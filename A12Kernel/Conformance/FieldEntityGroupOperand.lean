@@ -539,6 +539,51 @@ example :
       field ["Probe", "A", "Deep"] "DeepText"] = none := by
   native_decide
 
+/-! ### The extrema's sortable set is wider than this family's representable set
+
+`Sum` takes Number; the extrema take Number **or Date**, so a Date operand that this Number family
+cannot hold is a *representation* limit and not a Kernel refusal. Projecting the family's own
+"not Number" error as `MVK_NOT_SORTABLE` therefore names a refusal for a model the Kernel admits,
+which is the one error an importer or an Explain consumer cannot recover from — it reads as a
+verdict rather than as missing coverage. The rows below pin the Date operand at both loci that
+carry the error, and keep the String operand's measured refusal beside them so the fix cannot be
+"drop the class". -/
+
+/- A Date operand under the extrema draws no class: the Kernel admits it. This is the written-out
+   pair; the group form below is the second locus of the same mechanism. -/
+example :
+    aggregateDiagnostic? .maximum [field ["Probe", "Milestones"] "ReportedOn",
+      field ["Probe", "Milestones"] "SettledOn"] = none := by
+  native_decide
+
+example :
+    aggregateDiagnostic? .minimum [group ["Probe", "Milestones"]] = none := by
+  native_decide
+
+/- `Sum` over that same all-Date group keeps its own refusal, so the row above is the extrema's
+   admitted kind and not the operand becoming invisible. -/
+example :
+    aggregateDiagnostic? .sum [group ["Probe", "Milestones"]] = some .noNumber := by
+  native_decide
+
+/- The homogeneous String group in both operand forms — the measured refusal the extrema really do
+   report, and the reason the Date rows above are a narrowing rather than a deletion. -/
+example :
+    aggregateDiagnostic? .maximum [group ["Probe", "Contact"]] = some .notSortable := by
+  native_decide
+
+example :
+    aggregateDiagnostic? .minimum [field ["Probe", "Contact"] "Email",
+      field ["Probe", "Contact"] "Phone"] = some .notSortable := by
+  native_decide
+
+/- String **beside** Date in one expansion still refuses. An admitted kind in the list does not
+   rescue an unsortable one, which is what separates "classify by the offending kind" from
+   "classify by whether every kind is admitted". -/
+example :
+    aggregateDiagnostic? .maximum [group ["Probe", "Mixed"]] = some .notSortable := by
+  native_decide
+
 /-! ## `FieldValuesNotUnique` compares the group's whole `(row × field)` extent
 
 The compared set is **neither per-row nor per-field**: a duplicate lying within one row across two

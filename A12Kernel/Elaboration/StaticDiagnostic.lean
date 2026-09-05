@@ -52,7 +52,7 @@ inductive KernelStaticDiagnostic where
   | invalidWildcard
   /-- A starred group operand appeared under a quantifier that forbids one. Distinct from the scalar-presence wildcard class below, which the same star draws through a different carrier. -/
   | noWildcardsGAllowed
-  /-- Scalar `GroupFilled` received a starred group, where the group must stay whole. -/
+  /-- A star was written at an operand position that forbids one. Scalar `GroupFilled` reaches it with a starred **group**, where the group must stay whole, and field-operand carriers reach it with a starred **field**, so this is not a group-only refusal. Its fix is the opposite of `noWildcard`'s: remove the star, rather than supply the binding a repeatable operand is missing. The two names differ by one word and the wrong reading sends a consumer the wrong way. -/
   | noWildcardsAllowed
   /-- An operator-specific field-list gate refused a group-scope operand. -/
   | noGroupsAllowed

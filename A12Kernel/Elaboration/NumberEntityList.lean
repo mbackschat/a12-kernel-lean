@@ -204,8 +204,8 @@ inductive NumberEntityElabError where
   | shape (error : FieldEntityShapeElabError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | star (error : StarNumberElabError)
-  /-- A group slot whose expansion contains a declaration that is not Number-valued. The Kernel's class here is each operator's own — `MVK_NO_NUMBER` under `Sum`, `MVK_NOT_SORTABLE` under the extrema — so this shared boundary names none. -/
-  | groupExpansionNotNumber (path : List String)
+  /-- A group slot whose expansion contains a declaration that is not Number-valued, carrying the non-Number kinds it found in expansion order. The Kernel's class here is each operator's own — `MVK_NO_NUMBER` under `Sum`, `MVK_NOT_SORTABLE` under the extrema — so this shared boundary names none. The kinds are retained because the extrema's class depends on *which* non-Number kind arrived and the path alone cannot say. -/
+  | groupExpansionNotNumber (path : List String) (kinds : List SurfaceScalarKind)
   /-- A group slot whose subtree declares no field at all. Unmeasured, so refused without a class. -/
   | groupExpansionEmpty (path : List String)
   /-- A group slot whose expanded declarations disagree on signedness. A representation limit rather than a Kernel gate; see `CheckedNumberEntityGroup.uniformSigned`. -/
@@ -215,18 +215,35 @@ inductive NumberEntityElabError where
 
 namespace NumberEntityElabError
 
+/-- Whether the extrema are measured to refuse an operand of this declared kind.
+
+    The extrema's admitted set is **wider than this family's representable set**: they take Number *or* Date, while every value here is a Number field. A Date operand therefore reaches an error value meaning "this family cannot hold it" and must **not** be reported as a Kernel refusal, because the Kernel admits that model. Reading the family's own limit as `MVK_NOT_SORTABLE` is the defect these arms are written against.
+
+    Only String is measured refused. Every other non-Number kind answers `false` for one of two different reasons — Date is measured *admitted*, and the rest are simply unmeasured — and both reasons produce no class, which is this vocabulary's honest state for an unestablished mapping. -/
+private def extremaRefuseKind : SurfaceScalarKind → Bool
+  | .string => true
+  | .number => false
+  -- Date is measured admitted; the other four temporal kinds are unmeasured at this gate.
+  | .temporal _ => false
+  | .enumeration | .boolean | .confirm | .dateRange => false
+
 /-- The expansion-kind gate is **each operator's own question about the expansion's values**, which is why this projection is keyed by the operator where every gate the shared checker owns is not. One group whose subtree contains a String draws a different class under each of `Sum` and the extrema, and reading one carrier's class off a sibling is precisely the inference the Kernel refutes. The distinct count is stronger still: its class is not a property of the operator alone, so it is projected below rather than claimed.
 
     Shape refusals delegate to the shared checker, because the star, arity, and duplicate gates do not vary by carrier.
 
-    The **explicit** field list carries the class only under the extrema, where the equivalent written-out list is measured to draw the same unsortable code. No row places `Sum`'s or the distinct count's class on the explicit form, so it stays unprojected there rather than inheriting the group's. -/
+    The extrema's class is additionally keyed by the **kind** that arrived, not merely by the operand failing to be a Number; see `extremaRefuseKind`. `Sum` needs no such split, because its admitted set and this family's representable set coincide, so nothing reaching its arm is a model the Kernel would accept. What stays open for `Sum` is only whether some unmeasured kind draws a *different* code, never whether it is refused.
+
+    The **explicit** field list carries the class only under the extrema. Its measured witness is a starred String field path beside the group's own refusal in both repetition shapes, which is what places the gate on the operand's kind rather than on its groupness; the written-out multi-field spelling is that reading extended, not separately measured. No row places `Sum`'s or the distinct count's class on the explicit form, so it stays unprojected there rather than inheriting the group's. The starred arm reaches `star` and stays unprojected at this projection even so. -/
 def aggregateDiagnostic? (op : NumericAggregateOp) :
     NumberEntityElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
-  | .groupExpansionNotNumber _ =>
+  | .groupExpansionNotNumber _ kinds =>
       match op with
       | .sum => some .noNumber
-      | .minimum | .maximum => some .notSortable
+      -- One measured-refused kind decides the whole expansion: an admitted kind beside it does not
+      -- rescue the list, which is why this is `any` and not "every kind is unadmitted".
+      | .minimum | .maximum =>
+          if kinds.any extremaRefuseKind then some .notSortable else none
       -- The distinct count is the one member whose code is selected by the operand list's *first*
       -- element rather than by the offending one: Number-first draws `MVK_NUMBER_AND_NON_NUMBER`,
       -- String-first `MVK_STRING_ENUM_AND_NON_STRING_ENUM`, Date-first `MVK_DATE_AND_NONDATE`, and
@@ -236,9 +253,10 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- it — an earlier version projected the String class, measured on a String-first expansion and
       -- carried onto Number-first ones.
       | .distinctCount => none
-  | .fieldKindMismatch _ _ =>
+  | .fieldKindMismatch _ actual =>
       match op with
-      | .minimum | .maximum => some .notSortable
+      | .minimum | .maximum =>
+          if extremaRefuseKind actual then some .notSortable else none
       | .sum | .distinctCount => none
   | .star _ | .groupExpansionEmpty _ | .groupExpansionMixedSign _
   | .incoherentCore => none
@@ -273,7 +291,10 @@ private def certifyNumberEntityGroup (model : FlatModel)
         else
           throw (.groupExpansionMixedSign source.groupPath)
   else
-    throw (.groupExpansionNotNumber source.groupPath)
+    throw (.groupExpansionNotNumber source.groupPath
+      ((model.groupSubtreeFields source.groupPath).filterMap fun declaration =>
+        if declaration.toNumberField?.isSome then none
+        else some declaration.policy.kind.surfaceKind))
 
 private def certifyNumberEntityOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →

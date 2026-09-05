@@ -668,6 +668,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Group-carrier duplicate precedence](sources/inbound-group-operand-batches.md#src-group-carrier-duplicate-precedence)
 <a id="src-group-carrier-admission-sweep"></a>
 - [Group-carrier admission sweep](sources/inbound-group-operand-batches.md#src-group-carrier-admission-sweep)
+<a id="src-extrema-sortable-kind-set"></a>
+- [The extrema's admitted kind set is Number or Date](sources/inbound-group-operand-batches.md#src-extrema-sortable-kind-set)
 <a id="src-group-runtime-and-reference"></a>
 - [Group runtime and reference correction](sources/inbound-group-operand-batches.md#src-group-runtime-and-reference)
 <a id="src-group-first-filled-runtime-order"></a>
