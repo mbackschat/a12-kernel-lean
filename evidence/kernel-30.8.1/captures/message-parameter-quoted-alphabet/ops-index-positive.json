@@ -1,0 +1,46 @@
+[
+ {
+  "id": "Q1-index-of-index-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-Q1.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ },
+ {
+  "id": "Q2-index-of-plain-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-Q2.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ },
+ {
+  "id": "Q3-semantic-key-on-index",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-Q3.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ },
+ {
+  "id": "Q4-control-bare-name",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-Q4.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ }
+]

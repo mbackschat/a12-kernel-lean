@@ -1,0 +1,144 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 5 of 5 exited nonzero (0 failed, 5 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "P1-index-of-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-P1.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/P1': The rule '/Msg/Rows/P1' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Marker)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/P1"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "P2-index-of-other-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-P2.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/P2': The rule '/Msg/Rows/P2' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Err)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/P2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "P3-index-capitalised",
+      "verb" : "rule",
+      "args" : [ "add", "rule-P3.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Msg/Rows/P3': The rule '/Msg/Rows/P3' specifies an incorrect error text for the language English. The error text parameter 'Index(/Msg/Rows/Marker)' is not valid. Corrupt input or parameter not complete (yet): Unexpected found '('. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Msg/Rows/P3"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED — write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED — `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase — `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED — `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error — a token appeared where the grammar did not allow it — and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "P4-index-empty-arg",
+      "verb" : "rule",
+      "args" : [ "add", "rule-P4.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Msg/Rows/P4': The rule '/Msg/Rows/P4' specifies an incorrect error text for the language English. The error text parameter 'index()' is not valid. Corrupt input or parameter not complete (yet): Unexpected found ')'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Msg/Rows/P4"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED — write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED — `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase — `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED — `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error — a token appeared where the grammar did not allow it — and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "P5-index-unreferenced",
+      "verb" : "rule",
+      "args" : [ "add", "rule-P5.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/P5': The rule '/Msg/Rows/P5' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Other)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/P5"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

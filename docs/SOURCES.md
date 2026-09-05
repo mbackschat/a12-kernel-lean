@@ -387,6 +387,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-terminal-bundle-on-the-computation-carrier"></a>
 - [The parameter terminal bundle is shared with the computation message carrier, where `RuleGroup` names the computation's own group](sources/message-and-pointer-probes.md#src-terminal-bundle-on-the-computation-carrier)
 
+<a id="src-name-position-index-terminal"></a>
+- [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
+
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
 <a id="src-nested-self-exclusion"></a>

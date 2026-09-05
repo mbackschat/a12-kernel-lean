@@ -1,0 +1,46 @@
+[
+ {
+  "id": "R1-relative-name",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-R1.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ },
+ {
+  "id": "R2-group-relative",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-R2.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ },
+ {
+  "id": "R3-group-arg",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-R3.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ },
+ {
+  "id": "R4-bare-rows",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-R4.json",
+   "--dry-run",
+   "--model",
+   "MsgIdx_DM.json"
+  ]
+ }
+]

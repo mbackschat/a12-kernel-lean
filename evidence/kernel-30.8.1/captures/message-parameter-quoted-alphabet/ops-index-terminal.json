@@ -1,0 +1,57 @@
+[
+ {
+  "id": "P1-index-of-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-P1.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "P2-index-of-other-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-P2.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "P3-index-capitalised",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-P3.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "P4-index-empty-arg",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-P4.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "P5-index-unreferenced",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-P5.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ }
+]

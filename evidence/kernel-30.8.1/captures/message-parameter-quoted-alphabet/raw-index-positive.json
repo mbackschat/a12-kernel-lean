@@ -1,0 +1,109 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 4 ops; 3 of 4 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "Q1-index-of-index-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-Q1.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/Q1': The rule '/Msg/Rows/Q1' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Marker)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/Q1"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "Q2-index-of-plain-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-Q2.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/Q2': The rule '/Msg/Rows/Q2' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Err)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/Q2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "Q3-semantic-key-on-index",
+      "verb" : "rule",
+      "args" : [ "add", "rule-Q3.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
+          "summary" : "Rule with path '/Msg/Rows/Q3': The rule '/Msg/Rows/Q3' specifies an incorrect error text for the language English. A semantic index '/Msg/Rows/Err For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "where" : {
+            "rule" : "/Msg/Rows/Q3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "Q4-control-bare-name",
+      "verb" : "rule",
+      "args" : [ "add", "rule-Q4.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Msg/Rows/Q4",
+        "changed" : {
+          "rule" : "/Msg/Rows/Q4"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

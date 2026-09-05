@@ -1,0 +1,2 @@
+line 1:10 token recognition error at: '['
+line 1:10 token recognition error at: '['

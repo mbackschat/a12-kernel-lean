@@ -1,0 +1,178 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 7 ops; 5 of 7 exited nonzero (0 failed, 5 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 7,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "N1-group-index-1",
+      "verb" : "rule",
+      "args" : [ "add", "rule-N1.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_LEXER_STANDARD_ERROR",
+          "summary" : "Rule with path '/Msg/Rows/N1': The rule '/Msg/Rows/N1' specifies an incorrect error text for the language English. The error text parameter '#/Msg/Rows[1]' is not valid. Character '[' at position 11 is incorrect. [MVK_LEXER_STANDARD_ERROR]",
+          "where" : {
+            "rule" : "/Msg/Rows/N1"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "N2-group-index-2",
+      "verb" : "rule",
+      "args" : [ "add", "rule-N2.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_LEXER_STANDARD_ERROR",
+          "summary" : "Rule with path '/Msg/Rows/N2': The rule '/Msg/Rows/N2' specifies an incorrect error text for the language English. The error text parameter '#/Msg/Rows[2]' is not valid. Character '[' at position 11 is incorrect. [MVK_LEXER_STANDARD_ERROR]",
+          "where" : {
+            "rule" : "/Msg/Rows/N2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "N3-name-index-bare",
+      "verb" : "rule",
+      "args" : [ "add", "rule-N3.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_ENTITY",
+          "summary" : "Rule with path '/Msg/Rows/N3': The rule '/Msg/Rows/N3' specifies an incorrect error text for the language English. The group or field 'index' is not valid. [INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Msg/Rows/N3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "N4-name-index-call",
+      "verb" : "rule",
+      "args" : [ "add", "rule-N4.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/N4': The rule '/Msg/Rows/N4' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/N4"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "N5-name-semantic-key",
+      "verb" : "rule",
+      "args" : [ "add", "rule-N5.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
+          "summary" : "Rule with path '/Msg/Rows/N5': The rule '/Msg/Rows/N5' specifies an incorrect error text for the language English. A semantic index '/Msg/Rows/Marker For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "where" : {
+            "rule" : "/Msg/Rows/N5"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "N6-control-value",
+      "verb" : "rule",
+      "args" : [ "add", "rule-N6.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Msg/Rows/N6",
+        "changed" : {
+          "rule" : "/Msg/Rows/N6"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "N7-control-bare-name",
+      "verb" : "rule",
+      "args" : [ "add", "rule-N7.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Msg/Rows/N7",
+        "changed" : {
+          "rule" : "/Msg/Rows/N7"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

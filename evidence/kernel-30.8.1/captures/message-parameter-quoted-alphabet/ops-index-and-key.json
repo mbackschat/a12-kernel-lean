@@ -1,0 +1,79 @@
+[
+ {
+  "id": "N1-group-index-1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-N1.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "N2-group-index-2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-N2.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "N3-name-index-bare",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-N3.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "N4-name-index-call",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-N4.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "N5-name-semantic-key",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-N5.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "N6-control-value",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-N6.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "N7-control-bare-name",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-N7.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ }
+]

@@ -1,0 +1,15 @@
+{
+  "target" : "group",
+  "op" : "modify",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "set /Msg/Rows: index field Marker",
+  "changed" : {
+    "group" : "/Msg/Rows",
+    "indexField" : "Marker"
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "MsgIdx_DM.json"
+}

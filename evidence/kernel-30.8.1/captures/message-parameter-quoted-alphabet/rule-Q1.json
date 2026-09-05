@@ -1,0 +1,12 @@
+{
+ "field": "/Msg/Rows/Err",
+ "group": "/Msg/Rows",
+ "code": "Q1",
+ "condition": "FieldFilled(/Msg/Rows/Marker) And FieldFilled(/Msg/Rows/Err)",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "[x=$index(/Msg/Rows/Marker)$]"
+  }
+ ]
+}

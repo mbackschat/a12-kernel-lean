@@ -1,0 +1,115 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 4 ops; 4 of 4 exited nonzero (0 failed, 4 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "R1-relative-name",
+      "verb" : "rule",
+      "args" : [ "add", "rule-R1.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD_PARAMETER",
+          "summary" : "Rule with path '/Msg/Rows/R1': The rule '/Msg/Rows/R1' specifies an incorrect error text for the language English. The index-field parameter '$index(Marker)$' does neither access the value nor the category-value. [INVALID_INDEX_FIELD_PARAMETER]",
+          "where" : {
+            "rule" : "/Msg/Rows/R1"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "R2-group-relative",
+      "verb" : "rule",
+      "args" : [ "add", "rule-R2.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/R2': The rule '/Msg/Rows/R2' specifies an incorrect error text for the language English. The field referenced in parameter '$index(Rows/Marker)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/R2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "R3-group-arg",
+      "verb" : "rule",
+      "args" : [ "add", "rule-R3.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/R3': The rule '/Msg/Rows/R3' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/R3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "R4-bare-rows",
+      "verb" : "rule",
+      "args" : [ "add", "rule-R4.json", "--dry-run", "--model", "MsgIdx_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_INDEX_FIELD",
+          "summary" : "Rule with path '/Msg/Rows/R4': The rule '/Msg/Rows/R4' specifies an incorrect error text for the language English. The field referenced in parameter '$index(Rows)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "where" : {
+            "rule" : "/Msg/Rows/R4"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}
