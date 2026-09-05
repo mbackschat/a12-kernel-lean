@@ -233,6 +233,19 @@ Two consequences for this project's own records, both corrections of local error
 
 The compared-identity question itself is a runtime claim requiring a kernel/interpreter differential, which is a12-dmkits' harness; it stays with them and is not routed through `dmtool` from here.
 
+<a id="inbound-2026-09-05f"></a>
+### Reported 2026-09-05f — the distinct count's temporal identity is the decoded date, and the first-operand grid's envelope
+
+a12-dmkits reports `NumberOfDifferentValues` counting temporal operands by **decoded date**, not stored text, from `adapter.laws.DistinctCountTemporalIdentityDiffTest` — an adapter differential asserting kernel dynamic-Groovy and their interpreter agree per cell before any value is pinned. Three DATE fields on one root group, component set {YEAR, MONTH, DAY}, no Base Year declared so supplementation is not a second variable, rule shape `FieldFilled(Reference) And NumberOfDifferentValues(A, B) == N` with `N` probed at both 1 and 2.
+
+The four cells are a genuine separating matrix rather than one witness. `2024-03-05` beside `05.03.2024` counts **1**; the same cross-spelling pair with `06.03.2024` counts **2**; and a same-spelling arm counts 1 and 2 on equal and unequal dates. Row one alone would not settle it — a count of 1 is equally consistent with a decoded comparison and with an engine that cannot compare across spellings and folds the pair — and row two is what defeats that second reading. The peer states row one's admission is asserted inside the test rather than assumed, without which all four cells would measure a model that does not exist.
+
+The same message carries their `KF226` envelope for the first-operand grid, oracle `checkConsistency` via `BoundModel.ofJson`, each refusal pinning the rival code **absent** rather than only the expected one. Number-first draws `MVK_NUMBER_AND_NON_NUMBER`, String-first `MVK_STRING_ENUM_AND_NON_STRING_ENUM`, Date-first `MVK_DATE_AND_NONDATE`, Boolean-first `MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED`, each against its flipped pair, with a homogeneous accept control. Their Date field is `dd.MM.yyyy` so the date-first row is a real cross-family mix; `MVK_DATEFORMATS_NOT_COMPATIBLE` is reachable from a same-family pair on this operator and would be easy to mistake for the class result.
+
+**Two limits the peer stated and this project must carry.** The grid is two-operand throughout, so "the first operand fixes the class" is measured at arity 2 and not where a third family enters; and every row places the offender second, so the flip separates naming-the-offender from naming-the-leading-class but does not measure a list violating the leading class twice.
+
+Peer-reported, not locally re-derived. [SG22](SEMANTICS-GAPS.md#sg22--numberofdifferentvalues-operand-domain-and-its-two-homogeneity-codes) owns the re-derivation obligation and this project's own rows already agree with the grid independently, on different fixtures against the same terminal oracle.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.
