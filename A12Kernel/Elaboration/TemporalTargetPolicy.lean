@@ -85,7 +85,9 @@ inductive TimeTargetElabError where
   | unsupportedFormat (target : FieldId) (source : String)
   deriving Repr, DecidableEq
 
-/-- One checked complete Time target. The runtime's 1970 transport date and model zone do not enter clock rendering. -/
+/-- One checked complete Time target. The runtime's 1970 transport date and model zone do not enter clock rendering.
+
+    **`targetIsTime` is narrower than the Kernel's own admission and is retained deliberately.** Measured across all three temporal families, a computed target is gated by its declared **format string** rather than by its declared kind, so a DateTime declared with the degenerate time-only format is admitted where this structure refuses it ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)). Widening the field is blocked on the other half of that question — what such a cross-kind target *stores* is unmeasured, and the storage decides what a computation writing into it means. No caller consults `targetIsTime`, so the narrowing costs nothing but the models it excludes. -/
 structure CheckedTimeTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : TimeTargetFormat
