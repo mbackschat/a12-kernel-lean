@@ -494,23 +494,57 @@ example : (do
     some ([.overRepetition], .unknown .overRepetition) := by
   native_decide
 
-/- The **filtered** star never reaches either reader, because admission refuses it: no route here
-   elaborates a `Having`, and folding an unfiltered row set for a filtered operand would answer a
-   different question. The addressed reader keeps a totality arm for the form anyway, so a future
-   admission widening surfaces as a decline rather than as a silent unfiltered fold — this row is
-   what makes that arm's premise checked rather than asserted. -/
+/- The **filtered** star is admitted — the Kernel admits it
+   ([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)) — and
+   declined by the addressed reader, which is the arm that now actually receives it. The decline is
+   deliberate and must stay until the fold carries the filter: this capsule's shared shape holds no
+   elaborated `Having`, and folding `source` alone would return the **unfiltered** rows. That is a
+   wrong answer where the decline is a missing one.
+
+   Both halves are asserted together because neither alone is the property. Admission alone would
+   not say the reader is safe, and the decline alone would read as a refusal of the shape — which is
+   what this row asserted before the measurement, in the wrong direction. -/
 private def selfFilter : SurfaceCorrelatedHaving :=
   .presence .filled
     { origin := .inner
       field := { base := .absolute, groups := ["Probe", "Full"],
                  field := "FullRowDate" } }
 
-example : (TemporalExtremumOperands.elaborate probeModel ["Probe"]
-    { first := .starHaving
-        { base := .absolute
-          groups := [{ name := "Probe" }, { name := "Full", starred := true }]
-          field := "FullRowDate" } selfFilter
-      rest := [] }).toOption.isNone = true := by
+private def filteredStarOperand : SurfaceFieldEntityOperand :=
+  .starHaving
+    { base := .absolute
+      groups := [{ name := "Probe" }, { name := "Full", starred := true }]
+      field := "FullRowDate" } selfFilter
+
+private def filteredChecked? : Option (CheckedTemporalExtremumOperands probeModel) :=
+  (TemporalExtremumOperands.elaborate probeModel ["Probe"]
+    { first := filteredStarOperand, rest := [] }).toOption
+
+example : filteredChecked?.isSome = true := by native_decide
+
+/- And it carries the same component set the unfiltered star does, so admission is reading the
+   declaration through the filter rather than admitting the form unexamined. -/
+example :
+    filteredChecked?.map (·.components) =
+      (TemporalExtremumOperands.elaborate probeModel ["Probe"]
+        { first := .star
+            { base := .absolute
+              groups := [{ name := "Probe" }, { name := "Full", starred := true }]
+              field := "FullRowDate" }
+          rest := [] }).toOption.map (·.components) := by
+  native_decide
+
+/- The addressed reader declines it, naming the operand rather than folding. Without this row the
+   fold could start returning unfiltered rows and every other case in this module would still
+   pass. -/
+example : (do
+    let checked ← filteredChecked?
+    let document ← document? [] []
+    match TemporalExtremumStream.evalAddressedDate checked .maximum document []
+        .validation with
+    | .ok _ => none
+    | .error error => some error) =
+    some (.declined (.operandNeedsAddressing ["Probe", "Full", "FullRowDate"])) := by
   native_decide
 
 /-! ### A fixed group, and the tail bit that decides which ones it may fold

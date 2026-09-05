@@ -1,0 +1,164 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 7 ops; 3 of 7 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 7,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-gate-filtered-star-vs-differing-set",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0, CoverFrom) > [FiledOn]", "--code", "R1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "use DATE, TIME, or DATE_TIME fields with mutually compatible declared formats",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-control-plain-star-vs-differing-set",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate, CoverFrom) > [FiledOn]", "--code", "R2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "use DATE, TIME, or DATE_TIME fields with mutually compatible declared formats",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-separator-filtered-star-vs-same-set-other-spelling",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0, ClosedOn) > [FiledOn]", "--code", "R3" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-filtered-star-in-later-position",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(CoverFrom, /Probe/Rows*/RowDate Having [RowVal] > 0) > [FiledOn]", "--code", "R4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM' and 'yyyy-MM-dd' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "use DATE, TIME, or DATE_TIME fields with mutually compatible declared formats",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-carrier-uniqueness-filtered-star",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowDate Having [RowVal] > 0)", "--code", "R5" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-carrier-distinctcount-filtered-star",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowDate Having [RowVal] > 0) > 1", "--code", "R6" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-control-carrier-uniqueness-plain-star",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowDate)", "--code", "R7" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

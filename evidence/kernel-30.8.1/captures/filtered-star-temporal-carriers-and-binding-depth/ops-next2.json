@@ -1,0 +1,9 @@
+[
+ {"id":"1-gate-filtered-star-vs-differing-set","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0, CoverFrom) > [FiledOn]","--code","R1"]},
+ {"id":"2-control-plain-star-vs-differing-set","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate, CoverFrom) > [FiledOn]","--code","R2"]},
+ {"id":"3-separator-filtered-star-vs-same-set-other-spelling","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0, ClosedOn) > [FiledOn]","--code","R3"]},
+ {"id":"4-filtered-star-in-later-position","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(CoverFrom, /Probe/Rows*/RowDate Having [RowVal] > 0) > [FiledOn]","--code","R4"]},
+ {"id":"5-carrier-uniqueness-filtered-star","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowDate Having [RowVal] > 0)","--code","R5"]},
+ {"id":"6-carrier-distinctcount-filtered-star","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowDate Having [RowVal] > 0) > 1","--code","R6"]},
+ {"id":"7-control-carrier-uniqueness-plain-star","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowDate)","--code","R7"]}
+]

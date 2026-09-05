@@ -1,0 +1,66 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 3 ops; all children exited zero",
+  "data" : {
+    "ops" : 3,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-plain-star-temporal-extremum",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate) > [FiledOn]", "--code", "Q1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-filtered-star-temporal-extremum",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0) > [FiledOn]", "--code", "Q2" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-control-filtered-star-numeric-extremum",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowVal Having [RowVal] > 0) > 0", "--code", "Q3" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

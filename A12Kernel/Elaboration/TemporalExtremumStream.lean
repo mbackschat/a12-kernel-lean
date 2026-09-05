@@ -127,9 +127,11 @@ its own missing provenance, both of which weaken a selected result's given-ness 
 value.
 
 Every arm reuses the sole checked owner of its shape — the direct, star, and group core resolvers —
-so this module resolves no topology and reads no cell itself. The three declined arms are the same
-three the Number sibling declines: a filtered star needs its `Having` elaborated before it can be
-resolved, and admitting one unchecked would be worse than refusing it.
+so this module resolves no topology and reads no cell itself. A filtered star is *admitted* by the
+gate, because the Kernel admits it, but declined here: resolving it needs its `Having` elaborated at
+admission onto a checked operand this capsule's shared shape does not carry, and folding it without
+the filter would return the unfiltered rows — a wrong answer where the decline is merely a missing
+one.
 
 **Over-limit rows supply nothing.** The declared-capacity extent is a property of the operand rather
 than of the consuming operator, which is what the capacity sweep's distinct-count document separated
@@ -199,10 +201,13 @@ private def operandExtent (document : CheckedDocument model) (outer : Env) :
         let tail ← document.resolveCheckedGroupUninstantiatedTail outer
           boundCount declarations
         pure (core, tail)).mapError .addressing
-  -- The two filtered forms never arrive: admission refuses both with `unsupportedOperandForm`,
-  -- because no route here elaborates a `Having`. These arms exist for totality and are reported
-  -- rather than skipped, so a future admission widening surfaces as a decline instead of silently
-  -- folding an unfiltered row set.
+  -- A filtered star **does** arrive: admission admits it, because the Kernel does. This reader
+  -- still declines it, and the decline is the point — folding `source` here would silently drop the
+  -- filter and return the unfiltered row set, which is a wrong answer rather than a missing one.
+  -- Evaluating it needs the filter elaborated at admission, the way every carrier that folds one
+  -- keeps its own checked operand (`BooleanValueCount`, `NumberEntityList`); this capsule's shared
+  -- shape has no slot for it. Tracked as the remaining half of the gate's admission
+  -- ([`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md)).
   | .starHaving source _ =>
       throw (.declined (.operandNeedsAddressing source.declaration.path))
   | .starredGroupPresence source =>

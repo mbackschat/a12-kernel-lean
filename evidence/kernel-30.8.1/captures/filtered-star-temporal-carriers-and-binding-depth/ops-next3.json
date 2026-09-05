@@ -1,0 +1,9 @@
+[
+ {"id":"1-form-level-into-one-level-target","verb":"rule","args":["check","--field","/Probe/Rows/RowVal","--condition","FieldFilled(RowVal) And [/Probe/Amount] > 0","--code","T1"]},
+ {"id":"2-own-level-control","verb":"rule","args":["check","--field","/Probe/Rows/RowVal","--condition","FieldFilled(RowVal) And [RowVal] > 0","--code","T2"]},
+ {"id":"3-form-level-into-two-level-target","verb":"rule","args":["check","--field","/Probe/Rows/Sub/Leaf","--condition","FieldFilled(Leaf) And [/Probe/Amount] > 0","--code","T3"]},
+ {"id":"4-one-level-up-into-two-level-target","verb":"rule","args":["check","--field","/Probe/Rows/Sub/Leaf","--condition","FieldFilled(Leaf) And [/Probe/Rows/RowVal] > 0","--code","T4"]},
+ {"id":"5-one-level-below-the-target","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And [/Probe/Rows/RowVal] > 0","--code","T5"]},
+ {"id":"6-two-levels-below-the-target","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And [/Probe/Rows/Sub/Leaf] > 0","--code","T6"]},
+ {"id":"7-cross-repeatable-sibling-no-index","verb":"rule","args":["check","--field","/Probe/Rows/RowVal","--condition","FieldFilled(RowVal) And [/Probe/Other/OtherVal] > 0","--code","T7"]}
+]

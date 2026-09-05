@@ -246,6 +246,15 @@ The same message carries their `KF226` envelope for the first-operand grid, orac
 
 Peer-reported, not locally re-derived. [SG22](SEMANTICS-GAPS.md#sg22--numberofdifferentvalues-operand-domain-and-its-two-homogeneity-codes) owns the re-derivation obligation and this project's own rows already agree with the grid independently, on different fixtures against the same terminal oracle.
 
+<a id="inbound-2026-09-06a"></a>
+### Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
+
+a12-dmkits reports the binding relation holding on every cell of a nine-row table, committed `d7344e6c9`, oracle `checkConsistency`, run executed with 3 tests and 0 failures, recorded as their `KF255`. The fixture is the computation law's verbatim, so the carrier is the only variable: root policy, repeatable `Claims` with nested repeatable `Items`, and three repeatable siblings of `Claims` differing only in their index declaration. Form-level into one-level and two-level targets, one level up into a two-level target, own level, and a sibling whose index field carries the same name are all admitted; one level below the target, a repeatable into a form-level target, and a sibling with no index field draw `MVK_NO_WILDCARD`; a sibling whose index field has another name draws `MVK_ERROR_FIELD_INVALID_INDEX`.
+
+Two readings the peer supplied with it. Vacuity is excluded by the sibling triple rather than by a separate control: one helper returns three different outcomes over three groups differing only in their index declaration, which neither a defaulting harness nor an unreached condition can produce. And the carriers are genuinely asymmetric — a rule's condition must reference its error field, so every rule row carries two operands where the computation rows carried one, and the error-field read is itself a scope participant. The verdict is identical anyway, so the relation does not count operands, but that was not derivable in advance.
+
+The peer flagged their own epistemic position: they expected the computation rows and every row matched, which is weaker than a run that surprised them, and invited independent re-derivation. Done — seven of the nine rows reproduce on this project's own fixture, plus a depth-2 row their table does not carry ([checkpoint](sources/evaluation-and-application-routes.md#src-filtered-star-temporal-carriers-and-binding-depth)).
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.
@@ -465,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-filtered-star-temporal-carriers-and-binding-depth"></a>
+- [A `Having`-filtered star is admitted wherever a plain star is on all three temporal carriers, the component gate reads through it, and the binding relation re-derives independently](sources/evaluation-and-application-routes.md#src-filtered-star-temporal-carriers-and-binding-depth)
 <a id="src-distinct-count-component-set-and-locus"></a>
 - [`NumberOfDifferentValues` gates temporal operands by component set, not declared format; date-first class and group-presence locus confirmed locally](sources/evaluation-and-application-routes.md#src-distinct-count-component-set-and-locus)
 <a id="src-distinct-count-operand-domain"></a>

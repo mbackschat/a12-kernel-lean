@@ -24,8 +24,9 @@ private def dateParts (year month day : Bool) : TemporalComponents :=
 
 private def temporal (id : Nat) (name : String) (kind : TemporalKind)
     (components : TemporalComponents) (format : String)
-    (groupPath : GroupPath := ["Probe"]) : FlatFieldDecl :=
-  { id, groupPath, name,
+    (groupPath : GroupPath := ["Probe"])
+    (repeatableScope : List RepeatableLevel := []) : FlatFieldDecl :=
+  { id, groupPath, name, repeatableScope,
     policy := { kind := .temporal kind components },
     temporalTargetPolicy := some { format } }
 
@@ -68,6 +69,25 @@ private def plainModel : FlatModel :=
 
 private def baseYearModel : FlatModel :=
   { fields := declarations ++ groupDeclarations, baseYear := some 2024 }
+
+/-- A repeatable row carrying a full-date field and a numeric guard, plus a **non**-repeatable `Sub`
+    beneath it. `Sub` is what makes the starred-group *presence* form reachable from the surface:
+    a starred group resolves to the presence source exactly when its terminal is not itself a
+    repeatable level, so without a nested nonrepeatable group the declined arm could not be
+    exercised at all. -/
+private def rowDeclarations : List FlatFieldDecl :=
+  [ temporal 30 "RowDate" .date (dateParts true true true) "yyyy-MM-dd"
+      (groupPath := ["Probe", "Rows"]) (repeatableScope := [10]),
+    { id := 31, groupPath := ["Probe", "Rows"], name := "RowVal",
+      repeatableScope := [10],
+      policy := { kind := .number { scale := 0, signed := false } } },
+    temporal 32 "SubDate" .date (dateParts true true true) "yyyy-MM-dd"
+      (groupPath := ["Probe", "Rows", "Sub"]) (repeatableScope := [10]) ]
+
+private def starModel : FlatModel :=
+  { fields := declarations ++ groupDeclarations ++ rowDeclarations
+    repeatableGroups :=
+      [{ level := 10, path := ["Probe", "Rows"], repeatability := some 3 }] }
 
 private def fieldOperand (groups : GroupPath) (name : String) :
     SurfaceFieldEntityOperand :=
@@ -240,5 +260,90 @@ example : refusal? plainModel [1, 2, 12] = some .dateAndNonDate := by native_dec
 example : refusal? plainModel [1, 14] = none := by native_decide
 
 example : admitted plainModel [1, 14] = false := by native_decide
+
+/-! ## A filtered star is an operand like any other
+
+The gate reads the declaration a `Having`-filtered star names, exactly as it reads a plain star's.
+The filter selects **rows**, so it cannot change the component set of the field being read, and the
+measured rows say the Kernel agrees: a filtered star is admitted wherever the plain star is, and
+draws the same incompatibility against a differing set
+([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)).
+
+This capsule previously declined the form, on the stated ground that the neighbouring DateRange
+carrier refuses starred operands outright and reading admission across that boundary would be the
+crossing [`LF116`](../../docs/LEAN-FINDINGS.md) warns about. The decline was correct to demand a
+measurement and wrong about the answer. -/
+
+private def rowDateStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [{ name := "Probe" }, { name := "Rows", starred := true }]
+    field := "RowDate" }
+
+/-- A filter over the row's own guard. Its content is immaterial to the component gate — what the
+    rows below test is that a filter is *present* without changing the verdict — so the cheapest
+    well-formed one serves. -/
+private def rowFilter : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner,
+      field := { base := .absolute, groups := ["Probe", "Rows"], field := "RowVal" } }
+    { origin := .inner,
+      field := { base := .absolute, groups := ["Probe", "Rows"], field := "RowVal" } }
+
+private def plainStarOperand : SurfaceFieldEntityOperand := .star rowDateStar
+
+private def filteredStarOperand : SurfaceFieldEntityOperand :=
+  .starHaving rowDateStar rowFilter
+
+/- The two star forms are admitted alone, and the filtered one carries the same lifted set as the
+   plain one — the property that makes the pair below a comparison rather than two readings. -/
+example :
+    groupAdmitted starModel [plainStarOperand] = true ∧
+      groupAdmitted starModel [filteredStarOperand] = true := by
+  native_decide
+
+example :
+    (elaborateAt starModel [filteredStarOperand]).toOption.map (·.components) =
+      (elaborateAt starModel [plainStarOperand]).toOption.map (·.components) := by
+  native_decide
+
+/- Beside a matching set, and beside the **other spelling** of that set: admitted both times. The
+   second is the row that keeps this from reading as a format-string gate, and it is the one the
+   Kernel confirmed directly. -/
+example :
+    groupAdmitted starModel [filteredStarOperand, operandOf 1] = true ∧
+      groupAdmitted starModel [filteredStarOperand, operandOf 2] = true := by
+  native_decide
+
+/- Beside a **differing** set, refused — so admission above is the gate passing, not the gate being
+   skipped for filtered operands. Paired with the plain star on the identical list, because the
+   claim is that the filter changes nothing and a single row cannot say that. -/
+example :
+    groupRefusal? starModel [filteredStarOperand, operandOf 3] =
+        some .dateFormatsNotCompatible ∧
+      groupRefusal? starModel [plainStarOperand, operandOf 3] =
+        some .dateFormatsNotCompatible := by
+  native_decide
+
+/- And in a later position the filtered star is still read, drawing the same class when it disagrees
+   with a first operand that fixed a different set. -/
+example :
+    groupRefusal? starModel [operandOf 3, filteredStarOperand] =
+      some .dateFormatsNotCompatible := by
+  native_decide
+
+/- The negative control the fix must not widen: a starred **group presence** slot stays declined and
+   still claims no class, because no row measured it. Admission was measured for the filtered star
+   alone, and the two forms shared one arm before this change — so without this row the fix could
+   silently admit both and every row above would still pass. -/
+private def presenceGroup : SurfaceFieldEntityOperand :=
+  .starredGroup
+    { base := .absolute
+      groups := [{ name := "Probe" }, { name := "Rows", starred := true },
+        { name := "Sub" }] }
+
+example :
+    groupRefusal? starModel [presenceGroup] = none ∧
+      groupAdmitted starModel [presenceGroup] = false := by
+  native_decide
 
 end A12Kernel.Conformance.TemporalExtremumOperands

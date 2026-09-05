@@ -1,0 +1,5 @@
+[
+ {"id":"1-control-plain-star-temporal-extremum","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate) > [FiledOn]","--code","Q1"]},
+ {"id":"2-filtered-star-temporal-extremum","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0) > [FiledOn]","--code","Q2"]},
+ {"id":"3-control-filtered-star-numeric-extremum","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowVal Having [RowVal] > 0) > 0","--code","Q3"]}
+]
