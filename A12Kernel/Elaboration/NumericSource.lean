@@ -175,16 +175,20 @@ inductive TemporalNumericPart where
 
 namespace TemporalNumericPart
 
-/-- Static kind/component admission for one direct temporal numeric function. -/
+/-- Static **component** admission for one direct temporal numeric function.
+
+    The declared kind is deliberately not read. Measured on both extraction families with each kind
+    on both sides of both outcomes: `HoursFromTime` admits a DATE-declared `HH:mm:ss` field and
+    refuses a TIME-declared `yyyy-MM-dd` one, `YearFromDate` does the exact opposite, and the
+    Kernel's own code names the format — `MVK_WRONG_DATE_FORMAT_FOR_OP`
+    ([checkpoint](../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)).
+    The component test was already the whole rule; the kind conjunct this replaced refused two of
+    those four rows for a reason the Kernel does not have. -/
 def admittedBy (part : TemporalNumericPart) (field : FlatTemporalField)
     (hasBaseYear : Bool) : Bool :=
   match part with
-  | .date datePart =>
-      (field.kind == .date || field.kind == .dateTime) &&
-        datePart.admittedBy hasBaseYear field.components
-  | .time timePart =>
-      (field.kind == .time || field.kind == .dateTime) &&
-        timePart.admittedBy field.components
+  | .date datePart => datePart.admittedBy hasBaseYear field.components
+  | .time timePart => timePart.admittedBy field.components
 
 /-- Extract the selected amount from the matching decoded payload half. -/
 def project? (part : TemporalNumericPart) (value : TemporalValue) : Option Rat :=

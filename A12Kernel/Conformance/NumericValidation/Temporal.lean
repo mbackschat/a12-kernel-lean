@@ -16,6 +16,27 @@ private def fullDateField : FlatFieldDecl := {
 private def dateCarrierModel : FlatModel :=
   { model with fields := fullDateField :: model.fields }
 
+/-- A DATE-declared carrier whose format is a bare clock, beside a TIME-declared one whose format is
+    a complete date. Both are legal declarations, and the pair is what makes the operand gate's
+    keying observable: each kind sits on both sides of both outcomes, so no single row is consistent
+    with "TIME is permissive" or "DATE is permissive". -/
+private def dateAsClockField : FlatFieldDecl := {
+  id := 25
+  groupPath := ["Order"]
+  name := "DateAsClock"
+  policy := { kind := .temporal .date timeComponents } }
+
+private def timeAsDateField : FlatFieldDecl := {
+  id := 26
+  groupPath := ["Order"]
+  name := "TimeAsDate"
+  policy := { kind := .temporal .time TemporalComponents.fullDate } }
+
+private def crossCarrierModel : FlatModel :=
+  { dateCarrierModel with
+    fields :=
+      dateAsClockField :: timeAsDateField :: dateCarrierModel.fields }
+
 private def temporalPartDiagnostic? (surface : SurfaceNumericComparison)
     (sourceModel : FlatModel := model) : Option KernelStaticDiagnostic :=
   (errorOf surface sourceModel).bind
@@ -58,6 +79,37 @@ example :
         (comparison .equal (dateFieldPart "Time" .day) 1) = none ∧
       temporalPartDiagnostic?
         (comparison .equal (dateFieldPart "Code" .day) 1) = none := by
+  native_decide
+
+/- A temporal **operand's** admitted family is its declared format's and not its declared kind's,
+which is the rule the store and comparison already followed
+([checkpoint](../../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)).
+Extractors and the completed-period difference all read the component set: the kind conjunct these
+rows replaced refused the two admissions here, a wrong refusal rather than a wrong message. The
+`DateAsClock` difference stays refused because a clock carries no date at all, so the widening
+reaches the format's family and nothing wider, and the refused `YearFromDate` claims no Kernel code
+because that half of the pair was not measured. -/
+example :
+    errorOf (comparison .equal (timeFieldPart "DateAsClock" .hour) 1)
+        crossCarrierModel = none ∧
+      errorOf (comparison .equal (dateFieldPart "TimeAsDate" .year) 2024)
+        crossCarrierModel = none ∧
+      temporalPartDiagnostic?
+        (comparison .equal (timeFieldPart "TimeAsDate" .hour) 1)
+        crossCarrierModel = some .wrongDateFormatForOp ∧
+      errorOf (comparison .equal (dateFieldPart "DateAsClock" .year) 2024)
+          crossCarrierModel =
+        some (.temporalFieldPartNotExposed ["Order", "DateAsClock"]
+          (.date .year) .date timeComponents) ∧
+      errorOf (comparison .equal
+          (dateDifference .years (dateOperand "TimeAsDate")
+            (dateOperand "Date")) 0)
+        crossCarrierModel = none ∧
+      errorOf (comparison .equal
+          (dateDifference .years (dateOperand "DateAsClock")
+            (dateOperand "Date")) 0)
+          crossCarrierModel =
+        some (.incompatibleTemporalSource ["Order", "DateAsClock"]) := by
   native_decide
 
 /- Direct temporal components admit both numeric operation-form wrappers. Rounding preserves symmetric missingness, while `Abs` makes missing zero unable to shrink. -/

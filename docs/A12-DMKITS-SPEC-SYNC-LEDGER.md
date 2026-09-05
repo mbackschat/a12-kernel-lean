@@ -35,6 +35,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-14"></a>
+### `SPEC-2026-09-05-14` — a temporal **operand's** admitted family is its declared format's too, and a Base Year completes the year the format omits
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md`](../spec/05-dates-and-time.md)'s direct component-extraction and completed-period difference paragraphs, which stated the component requirement and the declared-kind requirement side by side as if both were gates.
+- `delta`: only the component requirement is a gate. `HoursFromTime` admits a **DATE**-declared `HH:mm:ss` field and refuses a **TIME**-declared `yyyy-MM-dd` one with `MVK_WRONG_DATE_FORMAT_FOR_OP`; `YearFromDate` does the exact opposite; `DifferenceInYears` follows the same pattern and takes the TIME-declared date-formatted field beside a real DATE field. Separately, with a Base Year declared, `YearFromDate` is admitted on a **pure TIME** field, so the year part's gate is *component present or Base Year supplies one* rather than *component present*.
+- `why-a-separate-entry-from` [`SPEC-2026-09-05-13`](#spec-2026-09-05-13): that entry was already forwarded on the *comparison* gate. An operand gate is a different surface, and inheriting the comparison rows onto it would have been the reuse-across-a-carrier crossing this project declined twice ([`LF116`](LEAN-FINDINGS.md)). It got its own rows and its own model, so it gets its own acceptance condition.
+- `basis`: `rule check` rows on one model, a12-dmkits `d1c528273`, `dmtool` 0.13.0, Kernel `30.8.1`, every envelope `KERNEL_CONFIRMED`, the sibling clean before and after. The [checkpoint](sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds) owns the rows and the retained model hash; the model is the value-family one plus `baseYear 2024` and a second complete-date pair, so the two entries' inputs differ.
+- `separator`: each kind sits on both sides of both outcomes, and the difference operator adds a third: a gate reading the declared kind could not mix a TIME declaration with a DATE one at all, whatever its permissiveness.
+- `consumer-consequence`: an implementation carrying a declared-kind conjunct beside its component test **refuses operands the Kernel admits** — a static rejection of a legal model, so a whole rule disappears rather than one cell answering wrongly. The conjunct is invisible in testing because it is unreachable without a cross-kind declaration.
+- `local-consequence`: seven shipped conjuncts fell — six `dateDifference` admission sites and the direct-extractor component test — plus the diagnostic projection, which was keyed on the kind although the code is the same for both complete-date declarations. Removing them flipped one shipped conformance expectation, `YearFromDate` on a pure TIME field under a Base-Year fixture model, which the `base-year-row` measurement settles as the Kernel's own answer.
+- `acceptance`: a12-dmkits confirms the four extractor rows and the mixed `DifferenceInYears`, and that `YearFromDate` is admitted on a pure TIME field under a declared Base Year; or reports the row where it diverges.
+- `also-worth-checking-your-side`: this is the **fourth** place the kind/format split has bitten one of us today, after the computed-target certificate, the store, and the comparison gate. If your interpreter has any other place where a declaration's kind and its format are both in scope, that is the shape to sweep for — the conjunct is always the kind, and it is always unreachable until a cross-kind declaration exists.
+- `limit`: static admission only, DATE and TIME declarations, `en_US`, one model. Which text parser runs over a cross-kind stored **value** is untouched, as are `CalendarDayDifference`'s kind test and the `dateTimeDifference` family's; those keep their conjuncts here, explicitly unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-13"></a>
 ### `SPEC-2026-09-05-13` — a temporal field's **value family** is its declared format's, not its declared kind's
 

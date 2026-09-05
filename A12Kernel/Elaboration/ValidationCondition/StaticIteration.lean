@@ -242,7 +242,7 @@ def ordinaryNumericAtomFieldDeclarations?
       (model.certifiedFieldValueAsNumberDeclaration? source).map (· :: [])
   | .dateDifference unit left right => do
       let declarations := temporalDifferenceOperandDeclarations? model
-        (fun source => source.kind == .date &&
+        (fun source =>
           unit.admittedBy model.hasBaseYear source.components)
       let leftDeclarations ← declarations left
       let rightDeclarations ← declarations right

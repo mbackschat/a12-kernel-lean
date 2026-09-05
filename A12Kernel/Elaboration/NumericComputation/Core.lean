@@ -191,9 +191,8 @@ def FlatModel.admitsNumericComputationOperand
   | .numeric (.dateDifference unit left right) =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
-            source.kind == .date &&
-              model.admitsTemporalComputationOperand source
-                (unit.admittedBy model.hasBaseYear source.components)
+            model.admitsTemporalComputationOperand source
+              (unit.admittedBy model.hasBaseYear source.components)
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
@@ -486,7 +485,7 @@ private def FlatModel.resolveNumericComputationExpression
           | .field reference => do
               let field ← model.resolveTemporalNumericComputationField
                 declaringGroup target reference
-                (fun source => source.kind == .date &&
+                (fun source =>
                   unit.admittedBy model.hasBaseYear source.components)
               pure (.field field)
           | .baseYear source =>

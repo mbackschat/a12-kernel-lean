@@ -139,7 +139,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       let resolveOperand := resolveDateDifferenceOperandWith model
         (fun reference =>
           resolveTemporalNumericField model rowGroup reference
-            (fun source => source.kind == .date &&
+            (fun source =>
               unit.admittedBy model.hasBaseYear source.components))
       let resolvedLeft ← resolveOperand left
       let resolvedRight ← resolveOperand right
@@ -269,8 +269,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
             resolveAddressedNumericDeclaration model rowGroup reference
           match declaration.toTemporalField? with
           | some field =>
-              if field.kind == .date &&
-                  unit.admittedBy model.hasBaseYear field.components then
+              if unit.admittedBy model.hasBaseYear field.components then
                 pure field
               else
                 throw (.incompatibleTemporalSource declaration.path)

@@ -160,11 +160,19 @@ def dateRangeBoundPartDiagnostic? :
   | .dateRangeBoundPartNotExposed _ _ => some .wrongDateFormatForOp
   | _ => none
 
-/-- Project only the exact reviewed direct-extractor diagnostic controls. The flat declaration universe's non-temporal branch is the seven authorable kinds measured for `YearFromDate`; `UNKNOWN` has no constructor here. The format projection is deliberately narrower: only full-Date `HoursFromTime` is measured, so adjacent extractors and partial Date declarations remain unmapped. -/
+/-- Project only the exact reviewed direct-extractor diagnostic controls. The flat declaration
+universe's non-temporal branch is the seven authorable kinds measured for `YearFromDate`; `UNKNOWN`
+has no constructor here. The format projection is deliberately narrower: only complete-date
+`HoursFromTime` is measured, so adjacent extractors and partial Date declarations remain unmapped.
+
+The **declared kind is not read**, and that is measured rather than assumed: the same
+`MVK_WRONG_DATE_FORMAT_FOR_OP` comes back for a DATE-declared complete-date field and for a
+TIME-declared one, so the component set alone selects the code
+([checkpoint](../../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)). -/
 def temporalFieldPartDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
   | .temporalFieldPartSourceNotTemporal _ (.date .year) => some .noDate
-  | .temporalFieldPartNotExposed _ (.time .hour) .date components =>
+  | .temporalFieldPartNotExposed _ (.time .hour) _ components =>
       if components == TemporalComponents.fullDate then
         some .wrongDateFormatForOp
       else
@@ -350,13 +358,12 @@ def NumericValidationAtom.admitted
   | .dateDifference unit left right =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
-            source.kind == .date &&
-              match scope with
-              | .sameGroup => model.admitsTemporalInGroup rowGroup source
-              | .sameGroupAddressed =>
-                  model.admitsAddressedTemporal rowGroup source
-              | .modelWideNonrepeatable | .modelWideCheckedComputation =>
-                  model.admitsTemporalModelWide source
+            match scope with
+            | .sameGroup => model.admitsTemporalInGroup rowGroup source
+            | .sameGroupAddressed =>
+                model.admitsAddressedTemporal rowGroup source
+            | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+                model.admitsTemporalModelWide source
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components

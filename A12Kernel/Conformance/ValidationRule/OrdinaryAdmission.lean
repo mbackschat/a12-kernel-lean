@@ -433,7 +433,14 @@ example :
       none := by
   native_decide
 
-/- Direct temporal component extraction retains its kind/component certificate while sharing the direct-operation host-zero branch. -/
+/- Direct temporal component extraction admits by **component set** and not by declared kind, sharing
+the direct-operation host-zero branch. The last two rows are the cross-family pair, and they answer
+differently for a reason that is the Kernel's: an hour cannot be read from a date-only set, while a
+**year** can be read from a time-only one whenever the model declares a Base Year — measured on a
+pure TIME field under Base Year 2024, and this model declares 2020
+([checkpoint](../../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)). The
+year row read `none` here until the kind conjunct was removed, which is the divergence that pair now
+guards. -/
 example :
     repeatableTemporalPartLegality? "InnerDate" (.date .day)
         (.ordinary .equal) 0 =
@@ -449,7 +456,7 @@ example :
       none ∧
     repeatableTemporalPartLegality? "InnerTime" (.date .year)
         (.ordinary .equal) 2024 =
-      none := by
+      some .legal := by
   native_decide
 
 /- Single-field operand-list Min/Max calls retain the same top-level operation-list guard without being flattened into direct fields. -/
