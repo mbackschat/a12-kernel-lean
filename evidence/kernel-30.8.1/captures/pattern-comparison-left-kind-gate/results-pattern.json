@@ -1,0 +1,114 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 4 ops; 3 of 4 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-string-left-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And [SkuText] PatternMatched \"[A-Z]+\"", "--code", "P1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-control-number-left-measured",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And [Amount] PatternMatched \"[A-Z]+\"", "--code", "P2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON",
+          "summary" : "Rule with path '/Probe4/CheckRule': Comparative operation 'PatternMatched' is only allowed for string values. [MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule",
+            "operator" : "PatternMatched"
+          },
+          "fix" : "the left pattern slot must be a String field; choose a String field or express the check as a numeric comparison",
+          "explain" : "True iff the string field's whole value matches the regular expression (anchored)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-DATERANGE-left-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And [Span] PatternMatched \"[A-Z]+\"", "--code", "P3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON",
+          "summary" : "Rule with path '/Probe4/CheckRule': Comparative operation 'PatternMatched' is only allowed for string values. [MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code has more than one trigger for PatternMatched; use the corrective matching the operands — the left pattern slot must be a String field; choose a String field or express the check as a numeric comparison; the right pattern slot must be a quoted string constant; replace the number with a regex literal such as \"A+\"",
+          "explain" : "True iff the string field's whole value matches the regular expression (anchored)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-DATERANGE-left-violated",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And [Span] PatternViolated \"[A-Z]+\"", "--code", "P4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON",
+          "summary" : "Rule with path '/Probe4/CheckRule': Comparative operation 'PatternViolated' is only allowed for string values. [MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code has more than one trigger for PatternViolated; use the corrective matching the operands — the left pattern slot must be a String field; choose a String field or express the check as a numeric comparison; the right pattern slot must be a quoted string constant; replace the number with a regex literal such as \"A+\"",
+          "explain" : "True iff the string field's whole value does NOT match the regular expression (anchored)."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

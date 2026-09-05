@@ -1,0 +1,6 @@
+[
+ {"id":"1-control-string-left-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And [SkuText] PatternMatched \"[A-Z]+\"","--code","P1"]},
+ {"id":"2-control-number-left-measured","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And [Amount] PatternMatched \"[A-Z]+\"","--code","P2"]},
+ {"id":"3-DATERANGE-left-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And [Span] PatternMatched \"[A-Z]+\"","--code","P3"]},
+ {"id":"4-DATERANGE-left-violated","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And [Span] PatternViolated \"[A-Z]+\"","--code","P4"]}
+]

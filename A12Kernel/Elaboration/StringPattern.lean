@@ -306,15 +306,21 @@ inductive StringPatternConditionElabError where
 
 namespace StringPatternConditionElabError
 
-/-- Project only measured pattern-source failure and wrong-left-kind classes. The
-surface makes the right operand a String constant structurally; remaining local
-refusals stay unmapped instead of guessing an external identity. -/
+/-- Project the measured pattern-source failure and the wrong-left-kind class. The left-kind gate is
+**total** over the kinds a declaration can carry: DATE_RANGE was the one the original admission
+matrix omitted, and it draws the same class as the other seven on both operators
+([checkpoint](../../docs/SOURCES.md#src-pattern-comparison-left-kind-gate-is-total)). The surface
+makes the right operand a String constant structurally; remaining local refusals stay unmapped
+instead of guessing an external identity. -/
 def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnostic
+  -- A String left operand is admitted, so this arm is never constructed; it is kept for totality
+  -- and reports nothing rather than a refusal class for a kind the gate accepts.
   | .fieldKind _ .string => none
   | .fieldKind _ .number
   | .fieldKind _ .boolean
   | .fieldKind _ .confirm
   | .fieldKind _ .enumeration
+  | .fieldKind _ .dateRange
   | .fieldKind _ (.temporal .date)
   | .fieldKind _ (.temporal .time)
   | .fieldKind _ (.temporal .dateTime) =>

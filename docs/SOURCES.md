@@ -474,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-pattern-comparison-left-kind-gate-is-total"></a>
+- [The pattern comparison's left-kind gate is total: DATE_RANGE draws the same class as the other seven kinds](sources/evaluation-and-application-routes.md#src-pattern-comparison-left-kind-gate-is-total)
 <a id="src-custom-validity-operand-refuses-every-kind-with-one-class"></a>
 - [The custom-validity operand gate names its admitted set: every refused kind draws one class, where the Boolean constant's target gate partitions four ways](sources/evaluation-and-application-routes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)
 <a id="src-temporal-declaration-without-a-format"></a>

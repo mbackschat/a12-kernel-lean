@@ -1,5 +1,16 @@
 # Evaluation and application source checkpoints
 
+<a id="src-pattern-comparison-left-kind-gate-is-total"></a>
+#### The pattern comparison's left-kind gate is total: DATE_RANGE draws the same class as the other seven kinds, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Four `rule check` children in one `batch`, every envelope `KERNEL_CONFIRMED`.
+- `retained-bytes`: `Probe4_DM.json` SHA-256 `6f85d83977facea4511f04cb5e04d3149d5f129e294ad5c6150a07f1ec0bbd2e`; ops `bc9a7aceefb78db4c1412347abe24d763d8567e1c9afc75de5f3352ba4253744`; results `f39c2d4d8cac8d036eedfa174b7d0add71e89ef5d69804f3e8e2e1f50b702ded`.
+- `question`: the [22-case admission matrix](#src-repeatable-string-application) established `MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON` for seven left kinds — Number, Boolean, Confirm, Enumeration, Date, Time, DateTime — and DATE_RANGE was not among them, so this project's projection fell through a catch-all to `none` for exactly that kind. One more [`LF152`](../LEAN-FINDINGS.md) arm, found by sweeping rather than by a failing case.
+- `claim`: **DATE_RANGE draws the same class**, on `PatternMatched` and `PatternViolated` alike, beside a Number control reproducing the earlier matrix's row and an admitted String control. The gate is now total over the left kinds a declaration can carry, so the projection stops needing a catch-all.
+- `the-syntax-cost-a-round`: the operator is **infix with a bracketed field** — `[Field] PatternMatched "regex"` — not a call. The first attempt used call syntax and all four rows returned `MVK_UNEXPECTED_TOKEN`, the admitted String control included, which is what exposed it. `dmtool operators PatternMatched` carries `validExample` and `invalidExample` fields holding exactly this; consulting the catalog before authoring a condition is cheaper than a batch, and is the method for any operator whose surface form is not already in a retained record.
+- `limit`: static admission only, one model, `en_US`, one regex throughout. The right-operand slot is untouched — the surface makes it a String constant structurally — and nothing here evaluates a match.
+- `sync`: none. The class corrects this project's own under-projection; the canonical clause already states one class for every non-String left kind.
+
 <a id="src-custom-validity-operand-refuses-every-kind-with-one-class"></a>
 #### The custom-validity operand gate names its **admitted** set: every refused kind draws `MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM`, measured 2026-09-06
 
