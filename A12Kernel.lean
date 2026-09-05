@@ -128,6 +128,7 @@ import A12Kernel.Elaboration.AddressedDateFromDateTime
 import A12Kernel.Elaboration.AddressedDateFromDateTimeFormalInput
 import A12Kernel.Elaboration.RawString
 import A12Kernel.Elaboration.CustomField
+import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Elaboration.OverRepetitionFindings
