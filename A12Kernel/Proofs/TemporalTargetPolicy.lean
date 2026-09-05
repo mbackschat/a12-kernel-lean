@@ -51,7 +51,7 @@ theorem dateTimeTarget_evaluate_value
       target.profile.localDateTime? instant = some dateTime) :
     target.evaluate (.value instant) =
       .ok (.accepted (target.format.render dateTime)) := by
-  simp [CheckedDateTimeTarget.evaluate, decoded]
+  simp [CheckedDateTimeFormatTarget.evaluate, decoded]
   rfl
 
 /-- **A yearless target's stored text does not depend on the year.** Two dates sharing a month and a

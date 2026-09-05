@@ -23,10 +23,11 @@ computed outcome and one `berechnungsWertFehler` residual at each in-capacity ta
 model verdict has a separate host-zone dependency upstream of this carrier
 ([checkpoint](../../docs/SOURCES.md#src-datetime-constant-zone-split)).
 
-Like the Time sibling this carrier reuses `CheckedDateTimeTarget`, which requires `kind = .dateTime`.
-The measured family gate reads the declared **format string** and not the field's kind, so the carrier
-is narrower than the Kernel wherever a non-DATETIME field declares a DateTime format. That narrowing
-is a stated exclusion rather than a claim, and its refusal borrows no Kernel class.
+Like the Time sibling this carrier takes `CheckedDateTimeFormatTarget`, the certificate that reads the
+declared **format string** and not the field's kind, so a DATE-declared field carrying the DateTime
+format is a legal target here and stores through that format. Both halves are measured for this
+carrier — admission and the store — which is what separates it from the shift, first-filled, and
+addressed families still on the DATETIME-only narrowing.
 -/
 
 namespace A12Kernel
@@ -55,7 +56,7 @@ zone validates the already-classified label at runtime. -/
 structure CheckedRepeatableDateTimeConstantComputation (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedRepeatableTarget model
-  dateTimeTarget : CheckedDateTimeTarget model
+  dateTimeTarget : CheckedDateTimeFormatTarget model
   /-- The two certificates describe one field. Without this they could drift to different targets. -/
   sameTarget : dateTimeTarget.checked.target.id = checkedTarget.targetField
   constant : LocalDateTime
@@ -71,7 +72,7 @@ def checkRepeatableDateTimeConstantComputation
     checkAddressedRepeatableTarget model declaringGroup targetField
       |>.mapError .target
   let dateTimeTarget ←
-    elaborateDateTimeTargetIn model checkedTarget.declaration.repeatableScope targetField
+    elaborateDateTimeFormatTargetIn model checkedTarget.declaration.repeatableScope targetField
       |>.mapError .targetNotDateTime
   if hSame : dateTimeTarget.checked.target.id = checkedTarget.targetField then
     pure { checkedTarget, dateTimeTarget, sameTarget := hSame, constant }

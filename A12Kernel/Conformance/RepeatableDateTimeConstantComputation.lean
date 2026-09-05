@@ -24,11 +24,20 @@ private def temporalField (id : FieldId) (name : String) (kind : TemporalKind)
 private def stamp := temporalField 1 "S" .dateTime TemporalComponents.now
   ["Probe", "Rows"] [10] "yyyy-MM-dd'T'HH:mm:ss"
 
-/-- A **DATE** declaration carrying the DateTime format string. The measured family gate reads the
-declared format and not the field's kind, so the Kernel's treatment of this cell is unmeasured; this
-carrier declines it through the shared certificate's `kind = .dateTime` requirement. -/
-private def dateTimeShapedDate := temporalField 2 "D" .date TemporalComponents.fullDate
+/-- A **DATE** declaration carrying the DateTime format string. The family gate reads the declared
+format and not the field's kind, and this cell is now measured on both halves — admitted, and storing
+through that format ([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)) —
+so this carrier admits it. Its components are complete, which the certificate still requires. -/
+private def dateTimeShapedDate := temporalField 2 "D" .date TemporalComponents.now
   ["Probe", "Rows"] [10] "yyyy-MM-dd'T'HH:mm:ss"
+
+/-- The **components** control beside it: a DATE declaration at the same DateTime format string but
+naming only a calendar date's components. It must stay refused, because otherwise the row above would
+read as "the kind gate is gone" when what it shows is that the kind gate was never the operative one.
+Yesterday's Date sibling passed for exactly that wrong reason. -/
+private def partialDateAtDateTimeFormat :=
+  temporalField 4 "P" .date TemporalComponents.fullDate
+    ["Probe", "Rows"] [10] "yyyy-MM-dd'T'HH:mm:ss"
 
 private def fixedStamp := temporalField 3 "Fixed" .dateTime TemporalComponents.now
   ["Probe", "Store"] [] "yyyy-MM-dd'T'HH:mm:ss"
@@ -36,7 +45,7 @@ private def fixedStamp := temporalField 3 "Fixed" .dateTime TemporalComponents.n
 /-- Europe/Berlin rather than UTC, so the model has a spring-forward discontinuity for the gap case
 below to land in. -/
 private def model : FlatModel := {
-  fields := [stamp, dateTimeShapedDate, fixedStamp]
+  fields := [stamp, dateTimeShapedDate, fixedStamp, partialDateAtDateTimeFormat]
   repeatableGroups := [
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 }]
   timeZoneId := "Europe/Berlin"
@@ -148,15 +157,25 @@ example : ([["Probe", "Rows"], ["Probe"]].map fun group =>
     ([true, true], some "MVK_ERROR_FIELD_NOT_IN_RULEGROUP") := by
   native_decide
 
-/- **The stated exclusion.** A DATE declaration carrying this DateTime format string is declined here
-   for its kind, and the nonrepeatable target is declined by the shared placement certificate. Neither
-   decline claims a Kernel class: the measured gate reads the declared format rather than the kind, so
-   asserting a refusal for the first would assert one the Kernel may well not make. -/
-example : ([dateTimeShapedDate.id, fixedStamp.id].map fun target =>
+/- **The cross-kind target, and what still refuses beside it.** A DATE declaration carrying the
+   DateTime format string is admitted, because the family gate reads the format; the same kind at the
+   same format but with a calendar-date component set is refused, and so is the nonrepeatable target
+   the shared placement certificate declines. The middle row is the one that keeps the first honest:
+   without it, admitting the first would be indistinguishable from having no gate at this position at
+   all. Neither refusal claims a Kernel class. -/
+example : ([dateTimeShapedDate.id, partialDateAtDateTimeFormat.id,
+      fixedStamp.id].map fun target =>
       match checkRepeatableDateTimeConstantComputation model ["Probe"] target marchFifth with
       | .error cause => (false, cause.diagnostic?.isSome)
       | .ok _ => (true, false)) =
-    [(false, false), (false, false)] := by
+    [(true, false), (false, false), (false, false)] := by
+  native_decide
+
+/- And it **stores through its declared format**, which is the half that was missing when this
+   certificate stayed narrowed: the DATE-declared field renders the same text its DATETIME sibling
+   does, as measured. -/
+example : outcome? ["Probe"] dateTimeShapedDate.id =
+    some (.accepted (stored "2024-03-05T12:30:00")) := by
   native_decide
 
 end A12Kernel.Conformance.RepeatableDateTimeConstantComputation

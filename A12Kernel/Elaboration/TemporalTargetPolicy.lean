@@ -441,12 +441,13 @@ inductive DateTimeTargetElabError where
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
-/-- One checked complete DateTime target with an executable whole-second format and concrete model-zone profile. -/
-structure CheckedDateTimeTarget (model : FlatModel) where
+/-- One checked complete DateTime target with an executable whole-second format and concrete model-zone profile, admitted by its declared **format** alone.
+
+    This completes the family rule the clock and full-Date certificates already state: a computed temporal target is gated by its declared format string and not by its declared kind. Both halves are measured for this carrier — admission across all three families, and the **store**, where a DATE declared with the DateTime format stores `2024-03-05T12:30:00` and a DATETIME declared `yyyy-MM-dd` stores `2024-03-05`, each against its same-kind control ([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)). Rendering here is format-driven by construction, so the store row confirms the construction rather than merely being consistent with it. -/
+structure CheckedDateTimeFormatTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : DateTimeTargetFormat
   profile : ModelZone.ConcreteProfile
-  targetIsDateTime : checked.target.kind = .dateTime
   componentsComplete :
     checked.target.components = TemporalComponents.now
   formatMatches :
@@ -454,9 +455,43 @@ structure CheckedDateTimeTarget (model : FlatModel) where
   profileMatches :
     ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
 
+/-- The DateTime target **narrowed to a DATETIME declaration**, which is strictly narrower than the Kernel.
+
+    Retained for the same reason as `CheckedTimeTarget`: the shift, first-filled, and addressed families share this certificate and have no cross-kind row of their own, so each keeps an honest exclusion until it earns one ([`LF116`](../../docs/LEAN-FINDINGS.md)). None of them may report a Kernel class for the refusal, because the Kernel accepts the shape. -/
+structure CheckedDateTimeTarget (model : FlatModel)
+    extends CheckedDateTimeFormatTarget model where
+  targetIsDateTime : checked.target.kind = .dateTime
+
 namespace CheckedTemporalTargetPolicy
 
-/-- Refine a checked temporal target to the first executable DateTime subset. Every wider kind, component set, format, or zone is an explicit refusal. -/
+/-- Refine a checked temporal target to the renderable complete-DateTime subset without reading its declared kind. -/
+def toDateTimeFormatTarget
+    (checked : CheckedTemporalTargetPolicy model) :
+    Except DateTimeTargetElabError (CheckedDateTimeFormatTarget model) :=
+  if hComponents :
+      checked.target.components = TemporalComponents.now then
+    match hFormat :
+        DateTimeTargetFormat.ofSource? checked.policy.format with
+    | none =>
+        throw (.unsupportedFormat checked.target.id checked.policy.format)
+    | some format =>
+        match hProfile :
+            ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+        | none => throw (.unsupportedZone checked.timeZoneId)
+        | some profile =>
+            pure {
+              checked
+              format
+              profile
+              componentsComplete := hComponents
+              formatMatches := hFormat
+              profileMatches := hProfile }
+  else
+    throw (.components checked.target.id checked.target.components)
+
+/-- Refine a checked temporal target to the first executable DateTime subset. Every wider kind, component set, format, or zone is an explicit refusal.
+
+    The parent's fields are repeated rather than reused through `toDateTimeFormatTarget`, for the reason `toTimeTarget` records: the kind proof is stated over the parent's `checked`, and a monadic bind hides that it is the same declaration. -/
 def toDateTimeTarget
     (checked : CheckedTemporalTargetPolicy model) :
     Except DateTimeTargetElabError (CheckedDateTimeTarget model) := do
@@ -487,6 +522,16 @@ def toDateTimeTarget
 
 end CheckedTemporalTargetPolicy
 
+/-- Resolve and refine one model-owned complete DateTime target by its declared format alone, with the repetition scope bound by the caller. This is the Kernel's own admission; `elaborateDateTimeTargetIn` is its DATETIME-only narrowing. -/
+def elaborateDateTimeFormatTargetIn
+    (model : FlatModel) (scope : List RepeatableLevel)
+    (targetField : FieldId) :
+    Except DateTimeTargetElabError (CheckedDateTimeFormatTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicyIn model scope targetField
+      |>.mapError .targetPolicy
+  checked.toDateTimeFormatTarget
+
 /-- Resolve and refine one model-owned complete DateTime target whose repetition scope is bound by the caller's reading environment. -/
 def elaborateDateTimeTargetIn
     (model : FlatModel) (scope : List RepeatableLevel)
@@ -508,11 +553,13 @@ inductive DateTimeTargetEvaluationFault where
   | localDateTimeUnavailable (instant : Instant)
   deriving Repr, DecidableEq
 
-namespace CheckedDateTimeTarget
+namespace CheckedDateTimeFormatTarget
 
-/-- Render one already-selected DateTime computation result at the target's declared whole-second precision without classifying a delta or mutating a document. -/
+/-- Render one already-selected DateTime computation result at the target's declared whole-second precision without classifying a delta or mutating a document.
+
+    It sits on the format-keyed certificate so the narrowed one inherits it: the declared kind reaches no part of the rendering, which is what the cross-kind store rows measure. -/
 def evaluate
-    (target : CheckedDateTimeTarget model) :
+    (target : CheckedDateTimeFormatTarget model) :
     TemporalComputationResult →
       Except DateTimeTargetEvaluationFault DateTimeTargetOutcome
   | .noValue => pure .noValue
@@ -523,6 +570,6 @@ def evaluate
       | some dateTime =>
           pure (.accepted (target.format.render dateTime))
 
-end CheckedDateTimeTarget
+end CheckedDateTimeFormatTarget
 
 end A12Kernel

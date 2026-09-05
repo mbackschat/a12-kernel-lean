@@ -29,6 +29,15 @@
 - `limit`: static admission only. No row evaluates a power, so the two precision stages and the runtime domain failures the clause records are untouched; one model, scale-0 target, `en_US`.
 - `sync`: **outbound**, as [`SPEC-2026-09-05-10`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-10). a12-dmkits' operator catalog carries no `Power` entry among its 110 operators, so there is no line to correct; it is sent because a consumer deriving the power's scale by any of the obvious rules — base's scale, or base times exponent — admits computed targets the Kernel refuses.
 
+<a id="src-datetime-carrier-stores-by-its-format"></a>
+#### The DATETIME carrier's cross-kind **store** is governed by its format too, inbound from a12-dmkits 2026-09-05
+
+- `provenance`: **inbound peer measurement**, not a run of this project's. a12-dmkits revision `f7fab769d`, `adapter.laws.ConstantTargetFormatLawsTest.theDATETIMECarrierStoresByItsFormatToo`, their `KF222`, kernel 30.8.1 on the kernel's own `compute()` path. The committed test was read here and asserts the four rows below with their controls; recorded as provenance under the no-feedback-loop rule, so it raises no outbound entry.
+- `claim`: a **DATE**-declared field carrying `yyyy-MM-dd'T'HH:mm:ss` stores `2024-03-05T12:30:00`, and a **DATE_TIME**-declared field carrying `yyyy-MM-dd` stores `2024-03-05`. Both cross directions, each beside its aligned same-kind control, so a store that fell back to the declared kind would show as the cross rows matching their kind's default.
+- `why-it-was-needed`: the admission half already covered a DateTime format on a DATE target, but every retained **store** row used a date-only or clock-only format — so the carrier whose format carries both component sets had never had its store measured. This project declined to inherit the DATE/TIME store result onto DATETIME and kept its certificate narrowed; the peer then measured it rather than returning it as an open item. The refusal to inherit is what produced the row ([`LF116`](../LEAN-FINDINGS.md)).
+- `local-consequence`: `CheckedDateTimeTarget` splits into a format-keyed `CheckedDateTimeFormatTarget` and its DATETIME-only narrowing, and the repeatable DateTime constant carrier takes the widened one — completing the family rule the clock and full-Date certificates already carried. The shift, first-filled, and addressed families stay narrowed, having no cross-kind row of their own.
+- `limit`: two cross cells and two controls, one constant per row, static plus store; no repeatable placement, no zone discontinuity, and no other DateTime format.
+
 <a id="src-computed-temporal-target-reads-the-format-not-the-kind"></a>
 #### A computed temporal target is gated by its declared **format string** and not by its declared kind, on all three of the Time, Date, and DateTime families, measured locally 2026-09-05
 

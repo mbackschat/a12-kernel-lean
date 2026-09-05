@@ -420,6 +420,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-computed-temporal-target-reads-the-format-not-the-kind"></a>
 - [A computed temporal target is gated by its declared format string and not by its declared kind, on all three of the Time, Date, and DateTime families](sources/computation-placement-and-constant-probes.md#src-computed-temporal-target-reads-the-format-not-the-kind)
+<a id="src-datetime-carrier-stores-by-its-format"></a>
+- [The DATETIME carrier's cross-kind store is governed by its format too, inbound from a12-dmkits](sources/computation-placement-and-constant-probes.md#src-datetime-carrier-stores-by-its-format)
 
 <a id="src-two-positions-share-the-root-gate"></a>
 - [Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)

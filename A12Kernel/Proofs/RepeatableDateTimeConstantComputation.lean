@@ -56,7 +56,7 @@ theorem checkedRepeatableDateTimeConstantComputation_renderingAgreesWithResolved
     operation.dateTimeTarget.evaluate (.value instant) =
       .ok (.accepted
         (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant)) := by
-  simp only [CheckedDateTimeTarget.evaluate,
+  simp only [CheckedDateTimeFormatTarget.evaluate,
     resolves]
   rfl
 
