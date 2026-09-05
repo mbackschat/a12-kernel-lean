@@ -1,0 +1,15 @@
+{
+ "computedField": "/Msg/Rows/Num",
+ "group": "/Msg/Rows",
+ "alternatives": [
+  {
+   "operation": "[/Msg/Rows/Src] * 2"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "[x=$#Zeile$]"
+  }
+ ]
+}

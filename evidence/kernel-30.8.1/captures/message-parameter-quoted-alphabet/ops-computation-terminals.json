@@ -1,0 +1,68 @@
+[
+ {
+  "id": "C1-absolute-own-group",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-C1.json",
+   "--dry-run",
+   "--model",
+   "MsgComp_DM.json"
+  ]
+ },
+ {
+  "id": "C2-rulegroup-keyword",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-C2.json",
+   "--dry-run",
+   "--model",
+   "MsgComp_DM.json"
+  ]
+ },
+ {
+  "id": "C3-rootgroup-keyword",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-C3.json",
+   "--dry-run",
+   "--model",
+   "MsgComp_DM.json"
+  ]
+ },
+ {
+  "id": "C4-retired-zeile",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-C4.json",
+   "--dry-run",
+   "--model",
+   "MsgComp_DM.json"
+  ]
+ },
+ {
+  "id": "C5-name-position-field",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-C5.json",
+   "--dry-run",
+   "--model",
+   "MsgComp_DM.json"
+  ]
+ },
+ {
+  "id": "C6-control-plain",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-C6.json",
+   "--dry-run",
+   "--model",
+   "MsgComp_DM.json"
+  ]
+ }
+]

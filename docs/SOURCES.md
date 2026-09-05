@@ -384,6 +384,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-parameter-token-versus-group-declaration-alphabet"></a>
 - [The parameter's name token is wider than any group may be named, and a quoted segment is refused where the bare spelling reaches lookup](sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet)
 
+<a id="src-terminal-bundle-on-the-computation-carrier"></a>
+- [The parameter terminal bundle is shared with the computation message carrier, where `RuleGroup` names the computation's own group](sources/message-and-pointer-probes.md#src-terminal-bundle-on-the-computation-carrier)
+
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
 <a id="src-nested-self-exclusion"></a>

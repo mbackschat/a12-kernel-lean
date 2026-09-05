@@ -1,0 +1,135 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 6 ops; 1 of 6 exited nonzero (0 failed, 1 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "C1-absolute-own-group",
+      "verb" : "computation",
+      "args" : [ "add", "comp-C1.json", "--dry-run", "--model", "MsgComp_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Msg/Rows/NumComp",
+        "changed" : {
+          "computation" : "/Msg/Rows/NumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "C2-rulegroup-keyword",
+      "verb" : "computation",
+      "args" : [ "add", "comp-C2.json", "--dry-run", "--model", "MsgComp_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Msg/Rows/NumComp",
+        "changed" : {
+          "computation" : "/Msg/Rows/NumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "C3-rootgroup-keyword",
+      "verb" : "computation",
+      "args" : [ "add", "comp-C3.json", "--dry-run", "--model", "MsgComp_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Msg/Rows/NumComp",
+        "changed" : {
+          "computation" : "/Msg/Rows/NumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "C4-retired-zeile",
+      "verb" : "computation",
+      "args" : [ "add", "comp-C4.json", "--dry-run", "--model", "MsgComp_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the computation is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "PARAM_INVALID_IN_NEW_WORLD",
+          "summary" : "Rule with path '/Msg/Rows/NumComp': The rule '/Msg/Rows/NumComp' specifies an incorrect error text for the language English. The parameter '#Zeile' is not allowed to be used in A12 models. [PARAM_INVALID_IN_NEW_WORLD]",
+          "where" : {
+            "rule" : "/Msg/Rows/NumComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "C5-name-position-field",
+      "verb" : "computation",
+      "args" : [ "add", "comp-C5.json", "--dry-run", "--model", "MsgComp_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Msg/Rows/NumComp",
+        "changed" : {
+          "computation" : "/Msg/Rows/NumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "C6-control-plain",
+      "verb" : "computation",
+      "args" : [ "add", "comp-C6.json", "--dry-run", "--model", "MsgComp_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Msg/Rows/NumComp",
+        "changed" : {
+          "computation" : "/Msg/Rows/NumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

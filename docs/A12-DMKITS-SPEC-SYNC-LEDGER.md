@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-06"></a>
+### `SPEC-2026-09-05-06` — the message parameter's terminal bundle belongs to the owning declaration, so `RuleGroup` resolves on a computation
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md`](../spec/11-messages-and-custom.md), the group-position bullets, which described the bundle on the rule carrier throughout and said nothing about which declaration owns it.
+- `delta`: the terminal bundle does not vary by parameter owner. On a **computation** message the absolute group path, both keyword shorthands `$#RuleGroup$` and `$#RootGroup$`, and a name-position field are all admitted, and the retired `$#Zeile$` draws the same `PARAM_INVALID_IN_NEW_WORLD` it draws on a rule. So `RuleGroup` names the **owning declaration's** group, and "rule" in its spelling is the Kernel's internal vocabulary rather than a restriction to validation rules.
+- `basis`: six `computation add --dry-run` children in one `batch`, `dmtool` 0.13.0, Kernel `30.8.1`, every child `KERNEL_CONFIRMED`, `model check` valid with zero diagnostics, the launcher self-reporting build `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`. The [checkpoint](sources/message-and-pointer-probes.md#src-terminal-bundle-on-the-computation-carrier) owns the rows and retained hashes.
+- `mechanism`: the Kernel's own refusal text on that carrier reads *"Rule with path '/Msg/Rows/NumComp'"* — it calls the computation a rule, which is why the terminal resolves instead of failing. That wording is the evidence for the ownership reading rather than an inference from admission alone.
+- `separator`: a parameterless message and a plain absolute path are admitted through the identical route, and the retired terminal is the batch's only refusal. An implementation scoping the terminal to validation rules passes every rule row published so far and fails only the computation shorthand rows.
+- `consumer-consequence`: a Translate or Compile consumer must bind the shorthand to whatever declaration owns the message, not to a rule. Getting this wrong refuses models the Kernel admits, and silently so, since every rule-carrier test still passes.
+- `local-consequence`: none behavioral; the fragment's message inputs carry no owner distinction to correct.
+- `acceptance`: a12-dmkits confirms that both keyword shorthands are admitted in a computation message and that the retired terminal keeps its own code there; or reports the row where it diverges. Static admission only — what the shorthand renders on that carrier is not claimed and stays unmeasured on both sides.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-05"></a>
 ### `SPEC-2026-09-05-05` — a message parameter's name token is wider than any group may be named, and quoting moves the refusal a layer earlier
 

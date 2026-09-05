@@ -1,0 +1,15 @@
+{
+  "target" : "field",
+  "op" : "add",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "added field /Msg/Rows/Num",
+  "changed" : {
+    "added" : "/Msg/Rows/Num",
+    "kind" : "NUMBER"
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "MsgComp_DM.json"
+}

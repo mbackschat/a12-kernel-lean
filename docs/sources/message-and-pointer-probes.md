@@ -1,5 +1,17 @@
 # Message and pointer source checkpoints
 
+<a id="src-terminal-bundle-on-the-computation-carrier"></a>
+#### The parameter terminal bundle is shared with the computation message carrier, where `RuleGroup` names the computation's own group, measured locally 2026-09-05
+
+- `revision`: launcher self-reported build a12-dmkits `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`; `dmtool` 0.13.0, Kernel `30.8.1`. Six `computation add --dry-run` children in one `batch`, every one `KERNEL_CONFIRMED`, `model check` valid with zero diagnostics.
+- `retained`: `raw-computation-terminals.json` SHA-256 `d149fc3f362ba8c2152fdde403c8aa0d1cc2b30f6eea3eb59f9ec84b2e5ae9d9`, model `MsgComp_DM.json` SHA-256 `86881661e35efaddbbef6097c46623c6f26b0c15b9052b6e641d115118914345`.
+- `question`: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) listed "every non-rule parameter owner sharing the terminal bundle" as unmeasured. Every row establishing the bundle was authored on a **rule** message, so a computation message is a carrier crossing rather than an instance ([`LF116`](../LEAN-FINDINGS.md)) — and one of the terminals is named `RuleGroup`, which a computation does not obviously have.
+- `claim`: **the bundle is carrier-identical, and `RuleGroup` is not rule-specific.** On a computation message at `/Msg/Rows`, the absolute `$#/Msg/Rows$`, both keyword shorthands `$#RuleGroup$` and `$#RootGroup$`, and a name-position field are all **admitted**, while the retired `$#Zeile$` draws `PARAM_INVALID_IN_NEW_WORLD` — the same code it draws on the rule carrier. So the terminal set, its admission, and its retirement class do not vary by parameter owner.
+- `mechanism`: the Kernel's own refusal text calls the computation a rule — *"Rule with path '/Msg/Rows/NumComp'"* — which is why `RuleGroup` resolves rather than failing. The terminal names the **owning declaration's** group, and "rule" in its spelling is the Kernel's internal vocabulary rather than a restriction to validation rules. A consumer reading the terminal as rule-only would refuse an admitted computation message.
+- `controls`: a parameterless message and a plain absolute path are admitted through the identical route, so neither the computation shape nor the message channel refuses on its own; the retired terminal is the only refusal in the batch, which is what isolates it.
+- `limit`: **static admission only.** No row observes what `$#RuleGroup$` *renders* on a computation, so "names the computation's own group" is the resolution the admission implies and not a measured value; the rendered-index result is the rule carrier's alone. The runtime half needs the `:adapter:kernelProbe` route, which refuses on a non-CLEAN sibling tree. One model, one nesting depth, `en_US`.
+- `sync`: **outbound**, as [`SPEC-2026-09-05-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-06). First recorded here as confirming-only, which was wrong: the clause described the bundle on the rule carrier throughout and said nothing about ownership, so stating that `RuleGroup` names the *owning declaration's* group adds a distinction rather than restating one. An implementation that scopes the terminal to validation rules passes every rule row and refuses admitted computation messages, which is a divergence a peer can reach.
+
 <a id="src-parameter-token-versus-group-declaration-alphabet"></a>
 #### The parameter's name token is wider than any group may be named, and a quoted segment is refused where the bare spelling reaches lookup, measured locally 2026-09-05
 
