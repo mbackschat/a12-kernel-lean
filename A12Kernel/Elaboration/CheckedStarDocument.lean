@@ -239,6 +239,37 @@ def resolveCheckedGroupEntityOperandCore
     hasNonRelevant := false
   }
 
+/-- Whether any repeatable declaration this group operand reopens retains **declared but
+uninstantiated** capacity, at the operand's own depth.
+
+    The companion of `resolveCheckedGroupEntityOperandCore`, and separate from it on purpose: that
+    walk enumerates only instantiated rows, so its `hasUninstantiatedTail` is `false` by
+    construction rather than by fact. A consumer whose result carries missing provenance for a
+    declared-but-absent row needs this query as well, and there are now two — Boolean value-count
+    fillability, and the temporal extrema, whose `given` flag `spec/05` ties to an omitted tail. The
+    two parameters are the same pair the walk takes, so a caller cannot ask the two questions about
+    different operands.
+
+    A scope no deeper than the operand's own depth contributes nothing: every one of its levels is
+    fixed by `outer`, so there is no reopened tail to be open. -/
+def resolveCheckedGroupUninstantiatedTail
+    (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
+    (declarations : List FlatFieldDecl) :
+    Except CheckedAddressingError Bool := do
+  let scopes := (declarations.map (·.repeatableScope)).eraseDups
+  let tails ← scopes.mapM fun scope => do
+    if scope.length ≤ boundCount then
+      pure false
+    else
+      let axes ← match model.repeatableAxesForScope? scope with
+        | some axes => pure axes
+        | none => throw (.document (.incoherentRepeatableScope scope))
+      let topology ←
+        (({ axes, firstStar := boundCount } : StarPath).resolve
+          checked.source.toDocument outer).mapError .addressing
+      pure topology.domain.hasOpenTail
+  pure (tails.any id)
+
 end CheckedDocument
 
 namespace CheckedStarFieldPath

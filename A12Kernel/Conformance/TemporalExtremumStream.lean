@@ -515,13 +515,13 @@ example : (TemporalExtremumOperands.elaborate probeModel ["Probe"]
 
 /-! ### A fixed group, and the tail bit that decides which ones it may fold
 
-A group operand's concrete cells resolve through the shared walk, but that walk enumerates only
-**instantiated** rows and reports no tail by construction, saying so in its own docstring and
-directing a consumer that needs declared-tail fillability to determine it separately. This fold is
-such a consumer, because `spec/05` gives an omitted tail symmetric missing provenance on a selected
-value. So a group whose expansion holds a repeatable declaration with spare declared capacity would
-fold to a **given** value where the Kernel's is not given — a wrong flag on a right value, which no
-case would catch and which is worse than a decline. The pair below is the whole rule. -/
+A group operand asks the shared owner **two** questions, and neither implies the other. The walk
+gives its concrete `(row x field)` extent and enumerates only **instantiated** rows, so its own tail
+bit is `false` by construction; the tail query gives whether any reopened declaration retains
+declared-but-uninstantiated capacity. `spec/05` ties this fold's `given` flag to the second, so asking
+only the first folded a subtree with spare capacity to a **given** value where the Kernel's is not
+given — a wrong flag on a right value, which no case would have caught. The three rows below vary
+exactly the document against one declaration. -/
 
 private def fixedGroupOperand (groups : GroupPath) : SurfaceFieldEntityOperand :=
   .group (.path { base := .absolute, groups })
@@ -536,19 +536,6 @@ private def groupFoldValue? (groups : GroupPath) (rows : List RowAddr)
   (TemporalExtremumStream.evalAddressedDate checked .maximum document []
     .validation).toOption
 
-private def groupFoldFault? (groups : GroupPath) (rows : List RowAddr)
-    (cells : List ClassifiedCellInput) :
-    Option TemporalExtremumStreamError := do
-  let checked ←
-    (TemporalExtremumOperands.elaborate probeModel ["Probe"]
-      { first := fixedGroupOperand groups, rest := [] }).toOption
-  let document ← document? rows cells
-  match TemporalExtremumStream.evalAddressedDate checked .maximum document []
-      .validation with
-  | .ok _ => none
-  | .error (.declined cause) => some cause
-  | .error (.addressing _) => none
-
 /- Two scalar Dates in their own group: folded, and **given** — no declared row exists anywhere under
    the expansion, so the walk's `false` tail is the fact rather than an artefact. -/
 example : groupFoldValue? ["Probe", "Pair"] []
@@ -560,26 +547,31 @@ example : groupFoldValue? ["Probe", "Pair"] []
   native_decide
 
 /- The same shape one repeatable descendant deeper — declared capacity 3, one row instantiated, and
-   the later date inside it. It is **declined**, not folded: the two uninstantiated rows are exactly
-   the provenance the result would have to carry, and the arm refuses rather than reporting a tail it
-   cannot resolve. Admitting it is what the one existing tail query would close, and that query is
-   bound to another carrier ([SG6](../../docs/SEMANTICS-GAPS.md)). -/
+   the later date inside it. It folds, and the result is **not given**: the two uninstantiated rows
+   are the provenance, and they come from the tail query rather than from the walk. Asking only the
+   walk answered `given` here, which is the divergence this row guards. -/
 example : groupFoldValue? ["Probe", "Box"] [{ group := 40, path := [1] }]
     [{ address := { field := 15, path := [] }, stored := "s",
        raw := dateCell 2024 1 1 },
      { address := { field := 16, path := [1] }, stored := "s",
-       raw := dateCell 2024 7 1 }] = none ∧
-    groupFoldFault? ["Probe", "Box"] [{ group := 40, path := [1] }]
-      [{ address := { field := 15, path := [] }, stored := "s",
-         raw := dateCell 2024 1 1 },
-       { address := { field := 16, path := [1] }, stored := "s",
-         raw := dateCell 2024 7 1 }] =
-      some (.groupTailUndetermined ["Probe", "Box"]) := by
+       raw := dateCell 2024 7 1 }] =
+    ((ymd 2024 7 1).map fun date => .value date false) := by
   native_decide
 
-/- Neither decline claims a Kernel class: both name shapes the Kernel folds. -/
-example : (groupFoldFault? ["Probe", "Box"] [] []).map
-    TemporalExtremumStreamError.diagnostic? = some none := by
+/- Filling the declared capacity closes the tail on the identical selection, so the flag tracks the
+   declaration against the document rather than the mere presence of a repeatable descendant. -/
+example : groupFoldValue? ["Probe", "Box"]
+    [{ group := 40, path := [1] }, { group := 40, path := [2] },
+     { group := 40, path := [3] }]
+    [{ address := { field := 15, path := [] }, stored := "s",
+       raw := dateCell 2024 1 1 },
+     { address := { field := 16, path := [1] }, stored := "s",
+       raw := dateCell 2024 7 1 },
+     { address := { field := 16, path := [2] }, stored := "s",
+       raw := dateCell 2024 2 1 },
+     { address := { field := 16, path := [3] }, stored := "s",
+       raw := dateCell 2024 3 1 }] =
+    ((ymd 2024 7 1).map fun date => .value date true) := by
   native_decide
 
 /-! ## What this slice declines, and why each is a boundary rather than a verdict -/

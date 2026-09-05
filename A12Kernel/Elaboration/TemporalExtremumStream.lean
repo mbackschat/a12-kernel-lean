@@ -48,8 +48,6 @@ inductive TemporalExtremumStreamError where
   | componentsMismatch (expected found : TemporalComponents)
   /-- A star, group, or filtered operand, which needs the addressed context the flat route does not take. -/
   | operandNeedsAddressing (path : List String)
-  /-- A fixed group whose expansion holds a repeatable declaration. Its concrete cells resolve, but its declared-but-uninstantiated tail does not, and this fold's result carries that bit. Declining is the honest answer: the alternative is a **given** verdict the Kernel does not give. -/
-  | groupTailUndetermined (path : List String)
   deriving Repr, DecidableEq
 
 namespace TemporalExtremumStream
@@ -153,33 +151,38 @@ inductive TemporalExtremumStreamFault where
   | addressing (cause : CheckedAddressingError)
   deriving Repr, DecidableEq, BEq
 
-/-- The resolved extent one operand contributes, through the sole checked owner of its shape. -/
-private def operandCore (document : CheckedDocument model) (outer : Env) :
+/-- The resolved extent one operand contributes, through the sole checked owner of its shape, paired
+    with **that operand's** uninstantiated-tail bit.
+
+    The bit is returned beside the core rather than inside it because the two come from different
+    queries for a group operand, and the core's constructor is the owner's to hold. -/
+private def operandExtent (document : CheckedDocument model) (outer : Env) :
     ResolvedFieldEntityOperand model →
-      Except TemporalExtremumStreamFault ResolvedCheckedEntityOperandCore
+      Except TemporalExtremumStreamFault
+        (ResolvedCheckedEntityOperandCore × Bool)
   | .field declaration _ =>
       (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError
-        .addressing
+        .addressing |>.map fun core => (core, core.hasUninstantiatedTail)
   | .star source =>
       (source.resolveCheckedValidationEntityOperandCore document outer
         none).mapError .addressing
-  -- A fixed group, admitted only while its expansion holds **no repeatable declaration**. The shared
-  -- group walk enumerates instantiated rows and reports `hasUninstantiatedTail := false` by
-  -- construction, saying so in its own docstring and directing a consumer that needs declared-tail
-  -- fillability to determine it separately. This fold is such a consumer: `spec/05` gives an
-  -- omitted tail symmetric missing provenance on a selected value, so a subtree with spare declared
-  -- capacity would fold to a **given** result where the Kernel's is not given. The one existing
-  -- tail query is bound to the Boolean value-count carrier; sharing it is what closes this arm, and
-  -- until then a repeatable expansion is declined rather than folded on a flag known to be wrong
-  -- ([SG6](../../docs/SEMANTICS-GAPS.md)).
+        |>.map fun core => (core, core.hasUninstantiatedTail)
+  -- A fixed group asks the shared owner **two** questions about one operand: the walk for its
+  -- concrete extent, and the tail query for its declared-but-uninstantiated capacity. Both are
+  -- needed and neither implies the other — the walk enumerates instantiated rows only, so its own
+  -- tail bit is `false` by construction, while `spec/05` gives an omitted tail symmetric missing
+  -- provenance on a selected value. Asking only the walk folded a subtree with spare capacity to a
+  -- **given** result where the Kernel's is not given: a wrong flag on a right value.
   | .group reference =>
       let declarations := model.groupSubtreeFields reference.path
-      if declarations.any (fun declaration => !declaration.repeatableScope.isEmpty) then
-        throw (.declined (.groupTailUndetermined reference.path))
-      else
-        (document.resolveCheckedGroupEntityOperandCore outer
-          (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
-          declarations).mapError .addressing
+      let boundCount :=
+        (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
+      (do
+        let core ← document.resolveCheckedGroupEntityOperandCore outer
+          boundCount declarations
+        let tail ← document.resolveCheckedGroupUninstantiatedTail outer
+          boundCount declarations
+        pure (core, tail)).mapError .addressing
   -- A **starred group** is admitted as an operand list, and its row extent under the shared group
   -- resolver would be its star plan's `firstStar` rather than its path's scope. That correspondence
   -- is unmeasured here, so the form is declined rather than resolved on a guess.
@@ -208,15 +211,15 @@ def readAddressedSideWith (expected : TemporalComponents)
   if admitted.components ≠ expected then
     throw (.declined (.componentsMismatch expected admitted.components))
   else
-    let cores ←
+    let extents ←
       (admitted.shape.first :: admitted.shape.rest).mapM
-        (operandCore document outer)
+        (operandExtent document outer)
     pure {
-      operands := cores.flatMap fun core =>
+      operands := extents.flatMap fun (core, _) =>
         core.inCapacityAddressedCells.map fun addressed =>
           project (observeCell phase addressed.cell)
-      hasUninstantiatedTail := cores.any (·.hasUninstantiatedTail)
-      hasHaving := cores.any (·.hasHaving) }
+      hasUninstantiatedTail := extents.any (·.2)
+      hasHaving := extents.any (·.1.hasHaving) }
 
 /-- Evaluate one admitted complete-Date extremum against an immutable checked document. -/
 def evalAddressedDate (admitted : CheckedTemporalExtremumOperands model)
@@ -274,7 +277,6 @@ namespace TemporalExtremumStreamError
 def diagnostic? : TemporalExtremumStreamError → Option KernelStaticDiagnostic
   | .componentsMismatch _ _ => none
   | .operandNeedsAddressing _ => none
-  | .groupTailUndetermined _ => none
 
 end TemporalExtremumStreamError
 
