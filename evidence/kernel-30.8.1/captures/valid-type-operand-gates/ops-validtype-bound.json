@@ -1,0 +1,104 @@
+[
+ {
+  "id": "W1-boolean-operand-bound",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "W1",
+   "--condition",
+   "Valid(/Rep/Rows/Flag, \"IBAN\") And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "W2-custom-operand-bound",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "W2",
+   "--condition",
+   "Valid(/Rep/Rows/Cust, \"IBAN\") And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "W3-confirm-operand-bound",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "W3",
+   "--condition",
+   "Valid(/Rep/Rows/Conf, \"IBAN\") And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "W4-number-operand-bound",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "W4",
+   "--condition",
+   "Valid(/Rep/Rows/Base, \"IBAN\") And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "W5-string-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "W5",
+   "--condition",
+   "Valid(/Rep/Txt, \"IBAN\") And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "W6-control-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "W6",
+   "--condition",
+   "FieldFilled(/Rep/Rows/Err)"
+  ]
+ }
+]

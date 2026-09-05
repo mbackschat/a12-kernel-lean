@@ -1,0 +1,2 @@
+{ "group": "/Rep", "name": "Choice", "kind": "ENUM",
+  "enum": { "values": [ { "value": "A" }, { "value": "B" } ] } }

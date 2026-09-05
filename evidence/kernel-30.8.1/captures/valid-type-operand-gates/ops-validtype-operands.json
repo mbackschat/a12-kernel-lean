@@ -1,0 +1,138 @@
+[
+ {
+  "id": "V1-string-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V1",
+   "--condition",
+   "Valid(/Rep/Txt, \"IBAN\") And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "V2-enumeration-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V2",
+   "--condition",
+   "Valid(/Rep/Choice, \"IBAN\") And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "V3-number-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V3",
+   "--condition",
+   "Valid(/Rep/RootNum, \"IBAN\") And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "V4-boolean-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V4",
+   "--condition",
+   "Valid(/Rep/Rows/Flag, \"IBAN\") And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "V5-custom-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V5",
+   "--condition",
+   "Valid(/Rep/Rows/Cust, \"IBAN\") And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "V6-group-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V6",
+   "--condition",
+   "Valid(/Rep/Meta, \"IBAN\") And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "V7-starred-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V7",
+   "--condition",
+   "Valid(/Rep/Rows*/Cust, \"IBAN\") And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "V8-control-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "V8",
+   "--condition",
+   "FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]

@@ -1,0 +1,160 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 6 ops; 4 of 6 exited nonzero (0 failed, 4 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "W1-boolean-operand-bound",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "W1", "--condition", "Valid(/Rep/Rows/Flag, \"IBAN\") And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Rep/Rows/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Rep/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "W2-custom-operand-bound",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "W2", "--condition", "Valid(/Rep/Rows/Cust, \"IBAN\") And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Rep/Rows/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Rep/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "W3-confirm-operand-bound",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "W3", "--condition", "Valid(/Rep/Rows/Conf, \"IBAN\") And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Rep/Rows/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Rep/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "W4-number-operand-bound",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "W4", "--condition", "Valid(/Rep/Rows/Base, \"IBAN\") And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Rep/Rows/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Rep/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "W5-string-control",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "W5", "--condition", "Valid(/Rep/Txt, \"IBAN\") And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "W6-control-plain",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "W6", "--condition", "FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "the rule errors when '/Rep/Rows/Err' IS filled — an errorCondition fires on the invalid case, so a requiredness rule should fire on absence",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "FieldNotFilled(/Rep/Rows/Err)",
+          "explain" : "an errorCondition is the error scenario (true ⇒ invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones — did you mean FieldNotFilled?"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

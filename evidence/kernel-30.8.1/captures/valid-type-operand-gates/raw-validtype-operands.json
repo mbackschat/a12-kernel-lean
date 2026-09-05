@@ -1,0 +1,208 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 8 ops; 5 of 8 exited nonzero (0 failed, 5 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 8,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "V1-string-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V1", "--condition", "Valid(/Rep/Txt, \"IBAN\") And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "V2-enumeration-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V2", "--condition", "Valid(/Rep/Choice, \"IBAN\") And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "V3-number-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V3", "--condition", "Valid(/Rep/RootNum, \"IBAN\") And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "V4-boolean-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V4", "--condition", "Valid(/Rep/Rows/Flag, \"IBAN\") And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Rows' in '/Rep/Rows/Flag'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "V5-custom-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V5", "--condition", "Valid(/Rep/Rows/Cust, \"IBAN\") And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Rows' in '/Rep/Rows/Cust'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "V6-group-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V6", "--condition", "Valid(/Rep/Meta, \"IBAN\") And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_GROUPS_ALLOWED",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'Valid': It is not allowed to use a group. [MVK_NO_GROUPS_ALLOWED]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          },
+          "fix" : "A GROUP was supplied where a FIELD (or a flattened field list) is required — the fix depends on the construct. For an AGGREGATE or a `Having` filter, the operand is a FLATTENED repetition list (the repeatable group starred, then the field: `/Order/Lines*/Amount`), NOT a bare group wildcard (`Lines*`): write Sum(Lines*/Amount) or Sum(Lines*/Amount Having <filter>); to count the group's rows instead use NumberOfFilledGroups(Lines*). For a FIELD-PRESENCE predicate, FieldFilled / FieldNotFilled take a field — for a group's presence use GroupFilled / GroupNotFilled.",
+          "explain" : "MVK_NO_GROUPS_ALLOWED fires when a group is supplied where the construct requires a field or a flattened field list: an aggregate / Having operand must flatten the repetitions to a starred-group-then-field list (a bare group wildcard is not a value list), and a field-presence predicate (FieldFilled) must name a field, not a group. The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "V7-starred-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V7", "--condition", "Valid(/Rep/Rows*/Cust, \"IBAN\") And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARDS_ALLOWED",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'Valid': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "V8-control-plain",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "V8", "--condition", "FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "the rule errors when '/Rep/RootNum' IS filled — an errorCondition fires on the invalid case, so a requiredness rule should fire on absence",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "FieldNotFilled(/Rep/RootNum)",
+          "explain" : "an errorCondition is the error scenario (true ⇒ invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones — did you mean FieldNotFilled?"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}
