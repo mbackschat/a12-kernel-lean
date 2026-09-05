@@ -212,6 +212,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [DateRange conditions read at the rule's iterating row](implementation/numeric-and-temporal.md#cap-iterated-date-range-conditions)
 <a id="cap-date-range-repeatable-operand-locus"></a>
 - [Repeatable-operand rule locus across the DateRange carriers](implementation/numeric-and-temporal.md#cap-date-range-repeatable-operand-locus)
+<a id="cap-temporal-extrema"></a>
+- [Temporal extrema](implementation/numeric-and-temporal.md#cap-temporal-extrema)
 <a id="cap-temporal-comparison-and-aggregates"></a>
 - [Temporal comparison and aggregates](implementation/numeric-and-temporal.md#cap-temporal-comparison-and-aggregates)
 

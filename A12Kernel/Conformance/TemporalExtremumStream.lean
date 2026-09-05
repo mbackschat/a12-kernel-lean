@@ -1,13 +1,18 @@
 import A12Kernel.Elaboration.TemporalExtremumStream
 
-/-! # A12Kernel.Conformance.TemporalExtremumStream — the extrema's complete-Date fold, read from a model
+/-! # A12Kernel.Conformance.TemporalExtremumStream — the extrema's folds, read from a model
 
-The fold was reachable only from a hand-built stream, so every earlier row about it assumed the
-projection these rows now exercise. What is worth locking here is the Date family's own empty rule
-and its two failure modes, because each has a plausible wrong account that a single happy-path row
-would leave standing: an unspecified operand could contribute a synthetic value the way an empty
-Number contributes zero, a malformed one could be skipped like an absent one, and a formally
-unavailable one could be skipped rather than aborting.
+The folds were reachable only from a hand-built stream, so every earlier row about them assumed the
+projection these rows now exercise. What is worth locking is each family's own empty rule and its two
+failure modes, because each has a plausible wrong account that a single happy-path row would leave
+standing: an unspecified operand could contribute a synthetic value the way an empty Number
+contributes zero, a malformed one could be skipped like an absent one, and a formally unavailable one
+could be skipped rather than aborting.
+
+The three families' rows are not one family's repeated. Date and clock order **decoded labels**;
+DateTime orders **exact instants**, and the shape that tells those apart is the repeated hour, where
+one wall label names two moments ([`spec/05`](../../spec/05-dates-and-time.md) states it as an exact
+selected instant remaining distinct from an equal-looking value across a model-zone overlap).
 -/
 
 namespace A12Kernel.Conformance.TemporalExtremumStream
@@ -49,6 +54,12 @@ private def probeModel : FlatModel :=
       { id := 8, groupPath := ["Probe"], name := "StampAsClock",
         policy := { kind := .temporal .dateTime TemporalComponents.time },
         temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      { id := 10, groupPath := ["Probe"], name := "Stamp",
+        policy := { kind := .temporal .dateTime TemporalComponents.now },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+      { id := 11, groupPath := ["Probe"], name := "Stamp2",
+        policy := { kind := .temporal .dateTime TemporalComponents.now },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
       { id := 6, groupPath := ["Probe", "Rows"], name := "RowDate",
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "yyyy-MM-dd" },
@@ -238,6 +249,113 @@ example : clockFoldOf ["Clock", "StampAsClock"] .minimum
 example : clockFoldOf ["Clock", "StampAsClock"] .maximum
     [(7, timeCell 9 30 0), (8, dateCell 2024 3 5)] =
     some (.unknown .malformed) := by
+  native_decide
+
+/-! ## The DateTime family, whose domain is the instant and not the label
+
+This family's rows are not the clock's rows again with a wider payload. Its element type is the
+exact `Instant`, so the one thing worth locking is that the projection hands over the value's
+**retained** instant instead of rebuilding one from its wall label — a distinction that is invisible
+on every ordinary pair and decides the answer on exactly one shape. -/
+
+private def stampCell (epochMillis : Int) (year month day hour minute second : Nat) : RawCell :=
+  match TimeOfDay.ofHms? hour minute second with
+  | some clock =>
+      .parsed (.temporal
+        (.dateTime { epochMillis } { year, month, day } clock .storedGregorian))
+  | none => .empty
+
+private def stampFoldOf (names : List String) (op : TemporalExtremumOp)
+    (cells : List (FieldId × RawCell)) :
+    Option (SimpleComparisonOperand Instant) := do
+  let checked ← admitted? names
+  (TemporalExtremumStream.evalDateTime checked op
+    (probeModel.checkContext (raw cells)) .validation).toOption
+
+example : stampFoldOf ["Stamp", "Stamp2"] .maximum
+    [(10, stampCell 1000 2024 3 5 9 30 0), (11, stampCell 5000 2024 3 5 9 30 4)] =
+    some (.value { epochMillis := 5000 } true) := by
+  native_decide
+
+example : stampFoldOf ["Stamp", "Stamp2"] .minimum
+    [(10, stampCell 1000 2024 3 5 9 30 0), (11, stampCell 5000 2024 3 5 9 30 4)] =
+    some (.value { epochMillis := 1000 } true) := by
+  native_decide
+
+/-- The repeated hour's two payloads, named once so the rows below and the premise they rest on
+    describe the same pair. Europe/Berlin passes through the label `2024-10-27T02:15:00` twice on
+    that date, at UTC `00:15` and `01:15`, which are these two `epochMillis` an hour apart. -/
+private def foldEarlier : RawCell := stampCell 1729988100000 2024 10 27 2 15 0
+private def foldLater : RawCell := stampCell 1729991700000 2024 10 27 2 15 0
+
+/- The separator's premise, stated rather than assumed: these two payloads carry the **same** label
+   and **different** instants. Without this row the two below could pass under a label account that
+   happened to order them correctly; with it, a label account must tie, and a tie keeps its left
+   operand, so it cannot answer `Max` and `Min` differently on this pair at all. -/
+example :
+    (match (probeModel.checkContext (raw [(10, foldEarlier), (11, foldLater)])).observeAt
+        .validation 10,
+      (probeModel.checkContext (raw [(10, foldEarlier), (11, foldLater)])).observeAt
+        .validation 11 with
+     | .value (.temporal first), .value (.temporal second) =>
+         some ((first.dateParts?, first.time?) == (second.dateParts?, second.time?) &&
+           first.instant != second.instant)
+     | _, _ => none) = some true := by
+  native_decide
+
+/- So a projection that rebuilt the instant from `date` and `time` returns the **same** answer for
+   `Max` and `Min` on this pair. Ordering by the retained instant separates them, which is why these
+   two rows are the family's whole point and no ordinary pair replaces them. -/
+example : stampFoldOf ["Stamp", "Stamp2"] .maximum
+    [(10, foldEarlier), (11, foldLater)] =
+    some (.value { epochMillis := 1729991700000 } true) := by
+  native_decide
+
+example : stampFoldOf ["Stamp", "Stamp2"] .minimum
+    [(10, foldEarlier), (11, foldLater)] =
+    some (.value { epochMillis := 1729988100000 } true) := by
+  native_decide
+
+/- Authored the other way round, so neither row above passes by operand position. -/
+example : stampFoldOf ["Stamp", "Stamp2"] .maximum
+    [(10, foldLater), (11, foldEarlier)] =
+    some (.value { epochMillis := 1729991700000 } true) := by
+  native_decide
+
+/- The shared empty rule and malformed arm on this payload, so the family is the siblings' rule and
+   not a reimplementation. -/
+example : stampFoldOf ["Stamp", "Stamp2"] .maximum
+    [(10, stampCell 1000 2024 3 5 9 30 0)] =
+    some (.value { epochMillis := 1000 } false) := by
+  native_decide
+
+example : stampFoldOf ["Stamp", "Stamp2"] .maximum [] = some .notEvaluated := by
+  native_decide
+
+example : stampFoldOf ["Stamp", "Stamp2"] .maximum
+    [(10, stampCell 1000 2024 3 5 9 30 0), (11, dateCell 2024 3 5)] =
+    some (.unknown .malformed) := by
+  native_decide
+
+/- Each reader declines the other's list at the one component-set gate, in both directions: the
+   time-only DATE_TIME pair belongs to the clock reader and the complete stamps to this one. Reading
+   the family off the declared kind would have sent both lists to this reader. -/
+example : (do
+    let checked ← admitted? ["Clock", "StampAsClock"]
+    match TemporalExtremumStream.evalDateTime checked .maximum
+        (probeModel.checkContext (raw [])) .validation with
+    | .ok _ => none
+    | .error error => some error) =
+    some (.componentsMismatch TemporalComponents.now TemporalComponents.time) := by
+  native_decide
+
+example : (do
+    let checked ← admitted? ["Stamp", "Stamp2"]
+    match TemporalExtremumStream.evalTime checked .maximum
+        (probeModel.checkContext (raw [])) .validation with
+    | .ok _ => none
+    | .error error => some error) =
+    some (.componentsMismatch TemporalComponents.time TemporalComponents.now) := by
   native_decide
 
 /-! ## What this slice declines, and why each is a boundary rather than a verdict -/

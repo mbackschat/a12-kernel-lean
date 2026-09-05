@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.TemporalExtremumOperands
 import A12Kernel.Semantics.TimeAggregate
+import A12Kernel.Semantics.DateTimeAggregate
 
 /-! # A12Kernel.Elaboration.TemporalExtremumStream — reading an admitted extremum's operands into the fold
 
@@ -16,17 +17,21 @@ own family would be, so a domain that erased the family would admit comparisons 
 parametric in that type, so nothing about it changes; what this module supplies is the projection
 into one family's domain.
 
-**Scope: the two families whose element type the measurements fix, direct field operands, scalar
-reads.** The admitted component set must be a whole calendar date or a whole clock, which is exactly
-the condition under which `FullDate` or `TimeOfDay` holds every operand. A component-omitting list —
+**Scope: the three families whose element type the measurements fix, direct field operands, scalar
+reads.** The admitted component set must be a whole calendar date, a whole clock, or both, which is
+exactly the condition under which `FullDate`, `TimeOfDay`, or the payload's retained `Instant` holds
+every operand. The DateTime family differs from its siblings in what its domain *is*: the two
+date-free and time-free families order decoded labels, while DateTime orders exact instants, so its
+projection hands over the payload's retained instant rather than one rebuilt from the label — the
+distinction that survives a zone transition. A component-omitting list —
 `yyyy-MM`, or a yearless set completed by a Base Year — is declined rather than folded, because its
 values are neither, and its element type is an interval this module does not yet carry
 ([SG6](../../docs/SEMANTICS-GAPS.md)). Star, group, and filtered operands are declined here too:
 they resolve through the addressed context rather than a flat one, and admitting them by reading
 only their declaring cell would silently fold one row where the Kernel folds all of them.
 
-The two families share one reader and differ only in their required component set and their cell
-projection, which is what makes adding the third a declaration rather than an architecture.
+All three share one reader and differ only in their required component set and their cell
+projection, which is what let the third arrive as two declarations rather than as an architecture.
 -/
 
 namespace A12Kernel
@@ -108,6 +113,26 @@ def evalTime (admitted : CheckedTemporalExtremumOperands model)
     (op : TemporalExtremumOp) (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError (SimpleComparisonOperand TimeOfDay) := do
   pure (evalTimeExtremumAggregate op (← readTimeSide admitted context phase))
+
+/-- Read one admitted complete-DateTime operand list into its fold side.
+
+    The required set is `TemporalComponents.now`, which is the complete date-and-time set; that
+    name records the constant's first consumer rather than an exclusive one, exactly as its
+    neighbours `today` and `baseYear` are aliases of `fullDate`. -/
+def readDateTimeSide (admitted : CheckedTemporalExtremumOperands model)
+    (context : FlatContext) (phase : Phase) :
+    Except TemporalExtremumStreamError ResolvedDateTimeAggregateSide :=
+  readSideWith TemporalComponents.now
+    CellObservation.asDateTimeExtremumOperand admitted context phase
+
+/-- Evaluate one admitted complete-DateTime extremum against a flat context. Selection is by exact
+    instant, which is the fold's own selector; what this route adds is that the instant reaching it
+    is the payload's **retained** one rather than one rebuilt from its wall label. -/
+def evalDateTime (admitted : CheckedTemporalExtremumOperands model)
+    (op : TemporalExtremumOp) (context : FlatContext) (phase : Phase) :
+    Except TemporalExtremumStreamError (SimpleComparisonOperand Instant) := do
+  pure (evalDateTimeExtremumAggregate op
+    (← readDateTimeSide admitted context phase))
 
 end TemporalExtremumStream
 

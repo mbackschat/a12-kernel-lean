@@ -71,4 +71,35 @@ theorem dateTimeExtremum_tail_comparison_firing (op : TemporalExtremumOp)
       evalSymmetricComparison_missing_firing comparison.holdsInstant
         selected expected false true (by decide) holds
 
+/-- The instant projection obeys its siblings' rule: **only** an absent cell is skipped. Stated as an
+equivalence because the useful direction is the reverse one — nothing else may reach the fold as an
+absent operand, so a malformed payload cannot be silently dropped and read as unfilled. The payload
+arms differ from the Date and Time families', which makes this a third obligation rather than a
+specialization of either. -/
+theorem asDateTimeExtremumOperand_notEvaluated_iff_empty
+    (observation : CellObservation) :
+    observation.asDateTimeExtremumOperand = .notEvaluated ↔ observation = .empty := by
+  constructor
+  · intro projected
+    cases observation with
+    | empty => rfl
+    | value payload =>
+        cases payload with
+        | temporal value => cases value <;> cases projected
+        | _ => cases projected
+    | unknown _ => cases projected
+    | poison _ => cases projected
+  · intro isEmpty
+    subst isEmpty
+    rfl
+
+/-- The projection carries a formal cause through verbatim in either phase, so the fold's abort
+reports the cell's own cause rather than a generic one. -/
+theorem asDateTimeExtremumOperand_preserves_cause (cause : FormalCause) :
+    (CellObservation.unknown (α := Value) cause).asDateTimeExtremumOperand =
+        .unknown cause ∧
+      (CellObservation.poison (α := Value) cause).asDateTimeExtremumOperand =
+        .unknown cause := by
+  exact ⟨rfl, rfl⟩
+
 end A12Kernel
