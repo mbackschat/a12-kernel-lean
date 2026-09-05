@@ -226,7 +226,10 @@ private def certifyTemporalUniquenessGroup (model : FlatModel)
         | .ok _ => throw .incoherentCore
     | none => throw .incoherentCore
 
-private def certifyTemporalUniquenessOperand (model : FlatModel)
+/-- Certify one resolved slot as a temporal operand carrying a coherent declared format. Shared
+    rather than private because the temporal distinct count certifies slots identically and differs
+    only in the **list** gate it then applies — component sets there, format equality here. -/
+def certifyTemporalUniquenessOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except TemporalValuesNotUniqueElabError
         (CheckedTemporalUniquenessOperand model)
@@ -247,7 +250,7 @@ private def certifyTemporalUniquenessOperand (model : FlatModel)
   | .starredGroupPresence source =>
       certifyTemporalUniquenessGroup model (.starredPresence source)
 
-private def certifyTemporalUniquenessOperands (model : FlatModel)
+def certifyTemporalUniquenessOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
       Except TemporalValuesNotUniqueElabError
         (List (CheckedTemporalUniquenessOperand model))

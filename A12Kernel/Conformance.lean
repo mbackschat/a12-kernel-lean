@@ -282,6 +282,7 @@ import A12Kernel.Conformance.TemporalEntityGroupOperand
 import A12Kernel.Conformance.TemporalFormat
 import A12Kernel.Conformance.TemporalTargetPolicy
 import A12Kernel.Conformance.TemporalValue
+import A12Kernel.Conformance.TemporalDistinctCount
 import A12Kernel.Conformance.TemporalValuesNotUnique
 import A12Kernel.Conformance.TimeAggregate
 import A12Kernel.Conformance.TimeComparison

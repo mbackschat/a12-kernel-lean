@@ -44,13 +44,10 @@ def CheckedTemporalUniquenessOperand.components :
   | .group source => source.first.components
 
 inductive TemporalDistinctCountElabError where
-  | shape (error : FieldEntityShapeElabError)
-  /-- An operand whose kind this operator refuses outright. -/
-  | inadmissibleKind (path : List String) (actual : SurfaceScalarKind)
-  /-- An individually admissible operand from another comparability category. -/
-  | mixedCategories (path : List String) (actual : SurfaceScalarKind)
-  /-- A temporal operand carrying no coherent declared format. -/
-  | missingDeclaredFormat (path : List String)
+  /-- A slot refusal from the shared temporal certifier. Wrapped rather than restated because slot
+      certification is identical across the two operators; the **codes** are not, so the projection
+      below re-maps each arm instead of delegating. -/
+  | slot (error : TemporalValuesNotUniqueElabError)
   /-- **This operator's own gate.** An operand whose component set differs from the list's, carrying
       both declared formats because the Kernel's message names them rather than the sets. -/
   | mixedComponentSets (path : List String) (found expected : String)
@@ -58,7 +55,6 @@ inductive TemporalDistinctCountElabError where
       equality, which is the neighbouring operator's rule, and no row measures a group expansion
       here. Claims no Kernel class. -/
   | groupOperandUnsupported (path : List String)
-  | having (error : CorrelationElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -99,18 +95,55 @@ def components (checked : CheckedTemporalDistinctCountSource model) :
 
 end CheckedTemporalDistinctCountSource
 
+/-- The group path of a slot this operator declines, or `none` for a slot it certifies. -/
+private def groupSlotPath? :
+    ResolvedFieldEntityOperand model → Option (List String)
+  | .group reference => some reference.path
+  | .starredGroup source => some source.group.path
+  | .starredGroupPresence source => some source.groupPath
+  | .field .. | .star _ | .starHaving _ _ => none
+
+/-- Certify one authored operand list for the temporal distinct count.
+
+    Slot certification is the shared one; the list gate is this operator's own. A **group** slot is
+    declined here rather than certified, because the shared group certificate carries the
+    neighbouring operator's format-equality gate and no retained row measures a group expansion at
+    this operator — the decline claims no Kernel class. -/
+def elaborateTemporalDistinctCountSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    Except TemporalDistinctCountElabError
+      (CheckedTemporalDistinctCountSource model) := do
+  let shape ← elaborateFieldEntityShape model declaringGroup authored
+    |>.mapError fun error => .slot (.shape error)
+  match firstKindGateRefusal? shape.operands with
+  | some refusal => throw (.slot refusal)
+  | none => pure ()
+  match (shape.first :: shape.rest).findSome? groupSlotPath? with
+  | some path => throw (.groupOperandUnsupported path)
+  | none => pure ()
+  let first ← (certifyTemporalUniquenessOperand model declaringGroup shape.first).mapError .slot
+  let rest ← (certifyTemporalUniquenessOperands model declaringGroup shape.rest).mapError .slot
+  match hComponents :
+      firstMismatchedTemporalComponents? first.components first.format rest with
+  | some (path, found, expected) =>
+      throw (.mixedComponentSets path found expected)
+  | none => pure { shape, first, rest, oneComponentSet := hComponents }
+
 namespace TemporalDistinctCountElabError
 
 /-- Project this operator's own gate and delegate the shared shape classes. The component-set
     refusal is `MVK_DATEFORMATS_NOT_COMPATIBLE`, measured naming both formats; the declined group
     slot claims nothing. -/
 def diagnostic? : TemporalDistinctCountElabError → Option KernelStaticDiagnostic
-  | .shape error => error.diagnostic?
   | .mixedComponentSets _ _ _ => some .dateFormatsNotCompatible
-  | .inadmissibleKind _ _ => some .onlyStringEnumNumberCmpDateAllowed
-  | .mixedCategories _ _ => some .dateAndNonDate
-  | .missingDeclaredFormat _ | .groupOperandUnsupported _
-  | .having _ | .incoherentCore => none
+  -- Re-mapped, never delegated: the shared certifier's own projection carries the neighbour's
+  -- codes, and the two operators' kind-domain classes differ by one token —
+  -- `MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED` here against the `CMP_`-less form there.
+  | .slot (.inadmissibleKind _ _) => some .onlyStringEnumNumberCmpDateAllowed
+  | .slot (.mixedCategories _ _) => some .dateAndNonDate
+  | .slot (.shape error) => error.diagnostic?
+  | .slot _ => none
+  | .groupOperandUnsupported _ | .incoherentCore => none
 
 end TemporalDistinctCountElabError
 
