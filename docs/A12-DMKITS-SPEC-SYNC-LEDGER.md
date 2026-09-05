@@ -47,6 +47,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `relation-to-your-KF198-amendment`: separate gate, same fixture family. Your amended admitted set — the condition's keyed field or the group's index field — is **independently reproduced here** on a four-field group, with two refused fields rather than one, and this project's own `spec/11` carried the wide form and is corrected in the same change. That half is inbound and raises no request; this entry is only the index-value gate, which neither estate had stated.
 - `local-consequence`: none behavioral beyond the clause; the fragment models the parameter grammar's spellings and does not evaluate index values.
 - `acceptance`: a12-dmkits confirms that a key literal invalid for the index field's kind refuses the condition with `MVK_INDEX_VALUE_INVALID` independently of any message parameter; or reports the row where it diverges.
+- `forwarded`: sent over the peer-session channel with the parameterless control named as the whole argument, and with this project's own first misreading of the matrix disclosed.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-05-08"></a>
@@ -61,6 +62,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `also-useful-to-you`: a computation declared at `/Rep/Rows` writing `/Rep/Rows/Items/Val` is **admitted** carrying both `$#RuleGroup$` and the absolute `$#/Rep/Rows/Items$` in one message. That shape makes the declaring group and the computed field's parent differ while both are nameable in the same text, so one render decides which the shorthand anchors at — the case you recorded as unmeasured and declined to extrapolate. Offered as a fixture, not a claim: this project has measured its admission only.
 - `local-consequence`: none behavioral yet; the fragment's message inputs carry no placement condition, and the shorthand is data rather than built in.
 - `acceptance`: a12-dmkits confirms that a declaration directly in the root group refuses `$#RuleGroup$` while admitting `$#RootGroup$` and the absolute spelling of that same group; or reports the row where it diverges.
+- `forwarded`: sent over the peer-session channel, flagged as live for their current computation-carrier work, together with the discriminating fixture offered as a fixture rather than a claim.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-05-07"></a>
