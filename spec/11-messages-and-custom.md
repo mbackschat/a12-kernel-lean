@@ -57,6 +57,10 @@ FieldFilled(id) And CustomCondition NotReverse
 
 `<Name>` uses the `nameOhnePunkt` token grammar: one or more ASCII letters or digits, `_`, `:`, or `ÄÜÖäüöß`. An unquoted name may begin with a digit, `_`, or `:` and may consist only of digits. A reserved token such as `Today` must be single-quoted as `'Today'`; the quoted form begins with a non-digit name character and otherwise uses the same alphabet. Hyphen, dot, slash, and whitespace are not name characters.
 
+**A quoted segment is lexed as a unit, so an illegal character inside it is refused a layer earlier than the same character bare.** `'Ro-ws'`, `'Ro ws'`, and `'1Rows'` in the group position each draw `MVK_LEXER_STANDARD_ERROR`, while their bare spellings reach the group lookup and draw `INVALID_GROUP` — the same code an undeclared but well-formed name draws. A consumer must therefore not merge the two codes: they report different layers, and only the lexer one says the text was never a name.
+
+**The parameter's name token is wider than any group may be named, so some legal tokens can never resolve.** The Kernel refuses to declare a group named `1Rows` or `Ro-ws` with `MVK_PATH_INVALID`, stating the rule itself — a group name may contain only letters, digits, and underscores, and must begin with a letter or an underscore. So the token grammar's digit-initial and `:`-bearing names are well formed and permanently unresolvable, and their `INVALID_GROUP` is the only answer the Kernel can give ([checkpoint](../docs/SOURCES.md#src-parameter-token-versus-group-declaration-alphabet)).
+
 Constraints and runtime behaviour:
 
 - **Forbidden in computation rules** and **inside filter (`Having`) conditions**.

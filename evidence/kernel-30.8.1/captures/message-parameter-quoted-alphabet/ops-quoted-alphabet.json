@@ -1,0 +1,90 @@
+[
+ {
+  "id": "L1-bare-hyphen",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L1.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "L2-quoted-hyphen",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L2.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "L3-bare-space",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L3.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "L4-quoted-space",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L4.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "L5-quoted-digit-first",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L5.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "L6-bare-digit-first",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L6.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "L7-control-unknown",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L7.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "L8-control-valid",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-L8.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ }
+]

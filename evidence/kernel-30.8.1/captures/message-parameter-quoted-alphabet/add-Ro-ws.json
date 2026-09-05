@@ -1,0 +1,22 @@
+{
+  "target" : "group",
+  "op" : "add",
+  "outcome" : "rejected",
+  "ok" : false,
+  "valid" : false,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "the group is rejected by the kernel",
+  "diagnostics" : [ {
+    "severity" : "ERROR",
+    "source" : "KERNEL",
+    "code" : "MVK_PATH_INVALID",
+    "summary" : "Group with path '/Msg/Ro-ws': The path '/Msg/Ro-ws' is invalid. [MVK_PATH_INVALID]",
+    "where" : { }
+  }, {
+    "severity" : "ERROR",
+    "source" : "KERNEL",
+    "summary" : "Group with path '/Msg/Ro-ws': /Msg/Ro-ws: A group name may only contain letters, numbers or underscores. Group names must begin with a letter or an underscore. Name parts may not be longer than 60 characters and are separated by slashes. An absolute group name must begin with a slash.",
+    "where" : { }
+  } ],
+  "written" : false
+}

@@ -381,6 +381,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-filter-reference-above-the-star"></a>
 - [A level above the star but still on the operand's path is scope-gated and rescuable, not iteration-prohibited](sources/having-filter-probes.md#src-filter-reference-above-the-star)
 
+<a id="src-parameter-token-versus-group-declaration-alphabet"></a>
+- [The parameter's name token is wider than any group may be named, and a quoted segment is refused where the bare spelling reaches lookup](sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet)
+
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
 <a id="src-nested-self-exclusion"></a>

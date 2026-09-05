@@ -1,0 +1,209 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 8 ops; 7 of 8 exited nonzero (0 failed, 7 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 8,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "L1-bare-hyphen",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L1.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "Rule with path '/Msg/Rows/L1': The rule '/Msg/Rows/L1' specifies an incorrect error text for the language English. Error text: '#/Msg/Ro-ws' specifies a group name '/Msg/Ro', which is not valid. [INVALID_GROUP]",
+          "where" : {
+            "rule" : "/Msg/Rows/L1"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "L2-quoted-hyphen",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L2.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_LEXER_STANDARD_ERROR",
+          "summary" : "Rule with path '/Msg/Rows/L2': The rule '/Msg/Rows/L2' specifies an incorrect error text for the language English. The error text parameter '#/Msg/'Ro-ws'' is not valid. Character ''' at position 7 is incorrect. [MVK_LEXER_STANDARD_ERROR]",
+          "where" : {
+            "rule" : "/Msg/Rows/L2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "L3-bare-space",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L3.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "Rule with path '/Msg/Rows/L3': The rule '/Msg/Rows/L3' specifies an incorrect error text for the language English. Error text: '#/Msg/Ro ws' specifies a group name '/Msg/Ro', which is not valid. [INVALID_GROUP]",
+          "where" : {
+            "rule" : "/Msg/Rows/L3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "L4-quoted-space",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L4.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_LEXER_STANDARD_ERROR",
+          "summary" : "Rule with path '/Msg/Rows/L4': The rule '/Msg/Rows/L4' specifies an incorrect error text for the language English. The error text parameter '#/Msg/'Ro ws'' is not valid. Character ''' at position 7 is incorrect. [MVK_LEXER_STANDARD_ERROR]",
+          "where" : {
+            "rule" : "/Msg/Rows/L4"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "L5-quoted-digit-first",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L5.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_LEXER_STANDARD_ERROR",
+          "summary" : "Rule with path '/Msg/Rows/L5': The rule '/Msg/Rows/L5' specifies an incorrect error text for the language English. The error text parameter '#/Msg/'1Rows'' is not valid. Character ''' at position 7 is incorrect. [MVK_LEXER_STANDARD_ERROR]",
+          "where" : {
+            "rule" : "/Msg/Rows/L5"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "L6-bare-digit-first",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L6.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "Rule with path '/Msg/Rows/L6': The rule '/Msg/Rows/L6' specifies an incorrect error text for the language English. Error text: '#/Msg/1Rows' specifies a group name '/Msg/1Rows', which is not valid. [INVALID_GROUP]",
+          "where" : {
+            "rule" : "/Msg/Rows/L6"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "L7-control-unknown",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L7.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "Rule with path '/Msg/Rows/L7': The rule '/Msg/Rows/L7' specifies an incorrect error text for the language English. Error text: '#/Msg/Nope' specifies a group name '/Msg/Nope', which is not valid. [INVALID_GROUP]",
+          "where" : {
+            "rule" : "/Msg/Rows/L7"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "L8-control-valid",
+      "verb" : "rule",
+      "args" : [ "add", "rule-L8.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Msg/Rows/L8",
+        "changed" : {
+          "rule" : "/Msg/Rows/L8"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

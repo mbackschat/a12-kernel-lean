@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-05"></a>
+### `SPEC-2026-09-05-05` — a message parameter's name token is wider than any group may be named, and quoting moves the refusal a layer earlier
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md`](../spec/11-messages-and-custom.md), the `<Name>` token paragraph, which asserted that the quoted form "otherwise uses the same alphabet" without a measurement.
+- `delta`: two facts, both kernel-stated. **The group-declaration alphabet is narrower than the parameter token grammar** — a group name may contain only letters, digits, and underscores and must begin with a letter or an underscore, so the token grammar's digit-initial and `:`-bearing names are well formed and can never resolve. And **a quoted segment is lexed as a unit**, so an illegal character inside it draws `MVK_LEXER_STANDARD_ERROR` where the identical characters bare reach the group lookup and draw `INVALID_GROUP`.
+- `basis`: eight `rule add --dry-run` children in one `batch` plus two `group add` attempts, `dmtool` 0.13.0, Kernel `30.8.1`, every child `KERNEL_CONFIRMED`, the launcher self-reporting build `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`. The [checkpoint](sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet) owns the rows, the retained envelope hashes, and the Kernel's own wording of the declaration rule.
+- `separator`: the control is an undeclared but well-formed name, which draws `INVALID_GROUP` — the same code the bare illegal spellings draw and a different one from the quoted spellings. Without it the lexer code and the lookup code read as two messages for one refusal rather than two layers.
+- `consumer-consequence`: a Compile, Translate, or Analyze consumer that validates a parameter name against the token grammar will accept names no group can bear, and must treat `INVALID_GROUP` on a well-formed token as the terminal answer rather than a fixture problem. One refusing an illegal character uniformly reports a single code where the Kernel reports two, losing the distinction between "never a name" and "a name that resolves to nothing".
+- `deliberately-unclaimed`: whether a *bare* hyphen or space is lexically accepted into one name, or merely reported as the raw argument after a parse failure, is **not** separated here — the witness would be a group bearing such a name, which the declaration rule forbids. Stated so the entry is not read as a claim about the bare lexer.
+- `local-consequence`: none behavioral. The fragment does not track the lexer's character position, which stays [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)'s remaining item in that bundle.
+- `acceptance`: a12-dmkits confirms that a group cannot be declared with a digit-initial or hyphenated name, and that a quoted parameter segment containing such a character is refused at the lexer while its bare spelling reaches the group lookup; or reports the row where it diverges. Note there is no surface of yours this corrects — the `diagnostics` catalog carries `RK_*`/`LINT` codes only — so this is sent for reconciliation of the interpreter's parameter validation rather than as a catalog fix.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-04"></a>
 ### `SPEC-2026-09-05-04` — `$` is filter-only by site, so it is refused outside a filter even where the enclosing iteration binds the level
 
