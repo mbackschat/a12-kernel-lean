@@ -22,7 +22,9 @@ inductive TemporalValuesNotUniqueElabError where
   | inadmissibleKind (path : List String) (actual : SurfaceScalarKind)
   /-- An operand of an individually admissible kind drawn from another comparability category, which the Kernel's **second** gate reports. -/
   | mixedCategories (path : List String) (actual : SurfaceScalarKind)
-  /-- A temporal operand whose declaration carries no coherent declared format. The operator's gate and its compared identity both need the exact format, so an incomplete declaration fails closed rather than defaulting. -/
+  /-- A temporal operand whose declaration carries no coherent declared format. The operator's gate and its compared identity both need the exact format, so an incomplete declaration fails closed rather than defaulting here.
+
+      This is a **flat-model** state, not a Kernel one, and the difference is now measured: a temporal field may declare no format and the Kernel resolves its kind's default, producing a format string that compares equal to the default spelling at this very gate ([checkpoint](../../docs/SOURCES.md#src-temporal-declaration-without-a-format)). A flat model built by a loader that performs that resolution never reaches this arm; one built without it does, and fails closed. Claims no Kernel class because the Kernel draws none — it admits the declaration. -/
   | missingDeclaredFormat (path : List String)
   | mixedDeclaredFormats (path : List String) (found expected : String)
   | having (error : CorrelationElabError)
