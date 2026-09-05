@@ -86,8 +86,10 @@ theorem resolveCheckedField_empty_topology
 ones.** Every consumer that reads the in-capacity projection inherits this: it can never see a cell
 the complete view does not have, in an order the complete view does not have, so no answer the
 extent produces is one the whole topology could not have produced from some sub-selection. Stated at
-the owning mechanism rather than per carrier, because the five consumers reading it differ only in
-what they fold over the cells.
+the owning mechanism rather than per carrier, because the consumers reading it differ only in what
+they fold over the cells. The temporal extremum is the consumer for which that generality earns its
+place: it *aborts* on a formally unavailable operand rather than skipping one, so it is the first
+whose answer the two views genuinely separate, and it needed no law of its own.
 
 The second conjunct is what makes the first informative — a selection that removed *nothing*
 satisfies the sublist alone, and a selection that removed everything would too. -/

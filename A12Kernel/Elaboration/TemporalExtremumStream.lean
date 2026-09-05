@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.TemporalExtremumOperands
 import A12Kernel.Semantics.TimeAggregate
 import A12Kernel.Semantics.DateTimeAggregate
+import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # A12Kernel.Elaboration.TemporalExtremumStream — reading an admitted extremum's operands into the fold
 
@@ -26,12 +27,14 @@ projection hands over the payload's retained instant rather than one rebuilt fro
 distinction that survives a zone transition. A component-omitting list —
 `yyyy-MM`, or a yearless set completed by a Base Year — is declined rather than folded, because its
 values are neither, and its element type is an interval this module does not yet carry
-([SG6](../../docs/SEMANTICS-GAPS.md)). Star, group, and filtered operands are declined here too:
-they resolve through the addressed context rather than a flat one, and admitting them by reading
-only their declaring cell would silently fold one row where the Kernel folds all of them.
+([SG6](../../docs/SEMANTICS-GAPS.md)).
 
-All three share one reader and differ only in their required component set and their cell
-projection, which is what let the third arrive as two declarations rather than as an architecture.
+**Two routes, one reader each.** The flat route below takes a `FlatContext` and therefore only direct
+field operands; a star, group, or filtered operand denotes a row set that no flat context can
+address, and folding just its declaring cell would answer for one row where the Kernel folds all of
+them. Those forms have their own reader further down, over the immutable checked document. Both
+routes share the three families' projections and the one parametric fold, so a family costs two
+declarations per route rather than an architecture.
 -/
 
 namespace A12Kernel
@@ -43,7 +46,7 @@ namespace A12Kernel
 inductive TemporalExtremumStreamError where
   /-- The agreed component set is not the one this reader was asked for, so its element type cannot hold the operands. Carries both so a consumer can see which family declined and why. -/
   | componentsMismatch (expected found : TemporalComponents)
-  /-- A star, group, or filtered operand, which needs the addressed context this slice does not take. -/
+  /-- A star, group, or filtered operand, which needs the addressed context the flat route does not take. -/
   | operandNeedsAddressing (path : List String)
   deriving Repr, DecidableEq
 
@@ -113,6 +116,119 @@ def evalTime (admitted : CheckedTemporalExtremumOperands model)
     (op : TemporalExtremumOp) (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError (SimpleComparisonOperand TimeOfDay) := do
   pure (evalTimeExtremumAggregate op (← readTimeSide admitted context phase))
+
+/-! ### The addressed route
+
+A star, group, or filtered operand resolves against the immutable checked document rather than a flat
+context, so it reaches the fold through a second entry point rather than through the one above. What
+that entry point adds is exactly the two structural markers the flat route could leave unset: a star
+whose declared capacity is not full contributes an **uninstantiated tail**, and a filter contributes
+its own missing provenance, both of which weaken a selected result's given-ness without changing the
+value.
+
+Every arm reuses the sole checked owner of its shape — the direct, star, and group core resolvers —
+so this module resolves no topology and reads no cell itself. The three declined arms are the same
+three the Number sibling declines: a filtered star needs its `Having` elaborated before it can be
+resolved, and admitting one unchecked would be worse than refusing it.
+
+**Over-limit rows supply nothing.** The declared-capacity extent is a property of the operand rather
+than of the consuming operator, which is what the capacity sweep's distinct-count document separated
+from a mere value agreement
+([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)). The extremum is a fifth consumer,
+and the two accounts genuinely differ for it: an over-limit cell is formally unavailable, and this
+fold *aborts* on an unavailable operand where the sweep's uniqueness carrier merely skips one — so
+reading the complete view would answer UNKNOWN for a document the Kernel folds. No retained row
+exercises an over-limit extremum; the extent is taken from the sweep's operand-level mechanism, and
+that assumption is recorded with its evidence item in [SG6](../../docs/SEMANTICS-GAPS.md).
+-/
+
+/-- Why an admitted operand list cannot be folded against an immutable checked document.
+
+    The two causes are different in kind and stay apart: a decline is this slice's own boundary,
+    while an addressing failure is the document's. -/
+inductive TemporalExtremumStreamFault where
+  | declined (cause : TemporalExtremumStreamError)
+  | addressing (cause : CheckedAddressingError)
+  deriving Repr, DecidableEq
+
+/-- The resolved extent one operand contributes, through the sole checked owner of its shape. -/
+private def operandCore (document : CheckedDocument model) (outer : Env) :
+    ResolvedFieldEntityOperand model →
+      Except TemporalExtremumStreamFault ResolvedCheckedEntityOperandCore
+  | .field declaration _ =>
+      (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError
+        .addressing
+  | .star source =>
+      (source.resolveCheckedValidationEntityOperandCore document outer
+        none).mapError .addressing
+  | .group reference =>
+      (document.resolveCheckedGroupEntityOperandCore outer
+        (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
+        (model.groupSubtreeFields reference.path)).mapError .addressing
+  -- A **starred group** is admitted as an operand list, and its row extent under the shared group
+  -- resolver would be its star plan's `firstStar` rather than its path's scope. That correspondence
+  -- is unmeasured here, so the form is declined rather than resolved on a guess.
+  | .starredGroup source =>
+      throw (.declined (.operandNeedsAddressing source.group.path))
+  -- The two filtered forms never arrive: admission refuses both with `unsupportedOperandForm`,
+  -- because no route here elaborates a `Having`. These arms exist for totality and are reported
+  -- rather than skipped, so a future admission widening surfaces as a decline instead of silently
+  -- folding an unfiltered row set.
+  | .starHaving source _ =>
+      throw (.declined (.operandNeedsAddressing source.declaration.path))
+  | .starredGroupPresence source =>
+      throw (.declined (.operandNeedsAddressing source.groupPath))
+
+/-- Read one admitted operand list against an immutable checked document.
+
+    Operands stay in authored order and each star's rows in canonical topology order, which is what
+    the fold's left-biased tie and its first-unavailable report depend on. The two markers are the
+    disjunction over the resolved operands, because either one anywhere in the list weakens the whole
+    selection's given-ness. -/
+def readAddressedSideWith (expected : TemporalComponents)
+    (project : CellObservation → SimpleComparisonOperand α)
+    (admitted : CheckedTemporalExtremumOperands model)
+    (document : CheckedDocument model) (outer : Env) (phase : Phase) :
+    Except TemporalExtremumStreamFault (ResolvedTemporalAggregateSide α) := do
+  if admitted.components ≠ expected then
+    throw (.declined (.componentsMismatch expected admitted.components))
+  else
+    let cores ←
+      (admitted.shape.first :: admitted.shape.rest).mapM
+        (operandCore document outer)
+    pure {
+      operands := cores.flatMap fun core =>
+        core.inCapacityAddressedCells.map fun addressed =>
+          project (observeCell phase addressed.cell)
+      hasUninstantiatedTail := cores.any (·.hasUninstantiatedTail)
+      hasHaving := cores.any (·.hasHaving) }
+
+/-- Evaluate one admitted complete-Date extremum against an immutable checked document. -/
+def evalAddressedDate (admitted : CheckedTemporalExtremumOperands model)
+    (op : TemporalExtremumOp) (document : CheckedDocument model)
+    (outer : Env) (phase : Phase) :
+    Except TemporalExtremumStreamFault (SimpleComparisonOperand FullDate) := do
+  pure (evalDateExtremumAggregate op
+    (← readAddressedSideWith TemporalComponents.fullDate
+      CellObservation.asDateExtremumOperand admitted document outer phase))
+
+/-- Evaluate one admitted complete-clock extremum against an immutable checked document. -/
+def evalAddressedTime (admitted : CheckedTemporalExtremumOperands model)
+    (op : TemporalExtremumOp) (document : CheckedDocument model)
+    (outer : Env) (phase : Phase) :
+    Except TemporalExtremumStreamFault (SimpleComparisonOperand TimeOfDay) := do
+  pure (evalTimeExtremumAggregate op
+    (← readAddressedSideWith TemporalComponents.time
+      CellObservation.asTimeExtremumOperand admitted document outer phase))
+
+/-- Evaluate one admitted complete-DateTime extremum against an immutable checked document. -/
+def evalAddressedDateTime (admitted : CheckedTemporalExtremumOperands model)
+    (op : TemporalExtremumOp) (document : CheckedDocument model)
+    (outer : Env) (phase : Phase) :
+    Except TemporalExtremumStreamFault (SimpleComparisonOperand Instant) := do
+  pure (evalDateTimeExtremumAggregate op
+    (← readAddressedSideWith TemporalComponents.now
+      CellObservation.asDateTimeExtremumOperand admitted document outer phase))
 
 /-- Read one admitted complete-DateTime operand list into its fold side.
 

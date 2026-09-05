@@ -63,8 +63,17 @@ private def probeModel : FlatModel :=
       { id := 6, groupPath := ["Probe", "Rows"], name := "RowDate",
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "yyyy-MM-dd" },
-        repeatableScope := [20] }]
-    repeatableGroups := [{ level := 20, path := ["Probe", "Rows"] }] }
+        repeatableScope := [20] },
+      -- A second repeatable group whose capacity the rows below **fill**. `Rows` above is declared
+      -- with spare capacity, so the pair is what makes the uninstantiated-tail marker observable
+      -- rather than constant.
+      { id := 12, groupPath := ["Probe", "Full"], name := "FullRowDate",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" },
+        repeatableScope := [30] }]
+    repeatableGroups := [
+      { level := 20, path := ["Probe", "Rows"], repeatability := some 3 },
+      { level := 30, path := ["Probe", "Full"], repeatability := some 2 }] }
 
 example : probeModel.validate.isOk = true := by native_decide
 
@@ -356,6 +365,134 @@ example : (do
     | .ok _ => none
     | .error error => some error) =
     some (.componentsMismatch TemporalComponents.time TemporalComponents.now) := by
+  native_decide
+
+/-! ## The addressed route, where a star finally folds every row
+
+Admission always accepted a starred operand and the flat reader always declined it, so until now no
+route folded one. These rows exercise the second entry point, over the immutable checked document.
+Three things are worth locking and nothing else is new: that every row reaches the fold in topology
+order, that the **uninstantiated tail** weakens the result's given-ness, and that an **over-limit**
+row supplies nothing at all. -/
+
+private def prepared :
+    PreparedFlatStringContext probeModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler probeModel).toOption.get (by native_decide)
+
+/-- One row of one repeatable group holding one stored Date. -/
+private def rowCell (field : FieldId) (row : Nat) (year month day : Nat) :
+    ClassifiedCellInput := {
+  address := { field, path := [row] }
+  stored := "stored"
+  raw := dateCell year month day }
+
+private def document? (rows : List RowAddr) (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument probeModel) :=
+  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+
+private def rowStarOperand (group field : String) : SurfaceFieldEntityOperand :=
+  .star { base := .absolute
+          groups := [{ name := "Probe" }, { name := group, starred := true }]
+          field }
+
+private def addressedFoldOf (operands : List SurfaceFieldEntityOperand)
+    (op : TemporalExtremumOp) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (SimpleComparisonOperand FullDate) := do
+  let checked ←
+    (TemporalExtremumOperands.elaborate probeModel ["Probe"]
+      (match operands with
+       | [] => sourceOf []
+       | first :: rest => { first, rest })).toOption
+  let document ← document? rows cells
+  (TemporalExtremumStream.evalAddressedDate checked op document []
+    .validation).toOption
+
+/- Two instantiated rows, folded. `Rows` is declared with capacity **3**, so this list carries an
+   uninstantiated tail and the selected value is not given — which is the marker the flat route had
+   no way to set. -/
+example : addressedFoldOf [rowStarOperand "Rows" "RowDate"] .maximum
+    [{ group := 20, path := [1] }, { group := 20, path := [2] }] [rowCell 6 1 2024 3 5, rowCell 6 2 2024 7 1] =
+    ((ymd 2024 7 1).map fun date => .value date false) := by
+  native_decide
+
+/- The same two rows in a group whose capacity they **fill**: the tail closes and the identical
+   selection becomes given. Without this pair the flag above would be indistinguishable from a
+   constant `false` on every starred operand. -/
+example : addressedFoldOf [rowStarOperand "Full" "FullRowDate"] .maximum
+    [{ group := 30, path := [1] }, { group := 30, path := [2] }] [rowCell 12 1 2024 3 5, rowCell 12 2 2024 7 1] =
+    ((ymd 2024 7 1).map fun date => .value date true) := by
+  native_decide
+
+example : addressedFoldOf [rowStarOperand "Full" "FullRowDate"] .minimum
+    [{ group := 30, path := [1] }, { group := 30, path := [2] }] [rowCell 12 1 2024 3 5, rowCell 12 2 2024 7 1] =
+    ((ymd 2024 3 5).map fun date => .value date true) := by
+  native_decide
+
+/- A scalar operand beside the star: both reach one fold, and the scalar's later date wins over every
+   row, so the two forms compose in one list rather than one shadowing the other. -/
+example : addressedFoldOf
+    [fieldOperand "A", rowStarOperand "Full" "FullRowDate"] .maximum
+    [{ group := 30, path := [1] }, { group := 30, path := [2] }]
+    [{ address := { field := 1, path := [] }, stored := "stored",
+       raw := dateCell 2025 1 1 },
+     rowCell 12 1 2024 3 5, rowCell 12 2 2024 7 1] =
+    ((ymd 2025 1 1).map fun date => .value date true) := by
+  native_decide
+
+/-! ### The over-limit row supplies nothing, and the two accounts genuinely differ here
+
+The declared-capacity extent is a property of the operand rather than of the consuming operator
+([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)). The extremum is the first consumer
+for which that choice is not a formality: an over-limit cell is formally unavailable, and this fold
+**aborts** on an unavailable operand where the sweep's uniqueness carrier merely skips one. So the
+complete view would answer UNKNOWN for a document the Kernel folds, and the two rows below say which
+account ships and prove the other is not the same answer by luck. -/
+
+private def overLimitRows : List RowAddr :=
+  [{ group := 30, path := [1] }, { group := 30, path := [2] },
+   { group := 30, path := [3] }]
+
+private def overLimitCells : List ClassifiedCellInput :=
+  [rowCell 12 1 2024 3 5, rowCell 12 2 2024 4 1, rowCell 12 3 2024 12 31]
+
+/- Capacity 2, three rows, and the **latest** date sits in the third. The answer is April, given, so
+   row three neither won nor terminalized: it supplied nothing. -/
+example : addressedFoldOf [rowStarOperand "Full" "FullRowDate"] .maximum
+    overLimitRows overLimitCells =
+    ((ymd 2024 4 1).map fun date => .value date true) := by
+  native_decide
+
+/- The premise, stated rather than assumed: that third cell is formally unavailable and projects to
+   an UNKNOWN operand, which is exactly what the fold aborts on. So the row above is the extent
+   account and not an agreement between two readings. -/
+example : (do
+    let document ← document? overLimitRows overLimitCells
+    let addressed ← (document.addressedCell [(30, 3)] 12).toOption
+    some (addressed.cell.findings,
+      CellObservation.asDateExtremumOperand
+        (observeCell .validation addressed.cell))) =
+    some ([.overRepetition], .unknown .overRepetition) := by
+  native_decide
+
+/- The **filtered** star never reaches either reader, because admission refuses it: no route here
+   elaborates a `Having`, and folding an unfiltered row set for a filtered operand would answer a
+   different question. The addressed reader keeps a totality arm for the form anyway, so a future
+   admission widening surfaces as a decline rather than as a silent unfiltered fold — this row is
+   what makes that arm's premise checked rather than asserted. -/
+private def selfFilter : SurfaceCorrelatedHaving :=
+  .presence .filled
+    { origin := .inner
+      field := { base := .absolute, groups := ["Probe", "Full"],
+                 field := "FullRowDate" } }
+
+example : (TemporalExtremumOperands.elaborate probeModel ["Probe"]
+    { first := .starHaving
+        { base := .absolute
+          groups := [{ name := "Probe" }, { name := "Full", starred := true }]
+          field := "FullRowDate" } selfFilter
+      rest := [] }).toOption.isNone = true := by
   native_decide
 
 /-! ## What this slice declines, and why each is a boundary rather than a verdict -/
