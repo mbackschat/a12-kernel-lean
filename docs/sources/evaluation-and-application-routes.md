@@ -1,5 +1,18 @@
 # Evaluation and application source checkpoints
 
+<a id="src-boolean-constant-target-kind-partitions-into-four-classes"></a>
+#### The Boolean constant computation's wrong-kind target draws four different classes, not one, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Ten `computation add --dry-run` children across two `batch` runs, the tool's read-only static preflight, which is kernel-gated and writes nothing.
+- `route`: the **computation** route, first used here. `dmtool computation add --dry-run <spec.json>` statically checks a computation spec, and `batch` dispatches the `computation` verb exactly as it does `rule`. That opens the computation half of the estate to the same cheap static measurement the rule route already had; the spec shape is `{computedField, alternatives, messages}`, and `dmtool schema computation add` prints it.
+- `retained-bytes`: `Probe3_DM.json` SHA-256 `3fb60e71dd1d0aa9221afc12c55d487a36fce4bc76559c74bb1c45b2132a1d9c` — the DateRange fixture extended with Time and DateTime targets, so it differs from the copy pinned beside the [scalar-slot checkpoint](#src-daterange-scalar-slot-rejects-every-nonscalar-form); each capture keeps the exact bytes its own batch ran against. Ops `c295a237a7bf2512e813fe28ccb53ff40c97741ca85627a1bbe7ba6df2d0db24` and `682f70c012f10ad34215361d4029ab6f2c2832d6f2b9d802bac8a03370413551`, results `94cb82c3fb565a6a40411743a722d8cd39995e32676ba1b05750d478638dd163` and `63843075bd42c0e5f975bd2308330f0e358d711f31be094488e201ca08eda2b3`, with the ten computation specs beside them.
+- `question`: this estate projected **no class** for a Boolean constant assigned to a target of the wrong kind, while projecting the Confirm asymmetry's `MVK_INVALID_COMPARE_TO_YES` beside it. Another instance of the [`LF152`](../LEAN-FINDINGS.md) shape — one measured sibling and an unmeasured neighbour — found by sweeping the arms that project nothing rather than by a failing case.
+- `claim`: **the refusal partitions the target kinds into four classes.** String and Enumeration share `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`; Number draws `MVK_INCONSISTENT_TYPES_COMPARED`; all three temporal families — DATE, TIME and DATE_TIME — share `MVK_INVALID_COMPARE_TO_DATE`; and DATE_RANGE draws `MVK_INVALID_COMPARE_TO_DATE_RANGE`. A single wrong-type class was the tempting account and is wrong four ways.
+- `claim`: the two admitted targets are unchanged and re-confirmed as controls — a Boolean target takes either constant, a Confirm target takes `True`, and `False` into Confirm still draws `MVK_INVALID_COMPARE_TO_YES`. Without those the partition would not distinguish "this kind is refused" from "this constant is refused".
+- `new-codes`: `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` and `MVK_INCONSISTENT_TYPES_COMPARED` were absent from this project's diagnostic registry entirely and are added by this capsule.
+- `limit`: static preflight only, one model, `en_US`, one unconditional alternative per spec. Nothing here runs a computation. The repeatable-target refusal that shares this module's error type is untouched and still projects no class.
+- `sync`: none. The classes correct this project's own under-projection; no `spec/` clause named them.
+
 <a id="src-daterange-scalar-slot-rejects-every-nonscalar-form"></a>
 #### `AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its **scalar** slot with one class, and admits all five in its `In` slot, measured 2026-09-06
 

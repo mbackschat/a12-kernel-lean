@@ -122,7 +122,12 @@ private def booleanConstantOperation?
   | .ok checked => some checked.operation.operation
   | .error _ => none
 
-/- The four measured constant/target combinations preserve the Confirm asymmetry and exact refusal code. A non-Boolean target remains a local unsupported refusal rather than being mistaken for acceptance or assigned an unmeasured Kernel class. -/
+/- The measured constant/target combinations preserve the Confirm asymmetry and each exact refusal
+   code. The wrong-kind target is **not** a local unsupported refusal: it carries a Kernel class of
+   its own, and which one depends on the kind
+   ([checkpoint](../../docs/SOURCES.md#src-boolean-constant-target-kind-partitions-into-four-classes)).
+   A String target draws neither the Confirm code nor a shared "wrong type" code, which is the
+   distinction a single-code account would erase. -/
 example :
     booleanConstantDecision booleanTarget.id true = .accepted ∧
       booleanConstantDecision booleanTarget.id false = .accepted ∧
@@ -132,9 +137,24 @@ example :
       (booleanConstantDecision confirmTarget.id false).kernelCode? =
         some "MVK_INVALID_COMPARE_TO_YES" ∧
       booleanConstantDecision stringTarget.id true =
-        .booleanConstantRefusal
-          (.operation stringTarget.path (.targetKind .string)) ∧
-      (booleanConstantDecision stringTarget.id true).kernelCode? = none := by
+        .kernelRejected .invalidCompareToEnumOrString ∧
+      (booleanConstantDecision stringTarget.id true).kernelCode? =
+        some "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" := by
+  native_decide
+
+/- The partition itself, over every kind the gate can receive. Four classes rather than one: the
+   three temporal families share theirs, String and Enumeration share another, and Number and
+   DATE_RANGE each have their own. Boolean and Confirm are absent because both are admitted targets,
+   which is what makes this arm's `none` a statement rather than a gap. -/
+example :
+    ([SurfaceScalarKind.string, .enumeration, .number, .temporal .date,
+      .temporal .time, .temporal .dateTime, .dateRange].map
+        fun kind =>
+          (BooleanConstantOperationElabError.targetKind kind).diagnostic?) =
+      [some .invalidCompareToEnumOrString, some .invalidCompareToEnumOrString,
+        some .inconsistentTypesCompared, some .invalidCompareToDate,
+        some .invalidCompareToDate, some .invalidCompareToDate,
+        some .invalidCompareToDateRange] := by
   native_decide
 
 /- Acceptance retains the authored Boolean payload and the distinct Confirm constructor instead of erasing both successful routes to one undifferentiated constant. -/

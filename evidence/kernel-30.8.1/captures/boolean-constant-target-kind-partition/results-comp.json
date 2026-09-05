@@ -1,0 +1,129 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 3 of 5 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-boolean-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-c1.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/FlagComp",
+        "changed" : {
+          "computation" : "/Probe3/FlagComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-string-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-c2.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/SkuTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/SkuTextComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-number-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-c3.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INCONSISTENT_TYPES_COMPARED",
+          "summary" : "Rule with path '/Probe3/AmountComp': Invalid comparison. [MVK_INCONSISTENT_TYPES_COMPARED]",
+          "where" : {
+            "rule" : "/Probe3/AmountComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-control-confirm-true",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-c4.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/AgreedComp",
+        "changed" : {
+          "computation" : "/Probe3/AgreedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-control-confirm-false",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-c5.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/AgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/AgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

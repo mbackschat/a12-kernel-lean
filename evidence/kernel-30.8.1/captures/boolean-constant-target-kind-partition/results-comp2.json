@@ -1,0 +1,143 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 5 of 5 exited nonzero (0 failed, 5 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-boolean-constant-into-date-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-t1.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/FiledOnComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/FiledOnComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-boolean-constant-into-time-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-t2.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/ClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/ClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-boolean-constant-into-datetime-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-t3.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/StampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/StampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-boolean-constant-into-daterange-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-t4.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe3/SpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe3/SpanComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-boolean-constant-into-enumeration-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-t5.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/ChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/ChoiceComp"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

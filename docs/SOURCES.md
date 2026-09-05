@@ -474,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-boolean-constant-target-kind-partitions-into-four-classes"></a>
+- [The Boolean constant computation's wrong-kind target draws four different classes, not one; first use of the `computation add --dry-run` route](sources/evaluation-and-application-routes.md#src-boolean-constant-target-kind-partitions-into-four-classes)
 <a id="src-daterange-scalar-slot-rejects-every-nonscalar-form"></a>
 - [`AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its scalar slot with one class, and admits all five in its `In` slot](sources/evaluation-and-application-routes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)
 <a id="src-later-position-class-is-total-and-presence-is-admitted"></a>

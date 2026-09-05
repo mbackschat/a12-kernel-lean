@@ -40,7 +40,19 @@ namespace BooleanConstantOperationElabError
 /-- Project only the measured Confirm/False refusal. Unsupported target kinds retain their local identity because no Kernel class has been established for them. -/
 def diagnostic? : BooleanConstantOperationElabError → Option KernelStaticDiagnostic
   | .falseConfirm => some .invalidCompareToYes
-  | .targetKind _ => none
+  -- The target-kind refusal is **not one class** — it partitions the kinds, which is why this arm
+  -- carries the kind and maps rather than returning a single code
+  -- ([checkpoint](../../docs/SOURCES.md#src-boolean-constant-target-kind-partitions-into-four-classes)).
+  -- The three temporal families share one, and String with Enumeration share another.
+  | .targetKind actual =>
+      match actual with
+      | .string | .enumeration => some .invalidCompareToEnumOrString
+      | .number => some .inconsistentTypesCompared
+      | .temporal _ => some .invalidCompareToDate
+      | .dateRange => some .invalidCompareToDateRange
+      -- Boolean and Confirm never reach this arm: both are admitted targets, and the Confirm
+      -- asymmetry is `falseConfirm`'s business above.
+      | .boolean | .confirm => none
 
 end BooleanConstantOperationElabError
 

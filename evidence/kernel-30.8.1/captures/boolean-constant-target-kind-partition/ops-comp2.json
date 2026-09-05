@@ -1,0 +1,47 @@
+[
+ {
+  "id": "1-boolean-constant-into-date-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-t1.json"
+  ]
+ },
+ {
+  "id": "2-boolean-constant-into-time-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-t2.json"
+  ]
+ },
+ {
+  "id": "3-boolean-constant-into-datetime-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-t3.json"
+  ]
+ },
+ {
+  "id": "4-boolean-constant-into-daterange-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-t4.json"
+  ]
+ },
+ {
+  "id": "5-boolean-constant-into-enumeration-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-t5.json"
+  ]
+ }
+]

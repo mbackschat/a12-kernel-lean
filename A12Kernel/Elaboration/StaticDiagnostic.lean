@@ -108,8 +108,12 @@ inductive KernelStaticDiagnostic where
   | invalidDateType
   /-- The measured direct Number/Number source pair under plural DateRange overlap contains no DateRange. -/
   | noDateRange
-  /-- `AtLeastOneDateRangeOverlaps` received a starred field in its scalar position rather than its list position. -/
+  /-- `AtLeastOneDateRangeOverlaps` received a non-scalar operand in its **scalar** position. Every non-scalar form draws it — plain star, filtered star, fixed group, starred group, and a star above a nonrepeatable terminal — while the identical operand is admitted in the `In` list, so the class belongs to the slot rather than to the form. -/
   | invalidParameterForDateRangeComparison
+  /-- A value was assigned or compared against a String or Enumeration declaration that cannot hold it. Measured as the Boolean constant computation's refusal on both of those target kinds, which share this one class. -/
+  | invalidCompareToEnumOrString
+  /-- A value was assigned or compared against a Number declaration that cannot hold it. Distinct from the String/Enumeration class above, which is why the Boolean constant's target gate maps per kind rather than to one refusal. -/
+  | inconsistentTypesCompared
   /-- A full-year DateRange overlap operand was paired with an `MM` or `MM-dd` range that has no Base Year. -/
   | dateWithAndWithoutYear
   /-- Two temporal operands of a direct comparison disagree on year presence, or on whether they carry a date at all, with no Base Year to supply the missing year. -/
@@ -198,6 +202,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noDateRange => "MVK_NO_DATE_RANGE"
   | .invalidParameterForDateRangeComparison =>
       "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON"
+  | .invalidCompareToEnumOrString => "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+  | .inconsistentTypesCompared => "MVK_INCONSISTENT_TYPES_COMPARED"
   | .dateWithAndWithoutYear => "MVK_DATE_WITH_AND_WITHOUT_YEAR"
   | .invalidCompareToDate => "MVK_INVALID_COMPARE_TO_DATE"
   | .noDate => "MVK_NO_DATE"
@@ -233,6 +239,7 @@ def all : List KernelStaticDiagnostic :=
     .errorReferenceToCalculatedField,
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
+    .invalidCompareToEnumOrString, .inconsistentTypesCompared,
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
     .invalidCompareToDate, .noDate, .semanticIndexContainedInIndex,
     .noIndexField, .semanticIndexNotAllowed, .semanticIndexAndWildcard,

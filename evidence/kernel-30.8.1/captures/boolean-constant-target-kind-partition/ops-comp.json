@@ -1,0 +1,47 @@
+[
+ {
+  "id": "1-control-boolean-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-c1.json"
+  ]
+ },
+ {
+  "id": "2-string-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-c2.json"
+  ]
+ },
+ {
+  "id": "3-number-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-c3.json"
+  ]
+ },
+ {
+  "id": "4-control-confirm-true",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-c4.json"
+  ]
+ },
+ {
+  "id": "5-control-confirm-false",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-c5.json"
+  ]
+ }
+]
