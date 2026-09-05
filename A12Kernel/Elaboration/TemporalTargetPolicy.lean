@@ -85,26 +85,51 @@ inductive TimeTargetElabError where
   | unsupportedFormat (target : FieldId) (source : String)
   deriving Repr, DecidableEq
 
-/-- One checked complete Time target. The runtime's 1970 transport date and model zone do not enter clock rendering.
+/-- One renderable complete-clock target, admitted by its declared **format** alone.
 
-    **`targetIsTime` is narrower than the Kernel's own admission and is retained deliberately.** Measured across all three temporal families, a computed target is gated by its declared **format string** rather than by its declared kind, so a DateTime or DATE declared with the degenerate time-only format is admitted where this structure refuses it ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)).
-
-    What blocks the widening is **not** the storage, which is measured: a DATE-declared field at `HH:mm:ss` stores `12:30:00`, and `evaluate` renders through the declared format and would produce exactly that. It is the **carrier count**. Seven families share this certificate and only the repeatable-constant one has the cross-kind row, so dropping the field would widen six carriers on one carrier's evidence. Widen it by making this the general certificate and giving each unmeasured family its own explicit exclusion — not by deleting the field. No caller consults `targetIsTime` today, so the narrowing costs only the models it excludes. -/
-structure CheckedTimeTarget (model : FlatModel) where
+    This is the Kernel's own rule at this position: measured across all three temporal families, a computed target is gated by its declared format string and not by its declared kind, so a DateTime or a DATE declared with the degenerate `HH:mm:ss` format is a legal clock target ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)). The runtime's 1970 transport date and the model zone do not enter clock rendering. -/
+structure CheckedClockFormatTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : TimeTargetFormat
-  targetIsTime : checked.target.kind = .time
   componentsComplete :
     checked.target.components = TemporalComponents.time
   formatMatches :
     TimeTargetFormat.ofSource? checked.policy.format = some format
 
+/-- The clock target **narrowed to a TIME declaration**, which is strictly narrower than the Kernel.
+
+    The narrowing is retained rather than deleted, and the reason is carrier count rather than missing evidence: the cross-kind cell is measured only for the repeatable-constant carrier, which now takes the base certificate above, while the remaining families share this one and have no row of their own. Each of them keeps an honest exclusion until it earns a measurement ([`LF116`](../../docs/LEAN-FINDINGS.md)); none of them may report a Kernel class for the refusal, because the Kernel accepts the shape. -/
+structure CheckedTimeTarget (model : FlatModel)
+    extends CheckedClockFormatTarget model where
+  targetIsTime : checked.target.kind = .time
+
 namespace CheckedTemporalTargetPolicy
+
+/-- Refine a checked temporal target to the renderable complete-clock subset without reading its declared kind. -/
+def toClockFormatTarget
+    (checked : CheckedTemporalTargetPolicy model) :
+    Except TimeTargetElabError (CheckedClockFormatTarget model) :=
+  if hComponents :
+      checked.target.components = TemporalComponents.time then
+    match hFormat : TimeTargetFormat.ofSource? checked.policy.format with
+    | none =>
+        throw (.unsupportedFormat checked.target.id checked.policy.format)
+    | some format =>
+        pure {
+          checked
+          format
+          componentsComplete := hComponents
+          formatMatches := hFormat }
+  else
+    throw (.components checked.target.id checked.target.components)
 
 /-- Refine a checked temporal target to the exact complete Time subset. -/
 def toTimeTarget
     (checked : CheckedTemporalTargetPolicy model) :
-    Except TimeTargetElabError (CheckedTimeTarget model) := do
+    Except TimeTargetElabError (CheckedTimeTarget model) :=
+  -- The parent's three fields are repeated rather than reused through `toClockFormatTarget`,
+  -- because the kind proof is stated over the parent's `checked` and a monadic bind hides that it
+  -- is the same declaration. The gate order is unchanged: kind, then components, then format.
   if hKind : checked.target.kind = .time then
     if hComponents :
         checked.target.components = TemporalComponents.time then
@@ -115,15 +140,25 @@ def toTimeTarget
           pure {
             checked
             format
-            targetIsTime := hKind
             componentsComplete := hComponents
-            formatMatches := hFormat }
+            formatMatches := hFormat
+            targetIsTime := hKind }
     else
       throw (.components checked.target.id checked.target.components)
   else
     throw (.targetKind checked.target.id checked.target.kind)
 
 end CheckedTemporalTargetPolicy
+
+/-- Resolve and refine one model-owned clock target by its declared format alone, with the repetition scope bound by the caller. This is the Kernel's own admission; `elaborateTimeTargetIn` is its TIME-only narrowing. -/
+def elaborateClockFormatTargetIn
+    (model : FlatModel) (scope : List RepeatableLevel)
+    (targetField : FieldId) :
+    Except TimeTargetElabError (CheckedClockFormatTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicyIn model scope targetField
+      |>.mapError .targetPolicy
+  checked.toClockFormatTarget
 
 /-- Resolve and refine one model-owned complete Time target whose repetition scope is bound by the caller. -/
 def elaborateTimeTargetIn

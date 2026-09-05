@@ -37,7 +37,7 @@ theorem checkedTimeConstructionComputation_evaluate_value
       .ok (.accepted (operation.target.format.render time)) := by
   simp [CheckedTimeConstructionComputation.evaluateOutcome, evaluated,
     TimeConstructionResult.asTimeComputationResult,
-    CheckedTimeTarget.evaluate, Except.map]
+    CheckedClockFormatTarget.evaluate, Except.map]
 
 /-- The checked world-aware computation certificate excludes its target from every static component and dynamic amount dependency. -/
 theorem checkedWorldTimeConstructionComputation_excludes_target
@@ -56,7 +56,7 @@ theorem checkedWorldTimeConstructionComputation_evaluate_value
       .ok (.accepted (operation.target.format.render time)) := by
   simp [CheckedWorldTimeConstructionComputation.evaluateOutcome, evaluated,
     TimeConstructionResult.asTimeComputationResult,
-    CheckedTimeTarget.evaluate, Except.map]
+    CheckedClockFormatTarget.evaluate, Except.map]
 
 /-- Time has no target-local error branch, so only residual messages affect the public error predicate. -/
 theorem timeComputationRun_noErrorOccurred_iff

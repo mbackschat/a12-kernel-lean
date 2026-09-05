@@ -34,6 +34,6 @@ theorem timeFromDateTimeComputation_value
     simp [Except.map, ValueAsDateTimeTimeOperand.asTimeComputationResult]
   unfold CheckedTimeFromDateTimeComputation.evaluateOutcome
   rw [operandRead]
-  simp [Except.map, CheckedTimeTarget.evaluate]
+  simp [Except.map, CheckedClockFormatTarget.evaluate]
 
 end A12Kernel

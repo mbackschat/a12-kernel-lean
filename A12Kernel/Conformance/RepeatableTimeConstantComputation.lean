@@ -28,8 +28,10 @@ private def dateShapedTime := temporalField 2 "T2" .time TemporalComponents.time
   ["Probe", "Rows"] [10] "yyyy-MM-dd"
 
 /-- A **DATE** declaration whose clock format the Kernel admits this constant for, storing
-`12:30:00`. This carrier declines it, which is the stated exclusion below. -/
-private def clockShapedDate := temporalField 3 "DClock" .date TemporalComponents.fullDate
+`12:30:00`. Its components are the clock's, because that is what a `HH:mm:ss` declaration exposes;
+an earlier version of this fixture wrote a full-date set beside that format, which made the cell
+refusable for its components and so could never have been about the declared kind. -/
+private def clockShapedDate := temporalField 3 "DClock" .date TemporalComponents.time
   ["Probe", "Rows"] [10] "HH:mm:ss"
 
 private def fixedClock := temporalField 4 "Fixed" .time TemporalComponents.time
@@ -89,19 +91,19 @@ example : (outcomes? ["Probe"] clock.id 2, outcomes? ["Probe", "Rows"] clock.id 
      some []) := by
   native_decide
 
-/- **The two cross-kind cells, and the one place this carrier is narrower than the Kernel.** A TIME
-   declaration whose format is date-shaped refuses the clock constant here and in the Kernel alike,
-   so that decline is correct. A **DATE** declaration whose format is `HH:mm:ss` is the opposite: the
-   Kernel admits it and stores `12:30:00`, while this carrier declines it because the shared
-   `CheckedTimeTarget` also requires `kind = .time`. That is a stated exclusion, not a measured gate,
-   so neither decline claims a Kernel class — the second one would be claiming the Kernel refuses a
-   shape it accepts. -/
+/- **The two cross-kind cells, which fall on opposite sides.** A TIME declaration whose format is
+   date-shaped refuses the clock constant here and in the Kernel alike. A **DATE** declaration whose
+   format is `HH:mm:ss` is admitted and stores `12:30:00`, because what the Kernel reads at this
+   position is the declared format and not the declared kind — this carrier takes the
+   kind-independent clock certificate, the one family with a row for that cell. The surviving
+   refusal claims no Kernel class, since its decline is the format gate rather than a measured
+   diagnostic. -/
 example : ((outcome? ["Probe"] dateShapedTime.id, outcome? ["Probe"] clockShapedDate.id),
     [dateShapedTime.id, clockShapedDate.id].map fun target =>
       match checkRepeatableTimeConstantComputation model ["Probe"] target halfPastTwelve with
       | .error cause => cause.diagnostic?.isSome
       | .ok _ => true) =
-    ((none, none), [false, false]) := by
+    ((none, some (.accepted (stored "12:30:00"))), [false, true]) := by
   native_decide
 
 /- Placement is containment: the target's own group and every ancestor admit it, and only a group the

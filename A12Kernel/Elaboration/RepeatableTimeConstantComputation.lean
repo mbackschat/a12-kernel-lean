@@ -18,10 +18,10 @@ without seconds is not one — and every admitted clock passes the target's basi
 **What decides admission is the target's declared format string, and the Kernel does not read the
 field's kind.** A DATE-declared field whose format is `HH:mm:ss` admits this constant and stores
 `12:30:00`; a TIME-declared field whose format is `yyyy-MM-dd` refuses it and takes a date literal
-instead. This carrier reuses `CheckedTimeTarget`, which additionally requires `kind = .time`, so it
-is **strictly narrower than the Kernel** on exactly that cell. That narrowing is a deliberate stated
-exclusion rather than a claim: widening the shared certificate would change every family built on it,
-none of which has a measurement for the cross-kind cell. The refusal therefore claims no Kernel class.
+instead. This carrier therefore takes `CheckedClockFormatTarget`, the certificate that reads the format and
+not the kind, and is the one family entitled to it: the cross-kind cell is measured here and nowhere
+else, so the sibling families keep the TIME-only `CheckedTimeTarget` until each earns its own row.
+What survives as a refusal is the format gate, which claims no Kernel class.
 
 A clock carries no date and no zone: it reaches the declared renderer directly, never an `Instant`,
 so no model-zone decoding can move it.
@@ -37,8 +37,8 @@ inductive RepeatableTimeConstantComputationElabError where
 namespace RepeatableTimeConstantComputationElabError
 
 /-- Only the shared placement refusal carries a measured Kernel identity. A target this carrier
-declines for its declared kind is a stated exclusion of a shape the Kernel admits, so it claims no
-class rather than borrowing a plausible one. -/
+declines for its declared **format** — a clock constant into a date-shaped declaration — is refused
+by the Kernel too, but with no observed class here, so it borrows none. -/
 def diagnostic? :
     RepeatableTimeConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
@@ -53,7 +53,7 @@ target's own format, and no runtime check at all. -/
 structure CheckedRepeatableTimeConstantComputation (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedRepeatableTarget model
-  timeTarget : CheckedTimeTarget model
+  timeTarget : CheckedClockFormatTarget model
   /-- The two certificates describe one field. Without this they could drift to different targets. -/
   sameTarget : timeTarget.checked.target.id = checkedTarget.targetField
   constant : TimeOfDay
@@ -69,7 +69,7 @@ def checkRepeatableTimeConstantComputation
     checkAddressedRepeatableTarget model declaringGroup targetField
       |>.mapError .target
   let timeTarget ←
-    elaborateTimeTargetIn model checkedTarget.declaration.repeatableScope targetField
+    elaborateClockFormatTargetIn model checkedTarget.declaration.repeatableScope targetField
       |>.mapError .targetNotTime
   if hSame : timeTarget.checked.target.id = checkedTarget.targetField then
     pure { checkedTarget, timeTarget, sameTarget := hSame, constant }

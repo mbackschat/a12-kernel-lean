@@ -412,16 +412,18 @@ def asTimeComputationResult : TimeConstructionResult → TimeComputationResult
 
 end TimeConstructionResult
 
-namespace CheckedTimeTarget
+namespace CheckedClockFormatTarget
 
-/-- Render one selected Time result; every admitted clock passes the exact target basic check. -/
-def evaluate (target : CheckedTimeTarget model) :
+/-- Render one selected Time result; every admitted clock passes the exact target basic check.
+
+    It sits on the kind-independent certificate because rendering reads only the declared format, which is also why the Kernel admits a DATE-declared clock target and stores the clock. `CheckedTimeTarget` reaches it through its parent. -/
+def evaluate (target : CheckedClockFormatTarget model) :
     TimeComputationResult → TimeTargetOutcome
   | .noValue => .noValue
   | .poison cause => .poison cause
   | .value time => .accepted (target.format.render time)
 
-end CheckedTimeTarget
+end CheckedClockFormatTarget
 
 namespace CheckedTimeConstructionComputation
 
