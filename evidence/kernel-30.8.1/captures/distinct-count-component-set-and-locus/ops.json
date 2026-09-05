@@ -1,0 +1,11 @@
+[
+ {"id":"1-SG22a-equal-set-diff-spelling","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, ClosedOn) > 0","--code","P1"]},
+ {"id":"2-SG22b-differing-set","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, CoverFrom) > 0","--code","P2"]},
+ {"id":"3-SG22c-uniqueness-control-same-pair","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And FieldValuesNotUnique(FiledOn, ClosedOn)","--code","P3"]},
+ {"id":"4-SG22d-date-first-cross-family","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, SkuText) > 0","--code","P4"]},
+ {"id":"5-SG5a-cross-group-resolved-read","verb":"rule","args":["check","--field","/Probe/Rows/RowVal","--condition","FieldFilled(RowVal) And [/Probe/Other/OtherVal] > 0","--code","P5"]},
+ {"id":"6-SG5b-control-unstarred-repeatable-locus","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And [/Probe/Rows/RowVal] > 0","--code","P6"]},
+ {"id":"7-SG6a-filtered-star-temporal-extremum","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0) > 2020-01-01","--code","P7"]},
+ {"id":"8-SG6b-control-plain-star-temporal-extremum","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate) > 2020-01-01","--code","P8"]},
+ {"id":"9-SG9-group-presence-unbound-own-level","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And GroupFilled(/Probe/Rows/Sub)","--code","P9"]}
+]

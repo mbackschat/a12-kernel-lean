@@ -1,0 +1,245 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 9 ops; 8 of 9 exited nonzero (0 failed, 8 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 9,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-SG22a-equal-set-diff-spelling",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, ClosedOn) > 0", "--code", "P1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-SG22b-differing-set",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, CoverFrom) > 0", "--code", "P2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'NumberOfDifferentValues': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "NumberOfDifferentValues needs date-like fields with compatible declared formats",
+          "explain" : "Counts the distinct values among the listed fields (the count/number of different values), typically over a repetition list."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-SG22c-uniqueness-control-same-pair",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(FiledOn, ClosedOn)", "--code", "P3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
+          "summary" : "Rule with path '/Probe/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: 'ClosedOn'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this operand list is refused by KIND or by declared FORMAT, not by mixing categories. Boolean, Confirm, and DateRange operands are never admitted — compare something else, or use RepetitionNotUnique on a key field. Temporal operands (Date, Time, DateTime, DateFragment) are admitted only when ALL of them declare one IDENTICAL format string, so align the declared formats; note the gate reads the format and not the kind, so a Date declared yyyy and a DateFragment declared yyyy are a legal pair. This code also wins over the mixing code wherever the offending operand sits, because both gates read the whole list — so do not read it as a claim that the rest of the list is comparable",
+          "explain" : "True when the listed fields' values are not all distinct."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-SG22d-date-first-cross-family",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, SkuText) > 0", "--code", "P4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe/CheckRule': At 'NumberOfDifferentValues': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it; the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the operand list family-homogeneous rather than reordering it"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-SG5a-cross-group-resolved-read",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/Rows/RowVal", "--condition", "FieldFilled(RowVal) And [/Probe/Other/OtherVal] > 0", "--code", "P5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe/Rows/CheckRule': Missing specification of an asterisk for '/Probe/Other' in '/Probe/Other/OtherVal'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/Rows/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-SG5b-control-unstarred-repeatable-locus",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And [/Probe/Rows/RowVal] > 0", "--code", "P6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe/Rows/RowVal'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-SG6a-filtered-star-temporal-extremum",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0) > 2020-01-01", "--code", "P7" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "8-SG6b-control-plain-star-temporal-extremum",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate) > 2020-01-01", "--code", "P8" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "9-SG9-group-presence-unbound-own-level",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And GroupFilled(/Probe/Rows/Sub)", "--code", "P9" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe/Rows/Sub'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}
