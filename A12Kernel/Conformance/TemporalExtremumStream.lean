@@ -67,13 +67,31 @@ private def probeModel : FlatModel :=
       -- A second repeatable group whose capacity the rows below **fill**. `Rows` above is declared
       -- with spare capacity, so the pair is what makes the uninstantiated-tail marker observable
       -- rather than constant.
+      -- Two nonrepeatable Dates in their own group: a fixed-group expansion with no declared row
+      -- anywhere under it, so its fold's tail bit is `false` by fact rather than by construction.
+      { id := 13, groupPath := ["Probe", "Pair"], name := "PairA",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 14, groupPath := ["Probe", "Pair"], name := "PairB",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      -- A nonrepeatable group holding a repeatable descendant with spare capacity: the shape whose
+      -- tail the shared group walk cannot report.
+      { id := 15, groupPath := ["Probe", "Box"], name := "BoxDate",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 16, groupPath := ["Probe", "Box", "Deep"], name := "DeepDate",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" },
+        repeatableScope := [40] },
       { id := 12, groupPath := ["Probe", "Full"], name := "FullRowDate",
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "yyyy-MM-dd" },
         repeatableScope := [30] }]
     repeatableGroups := [
       { level := 20, path := ["Probe", "Rows"], repeatability := some 3 },
-      { level := 30, path := ["Probe", "Full"], repeatability := some 2 }] }
+      { level := 30, path := ["Probe", "Full"], repeatability := some 2 },
+      { level := 40, path := ["Probe", "Box", "Deep"], repeatability := some 3 }] }
 
 example : probeModel.validate.isOk = true := by native_decide
 
@@ -493,6 +511,75 @@ example : (TemporalExtremumOperands.elaborate probeModel ["Probe"]
           groups := [{ name := "Probe" }, { name := "Full", starred := true }]
           field := "FullRowDate" } selfFilter
       rest := [] }).toOption.isNone = true := by
+  native_decide
+
+/-! ### A fixed group, and the tail bit that decides which ones it may fold
+
+A group operand's concrete cells resolve through the shared walk, but that walk enumerates only
+**instantiated** rows and reports no tail by construction, saying so in its own docstring and
+directing a consumer that needs declared-tail fillability to determine it separately. This fold is
+such a consumer, because `spec/05` gives an omitted tail symmetric missing provenance on a selected
+value. So a group whose expansion holds a repeatable declaration with spare declared capacity would
+fold to a **given** value where the Kernel's is not given — a wrong flag on a right value, which no
+case would catch and which is worse than a decline. The pair below is the whole rule. -/
+
+private def fixedGroupOperand (groups : GroupPath) : SurfaceFieldEntityOperand :=
+  .group (.path { base := .absolute, groups })
+
+private def groupFoldValue? (groups : GroupPath) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (SimpleComparisonOperand FullDate) := do
+  let checked ←
+    (TemporalExtremumOperands.elaborate probeModel ["Probe"]
+      { first := fixedGroupOperand groups, rest := [] }).toOption
+  let document ← document? rows cells
+  (TemporalExtremumStream.evalAddressedDate checked .maximum document []
+    .validation).toOption
+
+private def groupFoldFault? (groups : GroupPath) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option TemporalExtremumStreamError := do
+  let checked ←
+    (TemporalExtremumOperands.elaborate probeModel ["Probe"]
+      { first := fixedGroupOperand groups, rest := [] }).toOption
+  let document ← document? rows cells
+  match TemporalExtremumStream.evalAddressedDate checked .maximum document []
+      .validation with
+  | .ok _ => none
+  | .error (.declined cause) => some cause
+  | .error (.addressing _) => none
+
+/- Two scalar Dates in their own group: folded, and **given** — no declared row exists anywhere under
+   the expansion, so the walk's `false` tail is the fact rather than an artefact. -/
+example : groupFoldValue? ["Probe", "Pair"] []
+    [{ address := { field := 13, path := [] }, stored := "s",
+       raw := dateCell 2024 3 5 },
+     { address := { field := 14, path := [] }, stored := "s",
+       raw := dateCell 2024 7 1 }] =
+    ((ymd 2024 7 1).map fun date => .value date true) := by
+  native_decide
+
+/- The same shape one repeatable descendant deeper — declared capacity 3, one row instantiated, and
+   the later date inside it. It is **declined**, not folded: the two uninstantiated rows are exactly
+   the provenance the result would have to carry, and the arm refuses rather than reporting a tail it
+   cannot resolve. Admitting it is what the one existing tail query would close, and that query is
+   bound to another carrier ([SG6](../../docs/SEMANTICS-GAPS.md)). -/
+example : groupFoldValue? ["Probe", "Box"] [{ group := 40, path := [1] }]
+    [{ address := { field := 15, path := [] }, stored := "s",
+       raw := dateCell 2024 1 1 },
+     { address := { field := 16, path := [1] }, stored := "s",
+       raw := dateCell 2024 7 1 }] = none ∧
+    groupFoldFault? ["Probe", "Box"] [{ group := 40, path := [1] }]
+      [{ address := { field := 15, path := [] }, stored := "s",
+         raw := dateCell 2024 1 1 },
+       { address := { field := 16, path := [1] }, stored := "s",
+         raw := dateCell 2024 7 1 }] =
+      some (.groupTailUndetermined ["Probe", "Box"]) := by
+  native_decide
+
+/- Neither decline claims a Kernel class: both name shapes the Kernel folds. -/
+example : (groupFoldFault? ["Probe", "Box"] [] []).map
+    TemporalExtremumStreamError.diagnostic? = some none := by
   native_decide
 
 /-! ## What this slice declines, and why each is a boundary rather than a verdict -/

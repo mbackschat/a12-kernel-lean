@@ -48,6 +48,8 @@ inductive TemporalExtremumStreamError where
   | componentsMismatch (expected found : TemporalComponents)
   /-- A star, group, or filtered operand, which needs the addressed context the flat route does not take. -/
   | operandNeedsAddressing (path : List String)
+  /-- A fixed group whose expansion holds a repeatable declaration. Its concrete cells resolve, but its declared-but-uninstantiated tail does not, and this fold's result carries that bit. Declining is the honest answer: the alternative is a **given** verdict the Kernel does not give. -/
+  | groupTailUndetermined (path : List String)
   deriving Repr, DecidableEq
 
 namespace TemporalExtremumStream
@@ -149,7 +151,7 @@ that assumption is recorded with its evidence item in [SG6](../../docs/SEMANTICS
 inductive TemporalExtremumStreamFault where
   | declined (cause : TemporalExtremumStreamError)
   | addressing (cause : CheckedAddressingError)
-  deriving Repr, DecidableEq
+  deriving Repr, DecidableEq, BEq
 
 /-- The resolved extent one operand contributes, through the sole checked owner of its shape. -/
 private def operandCore (document : CheckedDocument model) (outer : Env) :
@@ -161,10 +163,23 @@ private def operandCore (document : CheckedDocument model) (outer : Env) :
   | .star source =>
       (source.resolveCheckedValidationEntityOperandCore document outer
         none).mapError .addressing
+  -- A fixed group, admitted only while its expansion holds **no repeatable declaration**. The shared
+  -- group walk enumerates instantiated rows and reports `hasUninstantiatedTail := false` by
+  -- construction, saying so in its own docstring and directing a consumer that needs declared-tail
+  -- fillability to determine it separately. This fold is such a consumer: `spec/05` gives an
+  -- omitted tail symmetric missing provenance on a selected value, so a subtree with spare declared
+  -- capacity would fold to a **given** result where the Kernel's is not given. The one existing
+  -- tail query is bound to the Boolean value-count carrier; sharing it is what closes this arm, and
+  -- until then a repeatable expansion is declined rather than folded on a flag known to be wrong
+  -- ([SG6](../../docs/SEMANTICS-GAPS.md)).
   | .group reference =>
-      (document.resolveCheckedGroupEntityOperandCore outer
-        (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
-        (model.groupSubtreeFields reference.path)).mapError .addressing
+      let declarations := model.groupSubtreeFields reference.path
+      if declarations.any (fun declaration => !declaration.repeatableScope.isEmpty) then
+        throw (.declined (.groupTailUndetermined reference.path))
+      else
+        (document.resolveCheckedGroupEntityOperandCore outer
+          (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
+          declarations).mapError .addressing
   -- A **starred group** is admitted as an operand list, and its row extent under the shared group
   -- resolver would be its star plan's `firstStar` rather than its path's scope. That correspondence
   -- is unmeasured here, so the form is declined rather than resolved on a guess.
@@ -259,6 +274,7 @@ namespace TemporalExtremumStreamError
 def diagnostic? : TemporalExtremumStreamError → Option KernelStaticDiagnostic
   | .componentsMismatch _ _ => none
   | .operandNeedsAddressing _ => none
+  | .groupTailUndetermined _ => none
 
 end TemporalExtremumStreamError
 
