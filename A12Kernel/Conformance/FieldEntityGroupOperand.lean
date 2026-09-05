@@ -573,6 +573,26 @@ example :
       some .numberAndNonNumber := by
   native_decide
 
+/- **The third family completes the pair matrix on this side.** A temporal member after a Number
+   leads draws the Number code like any other non-member, so the leading family fixes the code
+   without the offender's own family entering it — measured for all three pairs in both orders
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)).
+
+   The two date-**first** rows are `none` on purpose and are the honest boundary rather than a
+   passing row: `MVK_DATE_AND_NONDATE` is measured, but no temporal overload of this operator exists
+   to own it, so neither the Number nor the token consumer may class a list the Kernel would route
+   elsewhere. Projecting it from here would be the borrowing these rows exist to block. -/
+example :
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "A"] "AVal", field ["Probe", "Milestones"] "ReportedOn"] =
+      some .numberAndNonNumber ∧
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "Milestones"] "ReportedOn", field ["Probe", "A"] "AVal"] = none ∧
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "Milestones"] "ReportedOn",
+          field ["Probe", "Milestones"] "SettledOn"] = none := by
+  native_decide
+
 /- The sibling carriers are unmoved, which is what keeps the rows above from being a change to the
    shared gate. `Sum` still claims nothing from either position, and the extrema still report their
    own ordering class for the same String that draws the distinct count's Number code. -/

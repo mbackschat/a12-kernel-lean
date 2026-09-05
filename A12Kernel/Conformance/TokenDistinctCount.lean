@@ -82,6 +82,11 @@ private def repeatedNumber : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [10] }
 
+private def directDate : FlatFieldDecl :=
+  { id := 10, groupPath := ["Form"], name := "SignedOn",
+    policy := { kind := .temporal .date TemporalComponents.fullDate },
+    temporalTargetPolicy := some { format := "dd.MM.yyyy" } }
+
 private def directBoolean : FlatFieldDecl :=
   { id := 8, groupPath := ["Form"], name := "Agreed",
     policy := { kind := .boolean } }
@@ -93,7 +98,7 @@ private def directConfirm : FlatFieldDecl :=
 private def model : FlatModel :=
   { fields := [directString, directEnumeration, directNumber, repeatedString,
       repeatedEnumeration, repeatedNumber, directCustom, directBoolean,
-      directConfirm]
+      directConfirm, directDate]
     repeatableGroups := [{
       level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
@@ -362,6 +367,22 @@ example :
       [.field (directPath "Signed")])).bind
         TokenDistinctCountElabError.diagnostic? =
       some .stringEnumAndNonStringEnum := by
+  native_decide
+
+/- **A temporal member after a string-family lead draws the string-family code**, completing the
+   pair matrix on this side: the leading family fixes the code and the offender's own family does not
+   enter it ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). The
+   date-**first** mirror is `none` and is the honest boundary — `MVK_DATE_AND_NONDATE` is measured,
+   but no temporal overload of this operator exists to own it, so classing it here would borrow a
+   code for a list the Kernel routes elsewhere. -/
+example :
+    (checkedErrorOf (source (.field (directPath "Code"))
+      [.field (directPath "SignedOn")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .stringEnumAndNonStringEnum ∧
+    (checkedErrorOf (source (.field (directPath "SignedOn"))
+      [.field (directPath "Code")])).bind
+        TokenDistinctCountElabError.diagnostic? = none := by
   native_decide
 
 /- Two different offenders after an admissible first still report the **leading** family's class, so
