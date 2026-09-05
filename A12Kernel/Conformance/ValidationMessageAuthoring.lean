@@ -426,7 +426,14 @@ private def headGroupError? (template : String) :
 /- The **group position** `$#...$`. Measured at kernel 30.8.1, the admitted set is the rule's own group
 together with its ancestors, so containment runs the opposite way from the computation declaring-group
 gate: the *named* group must contain the rule's group. The two keyword shorthands name the endpoints of
-that chain and are admitted for the same reason, not as separate admissions. -/
+that chain and are admitted here for the same reason, not as separate admissions — but **`RuleGroup`
+additionally carries a placement condition this fragment does not implement**, so that shared reason is
+not the whole rule. Measured on the computation carrier, a declaration sitting directly in the root
+group may not write `$#RuleGroup$` at all, while `$#RootGroup$` and the absolute spelling of that very
+group are both admitted from the same locus
+([checkpoint](../../docs/SOURCES.md#src-rulegroup-shorthand-root-gate)). Whether the validation-rule
+carrier shares that gate is a crossing nobody has measured; the root-locus rows below are this theory's
+account until it is. -/
 example :
     headGroupOk? "In $#/Order/Head$" = some true ∧
       headGroupOk? "In $#/Order$" = some true ∧
@@ -484,9 +491,11 @@ example :
           (.invalidEntity (pathAt (.relative 0) [] "RootGroup"))) := by
   native_decide
 
-/- At the root the chain has one member, so both shorthands and the absolute spelling of that one group
-coincide, and the group below — admitted as the *rule's own* group above — is refused here. Admission
-therefore tracks the rule's position rather than the group's own depth. -/
+/- At the root the chain has one member, so all three spellings of that one group coincide **in this
+theory**, and the group below — admitted as the *rule's own* group above — is refused here. Admission
+therefore tracks the rule's position rather than the group's own depth. This is also the exact locus
+where the Kernel is measured to separate the shorthand from the other two on the computation carrier,
+so the first row is the one to revisit when that crossing is measured. -/
 example :
     pathTemplateOk? ["Order"] (bare "Other") "In $#RuleGroup$" = some true ∧
       pathTemplateOk? ["Order"] (bare "Other") "In $#RootGroup$" = some true ∧
