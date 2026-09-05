@@ -252,6 +252,13 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- carries no first-operand kind, so any single class here is wrong for some list that reaches
       -- it — an earlier version projected the String class, measured on a String-first expansion and
       -- carried onto Number-first ones.
+      --
+      -- The `kinds` payload added for the extrema does **not** reopen this. It carries the
+      -- expansion's kinds, and the distinct count's class is fixed by the first operand of the
+      -- *whole list*, which may be a field before this group; nothing routes lists to this family
+      -- by their leading kind, so a String-first list can reach here too. Both facts would have to
+      -- change together, and projecting from the expansion alone would restore the exact defect
+      -- 2026-08-31 removed.
       | .distinctCount => none
   | .fieldKindMismatch _ actual =>
       match op with
