@@ -32,6 +32,18 @@ private def dateField (id : FieldId) (name format : String)
   temporalTargetPolicy := some { format }
 }
 
+/-- Two date-only groups at the root, differing in exactly what the two operators' gates read: one
+    carries a single component set in two spellings, the other two component sets. -/
+private def groupField (id : FieldId) (group name format : String)
+    (components : TemporalComponents := TemporalComponents.fullDate) :
+    FlatFieldDecl := {
+  id
+  groupPath := ["Probe", group]
+  name
+  policy := { kind := .temporal .date components }
+  temporalTargetPolicy := some { format }
+}
+
 private def model : FlatModel := {
   fields := [
     dateField 1 "FiledOn" "yyyy-MM-dd",
@@ -41,7 +53,13 @@ private def model : FlatModel := {
     { id := 4, groupPath := ["Probe"], name := "SkuText",
       policy := { kind := .string } },
     { id := 5, groupPath := ["Probe"], name := "Flag",
-      policy := { kind := .boolean } }]
+      policy := { kind := .boolean } },
+    groupField 10 "MixBox" "IsoA" "yyyy-MM-dd",
+    groupField 11 "MixBox" "DotB" "dd.MM.yyyy",
+    groupField 12 "SetBox" "Full" "yyyy-MM-dd",
+    groupField 13 "SetBox" "YearMonth" "yyyy-MM" yearMonth,
+    { id := 14, groupPath := ["Probe", "TextBox"], name := "Note",
+      policy := { kind := .string } }]
 }
 
 private def bare (field : String) : SurfaceFieldPath :=
@@ -109,5 +127,68 @@ example :
     distinctAdmitted "FiledOn" "SupersededFrom" = true ∧
       unique? "FiledOn" "SupersededFrom" = none := by
   native_decide
+
+
+/-! ## A group operand, gated by **this** operator's rule
+
+The group is admitted, and its expansion meets the component-set gate rather than the neighbour's
+format-equality one. The pair below is the whole point: one group, two operators, two verdicts
+([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)). Reusing
+the neighbour's group certificate — the tempting move, since it already exists and already certifies
+temporal group expansions — would have refused the admitted half. -/
+private def groupOperand (group : String) : SurfaceFieldEntitySource :=
+  { first := .group (.path { base := .absolute, groups := ["Probe", group] })
+    rest := [] }
+
+private def distinctGroup? (group : String) : Option KernelStaticDiagnostic :=
+  match elaborateTemporalDistinctCountSource model ["Probe"] (groupOperand group) with
+  | .ok _ => none
+  | .error error => error.diagnostic?
+
+private def uniqueGroup? (group : String) : Option KernelStaticDiagnostic :=
+  match elaborateTemporalValuesNotUniqueSource model ["Probe"]
+      (groupOperand group) with
+  | .ok _ => none
+  | .error error => error.diagnostic?
+
+/- One component set in two spellings: admitted here, refused by the neighbour. -/
+example :
+    (elaborateTemporalDistinctCountSource model ["Probe"]
+      (groupOperand "MixBox")).toOption.isSome = true ∧
+      uniqueGroup? "MixBox" = some .onlyStringEnumNumberDateAllowed := by
+  native_decide
+
+/- Two component sets: refused here, with this operator's own class. Without this row the admission
+   above is equally well explained by the group slot skipping the gate entirely — which is the
+   failure mode that would let a group smuggle an incompatible declaration past it. -/
+example : distinctGroup? "SetBox" = some .dateFormatsNotCompatible := by
+  native_decide
+
+/- The group's component set reaches the **list** gate too, so a group and a scalar operand are
+   compared against each other rather than each being checked alone. -/
+example :
+    (elaborateTemporalDistinctCountSource model ["Probe"]
+      { first := .group (.path { base := .absolute, groups := ["Probe", "MixBox"] })
+        rest := [.field (bare "CoverFrom")] }).toOption.isNone = true := by
+  native_decide
+
+/- A **non-temporal** declaration in the expansion is refused by both operators, and the refusal
+   names that declaration's own path and kind rather than the group path with a fabricated one —
+   which is why the offending declaration is found and re-certified rather than reported
+   positionally. The duplicated certificate covers the component gate only; this arm is delegated,
+   so the two operators cannot disagree about *whether* such a group is refused.
+
+   They do disagree about the projected **class**, and that is not settled here: this list is
+   date-first, and a group whose expansion leads with a Number draws `MVK_NUMBER_AND_NON_NUMBER`
+   instead, exactly as the scalar first-operand rule does. Which family the expansion's first
+   declaration fixes for a group operand is recorded as open rather than projected from this row. -/
+example :
+    (elaborateTemporalDistinctCountSource model ["Probe"]
+      (groupOperand "TextBox")).toOption.isNone = true ∧
+      (elaborateTemporalValuesNotUniqueSource model ["Probe"]
+        (groupOperand "TextBox")).toOption.isNone = true ∧
+      distinctGroup? "TextBox" = some .dateAndNonDate := by
+  native_decide
+
 
 end A12Kernel.Conformance.TemporalDistinctCount

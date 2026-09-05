@@ -20,9 +20,13 @@ declaration whose format and component set contradict each other, and whether th
 such a declaration at all is unmeasured and owned by SG21. Stated as a total function either way, so
 no reachability question gates the clause.
 
-**Scope: direct field and starred operands.** A group operand is declined rather than admitted,
-because the reusable group certificate carries its neighbour's format-equality gate and no retained
-row measures a group expansion at this operator. The decline claims no Kernel class.
+**A group operand is admitted, and its expansion is gated by this operator's rule.** The group's
+own certificate is therefore this module's rather than the neighbour's: a group carrying one
+component set in two spellings is admitted here and refused there, on the identical group
+([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)). Two
+completed users whose gates genuinely differ is the case the reuse rule excludes, so the certificate
+is duplicated deliberately. A fixed group beneath an unstarred repeatable ancestor is refused by the
+ordinary binding rule, which is the shared shape checker's business and not this gate's.
 -/
 
 namespace A12Kernel
@@ -37,11 +41,87 @@ def CheckedTemporalUniquenessField.components
       { year := false, month := false, day := false
         hour := false, minute := false, second := false }
 
-/-- The component set one slot contributes to the list's gate. -/
+/-- The component set one shared slot contributes to the list's gate. -/
 def CheckedTemporalUniquenessOperand.components :
     CheckedTemporalUniquenessOperand model → TemporalComponents
   | .field source | .star _ source _ => source.components
   | .group source => source.first.components
+
+/-- Find the first expanded declaration whose component set differs from the group's own, reporting
+    its path and its declared format. The group's **internal** agreement obligation, which is this
+    operator's gate and not the neighbour's. -/
+def firstMismatchedTemporalFieldComponents?
+    (expected : TemporalComponents) :
+    List CheckedTemporalUniquenessField → Option (List String × String)
+  | [] => none
+  | field :: remaining =>
+      if field.components == expected then
+        firstMismatchedTemporalFieldComponents? expected remaining
+      else
+        some (field.path, field.format)
+
+/-- One authored group slot certified for **this** operator: a nonempty, wholly temporal expansion
+    agreeing on one component set.
+
+    Deliberately not the neighbour's `CheckedTemporalUniquenessGroup`, whose `oneDeclaredFormat`
+    obligation is the uniqueness carrier's gate. That certificate refuses a group carrying one
+    component set in two spellings, and the Kernel **admits** exactly that group here while refusing
+    it there ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)).
+    Two completed users whose gates genuinely differ is the case the reuse rule excludes, so the
+    certificate is duplicated on purpose rather than parameterized. -/
+structure CheckedTemporalDistinctCountGroup (model : FlatModel) where
+  private mk ::
+  source : CheckedEntityGroupSource model
+  first : CheckedTemporalUniquenessField
+  rest : List CheckedTemporalUniquenessField
+  expansionOwned :
+    (model.groupSubtreeFields source.groupPath).filterMap
+      FlatFieldDecl.toTemporalUniquenessField? = first :: rest
+  expansionAllTemporal :
+    (model.groupSubtreeFields source.groupPath).all
+      (fun declaration => declaration.toTemporalUniquenessField?.isSome) = true
+  oneComponentSet :
+    firstMismatchedTemporalFieldComponents? first.components rest = none
+
+namespace CheckedTemporalDistinctCountGroup
+
+def groupPath (group : CheckedTemporalDistinctCountGroup model) : GroupPath :=
+  group.source.groupPath
+
+def declarations (group : CheckedTemporalDistinctCountGroup model) :
+    List FlatFieldDecl :=
+  (group.first :: group.rest).map (·.declaration)
+
+def components (group : CheckedTemporalDistinctCountGroup model) :
+    TemporalComponents :=
+  group.first.components
+
+def format (group : CheckedTemporalDistinctCountGroup model) : String :=
+  group.first.format
+
+end CheckedTemporalDistinctCountGroup
+
+/-- One certified slot of this operator's list. The scalar forms reuse the shared certifier
+    unchanged; only the group arm is this operator's own, for the reason its certificate states. -/
+inductive CheckedTemporalDistinctCountOperand (model : FlatModel) where
+  | slot (operand : CheckedTemporalUniquenessOperand model)
+  | group (source : CheckedTemporalDistinctCountGroup model)
+
+namespace CheckedTemporalDistinctCountOperand
+
+def components : CheckedTemporalDistinctCountOperand model → TemporalComponents
+  | .slot operand => operand.components
+  | .group source => source.components
+
+def format : CheckedTemporalDistinctCountOperand model → String
+  | .slot operand => operand.format
+  | .group source => source.format
+
+def path : CheckedTemporalDistinctCountOperand model → List String
+  | .slot operand => operand.path
+  | .group source => source.groupPath
+
+end CheckedTemporalDistinctCountOperand
 
 inductive TemporalDistinctCountElabError where
   /-- A slot refusal from the shared temporal certifier. Wrapped rather than restated because slot
@@ -51,10 +131,6 @@ inductive TemporalDistinctCountElabError where
   /-- **This operator's own gate.** An operand whose component set differs from the list's, carrying
       both declared formats because the Kernel's message names them rather than the sets. -/
   | mixedComponentSets (path : List String) (found expected : String)
-  /-- A group slot. Declined rather than refused: the shared group certificate gates on format
-      equality, which is the neighbouring operator's rule, and no row measures a group expansion
-      here. Claims no Kernel class. -/
-  | groupOperandUnsupported (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -62,7 +138,7 @@ inductive TemporalDistinctCountElabError where
     declared format, and the list's. Public because the certificate states its gate in terms of it. -/
 def firstMismatchedTemporalComponents?
     (expectedComponents : TemporalComponents) (expectedFormat : String) :
-    List (CheckedTemporalUniquenessOperand model) →
+    List (CheckedTemporalDistinctCountOperand model) →
       Option (List String × String × String)
   | [] => none
   | operand :: remaining =>
@@ -77,15 +153,15 @@ def firstMismatchedTemporalComponents?
 structure CheckedTemporalDistinctCountSource (model : FlatModel) where
   private mk ::
   shape : CheckedFieldEntityShape model
-  first : CheckedTemporalUniquenessOperand model
-  rest : List (CheckedTemporalUniquenessOperand model)
+  first : CheckedTemporalDistinctCountOperand model
+  rest : List (CheckedTemporalDistinctCountOperand model)
   oneComponentSet :
     firstMismatchedTemporalComponents? first.components first.format rest = none
 
 namespace CheckedTemporalDistinctCountSource
 
 def operands (checked : CheckedTemporalDistinctCountSource model) :
-    List (CheckedTemporalUniquenessOperand model) :=
+    List (CheckedTemporalDistinctCountOperand model) :=
   checked.first :: checked.rest
 
 /-- The list's shared component set, which every operand carries by construction. -/
@@ -95,13 +171,73 @@ def components (checked : CheckedTemporalDistinctCountSource model) :
 
 end CheckedTemporalDistinctCountSource
 
-/-- The group path of a slot this operator declines, or `none` for a slot it certifies. -/
-private def groupSlotPath? :
-    ResolvedFieldEntityOperand model → Option (List String)
-  | .group reference => some reference.path
-  | .starredGroup source => some source.group.path
-  | .starredGroupPresence source => some source.groupPath
+/-- The group source a slot names, or `none` for a scalar slot. Every group form resolves to the
+    shared `CheckedEntityGroupSource`, so all three are certified by one path here. -/
+private def groupSlotSource? :
+    ResolvedFieldEntityOperand model → Option (CheckedEntityGroupSource model)
+  | .group reference => some (.fixed reference)
+  | .starredGroup source => some (.starred source)
+  | .starredGroupPresence source => some (.starredPresence source)
   | .field .. | .star _ | .starHaving _ _ => none
+
+/-- Certify one group slot against **this** operator's component-set gate. -/
+private def certifyDistinctCountGroup (model : FlatModel)
+    (source : CheckedEntityGroupSource model) :
+    Except TemporalDistinctCountElabError
+      (CheckedTemporalDistinctCountOperand model) :=
+  let declarations := model.groupSubtreeFields source.groupPath
+  if hAll : declarations.all
+      (fun declaration => declaration.toTemporalUniquenessField?.isSome) = true then
+    match hExpansion : declarations.filterMap
+        FlatFieldDecl.toTemporalUniquenessField? with
+    | [] => throw (.slot (.groupExpansionEmpty source.groupPath))
+    | first :: rest =>
+        match hComponents :
+            firstMismatchedTemporalFieldComponents? first.components rest with
+        | some (path, found) =>
+            throw (.mixedComponentSets path found first.format)
+        | none =>
+            pure (.group {
+              source
+              first
+              rest
+              expansionOwned := hExpansion
+              expansionAllTemporal := hAll
+              oneComponentSet := hComponents })
+  else
+    -- A non-temporal declaration anywhere in the expansion. The offending declaration is found and
+    -- re-certified so the refusal names **its** kind and path rather than a fabricated one; the
+    -- shared certifier reports the same way, and disagreeing here would give one group two
+    -- different refusals depending on which operator read it.
+    match declarations.find? fun declaration =>
+        declaration.toTemporalUniquenessField?.isNone with
+    | some declaration =>
+        match certifyTemporalUniquenessField declaration with
+        | .error error => throw (.slot error)
+        | .ok _ => throw .incoherentCore
+    | none => throw .incoherentCore
+
+/-- Certify one slot: the scalar forms through the shared certifier, a group through this
+    operator's own. -/
+private def certifyDistinctCountOperand (model : FlatModel)
+    (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model) :
+    Except TemporalDistinctCountElabError
+      (CheckedTemporalDistinctCountOperand model) :=
+  match groupSlotSource? operand with
+  | some source => certifyDistinctCountGroup model source
+  | none =>
+      (certifyTemporalUniquenessOperand model declaringGroup operand).map .slot
+        |>.mapError .slot
+
+private def certifyDistinctCountOperands (model : FlatModel)
+    (declaringGroup : GroupPath) :
+    List (ResolvedFieldEntityOperand model) →
+      Except TemporalDistinctCountElabError
+        (List (CheckedTemporalDistinctCountOperand model))
+  | [] => pure []
+  | operand :: remaining => do
+      pure ((← certifyDistinctCountOperand model declaringGroup operand) ::
+        (← certifyDistinctCountOperands model declaringGroup remaining))
 
 /-- Certify one authored operand list for the temporal distinct count.
 
@@ -118,11 +254,8 @@ def elaborateTemporalDistinctCountSource (model : FlatModel)
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw (.slot refusal)
   | none => pure ()
-  match (shape.first :: shape.rest).findSome? groupSlotPath? with
-  | some path => throw (.groupOperandUnsupported path)
-  | none => pure ()
-  let first ← (certifyTemporalUniquenessOperand model declaringGroup shape.first).mapError .slot
-  let rest ← (certifyTemporalUniquenessOperands model declaringGroup shape.rest).mapError .slot
+  let first ← certifyDistinctCountOperand model declaringGroup shape.first
+  let rest ← certifyDistinctCountOperands model declaringGroup shape.rest
   match hComponents :
       firstMismatchedTemporalComponents? first.components first.format rest with
   | some (path, found, expected) =>
@@ -143,7 +276,7 @@ def diagnostic? : TemporalDistinctCountElabError → Option KernelStaticDiagnost
   | .slot (.mixedCategories _ _) => some .dateAndNonDate
   | .slot (.shape error) => error.diagnostic?
   | .slot _ => none
-  | .groupOperandUnsupported _ | .incoherentCore => none
+  | .incoherentCore => none
 
 end TemporalDistinctCountElabError
 
