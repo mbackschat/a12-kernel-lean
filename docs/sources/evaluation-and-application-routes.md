@@ -1,5 +1,17 @@
 # Evaluation and application source checkpoints
 
+<a id="src-temporal-group-operand-follows-its-own-operator"></a>
+#### A group operand is admitted at both temporal uniqueness carriers, and its expansion is gated by **that operator's own rule**, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Twelve `rule check` children in one `batch`, every envelope `KERNEL_CONFIRMED`.
+- `retained-bytes`: `Probe4_DM.json` SHA-256 `919806896ed71685c7cc1512cb9953e17c7617ca4a4067230e496aff86cba277`, extended with four date-only groups — a root fixed group, one mixing spellings at one component set, and one mixing component sets. Ops `05a821ac0d6a66b332e5c2968939dcae9b01674a0a7942d2a66da9e1ece04402`; results `cfbffe04fdd7d7583c21889c5e998f9be6386a42300a69ecb4465fcf29838eea`. The fixture grew twice and the whole batch was re-run against the final bytes each time.
+- `question`: the temporal distinct count declined every group slot with `groupOperandUnsupported`, on the stated ground that the shared group certificate carries the *neighbouring* operator's format-equality gate and no row measured a group expansion here. Another [`LF152`](../LEAN-FINDINGS.md) arm — and the stated ground turned out to be exactly right about the mechanism while wrong about the verdict.
+- `claim`: **a group operand is admitted at both carriers**, in the fixed form at a bindable locus and in the starred form. A fixed group beneath an **unstarred repeatable** ancestor draws `MVK_NO_WILDCARD` instead, which is the ordinary binding rule rather than a group-slot rule — the root-level fixed group is what separates the two, and without it the group slot would look refused.
+- `claim`: **the expansion is gated by the operator's own rule, not by one shared group gate.** A group whose fields carry one component set in two spellings — `yyyy-MM-dd` beside `dd.MM.yyyy` — is **admitted** by `NumberOfDifferentValues` and **refused** by `FieldValuesNotUnique` with `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`. A group whose fields differ in component set is refused by the distinct count with `MVK_DATEFORMATS_NOT_COMPATIBLE`. So each operator applies to a group's expansion exactly the gate it applies to scalar operands, and the two gates genuinely differ.
+- `the-decline-was-right-about-the-mechanism`: reusing the uniqueness carrier's group certificate at the distinct count would have inherited format equality and **over-refused** the same-set/different-spelling group. The decline named that risk precisely and then paid for it in the opposite direction, refusing everything rather than refusing one shape. Recording it because the reasoning transfers: the fix is a distinct-count-owned certificate carrying a component-set agreement obligation, not the shared one.
+- `limit`: static admission only, one model, `en_US`. Nothing here counts or compares a value, so what a group operand contributes to a distinct count at runtime — its expansion order, and whether an uninstantiated row supplies anything — is untouched.
+- `sync`: none yet. The clause states scalar operand gates; the group-expansion rule enters `spec/` with the capsule that implements it.
+
 <a id="src-constant-computation-admits-a-repeatable-target"></a>
 #### A constant computation admits a **repeatable** target at every declaring-group choice, measured 2026-09-06
 

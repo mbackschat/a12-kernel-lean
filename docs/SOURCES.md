@@ -474,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-temporal-group-operand-follows-its-own-operator"></a>
+- [A group operand is admitted at both temporal uniqueness carriers, and its expansion is gated by that operator's own rule](sources/evaluation-and-application-routes.md#src-temporal-group-operand-follows-its-own-operator)
 <a id="src-constant-computation-admits-a-repeatable-target"></a>
 - [A constant computation admits a repeatable target at every declaring-group choice; only a star in a precondition refuses](sources/evaluation-and-application-routes.md#src-constant-computation-admits-a-repeatable-target)
 <a id="src-pattern-comparison-left-kind-gate-is-total"></a>

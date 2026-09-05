@@ -1,0 +1,277 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 12 ops; 6 of 12 exited nonzero (0 failed, 6 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 12,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-two-date-fields",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, ClosedOn) > 0", "--code", "G1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-fixed-GROUP-dates-only",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/Rows/DateSub) > 0", "--code", "G2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe4/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe4/Rows/DateSub'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-starred-GROUP-dates-only",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/Rows*/DateSub) > 0", "--code", "G3" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-uniqueness-fixed-GROUP-dates-only",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/Rows/DateSub)", "--code", "G4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe4/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe4/Rows/DateSub'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-uniqueness-starred-GROUP-dates-only",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/Rows*/DateSub)", "--code", "G5" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-control-mixed-group",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/Rows*/Sub) > 0", "--code", "G6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NUMBER_AND_NON_NUMBER",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a number (including amounts) then all parameters have to be of type number (including amounts). Corrupt: '/Probe4/Rows/Sub'. [MVK_NUMBER_AND_NON_NUMBER]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-root-fixed-GROUP-dates-only",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/DateBox) > 0", "--code", "G7" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "8-uniqueness-root-fixed-GROUP",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/DateBox)", "--code", "G8" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "9-distinctcount-group-SAME-set-other-spelling",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/MixBox) > 0", "--code", "G9" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "10-uniqueness-group-SAME-set-other-spelling",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/MixBox)", "--code", "GA" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: '/Probe4/MixBox'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this operand list is refused by KIND or by declared FORMAT, not by mixing categories. Boolean, Confirm, and DateRange operands are never admitted — compare something else, or use RepetitionNotUnique on a key field. Temporal operands (Date, Time, DateTime, DateFragment) are admitted only when ALL of them declare one IDENTICAL format string, so align the declared formats; note the gate reads the format and not the kind, so a Date declared yyyy and a DateFragment declared yyyy are a legal pair. This code also wins over the mixing code wherever the offending operand sits, because both gates read the whole list — so do not read it as a claim that the rest of the list is comparable",
+          "explain" : "True when the listed fields' values are not all distinct."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "11-distinctcount-group-DIFFERING-set",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/SetBox) > 0", "--code", "GB" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe4/CheckRule': Date formats not compatible for 'NumberOfDifferentValues': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "NumberOfDifferentValues needs date-like fields with compatible declared formats",
+          "explain" : "Counts the distinct values among the listed fields (the count/number of different values), typically over a repetition list."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "12-uniqueness-group-DIFFERING-set",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/SetBox)", "--code", "GC" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: '/Probe4/SetBox'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this operand list is refused by KIND or by declared FORMAT, not by mixing categories. Boolean, Confirm, and DateRange operands are never admitted — compare something else, or use RepetitionNotUnique on a key field. Temporal operands (Date, Time, DateTime, DateFragment) are admitted only when ALL of them declare one IDENTICAL format string, so align the declared formats; note the gate reads the format and not the kind, so a Date declared yyyy and a DateFragment declared yyyy are a legal pair. This code also wins over the mixing code wherever the offending operand sits, because both gates read the whole list — so do not read it as a claim that the rest of the list is comparable",
+          "explain" : "True when the listed fields' values are not all distinct."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

@@ -1,0 +1,158 @@
+[
+ {
+  "id": "1-control-two-date-fields",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, ClosedOn) > 0",
+   "--code",
+   "G1"
+  ]
+ },
+ {
+  "id": "2-fixed-GROUP-dates-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/Rows/DateSub) > 0",
+   "--code",
+   "G2"
+  ]
+ },
+ {
+  "id": "3-starred-GROUP-dates-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/Rows*/DateSub) > 0",
+   "--code",
+   "G3"
+  ]
+ },
+ {
+  "id": "4-uniqueness-fixed-GROUP-dates-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/Rows/DateSub)",
+   "--code",
+   "G4"
+  ]
+ },
+ {
+  "id": "5-uniqueness-starred-GROUP-dates-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/Rows*/DateSub)",
+   "--code",
+   "G5"
+  ]
+ },
+ {
+  "id": "6-control-mixed-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/Rows*/Sub) > 0",
+   "--code",
+   "G6"
+  ]
+ },
+ {
+  "id": "7-root-fixed-GROUP-dates-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/DateBox) > 0",
+   "--code",
+   "G7"
+  ]
+ },
+ {
+  "id": "8-uniqueness-root-fixed-GROUP",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/DateBox)",
+   "--code",
+   "G8"
+  ]
+ },
+ {
+  "id": "9-distinctcount-group-SAME-set-other-spelling",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/MixBox) > 0",
+   "--code",
+   "G9"
+  ]
+ },
+ {
+  "id": "10-uniqueness-group-SAME-set-other-spelling",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/MixBox)",
+   "--code",
+   "GA"
+  ]
+ },
+ {
+  "id": "11-distinctcount-group-DIFFERING-set",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/SetBox) > 0",
+   "--code",
+   "GB"
+  ]
+ },
+ {
+  "id": "12-uniqueness-group-DIFFERING-set",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe4/SetBox)",
+   "--code",
+   "GC"
+  ]
+ }
+]
