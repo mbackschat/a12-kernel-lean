@@ -334,6 +334,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-2026-09-05-group-parameter-render-reconciliation"></a>
+- [Reviewed a12-dmkits handback completing the group position's bilingual table and separating the rendered coordinate on a doubly nested topology](sources/message-and-pointer-probes.md#src-2026-09-05-group-parameter-render-reconciliation)
+
 <a id="src-2026-09-05-second-reconciliation"></a>
 - [Reviewed a12-dmkits letter accepting the two-gate entry, correcting its attribution, and narrowing two clauses this project had already accepted](sources/computation-placement-and-constant-probes.md#src-2026-09-05-second-reconciliation) — also the route for their shipped `dmtool operators Having` gate text, read by running the launcher at `ede777e55`
 
