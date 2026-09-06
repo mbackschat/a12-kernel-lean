@@ -421,21 +421,6 @@ def temporalDistinctCountFoldArm
   else if components.year || hasBaseYear then .dated
   else .yearless
 
-/-- The component triple this operator compares for one operand: the cell's decoded parts reduced to
-    the operand's **declared** set, with a yearless declaration's year taken from the model's Base
-    Year. Each component the set omits takes the set's canonical representative and never the cell's
-    value, which is what makes the count depend on the model rather than on whichever value the
-    admitting classifier happened to pair with the stored text.
-
-    The `.dated` arm is reached only when the declared set names a year or the model declares one, so
-    the `0` fallback is unreachable there; it is written as a total function rather than gated on that
-    reachability, because a partial one would put the arm's precondition into every caller. -/
-def maskedDateComponents (components : TemporalComponents) (baseYear : Option Int)
-    (parts : DateParts) : Int × Nat × Nat :=
-  (if components.year then parts.year else baseYear.getD 0,
-    if components.month then parts.month else 1,
-    if components.day then parts.day else 1)
-
 /-- Project one addressed temporal cell to the identity this list compares: the **decoded** date
     reduced to the operand's declared component set, with a yearless declaration's year taken from
     the model's Base Year. The stored text is deliberately discarded, which is the exact inverse of

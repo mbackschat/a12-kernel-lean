@@ -24,18 +24,19 @@ exactly the condition under which `FullDate`, `TimeOfDay`, or the payload's reta
 every operand. The DateTime family differs from its siblings in what its domain *is*: the two
 date-free and time-free families order decoded labels, while DateTime orders exact instants, so its
 projection hands over the payload's retained instant rather than one rebuilt from the label — the
-distinction that survives a zone transition. A component-omitting list — `yyyy-MM`, or a
-yearless `MM` — is declined rather than folded, and that decline is a **measured under-service**
-rather than an open design: the Kernel admits such a list and orders it at the shared set's own
-precision, the yearless one even with no Base Year declared
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+distinction that survives a zone transition.
 
-**No interval element type is involved, which an earlier version of this note assumed.** Within one
-shared component set the canonical representative is order-preserving, so the two arms the widening
-needs are `FullDate` for a year-bearing set and `MonthDayValue` for a yearless one — both of which
-already carry an ordering. The reader below is parametric in the element type, so what the widening
-adds is the masking projection and not a domain
-([SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema)).
+**A component-omitting list folds too, on two further arms, and no interval element type is involved
+— which an earlier version of this note assumed.** The Kernel admits `yyyy-MM` or a yearless `MM`
+and orders it at the shared set's own precision, the yearless one even with no Base Year declared
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+Within one shared component set a canonical representative is order-preserving, so the two arms are
+`FullDate` for a year-bearing set — its unnamed components masked to the canonical value the
+distinct count already fixes, `Semantics/FullDate.lean`'s `maskedDateComponents` — and
+`MonthDayValue` for a yearless one, both of which already carry an ordering. `omittingDateExtremumArm`
+selects between them on the set, never the declared kind, and a set the Base Year supplements is
+year-bearing. Since the reader is parametric in the element type, the widening added a projection
+and no domain ([SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema)).
 
 **Two routes, one reader each.** The flat route below takes a `FlatContext` and therefore only direct
 field operands; a star, group, or filtered operand denotes a row set that no flat context can
@@ -109,6 +110,63 @@ def evalDate (admitted : CheckedTemporalExtremumOperands model)
     (op : TemporalExtremumOp) (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError (SimpleComparisonOperand FullDate) := do
   pure (evalDateExtremumAggregate op (← readDateSide admitted context phase))
+
+/-! ## The reduced-precision entry points
+
+A component-omitting list folds at its **own** declared set, so these two pass `admitted.components`
+as the expected set: the reader's equality check is then satisfied by construction, which is the
+honest shape here because the set is not a constant of the arm but the thing the arm is keyed on.
+-/
+
+/-- Whether an admitted component-omitting Date list orders as a completed date or as a yearless
+    calendar position. Two arms and not one: a list with no year available anywhere must order on the
+    position it spells, and completing it against an invented year would order two such values by
+    that invention. -/
+inductive OmittingDateExtremumArm where
+  | dated
+  | yearless
+  deriving Repr, DecidableEq
+
+/-- The arm an admitted list orders at.
+
+    **No Base Year parameter, unlike the sibling distinct count**, and the asymmetry is the
+    certificates' rather than the operators': this gate applies `withBaseYear` to every declaration
+    *before* fixing the expected set, so `components` here is already supplemented and asking again
+    would be a second way to compute one thing. `TemporalDistinctCount` stores the authored set and
+    therefore must supplement at the fold. Reading the flag off the certificate that carries it is
+    what keeps the two from drifting. -/
+def omittingDateExtremumArm {model : FlatModel}
+    (admitted : CheckedTemporalExtremumOperands model) : OmittingDateExtremumArm :=
+  if admitted.components.year then .dated else .yearless
+
+/-- Read one admitted **year-bearing** component-omitting Date list into its fold side. -/
+def readMaskedDateSide (admitted : CheckedTemporalExtremumOperands model)
+    (baseYear : Option Int) (context : FlatContext) (phase : Phase) :
+    Except TemporalExtremumStreamError ResolvedDateAggregateSide :=
+  readSideWith admitted.components
+    (CellObservation.asMaskedDateExtremumOperand admitted.components baseYear)
+    admitted context phase
+
+/-- Evaluate one admitted year-bearing component-omitting Date extremum. -/
+def evalMaskedDate (admitted : CheckedTemporalExtremumOperands model)
+    (op : TemporalExtremumOp) (baseYear : Option Int)
+    (context : FlatContext) (phase : Phase) :
+    Except TemporalExtremumStreamError (SimpleComparisonOperand FullDate) := do
+  pure (evalDateExtremumAggregate op (← readMaskedDateSide admitted baseYear context phase))
+
+/-- Read one admitted **yearless** Date list into its fold side. -/
+def readYearlessDateSide (admitted : CheckedTemporalExtremumOperands model)
+    (context : FlatContext) (phase : Phase) :
+    Except TemporalExtremumStreamError ResolvedYearlessDateAggregateSide :=
+  readSideWith admitted.components
+    (CellObservation.asYearlessDateExtremumOperand admitted.components)
+    admitted context phase
+
+/-- Evaluate one admitted yearless Date extremum. -/
+def evalYearlessDate (admitted : CheckedTemporalExtremumOperands model)
+    (op : TemporalExtremumOp) (context : FlatContext) (phase : Phase) :
+    Except TemporalExtremumStreamError (SimpleComparisonOperand MonthDayValue) := do
+  pure (evalYearlessDateExtremumAggregate op (← readYearlessDateSide admitted context phase))
 
 /-- Read one admitted complete-clock operand list into its fold side. -/
 def readTimeSide (admitted : CheckedTemporalExtremumOperands model)

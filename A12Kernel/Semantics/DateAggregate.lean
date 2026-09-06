@@ -79,6 +79,68 @@ def asDateExtremumOperand :
 
 end CellObservation
 
+/-! ## The reduced-precision arms
+
+A component-omitting Date list is admitted and **ordered** by the Kernel at the shared set's own
+precision, the yearless case even with no Base Year declared
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+No interval domain is involved: within one shared component set the canonical representative is
+order-preserving, so a year-bearing set orders as `FullDate` and a yearless one as `MonthDayValue`,
+each through the generic scan above. The omitted components are supplied by `maskedDateComponents`
+rather than read off the cell, for the reason that projection states.
+-/
+
+/-- Select one yearless calendar position, preserving the left value on a tie — the same left-biased
+    rule the full-Date selector applies, over the ordering `MonthDayValue` already carries. -/
+def TemporalExtremumOp.selectMonthDay (op : TemporalExtremumOp)
+    (left right : MonthDayValue) : MonthDayValue :=
+  match op with
+  | .minimum => if right.before left then right else left
+  | .maximum => if left.before right then right else left
+
+/-- One already-expanded yearless-Date aggregate side. -/
+abbrev ResolvedYearlessDateAggregateSide := ResolvedTemporalAggregateSide MonthDayValue
+
+namespace CellObservation
+
+/-- Classify one phase-observed cell as a **year-bearing component-omitting** Date extremum operand:
+    the decoded parts reduced to the declared set, with the model's Base Year supplying a yearless
+    declaration's year. A set naming every date component reduces to the ordinary projection, so this
+    is a widening of `asDateExtremumOperand` and not a rival to it. -/
+def asMaskedDateExtremumOperand (components : TemporalComponents) (baseYear : Option Int) :
+    CellObservation → SimpleComparisonOperand FullDate
+  | .empty => .notEvaluated
+  | .value (.temporal (.date dateValue)) =>
+      let (year, month, day) := maskedDateComponents components baseYear dateValue.parts
+      match FullDate.ofYmd? year month day with
+      | some date => .value date true
+      | none => .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+/-- Classify one phase-observed cell as a **yearless** Date extremum operand: the calendar position
+    the declaration spells, with a set that omits the day taking its canonical first. No year is
+    available to complete either side, so the yearless position *is* the ordered value rather than a
+    projection of one — completing it against an invented year would order two such values by that
+    invention. -/
+def asYearlessDateExtremumOperand (components : TemporalComponents) :
+    CellObservation → SimpleComparisonOperand MonthDayValue
+  | .empty => .notEvaluated
+  | .value (.temporal (.date dateValue)) =>
+      let (_, month, day) := maskedDateComponents components none dateValue.parts
+      .value { month, day } true
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+end CellObservation
+
+/-- Evaluate one resolved yearless-Date extremum through the shared scan. -/
+def evalYearlessDateExtremumAggregate (op : TemporalExtremumOp)
+    (side : ResolvedYearlessDateAggregateSide) : SimpleComparisonOperand MonthDayValue :=
+  evalTemporalExtremumAggregate op.selectMonthDay side
+
 /-- Date-specialized scan retained as the stable API for existing Date laws and consumers. -/
 def scanDateExtremumOperands (op : TemporalExtremumOp) :=
   scanTemporalExtremumOperands op.select

@@ -120,6 +120,33 @@ def before (left right : FullDate) : Bool :=
 
 end FullDate
 
+/-- The component triple a temporal aggregate compares for one operand: the cell's decoded parts
+reduced to the operand's **declared** component set, with a yearless declaration's year taken from
+the model's Base Year. Each component the set omits takes the set's canonical representative and
+never the cell's value.
+
+**Why masking rather than reading the cell.** `RawCell.parsed` carries whatever value the classifier
+that admitted the stored text produced, and the document's coherence check re-derives boolean,
+confirm and DateRange values from their stored text but not temporal ones — so for a `yyyy-MM`
+declaration nothing pins which day the producer chose. A fold that trusted the omitted components
+would answer differently for two producers spelling the same value, which is not a semantics.
+
+**Why it lives here.** Two completed consumers compare at the shared set and mean the same thing by
+it: `NumberOfDifferentValues` folds distinct values at that precision, and `MinValue`/`MaxValue` order
+at it — both measured, on the same declarations
+([distinct count](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold),
+[extrema](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+Their modules share only this projection, which is the reason `toFullDate?` sits here too.
+
+A caller reaching the year-bearing arm has a year available from the set or the Base Year, so the
+`0` fallback is unreachable there; it is written as a total function rather than gated on that
+reachability, because a partial one would put the arm's precondition into every caller. -/
+def maskedDateComponents (components : TemporalComponents) (baseYear : Option Int)
+    (parts : DateParts) : Int × Nat × Nat :=
+  (if components.year then parts.year else baseYear.getD 0,
+    if components.month then parts.month else 1,
+    if components.day then parts.day else 1)
+
 namespace DateValue
 
 /-- Project one universal Date endpoint into the established real, floor-admitted full-Date domain. Exact instant and calendar provenance remain available on the source value.

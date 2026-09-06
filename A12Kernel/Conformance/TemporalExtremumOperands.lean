@@ -403,7 +403,11 @@ component set as the admitted `DottedDate` beside it and differs from it in `dat
 ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). A gate reading
 components admits every one of them, which is what this project did.
 
-This is also why the extrema need no interval element type: the operand never reaches the fold. -/
+This settles the **partially known** carrier and nothing beyond it: that operand never reaches the
+fold. It was once read as also settling the *component-omitting* one, and that inference was wrong —
+a component-omitting format carries no `datePrecision`, is admitted, and is ordered by the fold
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold),
+[`LF159`](../../docs/LEAN-FINDINGS.md)). -/
 
 example :
     ([41, 42, 43].map (fun source => refusal? plainModel [source, 2]),
