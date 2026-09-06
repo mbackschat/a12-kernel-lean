@@ -24,10 +24,18 @@ exactly the condition under which `FullDate`, `TimeOfDay`, or the payload's reta
 every operand. The DateTime family differs from its siblings in what its domain *is*: the two
 date-free and time-free families order decoded labels, while DateTime orders exact instants, so its
 projection hands over the payload's retained instant rather than one rebuilt from the label — the
-distinction that survives a zone transition. A component-omitting list —
-`yyyy-MM`, or a yearless set completed by a Base Year — is declined rather than folded, because its
-values are neither, and its element type is an interval this module does not yet carry
-([SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema-operand-gate-element-type-and-fold)).
+distinction that survives a zone transition. A component-omitting list — `yyyy-MM`, or a
+yearless `MM` — is declined rather than folded, and that decline is a **measured under-service**
+rather than an open design: the Kernel admits such a list and orders it at the shared set's own
+precision, the yearless one even with no Base Year declared
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+
+**No interval element type is involved, which an earlier version of this note assumed.** Within one
+shared component set the canonical representative is order-preserving, so the two arms the widening
+needs are `FullDate` for a year-bearing set and `MonthDayValue` for a yearless one — both of which
+already carry an ordering. The reader below is parametric in the element type, so what the widening
+adds is the masking projection and not a domain
+([SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema)).
 
 **Two routes, one reader each.** The flat route below takes a `FlatContext` and therefore only direct
 field operands; a star, group, or filtered operand denotes a row set that no flat context can
