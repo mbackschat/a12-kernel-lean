@@ -131,6 +131,18 @@
                     "type" : "ConfirmType"
                   }
                 }
+              }, {
+                "type" : "Field",
+                "id" : "/Rng_DM/Rows/Cust",
+                "name" : "Cust",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "CustomFieldType",
+                    "CustomFieldType" : {
+                      "name" : "ProjectCode"
+                    }
+                  }
+                }
               } ]
             }
           }, {

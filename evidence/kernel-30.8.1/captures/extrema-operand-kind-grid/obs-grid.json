@@ -7,7 +7,7 @@
     "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
     "state" : "CLEAN"
   },
-  "model" : "530abb0be6a66d6613fdd2e32982b0fe2354ae27395d26ad25c62940e6e68d20",
+  "model" : "1094d6bc5a89e766e385931cccf0df3ec8f3ae77eed0f85e8c2c817f1c45fa35",
   "observations" : [ {
     "id" : "dr-min",
     "inputHash" : "a54d311d43c14a4df5e79a8bdb008439dddf681b0848075aae6f12399aebf062",
@@ -134,5 +134,29 @@
     "ok" : true,
     "valid" : false,
     "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "first-Cust",
+    "inputHash" : "25a8b28ef0577af5c81818123733d5f7afc021e05349a2b4d20d1761d5877ea5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "later-Cust",
+    "inputHash" : "ddee88ab83fb34c3fc8e923d18b3b382d698c1003db7356a1f45be411a3976ab",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "cust-nodv",
+    "inputHash" : "1f6365e7ed979631195b7f6a43047a6c00b8e37c680ef66c60c34428b94a231d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cust-notunique",
+    "inputHash" : "f1794ae7098b9716dfccf0a0c3f38df37ff579fb19087628571a5d3002674059",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
   } ]
 }

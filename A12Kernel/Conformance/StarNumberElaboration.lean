@@ -35,6 +35,14 @@ private def span : FlatFieldDecl :=
     id := 15, name := "Span", policy := { kind := .dateRange },
     dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } }
 
+/-- A CUSTOM declaration is a String carrying a registered type name, so it reaches the extremum
+    gate through the String arm. Locked rather than inherited: the Kernel refuses it at the extrema
+    like the bare String, and the custom declaration does not rescue it. -/
+private def custom : FlatFieldDecl :=
+  { amount with
+    id := 17, name := "Cust", policy := { kind := .string },
+    customType := some { name := "ProjectCode" } }
+
 private def due : FlatFieldDecl :=
   { amount with
     id := 16, name := "Due",
@@ -65,7 +73,7 @@ private def extraValue : FlatFieldDecl :=
     repeatableScope := [10, 40] }
 
 private def model : FlatModel :=
-  { fields := [amount, note, token, flag, signed, span, due, sectionLimit,
+  { fields := [amount, note, token, flag, signed, span, due, custom, sectionLimit,
       otherAmount, extraValue]
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
@@ -609,6 +617,16 @@ example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Span"] 
   native_decide
 
 example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Flag"] =
+    some .notSortable := by
+  native_decide
+
+/-- CUSTOM completes the grid: refused at the extrema in both positions, and its distinct-count
+    admission is a **different gate's** row rather than this one's, because the two kind domains are
+    measured to differ exactly here. -/
+example : entityDiagnostic .minimum (starOperand "Cust") = some .notSortable := by
+  native_decide
+
+example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Cust"] =
     some .notSortable := by
   native_decide
 

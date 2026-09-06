@@ -313,5 +313,65 @@
    "--code",
    "X"
   ]
+ },
+ {
+  "id": "first-Cust",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/Cust) == MaxValue(/Rng_DM/Rows*/Cust)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "later-Cust",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/Cust) == MaxValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/Cust)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "cust-nodv",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And NumberOfDifferentValues(/Rng_DM/Rows*/Cust) == 1",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "cust-notunique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And FieldValuesNotUnique(/Rng_DM/Rows*/Cust)",
+   "--code",
+   "X"
+  ]
  }
 ]
