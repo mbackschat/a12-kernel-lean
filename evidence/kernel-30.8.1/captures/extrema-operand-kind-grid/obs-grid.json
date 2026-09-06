@@ -1,0 +1,138 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+    "state" : "CLEAN"
+  },
+  "model" : "530abb0be6a66d6613fdd2e32982b0fe2354ae27395d26ad25c62940e6e68d20",
+  "observations" : [ {
+    "id" : "dr-min",
+    "inputHash" : "a54d311d43c14a4df5e79a8bdb008439dddf681b0848075aae6f12399aebf062",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "dr-max",
+    "inputHash" : "777f0d0a81f5621f8c6a7bdc3dcda680df2e140c37779fd105d3da62a45cedb6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "dr-nodv",
+    "inputHash" : "4eecb0df990d31c9a65fc3f0299ebeae6574f15b7226fefbf4683903d35039fc",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED" ]
+  }, {
+    "id" : "dr-notunique",
+    "inputHash" : "012c5999bae8f48750bed4f6b731129fa24c876ef2c7adb114c73a0efa11ad9b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED" ]
+  }, {
+    "id" : "d-min",
+    "inputHash" : "6563efd2b1c79f57831ee2cb5876905fec3e86c31b5203c60d3104c1cf043a76",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d-nodv",
+    "inputHash" : "7259715c0cd490aaa74a54bf8ceed9b546eaa47b3c3328baa8e7430a89812b05",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d-notunique",
+    "inputHash" : "184de7f3a4fbe855e0508372535c7b9311c09a558603c6c7338759cd755556a5",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "n-min",
+    "inputHash" : "1e48915ad8c5dd869d7c310467c4ce44d837268638aa1c2a7b47d137288b6e36",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "first-S",
+    "inputHash" : "352d9bb18a9d69851ac568378edd04f8ad2a886ba0beff44dc17cfbda14b8c13",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "first-E",
+    "inputHash" : "aa7ef1c8cc19b28fe6aa03c1cb8016a500607d4ec2142e2718e4fe693160b78d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "first-B",
+    "inputHash" : "53853668971bb1f6305f638f1d51100fa811896c96cc5ff28bb800356f8f3eb5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "first-C",
+    "inputHash" : "451e7dfab58a03d90eb758e3917b15edea439aa1775d2461b726946e5a77e228",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "first-Span",
+    "inputHash" : "3421915b8c4043251c699196210bd2bbdb906554d86d7042eacbd994d5ea9580",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "first-D",
+    "inputHash" : "6563efd2b1c79f57831ee2cb5876905fec3e86c31b5203c60d3104c1cf043a76",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "first-N",
+    "inputHash" : "1e48915ad8c5dd869d7c310467c4ce44d837268638aa1c2a7b47d137288b6e36",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "later-S",
+    "inputHash" : "f265de4dbc2d8befe18056ff7f3f571a0157beca2f1cc325657e78f6ba6d71a5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "later-E",
+    "inputHash" : "c8de970a2b99c0235d1a5839cb574f01d6d7332a599eee9030465c0c2c619903",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "later-B",
+    "inputHash" : "6042e4061d44dd1e51a79ed3c09ad5c6f5f0660aff5cc74b64e87b1925152e83",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "later-C",
+    "inputHash" : "14a8fa43bab19a56f53696c2900e40e91dbfd004fd2e4282c456184346caa680",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "later-Span",
+    "inputHash" : "9fcd1fb561eccf71729678b6ae45f5df13788e956d6c2b2b4ab2642b28681948",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "later-D",
+    "inputHash" : "5f522ccec36409b0503ed42e4cae7ffa2a4e921847d8d50b648dea6aa0a722d6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  } ]
+}

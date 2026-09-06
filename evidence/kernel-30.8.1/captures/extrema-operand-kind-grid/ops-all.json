@@ -1,0 +1,317 @@
+[
+ {
+  "id": "dr-min",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/Span) == MinValue(/Rng_DM/Rows*/Span2)",
+   "--code",
+   "DRMIN"
+  ]
+ },
+ {
+  "id": "dr-max",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MaxValue(/Rng_DM/Rows*/Span) == MaxValue(/Rng_DM/Rows*/Span2)",
+   "--code",
+   "DRMAX"
+  ]
+ },
+ {
+  "id": "dr-nodv",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And NumberOfDifferentValues(/Rng_DM/Rows*/Span) == 1",
+   "--code",
+   "DRNODV"
+  ]
+ },
+ {
+  "id": "dr-notunique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And FieldValuesNotUnique(/Rng_DM/Rows*/Span)",
+   "--code",
+   "DRNU"
+  ]
+ },
+ {
+  "id": "d-min",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/D) == MaxValue(/Rng_DM/Rows*/D)",
+   "--code",
+   "DMIN"
+  ]
+ },
+ {
+  "id": "d-nodv",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And NumberOfDifferentValues(/Rng_DM/Rows*/D) == 1",
+   "--code",
+   "DNODV"
+  ]
+ },
+ {
+  "id": "d-notunique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And FieldValuesNotUnique(/Rng_DM/Rows*/D)",
+   "--code",
+   "DNU"
+  ]
+ },
+ {
+  "id": "n-min",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N) == MaxValue(/Rng_DM/Rows*/N)",
+   "--code",
+   "NMIN"
+  ]
+ },
+ {
+  "id": "first-S",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/S) == MaxValue(/Rng_DM/Rows*/S)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "first-E",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/E) == MaxValue(/Rng_DM/Rows*/E)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "first-B",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/B) == MaxValue(/Rng_DM/Rows*/B)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "first-C",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/C) == MaxValue(/Rng_DM/Rows*/C)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "first-Span",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/Span) == MaxValue(/Rng_DM/Rows*/Span)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "first-D",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/D) == MaxValue(/Rng_DM/Rows*/D)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "first-N",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N) == MaxValue(/Rng_DM/Rows*/N)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "later-S",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/S) == MaxValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/S)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "later-E",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/E) == MaxValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/E)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "later-B",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/B) == MaxValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/B)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "later-C",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/C) == MaxValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/C)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "later-Span",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/Span) == MaxValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/Span)",
+   "--code",
+   "X"
+  ]
+ },
+ {
+  "id": "later-D",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "Rng_DM.json",
+   "--field",
+   "/Rng_DM/Anchor",
+   "--condition",
+   "FieldFilled(/Rng_DM/Anchor) And MinValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/D) == MaxValue(/Rng_DM/Rows*/N, /Rng_DM/Rows*/D)",
+   "--code",
+   "X"
+  ]
+ }
+]

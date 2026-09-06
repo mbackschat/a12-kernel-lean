@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.FirstFilledValue
+import A12Kernel.Elaboration.NumberEntityList
 
 /-! # Checked nested Number-star consumption locks -/
 
@@ -15,6 +16,30 @@ private def amount : FlatFieldDecl :=
 
 private def note : FlatFieldDecl :=
   { amount with id := 8, name := "Note", policy := { kind := .string } }
+
+/-- The four kinds the extremum grid added, each declared beside the String in the same starred
+    group so one operand helper reaches them all, plus the Date whose class depends on position. -/
+private def token : FlatFieldDecl :=
+  { amount with
+    id := 12, name := "Token", policy := { kind := .enumeration },
+    enumeration := some { storedTokens := ["a", "b"] } }
+
+private def flag : FlatFieldDecl :=
+  { amount with id := 13, name := "Flag", policy := { kind := .boolean } }
+
+private def signed : FlatFieldDecl :=
+  { amount with id := 14, name := "Signed", policy := { kind := .confirm } }
+
+private def span : FlatFieldDecl :=
+  { amount with
+    id := 15, name := "Span", policy := { kind := .dateRange },
+    dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } }
+
+private def due : FlatFieldDecl :=
+  { amount with
+    id := 16, name := "Due",
+    policy := { kind := .temporal .date TemporalComponents.fullDate },
+    temporalTargetPolicy := some { format := "dd.MM.yyyy" } }
 
 private def sectionLimit : FlatFieldDecl :=
   { id := 9
@@ -40,7 +65,8 @@ private def extraValue : FlatFieldDecl :=
     repeatableScope := [10, 40] }
 
 private def model : FlatModel :=
-  { fields := [amount, note, sectionLimit, otherAmount, extraValue]
+  { fields := [amount, note, token, flag, signed, span, due, sectionLimit,
+      otherAmount, extraValue]
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
       { level := 10, path := ["Shop", "Sections"], repeatability := some 2 },
@@ -507,6 +533,83 @@ example : havingErrorOf ["Shop"] source (.and surfaceNestedSibling surfaceInScop
     satisfies the scope gate by itself, with both stars on and no conjunct beside it. -/
 example : havingErrorOf ["Shop"] source
     (surfacePresent sectionLimit.groupPath "Limit") = none := by
+  native_decide
+
+/-! ## The extremum family gate reads the declaration, not the operand form
+
+A starred single-field operand takes the same verdict **and the same Kernel code** as a plain field
+of that kind, in either operand position, measured across the whole declared-kind grid
+([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). The sortable leader
+set is exactly `{NUMBER, DATE}`: STRING, ENUM, BOOLEAN, CONFIRM and DATERANGE each draw
+`MVK_NOT_SORTABLE` leading the list, and every non-Number kind draws it after a Number — DATE
+included, which is the one kind whose class depends on its position. -/
+
+private def entityDiagnostic (op : NumericAggregateOp)
+    (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Option KernelStaticDiagnostic :=
+  match elaborateNumberEntitySource model ["Shop"] { first, rest } with
+  | .ok _ => none
+  | .error error => error.aggregateDiagnostic? op
+
+private def starOperand (field : String) : SurfaceFieldEntityOperand :=
+  .star (source field)
+
+/-- A starred String leading the list draws the sortable class, exactly as the plain field does. -/
+example : entityDiagnostic .minimum (starOperand "Note") = some .notSortable := by
+  native_decide
+
+/-- `MaxValue` reproduces it, so the gate belongs to the extremum pair rather than one keyword. -/
+example : entityDiagnostic .maximum (starOperand "Note") = some .notSortable := by
+  native_decide
+
+/-- The same starred String **after** a Number keeps the class, through the shared later-operand
+    re-keying rather than a second rule. -/
+example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Note"] =
+    some .notSortable := by
+  native_decide
+
+/-- The admitted control: a starred Number operand is no refusal at all, so the rows above are the
+    kind's class and not the starred form failing to resolve. -/
+example : entityDiagnostic .minimum (starOperand "Amount") = none := by
+  native_decide
+
+/-- `Sum` is not keyed by position in anything measured, so it claims no class here. Its own domain
+    refusal is `MVK_NO_NUMBER` and is a different gate's row. -/
+example : entityDiagnostic .sum (starOperand "Note") = none := by
+  native_decide
+
+/-- Each of the four kinds the grid added leads no overload, so each draws the sortable class in
+    **first** position exactly as the String does. -/
+example : entityDiagnostic .minimum (starOperand "Token") = some .notSortable := by
+  native_decide
+
+example : entityDiagnostic .minimum (starOperand "Flag") = some .notSortable := by
+  native_decide
+
+example : entityDiagnostic .minimum (starOperand "Signed") = some .notSortable := by
+  native_decide
+
+example : entityDiagnostic .minimum (starOperand "Span") = some .notSortable := by
+  native_decide
+
+/-- **DATE is the one kind whose class depends on its position**, which is what makes the arm's lost
+    position observable rather than a tidiness point. A starred Date leading the list is the temporal
+    family's, so this gate claims nothing; the same operand after a Number is refused. -/
+example : entityDiagnostic .minimum (starOperand "Due") = none := by
+  native_decide
+
+example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Due"] =
+    some .notSortable := by
+  native_decide
+
+/-- The four added kinds keep the class after a Number too, so the grid holds in both positions. -/
+example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Span"] =
+    some .notSortable := by
+  native_decide
+
+example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Flag"] =
+    some .notSortable := by
   native_decide
 
 end A12Kernel.Conformance.StarNumberElaboration

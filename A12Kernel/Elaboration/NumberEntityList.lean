@@ -230,13 +230,17 @@ private def extremaRefuseKind : SurfaceScalarKind → Bool
   | .number => false
   -- A first-position temporal operand is the temporal list's, not a Kernel refusal here.
   | .temporal _ => false
-  | .enumeration | .boolean | .confirm | .dateRange => false
+  -- Measured: the sortable leader set is exactly `{NUMBER, DATE}`, so these four lead no overload
+  -- and are refused outright where they once claimed nothing
+  -- ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)).
+  | .enumeration | .boolean | .confirm | .dateRange => true
 
 /-- Whether the extrema are measured to refuse an operand of this declared kind **after** a Number one. Temporal joins String here, which is the whole difference from first position. -/
 private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
   | .string | .temporal _ => true
   | .number => false
-  | .enumeration | .boolean | .confirm | .dateRange => false
+  -- Measured in later position too, so only NUMBER survives after a Number leader.
+  | .enumeration | .boolean | .confirm | .dateRange => true
 
 /-- The expansion-kind gate is **each operator's own question about the expansion's values**, which is why this projection is keyed by the operator where every gate the shared checker owns is not. One group whose subtree contains a String draws a different class under each of `Sum` and the extrema, and reading one carrier's class off a sibling is precisely the inference the Kernel refutes. The distinct count is stronger still: its class is not a property of the operator alone, so it is projected below rather than claimed.
 
@@ -316,10 +320,19 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
 
 end NumberEntityElabError
 
+/-- A starred single-field operand refuses through the **direct field arm**, not a star-specific one.
+    The Kernel's family gate reads the declaration and not the operand form: a starred field draws
+    the same code as the plain field of that kind, in either position
+    ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). Routing here is
+    what lets `atLaterOperand` re-key the star positionally and the existing kind predicates classify
+    it; the former star arm carried neither the kind nor the position, so it could project nothing at
+    all — `none` was sound only because the admitted DATE-first case shared it. -/
 private def certifyStarNumber (source : CheckedStarFieldPath model) :
     Except NumberEntityElabError (CheckedStarNumberSource model) :=
   match hField : source.declaration.toNumberField? with
-  | none => throw (.star (.fieldNotNumber source.declaration.path))
+  | none =>
+      throw (.fieldKindMismatch source.declaration.path
+        source.declaration.policy.kind.surfaceKind)
   | some field => pure { source, field, fieldOwned := hField }
 
 /-- Certify one authored group slot by expanding it once through the shared subtree query. The three refusals are distinct and all deliberately unprojected: `MVK_NO_NUMBER` and its siblings are each operator's own class, and this boundary has no operator. -/

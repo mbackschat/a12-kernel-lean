@@ -99,8 +99,12 @@ structure CheckedTemporalExtremumOperands (model : FlatModel) where
 namespace TemporalExtremumOperands
 
 /-- The component set a declaration contributes, or `none` when it is not temporal. DATE_RANGE is
-    excluded here with every other non-temporal kind, because this model carries no component set
-    for it — a representation limit, not a Kernel verdict. -/
+    excluded here with every other non-temporal kind, and that exclusion is now **the Kernel's own
+    verdict** rather than the representation limit an earlier comment claimed: the extrema refuse a
+    DATE_RANGE operand outright with `MVK_NOT_SORTABLE`, in either operand position, and so do both
+    distinct-count members with their own two codes
+    ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). So no component
+    set is owed for it here, and none can be inferred later from an admission that does not exist. -/
 def componentsOf? (declaration : FlatFieldDecl) : Option TemporalComponents :=
   match declaration.policy.kind with
   | .temporal _ components => some components
