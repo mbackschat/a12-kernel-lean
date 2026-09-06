@@ -216,7 +216,11 @@ done < <(grep -Ein '^- (\*\*)?(closed|resolved|corrected|partly resolved|upstrea
 # does not already appear in the tree at the range's start, so moving or re-quoting a record does
 # not re-flag its existing receipts; peer history is rewritten upstream and 176 of the 426 existing
 # citations resolve nowhere, which is honest history rather than a defect (see docs/SOURCES.md).
-# Retires LF138: a fabricated receipt reads exactly like a measured one.
+# Carrier scope, and it retires nothing. This resolves the 40-hex REVISION carrier only. The
+# 64-hex artifact-SHA-256 carrier is a different one and stays owned by LF138, whose own text
+# names it as the carrier the revision rule's wording misses; the boundary regex below excludes
+# 64-hex strings by construction, so a fabricated artifact hash passes here unseen. Extending to
+# that carrier means comparing added 64-hex strings against the capture directories' real hashes.
 revision_range="${A12_REVISION_RANGE:-HEAD~1..HEAD}"
 range_base="${revision_range%%..*}"
 if git rev-parse --verify --quiet "$range_base" >/dev/null; then
@@ -235,7 +239,7 @@ if git rev-parse --verify --quiet "$range_base" >/dev/null; then
       continue
     fi
     if [[ "$siblings_present" == true ]]; then
-      echo "new revision citation ${citation} resolves in no checkout; cite the revision you read, never an extension of a short form [LF138]" >&2
+      echo "new revision citation ${citation} resolves in no checkout; cite the revision you read, never an extension of a short form" >&2
       failed=true
     else
       echo "documentation hygiene guard: citation ${citation} UNVERIFIABLE, a sibling checkout is absent; re-run where ../a12-rulekit and ../a12-kernel are present" >&2
