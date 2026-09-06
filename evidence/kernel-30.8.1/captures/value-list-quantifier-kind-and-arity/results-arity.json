@@ -1,0 +1,146 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 6 ops; 3 of 6 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-VLQ-single-field",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "AtLeastOneFieldValueIncludedInValueList(SkuText In \"x\")", "--code", "A1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-VLQ-single-field-other-quantifier",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "NoFieldValueIncludedInValueList(SkuText In \"x\")", "--code", "A2" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-VLQ-single-field-third-quantifier",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "NotAllFieldValuesIncludedInValueList(SkuText In \"x\")", "--code", "A3" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-control-uniqueness-single-field",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(FiledOn)", "--code", "A4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': There must be more than one field or at least one group defined. [MVK_PARAMSIZE_INVALIDN]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own",
+          "explain" : "True when the listed fields' values are not all distinct."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-control-distinctcount-single-field",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn) > 0", "--code", "A5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': There must be more than one field or at least one group defined. [MVK_PARAMSIZE_INVALIDN]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-VLQ-two-fields-control",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "AtLeastOneFieldValueIncludedInValueList(SkuText, /Probe4/Contact In \"x\")", "--code", "A6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Probe4/CheckRule': The group or field '/Probe4/Contact' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name — a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name — almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

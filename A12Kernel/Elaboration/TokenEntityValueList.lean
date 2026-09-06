@@ -164,7 +164,10 @@ def diagnostic? : TokenEntityStringLiteralValueListElabError →
     Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
   | .dateGroupAgainstStringValues _ => some .onlyStringEnumNumberAllowed
-  | .fields _ | .unsupportedFieldsFamily _ | .emptyValues => none
+  -- Delegated rather than dropped: the field side's own projection now carries the three-way kind
+  -- partition this carrier's message vocabulary draws.
+  | .fields error => error.diagnostic?
+  | .unsupportedFieldsFamily _ | .emptyValues => none
 
 end TokenEntityStringLiteralValueListElabError
 

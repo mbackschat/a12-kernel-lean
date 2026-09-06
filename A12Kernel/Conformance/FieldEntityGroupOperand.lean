@@ -72,6 +72,8 @@ private def probeModel : FlatModel :=
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "dd.MM.yyyy" },
         repeatableScope := [12] },
+      -- The four kinds outside the value-list quantifier's admitted set, plus an Enumeration,
+      -- so the kind partition below can be exhibited rather than sampled.
       { id := 16, groupPath := ["Probe", "Rows", "Fixed"], name := "First",
         policy := { kind := .number unsigned }, repeatableScope := [10] },
       { id := 17, groupPath := ["Probe", "Rows", "Fixed"], name := "Second",

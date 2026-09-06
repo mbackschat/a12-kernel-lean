@@ -1,0 +1,6 @@
+[
+ {"id":"1-enum-field-vs-VALID-token","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(Choice In \"A\")","--code","E1"]},
+ {"id":"2-enum-field-vs-NON-token","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(Choice In \"x\")","--code","E2"]},
+ {"id":"3-enum-field-vs-mixed-tokens","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(Choice In \"A\", \"x\")","--code","E3"]},
+ {"id":"4-control-string-field-vs-any-literal","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(SkuText In \"x\")","--code","E4"]}
+]

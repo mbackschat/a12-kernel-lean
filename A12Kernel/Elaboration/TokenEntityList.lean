@@ -176,6 +176,34 @@ inductive TokenEntityElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+namespace TokenEntityElabError
+
+/-- The Kernel class one token-list refusal draws, against a **String-literal** value list.
+
+    The kind gate partitions three ways rather than two, and the operator's own message vocabulary
+    is what makes that visible: a Number field is *inside* the admitted set the
+    `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` message names, so it passes that gate and then fails the
+    literal comparison with `MVK_INVALID_TYPES_FOR_COMPARISON`, while DATE, BOOLEAN, DATE_RANGE and
+    CONFIRM never reach that stage
+    ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+    Collapsing the two would report the admitted-set class for a kind the Kernel says is admitted.
+
+    Every other arm keeps its local identity: they are this theory's representation limits or
+    delegated shape gates, not observed Kernel classes at this carrier. -/
+def diagnostic? : TokenEntityElabError → Option KernelStaticDiagnostic
+  | .shape error => error.diagnostic?
+  | .fieldKindMismatch _ actual =>
+      match actual with
+      | .number => some .invalidTypesForComparison
+      | .temporal _ | .boolean | .confirm | .dateRange =>
+          some .onlyStringEnumNumberAllowed
+      -- Both are admitted against a String-literal list, so neither reaches this arm.
+      | .string | .enumeration => none
+  | .rawStringValue _ | .enumerationOperand _ _ | .having _ | .group _
+  | .incoherentCore => none
+
+end TokenEntityElabError
+
 private def checkedTokenOperand? (declaration : FlatFieldDecl)
     (projectionRef : EnumerationProjectionRef) :
     Option (FlatTextFieldOperand × DirectComparableField) :=

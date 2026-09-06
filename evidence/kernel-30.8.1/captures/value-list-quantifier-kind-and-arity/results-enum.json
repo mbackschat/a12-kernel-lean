@@ -1,0 +1,109 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 4 ops; 3 of 4 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-enum-field-vs-VALID-token",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "AtLeastOneFieldValueIncludedInValueList(Choice In \"A\")", "--code", "E1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
+          "summary" : "Rule with path '/Probe4/CheckRule': The error field '/Probe4/SkuText' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path — reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And …`.",
+          "explain" : "Every rule's error field must appear among the fields its condition references — the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-enum-field-vs-NON-token",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "AtLeastOneFieldValueIncludedInValueList(Choice In \"x\")", "--code", "E2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'AtLeastOneFieldValueIncludedInValueList': 'x' is not valid in the used enumerations or categories. [MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-enum-field-vs-mixed-tokens",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "AtLeastOneFieldValueIncludedInValueList(Choice In \"A\", \"x\")", "--code", "E3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'AtLeastOneFieldValueIncludedInValueList': 'x' is not valid in the used enumerations or categories. [MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-control-string-field-vs-any-literal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "AtLeastOneFieldValueIncludedInValueList(SkuText In \"x\")", "--code", "E4" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

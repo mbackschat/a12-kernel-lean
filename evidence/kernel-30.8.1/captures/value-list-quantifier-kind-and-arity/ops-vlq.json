@@ -1,0 +1,11 @@
+[
+ {"id":"1-control-two-strings","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(SkuText, /Probe4/DateBox/BoxA In \"x\")","--code","K1"]},
+ {"id":"2-control-string-only","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(SkuText In \"x\")","--code","K2"]},
+ {"id":"3-NUMBER-field-left","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Amount In \"x\")","--code","K3"]},
+ {"id":"4-DATE-field-left","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(FiledOn In \"x\")","--code","K4"]},
+ {"id":"5-BOOLEAN-field-left","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Flag In \"x\")","--code","K5"]},
+ {"id":"6-DATERANGE-field-left","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Span In \"x\")","--code","K6"]},
+ {"id":"7-CONFIRM-field-left","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Agreed In \"x\")","--code","K7"]},
+ {"id":"8-ENUM-field-left","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice In \"A\")","--code","K8"]},
+ {"id":"9-mixed-string-and-number","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(SkuText, Amount In \"x\")","--code","K9"]}
+]

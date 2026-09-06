@@ -17,6 +17,8 @@ inductive KernelStaticDiagnostic where
   | onlyStringEnumNumberDateAllowed
   /-- A plural value-list field side expands to a homogeneous Date group while its literal side is String-valued. -/
   | onlyStringEnumNumberAllowed
+  /-- A field whose kind the operator admits, paired with a value list its kind cannot be compared against. Distinct from the admitted-set class above, and the distinction is the operator's own message vocabulary: a Number field passes a `STRING_ENUM_NUMBER` gate and then fails the **literal** comparison, where a Date never reaches that stage. -/
+  | invalidTypesForComparison
   /-- Operands drawn from two different comparability categories, each individually admissible. -/
   | varyingTypesNotAllowed
   /-- `FirstFilledValue` received the measured homogeneous two-Confirm operand expansion. -/
@@ -152,6 +154,7 @@ def kernelCode : KernelStaticDiagnostic → String
       "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON"
   | .onlyStringEnumNumberDateAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED"
   | .onlyStringEnumNumberAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED"
+  | .invalidTypesForComparison => "MVK_INVALID_TYPES_FOR_COMPARISON"
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
   | .noBoolyAllowed => "MVK_NO_BOOLY_ALLOWED"
   | .invalidCompareToYes => "MVK_INVALID_COMPARE_TO_YES"
@@ -220,6 +223,7 @@ def kernelCode : KernelStaticDiagnostic → String
 def all : List KernelStaticDiagnostic :=
   [.invalidStringConstantForEnumComparison,
     .onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
+    .invalidTypesForComparison,
     .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .fieldNotInRuleGroup,

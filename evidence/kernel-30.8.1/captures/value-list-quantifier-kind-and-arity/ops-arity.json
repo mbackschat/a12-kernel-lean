@@ -1,0 +1,8 @@
+[
+ {"id":"1-VLQ-single-field","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(SkuText In \"x\")","--code","A1"]},
+ {"id":"2-VLQ-single-field-other-quantifier","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","NoFieldValueIncludedInValueList(SkuText In \"x\")","--code","A2"]},
+ {"id":"3-VLQ-single-field-third-quantifier","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","NotAllFieldValuesIncludedInValueList(SkuText In \"x\")","--code","A3"]},
+ {"id":"4-control-uniqueness-single-field","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And FieldValuesNotUnique(FiledOn)","--code","A4"]},
+ {"id":"5-control-distinctcount-single-field","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn) > 0","--code","A5"]},
+ {"id":"6-VLQ-two-fields-control","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","AtLeastOneFieldValueIncludedInValueList(SkuText, /Probe4/Contact In \"x\")","--code","A6"]}
+]

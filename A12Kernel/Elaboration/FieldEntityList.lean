@@ -262,7 +262,16 @@ inductive FieldEntityShapeElabError where
   | overlappingOperands (ancestor descendant : List String)
   deriving Repr, DecidableEq
 
-/-- The gates this shared checker owns, projected once. Every carrier in the family routes through the same resolution, so these classes do not vary by carrier even where a row measured only one. -/
+/-- The gates this shared checker owns, projected once. The **classes** do not vary by carrier, and
+a row measured at one carrier fixes the code everywhere.
+
+**Whether a gate fires does vary, and the arity gate is measured to.** All three value-list
+quantifiers accept a *sole unstarred field* operand, where the entity-list carriers refuse one with
+`MVK_PARAMSIZE_INVALIDN`
+([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+This checker applies the entity-list rule to both, so it over-refuses a legal value-list quantifier.
+Relaxing it is a change to `requiredMultiplicity`, a proof field of the shared shape, rather than a
+projection fix. -/
 def FieldEntityShapeElabError.diagnostic? :
     FieldEntityShapeElabError → Option KernelStaticDiagnostic
   | .tooFewFields => some .paramSizeInvalidN

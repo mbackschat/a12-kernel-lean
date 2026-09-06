@@ -474,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
+- [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/evaluation-and-application-routes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
 <a id="src-temporal-group-operand-follows-its-own-operator"></a>
 - [A group operand is admitted at both temporal uniqueness carriers, and its expansion is gated by that operator's own rule](sources/evaluation-and-application-routes.md#src-temporal-group-operand-follows-its-own-operator)
 <a id="src-constant-computation-admits-a-repeatable-target"></a>
