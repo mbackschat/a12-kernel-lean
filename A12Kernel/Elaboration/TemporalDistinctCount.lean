@@ -372,34 +372,84 @@ The compared identity here is the **decoded date**, not the stored text its neig
 are one value here and two values there, and the same list can be legal for both operators.
 
 The runtime is narrower than the static certificate on purpose, and both narrowings are certificates
-rather than silent behaviour. It requires **every operand's** declared component set to be the
-**complete** calendar date, because `FullDate` is the atom and a component-omitting declaration has
-no complete date to decode; and it requires every operand to be a **slot**, because a group
-expansion has no retained row at this operator. A source outside either restriction is certified
-statically and simply has no evaluator, which is the honest shape — the alternative would decode a
-partial value into a `malformed` UNKNOWN and report a formal failure the Kernel does not.
+rather than silent behaviour. It requires the shared component set to name **no time component**,
+because no retained row measures what this operator compares over a time-bearing value; and it
+requires every operand to be a **slot**, because a group expansion has no retained row at this
+operator. A source outside either restriction is certified statically and simply has no evaluator,
+which is the honest shape.
 
-The component-set restriction is a **measured under-service**, not an untested limit: the Kernel does
-fold a component-omitting list, at the shared set's own precision and after Base Year supplementation
+**Every date precision folds, at its own precision.** A component-omitting list is counted at the
+shared set after Base Year supplementation, and a list with no year available anywhere is counted on
+the calendar position it spells
 ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)).
-Widening it is [SG24](../../docs/SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold)'s, which
-records the shape; the restriction stays exact meanwhile so no list is folded at a precision its
-operands do not carry.
+Each operand is projected through **its own** declared set, so one list may hold operands the Base
+Year supplements differently. The omitted components are supplied canonically by the projection
+rather than read off the cell, which is what keeps the count the declaration's rather than the
+producer's.
 -/
 
-/-- Project one addressed temporal cell to this operator's compared identity, the **decoded** date.
-    The stored text is deliberately discarded, which is the exact inverse of the neighbouring
-    uniqueness operator's projection over the same cells. -/
-private def temporalDistinctCountCell (addressed : CheckedAddressedCell) :
-    ValueListCell .date :=
-  match observeCell .validation addressed.cell with
-  | .value (.temporal (.date dateValue)) =>
-      match dateValue.toFullDate? with
-      | some date => .present date
-      | none => .unknown .malformed
-  | .value _ => .unknown .malformed
-  | .empty => .empty
-  | .unknown cause | .poison cause => .unknown cause
+/-- Which identity a certified list folds at. Two arms and not one: a list with no year available
+    anywhere compares the calendar position it spells, and completing it against an invented year
+    would make two such values equal or unequal by that invention. -/
+inductive TemporalDistinctCountFoldArm where
+  | dated
+  | yearless
+  deriving Repr, DecidableEq
+
+/-- The value-list kind each arm folds over. -/
+def TemporalDistinctCountFoldArm.kind : TemporalDistinctCountFoldArm → ValueListKind
+  | .dated => .date
+  | .yearless => .yearlessDate
+
+/-- The arm a shared component set folds at, given whether the model declares a Base Year. A year is
+    available when the set names one or when the Base Year supplies it, which is the same
+    supplementation the admission gate applies. -/
+def temporalDistinctCountFoldArm
+    (components : TemporalComponents) (hasBaseYear : Bool) :
+    TemporalDistinctCountFoldArm :=
+  if components.year || hasBaseYear then .dated else .yearless
+
+/-- Project one addressed temporal cell to the identity this list compares: the **decoded** date
+    reduced to the operand's declared component set, with a yearless declaration's year taken from
+    the model's Base Year. The stored text is deliberately discarded, which is the exact inverse of
+    the neighbouring uniqueness operator's projection over the same cells.
+
+    **The omitted components are replaced by the set's canonical representative rather than read off
+    the cell**, and that is load-bearing. `RawCell.parsed` carries whatever value the classifier that
+    admitted the text produced, and the document's coherence check re-derives boolean, confirm, and
+    DateRange values from their stored text but not temporal ones — so for a `yyyy-MM` declaration
+    nothing pins which day the producer chose. A fold that trusted the day would answer differently
+    for two producers spelling the same value, which is not a semantics. Masking makes the count the
+    declaration's.
+
+    Measured: the count compares at the shared set's precision after Base Year supplementation
+    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)). -/
+private def temporalDistinctCountCell
+    (components : TemporalComponents) (baseYear : Option Int) :
+    (arm : TemporalDistinctCountFoldArm) → CheckedAddressedCell →
+      ValueListCell arm.kind
+  | .dated, addressed =>
+      match observeCell .validation addressed.cell with
+      | .value (.temporal (.date dateValue)) =>
+          -- A yearless declaration carries no year of its own, so the Base Year supplies it; the
+          -- `.dated` arm is reached only when one of the two is available.
+          let year := if components.year then dateValue.parts.year else baseYear.getD 0
+          let month := if components.month then dateValue.parts.month else 1
+          let day := if components.day then dateValue.parts.day else 1
+          match FullDate.ofYmd? year month day with
+          | some date => .present date
+          | none => .unknown .malformed
+      | .value _ => .unknown .malformed
+      | .empty => .empty
+      | .unknown cause | .poison cause => .unknown cause
+  | .yearless, addressed =>
+      match observeCell .validation addressed.cell with
+      | .value (.temporal (.date dateValue)) =>
+          .present { month := dateValue.parts.month
+                     day := if components.day then dateValue.parts.day else 1 }
+      | .value _ => .unknown .malformed
+      | .empty => .empty
+      | .unknown cause | .poison cause => .unknown cause
 
 /-- Every operand as a slot, or `none` as soon as one is a group expansion. -/
 def temporalDistinctCountSlots? :
@@ -410,36 +460,28 @@ def temporalDistinctCountSlots? :
   | .slot operand :: remaining =>
       (temporalDistinctCountSlots? remaining).map (operand :: ·)
 
-/-- The first operand whose **declared** set is not the complete calendar date, which is what the
-    fold's `FullDate` atom requires.
+/-- One statically certified temporal distinct count that this project can also **evaluate**: the
+    shared component set names no time component, and every operand is a slot.
 
-    Read over the whole list rather than the leading operand. Base Year supplementation admits a
-    list whose declared sets differ — a complete date beside a supplemented `MM-dd` — and such a
-    list *leads* with the complete set, so a leading-operand test would admit it here and fold the
-    yearless cell as though it carried a day. -/
-def firstNonCompleteDateComponents? :
-    List (CheckedTemporalDistinctCountOperand model) → Option TemporalComponents
-  | [] => none
-  | operand :: remaining =>
-      if operand.components == TemporalComponents.fullDate then
-        firstNonCompleteDateComponents? remaining
-      else
-        some operand.components
-
-/-- One statically certified temporal distinct count that this project can also **evaluate**: every
-    operand's declared component set is the complete calendar date and every operand is a slot. -/
+    The set no longer has to be the *complete* calendar date. A component-omitting list folds at its
+    own precision, which is what the Kernel does; each operand's omitted components are supplied
+    canonically by the projection rather than read off the cell, so a list whose declared sets differ
+    under Base Year supplementation folds correctly too. -/
 structure CheckedTemporalDistinctCountRun (model : FlatModel) where
   source : CheckedTemporalDistinctCountSource model
   slots : List (CheckedTemporalUniquenessOperand model)
   slotsOwned : temporalDistinctCountSlots? source.operands = some slots
-  completeDates : firstNonCompleteDateComponents? source.operands = none
+  dateOnly : source.components.hasTime = false
 
 /-- Why a statically certified source has no evaluator here. **Neither is a Kernel refusal** — the
     Kernel admits both shapes — so this is its own type rather than an arm of the elaboration error,
     which exists to carry measured Kernel codes and would have to project `none` for both. -/
 inductive TemporalDistinctCountRunLimit where
   | groupOperand
-  | componentSetNotComplete (components : TemporalComponents)
+  /-- A TIME or DATETIME list. Statically admitted — `spec/07` names all four temporal kinds as legal
+      operands — and unevaluated here, because no retained row measures what this operator compares
+      over a time-bearing value and the date arms must not be assumed to speak for it. -/
+  | timeComponentsPresent (components : TemporalComponents)
   deriving Repr, DecidableEq
 
 /-- Admit one checked source to the runtime, or report which restriction it falls outside. -/
@@ -450,25 +492,38 @@ def checkTemporalDistinctCountRun
   match hSlots : temporalDistinctCountSlots? source.operands with
   | none => throw .groupOperand
   | some slots =>
-      match hComplete : firstNonCompleteDateComponents? source.operands with
-      | none => .ok { source, slots, slotsOwned := hSlots, completeDates := hComplete }
-      | some components => throw (.componentSetNotComplete components)
+      if hDateOnly : source.components.hasTime = false then
+        .ok { source, slots, slotsOwned := hSlots, dateOnly := hDateOnly }
+      else
+        throw (.timeComponentsPresent source.components)
 
 namespace CheckedTemporalDistinctCountRun
 
+/-- The arm this list folds at, read from the shared set and the model's Base Year. Using the first
+    operand's declared set is exact: with a Base Year the arm is `.dated` whatever the sets say, and
+    without one the source certifies every declared set equal. -/
+def arm (operation : CheckedTemporalDistinctCountRun model) :
+    TemporalDistinctCountFoldArm :=
+  temporalDistinctCountFoldArm operation.source.components model.hasBaseYear
+
 /-- Count distinct decoded dates from one immutable model-certified checked document. Slots resolve
     in authored order through the shared entity core, and the count itself is the kind-generic
-    aggregate every distinct-count carrier already uses. -/
+    aggregate every distinct-count carrier already uses.
+
+    Each slot is projected through **its own** declared component set, which is what lets one list
+    hold operands the Base Year supplements differently — a yearless `MM-dd` beside a complete date
+    reduces to the same identity because the Base Year supplies the one component it lacks. -/
 def evaluate (operation : CheckedTemporalDistinctCountRun model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand := do
   let sides ← operation.slots.mapM fun slot => do
     let core ← slot.resolveValidationCore document outer
     pure ({
-      cells := core.addressedCells.map temporalDistinctCountCell
+      cells := core.addressedCells.map
+        (temporalDistinctCountCell slot.components model.baseYear operation.arm)
       hasUninstantiatedTail := core.hasUninstantiatedTail
       hasHaving := core.hasHaving
-      hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide .date)
+      hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide operation.arm.kind)
   pure (evalDistinctCountAggregate
     (sides.foldl ResolvedValueListSide.append ResolvedValueListSide.empty))
 

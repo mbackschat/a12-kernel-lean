@@ -15,6 +15,10 @@ inductive ValueListKind where
   | number
   | token
   | date
+  /-- A date with **no year available anywhere**: a yearless declared format in a model that declares
+      no Base Year. Its own arm rather than a `date` completed against an invented year, because two
+      such values must compare on the calendar position they actually spell. -/
+  | yearlessDate
   deriving Repr, DecidableEq
 
 /-- Partial all-rows aggregate evaluation distinguishes the kernel's rule-level filtered skip, a relevance failure, and an evaluated numeric result. Nonrelevance is not forged into a formal cell cause. -/
@@ -29,6 +33,7 @@ abbrev ValueListAtom : ValueListKind → Type
   | .number => Rat
   | .token => String
   | .date => FullDate
+  | .yearlessDate => MonthDayValue
 
 /-- One expanded operand cell after validation-phase observation. Empty is not substituted, and UNKNOWN remains distinct from an absent cell. -/
 inductive ValueListCell (kind : ValueListKind) where
@@ -82,6 +87,10 @@ def equal : {kind : ValueListKind} →
   -- Decoded identity, so two admitted spellings of one calendar day are one value. `FullDate`
   -- carries a proof field, and its `DecidableEq` compares the civil date the proof is about.
   | .date, left, right => left == right
+  -- The calendar position a yearless value spells, compared exactly. No year is available to
+  -- complete either side, so month-day equality *is* the identity here rather than a projection of
+  -- one.
+  | .yearlessDate, left, right => left == right
 
 end ValueListAtom
 

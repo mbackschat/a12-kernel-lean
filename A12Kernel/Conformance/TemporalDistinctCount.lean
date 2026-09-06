@@ -30,6 +30,10 @@ private def monthDay : TemporalComponents :=
   { year := false, month := true, day := true
     hour := false, minute := false, second := false }
 
+private def clockOnly : TemporalComponents :=
+  { year := false, month := false, day := false
+    hour := true, minute := true, second := true }
+
 private def dateField (id : FieldId) (name format : String)
     (components : TemporalComponents := TemporalComponents.fullDate) :
     FlatFieldDecl := {
@@ -94,7 +98,14 @@ private def model : FlatModel := {
     -- single one could only pair with itself and the duplicate gate answers first.
     dateField 23 "MonthOnly" "MM" monthOnly,
     dateField 24 "MonthOnly2" "MM" monthOnly,
-    dateField 25 "MonthDay" "MM-dd" monthDay]
+    dateField 25 "MonthDay" "MM-dd" monthDay,
+    -- A time-bearing pair, so the runtime restriction below has a reachable witness.
+    { id := 26, groupPath := ["Probe"], name := "ClockA"
+      policy := { kind := .temporal .time clockOnly }
+      temporalTargetPolicy := some { format := "HH:mm:ss" } },
+    { id := 27, groupPath := ["Probe"], name := "ClockB"
+      policy := { kind := .temporal .time clockOnly }
+      temporalTargetPolicy := some { format := "HH:mm:ss" } }]
 }
 
 /-- The identical model with a Base Year declared. Every supplementation row below pairs against its
@@ -157,11 +168,11 @@ example :
       (true, true, false, false, true) := by
   native_decide
 
-/- **Supplementation widens admission, so the runtime restriction must read every operand and not
-   only the first.** A complete date beside a supplemented `MM-dd` is an admitted list whose leading
-   declared set *is* the complete date; if the run certificate read the leading set alone it would
-   admit this list and fold the yearless cell as though it were complete. Locked at `none` in both
-   orders, against the same-set complete pair that does have an evaluator. -/
+/- **A list whose declared sets differ under supplementation has an evaluator, in either operand
+   order.** A complete date beside a supplemented `MM-dd` is admitted, and each operand is projected
+   through its *own* declared set, so the Base Year supplies exactly the component the yearless
+   operand lacks. The order rows matter because the arm is read from the leading operand: it must
+   answer the same either way. -/
 example :
     ((match (elaborateTemporalDistinctCountSource baseYearModel ["Probe"]
         (pair "FiledOn" "MonthDay")).toOption with
@@ -175,7 +186,7 @@ example :
         (pair "FiledOn" "ClosedOn")).toOption with
       | some source => (checkTemporalDistinctCountRun source).toOption.isSome
       | none => false)) =
-      (false, false, true) := by
+      (true, true, true) := by
   native_decide
 
 example : distinct? "FiledOn" "CoverFrom" = some .dateFormatsNotCompatible := by
@@ -347,17 +358,48 @@ example :
       some (.value 1 .growOnly) := by
   native_decide
 
-/- **Both runtime restrictions are certificates, and each refuses for its own reason.** A
-   component-omitting list is statically admitted and has no evaluator, because `FullDate` has no
-   partial value to hold; a group operand likewise. Neither is a Kernel refusal, which is why they
-   carry their own limit type rather than an elaboration error arm. -/
+/- **A component-omitting list folds at its own precision, and the omitted day is discarded rather
+   than trusted.** Both operands are `yyyy-MM` and the two cells carry the same year and month with
+   *different* days — which a producer is free to do, because the document's coherence check
+   re-derives boolean, confirm and DateRange values from their stored text but not temporal ones. The
+   count is 1, so the identity is the declared set's; a fold that carried the cell's day through
+   would answer 2 and would make the count depend on the producer rather than the model. The second
+   row moves the month and answers 2, so the first is not a collapse of everything. -/
+example :
+    count? "CoverFrom" "CoverTo"
+        [temporalCell 3 "2024-03" (dateValue 2024 3 1),
+          temporalCell 20 "2024-03" (dateValue 2024 3 17)] =
+      some (.value 1 .fixed) ∧
+    count? "CoverFrom" "CoverTo"
+        [temporalCell 3 "2024-03" (dateValue 2024 3 1),
+          temporalCell 20 "2024-04" (dateValue 2024 4 1)] =
+      some (.value 2 .fixed) := by
+  native_decide
+
+/- **A yearless list with no Base Year folds on the calendar position it spells.** `MM` carries
+   neither year nor day, so both are discarded and two cells differing in either still count once;
+   moving the month answers 2. This is the arm that must not be a date completed against an invented
+   year — the two cells below carry *different* supplied years, and the count is still 1. -/
+example :
+    count? "MonthOnly" "MonthOnly2"
+        [temporalCell 23 "03" (dateValue 2024 3 9),
+          temporalCell 24 "03" (dateValue 1999 3 25)] =
+      some (.value 1 .fixed) ∧
+    count? "MonthOnly" "MonthOnly2"
+        [temporalCell 23 "03" (dateValue 2024 3 1),
+          temporalCell 24 "04" (dateValue 2024 4 1)] =
+      some (.value 2 .fixed) := by
+  native_decide
+
+/- The **time-bearing** list is what the runtime restriction now names: `spec/07` admits all four
+   temporal kinds as operands and no retained row measures what this operator compares over a value
+   carrying a time, so a TIME list is certified statically and has no evaluator here. -/
 example :
     (match (elaborateTemporalDistinctCountSource model ["Probe"]
-        (pair "CoverFrom" "CoverTo")).toOption with
+        (pair "ClockA" "ClockB")).toOption with
       | some source =>
           match checkTemporalDistinctCountRun source with
-          | .error (.componentSetNotComplete components) =>
-              components == yearMonth
+          | .error (.timeComponentsPresent components) => components == clockOnly
           | _ => false
       | none => false) = true := by
   native_decide
