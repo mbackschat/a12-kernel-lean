@@ -124,14 +124,17 @@ example :
         | _ => false) = true := by
   native_decide
 
-/- A selected target of another kind fails closed before any exposure question, and this project maps
-neither local class to a Kernel code: the admission measurement established that the operand shape is
-accepted, not which code its rejections carry. -/
+/- A selected target of another kind fails closed before any exposure question, and it now carries
+the Kernel class that refusal actually draws: a keyed reference to a non-DateRange field at an
+overlap operand is refused `MVK_NO_DATE_RANGE`
+([checkpoint](../../docs/SOURCES.md#src-keyed-date-range-overlap-admits-both-sides)). The
+neighbouring exposure class stays unmapped, because that measurement reached this refusal and not
+that one. -/
 example :
     (match checked (literalKeyed "Headcount") .start .month with
       | .error error =>
           error == .selectedTargetNotDateRange headcountDecl.path &&
-            error.diagnostic? == none
+            error.diagnostic? == some .noDateRange
       | .ok _ => false) = true := by
   native_decide
 
@@ -511,6 +514,66 @@ example :
               storedAt indexDecl.id [2] "Sales"
             else
               input) = some .notFired := by
+  native_decide
+
+private def keyedAs (field key : String) : SurfaceSemanticIndex :=
+  { target := inRows field, key := .literal (.text key) }
+
+private def keyedPair (leftKey rightKey : String) :
+    Except SemanticIndexDateRangeElabError
+      (CheckedSemanticIndexKeyedPairOverlap model) :=
+  elaborateSemanticIndexKeyedPairOverlap model ["Order"]
+    (keyedAs "RowRange" leftKey) (keyedAs "RowRange" rightKey)
+
+/- **Both operands may be keyed, and the duplicate gate reads the key.** The same declaration under
+two different keys is admitted; under the *same* key it draws `MVK_DUPLICATE_PARAM1`. The admitted
+row is what makes the refusal a duplicate gate rather than a refusal of keyed pairing altogether, and
+the shared field is what makes it a key gate rather than a field one — with two different fields
+neither account would be separated. -/
+example :
+    (keyedPair "Sales" "Eng").isOk = true ∧
+      (match keyedPair "Sales" "Sales" with
+        | .error error =>
+            (match error with
+              | .duplicateKeyedOperand _ => true
+              | _ => false) && error.diagnostic? == some .duplicateParam1
+        | .ok _ => false) = true := by
+  native_decide
+
+/- The pairing takes the operator's own declaration gate on **each** side, so a yearless operand is
+refused here exactly as it is beside a direct range, and the refusal claims no Kernel class. -/
+example :
+    (match elaborateSemanticIndexKeyedPairOverlap model ["Order"]
+        (keyedAs "RowMonths" "Sales") (keyedAs "RowRange" "Eng") with
+      | .error error =>
+          (match error with
+            | .overlap (.unsupportedPolicy _ _ _) => true
+            | _ => false) && error.diagnostic? == none
+      | .ok _ => false) = true := by
+  native_decide
+
+private def keyedPairVerdict? (leftKey rightKey : String)
+    (cells : List ClassifiedCellInput) : Option Verdict := do
+  let operation ← (keyedPair leftKey rightKey).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] }, { group := 10, path := [2] }
+    ]
+    cells }).toOption
+  let preliminary ← document.applyFullIndexPreliminary.toOption
+  (operation.evaluate preliminary { read := fun _ => .empty }).toOption
+
+/- Two keyed reads select two different rows and the verdict is those two rows' own ranges. The
+baseline's Sales and Eng ranges are disjoint and stay silent; moving the Eng row's range to meet the
+Sales one fires. Without the firing row the silent one would equally suit a scan that never reads
+either cell, and the perturbation is one cell of the baseline so the difference is attributable. -/
+example :
+    (keyedPairVerdict? "Sales" "Eng" baseline,
+      keyedPairVerdict? "Sales" "Eng"
+        (baseline.filter (fun input =>
+            !(input.address.field == rangeDecl.id && input.address.path == [2])) ++
+          [storedAt rangeDecl.id [2] "2024-07-01/2024-09-30"])) =
+    (some .notFired, some (.fired .value)) := by
   native_decide
 
 end A12Kernel.Conformance.SemanticIndexDateRange

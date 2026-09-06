@@ -27,17 +27,23 @@ two direct owners' gates are complementary, so the decision is a total two-way r
 profile rather than a preference, and it is taken here from the certificate instead of from which
 owner happened to certify the operand.
 
-The overlap carrier is a **pair**, not the operator's list. The measured authoring is one keyed
-operand against one direct range, and the list operator additionally admits starred, filtered, and
-group slots whose extent is a stream of rows reached by addressing — a keyed slot inside such a list
-would have to thread an index preliminary through that shared resolution, which no observation calls
-for. This carrier instead reuses the operator's own two declaration gates, its uniform-year rule, its
-slot projection, and its pure any-pair scan, so it adds an operand shape rather than a predicate.
+The overlap carrier is a **pair**, not the operator's list, and it now has two pairings: one keyed
+operand against a direct range, and — measured later — two keyed operands against each other. The
+list operator additionally admits starred, filtered, and group slots whose extent is a stream of rows
+reached by addressing; a keyed slot inside such a list would have to thread an index preliminary
+through that shared resolution, which no observation calls for. Both pairings instead reuse the
+operator's own two declaration gates, its uniform-year rule, its slot projection, and its pure
+any-pair scan, so each adds an operand shape rather than a predicate.
 
-Every local refusal stays **unmapped to a Kernel diagnostic**, including the ones reached through the
-shared overlap certifier. Those classes' codes are measured for direct operands; for a keyed one they
-are not, and the admission measurement establishes that the operand is accepted rather than which
-code its rejections carry.
+The keyed pair is a separate certificate rather than a relaxation of the keyed/direct one because it
+carries a gate the other structurally cannot state: the two operands must not name the same
+declaration under the same key. Merging them would have to make that gate vacuous on one side.
+
+Two local refusals now carry a **measured** Kernel diagnostic — a selected target of the wrong kind,
+and the duplicate keyed pair — because both were measured on a keyed operand itself. The rest stay
+unmapped, including the ones reached through the shared overlap certifier: those classes' codes are
+measured for *direct* operands, and reporting one here would assert it for a keyed operand that no
+observation covers.
 -/
 
 namespace A12Kernel
@@ -60,20 +66,30 @@ inductive SemanticIndexDateRangeElabError where
   | overlap (cause : DateRangesOverlapElabError)
   /-- The two overlap operands disagree on year presence under this model. -/
   | overlapMixesYearClass (keyed direct : DateRangeInputFormat)
+  /-- Two keyed overlap operands naming the same declaration under the same key. -/
+  | duplicateKeyedOperand (path : List String)
   deriving Repr, DecidableEq
 
 namespace SemanticIndexDateRangeElabError
 
-/-- Only the shared source classes project. The two local ones are unmeasured for this operand
-shape, so mapping them would assert a code rather than report one. -/
+/-- The shared source classes project, and so does the wrong-kind selected target, which is measured
+on the keyed operand itself. The remaining local classes stay unmapped because that measurement
+reached this refusal and not those. -/
 def diagnostic? : SemanticIndexDateRangeElabError → Option KernelStaticDiagnostic
   | .source error => error.diagnostic?
   | .directSource cause => cause.diagnostic?
   | .directBound cause => cause.diagnostic?
+  -- Measured on this carrier rather than inherited: a keyed reference naming a non-DateRange field
+  -- at an overlap operand is refused `MVK_NO_DATE_RANGE`
+  -- ([checkpoint](../../docs/SOURCES.md#src-keyed-date-range-overlap-admits-both-sides)).
+  | .selectedTargetNotDateRange _ => some .noDateRange
   -- The overlap certifier's own classes carry measured codes for a *direct* operand. Reporting one
   -- here would assert that code for a keyed operand, which no observation covers.
   | .overlap _ => none
-  | .selectedTargetNotDateRange _ | .boundPartNotExposed _ _ |
+  -- Measured on this carrier too: the same declaration under the same key draws
+  -- `MVK_DUPLICATE_PARAM1` at either overlap operator, where two different keys are admitted.
+  | .duplicateKeyedOperand _ => some .duplicateParam1
+  | .boundPartNotExposed _ _ |
     .componentMismatch _ _ | .boundsNotComparable _ _ |
     .overlapMixesYearClass _ _ => none
 
@@ -428,5 +444,80 @@ def evaluate (operation : CheckedSemanticIndexDateRangeOverlap model)
       else [directOperand, keyedOperand]))
 
 end CheckedSemanticIndexDateRangeOverlap
+
+/-- Two **keyed** ranges overlapping each other, in authored order.
+
+This pairing is measured rather than carried across from the keyed/direct one: the Kernel admits a
+keyed operand in both positions, and refuses the two under the *same* key with
+`MVK_DUPLICATE_PARAM1`
+([checkpoint](../../docs/SOURCES.md#src-keyed-date-range-overlap-admits-both-sides)). That refusal is
+why this is a separate certificate rather than a relaxation of `keyedFirst`: a duplicate gate has no
+meaning when one side cannot be keyed, so the neighbouring structure could not state it.
+
+The exact identity the gate compares is the **(target declaration, key) pair**, not the field: the
+same field under two different keys is admitted. That matches the read-form split the same batch
+measured at the entity-list carriers, where an exact reference repeats and a starred scan does not —
+a keyed reference is exact, and its key is part of what makes it so. -/
+structure CheckedSemanticIndexKeyedPairOverlap (model : FlatModel) where
+  left : CheckedDateRangeSemanticIndexSource model
+  leftCanonical : CheckedCanonicalDateRangeField
+  right : CheckedDateRangeSemanticIndexSource model
+  rightCanonical : CheckedCanonicalDateRangeField
+  distinctOperands :
+    (left.targetDeclaration.id == right.targetDeclaration.id &&
+      left.key == right.key) = false
+  yearClassUniform :
+    dateRangeProfileIncludesYear model left.format =
+      dateRangeProfileIncludesYear model right.format
+
+/-- Certify two keyed overlap operands against each other. Each side takes the operator's own
+declaration gates exactly as a direct operand does, so neither can reach a profile the operator
+refuses elsewhere; the duplicate and uniform-year rules are the pair's. -/
+def elaborateSemanticIndexKeyedPairOverlap (model : FlatModel)
+    (declaringGroup : GroupPath) (leftAuthored rightAuthored : SurfaceSemanticIndex) :
+    Except SemanticIndexDateRangeElabError
+      (CheckedSemanticIndexKeyedPairOverlap model) := do
+  let left ← elaborateDateRangeSemanticIndexSource model declaringGroup leftAuthored
+  let right ← elaborateDateRangeSemanticIndexSource model declaringGroup rightAuthored
+  let leftCanonical ←
+    certifyDateRangesOverlapField left.targetDeclaration |>.mapError .overlap
+  let rightCanonical ←
+    certifyDateRangesOverlapField right.targetDeclaration |>.mapError .overlap
+  if hDistinct : (left.targetDeclaration.id == right.targetDeclaration.id &&
+      left.key == right.key) = false then
+    if hYear : dateRangeProfileIncludesYear model left.format =
+        dateRangeProfileIncludesYear model right.format then
+      pure {
+        left, leftCanonical, right, rightCanonical
+        distinctOperands := hDistinct, yearClassUniform := hYear }
+    else
+      throw (.overlapMixesYearClass left.format right.format)
+  else
+    throw (.duplicateKeyedOperand left.targetDeclaration.path)
+
+namespace CheckedSemanticIndexKeyedPairOverlap
+
+/-- Read both keyed operands once and take the operator's own any-pair verdict in authored order.
+Neither slot carries a path, for the same reason the keyed/direct pairing gives neither one: the
+selecting row belongs to the index column rather than to the operand. -/
+def evaluate (operation : CheckedSemanticIndexKeyedPairOverlap model)
+    (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
+    (environment : Env := []) :
+    Except SemanticIndexDateRangeOverlapFault Verdict := do
+  let leftObserved ← operation.left.observePreliminaryRange preliminary keyRaw
+    .validation environment |>.mapError .keyed
+  let rightObserved ← operation.right.observePreliminaryRange preliminary keyRaw
+    .validation environment |>.mapError .keyed
+  let leftSlot ← dateRangeOverlapSlotOf
+    { field := operation.left.target.id, path := [] } leftObserved
+    |>.mapError .slot
+  let rightSlot ← dateRangeOverlapSlotOf
+    { field := operation.right.target.id, path := [] } rightObserved
+    |>.mapError .slot
+  pure (evalDateRangesOverlap
+    [{ slots := [leftSlot], hasFilter := false },
+     { slots := [rightSlot], hasFilter := false }])
+
+end CheckedSemanticIndexKeyedPairOverlap
 
 end A12Kernel
