@@ -4,7 +4,7 @@
 - `contract`: a checked A12 artifact becomes another checked A12 artifact under an explicitly named observation relation and preconditions.
 - `authority`: [addressed numeric-operation consumer laws](../../A12Kernel/Proofs/AddressedNumericOperationConsumer.lean), especially universal identity preservation of Analyze, Execute, and rich result views.
 - `authority`: the fixed [Boolean/Confirm constant definition and result/application laws](../../A12Kernel/Proofs/BooleanConstantComputation.lean), exact [execution cases](../../A12Kernel/Conformance/BooleanConstantComputation.lean), and the shared [Boolean result/application owner](../../A12Kernel/Elaboration/BooleanComputationResult.lean).
-- `handover`: the [bounded numeric-operation capability](../implementation/numeric-and-temporal.md#cap-addressed-numeric-operation-consumer), the [fixed Boolean/Confirm constant capability](../implementation/computations.md#cap-boolean-confirm-constant-computation-target-admission), and their explicit rule that fingerprint difference is not semantic inequivalence.
+- `handover`: the [bounded numeric-operation capability](../implementation/numeric.md#cap-addressed-numeric-operation-consumer), the [fixed Boolean/Confirm constant capability](../implementation/computations.md#cap-boolean-confirm-constant-computation-target-admission), and their explicit rule that fingerprint difference is not semantic inequivalence.
 
 ## First probe
 

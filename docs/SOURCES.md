@@ -154,7 +154,7 @@ The peer revision is inbound reviewed provenance, so its accepted canonical corr
 <a id="src-2026-09-06-ladder-handback-detail"></a>
 a12-dmkits revision `7bdfa7470f7aa0baea539ffea7bd36828af19445` is the reviewed handback on [`SPEC-2026-09-06-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md). It re-derives all three ladder rungs and both pair-dependent cells on an independently built fixture, carries them as `ConstantAssignmentDiagnosticLadderLawsTest` and `KF257`, and ships the corrective the ladder implied — `MVK_INVALID_COMPARE_TO_DATE` previously had none, so an author assigning a date-shaped literal to a String field was told about dates and sent to inspect the target rather than the constant.
 
-Two facts travel with it. Their diagnostic ledger had recorded `MVK_INCONSISTENT_TYPES_COMPARED`, `MVK_INVALID_COMPARE_TO_YES`, and `MVK_INVALID_COMPARE_TO_YESNO` as unconstructible on the strength of the **comparison** surface, where their references are kind-typed; assignment is a second live firing site those rows did not name, and all three are amended there. And the kernel lexer has **one** string-literal syntax, so a temporal constant is a string literal whose content parses as a date rather than a distinct spelling — [the ladder checkpoint](sources/evaluation-and-application-routes.md#src-constant-assignment-diagnostic-ladder) carries the local witness for that, which is prior to and independent of the grammar reading.
+Two facts travel with it. Their diagnostic ledger had recorded `MVK_INCONSISTENT_TYPES_COMPARED`, `MVK_INVALID_COMPARE_TO_YES`, and `MVK_INVALID_COMPARE_TO_YESNO` as unconstructible on the strength of the **comparison** surface, where their references are kind-typed; assignment is a second live firing site those rows did not name, and all three are amended there. And the kernel lexer has **one** string-literal syntax, so a temporal constant is a string literal whose content parses as a date rather than a distinct spelling — [the ladder checkpoint](sources/static-admission-and-class-probes.md#src-constant-assignment-diagnostic-ladder) carries the local witness for that, which is prior to and independent of the grammar reading.
 
 Revision `33411f1e2a7bc4e7dcd7b8c3cf6eba84ed911eb6` follows it and carries a third carrier for the same vocabulary, measured after this project reported the filter one: `[Handler] == "05.03.2024"` on a String field in an **ordinary rule condition** — no computation, no assignment, no filter — draws `MVK_INVALID_COMPARE_TO_DATE`, with a non-date literal at the identical site admitted as the control. That is the cleanest of the three carriers, because it removes both constructs the other two could otherwise be about. The same revision corrects the corrective shipped an hour earlier, whose text spoke of a "target" that has no referent on the two non-assignment carriers.
 
@@ -281,7 +281,7 @@ a12-dmkits reports the binding relation holding on every cell of a nine-row tabl
 
 Two readings the peer supplied with it. Vacuity is excluded by the sibling triple rather than by a separate control: one helper returns three different outcomes over three groups differing only in their index declaration, which neither a defaulting harness nor an unreached condition can produce. And the carriers are genuinely asymmetric — a rule's condition must reference its error field, so every rule row carries two operands where the computation rows carried one, and the error-field read is itself a scope participant. The verdict is identical anyway, so the relation does not count operands, but that was not derivable in advance.
 
-The peer flagged their own epistemic position: they expected the computation rows and every row matched, which is weaker than a run that surprised them, and invited independent re-derivation. Done — seven of the nine rows reproduce on this project's own fixture, plus a depth-2 row their table does not carry ([checkpoint](sources/evaluation-and-application-routes.md#src-filtered-star-temporal-carriers-and-binding-depth)).
+The peer flagged their own epistemic position: they expected the computation rows and every row matched, which is weaker than a run that surprised them, and invited independent re-derivation. Done — seven of the nine rows reproduce on this project's own fixture, plus a depth-2 row their table does not carry ([checkpoint](sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)).
 
 ## Provenance checkpoint index
 
@@ -505,54 +505,54 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
-- [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/evaluation-and-application-routes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
+- [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
 <a id="src-partial-date-precision-operand-gate"></a>
 - [A partially known Date is refused as an extremum or distinct-count operand and admitted as a uniqueness operand](sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate)
 <a id="src-temporal-computed-target-gate-reads-format-not-kind"></a>
 - [A temporal computed target admits a value by its declared format, never by its declared kind, across five computation families](sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)
 <a id="src-keyed-date-range-overlap-admits-both-sides"></a>
-- [A semantic-index keyed operand is admitted on both sides of either overlap operator, and the duplicate identity includes the key](sources/evaluation-and-application-routes.md#src-keyed-date-range-overlap-admits-both-sides)
+- [A semantic-index keyed operand is admitted on both sides of either overlap operator, and the duplicate identity includes the key](sources/static-admission-and-class-probes.md#src-keyed-date-range-overlap-admits-both-sides)
 <a id="src-first-filled-admits-a-repeatable-target"></a>
-- [A first-filled computation reading a starred source admits a repeatable target, on four carriers](sources/evaluation-and-application-routes.md#src-first-filled-admits-a-repeatable-target)
+- [A first-filled computation reading a starred source admits a repeatable target, on four carriers](sources/static-admission-and-class-probes.md#src-first-filled-admits-a-repeatable-target)
 <a id="src-suppress-warning-directive-scopes-the-whole-condition"></a>
-- [`@SuppressWarning` is a condition preamble whose scope is the whole condition, and only one warning is suppressible](sources/evaluation-and-application-routes.md#src-suppress-warning-directive-scopes-the-whole-condition)
+- [`@SuppressWarning` is a condition preamble whose scope is the whole condition, and only one warning is suppressible](sources/static-admission-and-class-probes.md#src-suppress-warning-directive-scopes-the-whole-condition)
 <a id="src-value-list-literal-domain-is-the-union"></a>
-- [A value list's Enumeration literals must name a token in the union of the selected domains, and the duplicate-operand gate splits by read form](sources/evaluation-and-application-routes.md#src-value-list-literal-domain-is-the-union)
+- [A value list's Enumeration literals must name a token in the union of the selected domains, and the duplicate-operand gate splits by read form](sources/static-admission-and-class-probes.md#src-value-list-literal-domain-is-the-union)
 <a id="src-having-filter-class-is-carrier-independent-and-first-defect-wins"></a>
-- [A Having filter's static class is carrier-independent across six wrappers, and a multi-leaf filter reports its first defective leaf](sources/evaluation-and-application-routes.md#src-having-filter-class-is-carrier-independent-and-first-defect-wins)
+- [A Having filter's static class is carrier-independent across six wrappers, and a multi-leaf filter reports its first defective leaf](sources/static-admission-and-class-probes.md#src-having-filter-class-is-carrier-independent-and-first-defect-wins)
 <a id="src-temporal-group-operand-follows-its-own-operator"></a>
-- [A group operand is admitted at both temporal uniqueness carriers, and its expansion is gated by that operator's own rule](sources/evaluation-and-application-routes.md#src-temporal-group-operand-follows-its-own-operator)
+- [A group operand is admitted at both temporal uniqueness carriers, and its expansion is gated by that operator's own rule](sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)
 <a id="src-constant-computation-admits-a-repeatable-target"></a>
-- [A constant computation admits a repeatable target at every declaring-group choice; only a star in a precondition refuses](sources/evaluation-and-application-routes.md#src-constant-computation-admits-a-repeatable-target)
+- [A constant computation admits a repeatable target at every declaring-group choice; only a star in a precondition refuses](sources/static-admission-and-class-probes.md#src-constant-computation-admits-a-repeatable-target)
 <a id="src-pattern-comparison-left-kind-gate-is-total"></a>
-- [The pattern comparison's left-kind gate is total: DATE_RANGE draws the same class as the other seven kinds](sources/evaluation-and-application-routes.md#src-pattern-comparison-left-kind-gate-is-total)
+- [The pattern comparison's left-kind gate is total: DATE_RANGE draws the same class as the other seven kinds](sources/static-admission-and-class-probes.md#src-pattern-comparison-left-kind-gate-is-total)
 <a id="src-custom-validity-operand-refuses-every-kind-with-one-class"></a>
-- [The custom-validity operand gate names its admitted set: every refused kind draws one class, where the Boolean constant's target gate partitions four ways](sources/evaluation-and-application-routes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)
+- [The custom-validity operand gate names its admitted set: every refused kind draws one class, where the Boolean constant's target gate partitions four ways](sources/static-admission-and-class-probes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)
 <a id="src-temporal-declaration-without-a-format"></a>
-- [A temporal field may declare no format, and the Kernel resolves the default from its declared kind](sources/evaluation-and-application-routes.md#src-temporal-declaration-without-a-format)
+- [A temporal field may declare no format, and the Kernel resolves the default from its declared kind](sources/static-admission-and-class-probes.md#src-temporal-declaration-without-a-format)
 <a id="src-having-filter-comparison-and-scope-classes"></a>
-- [The `Having` filter's refusal classes belong to the filter rather than the wrapping operator, and its numeric and String-literal comparison columns disagree on six kinds of eight](sources/evaluation-and-application-routes.md#src-having-filter-comparison-and-scope-classes)
+- [The `Having` filter's refusal classes belong to the filter rather than the wrapping operator, and its numeric and String-literal comparison columns disagree on six kinds of eight](sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)
 <a id="src-constant-assignment-diagnostic-ladder"></a>
-- [A wrong-kind constant assignment's diagnostic is an ordered ladder over the (constant, target) pair; the complete eighty-cell grid is what makes it legible](sources/evaluation-and-application-routes.md#src-constant-assignment-diagnostic-ladder)
+- [A wrong-kind constant assignment's diagnostic is an ordered ladder over the (constant, target) pair; the complete eighty-cell grid is what makes it legible](sources/static-admission-and-class-probes.md#src-constant-assignment-diagnostic-ladder)
 <a id="src-boolean-constant-target-kind-partitions-into-four-classes"></a>
-- [The Boolean constant computation's wrong-kind target draws four different classes, not one; first use of the `computation add --dry-run` route](sources/evaluation-and-application-routes.md#src-boolean-constant-target-kind-partitions-into-four-classes)
+- [The Boolean constant computation's wrong-kind target draws four different classes, not one; first use of the `computation add --dry-run` route](sources/static-admission-and-class-probes.md#src-boolean-constant-target-kind-partitions-into-four-classes)
 <a id="src-daterange-scalar-slot-rejects-every-nonscalar-form"></a>
-- [`AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its scalar slot with one class, and admits all five in its `In` slot](sources/evaluation-and-application-routes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)
+- [`AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its scalar slot with one class, and admits all five in its `In` slot](sources/static-admission-and-class-probes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)
 <a id="src-later-position-class-is-total-and-presence-is-admitted"></a>
-- [Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated](sources/evaluation-and-application-routes.md#src-later-position-class-is-total-and-presence-is-admitted)
+- [Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated](sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)
 <a id="src-later-position-kinds-and-group-expansion-class"></a>
-- [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/evaluation-and-application-routes.md#src-later-position-kinds-and-group-expansion-class)
+- [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/static-admission-and-class-probes.md#src-later-position-kinds-and-group-expansion-class)
 <a id="src-filtered-star-temporal-carriers-and-binding-depth"></a>
-- [A `Having`-filtered star is admitted wherever a plain star is on all three temporal carriers, the component gate reads through it, and the binding relation re-derives independently](sources/evaluation-and-application-routes.md#src-filtered-star-temporal-carriers-and-binding-depth)
+- [A `Having`-filtered star is admitted wherever a plain star is on all three temporal carriers, the component gate reads through it, and the binding relation re-derives independently](sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)
 <a id="src-distinct-count-component-set-and-locus"></a>
-- [`NumberOfDifferentValues` gates temporal operands by component set, not declared format; date-first class and group-presence locus confirmed locally](sources/evaluation-and-application-routes.md#src-distinct-count-component-set-and-locus)
+- [`NumberOfDifferentValues` gates temporal operands by component set, not declared format; date-first class and group-presence locus confirmed locally](sources/static-admission-and-class-probes.md#src-distinct-count-component-set-and-locus)
 <a id="src-distinct-count-operand-domain"></a>
-- [`NumberOfDifferentValues` admits Custom as string-like, splits homogeneity into two codes, and counts expanded operands for arity](sources/evaluation-and-application-routes.md#src-distinct-count-operand-domain)
+- [`NumberOfDifferentValues` admits Custom as string-like, splits homogeneity into two codes, and counts expanded operands for arity](sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain)
 
 <a id="src-extensible-enumeration-has-no-dm-json-carrier"></a>
-- [Extensible Enumeration is a String type's runtime quality with no DM-JSON carrier](sources/evaluation-and-application-routes.md#src-extensible-enumeration-has-no-dm-json-carrier)
+- [Extensible Enumeration is a String type's runtime quality with no DM-JSON carrier](sources/static-admission-and-class-probes.md#src-extensible-enumeration-has-no-dm-json-carrier)
 <a id="src-validtype-operand-gates"></a>
-- [The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals](sources/evaluation-and-application-routes.md#src-validtype-operand-gates)
+- [The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals](sources/static-admission-and-class-probes.md#src-validtype-operand-gates)
 
 <a id="src-aggregate-operand-list-takes-paths-only"></a>
 - [Composition is one-way: an aggregate nests inside a wrapper, but no expression nests inside an aggregate's operand list](sources/computation-placement-and-constant-probes.md#src-aggregate-operand-list-takes-paths-only)

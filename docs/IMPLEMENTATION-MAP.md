@@ -131,91 +131,91 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 #### Numeric and temporal capabilities
 
 <a id="5--numbers-and-decimals"></a>
-- [§5 numbers and decimals](implementation/numeric-and-temporal.md#5--numbers-and-decimals)
+- [§5 numbers and decimals](implementation/numeric.md#5--numbers-and-decimals)
 <a id="6--dates-and-time"></a>
-- [§6 dates and time](implementation/numeric-and-temporal.md#6--dates-and-time)
+- [§6 dates and time](implementation/temporal.md#6--dates-and-time)
 <a id="cap-arithmetic-and-scale-analysis"></a>
-- [Arithmetic and scale analysis](implementation/numeric-and-temporal.md#cap-arithmetic-and-scale-analysis)
+- [Arithmetic and scale analysis](implementation/numeric.md#cap-arithmetic-and-scale-analysis)
 <a id="cap-fillability-and-comparison"></a>
-- [Fillability and comparison](implementation/numeric-and-temporal.md#cap-fillability-and-comparison)
+- [Fillability and comparison](implementation/numeric.md#cap-fillability-and-comparison)
 <a id="cap-numeric-wrappers-and-extrema"></a>
-- [Numeric wrappers and extrema](implementation/numeric-and-temporal.md#cap-numeric-wrappers-and-extrema)
+- [Numeric wrappers and extrema](implementation/numeric.md#cap-numeric-wrappers-and-extrema)
 <a id="cap-number-source-conversions"></a>
-- [Number source conversions](implementation/numeric-and-temporal.md#cap-number-source-conversions)
+- [Number source conversions](implementation/numeric.md#cap-number-source-conversions)
 <a id="cap-number-aggregates"></a>
-- [Number aggregates](implementation/numeric-and-temporal.md#cap-number-aggregates)
+- [Number aggregates](implementation/numeric.md#cap-number-aggregates)
 <a id="cap-stored-number-formal-read"></a>
-- [Stored Number formal read](implementation/numeric-and-temporal.md#cap-stored-number-formal-read)
+- [Stored Number formal read](implementation/numeric.md#cap-stored-number-formal-read)
 <a id="cap-stored-decimal-identity"></a>
-- [Stored decimal identity](implementation/numeric-and-temporal.md#cap-stored-decimal-identity)
+- [Stored decimal identity](implementation/numeric.md#cap-stored-decimal-identity)
 <a id="cap-number-target-and-delta"></a>
-- [Number target and delta](implementation/numeric-and-temporal.md#cap-number-target-and-delta)
+- [Number target and delta](implementation/numeric.md#cap-number-target-and-delta)
 <a id="cap-scalar-number-computation"></a>
-- [Scalar Number computation](implementation/numeric-and-temporal.md#cap-scalar-number-computation)
+- [Scalar Number computation](implementation/numeric.md#cap-scalar-number-computation)
 <a id="cap-addressed-numeric-operation-consumer"></a>
-- [Addressed numeric-operation consumer](implementation/numeric-and-temporal.md#cap-addressed-numeric-operation-consumer)
+- [Addressed numeric-operation consumer](implementation/numeric.md#cap-addressed-numeric-operation-consumer)
 <a id="resolved-date-range-overlap-truth-and-operator-scans"></a>
-- [Date construction and Base Year](implementation/numeric-and-temporal.md#resolved-date-range-overlap-truth-and-operator-scans)
+- [Date construction and Base Year](implementation/date-range.md#resolved-date-range-overlap-truth-and-operator-scans)
 <a id="resolved-direct-date-construction-and-base-year-date-sources"></a>
-- [Date construction and Base Year](implementation/numeric-and-temporal.md#resolved-direct-date-construction-and-base-year-date-sources)
+- [Date construction and Base Year](implementation/temporal.md#resolved-direct-date-construction-and-base-year-date-sources)
 <a id="differenceindays-concrete-profile-closure"></a>
-- [Date construction and Base Year](implementation/numeric-and-temporal.md#differenceindays-concrete-profile-closure)
+- [Date construction and Base Year](implementation/temporal.md#differenceindays-concrete-profile-closure)
 <a id="cap-date-construction-and-base-year"></a>
-- [Date construction and Base Year](implementation/numeric-and-temporal.md#cap-date-construction-and-base-year)
+- [Date construction and Base Year](implementation/temporal.md#cap-date-construction-and-base-year)
 <a id="cap-model-zone-profile"></a>
-- [Model-zone profile](implementation/numeric-and-temporal.md#cap-model-zone-profile)
+- [Model-zone profile](implementation/temporal.md#cap-model-zone-profile)
 <a id="cap-temporal-differences"></a>
-- [Temporal differences](implementation/numeric-and-temporal.md#cap-temporal-differences)
+- [Temporal differences](implementation/temporal.md#cap-temporal-differences)
 <a id="cap-calendar-shifts"></a>
-- [Calendar shifts](implementation/numeric-and-temporal.md#cap-calendar-shifts)
+- [Calendar shifts](implementation/temporal.md#cap-calendar-shifts)
 <a id="cap-component-authoring"></a>
-- [Component authoring](implementation/numeric-and-temporal.md#cap-component-authoring)
+- [Component authoring](implementation/temporal.md#cap-component-authoring)
 <a id="cap-temporal-target-computation-application"></a>
-- [Temporal target/computation/application](implementation/numeric-and-temporal.md#cap-temporal-target-computation-application)
+- [Temporal target/computation/application](implementation/temporal.md#cap-temporal-target-computation-application)
 <a id="cap-full-date-stored-classifier"></a>
-- [Bounded full-Date stored classifier](implementation/numeric-and-temporal.md#cap-full-date-stored-classifier)
+- [Bounded full-Date stored classifier](implementation/temporal.md#cap-full-date-stored-classifier)
 <a id="cap-datetime-stored-input"></a>
-- [Bounded DateTime stored classifier](implementation/numeric-and-temporal.md#cap-datetime-stored-input)
+- [Bounded DateTime stored classifier](implementation/temporal.md#cap-datetime-stored-input)
 <a id="cap-omitting-date-input"></a>
-- [Component-omitting Date stored classifier](implementation/numeric-and-temporal.md#cap-omitting-date-input)
+- [Component-omitting Date stored classifier](implementation/temporal.md#cap-omitting-date-input)
 <a id="cap-filled-field-count"></a>
-- [`NumberOfFilledFields` validation count](implementation/numeric-and-temporal.md#cap-filled-field-count)
+- [`NumberOfFilledFields` validation count](implementation/temporal.md#cap-filled-field-count)
 <a id="cap-date-from-datetime"></a>
-- [`DateFromDateTime` extractor](implementation/numeric-and-temporal.md#cap-date-from-datetime)
+- [`DateFromDateTime` extractor](implementation/temporal.md#cap-date-from-datetime)
 <a id="cap-value-as-date-locus"></a>
-- [`ValueAsDate` reading locus](implementation/numeric-and-temporal.md#cap-value-as-date-locus)
+- [`ValueAsDate` reading locus](implementation/temporal.md#cap-value-as-date-locus)
 <a id="cap-document-temporal-coherence"></a>
-- [Placed-temporal-cell coherence property](implementation/numeric-and-temporal.md#cap-document-temporal-coherence)
+- [Placed-temporal-cell coherence property](implementation/temporal.md#cap-document-temporal-coherence)
 <a id="cap-time-stored-input"></a>
-- [Bounded Time stored classifier](implementation/numeric-and-temporal.md#cap-time-stored-input)
+- [Bounded Time stored classifier](implementation/temporal.md#cap-time-stored-input)
 <a id="cap-partial-date-stored-input"></a>
-- [Bounded partially known Date stored classifier](implementation/numeric-and-temporal.md#cap-partial-date-stored-input)
+- [Bounded partially known Date stored classifier](implementation/temporal.md#cap-partial-date-stored-input)
 <a id="cap-temporal-value-identity"></a>
-- [Universal temporal value identity](implementation/numeric-and-temporal.md#cap-temporal-value-identity)
+- [Universal temporal value identity](implementation/temporal.md#cap-temporal-value-identity)
 <a id="cap-date-range-checked-declaration"></a>
-- [Checked DateRange declaration and admission](implementation/numeric-and-temporal.md#cap-date-range-checked-declaration)
+- [Checked DateRange declaration and admission](implementation/date-range.md#cap-date-range-checked-declaration)
 <a id="cap-date-range-construction-computation"></a>
-- [Direct DateRange construction computation](implementation/numeric-and-temporal.md#cap-date-range-construction-computation)
+- [Direct DateRange construction computation](implementation/date-range.md#cap-date-range-construction-computation)
 <a id="cap-indexed-date-range-construction-computation"></a>
-- [String-keyed DateRange construction computation](implementation/numeric-and-temporal.md#cap-indexed-date-range-construction-computation)
+- [String-keyed DateRange construction computation](implementation/date-range.md#cap-indexed-date-range-construction-computation)
 <a id="cap-checked-date-range-bound"></a>
-- [Checked direct DateRange bound extraction, fixed-Date comparison, and components](implementation/numeric-and-temporal.md#cap-checked-date-range-bound)
+- [Checked direct DateRange bound extraction, fixed-Date comparison, and components](implementation/date-range.md#cap-checked-date-range-bound)
 <a id="cap-stored-date-range-equality"></a>
-- [Checked stored-versus-stored DateRange equality](implementation/numeric-and-temporal.md#cap-stored-date-range-equality)
+- [Checked stored-versus-stored DateRange equality](implementation/date-range.md#cap-stored-date-range-equality)
 <a id="cap-unconfigured-yearless-date-range-bound"></a>
-- [Unconfigured yearless DateRange bound extraction and components](implementation/numeric-and-temporal.md#cap-unconfigured-yearless-date-range-bound)
+- [Unconfigured yearless DateRange bound extraction and components](implementation/date-range.md#cap-unconfigured-yearless-date-range-bound)
 <a id="cap-date-range-bound-pair-comparison"></a>
-- [Checked DateRange endpoint-pair comparison](implementation/numeric-and-temporal.md#cap-date-range-bound-pair-comparison)
+- [Checked DateRange endpoint-pair comparison](implementation/date-range.md#cap-date-range-bound-pair-comparison)
 <a id="cap-date-range-bound-component-operand"></a>
-- [The numeric Date component of a selected DateRange endpoint](implementation/numeric-and-temporal.md#cap-date-range-bound-component-operand)
+- [The numeric Date component of a selected DateRange endpoint](implementation/date-range.md#cap-date-range-bound-component-operand)
 <a id="cap-iterated-date-range-conditions"></a>
-- [DateRange conditions read at the rule's iterating row](implementation/numeric-and-temporal.md#cap-iterated-date-range-conditions)
+- [DateRange conditions read at the rule's iterating row](implementation/date-range.md#cap-iterated-date-range-conditions)
 <a id="cap-date-range-repeatable-operand-locus"></a>
-- [Repeatable-operand rule locus across the DateRange carriers](implementation/numeric-and-temporal.md#cap-date-range-repeatable-operand-locus)
+- [Repeatable-operand rule locus across the DateRange carriers](implementation/date-range.md#cap-date-range-repeatable-operand-locus)
 <a id="cap-temporal-extrema"></a>
-- [Temporal extrema](implementation/numeric-and-temporal.md#cap-temporal-extrema)
+- [Temporal extrema](implementation/temporal.md#cap-temporal-extrema)
 <a id="cap-temporal-comparison-and-aggregates"></a>
-- [Temporal comparison and aggregates](implementation/numeric-and-temporal.md#cap-temporal-comparison-and-aggregates)
+- [Temporal comparison and aggregates](implementation/temporal.md#cap-temporal-comparison-and-aggregates)
 
 #### String and enumeration capabilities
 

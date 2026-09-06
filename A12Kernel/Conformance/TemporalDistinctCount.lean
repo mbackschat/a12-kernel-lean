@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.TemporalDistinctCount
 differently, so every row here is paired with the neighbour's answer on the identical list. That
 pairing is the point: a gate that merely *looked* right on this operator would be indistinguishable
 from the neighbour's until a pair separates them, and one such pair exists
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-set-and-locus),
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-distinct-count-component-set-and-locus),
 nine `rule check` rows in one batch).
 
 The fixture's component sets agree with each declaration's format, which is what any model this

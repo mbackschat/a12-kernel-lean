@@ -11,7 +11,7 @@ this module owns.
 fields spelled `yyyy-MM-dd` and `dd.MM.yyyy` name the same components and are **admitted** here,
 while the neighbouring uniqueness operator refuses that exact pair; a differing set such as
 `yyyy-MM-dd` beside `yyyy-MM` is refused `MVK_DATEFORMATS_NOT_COMPATIBLE` naming both formats
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-set-and-locus)).
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-distinct-count-component-set-and-locus)).
 So the two operators genuinely differ on one field pair and neither gate may be read off the other.
 
 The component set is taken from the **declaration**, which is equivalent to reading it off the
