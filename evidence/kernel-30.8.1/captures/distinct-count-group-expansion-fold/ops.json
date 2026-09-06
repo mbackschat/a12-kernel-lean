@@ -1,0 +1,41 @@
+[
+ {
+  "id": "1-fixed-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Grp_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Box) == 1",
+   "--code",
+   "G1"
+  ]
+ },
+ {
+  "id": "2-starred-repeatable-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Grp_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Rows*) == 1",
+   "--code",
+   "G2"
+  ]
+ },
+ {
+  "id": "3-nested-subgroup-alone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Grp_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Box/Sub) == 1",
+   "--code",
+   "G3"
+  ]
+ }
+]

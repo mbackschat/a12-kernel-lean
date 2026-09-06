@@ -1,0 +1,1 @@
+{"field": "/Grp_DM/Reference", "code": "B3", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Box) == 3", "messages": [{"locale": "en_US", "text": "box counts three"}]}

@@ -1,0 +1,192 @@
+{
+  "header" : {
+    "id" : "Grp_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Grp_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Grp_DM",
+        "name" : "Grp_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Grp_DM/Reference",
+            "name" : "Reference",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Grp_DM/Box",
+            "name" : "Box",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Grp_DM/Box/D1",
+                "name" : "D1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Grp_DM/Box/D2",
+                "name" : "D2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Grp_DM/Box/Sub",
+                "name" : "Sub",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Grp_DM/Box/Sub/D3",
+                    "name" : "D3",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateType",
+                        "DateType" : {
+                          "format" : "yyyy-MM-dd"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Grp_DM/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Grp_DM/Rows/RD",
+                "name" : "RD",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Grp_DM/B1",
+            "name" : "B1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "B1",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Box) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "box counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Grp_DM/B2",
+            "name" : "B2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "B2",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Box) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "box counts two"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Grp_DM/B3",
+            "name" : "B3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "B3",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Box) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "box counts three"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Grp_DM/R1",
+            "name" : "R1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "R1",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Rows*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "rows count one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Grp_DM/R2",
+            "name" : "R2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "R2",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Rows*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "rows count two"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

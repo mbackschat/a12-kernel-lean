@@ -1,0 +1,164 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Grp_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "nested-differs",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "B2",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "box counts two",
+              "referenced" : [
+                "Grp_DM/Box/D1",
+                "Grp_DM/Box/D2",
+                "Grp_DM/Box/Sub/D3",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R1",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "rows count one",
+              "referenced" : [
+                "/Grp_DM[1]/Rows[0]/RD",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [
+                "/Grp_DM[1]/Rows[0]/RD"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "B2",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "box counts two",
+              "referenced" : [
+                "Grp_DM/Box/D1",
+                "Grp_DM/Box/D2",
+                "Grp_DM/Box/Sub/D3",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R1",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "rows count one",
+              "referenced" : [
+                "/Grp_DM[1]/Rows[0]/RD",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [
+                "/Grp_DM[1]/Rows[0]/RD"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "all-distinct",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "B3",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "box counts three",
+              "referenced" : [
+                "Grp_DM/Box/D1",
+                "Grp_DM/Box/D2",
+                "Grp_DM/Box/Sub/D3",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R2",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "rows count two",
+              "referenced" : [
+                "/Grp_DM[1]/Rows[0]/RD",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [
+                "/Grp_DM[1]/Rows[0]/RD"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "B3",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "box counts three",
+              "referenced" : [
+                "Grp_DM/Box/D1",
+                "Grp_DM/Box/D2",
+                "Grp_DM/Box/Sub/D3",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R2",
+              "field" : "Grp_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "rows count two",
+              "referenced" : [
+                "/Grp_DM[1]/Rows[0]/RD",
+                "Grp_DM/Reference"
+              ],
+              "fillToFix" : [
+                "/Grp_DM[1]/Rows[0]/RD"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

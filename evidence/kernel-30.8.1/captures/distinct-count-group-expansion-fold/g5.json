@@ -1,0 +1,1 @@
+{"field": "/Grp_DM/Reference", "code": "R2", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(/Grp_DM/Rows*) == 2", "messages": [{"locale": "en_US", "text": "rows count two"}]}

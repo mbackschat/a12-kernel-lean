@@ -1,0 +1,1 @@
+{"model": "Grp_DM2.json", "locale": "en_US", "observe": ["validateFull"], "rows": [{"name": "nested-differs", "document": "doc-nested.json"}, {"name": "all-distinct", "document": "doc-distinct.json"}]}
