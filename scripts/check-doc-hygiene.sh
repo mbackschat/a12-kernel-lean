@@ -243,6 +243,41 @@ if git rev-parse --verify --quiet "$range_base" >/dev/null; then
   done
 fi
 
+# An absence claim must name the surface it searched. Triggered on the phrasing CLAUDE.md MANDATES
+# ("no witness known as of", "unmeasured", "untested", "never") rather than the spellings it forbids,
+# because 0 of the 283 existing `limit` rows contain a forbidden spelling: a compliant author never
+# writes one, so a gate keyed to them would fire on nothing. `limit` is untouched and keeps bounding
+# positive claims. Scoped to records this range adds or modifies, because a denominator can only be
+# written by someone who knows which surface was actually searched.
+# LIMIT: this reaches a claim phrased as a negative existential, not an absence stated without one.
+# A claim like "an over-limit row receives no outcome at all" carries no trigger word and is missed.
+denominator_range="${A12_REVISION_RANGE:-HEAD~1..HEAD}"
+if git rev-parse --verify --quiet "${denominator_range%%..*}" >/dev/null; then
+  while IFS= read -r shard; do
+    [[ -f "$shard" ]] || continue
+    added_claims="$(git diff "$denominator_range" -- "$shard" | grep '^+- `claim`:' | sed 's/^+//' || true)"
+    [[ -z "$added_claims" ]] && continue
+    while IFS= read -r offender; do
+      [[ -z "$offender" ]] && continue
+      echo "${shard}: record ${offender} states an absence but carries no \`denominator\` row; name the surface actually searched" >&2
+      failed=true
+    done < <(printf '%s\n' "$added_claims" | awk '
+      NR==FNR { added[$0]=1; next }
+      /^<a id="src-/ {
+        if (anchor != "" && neg && !den) print anchor
+        anchor = $0; sub(/^<a id="/, "", anchor); sub(/"><\/a>$/, "", anchor)
+        neg = 0; den = 0; next
+      }
+      /^- `claim`:/ {
+        if ($0 in added && tolower($0) ~ /no witness|unmeasured|not measured|untested|never/) neg = 1
+        next
+      }
+      /^- `denominator`:/ { den = 1 }
+      END { if (anchor != "" && neg && !den) print anchor }
+    ' - "$shard")
+  done < <(git diff --name-only "$denominator_range" -- docs/sources/ | grep '\.md$' || true)
+fi
+
 if [[ "$failed" == true ]]; then
   exit 1
 fi
