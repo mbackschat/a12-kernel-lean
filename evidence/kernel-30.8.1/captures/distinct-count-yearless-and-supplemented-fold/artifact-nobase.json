@@ -1,0 +1,156 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "NoBase_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "yearless-no-baseyear-equal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NB1",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month pair counts one",
+              "referenced" : [
+                "Yearless_DM/M1",
+                "Yearless_DM/M2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ND1",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month-day pair counts one",
+              "referenced" : [
+                "Yearless_DM/MD1",
+                "Yearless_DM/MD2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NB1",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month pair counts one",
+              "referenced" : [
+                "Yearless_DM/M1",
+                "Yearless_DM/M2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ND1",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month-day pair counts one",
+              "referenced" : [
+                "Yearless_DM/MD1",
+                "Yearless_DM/MD2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "yearless-no-baseyear-unequal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NB2",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month pair counts two",
+              "referenced" : [
+                "Yearless_DM/M1",
+                "Yearless_DM/M2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ND2",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month-day pair counts two",
+              "referenced" : [
+                "Yearless_DM/MD1",
+                "Yearless_DM/MD2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NB2",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month pair counts two",
+              "referenced" : [
+                "Yearless_DM/M1",
+                "Yearless_DM/M2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ND2",
+              "field" : "Yearless_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless month-day pair counts two",
+              "referenced" : [
+                "Yearless_DM/MD1",
+                "Yearless_DM/MD2",
+                "Yearless_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

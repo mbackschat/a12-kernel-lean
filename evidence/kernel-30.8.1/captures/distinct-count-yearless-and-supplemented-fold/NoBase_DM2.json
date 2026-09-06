@@ -1,0 +1,178 @@
+{
+  "header" : {
+    "id" : "Yearless_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Yearless_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Yearless_DM",
+        "name" : "Yearless_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Yearless_DM/Reference",
+            "name" : "Reference",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Yearless_DM/M1",
+            "name" : "M1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Yearless_DM/M2",
+            "name" : "M2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Yearless_DM/MD1",
+            "name" : "MD1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Yearless_DM/MD2",
+            "name" : "MD2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Yearless_DM/Y1",
+            "name" : "Y1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Yearless_DM/Y2",
+            "name" : "Y2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Yearless_DM/NB1",
+            "name" : "NB1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "NB1",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(M1, M2) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "yearless month pair counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Yearless_DM/NB2",
+            "name" : "NB2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "NB2",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(M1, M2) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "yearless month pair counts two"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Yearless_DM/ND1",
+            "name" : "ND1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "ND1",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(MD1, MD2) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "yearless month-day pair counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Yearless_DM/ND2",
+            "name" : "ND2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "ND2",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(MD1, MD2) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "yearless month-day pair counts two"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

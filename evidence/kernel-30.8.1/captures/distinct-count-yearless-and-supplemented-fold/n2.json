@@ -1,0 +1,1 @@
+{"field": "/Yearless_DM/Reference", "code": "NB2", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(M1, M2) == 2", "messages": [{"locale": "en_US", "text": "yearless month pair counts two"}]}
