@@ -498,14 +498,36 @@ private def temporalDistinctCountCell
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause
 
-/-- Every operand as a slot, or `none` as soon as one is a group expansion. -/
+/-- Every operand as a slot this fold can resolve, or `none` as soon as one is a **starred** group.
+
+    A **fixed** group contributes its expansion's fields, which is the measured extent: the count
+    over a nonrepeatable group reaches the whole subtree, a nested subgroup's field included
+    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-group-expansion-fold)). Each field is then
+    projected exactly as an explicit operand is, because the expansion contributes values and not a
+    shape of its own.
+
+    **This is a fold-local resolution and never a lowering of the operand.** The authored group
+    reference is retained precisely because the wildcard gate reads the authored path, so a group
+    operand and its written-out expansion are two different models statically — the warning
+    `CheckedEntityGroupSource` carries. Nothing here may be reused to rewrite one into the other;
+    it decides which cells the count reads, after admission has already been settled on the authored
+    form.
+
+    A **starred** group is refused instead of lifted: its expanded fields are addressed under a star
+    and the `.field` arm addresses a fixed path, so lifting them would read row one and silently
+    answer for a single row. Its runtime is measured and its arm is the row this fold still owes. -/
 def temporalDistinctCountSlots? :
     List (CheckedTemporalDistinctCountOperand model) →
       Option (List (CheckedTemporalUniquenessOperand model))
   | [] => some []
-  | .group _ :: _ => none
   | .slot operand :: remaining =>
       (temporalDistinctCountSlots? remaining).map (operand :: ·)
+  | .group source :: remaining =>
+      if source.source.isStarred then
+        none
+      else
+        (temporalDistinctCountSlots? remaining).map
+          ((source.first :: source.rest).map .field ++ ·)
 
 /-- Whether the fold's atom for a time-bearing set holds exactly the components that set names.
 
@@ -541,7 +563,10 @@ structure CheckedTemporalDistinctCountRun (model : FlatModel) where
     Kernel admits both shapes — so this is its own type rather than an arm of the elaboration error,
     which exists to carry measured Kernel codes and would have to project `none` for both. -/
 inductive TemporalDistinctCountRunLimit where
-  | groupOperand
+  /-- A **starred** group operand. Its expansion's fields are addressed under a star, which the
+      resolvable `.field` arm cannot express, so lifting them would answer for row one alone. The
+      fixed group's expansion does fold; only this shape is outstanding. -/
+  | starredGroupOperand
   /-- A time-bearing set naming only some of the components its atom carries. Statically admitted and
       unevaluated, because the time atoms cannot be masked to a partial set the way the date ones
       are; `timeBearingSetIsComplete` owns the reason and the format-domain note. -/
@@ -554,7 +579,7 @@ def checkTemporalDistinctCountRun
     Except TemporalDistinctCountRunLimit
       (CheckedTemporalDistinctCountRun model) :=
   match hSlots : temporalDistinctCountSlots? source.operands with
-  | none => throw .groupOperand
+  | none => throw .starredGroupOperand
   | some slots =>
       if hTimeSet : timeBearingSetIsComplete source.components = true then
         .ok { source, slots, slotsOwned := hSlots, timeSetComplete := hTimeSet }

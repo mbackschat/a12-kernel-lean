@@ -137,7 +137,13 @@ private def model : FlatModel := {
       temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
     { id := 32, groupPath := ["Probe"], name := "PartialStamp2"
       policy := { kind := .temporal .dateTime dayAndClock }
-      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }]
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+    -- A repeatable group carrying dates, so the starred-group restriction has a reachable case.
+    { id := 33, groupPath := ["Probe", "RepBox"], name := "RepDate"
+      policy := { kind := .temporal .date TemporalComponents.fullDate }
+      repeatableScope := [1]
+      temporalTargetPolicy := some { format := "yyyy-MM-dd" } }]
+  repeatableGroups := [{ level := 1, path := ["Probe", "RepBox"], repeatability := some 3 }]
 }
 
 /-- The identical model with a Base Year declared. Every supplementation row below pairs against its
@@ -264,6 +270,13 @@ private def groupOperand (group : String) : SurfaceFieldEntitySource :=
   { first := .group (.path { base := .absolute, groups := ["Probe", group] })
     rest := [] }
 
+/-- The **starred** form of a repeatable group operand, which the fold refuses. -/
+private def starredGroupOperand (group : String) : SurfaceFieldEntitySource :=
+  { first := .starredGroup
+      { base := .absolute
+        groups := [{ name := "Probe" }, { name := group, starred := true }] }
+    rest := [] }
+
 private def distinctGroup? (group : String) : Option KernelStaticDiagnostic :=
   match elaborateTemporalDistinctCountSource model ["Probe"] (groupOperand group) with
   | .ok _ => none
@@ -358,6 +371,17 @@ private def dateValue (year month day : Nat) : TemporalValue :=
 private def temporalCell (field : FieldId) (stored : String)
     (value : TemporalValue) : ClassifiedCellInput :=
   { address := { field, path := [] }, stored, raw := .parsed (.temporal value) }
+
+/-- The same fold over a **group** operand, so a case can hold the cells fixed and vary only whether
+    the operand is written as a group or as its fields. -/
+private def countGroup? (group : String) (cells : List ClassifiedCellInput) :
+    Option NumericOperand := do
+  let source ←
+    (elaborateTemporalDistinctCountSource model ["Probe"] (groupOperand group)).toOption
+  let run ← (checkTemporalDistinctCountRun source).toOption
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
+  (run.evaluate document []).toOption
 
 private def count? (first second : String) (cells : List ClassifiedCellInput) :
     Option NumericOperand := do
@@ -484,17 +508,42 @@ example :
       some (.value 2 .fixed) := by
   native_decide
 
-/- The group restriction is the other one, and it is reachable rather than hypothetical: `MixBox` is
-   a group expansion this operator **admits statically**, locked above, and it still has no evaluator
-   because no retained row measures a group expansion's runtime here. -/
+/- **A starred repeatable group is the shape the fold still refuses**, and it is reachable rather
+   than hypothetical: the Kernel evaluates it — a starred group's count moves 1 → 2 across two rows
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-group-expansion-fold)) — but its expanded
+   fields are addressed under a star, which the resolvable slot arm cannot express, so lifting them
+   would answer for row one alone. The fixed group beside it is what makes this a shape restriction
+   and not a refusal of every group. -/
 example :
-    (match (elaborateTemporalDistinctCountSource model ["Probe"]
-        (groupOperand "MixBox")).toOption with
+    ((match (elaborateTemporalDistinctCountSource model ["Probe"]
+        (starredGroupOperand "RepBox")).toOption with
       | some source =>
           match checkTemporalDistinctCountRun source with
-          | .error .groupOperand => true
+          | .error .starredGroupOperand => true
           | _ => false
-      | none => false) = true := by
+      | none => false),
+      (match (elaborateTemporalDistinctCountSource model ["Probe"]
+        (groupOperand "MixBox")).toOption with
+      | some source => (checkTemporalDistinctCountRun source).toOption.isSome
+      | none => false)) =
+      (true, true) := by
+  native_decide
+
+/- **A fixed group's expansion folds, and it folds each field exactly as an explicit operand.**
+   `MixBox` declares `IsoA` at `yyyy-MM-dd` and `DotB` at `dd.MM.yyyy` — one component set in two
+   spellings, which is the pair this operator admits and its neighbour refuses — so one calendar day
+   spelled both ways counts once and two days count twice. The extent is the measured one: the count
+   over a nonrepeatable group reaches its whole subtree
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-group-expansion-fold)). -/
+example :
+    countGroup? "MixBox"
+        [temporalCell 10 "2024-03-05" (dateValue 2024 3 5),
+          temporalCell 11 "05.03.2024" (dateValue 2024 3 5)] =
+      some (.value 1 .fixed) ∧
+    countGroup? "MixBox"
+        [temporalCell 10 "2024-03-05" (dateValue 2024 3 5),
+          temporalCell 11 "06.03.2024" (dateValue 2024 3 6)] =
+      some (.value 2 .fixed) := by
   native_decide
 
 /- And the complete-date pair the same gate admits, which keeps the rows above from reading as "this
