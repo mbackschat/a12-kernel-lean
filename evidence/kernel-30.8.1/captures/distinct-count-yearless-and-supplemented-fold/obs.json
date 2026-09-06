@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+    "state" : "CLEAN"
+  },
+  "model" : "ca6be275cadbbbe82b6d31c496e92720fe34b9fb9365326c44ec0479fa2cf1b8",
+  "observations" : [ {
+    "id" : "1-yearless-month-pair",
+    "inputHash" : "310eecb8122b92987a5d22288c80c4516e7aa6c0723fc45db81fe4aa08bc27b7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-yearless-monthday-pair",
+    "inputHash" : "3bd20ab6755229cc744dde039405b6499126649266774d4d3388553690bd110e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "3-year-only-pair",
+    "inputHash" : "6f5898871069d7fc222b2214148a79beedac0c5d0b485fd067d018e88af6fb3a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "4-yearless-against-yearbearing",
+    "inputHash" : "9a0c2fe5e6f8138f40f818ca2fbe20549f9f726c9d019074a152fee0ca1458e1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DATEFORMATS_NOT_COMPATIBLE" ]
+  } ]
+}

@@ -1,0 +1,156 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Omit_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "omitting-and-fragment-equal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FR1EQ",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "fragment pair counts one",
+              "referenced" : [
+                "Omit_DM/Frag1",
+                "Omit_DM/Frag2",
+                "Omit_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "YM1EQ",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "omitting pair counts one",
+              "referenced" : [
+                "Omit_DM/Reference",
+                "Omit_DM/YM1",
+                "Omit_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FR1EQ",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "fragment pair counts one",
+              "referenced" : [
+                "Omit_DM/Frag1",
+                "Omit_DM/Frag2",
+                "Omit_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "YM1EQ",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "omitting pair counts one",
+              "referenced" : [
+                "Omit_DM/Reference",
+                "Omit_DM/YM1",
+                "Omit_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "omitting-and-fragment-unequal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FR2NE",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "fragment pair counts two",
+              "referenced" : [
+                "Omit_DM/Frag1",
+                "Omit_DM/Frag2",
+                "Omit_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "YM2NE",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "omitting pair counts two",
+              "referenced" : [
+                "Omit_DM/Reference",
+                "Omit_DM/YM1",
+                "Omit_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FR2NE",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "fragment pair counts two",
+              "referenced" : [
+                "Omit_DM/Frag1",
+                "Omit_DM/Frag2",
+                "Omit_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "YM2NE",
+              "field" : "Omit_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "omitting pair counts two",
+              "referenced" : [
+                "Omit_DM/Reference",
+                "Omit_DM/YM1",
+                "Omit_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"field": "/Yearless_DM/Reference", "code": "SUP2", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(M1, YM) == 2", "messages": [{"locale": "en_US", "text": "supplemented pair counts two"}]}

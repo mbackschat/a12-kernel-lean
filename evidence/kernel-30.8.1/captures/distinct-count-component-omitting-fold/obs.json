@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+    "state" : "CLEAN"
+  },
+  "model" : "89a18283638a48bf7365cf9939adf802b020273e3a1c130cdbed038b9600fc59",
+  "observations" : [ {
+    "id" : "1-component-omitting-date-pair",
+    "inputHash" : "17fc21d8c64a29826a1360fa5390768b29f60b85e3f009f1a905e8adf4be90e8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-omitting-beside-complete",
+    "inputHash" : "3e8dd30eaf0a2d7b636a051c157ca57942506a2e1cbecd3454acfeaa67514806",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DATEFORMATS_NOT_COMPATIBLE" ]
+  }, {
+    "id" : "3-partial-fragment-pair",
+    "inputHash" : "8999295f1007c2b36a8575866cc660c9e72082f891bb16b589db5ca9a19b4932",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "4-complete-pair-control",
+    "inputHash" : "86aaed15e0ac1782f9c62e5ae21c3dbc04c4d79111770e6d1cccafda4558a908",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  } ]
+}

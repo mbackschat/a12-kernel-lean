@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+    "state" : "CLEAN"
+  },
+  "model" : "54d72a37f9424714c9060dd10c73be20f63108d31a0c3bec981d8e15afeaba2c",
+  "observations" : [ {
+    "id" : "1-yearless-vs-yearbearing-with-baseyear",
+    "inputHash" : "12e84688b73f71fff720e696a881556042a4a511d54f6688aa164edfd9b450a2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-yearless-monthday-vs-yearbearing",
+    "inputHash" : "b1b22f6cd710c12f6aa9ce0d5c962997d4e93fc68e97f2eb2b9f0cb4f6c2d435",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DATEFORMATS_NOT_COMPATIBLE" ]
+  }, {
+    "id" : "3-yearless-pair-still-admitted",
+    "inputHash" : "310eecb8122b92987a5d22288c80c4516e7aa6c0723fc45db81fe4aa08bc27b7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

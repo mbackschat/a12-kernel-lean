@@ -1,0 +1,54 @@
+[
+ {
+  "id": "1-component-omitting-date-pair",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Omit_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(YM1, YM2) == 1",
+   "--code",
+   "O1"
+  ]
+ },
+ {
+  "id": "2-omitting-beside-complete",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Omit_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(YM1, Full1) == 1",
+   "--code",
+   "O2"
+  ]
+ },
+ {
+  "id": "3-partial-fragment-pair",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Omit_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(Frag1, Frag2) == 1",
+   "--code",
+   "O3"
+  ]
+ },
+ {
+  "id": "4-complete-pair-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Omit_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(Full1, Full1) == 1",
+   "--code",
+   "O4"
+  ]
+ }
+]

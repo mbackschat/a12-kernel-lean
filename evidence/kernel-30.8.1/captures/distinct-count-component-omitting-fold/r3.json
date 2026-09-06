@@ -1,0 +1,1 @@
+{"field": "/Omit_DM/Reference", "code": "FR1EQ", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(Frag1, Frag2) == 1", "messages": [{"locale": "en_US", "text": "fragment pair counts one"}]}

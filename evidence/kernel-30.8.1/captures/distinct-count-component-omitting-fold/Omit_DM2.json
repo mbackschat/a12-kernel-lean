@@ -1,0 +1,166 @@
+{
+  "header" : {
+    "id" : "Omit_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Omit_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Omit_DM",
+        "name" : "Omit_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Omit_DM/Reference",
+            "name" : "Reference",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Omit_DM/YM1",
+            "name" : "YM1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Omit_DM/YM2",
+            "name" : "YM2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Omit_DM/Full1",
+            "name" : "Full1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Omit_DM/Frag1",
+            "name" : "Frag1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Omit_DM/Frag2",
+            "name" : "Frag2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Omit_DM/YM1EQ",
+            "name" : "YM1EQ",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "YM1EQ",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(YM1, YM2) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "omitting pair counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Omit_DM/YM2NE",
+            "name" : "YM2NE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "YM2NE",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(YM1, YM2) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "omitting pair counts two"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Omit_DM/FR1EQ",
+            "name" : "FR1EQ",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "FR1EQ",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(Frag1, Frag2) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "fragment pair counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Omit_DM/FR2NE",
+            "name" : "FR2NE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "FR2NE",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(Frag1, Frag2) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "fragment pair counts two"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

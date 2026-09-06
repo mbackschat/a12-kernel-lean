@@ -1,0 +1,54 @@
+[
+ {
+  "id": "1-yearless-month-pair",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Yearless_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(M1, M2) == 1",
+   "--code",
+   "Y1"
+  ]
+ },
+ {
+  "id": "2-yearless-monthday-pair",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Yearless_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(MD1, MD2) == 1",
+   "--code",
+   "Y2"
+  ]
+ },
+ {
+  "id": "3-year-only-pair",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Yearless_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(Y1, Y2) == 1",
+   "--code",
+   "Y3"
+  ]
+ },
+ {
+  "id": "4-yearless-against-yearbearing",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Yearless_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(M1, Y1) == 1",
+   "--code",
+   "Y4"
+  ]
+ }
+]

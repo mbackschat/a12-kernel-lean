@@ -1,0 +1,1 @@
+{"model": "BaseYear_DM2.json", "locale": "en_US", "observe": ["validateFull"], "rows": [{"name": "supplemented-equal", "document": "doc-sup-eq.json"}, {"name": "supplemented-unequal", "document": "doc-sup-ne.json"}]}

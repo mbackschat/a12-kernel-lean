@@ -1,0 +1,1 @@
+{"field": "/Omit_DM/Reference", "code": "YM2NE", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(YM1, YM2) == 2", "messages": [{"locale": "en_US", "text": "omitting pair counts two"}]}

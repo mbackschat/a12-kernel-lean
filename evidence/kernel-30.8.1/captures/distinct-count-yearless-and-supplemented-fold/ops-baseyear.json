@@ -1,0 +1,41 @@
+[
+ {
+  "id": "1-yearless-vs-yearbearing-with-baseyear",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Yearless_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(M1, YM) == 1",
+   "--code",
+   "B1"
+  ]
+ },
+ {
+  "id": "2-yearless-monthday-vs-yearbearing",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Yearless_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(MD1, YM) == 1",
+   "--code",
+   "B2"
+  ]
+ },
+ {
+  "id": "3-yearless-pair-still-admitted",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Yearless_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(M1, M2) == 1",
+   "--code",
+   "B3"
+  ]
+ }
+]
