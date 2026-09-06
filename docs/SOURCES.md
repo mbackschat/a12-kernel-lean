@@ -685,6 +685,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+<a id="src-repeatable-computation-row-extent"></a>
+- [A repeatable computation's row extent is exactly the instantiated rows, with no phantom tail](sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent)
 <a id="src-distinct-count-first-operand-class"></a>
 - [`NumberOfDifferentValues` classifies by its first operand](sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)
 <a id="src-extrema-operand-family-is-positional"></a>

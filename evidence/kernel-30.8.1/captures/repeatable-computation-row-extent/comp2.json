@@ -1,0 +1,15 @@
+{
+ "computedField": "/Probe/Rows/T2",
+ "group": "/Probe",
+ "alternatives": [
+  {
+   "operation": "FirstFilledValue(/Probe/Rows*/Note)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "ff"
+  }
+ ]
+}

@@ -1,0 +1,34 @@
+{
+ "model": "Probe_EXT.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "rows0",
+   "document": "doc-rows0.json"
+  },
+  {
+   "name": "rows1",
+   "document": "doc-rows1.json"
+  },
+  {
+   "name": "rows2",
+   "document": "doc-rows2.json"
+  },
+  {
+   "name": "rows3",
+   "document": "doc-rows3.json"
+  },
+  {
+   "name": "rows2-filled",
+   "document": "doc-rows2-filled.json"
+  },
+  {
+   "name": "no-rows-key",
+   "document": "doc-no-rows-key.json"
+  }
+ ]
+}

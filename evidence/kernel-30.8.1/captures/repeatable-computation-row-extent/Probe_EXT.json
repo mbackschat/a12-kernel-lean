@@ -1,0 +1,112 @@
+{
+  "header" : {
+    "id" : "Probe_EXT",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Probe_EXT",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/T",
+                "name" : "T",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/T2",
+                "name" : "T2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TComp",
+            "name" : "TComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/T",
+              "computationAlternatives" : [ {
+                "operation" : "\"fixed\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "constant"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/T2Comp",
+            "name" : "T2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/T2",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Probe/Rows*/Note)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ff"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

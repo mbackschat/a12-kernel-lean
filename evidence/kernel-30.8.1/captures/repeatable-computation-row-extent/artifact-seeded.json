@@ -1,0 +1,244 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Probe_EXT.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "rows4-seeded-over-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/T",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/T"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[2]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[3]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[4]/T",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/T",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/T"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[2]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[3]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[4]/T",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "rows3-seeded-in-capacity-control",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TComp",
+              "field" : "Probe/Rows[3]/T",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "constant",
+              "referenced" : [
+                "Probe/Rows[3]/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[2]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[3]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TComp",
+              "field" : "Probe/Rows[3]/T",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "constant",
+              "referenced" : [
+                "Probe/Rows[3]/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[2]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              },
+              {
+                "field" : "Probe/Rows[3]/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "fixed"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

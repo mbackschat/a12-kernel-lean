@@ -1,0 +1,15 @@
+{
+ "computedField": "/Probe/Rows/T",
+ "group": "/Probe",
+ "alternatives": [
+  {
+   "operation": "\"fixed\""
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "constant"
+  }
+ ]
+}

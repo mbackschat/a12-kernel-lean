@@ -1,0 +1,18 @@
+{
+ "model": "Probe_EXT.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "over-capacity",
+   "document": "doc-2c-over-capacity.json"
+  },
+  {
+   "name": "at-capacity",
+   "document": "doc-2c-at-capacity.json"
+  }
+ ]
+}
