@@ -28,6 +28,11 @@ component set in two spellings is admitted here and refused there, on the identi
 completed users whose gates genuinely differ is the case the reuse rule excludes, so the certificate
 is duplicated deliberately. A fixed group beneath an unstarred repeatable ancestor is refused by the
 ordinary binding rule, which is the shared shape checker's business and not this gate's.
+
+**Every admitted operand shape folds, the starred group included**, because a group operand resolves
+*as a group* through the shared resolver at its own depth rather than being lifted into its
+expansion's fields. The lift was the reason the starred shape had to be refused, so removing it
+closed the arm instead of widening it; `resolveDistinctCountCore` owns that reasoning.
 -/
 
 namespace A12Kernel
@@ -483,36 +488,33 @@ private def temporalDistinctCountCell
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause
 
-/-- Every operand as a slot this fold can resolve, or `none` as soon as one is a **starred** group.
+/-- The `(row × field)` extent one admitted operand reaches, whatever shape it was authored in.
 
-    A **fixed** group contributes its expansion's fields, which is the measured extent: the count
-    over a nonrepeatable group reaches the whole subtree, a nested subgroup's field included
-    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-group-expansion-fold)). Each field is then
-    projected exactly as an explicit operand is, because the expansion contributes values and not a
-    shape of its own.
+    **A group operand resolves as a group and is never lifted into its fields.** The lift this
+    replaced mapped a group's expansion to fixed-path slots, which addressed row one of anything the
+    operand reopened — so a *starred* group had to be refused to stay honest, and the refusal was
+    read as a missing arm rather than as the symptom it was. The shared group resolver already takes
+    the operand's **own depth** and enumerates every instantiated row below it, and
+    `CheckedEntityGroupSource.boundLevelCount` already distinguishes the two shapes: a fixed group's
+    whole repeatable ancestry, a starred one's `firstStar`. So both fold through one call and neither
+    needs a per-declaration star path — which `spec/07` warns against directly, since an extent read
+    off star machinery rather than the model's repeatability gets it wrong
+    ([resolver](CheckedStarDocument.lean)).
 
-    **This is a fold-local resolution and never a lowering of the operand.** The authored group
-    reference is retained precisely because the wildcard gate reads the authored path, so a group
-    operand and its written-out expansion are two different models statically — the warning
-    `CheckedEntityGroupSource` carries. Nothing here may be reused to rewrite one into the other;
-    it decides which cells the count reads, after admission has already been settled on the authored
-    form.
-
-    A **starred** group is refused instead of lifted: its expanded fields are addressed under a star
-    and the `.field` arm addresses a fixed path, so lifting them would read row one and silently
-    answer for a single row. Its runtime is measured and its arm is the row this fold still owes. -/
-def temporalDistinctCountSlots? :
-    List (CheckedTemporalDistinctCountOperand model) →
-      Option (List (CheckedTemporalUniquenessOperand model))
-  | [] => some []
-  | .slot operand :: remaining =>
-      (temporalDistinctCountSlots? remaining).map (operand :: ·)
-  | .group source :: remaining =>
-      if source.source.isStarred then
-        none
-      else
-        (temporalDistinctCountSlots? remaining).map
-          ((source.first :: source.rest).map .field ++ ·)
+    Resolution stays **fold-local and is never a lowering**: the authored reference is retained
+    because the wildcard gate reads the authored path, so a group operand and its written-out
+    expansion remain two different models statically — the warning `CheckedEntityGroupSource`
+    carries. This decides which cells the count reads, after admission was settled on the authored
+    form. -/
+def CheckedTemporalDistinctCountOperand.resolveDistinctCountCore
+    (operand : CheckedTemporalDistinctCountOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
+  match operand with
+  | .slot inner => inner.resolveValidationCore document outer
+  | .group source =>
+      document.resolveCheckedGroupEntityOperandCore outer
+        source.source.boundLevelCount source.declarations
 
 /-- Whether the fold's atom for a time-bearing set holds exactly the components that set names.
 
@@ -531,27 +533,26 @@ def timeBearingSetIsComplete (components : TemporalComponents) : Bool :=
         (components.year && components.month && components.day)))
 
 /-- One statically certified temporal distinct count that this project can also **evaluate**: a
-    time-bearing shared set names every component its atom carries, and every operand is a slot.
+    time-bearing shared set names every component its atom carries.
 
-    The set no longer has to be a *complete calendar date*, nor date-only. A component-omitting date
-    list folds at its own precision and a time-bearing one at the clock or the instant, which is what
-    the Kernel does; each date operand's omitted components are supplied canonically by the
-    projection rather than read off the cell, so a list whose declared sets differ under Base Year
+    **Every admitted operand shape now folds**, so the certificate carries no operand condition at
+    all. The set does not have to be a *complete calendar date*, nor date-only: a component-omitting
+    date list folds at its own precision and a time-bearing one at the clock or the instant, which is
+    what the Kernel does, and each date operand's omitted components are supplied canonically by the
+    projection rather than read off the cell — so a list whose declared sets differ under Base Year
     supplementation folds correctly too. -/
 structure CheckedTemporalDistinctCountRun (model : FlatModel) where
   source : CheckedTemporalDistinctCountSource model
-  slots : List (CheckedTemporalUniquenessOperand model)
-  slotsOwned : temporalDistinctCountSlots? source.operands = some slots
   timeSetComplete : timeBearingSetIsComplete source.components = true
 
-/-- Why a statically certified source has no evaluator here. **Neither is a Kernel refusal** — the
-    Kernel admits both shapes — so this is its own type rather than an arm of the elaboration error,
-    which exists to carry measured Kernel codes and would have to project `none` for both. -/
+/-- Why a statically certified source has no evaluator here. **Not a Kernel refusal** — the Kernel
+    admits the shape — so this is its own type rather than an arm of the elaboration error, which
+    exists to carry measured Kernel codes and would have to project `none` for it.
+
+    One arm, and it stays a type rather than collapsing into an `Option`: the component set it
+    carries is what a consumer needs to report the restriction, and a second arm is expected here
+    before a Kernel code ever is. -/
 inductive TemporalDistinctCountRunLimit where
-  /-- A **starred** group operand. Its expansion's fields are addressed under a star, which the
-      resolvable `.field` arm cannot express, so lifting them would answer for row one alone. The
-      fixed group's expansion does fold; only this shape is outstanding. -/
-  | starredGroupOperand
   /-- A time-bearing set naming only some of the components its atom carries. Statically admitted and
       unevaluated, because the time atoms cannot be masked to a partial set the way the date ones
       are; `timeBearingSetIsComplete` owns the reason and the format-domain note. -/
@@ -563,13 +564,10 @@ def checkTemporalDistinctCountRun
     (source : CheckedTemporalDistinctCountSource model) :
     Except TemporalDistinctCountRunLimit
       (CheckedTemporalDistinctCountRun model) :=
-  match hSlots : temporalDistinctCountSlots? source.operands with
-  | none => throw .starredGroupOperand
-  | some slots =>
-      if hTimeSet : timeBearingSetIsComplete source.components = true then
-        .ok { source, slots, slotsOwned := hSlots, timeSetComplete := hTimeSet }
-      else
-        throw (.incompleteTimeBearingSet source.components)
+  if hTimeSet : timeBearingSetIsComplete source.components = true then
+    .ok { source, timeSetComplete := hTimeSet }
+  else
+    throw (.incompleteTimeBearingSet source.components)
 
 namespace CheckedTemporalDistinctCountRun
 
@@ -590,11 +588,11 @@ def arm (operation : CheckedTemporalDistinctCountRun model) :
 def evaluate (operation : CheckedTemporalDistinctCountRun model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand := do
-  let sides ← operation.slots.mapM fun slot => do
-    let core ← slot.resolveValidationCore document outer
+  let sides ← operation.source.operands.mapM fun operand => do
+    let core ← operand.resolveDistinctCountCore document outer
     pure ({
       cells := core.addressedCells.map
-        (temporalDistinctCountCell slot.components model.baseYear operation.arm)
+        (temporalDistinctCountCell operand.components model.baseYear operation.arm)
       hasUninstantiatedTail := core.hasUninstantiatedTail
       hasHaving := core.hasHaving
       hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide operation.arm.kind)

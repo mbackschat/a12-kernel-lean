@@ -383,6 +383,29 @@ private def countGroup? (group : String) (cells : List ClassifiedCellInput) :
     (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
   (run.evaluate document []).toOption
 
+/-- The same fold over a **starred** repeatable group, which needs instantiated rows: the whole
+    question is whether the count ranges over every row or answers for one. -/
+private def countStarredGroup? (group : String) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let source ←
+    (elaborateTemporalDistinctCountSource model ["Probe"]
+      (starredGroupOperand group)).toOption
+  let run ← (checkTemporalDistinctCountRun source).toOption
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  (run.evaluate document []).toOption
+
+/-- One `RepBox` row holding `RepDate`. Row indices are **1-based**: index zero is
+    `CheckedDocumentError.zeroRowIndex`, so a fixture written from zero fails document checking
+    before it reaches the fold. -/
+private def repRow (index : Nat) : RowAddr :=
+  { group := 1, path := [index] }
+
+private def repCell (index year month day : Nat) (stored : String) :
+    ClassifiedCellInput :=
+  { address := { field := 33, path := [index] }, stored,
+    raw := .parsed (.temporal (dateValue year month day)) }
+
 private def count? (first second : String) (cells : List ClassifiedCellInput) :
     Option NumericOperand := do
   let source ←
@@ -508,25 +531,26 @@ example :
       some (.value 2 .fixed) := by
   native_decide
 
-/- **A starred repeatable group is the shape the fold still refuses**, and it is reachable rather
-   than hypothetical: the Kernel evaluates it — a starred group's count moves 1 → 2 across two rows
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-group-expansion-fold)) — but its expanded
-   fields are addressed under a star, which the resolvable slot arm cannot express, so lifting them
-   would answer for row one alone. The fixed group beside it is what makes this a shape restriction
-   and not a refusal of every group. -/
+/- **A starred repeatable group folds over every row**, which is the shape this fold used to refuse.
+   The count moves 1 → 2 across two rows exactly as the Kernel's does
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-group-expansion-fold)), and the pair is
+   what makes this an extent measurement rather than one document that happens to answer: an
+   implementation reading row one alone answers 1 for both. -/
 example :
-    ((match (elaborateTemporalDistinctCountSource model ["Probe"]
-        (starredGroupOperand "RepBox")).toOption with
-      | some source =>
-          match checkTemporalDistinctCountRun source with
-          | .error .starredGroupOperand => true
-          | _ => false
-      | none => false),
-      (match (elaborateTemporalDistinctCountSource model ["Probe"]
+    (countStarredGroup? "RepBox" [repRow 1, repRow 2]
+        [repCell 1 2024 3 5 "2024-03-05", repCell 2 2024 3 5 "2024-03-05"],
+      countStarredGroup? "RepBox" [repRow 1, repRow 2]
+        [repCell 1 2024 3 5 "2024-03-05", repCell 2 2024 4 6 "2024-04-06"]) =
+      (some (.value 1 .fixed), some (.value 2 .fixed)) := by
+  native_decide
+
+/- The fixed group beside it still folds, so widening to the starred shape did not trade one
+   restriction for another. -/
+example :
+    (match (elaborateTemporalDistinctCountSource model ["Probe"]
         (groupOperand "MixBox")).toOption with
       | some source => (checkTemporalDistinctCountRun source).toOption.isSome
-      | none => false)) =
-      (true, true) := by
+      | none => false) = true := by
   native_decide
 
 /- **A fixed group's expansion folds, and it folds each field exactly as an explicit operand.**
