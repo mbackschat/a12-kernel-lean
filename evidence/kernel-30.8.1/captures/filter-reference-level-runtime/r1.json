@@ -1,0 +1,3 @@
+{"field":"/Rep_DM/Rows/Gate","code":"EMPTYSEL",
+ "condition":"FieldFilled(/Rep_DM/Rows/Gate) And Sum(/Rep_DM/Rows/Items*/Val Having [/Rep_DM/Rows/Gate] > 0 And [/Rep_DM/Rows/Items/Val] > 0) == 0",
+ "messages":[{"locale":"en_US","text":"selection emptied"}]}

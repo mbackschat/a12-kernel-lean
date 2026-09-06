@@ -1,0 +1,184 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Rep_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "marked-and-validation",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "EMPTYSEL",
+              "field" : "Rep_DM/Rows[2]/Gate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "selection emptied",
+              "referenced" : [
+                "/Rep_DM[1]/Rows[2]/Items[0]/Val",
+                "Rep_DM/Rows[2]/Gate"
+              ],
+              "fillToFix" : [
+                "/Rep_DM[1]/Rows[2]/Items[0]/Val",
+                "Rep_DM/Rows[2]/Gate"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Rep_DM/Rows/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              },
+              {
+                "field" : "Rep_DM/Rows/Total2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              },
+              {
+                "field" : "Rep_DM/Rows/Total3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              },
+              {
+                "field" : "Rep_DM/Rows[2]/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Rep_DM/Rows[2]/Total2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "70"
+              },
+              {
+                "field" : "Rep_DM/Rows[2]/Total3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Rep_DM/Rows[3]/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50"
+              },
+              {
+                "field" : "Rep_DM/Rows[3]/Total2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50"
+              },
+              {
+                "field" : "Rep_DM/Rows[3]/Total3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "EMPTYSEL",
+              "field" : "Rep_DM/Rows[2]/Gate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "selection emptied",
+              "referenced" : [
+                "/Rep_DM[1]/Rows[2]/Items[0]/Val",
+                "Rep_DM/Rows[2]/Gate"
+              ],
+              "fillToFix" : [
+                "/Rep_DM[1]/Rows[2]/Items[0]/Val",
+                "Rep_DM/Rows[2]/Gate"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Rep_DM/Rows/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              },
+              {
+                "field" : "Rep_DM/Rows/Total2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              },
+              {
+                "field" : "Rep_DM/Rows/Total3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              },
+              {
+                "field" : "Rep_DM/Rows[2]/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Rep_DM/Rows[2]/Total2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "70"
+              },
+              {
+                "field" : "Rep_DM/Rows[2]/Total3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Rep_DM/Rows[3]/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50"
+              },
+              {
+                "field" : "Rep_DM/Rows[3]/Total2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50"
+              },
+              {
+                "field" : "Rep_DM/Rows[3]/Total3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
