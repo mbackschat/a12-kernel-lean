@@ -1,0 +1,1 @@
+{"model": "Ext_DM2.json", "locale": "en_US", "observe": ["validateFull"], "rows": [{"name": "ordered", "document": "doc-ordered.json"}, {"name": "reversed", "document": "doc-reversed.json"}]}

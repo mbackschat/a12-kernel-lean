@@ -1,0 +1,1 @@
+{"field": "/Ext_DM/Reference", "code": "E4", "condition": "FieldFilled(Reference) And MinValue(F1, F2) == [F1]", "messages": [{"locale": "en_US", "text": "complete min is the first"}]}

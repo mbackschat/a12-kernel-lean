@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+    "state" : "CLEAN"
+  },
+  "model" : "4763eea882fc1a0e2edbfaa72d5df913ed3a7bcb3be51766bbd6b819d52d290b",
+  "observations" : [ {
+    "id" : "1-min-year-month",
+    "inputHash" : "be510ec956dad6a512f5c9b877f82af4bf55c78bc69f9c56b3c0348bc7b440d0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-max-year-month",
+    "inputHash" : "3064fea0781f2667df5e71345c2ce49eceb39a7539f1c0b42285998ec1d4e8b2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "3-min-yearless",
+    "inputHash" : "9f495aa11d5007c942c1a70ff8fb5f530b2be85cd084735ee4ca20aa4d3c753b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "4-min-complete-control",
+    "inputHash" : "133833dedef429d13bd1a0578d585b785d6a623777573946703d9ba803738576",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

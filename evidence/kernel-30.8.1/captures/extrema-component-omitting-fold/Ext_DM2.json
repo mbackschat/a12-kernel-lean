@@ -1,0 +1,178 @@
+{
+  "header" : {
+    "id" : "Ext_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Ext_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Ext_DM",
+        "name" : "Ext_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Ext_DM/Reference",
+            "name" : "Reference",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ext_DM/YM1",
+            "name" : "YM1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ext_DM/YM2",
+            "name" : "YM2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ext_DM/M1",
+            "name" : "M1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ext_DM/M2",
+            "name" : "M2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ext_DM/F1",
+            "name" : "F1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ext_DM/F2",
+            "name" : "F2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Ext_DM/E1",
+            "name" : "E1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "E1",
+              "errorCondition" : "FieldFilled(Reference) And MinValue(YM1, YM2) == [YM1]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "year-month min is the first"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Ext_DM/E2",
+            "name" : "E2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "E2",
+              "errorCondition" : "FieldFilled(Reference) And MaxValue(YM1, YM2) == [YM2]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "year-month max is the second"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Ext_DM/E3",
+            "name" : "E3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "E3",
+              "errorCondition" : "FieldFilled(Reference) And MinValue(M1, M2) == [M1]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "yearless min is the first"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Ext_DM/E4",
+            "name" : "E4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "E4",
+              "errorCondition" : "FieldFilled(Reference) And MinValue(F1, F2) == [F1]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "complete min is the first"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

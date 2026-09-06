@@ -691,6 +691,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+<a id="src-extrema-component-omitting-fold"></a>
+- [The extrema fold a component-omitting operand, yearless included, and order it correctly](sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)
 <a id="src-cross-kind-format-runtime-parser"></a>
 - [The runtime text parser is the declared format's, not the declared kind's](sources/evaluation-and-application-routes.md#src-cross-kind-format-runtime-parser)
 <a id="src-distinct-count-group-expansion-fold"></a>

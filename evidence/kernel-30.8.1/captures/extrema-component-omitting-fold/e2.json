@@ -1,0 +1,1 @@
+{"field": "/Ext_DM/Reference", "code": "E2", "condition": "FieldFilled(Reference) And MaxValue(YM1, YM2) == [YM2]", "messages": [{"locale": "en_US", "text": "year-month max is the second"}]}

@@ -1,0 +1,54 @@
+[
+ {
+  "id": "1-min-year-month",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Ext_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And MinValue(YM1, YM2) == [YM1]",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "2-max-year-month",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Ext_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And MaxValue(YM1, YM2) == [YM2]",
+   "--code",
+   "E2"
+  ]
+ },
+ {
+  "id": "3-min-yearless",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Ext_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And MinValue(M1, M2) == [M1]",
+   "--code",
+   "E3"
+  ]
+ },
+ {
+  "id": "4-min-complete-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Ext_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And MinValue(F1, F2) == [F1]",
+   "--code",
+   "E4"
+  ]
+ }
+]

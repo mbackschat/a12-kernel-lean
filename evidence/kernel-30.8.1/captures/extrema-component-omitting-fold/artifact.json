@@ -1,0 +1,154 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Ext_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "ordered",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E1",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "year-month min is the first",
+              "referenced" : [
+                "Ext_DM/Reference",
+                "Ext_DM/YM1",
+                "Ext_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E2",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "year-month max is the second",
+              "referenced" : [
+                "Ext_DM/Reference",
+                "Ext_DM/YM1",
+                "Ext_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E3",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless min is the first",
+              "referenced" : [
+                "Ext_DM/M1",
+                "Ext_DM/M2",
+                "Ext_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E4",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "complete min is the first",
+              "referenced" : [
+                "Ext_DM/F1",
+                "Ext_DM/F2",
+                "Ext_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E1",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "year-month min is the first",
+              "referenced" : [
+                "Ext_DM/Reference",
+                "Ext_DM/YM1",
+                "Ext_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E2",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "year-month max is the second",
+              "referenced" : [
+                "Ext_DM/Reference",
+                "Ext_DM/YM1",
+                "Ext_DM/YM2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E3",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "yearless min is the first",
+              "referenced" : [
+                "Ext_DM/M1",
+                "Ext_DM/M2",
+                "Ext_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E4",
+              "field" : "Ext_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "complete min is the first",
+              "referenced" : [
+                "Ext_DM/F1",
+                "Ext_DM/F2",
+                "Ext_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "reversed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    }
+  ]
+}

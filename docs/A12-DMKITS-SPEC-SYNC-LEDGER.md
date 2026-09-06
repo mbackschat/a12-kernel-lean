@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-06-10"></a>
+### `SPEC-2026-09-06-10` — the extrema fold a component-omitting operand and order it, yearless included
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` extrema operand family](../spec/07-repetition-and-iteration.md)
+- `delta`: the clause states the extrema's operand gates — the positional family rule, the sortable leader set, and the component-set gate that admits an equal-set pair in two spellings — and separately that a **partially known** Date is refused as an extremum operand. It said nothing about what the fold does with an admitted **component-omitting** operand. Added: it folds it and orders it at the shared set's own precision, with a yearless set ordering even when the model declares no Base Year.
+- `mechanism`: the same rule the admission gate applies reaches the fold, so the shared component set fixes both which lists are legal and what the comparison ranges over. There is no separate interval domain: within one shared set the canonical representative is order-preserving, which is why the component-tuple and completed-date orderings cannot disagree on an admitted list.
+- `evidence`: one `dmtool batch --observations` and one `:adapter:kernelProbe` request at a12-dmkits `fc2b3187c43d0ac29cb335628dde676b69464260`, `source.state: CLEAN`, `enginesAgree: true` on both rows, Kernel `30.8.1` built and runtime. `MinValue`/`MaxValue` over a `yyyy-MM` pair, `MinValue` over a yearless `MM` pair, and a complete-date control: all four admitted, all four firing on an ascending document ([checkpoint](sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+- `separator`: the reversed document fires **nothing**. Every pair is swapped and no rule fires, which is what distinguishes an ordering measurement from four conditions that happen to hold; the ascending row alone would be consistent with a constant-true reading.
+- `not-the-partial-date`: a component-omitting **format** and a **partially known** declaration are different declarations and only the second is refused here. This project's own gap record had read the partial refusal as dissolving the component-omitting question too, and that is the error this entry corrects on its own side before proposing anything.
+- `limit`: the year-month and yearless month sets against a complete-date control, arity 2, `en_US`, validation arm, UTC model with **no** Base Year, `MinValue` and `MaxValue` with direct field operands. A yearless set under a declared Base Year, the month-day set, starred and group operands, the computation arm, and a set mixing precisions under supplementation are unmeasured.
+- `surfaces`: any peer clause, evaluator, or importer that declines a component-omitting extremum list, or that requires a complete calendar date before ordering. It refuses legal models; the visible failure is a `yyyy-MM` or `MM` operand list that the Kernel orders without complaint.
+- `local-scope`: `TemporalExtremumStream` declines such a list today and its documentation names the element type as an interval it does not carry. The measurement removes the need for an interval — the two arms are `FullDate` for a year-bearing set and `MonthDayValue` for a yearless one, both of which already carry an ordering — so the widening is determined rather than chosen.
+
 <a id="spec-2026-09-06-09"></a>
 ### `SPEC-2026-09-06-09` — the runtime text parser follows the declared format, and the declared kind supplies no fallback
 
