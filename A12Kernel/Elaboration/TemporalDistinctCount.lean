@@ -394,20 +394,32 @@ producer's.
 inductive TemporalDistinctCountFoldArm where
   | dated
   | yearless
+  | clock
+  | instant
   deriving Repr, DecidableEq
 
 /-- The value-list kind each arm folds over. -/
 def TemporalDistinctCountFoldArm.kind : TemporalDistinctCountFoldArm → ValueListKind
   | .dated => .date
   | .yearless => .yearlessDate
+  | .clock => .timeOfDay
+  | .instant => .instant
 
-/-- The arm a shared component set folds at, given whether the model declares a Base Year. A year is
-    available when the set names one or when the Base Year supplies it, which is the same
-    supplementation the admission gate applies. -/
+/-- The arm a shared component set folds at, given whether the model declares a Base Year.
+
+    Keyed on the declared **component set** and never on the declared kind, which is measured: a TIME
+    and a DATETIME declared the degenerate `HH:mm:ss` count one value for one clock reading, so they
+    must land in the same arm
+    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-time-bearing-fold)).
+    Among the date arms a year is available when the set names one or the Base Year supplies it,
+    which is the same supplementation the admission gate applies. -/
 def temporalDistinctCountFoldArm
     (components : TemporalComponents) (hasBaseYear : Bool) :
     TemporalDistinctCountFoldArm :=
-  if components.year || hasBaseYear then .dated else .yearless
+  if components.hasTime then
+    if components.hasDate then .instant else .clock
+  else if components.year || hasBaseYear then .dated
+  else .yearless
 
 /-- The component triple this operator compares for one operand: the cell's decoded parts reduced to
     the operand's **declared** set, with a yearless declaration's year taken from the model's Base
@@ -463,6 +475,28 @@ private def temporalDistinctCountCell
       | .value _ => .unknown .malformed
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause
+  | .clock, addressed =>
+      match observeCell .validation addressed.cell with
+      -- **One case covers both temporal kinds that can declare a clock set, because the cell's value
+      -- shape follows the declared component set and not the declared kind.** A DATETIME declared the
+      -- degenerate `HH:mm:ss` holds a `.time` here — `formalCheck` marks a `.dateTime` value under
+      -- that declaration malformed — which is why the measured cross-kind identity needs no second
+      -- case: a TIME and such a DATETIME arrive as the same value shape and compare on the decoded
+      -- reading. Comparing instants instead would answer 2 to the pair the Kernel counts as one,
+      -- since neither operand's transport date is meaningful.
+      | .value (.temporal (.time _ parts)) => .present parts
+      | .value _ => .unknown .malformed
+      | .empty => .empty
+      | .unknown cause | .poison cause => .unknown cause
+  | .instant, addressed =>
+      match observeCell .validation addressed.cell with
+      -- The exact moment. Whether the engine compares this or the decoded local label is not
+      -- separable by stored text within one model zone — a wall label resolves to a single instant
+      -- there — so this arm holds the instant and the boundary is recorded rather than claimed.
+      | .value (.temporal (.dateTime instant _ _ _)) => .present instant
+      | .value _ => .unknown .malformed
+      | .empty => .empty
+      | .unknown cause | .poison cause => .unknown cause
 
 /-- Every operand as a slot, or `none` as soon as one is a group expansion. -/
 def temporalDistinctCountSlots? :
@@ -473,28 +507,45 @@ def temporalDistinctCountSlots? :
   | .slot operand :: remaining =>
       (temporalDistinctCountSlots? remaining).map (operand :: ·)
 
-/-- One statically certified temporal distinct count that this project can also **evaluate**: the
-    shared component set names no time component, and every operand is a slot.
+/-- Whether the fold's atom for a time-bearing set holds exactly the components that set names.
 
-    The set no longer has to be the *complete* calendar date. A component-omitting list folds at its
-    own precision, which is what the Kernel does; each operand's omitted components are supplied
-    canonically by the projection rather than read off the cell, so a list whose declared sets differ
-    under Base Year supplementation folds correctly too. -/
+    The date arms need no such condition: each omitted component is masked to the set's canonical
+    representative. The time atoms cannot be masked — `TimeOfDay` and `Instant` carry every component
+    they have — so a set omitting one would be folded at a precision it does not declare. No format
+    in the admitted domain spells such a set: the twelve admitted date/time formats are the ten date
+    sets, the complete clock, and the complete instant
+    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-time-bearing-fold)).
+    So this is a representable shape with no known witness rather than a measured gap, which is
+    exactly why it stays a certificate instead of an invented projection. -/
+def timeBearingSetIsComplete (components : TemporalComponents) : Bool :=
+  !components.hasTime ||
+    (components.hour && components.minute && components.second &&
+      (!components.hasDate ||
+        (components.year && components.month && components.day)))
+
+/-- One statically certified temporal distinct count that this project can also **evaluate**: a
+    time-bearing shared set names every component its atom carries, and every operand is a slot.
+
+    The set no longer has to be a *complete calendar date*, nor date-only. A component-omitting date
+    list folds at its own precision and a time-bearing one at the clock or the instant, which is what
+    the Kernel does; each date operand's omitted components are supplied canonically by the
+    projection rather than read off the cell, so a list whose declared sets differ under Base Year
+    supplementation folds correctly too. -/
 structure CheckedTemporalDistinctCountRun (model : FlatModel) where
   source : CheckedTemporalDistinctCountSource model
   slots : List (CheckedTemporalUniquenessOperand model)
   slotsOwned : temporalDistinctCountSlots? source.operands = some slots
-  dateOnly : source.components.hasTime = false
+  timeSetComplete : timeBearingSetIsComplete source.components = true
 
 /-- Why a statically certified source has no evaluator here. **Neither is a Kernel refusal** — the
     Kernel admits both shapes — so this is its own type rather than an arm of the elaboration error,
     which exists to carry measured Kernel codes and would have to project `none` for both. -/
 inductive TemporalDistinctCountRunLimit where
   | groupOperand
-  /-- A TIME or DATETIME list. Statically admitted — `spec/07` names all four temporal kinds as legal
-      operands — and unevaluated here, because no retained row measures what this operator compares
-      over a time-bearing value and the date arms must not be assumed to speak for it. -/
-  | timeComponentsPresent (components : TemporalComponents)
+  /-- A time-bearing set naming only some of the components its atom carries. Statically admitted and
+      unevaluated, because the time atoms cannot be masked to a partial set the way the date ones
+      are; `timeBearingSetIsComplete` owns the reason and the format-domain note. -/
+  | incompleteTimeBearingSet (components : TemporalComponents)
   deriving Repr, DecidableEq
 
 /-- Admit one checked source to the runtime, or report which restriction it falls outside. -/
@@ -505,10 +556,10 @@ def checkTemporalDistinctCountRun
   match hSlots : temporalDistinctCountSlots? source.operands with
   | none => throw .groupOperand
   | some slots =>
-      if hDateOnly : source.components.hasTime = false then
-        .ok { source, slots, slotsOwned := hSlots, dateOnly := hDateOnly }
+      if hTimeSet : timeBearingSetIsComplete source.components = true then
+        .ok { source, slots, slotsOwned := hSlots, timeSetComplete := hTimeSet }
       else
-        throw (.timeComponentsPresent source.components)
+        throw (.incompleteTimeBearingSet source.components)
 
 namespace CheckedTemporalDistinctCountRun
 

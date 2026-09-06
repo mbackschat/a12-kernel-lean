@@ -19,6 +19,12 @@ inductive ValueListKind where
       no Base Year. Its own arm rather than a `date` completed against an invented year, because two
       such values must compare on the calendar position they actually spell. -/
   | yearlessDate
+  /-- A clock reading, from a declared set naming time components and no date ones. A TIME and a
+      DATETIME declared the degenerate `HH:mm:ss` both land here: the identity follows the declared
+      component set across the kind boundary, measured. -/
+  | timeOfDay
+  /-- A complete moment, from a declared set naming both date and time components. -/
+  | instant
   deriving Repr, DecidableEq
 
 /-- Partial all-rows aggregate evaluation distinguishes the kernel's rule-level filtered skip, a relevance failure, and an evaluated numeric result. Nonrelevance is not forged into a formal cell cause. -/
@@ -34,6 +40,8 @@ abbrev ValueListAtom : ValueListKind → Type
   | .token => String
   | .date => FullDate
   | .yearlessDate => MonthDayValue
+  | .timeOfDay => TimeOfDay
+  | .instant => Instant
 
 /-- One expanded operand cell after validation-phase observation. Empty is not substituted, and UNKNOWN remains distinct from an absent cell. -/
 inductive ValueListCell (kind : ValueListKind) where
@@ -91,6 +99,13 @@ def equal : {kind : ValueListKind} →
   -- complete either side, so month-day equality *is* the identity here rather than a projection of
   -- one.
   | .yearlessDate, left, right => left == right
+  -- The decoded clock reading, compared exactly. `TimeOfDay` carries a range proof and its
+  -- `DecidableEq` compares the components the proof is about, as `FullDate`'s does.
+  | .timeOfDay, left, right => left == right
+  -- The exact moment. Whether the engine's identity here is the instant or the decoded local label
+  -- is not separable by stored text within one model zone, since a wall label resolves to a single
+  -- instant there; this arm holds the instant and says so rather than claiming the question settled.
+  | .instant, left, right => left == right
 
 end ValueListAtom
 

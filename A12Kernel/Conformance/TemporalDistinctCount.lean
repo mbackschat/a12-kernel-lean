@@ -34,6 +34,20 @@ private def clockOnly : TemporalComponents :=
   { year := false, month := false, day := false
     hour := true, minute := true, second := true }
 
+private def instantSet : TemporalComponents :=
+  { year := true, month := true, day := true
+    hour := true, minute := true, second := true }
+
+private def dayAndClock : TemporalComponents :=
+  { year := false, month := false, day := true
+    hour := true, minute := true, second := true }
+
+private def noonHalf : TimeOfDay :=
+  { hour := 12, minute := 30, second := 0, valid := by decide }
+
+private def afternoonHalf : TimeOfDay :=
+  { hour := 13, minute := 30, second := 0, valid := by decide }
+
 private def dateField (id : FieldId) (name format : String)
     (components : TemporalComponents := TemporalComponents.fullDate) :
     FlatFieldDecl := {
@@ -105,7 +119,25 @@ private def model : FlatModel := {
       temporalTargetPolicy := some { format := "HH:mm:ss" } },
     { id := 27, groupPath := ["Probe"], name := "ClockB"
       policy := { kind := .temporal .time clockOnly }
-      temporalTargetPolicy := some { format := "HH:mm:ss" } }]
+      temporalTargetPolicy := some { format := "HH:mm:ss" } },
+    -- A DATETIME declared the degenerate clock format, which is the cross-kind witness.
+    { id := 28, groupPath := ["Probe"], name := "StampClock"
+      policy := { kind := .temporal .dateTime clockOnly }
+      temporalTargetPolicy := some { format := "HH:mm:ss" } },
+    { id := 29, groupPath := ["Probe"], name := "Stamp1"
+      policy := { kind := .temporal .dateTime instantSet }
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+    { id := 30, groupPath := ["Probe"], name := "Stamp2"
+      policy := { kind := .temporal .dateTime instantSet }
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+    -- A time-bearing set naming only *some* date components. No admitted format spells one, so this
+    -- pair exists to keep the runtime certificate reachable rather than hypothetical.
+    { id := 31, groupPath := ["Probe"], name := "PartialStamp1"
+      policy := { kind := .temporal .dateTime dayAndClock }
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+    { id := 32, groupPath := ["Probe"], name := "PartialStamp2"
+      policy := { kind := .temporal .dateTime dayAndClock }
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }]
 }
 
 /-- The identical model with a Base Year declared. Every supplementation row below pairs against its
@@ -391,17 +423,65 @@ example :
       some (.value 2 .fixed) := by
   native_decide
 
-/- The **time-bearing** list is what the runtime restriction now names: `spec/07` admits all four
-   temporal kinds as operands and no retained row measures what this operator compares over a value
-   carrying a time, so a TIME list is certified statically and has no evaluator here. -/
+/- **A clock list folds on the decoded reading, and a TIME agrees with a DATETIME declared the
+   degenerate `HH:mm:ss`.** The cross-kind row is the one that fixes the arm: the identity follows
+   the declared component set and not the declared kind, so both operands must land in the same arm
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-time-bearing-fold)). The two cells carry
+   *different* transport instants for one clock reading, which is what a kind-keyed or
+   instant-keyed identity would answer 2 to. -/
+example :
+    count? "ClockA" "ClockB"
+        [temporalCell 26 "12:30:00" (.time { epochMillis := 0 } noonHalf),
+          temporalCell 27 "12:30:00" (.time { epochMillis := 86400000 } noonHalf)] =
+      some (.value 1 .fixed) ∧
+    count? "ClockA" "StampClock"
+        [temporalCell 26 "12:30:00" (.time { epochMillis := 0 } noonHalf),
+          -- A DATETIME declared the degenerate clock format holds a **`.time`** value: the cell's
+          -- value shape follows the declared component set, and `formalCheck` marks a `.dateTime`
+          -- value under this declaration malformed. That is what makes the cross-kind identity fall
+          -- out of the representation instead of needing a case of its own.
+          temporalCell 28 "12:30:00" (.time { epochMillis := 3600000 } noonHalf)] =
+      some (.value 1 .fixed) ∧
+    count? "ClockA" "ClockB"
+        [temporalCell 26 "12:30:00" (.time { epochMillis := 0 } noonHalf),
+          temporalCell 27 "13:30:00" (.time { epochMillis := 0 } afternoonHalf)] =
+      some (.value 2 .fixed) := by
+  native_decide
+
+/- **The one runtime certificate left is a time-bearing set naming only some of its atom's
+   components.** `TimeOfDay` and `Instant` carry every component they have, so unlike the date arms
+   there is nothing to mask a partial set down to; the fold would otherwise answer at a precision the
+   declaration does not name. The admitted control beside it is the complete instant pair below. -/
 example :
     (match (elaborateTemporalDistinctCountSource model ["Probe"]
-        (pair "ClockA" "ClockB")).toOption with
+        (pair "PartialStamp1" "PartialStamp2")).toOption with
       | some source =>
           match checkTemporalDistinctCountRun source with
-          | .error (.timeComponentsPresent components) => components == clockOnly
+          | .error (.incompleteTimeBearingSet components) => components == dayAndClock
           | _ => false
       | none => false) = true := by
+  native_decide
+
+/- **An instant list folds on the exact moment.** This arm holds the instant rather than the decoded
+   label because the two are not separable by stored text within one model zone, and the arm says so
+   rather than claiming the question settled; the pair below differs in the instant alone. -/
+example :
+    count? "Stamp1" "Stamp2"
+        [temporalCell 29 "2024-03-05T12:30:00"
+            (.dateTime { epochMillis := 1709641800000 }
+              { year := 2024, month := 3, day := 5 } noonHalf .storedGregorian),
+          temporalCell 30 "2024-03-05T12:30:00"
+            (.dateTime { epochMillis := 1709641800000 }
+              { year := 2024, month := 3, day := 5 } noonHalf .storedGregorian)] =
+      some (.value 1 .fixed) ∧
+    count? "Stamp1" "Stamp2"
+        [temporalCell 29 "2024-03-05T12:30:00"
+            (.dateTime { epochMillis := 1709641800000 }
+              { year := 2024, month := 3, day := 5 } noonHalf .storedGregorian),
+          temporalCell 30 "2024-03-05T13:30:00"
+            (.dateTime { epochMillis := 1709645400000 }
+              { year := 2024, month := 3, day := 5 } afternoonHalf .storedGregorian)] =
+      some (.value 2 .fixed) := by
   native_decide
 
 /- The group restriction is the other one, and it is reachable rather than hypothetical: `MixBox` is
