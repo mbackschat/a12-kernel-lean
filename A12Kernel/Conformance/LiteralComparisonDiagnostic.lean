@@ -131,4 +131,67 @@ example : [KernelStaticDiagnostic.invalidCompareToYesNo,
       "MVK_INCONSISTENT_TYPES_COMPARED"] := by
   native_decide
 
+/-! ## A bounded Explain probe: which side does the class name?
+
+An Explain consumer's job at one of these refusals is to point the author at the operand that is
+wrong. The class alone cannot do it, and that is not a theoretical limitation — a12-dmkits shipped a
+corrective built on the assumption that it could, and withdrew it the same day.
+
+The rows below are the probe. They establish that the **pair** is sufficient and the **class** is
+not, which is a statement about the projection rather than about the representation: the error arms
+retain the kind, so a consumer reading them can decide correctly, while one reading only
+`literalComparisonDiagnostic?` cannot.
+-/
+
+/-- Which operand's kind the reported class actually names. -/
+private inductive NamedSide where
+  | theLiteral
+  | theField
+  | neither
+  deriving Repr, DecidableEq
+
+/-- The side each cell's class names, derived from the pair rather than from the class. Rung 1 and
+rung 3 name the field; rung 2 names the literal, because a temporal literal reports its own family
+at a field that is not temporal. The Number cell against a Boolean literal names neither — it
+reports only that the two disagree. -/
+private def namedSide (family : ComparedLiteralFamily)
+    (kind : SurfaceScalarKind) : Option NamedSide :=
+  match literalComparisonDiagnostic? family kind with
+  | none => none
+  | some _ =>
+      match family, kind with
+      | _, .boolean | _, .confirm => some .theField
+      | .temporal, .temporal _ => some .theField
+      | .temporal, _ => some .theLiteral
+      | .booleanLike, .number => some .neither
+      | .stringLike, .number => some .theLiteral
+      | _, _ => some .theField
+
+/- **The same class names opposite sides on two different pairs**, which is precisely what a
+   class-keyed corrective gets wrong. `MVK_INVALID_COMPARE_TO_DATE` at a temporal field is about the
+   field; at a String field it is about the literal. A consumer told only the class must guess, and
+   whichever way it guesses it is wrong half the time. -/
+example : ((literalComparisonDiagnostic? .stringLike (.temporal .date),
+      namedSide .stringLike (.temporal .date)),
+    (literalComparisonDiagnostic? .temporal .string, namedSide .temporal .string)) =
+    ((some .invalidCompareToDate, some .theField),
+      (some .invalidCompareToDate, some .theLiteral)) := by
+  native_decide
+
+/- **The pair decides it everywhere.** Every classified cell has a side, so a consumer holding the
+   pair is never left without an answer — the representation is adequate for the task even though
+   the class projection is not. -/
+example : families.all (fun family =>
+    kinds.all fun kind =>
+      (literalComparisonDiagnostic? family kind).isSome == (namedSide family kind).isSome) =
+    true := by
+  native_decide
+
+/- The one cell that names **neither** side is worth keeping distinct from an absent answer: a
+   Boolean literal at a Number field reports that the two disagree and nothing about which is
+   intended, so an Explain consumer should say exactly that rather than pick a side. -/
+example : (namedSide .booleanLike .number, namedSide .stringLike .number) =
+    (some .neither, some .theLiteral) := by
+  native_decide
+
 end A12Kernel.Conformance.LiteralComparisonDiagnostic
