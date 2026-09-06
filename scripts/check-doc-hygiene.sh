@@ -288,6 +288,46 @@ else
   done < <(git diff --name-only "$denominator_range" -- docs/sources/ | grep '\.md$' || true)
 fi
 
+# Artifact-hash citations on FILE-BACKED row keys must match a tracked file under evidence/.
+# Key-filtered on purpose: of 1,155 distinct 64-hex citations, 736 pin a tracked file while 419 sit
+# on `integrity`, `runtime-identity` and `static-identity` rows quoting hashes the probe reported for
+# request, model and document payloads held in ignored sibling storage. No local computation can
+# reach those, so a blanket check would fail on the dominant row shape of every recent checkpoint.
+# That carrier stays owned by LF138; this closes only the half a local hash can settle.
+hash_range="${A12_REVISION_RANGE:-HEAD~1..HEAD}"
+hash_base="${hash_range%%..*}"
+if ! git rev-parse --verify --quiet "${hash_base}^{commit}" >/dev/null; then
+  echo "documentation hygiene guard: range base ${hash_base} is unresolvable, so the artifact-hash check did NOT run; deepen the checkout or set A12_REVISION_RANGE" >&2
+else
+  # Chosen by measurement, not by hand: on these keys all 401 corpus hashes match a tracked file
+  # and none misses, and the `bytes` substring picks up later variants such as `grid-bytes`.
+  file_backed_keys='[a-z0-9-]*bytes[a-z0-9-]*|retained|models?|evidence'
+  added_hashes="$(git diff "$hash_range" -- docs/ spec/ \
+    | grep -E "^\+- \`(${file_backed_keys})\`:" \
+    | grep -oE '\b[0-9a-f]{64}\b' | sort -u || true)"
+  existing_hashes="$(git grep -hI -e '' "$hash_base" -- docs/ spec/ 2>/dev/null \
+    | grep -oE '\b[0-9a-f]{64}\b' | sort -u || true)"
+  new_hashes="$(comm -23 <(printf '%s\n' "$added_hashes") <(printf '%s\n' "$existing_hashes") | grep -E '^[0-9a-f]{64}$' || true)"
+  if [[ -n "$new_hashes" ]]; then
+    if command -v sha256sum >/dev/null 2>&1; then
+      tracked_hashes="$(git ls-files -z evidence/ | xargs -0 sha256sum 2>/dev/null | awk '{print $1}' | sort -u)"
+    elif command -v shasum >/dev/null 2>&1; then
+      tracked_hashes="$(git ls-files -z evidence/ | xargs -0 shasum -a 256 2>/dev/null | awk '{print $1}' | sort -u)"
+    else
+      echo "documentation hygiene guard: a new file-backed hash citation needs sha256sum or shasum to verify; neither is available" >&2
+      failed=true
+      tracked_hashes=""
+    fi
+    if [[ -n "$tracked_hashes" ]]; then
+      while IFS= read -r orphan; do
+        [[ -z "$orphan" ]] && continue
+        echo "new file-backed hash citation ${orphan} matches no tracked file under evidence/; run the hashing command and paste its output rather than typing a hash [LF138]" >&2
+        failed=true
+      done < <(comm -23 <(printf '%s\n' "$new_hashes") <(printf '%s\n' "$tracked_hashes"))
+    fi
+  fi
+fi
+
 if [[ "$failed" == true ]]; then
   exit 1
 fi
