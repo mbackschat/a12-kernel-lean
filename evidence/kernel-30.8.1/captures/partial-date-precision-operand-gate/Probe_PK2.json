@@ -1,0 +1,147 @@
+{
+ "header": {
+  "id": "Probe_PK2",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Probe_PK2",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/Anchor",
+        "name": "Anchor",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/Thr",
+        "name": "Thr",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/PkDay",
+        "name": "PkDay",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/DFull",
+           "name": "DFull",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "dd.MM.yyyy"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/DDay",
+           "name": "DDay",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "dd.MM.yyyy",
+              "datePrecision": "DAY_OPTIONAL"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/DMonth",
+           "name": "DMonth",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "dd.MM.yyyy",
+              "datePrecision": "MONTH_OPTIONAL"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/DYear",
+           "name": "DYear",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "dd.MM.yyyy",
+              "datePrecision": "YEAR_OPTIONAL"
+             }
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

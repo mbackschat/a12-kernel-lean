@@ -118,6 +118,8 @@ inductive KernelStaticDiagnostic where
   | invalidDateType
   /-- The measured direct Number/Number source pair under plural DateRange overlap contains no DateRange. -/
   | noDateRange
+  /-- A partially known Date supplied where the operator admits only fully known ones. -/
+  | partialDateNotAllowed
   /-- `AtLeastOneDateRangeOverlaps` received a non-scalar operand in its **scalar** position. Every non-scalar form draws it — plain star, filtered star, fixed group, starred group, and a star above a nonrepeatable terminal — while the identical operand is admitted in the `In` list, so the class belongs to the slot rather than to the form. -/
   | invalidParameterForDateRangeComparison
   /-- A value was assigned or compared against a String or Enumeration declaration that cannot hold it. Measured as the Boolean constant computation's refusal on both of those target kinds, which share this one class. -/
@@ -216,6 +218,7 @@ def kernelCode : KernelStaticDiagnostic → String
       "MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD"
   | .invalidDateType => "MVK_INVALID_DATE_TYPE"
   | .noDateRange => "MVK_NO_DATE_RANGE"
+  | .partialDateNotAllowed => "MVK_PARTIAL_DATE_NOT_ALLOWED"
   | .invalidParameterForDateRangeComparison =>
       "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON"
   | .invalidCompareToEnumOrString => "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
@@ -257,6 +260,7 @@ def all : List KernelStaticDiagnostic :=
     .stringEnumAndNonStringEnum, .invalidCompareDecimalPlaces,
     .errorReferenceToCalculatedField,
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
+    .partialDateNotAllowed,
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
     .invalidCompareToEnumOrString, .inconsistentTypesCompared,
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,

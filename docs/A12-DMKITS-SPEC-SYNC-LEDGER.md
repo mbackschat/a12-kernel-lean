@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-06-05"></a>
+### `SPEC-2026-09-06-05` — a partially known Date is refused by the extrema and the distinct count, and admitted by `FieldValuesNotUnique`
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md` temporal operand admission](../spec/05-dates-and-time.md)
+- `delta`: the clause carried no notion of **date precision** at all. Added: a Date declaration may be `DAY_OPTIONAL`, `MONTH_OPTIONAL` or `YEAR_OPTIONAL`, storing unspecified components as literal `00`; precision is independent of the declared component set, so a `dd.MM.yyyy` declaration exposing all three components may still be partially known and an operand gate reading components alone cannot see it.
+- `mechanism`: **the split follows the compared identity the two field-list operators already differ on.** `FieldValuesNotUnique` compares the exact stored text, which a partial has, and admits all three precisions; `MinValue`/`MaxValue` and `NumberOfDifferentValues` compare the decoded date, which a partial has not, and refuse all three with `MVK_PARTIAL_DATE_NOT_ALLOWED`. This is static corroboration of that identity split from an independent direction — not a re-derivation of the runtime identity, which remains peer-measured.
+- `mechanism`: `ValueAsDate` is the inverse gate, requiring a partially known source and refusing a fully known one `MVK_INVALID_DATE_TYPE_FOR_OP`, so the distinction is statically enforced in both directions rather than being a permissive widening on one side.
+- `evidence`: twenty-six `rule check` children in one `batch` plus two rejected `rule add` calls at a12-dmkits `fc2b3187cb6e6cd4d7a9f0a3d5c7d59f8f4e1b2a`, four precisions crossed against five operators with the full-precision control admitted on the same fixture ([checkpoint](sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate)).
+- `limit`: static admission only, one model, `en_US`, `dd.MM.yyyy`. Nothing evaluates a stored partial; no row tests a partial inside a `Having` filter or a group expansion, and a mixed-precision group expansion is unmeasured. A partial-precision Date is not authorable through `field add` — the DM-JSON key is `datePrecision` inside `DateType`.
+- `surfaces`: any peer clause, checker, importer or Explain consumer that admits a partially known Date at an extremum or distinct count, or that refuses one at `FieldValuesNotUnique`. Also any consumer that reads the upstream `Partially known dates` restriction list as complete: it names only `DayFromDate`, `MonthFromDate`, `YearFromDate` and `QuarterFromDate`, and the three operators above gate on precision without appearing in it.
+- `local-scope`: closed in Lean. The extrema certifier and the distinct count each gained their own precision gate projecting `MVK_PARTIAL_DATE_NOT_ALLOWED`; the shared temporal certificate exposes the precision without gating on it, so the uniqueness neighbour keeps admitting every precision. Both sides are locked by cases that differ from their admitted control in declared precision alone.
+- `acceptance`: a12-dmkits confirms the refusal at both extrema and the distinct count and the admission at `FieldValuesNotUnique` on its own fixture, or supplies the contrary measurement — in particular whether a mixed-precision group expansion follows its leading declaration.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-06-04"></a>
 ### `SPEC-2026-09-06-04` — a `Having` filter's refusal classes belong to the filter, and its two comparison columns disagree on six kinds of eight
 

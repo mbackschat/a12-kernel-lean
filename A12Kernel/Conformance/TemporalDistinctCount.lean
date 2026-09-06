@@ -53,6 +53,14 @@ private def model : FlatModel := {
     -- could only pair `CoverFrom` with itself, which the duplicate gate refuses before the runtime
     -- restriction is reached — the case would pass without ever exercising it.
     dateField 20 "CoverTo" "yyyy-MM" yearMonth,
+    -- A **partially known** declaration carrying the complete component set, so it differs from
+    -- `FiledOn` in declared precision alone.
+    { id := 21, groupPath := ["Probe"], name := "PartialDay"
+      policy := { kind := .temporal .date TemporalComponents.fullDate }
+      temporalTargetPolicy := some { format := "dd.MM.yyyy", partialMode := .dayOptional } },
+    { id := 22, groupPath := ["Probe"], name := "PartialDay2"
+      policy := { kind := .temporal .date TemporalComponents.fullDate }
+      temporalTargetPolicy := some { format := "dd.MM.yyyy", partialMode := .dayOptional } },
     dateField 6 "SupersededFrom" "yyyy-MM-dd",
     { id := 4, groupPath := ["Probe"], name := "SkuText",
       policy := { kind := .string } },
@@ -315,6 +323,24 @@ example :
         (pair "FiledOn" "ClosedOn")).toOption with
       | some source => (checkTemporalDistinctCountRun source).toOption.isSome
       | none => false) = true := by
+  native_decide
+
+/- **The two neighbouring operators split on declared precision, and in the opposite direction from
+   their comparability rule.** A partially known Date is refused here — it has no decoded date to
+   compare — and admitted by `FieldValuesNotUnique`, which compares the exact stored text a partial
+   does have ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). The
+   admitted full-precision pair beside it is what makes this a precision gate rather than a refusal
+   of the fixture, and the uniqueness row is what makes it an asymmetry rather than a shared rule. -/
+example :
+    ((match elaborateTemporalDistinctCountSource model ["Probe"]
+        (pair "PartialDay" "FiledOn") with
+      | .error error => error.diagnostic?
+      | .ok _ => none),
+      (elaborateTemporalValuesNotUniqueSource model ["Probe"]
+        (pair "PartialDay" "PartialDay2")).toOption.isSome,
+      (elaborateTemporalDistinctCountSource model ["Probe"]
+        (pair "FiledOn" "ClosedOn")).toOption.isSome) =
+    (some .partialDateNotAllowed, true, true) := by
   native_decide
 
 end A12Kernel.Conformance.TemporalDistinctCount

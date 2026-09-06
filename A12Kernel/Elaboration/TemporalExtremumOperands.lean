@@ -60,6 +60,10 @@ inductive TemporalExtremumOperandElabError where
   | laterNotTemporal (path : List String) (actual : SurfaceScalarKind)
   /-- A group slot whose subtree declares no field, so no component set exists to agree on. -/
   | groupExpansionEmpty (path : List String)
+  /-- A **partially known** Date operand, which this operator admits only fully known. Measured on
+      all three declared precisions at both extrema
+      ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). -/
+  | partialDate (path : List String) (mode : TemporalPartialMode)
   /-- The shared entity-list checker's own refusal: arity, the wildcard gate, and both duplicate arms. It is delegated rather than restated, because those gates do not vary by carrier. -/
   | shape (error : FieldEntityShapeElabError)
   deriving Repr, DecidableEq
@@ -164,7 +168,16 @@ private def liftedComponentsOf (model : FlatModel) (isFirst : Bool)
       else
         throw (.laterNotTemporal declaration.path kind)
   | some components =>
-      pure (components.withBaseYear model.baseYear.isSome)
+      -- The precision gate sits **after** the temporal-kind one and before component agreement,
+      -- because a partial declaration is a Date whose components are complete: reading components
+      -- alone admits it, which is what this project used to do.
+      match declaration.toTemporalTargetPolicy? with
+      | some policy =>
+          if policy.partialMode == .full then
+            pure (components.withBaseYear model.baseYear.isSome)
+          else
+            throw (.partialDate declaration.path policy.partialMode)
+      | none => pure (components.withBaseYear model.baseYear.isSome)
 
 private def certifyAgainst (model : FlatModel) (expected : TemporalComponents) :
     List FlatFieldDecl → Except TemporalExtremumOperandElabError Unit
@@ -217,6 +230,10 @@ def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagno
   -- is a component mismatch and carries its own class.
   | .laterNotTemporal _ _ => some .dateAndNonDate
   | .groupExpansionEmpty _ => none
+  -- Measured, and it is the operand's declared **precision** rather than its components: a
+  -- `dd.MM.yyyy` declaration carries the complete component set and is still refused when its
+  -- `datePrecision` is any of the three optional ones.
+  | .partialDate _ _ => some .partialDateNotAllowed
   | .shape error => error.diagnostic?
 
 end TemporalExtremumOperandElabError

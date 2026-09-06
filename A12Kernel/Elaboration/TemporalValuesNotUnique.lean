@@ -49,6 +49,13 @@ def format (checked : CheckedTemporalUniquenessField) : String :=
 def path (checked : CheckedTemporalUniquenessField) : List String :=
   checked.declaration.path
 
+/-- The declared **precision** this operand carries. Exposed here rather than gated here: this
+    operator admits every precision, and its neighbour the distinct count refuses all three
+    ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)), so the accessor
+    belongs to the shared certificate and the gate to the carrier that has one. -/
+def partialMode (checked : CheckedTemporalUniquenessField) : TemporalPartialMode :=
+  checked.policy.partialMode
+
 end CheckedTemporalUniquenessField
 
 /-- Certify one resolved declaration as a temporal operand. A non-temporal kind and a temporal kind without a coherent declared format are distinct refusals: the first is the wrong comparability category, the second an insufficient declaration. -/
@@ -116,6 +123,10 @@ def declarations (group : CheckedTemporalUniquenessGroup model) :
 def format (group : CheckedTemporalUniquenessGroup model) : String :=
   group.first.format
 
+/-- The expansion's leading declared precision, which its own component gate makes shared. -/
+def partialMode (group : CheckedTemporalUniquenessGroup model) : TemporalPartialMode :=
+  group.first.partialMode
+
 end CheckedTemporalUniquenessGroup
 
 /-- One certified temporal slot. A filter belongs to its exact authored wildcard occurrence. -/
@@ -132,6 +143,12 @@ def format (operand : CheckedTemporalUniquenessOperand model) : String :=
   match operand with
   | .field source | .star _ source _ => source.format
   | .group source => source.format
+
+def partialMode (operand : CheckedTemporalUniquenessOperand model) :
+    TemporalPartialMode :=
+  match operand with
+  | .field source | .star _ source _ => source.partialMode
+  | .group source => source.partialMode
 
 def path (operand : CheckedTemporalUniquenessOperand model) : List String :=
   match operand with

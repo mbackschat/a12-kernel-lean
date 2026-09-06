@@ -1,0 +1,340 @@
+[
+ {
+  "id": "001|max|full",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MaxValue(/Probe/Rows*/DFull) > [Thr]",
+   "--code",
+   "P001"
+  ]
+ },
+ {
+  "id": "002|min|full",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MinValue(/Probe/Rows*/DFull) < [Thr]",
+   "--code",
+   "P002"
+  ]
+ },
+ {
+  "id": "003|ndv|full",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And NumberOfDifferentValues(/Probe/Rows*/DFull) < 2",
+   "--code",
+   "P003"
+  ]
+ },
+ {
+  "id": "004|uniq|full",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldValuesNotUnique(/Probe/Rows*/DFull)",
+   "--code",
+   "P004"
+  ]
+ },
+ {
+  "id": "005|yearfrom|full",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And YearFromDate(DFull) > 2000",
+   "--code",
+   "P005"
+  ]
+ },
+ {
+  "id": "006|max|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MaxValue(/Probe/Rows*/DDay) > [Thr]",
+   "--code",
+   "P006"
+  ]
+ },
+ {
+  "id": "007|min|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MinValue(/Probe/Rows*/DDay) < [Thr]",
+   "--code",
+   "P007"
+  ]
+ },
+ {
+  "id": "008|ndv|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And NumberOfDifferentValues(/Probe/Rows*/DDay) < 2",
+   "--code",
+   "P008"
+  ]
+ },
+ {
+  "id": "009|uniq|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldValuesNotUnique(/Probe/Rows*/DDay)",
+   "--code",
+   "P009"
+  ]
+ },
+ {
+  "id": "010|yearfrom|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And YearFromDate(PkDay) > 2000",
+   "--code",
+   "P010"
+  ]
+ },
+ {
+  "id": "011|max|monthopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MaxValue(/Probe/Rows*/DMonth) > [Thr]",
+   "--code",
+   "P011"
+  ]
+ },
+ {
+  "id": "012|min|monthopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MinValue(/Probe/Rows*/DMonth) < [Thr]",
+   "--code",
+   "P012"
+  ]
+ },
+ {
+  "id": "013|ndv|monthopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And NumberOfDifferentValues(/Probe/Rows*/DMonth) < 2",
+   "--code",
+   "P013"
+  ]
+ },
+ {
+  "id": "014|uniq|monthopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldValuesNotUnique(/Probe/Rows*/DMonth)",
+   "--code",
+   "P014"
+  ]
+ },
+ {
+  "id": "015|yearfrom|monthopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And YearFromDate(DMonth) > 2000",
+   "--code",
+   "P015"
+  ]
+ },
+ {
+  "id": "016|max|yearopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MaxValue(/Probe/Rows*/DYear) > [Thr]",
+   "--code",
+   "P016"
+  ]
+ },
+ {
+  "id": "017|min|yearopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MinValue(/Probe/Rows*/DYear) < [Thr]",
+   "--code",
+   "P017"
+  ]
+ },
+ {
+  "id": "018|ndv|yearopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And NumberOfDifferentValues(/Probe/Rows*/DYear) < 2",
+   "--code",
+   "P018"
+  ]
+ },
+ {
+  "id": "019|uniq|yearopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldValuesNotUnique(/Probe/Rows*/DYear)",
+   "--code",
+   "P019"
+  ]
+ },
+ {
+  "id": "020|yearfrom|yearopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And YearFromDate(DYear) > 2000",
+   "--code",
+   "P020"
+  ]
+ },
+ {
+  "id": "021|fromdate|YearFromDate|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And YearFromDate(PkDay) > 0",
+   "--code",
+   "P021"
+  ]
+ },
+ {
+  "id": "022|fromdate|MonthFromDate|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And MonthFromDate(PkDay) > 0",
+   "--code",
+   "P022"
+  ]
+ },
+ {
+  "id": "023|fromdate|DayFromDate|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And DayFromDate(PkDay) > 0",
+   "--code",
+   "P023"
+  ]
+ },
+ {
+  "id": "024|fromdate|QuarterFromDate|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And QuarterFromDate(PkDay) > 0",
+   "--code",
+   "P024"
+  ]
+ },
+ {
+  "id": "025|valueasdate|dayopt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And ValueAsDate(PkDay, FirstDay) > [Thr]",
+   "--code",
+   "P025"
+  ]
+ },
+ {
+  "id": "026|valueasdate|full",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And ValueAsDate(Thr, FirstDay) > [Thr]",
+   "--code",
+   "P026"
+  ]
+ }
+]

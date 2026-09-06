@@ -1,0 +1,168 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "0ca44debbd15bdc1863bcadae74709205dcf2211",
+    "state" : "DIRTY"
+  },
+  "model" : "4ce868c0282cd663572240bc75f64f9bcfb3f95caa773dae634a8e856e3f59f7",
+  "observations" : [ {
+    "id" : "001|max|full",
+    "inputHash" : "d8a80c54418e41c40e86534bb22a7c252074a96eb584799d7922dc404e866180",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "002|min|full",
+    "inputHash" : "1d95d74d0f4829079e120c60f785ca2857b342359d457c2ec274e1c018373d85",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "003|ndv|full",
+    "inputHash" : "7f2faa629b7b0285496762fb5ccb54e59aa1bfc36dec940ff00c5337503d079b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "004|uniq|full",
+    "inputHash" : "32aff7f3920ca83b132b558d5d0dd7d735565afd71739442c3bcf34f982b1e2b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "005|yearfrom|full",
+    "inputHash" : "8736a30bf17bf483522bab851c173968626a550faa4c184781e012c7256bef42",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "006|max|dayopt",
+    "inputHash" : "894c48551e3c741fb28925427ce2b2bc3145a29d012845080384f48f9cda9f51",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "007|min|dayopt",
+    "inputHash" : "84fccd4ba406ef6ee88d8932fc02cda9d46c2e5f652208a8a971232c5dcb7632",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "008|ndv|dayopt",
+    "inputHash" : "5c01b6659ae48ef4123b56d61ed2681ec49c386e6b153bf7c0f87566d74b33a7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "009|uniq|dayopt",
+    "inputHash" : "d218cef737be7bb150100b4a815c5400ec3b4bea01415f24ba7bc91d0b758858",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "010|yearfrom|dayopt",
+    "inputHash" : "b5d888c6d91fd37d1503b048b294b959a071ebfbf9e2dba1ae9f170059f52f81",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "011|max|monthopt",
+    "inputHash" : "caf218e058eb97c835581c2d279ffba782e6003d89897c6ff12617dcc4ac9092",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "012|min|monthopt",
+    "inputHash" : "6baf22c6dcbdaaf72332cb4e65c2aa7bf541deac49845e87abb5f3c067197e84",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "013|ndv|monthopt",
+    "inputHash" : "b2803f7521582da6d580476f85fd076a69b19a63dabbe69c5aff4409f74a5e41",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "014|uniq|monthopt",
+    "inputHash" : "dec9e173cb234ca69c0f3757808c296c7fe696117abe1a50578729522c416179",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "015|yearfrom|monthopt",
+    "inputHash" : "cabd9e2c870717cff069f40c1477e4cba5c487cd8b031d51cc213df23cfb2431",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "016|max|yearopt",
+    "inputHash" : "c37f1b1db630d39ee9a4fd686da20ac94cd1dad04493cdb7b8d2352829c51b1a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "017|min|yearopt",
+    "inputHash" : "353c3845b33e8c26fb32f3880fc950622ae0db769ee3001abd6b12ea8913d7d6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "018|ndv|yearopt",
+    "inputHash" : "2ebdd80b0fe83e880aabadb50cb6aeaf4f268bf6debe46bf2e9593332d4bdd63",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARTIAL_DATE_NOT_ALLOWED" ]
+  }, {
+    "id" : "019|uniq|yearopt",
+    "inputHash" : "ae301cf94d95ff977dd7bb211e850ead2a92c93894bc4b66406eb1b837724dea",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "020|yearfrom|yearopt",
+    "inputHash" : "78eb70da305a04ac0cecfcc86461457d22a80d6441e9d16e076b2f3f4bbde97e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "021|fromdate|YearFromDate|dayopt",
+    "inputHash" : "b5a005f795fd08f581cb9afab030a3458b00c0d5ac41dbe4bcc6bf1c9b41e859",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "022|fromdate|MonthFromDate|dayopt",
+    "inputHash" : "c12d77208022354165351e8103c704ea23c0ca14f5e990154c807d2a9594063b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "023|fromdate|DayFromDate|dayopt",
+    "inputHash" : "67cf216ce76ee53a3d098595fcd0e49fe323661a7b0066c0dac407ed5ca69a6d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_TYPE" ]
+  }, {
+    "id" : "024|fromdate|QuarterFromDate|dayopt",
+    "inputHash" : "33dcb9fd04d0f4493189734311ed59f3f43bf65bf07ba1a82ee26ffa337624a2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "025|valueasdate|dayopt",
+    "inputHash" : "09eee9985d591ccbb1135fbc438b01dda9fe7d8f27f6d1fa89401242f23a4d92",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "026|valueasdate|full",
+    "inputHash" : "23a615bfb128a822408c2f802e6de4e2851bf1fc71c4301aca7b1e66af1bdbfa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_TYPE_FOR_OP" ]
+  } ]
+}

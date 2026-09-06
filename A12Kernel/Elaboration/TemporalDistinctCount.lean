@@ -96,6 +96,13 @@ def components (group : CheckedTemporalDistinctCountGroup model) :
     TemporalComponents :=
   group.first.components
 
+/-- The expansion's leading declared precision. Its own component gate makes the set shared, and a
+    mixed-precision expansion is not separately measured — the leading declaration is the one this
+    operator's positional class already reads. -/
+def partialMode (group : CheckedTemporalDistinctCountGroup model) :
+    TemporalPartialMode :=
+  group.first.partialMode
+
 def format (group : CheckedTemporalDistinctCountGroup model) : String :=
   group.first.format
 
@@ -131,6 +138,10 @@ inductive TemporalDistinctCountElabError where
   /-- **This operator's own gate.** An operand whose component set differs from the list's, carrying
       both declared formats because the Kernel's message names them rather than the sets. -/
   | mixedComponentSets (path : List String) (found expected : String)
+  /-- A **partially known** Date operand. This operator compares the decoded date, which a partial
+      does not have, and refuses all three declared precisions where its uniqueness neighbour admits
+      every one ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). -/
+  | partialDate (path : List String) (mode : TemporalPartialMode)
   /-- A group whose expansion's **first** declaration is not temporal, so the authored list is not
       this overload's at all. **No class is claimed**: the Kernel reports the leading family's own
       code — `MVK_NUMBER_AND_NON_NUMBER` for a Number-first expansion — which the Number overload
@@ -256,6 +267,24 @@ private def certifyDistinctCountOperands (model : FlatModel)
       pure ((← certifyDistinctCountOperand model declaringGroup operand) ::
         (← certifyDistinctCountOperands model declaringGroup remaining))
 
+/-- The first operand in authored order whose declared precision is not fully known. -/
+def firstPartialTemporalOperand? :
+    List (CheckedTemporalDistinctCountOperand model) →
+      Option (List String × TemporalPartialMode)
+  | [] => none
+  | operand :: remaining =>
+      match operand with
+      | .slot slot =>
+          if slot.partialMode == .full then
+            firstPartialTemporalOperand? remaining
+          else
+            some (slot.path, slot.partialMode)
+      | .group source =>
+          if source.partialMode == .full then
+            firstPartialTemporalOperand? remaining
+          else
+            some (source.groupPath, source.partialMode)
+
 /-- Certify one authored operand list for the temporal distinct count.
 
     Slot certification is the shared one; the list gate is this operator's own. A **group** slot is
@@ -278,6 +307,12 @@ def elaborateTemporalDistinctCountSource (model : FlatModel)
   | none => pure ()
   let first ← certifyDistinctCountOperand model declaringGroup shape.first
   let rest ← certifyDistinctCountOperands model declaringGroup shape.rest
+  -- The precision gate is this operator's own and is applied in authored order, before the
+  -- component-set gate: a partial declaration carries a complete component set, so the two gates
+  -- are independent and a list can be refused by either.
+  match firstPartialTemporalOperand? (first :: rest) with
+  | some (path, mode) => throw (.partialDate path mode)
+  | none => pure ()
   match hComponents :
       firstMismatchedTemporalComponents? first.components first.format rest with
   | some (path, found, expected) =>
@@ -291,6 +326,7 @@ namespace TemporalDistinctCountElabError
     slot claims nothing. -/
 def diagnostic? : TemporalDistinctCountElabError → Option KernelStaticDiagnostic
   | .mixedComponentSets _ _ _ => some .dateFormatsNotCompatible
+  | .partialDate _ _ => some .partialDateNotAllowed
   -- Re-mapped, never delegated: the shared certifier's own projection carries the neighbour's
   -- codes, and the two operators' kind-domain classes differ by one token —
   -- `MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED` here against the `CMP_`-less form there.

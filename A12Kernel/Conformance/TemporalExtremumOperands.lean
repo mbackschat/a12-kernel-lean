@@ -25,16 +25,26 @@ private def dateParts (year month day : Bool) : TemporalComponents :=
 private def temporal (id : Nat) (name : String) (kind : TemporalKind)
     (components : TemporalComponents) (format : String)
     (groupPath : GroupPath := ["Probe"])
-    (repeatableScope : List RepeatableLevel := []) : FlatFieldDecl :=
+    (repeatableScope : List RepeatableLevel := [])
+    (partialMode : TemporalPartialMode := .full) : FlatFieldDecl :=
   { id, groupPath, name, repeatableScope,
     policy := { kind := .temporal kind components },
-    temporalTargetPolicy := some { format } }
+    temporalTargetPolicy := some { format, partialMode } }
 
 /-- One declaration per spelling the matrix needs, plus a String control. Ids are stable across the
     two models so a row can be read against both Base Year states. -/
 private def declarations : List FlatFieldDecl :=
   [ temporal 1 "IsoDate" .date (dateParts true true true) "yyyy-MM-dd",
     temporal 2 "DottedDate" .date (dateParts true true true) "dd.MM.yyyy",
+    -- Three **partially known** declarations. Each carries the *complete* component set, which is
+    -- the whole point: they differ from `DottedDate` in declared precision alone, so a gate reading
+    -- components admits them and only a precision gate refuses.
+    temporal 41 "DayOptional" .date (dateParts true true true) "dd.MM.yyyy"
+      ["Probe"] [] .dayOptional,
+    temporal 42 "MonthOptional" .date (dateParts true true true) "dd.MM.yyyy"
+      ["Probe"] [] .monthOptional,
+    temporal 43 "YearOptional" .date (dateParts true true true) "dd.MM.yyyy"
+      ["Probe"] [] .yearOptional,
     temporal 3 "IsoYearMonth" .date (dateParts true true false) "yyyy-MM",
     temporal 4 "PackedYearMonth" .date (dateParts true true false) "yyyyMM",
     temporal 5 "DateYear" .date (dateParts true false false) "yyyy",
@@ -383,6 +393,24 @@ example :
    rather than none — the presence form participates in the positional rule like any other. -/
 example :
     groupRefusal? starModel [presenceGroup, operandOf 12] = some .dateAndNonDate := by
+  native_decide
+
+/-! ## Declared precision, not components
+
+A partially known Date is refused as an extremum operand on all three declared precisions, and the
+gate reads the **precision**: each of the three declarations below carries the same complete
+component set as the admitted `DottedDate` beside it and differs from it in `datePrecision` alone
+([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). A gate reading
+components admits every one of them, which is what this project did.
+
+This is also why the extrema need no interval element type: the operand never reaches the fold. -/
+
+example :
+    ([41, 42, 43].map (fun source => refusal? plainModel [source, 2]),
+      refusal? plainModel [2, 41],
+      admitted plainModel [2, 1]) =
+    (List.replicate 3 (some .partialDateNotAllowed),
+      some .partialDateNotAllowed, true) := by
   native_decide
 
 end A12Kernel.Conformance.TemporalExtremumOperands
