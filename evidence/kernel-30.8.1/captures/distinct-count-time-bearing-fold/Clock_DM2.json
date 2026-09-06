@@ -1,0 +1,154 @@
+{
+  "header" : {
+    "id" : "Clock_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Clock_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Clock_DM",
+        "name" : "Clock_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Clock_DM/Reference",
+            "name" : "Reference",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/T1",
+            "name" : "T1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/T2",
+            "name" : "T2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/DT1",
+            "name" : "DT1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/DT2",
+            "name" : "DT2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Clock_DM/TP1",
+            "name" : "TP1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "TP1",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(T1, T2) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "time pair counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Clock_DM/TP2",
+            "name" : "TP2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "TP2",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(T1, T2) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "time pair counts two"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Clock_DM/XK1",
+            "name" : "XK1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "XK1",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(T1, DT2) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "cross-kind clock pair counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Clock_DM/XK2",
+            "name" : "XK2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "XK2",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(T1, DT2) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "cross-kind clock pair counts two"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

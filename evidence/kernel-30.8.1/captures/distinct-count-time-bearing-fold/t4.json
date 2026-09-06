@@ -1,0 +1,1 @@
+{"field": "/Clock_DM/Reference", "code": "XK2", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(T1, DT2) == 2", "messages": [{"locale": "en_US", "text": "cross-kind clock pair counts two"}]}

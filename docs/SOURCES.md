@@ -691,6 +691,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+<a id="src-distinct-count-time-bearing-fold"></a>
+- [The distinct count folds a time-bearing operand too, and a TIME agrees with a time-only DATETIME](sources/evaluation-and-application-routes.md#src-distinct-count-time-bearing-fold)
 <a id="src-distinct-count-component-omitting-fold"></a>
 - [The distinct count folds a component-omitting date at its declared precision](sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>

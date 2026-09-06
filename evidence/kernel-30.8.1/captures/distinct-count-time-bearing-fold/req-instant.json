@@ -1,0 +1,1 @@
+{"model": "Instant_DM2.json", "locale": "en_US", "observe": ["validateFull"], "rows": [{"name": "instant-equal", "document": "doc-instant-eq.json"}, {"name": "instant-unequal", "document": "doc-instant-ne.json"}]}

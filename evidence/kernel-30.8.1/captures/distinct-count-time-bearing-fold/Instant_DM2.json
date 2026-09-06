@@ -1,0 +1,138 @@
+{
+  "header" : {
+    "id" : "Clock_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Clock_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Clock_DM",
+        "name" : "Clock_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Clock_DM/Reference",
+            "name" : "Reference",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/T1",
+            "name" : "T1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/T2",
+            "name" : "T2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/DT1",
+            "name" : "DT1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/DT2",
+            "name" : "DT2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Clock_DM/DT3",
+            "name" : "DT3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Clock_DM/IP1",
+            "name" : "IP1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "IP1",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(DT1, DT3) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "instant pair counts one"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Clock_DM/IP2",
+            "name" : "IP2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Reference",
+              "errorCode" : "IP2",
+              "errorCondition" : "FieldFilled(Reference) And NumberOfDifferentValues(DT1, DT3) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "instant pair counts two"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

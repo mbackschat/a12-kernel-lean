@@ -1,0 +1,1 @@
+{"model": "Clock_DM2.json", "locale": "en_US", "observe": ["validateFull"], "rows": [{"name": "clock-equal", "document": "doc-eq.json"}, {"name": "clock-unequal", "document": "doc-ne.json"}]}

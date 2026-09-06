@@ -1,0 +1,1 @@
+{"field": "/Clock_DM/Reference", "code": "TP2", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(T1, T2) == 2", "messages": [{"locale": "en_US", "text": "time pair counts two"}]}

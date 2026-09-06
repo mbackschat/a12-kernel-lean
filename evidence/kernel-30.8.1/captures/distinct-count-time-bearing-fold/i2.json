@@ -1,0 +1,1 @@
+{"field": "/Clock_DM/Reference", "code": "IP2", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(DT1, DT3) == 2", "messages": [{"locale": "en_US", "text": "instant pair counts two"}]}

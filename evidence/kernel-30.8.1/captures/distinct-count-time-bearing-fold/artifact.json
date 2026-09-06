@@ -1,0 +1,156 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Clock_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "clock-equal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TP1",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "time pair counts one",
+              "referenced" : [
+                "Clock_DM/Reference",
+                "Clock_DM/T1",
+                "Clock_DM/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "XK1",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-kind clock pair counts one",
+              "referenced" : [
+                "Clock_DM/DT2",
+                "Clock_DM/Reference",
+                "Clock_DM/T1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TP1",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "time pair counts one",
+              "referenced" : [
+                "Clock_DM/Reference",
+                "Clock_DM/T1",
+                "Clock_DM/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "XK1",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-kind clock pair counts one",
+              "referenced" : [
+                "Clock_DM/DT2",
+                "Clock_DM/Reference",
+                "Clock_DM/T1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "clock-unequal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TP2",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "time pair counts two",
+              "referenced" : [
+                "Clock_DM/Reference",
+                "Clock_DM/T1",
+                "Clock_DM/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "XK2",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-kind clock pair counts two",
+              "referenced" : [
+                "Clock_DM/DT2",
+                "Clock_DM/Reference",
+                "Clock_DM/T1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TP2",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "time pair counts two",
+              "referenced" : [
+                "Clock_DM/Reference",
+                "Clock_DM/T1",
+                "Clock_DM/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "XK2",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-kind clock pair counts two",
+              "referenced" : [
+                "Clock_DM/DT2",
+                "Clock_DM/Reference",
+                "Clock_DM/T1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

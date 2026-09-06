@@ -1,0 +1,104 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Instant_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "instant-equal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "IP1",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "instant pair counts one",
+              "referenced" : [
+                "Clock_DM/DT1",
+                "Clock_DM/DT3",
+                "Clock_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "IP1",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "instant pair counts one",
+              "referenced" : [
+                "Clock_DM/DT1",
+                "Clock_DM/DT3",
+                "Clock_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "instant-unequal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "IP2",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "instant pair counts two",
+              "referenced" : [
+                "Clock_DM/DT1",
+                "Clock_DM/DT3",
+                "Clock_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "IP2",
+              "field" : "Clock_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "instant pair counts two",
+              "referenced" : [
+                "Clock_DM/DT1",
+                "Clock_DM/DT3",
+                "Clock_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

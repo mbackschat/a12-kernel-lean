@@ -1,0 +1,41 @@
+[
+ {
+  "id": "1-time-pair",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Clock_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(T1, T2) == 1",
+   "--code",
+   "C1"
+  ]
+ },
+ {
+  "id": "2-time-beside-timeonly-datetime",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Clock_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(T1, DT2) == 1",
+   "--code",
+   "C2"
+  ]
+ },
+ {
+  "id": "3-instant-beside-timeonly-datetime",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Clock_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(DT1, DT2) == 1",
+   "--code",
+   "C3"
+  ]
+ }
+]
