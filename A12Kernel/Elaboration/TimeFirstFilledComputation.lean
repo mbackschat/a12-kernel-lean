@@ -14,7 +14,7 @@ inductive TimeFirstFilledComputationElabError where
 structure CheckedTimeFirstFilledComputation (model : FlatModel) where
   private mk ::
   shape : CheckedTemporalFirstFilledStarComputation model .timeHms
-  targetPolicy : CheckedTimeTarget model
+  targetPolicy : CheckedClockFormatTarget model
 
 /-- Check the bounded Time computation shape. Wider formats, policies, operands, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
 def checkTimeFirstFilledComputation
@@ -25,7 +25,7 @@ def checkTimeFirstFilledComputation
   let shape ← checkTemporalFirstFilledStarComputation
     model declaringGroup targetField authored .timeHms
       |>.mapError .shape
-  let targetPolicy ← elaborateTimeTarget model targetField
+  let targetPolicy ← elaborateClockFormatTarget model targetField
     |>.mapError .targetPolicy
   pure { shape, targetPolicy }
 

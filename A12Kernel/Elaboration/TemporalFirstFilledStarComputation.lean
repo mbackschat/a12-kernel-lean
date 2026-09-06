@@ -32,13 +32,31 @@ def TemporalFirstFilledStarCarrier.isDateFragment :
       .monthDayFragment => true
   | _ => false
 
-/-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
+/-- Classify only the completed temporal declaration profiles.
+
+    **The three scalar arms read the declared component set and format, never the declared kind.**
+    That is the measured Kernel rule at this position: a DATE-declared field whose components and
+    format are the clock's takes a clock value exactly as a TIME-declared one does, and a
+    TIME-declared field spelled `yyyy-MM-dd` takes a Date
+    ([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)).
+    Keying on the kind here was one mechanism producing the same over-refusal at every scalar
+    temporal first-filled carrier, so it is corrected once rather than per carrier.
+
+    `DATE_RANGE` stays keyed on its kind, and correctly: it is the one kind whose format is
+    allowlisted as a `(format, separator)` **pair** rather than as a bare format string, so its
+    profile genuinely cannot be read off a format alone. Date profiles with optional pre-1900
+    checking remain outside until checked temporal input represents that declaration-owned source
+    check. -/
 def FlatFieldDecl.temporalFirstFilledStarCarrier?
     (declaration : FlatFieldDecl) : Option TemporalFirstFilledStarCarrier :=
   match declaration.policy.kind, declaration.toTemporalTargetPolicy?,
       declaration.toDateRangeDeclarationPolicy? with
-  | .temporal .date components, some policy, _ =>
-      if components != TemporalComponents.fullDate ||
+  | .temporal _ components, some policy, _ =>
+      if components == TemporalComponents.time then
+        if policy.format == "HH:mm:ss" then some .timeHms else none
+      else if components == TemporalComponents.now then
+        if policy.format == "yyyy-MM-dd'T'HH:mm:ss" then some .dateTimeIso else none
+      else if components != TemporalComponents.fullDate ||
           policy.youngerThan1900Check then
         none
       else if policy.partialMode == .yearOptional then
@@ -59,18 +77,6 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
           some .fullDateDotted
         else
           none
-      else
-        none
-  | .temporal .time components, some policy, _ =>
-      if components == TemporalComponents.time &&
-          policy.format == "HH:mm:ss" then
-        some .timeHms
-      else
-        none
-  | .temporal .dateTime components, some policy, _ =>
-      if components == TemporalComponents.now &&
-          policy.format == "yyyy-MM-dd'T'HH:mm:ss" then
-        some .dateTimeIso
       else
         none
   | .dateRange, _, some policy =>

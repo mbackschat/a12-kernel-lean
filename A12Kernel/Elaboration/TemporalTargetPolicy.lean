@@ -164,6 +164,13 @@ def elaborateClockFormatTargetIn
       |>.mapError .targetPolicy
   checked.toClockFormatTarget
 
+/-- Resolve and refine one model-owned nonrepeatable renderable complete-clock target, reading the
+declared format and not the declared kind. -/
+def elaborateClockFormatTarget
+    (model : FlatModel) (targetField : FieldId) :
+    Except TimeTargetElabError (CheckedClockFormatTarget model) :=
+  elaborateClockFormatTargetIn model [] targetField
+
 /-- Resolve and refine one model-owned complete Time target whose repetition scope is bound by the caller. -/
 def elaborateTimeTargetIn
     (model : FlatModel) (scope : List RepeatableLevel)

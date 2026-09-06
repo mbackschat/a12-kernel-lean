@@ -59,10 +59,20 @@ private def checkedSource :=
   timeField 12 ["Cart", "Lines"] "CheckedTime" [10] "HH:mm:ss"
     TemporalComponents.time .full true
 
+/-- A **DATE**-declared target whose format and components are the clock's. Both halves matter: with
+a full-date component set beside the clock format the cell would be refusable for its components, so
+the row could never have been about the declared kind
+([sibling trap](RepeatableTimeConstantComputation.lean)). -/
+private def clockShapedDateTarget : FlatFieldDecl :=
+  { id := 10, groupPath := ["Cart"], name := "ClockShapedDate"
+    policy := { kind := .temporal .date TemporalComponents.time }
+    temporalTargetPolicy := some { format := "HH:mm:ss" } }
+
 private def model : FlatModel := {
   fields := [
     target, source, shortSource, incompleteSource, dateSource,
-    repeatedTarget, nestedSource, otherFormatTarget, otherGroupTarget]
+    repeatedTarget, nestedSource, otherFormatTarget, otherGroupTarget,
+    clockShapedDateTarget]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 },
     { level := 20, path := ["Cart", "Lines", "Details"],
@@ -267,6 +277,24 @@ example :
       (checkedAt? ["Cart", "Lines"] repeatedTarget.id
         (star "Time")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by
+  native_decide
+
+
+/- **The target gate reads the declared format, not the declared kind.** A DATE-declared field whose
+   format and components are the clock's takes this computation exactly as the TIME-declared target
+   does, which the Kernel admits for this family and for `TimeFromDateTime` alike
+   ([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
+   TIME-declared control beside it is what keeps the row from reading as "any target is admitted". -/
+example :
+    ((checked? clockShapedDateTarget.id (star "Time")).isSome,
+      (checked? target.id (star "Time")).isSome) = (true, true) := by
+  native_decide
+
+/- And the gate still gates, on the axis it actually reads. `otherFormatTarget` is **TIME**-declared
+   and refused, because its `HH:mm` format is not the complete clock — so dropping the kind test
+   widened the carrier by exactly the cross-kind cell and by nothing else. Without this row the
+   admission above would equally suit a projection that had stopped checking anything. -/
+example : (checked? otherFormatTarget.id (star "Time")).isSome = false := by
   native_decide
 
 end A12Kernel.Conformance.TimeFirstFilledComputation

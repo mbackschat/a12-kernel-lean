@@ -1,0 +1,278 @@
+[
+ {
+  "id": "501|clockcol|firstfilled-clock|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y501.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "502|clockcol|firstfilled-clock|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y502.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "503|clockcol|firstfilled-clock|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y503.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "504|clockcol|firstfilled-clock|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y504.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "505|clockcol|shift-clock|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y505.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "AddHours(TClock, 2)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "506|clockcol|shift-clock|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y506.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "AddHours(TClock, 2)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "507|clockcol|shift-clock|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y507.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "AddHours(TClock, 2)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "508|clockcol|shift-clock|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y508.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "AddHours(TClock, 2)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "509|clockcol|worldtime-clock|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y509.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "Time"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "510|clockcol|worldtime-clock|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y510.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "Time"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "511|clockcol|worldtime-clock|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y511.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "Time"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "512|clockcol|worldtime-clock|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "y512.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "Time"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ }
+]

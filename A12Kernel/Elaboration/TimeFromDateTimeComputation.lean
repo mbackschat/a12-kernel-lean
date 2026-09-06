@@ -17,7 +17,7 @@ inductive TimeFromDateTimeComputationElabError where
 /-- One checked complete-DateTime source paired with the existing declaration-owned Time target. -/
 structure CheckedTimeFromDateTimeComputation (model : FlatModel) where
   source : CheckedDateTimeSource model
-  target : CheckedTimeTarget model
+  target : CheckedClockFormatTarget model
 
 /-- Resolve one nonrepeatable complete-DateTime source and one complete Time target in the same model. -/
 def elaborateTimeFromDateTimeComputation
@@ -25,7 +25,7 @@ def elaborateTimeFromDateTimeComputation
     Except TimeFromDateTimeComputationElabError
       (CheckedTimeFromDateTimeComputation model) := do
   let source ← elaborateDateTimeSource model sourceField |>.mapError .source
-  let target ← elaborateTimeTarget model targetField |>.mapError .target
+  let target ← elaborateClockFormatTarget model targetField |>.mapError .target
   pure { source, target }
 
 namespace ValueAsDateTimeTimeOperand

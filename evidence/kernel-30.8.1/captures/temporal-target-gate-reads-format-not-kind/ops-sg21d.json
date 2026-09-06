@@ -1,0 +1,71 @@
+[
+ {
+  "id": "601|shift-dt|target-DATE-kind-dt-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "z601.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DStampDate",
+   "alternatives": [
+    {
+     "operation": "AddHours(DTStamp, 2)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "602|shift-dt|target-datefmt-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "z602.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "AddHours(DTStamp, 2)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "603|shift-dt|target-clockfmt-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "z603.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "AddHours(DTStamp, 2)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ }
+]
