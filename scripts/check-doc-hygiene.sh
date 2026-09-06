@@ -212,6 +212,37 @@ while IFS=: read -r line_number _; do
   failed=true
 done < <(grep -Ein '^- (\*\*)?(closed|resolved|corrected|partly resolved|upstream reconciliation closed)(\*\*)?([ :,.]|$)' docs/SEMANTICS-GAPS.md || true)
 
+# Revision citations newly written in this range must resolve. A citation is "new" only when it
+# does not already appear in the tree at the range's start, so moving or re-quoting a record does
+# not re-flag its existing receipts; peer history is rewritten upstream and 176 of the 426 existing
+# citations resolve nowhere, which is honest history rather than a defect (see docs/SOURCES.md).
+# Retires LF138: a fabricated receipt reads exactly like a measured one.
+revision_range="${A12_REVISION_RANGE:-HEAD~1..HEAD}"
+range_base="${revision_range%%..*}"
+if git rev-parse --verify --quiet "$range_base" >/dev/null; then
+  hex_of() { grep -hoE '(^|[^0-9a-f])[0-9a-f]{40}([^0-9a-f]|$)' | grep -oE '[0-9a-f]{40}' | sort -u; }
+  added_citations="$(git diff "$revision_range" -- docs/ spec/ | grep '^+' | hex_of || true)"
+  existing_citations="$(git grep -hI -e '' "$range_base" -- docs/ spec/ 2>/dev/null | hex_of || true)"
+  new_citations="$(comm -23 <(printf '%s\n' "$added_citations") <(printf '%s\n' "$existing_citations"))"
+  siblings_present=true
+  for sibling in ../a12-rulekit ../a12-kernel; do
+    git -C "$sibling" rev-parse --git-dir >/dev/null 2>&1 || siblings_present=false
+  done
+  for citation in $new_citations; do
+    if git cat-file -t "$citation" >/dev/null 2>&1 \
+      || git -C ../a12-rulekit cat-file -t "$citation" >/dev/null 2>&1 \
+      || git -C ../a12-kernel cat-file -t "$citation" >/dev/null 2>&1; then
+      continue
+    fi
+    if [[ "$siblings_present" == true ]]; then
+      echo "new revision citation ${citation} resolves in no checkout; cite the revision you read, never an extension of a short form [LF138]" >&2
+      failed=true
+    else
+      echo "documentation hygiene guard: citation ${citation} UNVERIFIABLE, a sibling checkout is absent; re-run where ../a12-rulekit and ../a12-kernel are present" >&2
+    fi
+  done
+fi
+
 if [[ "$failed" == true ]]; then
   exit 1
 fi

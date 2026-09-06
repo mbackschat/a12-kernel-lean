@@ -18,6 +18,12 @@ Start from the relevant [`spec/` clause](../spec/SEMANTICS-MAP.md), then:
 3. follow a12-dmkits’ guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) for its exhaustive prose/test/corpus inventory;
 4. consult this file’s focused packets only for cross-layer mechanisms not answered by one locus.
 
+### How far to trust a 40-character revision receipt
+
+**A revision citation certifies what was read when it was written, not that it still resolves.** Measured 2026-09-06: of 426 distinct 40-hex citations across `docs/` and `spec/`, **176 resolve in no local checkout**. Restricted to the live provenance owners — this file, `EVIDENCE.md`, the current ledger, and the `sources/` shards — **182 citations resolve at 80%**. The remaining dead ones concentrate in `archived/`, `LEAN-FORMALIZATION.md` and `PRODUCTION-RELEASE.md`, where they name frozen history or external repositories such as Cedar and Lean that no local checkout is expected to hold. Peer history is rewritten upstream and this repository's early history was rewritten too, so decay is the normal condition of an old receipt rather than evidence of a fabricated one.
+
+Two consequences. A reader resolving an old citation and failing has learned nothing about the claim: re-derive it from the record's own `claim` and `separator` rows instead. And a *newly written* citation is different in kind — [`check-doc-hygiene.sh`](../scripts/check-doc-hygiene.sh) resolves every 40-hex string a commit range introduces that was not already in the tree, so a receipt is verified live at authoring time and never afterwards. Set `A12_REVISION_RANGE` to widen that range; the check reports `UNVERIFIABLE` rather than passing when a sibling checkout is absent.
+
 Search reusable provenance entries with `rg -n '^<a id="src-' docs/SOURCES.md`, then follow the entry to its bounded family record under [`sources/`](sources/). Search the shard directly when updating a checkpoint. Add a route only when it is reusable by later work. A one-capsule source narrative belongs in working context and Git history, while a durable surprising mechanism belongs in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 
 ### Engine routing rule — pick the layer by the question, not by habit
