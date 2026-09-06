@@ -162,7 +162,7 @@ example : ([["Probe", "Rows"], ["Probe"]].map fun group =>
    same format but with a calendar-date component set is refused, and so is the nonrepeatable target
    the shared placement certificate declines. The middle row is the one that keeps the first honest:
    without it, admitting the first would be indistinguishable from having no gate at this position at
-   all. The two refusals separate by class: the component-set one draws the assignment ladder's
+   all. The two refusals separate by class: the component-set one draws the shared literal-comparison ladder's
    temporal class, while the placement decline is this project's own routing and claims none. -/
 example : ([dateTimeShapedDate.id, partialDateAtDateTimeFormat.id,
       fixedStamp.id].map fun target =>

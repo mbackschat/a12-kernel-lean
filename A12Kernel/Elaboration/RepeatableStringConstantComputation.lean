@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.StringComputationRunApplication
-import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Ordinary String constant computation into a repeatable target
@@ -34,7 +34,7 @@ inductive RepeatableStringConstantComputationElabError where
 namespace RepeatableStringConstantComputationElabError
 
 /-- Containment carries its own measured identity, and a wrong-kind target draws the shared
-assignment ladder's `stringLike` row.
+literal-comparison ladder's `stringLike` row.
 
 The ladder returns `none` for the two shapes this carrier still refuses without the Kernel
 refusing them. A **raw** String target is one: it has the String kind and so passes every kind
@@ -47,7 +47,7 @@ def diagnostic? :
     RepeatableStringConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
   | .targetNotOrdinaryString _ actual =>
-      constantAssignmentDiagnostic? .stringLike actual
+      literalComparisonDiagnostic? .stringLike actual
   | .target (.target _) | .target (.targetNotRepeatable _) => none
 
 end RepeatableStringConstantComputationElabError

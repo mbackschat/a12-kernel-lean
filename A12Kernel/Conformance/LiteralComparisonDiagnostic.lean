@@ -1,9 +1,11 @@
-import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 
-/-! # A12Kernel.Conformance.ConstantAssignmentDiagnostic — the wrong-kind constant's class ladder
+/-! # A12Kernel.Conformance.LiteralComparisonDiagnostic — the wrong-kind literal's class ladder
 
-Assigning a bare constant to a target of the wrong kind is refused, and which class the Kernel
-reports is decided by an **ordered ladder over the pair** rather than by either side alone. The
+A literal of one family meeting a field of another kind is refused, and which class the Kernel
+reports is decided by an **ordered ladder over the pair** rather than by either side alone. These
+rows measure it at the constant-assignment carrier; the [filter cases](HavingFilterDiagnostic.lean)
+measure the same table where nothing is a target, which is why the ladder is named for neither. The
 complete eight-constant by ten-target grid behind these rows was measured in one batch
 ([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)); every cell asserted
 here has an observed row, and the grid is what makes the ladder legible at all.
@@ -21,11 +23,11 @@ admissions; the fourth, a string-like constant at an Enumeration target, is gate
 membership in the declared domain instead, which this function is not given the domain to decide.
 -/
 
-namespace A12Kernel.Conformance.ConstantAssignmentDiagnostic
+namespace A12Kernel.Conformance.LiteralComparisonDiagnostic
 
 open A12Kernel
 
-private def families : List ConstantAssignmentFamily :=
+private def families : List ComparedLiteralFamily :=
   [.stringLike, .number, .temporal, .booleanLike]
 
 /-- Every `SurfaceScalarKind` value, in the grid's column order. The temporal constructor is
@@ -39,7 +41,7 @@ private def kinds : List SurfaceScalarKind :=
 /- **The complete kind-decided table**, one row per constant family in `kinds` order. Each cell is a
    measured verdict: `none` where the batch admitted the pair or gated it on the literal instead,
    and the observed class otherwise. -/
-example : families.map (fun family => kinds.map (constantAssignmentDiagnostic? family)) =
+example : families.map (fun family => kinds.map (literalComparisonDiagnostic? family)) =
     [ -- a string-like constant
       [ none, none, some .invalidCompareToEnumOrString
       , some .invalidCompareToDate, some .invalidCompareToDate
@@ -74,8 +76,8 @@ example : families.map (fun family => kinds.map (constantAssignmentDiagnostic? f
    share a class, so a consumer collapsing Boolean with Confirm reports the wrong one. -/
 example : (families.filter (· != .booleanLike)).map
       (fun family =>
-        (constantAssignmentDiagnostic? family .boolean,
-          constantAssignmentDiagnostic? family .confirm)) =
+        (literalComparisonDiagnostic? family .boolean,
+          literalComparisonDiagnostic? family .confirm)) =
     List.replicate 3
       (some .invalidCompareToYesNo, some .invalidCompareToYes) := by
   native_decide
@@ -85,8 +87,8 @@ example : (families.filter (· != .booleanLike)).map
    reports its own — and the four targets that disagree are exactly the separating witnesses. -/
 example : [SurfaceScalarKind.string, .enumeration, .number, .dateRange].map
       (fun kind =>
-        (constantAssignmentDiagnostic? .temporal kind,
-          constantAssignmentDiagnostic? .number kind)) =
+        (literalComparisonDiagnostic? .temporal kind,
+          literalComparisonDiagnostic? .number kind)) =
     [ (some .invalidCompareToDate, some .invalidCompareToEnumOrString)
     , (some .invalidCompareToDate, some .invalidCompareToEnumOrString)
     , (some .invalidCompareToDate, none)
@@ -97,8 +99,8 @@ example : [SurfaceScalarKind.string, .enumeration, .number, .dateRange].map
    string-like class for a string-like constant and `inconsistentTypesCompared` for a Boolean one.
    This is the cell a per-carrier table read off a measured sibling gets wrong, and it is why the
    ladder is shared rather than copied. -/
-example : (constantAssignmentDiagnostic? .stringLike .number,
-    constantAssignmentDiagnostic? .booleanLike .number) =
+example : (literalComparisonDiagnostic? .stringLike .number,
+    literalComparisonDiagnostic? .booleanLike .number) =
     (some .invalidCompareToEnumOrString, some .inconsistentTypesCompared) := by
   native_decide
 
@@ -109,7 +111,7 @@ example : (constantAssignmentDiagnostic? .stringLike .number,
    asserted rather than left implicit. -/
 example :
     ((FieldKind.string.surfaceKind, SurfaceScalarKind.string),
-      families.map (constantAssignmentDiagnostic? · .string)) =
+      families.map (literalComparisonDiagnostic? · .string)) =
     ((SurfaceScalarKind.string, SurfaceScalarKind.string),
       [ none
       , some .invalidCompareToEnumOrString
@@ -129,4 +131,4 @@ example : [KernelStaticDiagnostic.invalidCompareToYesNo,
       "MVK_INCONSISTENT_TYPES_COMPARED"] := by
   native_decide
 
-end A12Kernel.Conformance.ConstantAssignmentDiagnostic
+end A12Kernel.Conformance.LiteralComparisonDiagnostic

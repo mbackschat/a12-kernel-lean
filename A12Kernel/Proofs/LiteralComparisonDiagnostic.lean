@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 
 /-! # Laws of the constant-assignment and numeric-comparison class ladders
 
@@ -16,22 +16,22 @@ table.
 
 namespace A12Kernel
 
-/-- The exact pairs the constant-assignment ladder declines to classify, and the reason each one is
+/-- The exact pairs the literal-comparison ladder declines to classify, and the reason each one is
 there. Three are outright Kernel admissions; the fourth is gated on the literal's membership in a
 declared enumeration domain, which is a value question the ladder is not given the domain to
 decide. -/
-def constantAssignmentUnclassifiedPairs :
-    List (ConstantAssignmentFamily × SurfaceScalarKind) :=
+def literalComparisonUnclassifiedPairs :
+    List (ComparedLiteralFamily × SurfaceScalarKind) :=
   [(.booleanLike, .boolean), (.booleanLike, .confirm),
     (.number, .number), (.stringLike, .string), (.stringLike, .enumeration)]
 
 /-- **The ladder is total on refusals.** A pair it declines to classify is one of the five above,
 and every other pair carries a class. A consumer may therefore read `none` as "the Kernel's kind
 gate does not refuse this", never as "unrecorded". -/
-theorem constantAssignmentDiagnostic_total_on_refusals
-    (family : ConstantAssignmentFamily) (kind : SurfaceScalarKind) :
-    constantAssignmentDiagnostic? family kind = none ↔
-      (family, kind) ∈ constantAssignmentUnclassifiedPairs := by
+theorem literalComparisonDiagnostic_total_on_refusals
+    (family : ComparedLiteralFamily) (kind : SurfaceScalarKind) :
+    literalComparisonDiagnostic? family kind = none ↔
+      (family, kind) ∈ literalComparisonUnclassifiedPairs := by
   cases family <;> cases kind <;>
     first
       | rfl
@@ -53,9 +53,9 @@ theorem numericComparisonDiagnostic_total_on_refusals
 /-- **A temporal constant is never unclassified.** Rung 2 makes its row total: every target kind
 draws a class, including the two the other families are admitted at. This is the law a consumer
 needs to know that a date-shaped literal always reports something, whatever it is assigned to. -/
-theorem temporalConstantAssignment_alwaysClassified
+theorem temporalLiteralComparison_alwaysClassified
     (kind : SurfaceScalarKind) :
-    (constantAssignmentDiagnostic? .temporal kind).isSome = true := by
+    (literalComparisonDiagnostic? .temporal kind).isSome = true := by
   cases kind <;>
     first
       | rfl

@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
 import A12Kernel.Elaboration.BooleanComputationResult
-import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 
@@ -45,7 +45,7 @@ def diagnostic? : BooleanConstantOperationElabError → Option KernelStaticDiagn
   -- the shared ladder's `booleanLike` row. The Number cell is one of the two the ladder's own
   -- grid shows to be pair-dependent, so specializing is what keeps this carrier from drifting
   -- into a per-carrier table that would be wrong there.
-  | .targetKind actual => constantAssignmentDiagnostic? .booleanLike actual
+  | .targetKind actual => literalComparisonDiagnostic? .booleanLike actual
 
 end BooleanConstantOperationElabError
 

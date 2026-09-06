@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
@@ -115,7 +115,7 @@ one fact.
 
 The two comparison arms carry the field's kind because **one arm reports several classes**. A
 numeric comparison collapses every non-Number, non-temporal kind into one class; a String-literal
-comparison spreads the same kinds across four, and that column is the constant-assignment ladder's
+comparison spreads the same kinds across four, and that column is the shared literal-comparison ladder's
 `stringLike` row cell for cell — one Kernel comparison vocabulary that a plain rule comparison
 reaches too, whatever route an assignment takes to it.
 Reading either column off the other is wrong for six kinds of eight; the two temporal families are
@@ -129,7 +129,7 @@ resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
   | .fieldNotStringValue _ actual =>
-      constantAssignmentDiagnostic? .stringLike actual
+      literalComparisonDiagnostic? .stringLike actual
   | .fieldOutsideGroup _ _ _ => some .noIterationForWildcard
   | .fieldOutsideEnvironment _ _ _ _ => some .invalidIterationInFilterCondition
   | .repetitionOutsideEnvironment _ _ _ _ =>

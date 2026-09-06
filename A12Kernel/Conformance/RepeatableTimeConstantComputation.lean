@@ -96,7 +96,7 @@ example : (outcomes? ["Probe"] clock.id 2, outcomes? ["Probe", "Rows"] clock.id 
    format is `HH:mm:ss` is admitted and stores `12:30:00`, because what the Kernel reads at this
    position is the declared format and not the declared kind — this carrier takes the
    kind-independent clock certificate, the one family with a row for that cell. The surviving
-   refusal draws the assignment ladder's temporal class, which the Kernel reports for a
+   refusal draws the shared literal-comparison ladder's temporal class, which the Kernel reports for a
    format-refused temporal target exactly as it does for a wrong-kind one. -/
 example : ((outcome? ["Probe"] dateShapedTime.id, outcome? ["Probe"] clockShapedDate.id),
     [dateShapedTime.id, clockShapedDate.id].map fun target =>

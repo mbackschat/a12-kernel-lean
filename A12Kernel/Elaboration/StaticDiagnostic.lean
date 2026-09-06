@@ -31,7 +31,7 @@ inductive KernelStaticDiagnostic where
   | noBoolyAllowed
   /-- A Confirm computation target received the constant False. True is accepted, and Boolean targets accept either constant. -/
   | invalidCompareToYes
-  /-- A Boolean computation target received a constant of any other family. It is the **top** of the constant-assignment ladder: measured across an eight-constant by ten-target grid, a Boolean target reports this class even against a temporal constant, which outranks every other target ([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)). Its Confirm neighbour reports `invalidCompareToYes` in the same position, so the two kinds do not share a class even though they share the ladder rung. -/
+  /-- A Boolean computation target received a constant of any other family. It is the **top** of the shared literal-comparison ladder: measured across an eight-constant by ten-target grid, a Boolean target reports this class even against a temporal constant, which outranks every other target ([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)). Its Confirm neighbour reports `invalidCompareToYes` in the same position, so the two kinds do not share a class even though they share the ladder rung. -/
   | invalidCompareToYesNo
   /-- A computation's target does not lie at or below its declaring group while the computation
   iterates. Iteration is derived from the target's own repeatable scope or from a per-row operand of

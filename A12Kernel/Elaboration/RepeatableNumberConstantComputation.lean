@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.NumericComputation.RunApplication
 import A12Kernel.Elaboration.NumericComputation.SourceTarget
 import A12Kernel.Elaboration.NumericComputation.RunResult
-import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Number constant computation into a repeatable target
@@ -42,14 +42,14 @@ inductive RepeatableNumberConstantComputationElabError where
 namespace RepeatableNumberConstantComputationElabError
 
 /-- Every refusal but target routing carries a measured Kernel identity. A wrong-kind target draws
-the shared assignment ladder's `number` row, whose String and Enumeration cells report the
+the shared literal-comparison ladder's `number` row, whose String and Enumeration cells report the
 string-like class rather than a numeric one — the code names the *pair*, and reading it off this
 carrier's own kind would name the wrong side. -/
 def diagnostic? :
     RepeatableNumberConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
   | .constantScaleExceedsTarget _ _ _ => some .invalidCompareDecimalPlaces
-  | .targetNotNumber _ actual => constantAssignmentDiagnostic? .number actual
+  | .targetNotNumber _ actual => literalComparisonDiagnostic? .number actual
   | .target (.target _) | .target (.targetNotRepeatable _) => none
 
 end RepeatableNumberConstantComputationElabError

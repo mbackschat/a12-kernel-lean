@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.NumericComputation.RunResult
-import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.ComputationMessage
 
@@ -48,7 +48,7 @@ def diagnostic? :
     RepeatableDateTimeConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
   | .targetNotDateTime (.targetPolicy (.targetNotTemporal _ actual)) =>
-      constantAssignmentDiagnostic? .temporal actual
+      literalComparisonDiagnostic? .temporal actual
   | .targetNotDateTime _ => some .invalidCompareToDate
   | .target (.target _) | .target (.targetNotRepeatable _) => none
 

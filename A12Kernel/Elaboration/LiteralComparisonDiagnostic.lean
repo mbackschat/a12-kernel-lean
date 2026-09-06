@@ -1,20 +1,27 @@
 import A12Kernel.Elaboration.Flat.Types
 
-/-! # The constant-assignment diagnostic ladder
+/-! # The literal-comparison diagnostic ladder
 
-A computation that assigns a bare constant to a target of the wrong kind is refused, and **which**
-class the Kernel reports is decided by an ordered ladder over the (constant family, target kind)
-pair rather than by either side alone. Measured as a complete eight-constant by ten-target grid on
-repeatable targets ([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)),
-the three rungs are:
+When a literal of one family meets a field of another kind, the Kernel refuses, and **which** class
+it reports is decided by an ordered ladder over the pair rather than by either side alone.
 
-1. **A Boolean or Confirm target outranks every constant**, a temporal one included, and the two
+**The name is carrier-neutral on purpose.** This ladder was first measured at a constant assignment
+and its vocabulary said so — "constant", "target". Two further carriers then turned out to draw the
+same table: a `Having` filter, where nothing is a target, and a plain rule comparison, where nothing
+is a constant. Prose authored from one carrier inherits that carrier's words silently, and the
+inherited word only stops reading as neutral once a second carrier exists to test it against; a12-dmkits
+shipped a user-facing corrective with exactly that defect on the same day and had to withdraw it.
+The three carriers are recorded at the [filter checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes). Measured as a complete eight-literal by eleven-kind grid
+([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)), the three rungs
+are:
+
+1. **A Boolean or Confirm field kind outranks every literal**, a temporal one included, and the two
    kinds report *different* classes.
-2. **A temporal constant then reports its own family** whatever the remaining target is — a date
-   constant at a String target draws the date class, not the string one. All three temporal
+2. **A temporal literal then reports its own family** whatever the remaining kind is — a date
+   literal against a String field draws the date class, not the string one. All three temporal
    families share the single class, and so does a temporal target whose declared format refused
    the constant.
-3. **Otherwise the target's declared kind decides.**
+3. **Otherwise the field's declared kind decides.**
 
 The grid is what makes the ladder legible, because two of its cells are the only places the pair
 matters. At a Number target a string-like constant draws `invalidCompareToEnumOrString` while a
@@ -41,7 +48,7 @@ a single class where the literal column spreads them across five.
 
 namespace A12Kernel
 
-/-- The constant families the assignment ladder distinguishes.
+/-- The literal families the comparison ladder distinguishes.
 
 These are **content** classifications, not authored surfaces. The Kernel lexer has one string-literal
 syntax, so `"x"` and `"05.03.2024"` are the same authored form and differ only in what their content
@@ -49,7 +56,7 @@ parses as — witnessed directly by the grid, where the two draw different class
 target. Rung 2 is therefore the Kernel reinterpreting a string literal, not a separate surface
 reaching the gate. The three temporal families then collapse into one because the Kernel's own class
 does not separate them here. -/
-inductive ConstantAssignmentFamily where
+inductive ComparedLiteralFamily where
   | stringLike
   | number
   | temporal
@@ -69,8 +76,8 @@ value refusal this function is not given the domain to decide.
 A temporal target is deliberately **not** in that list. Its admission reads the declared format
 string and not the declared kind, so a caller reaching here with a temporal target has already been
 refused by format, and rung 2 records that the refusal draws the same class. -/
-def constantAssignmentDiagnostic? :
-    ConstantAssignmentFamily → SurfaceScalarKind → Option KernelStaticDiagnostic
+def literalComparisonDiagnostic? :
+    ComparedLiteralFamily → SurfaceScalarKind → Option KernelStaticDiagnostic
   | .booleanLike, .boolean | .booleanLike, .confirm => none
   | .number, .number => none
   | .stringLike, .string | .stringLike, .enumeration => none

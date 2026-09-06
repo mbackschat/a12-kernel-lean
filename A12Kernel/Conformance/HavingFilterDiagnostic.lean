@@ -14,7 +14,7 @@ projection is therefore right, and a per-carrier table would have been three cop
 
 The comparison rows are the reason the two arms carry the field's kind. A **numeric** comparison
 collapses every non-Number, non-temporal kind into one class; a **String-literal** comparison spreads
-the same kinds across four, and that column is the constant-assignment ladder's `stringLike` row cell
+the same kinds across four, and that column is the shared literal-comparison ladder's `stringLike` row cell
 for cell — the same Kernel vocabulary reached through a generated equality. Either column read off
 the other is wrong for six kinds of eight, which is what these rows lock.
 -/
@@ -42,7 +42,7 @@ example : kinds.map numericComparisonDiagnostic? =
    and Enumeration is gated on the literal's membership in the declared domain rather than on kind,
    so both project nothing; the other six spread across four classes where the numeric column had
    one. -/
-example : kinds.map (constantAssignmentDiagnostic? .stringLike) =
+example : kinds.map (literalComparisonDiagnostic? .stringLike) =
     [ some .invalidCompareToEnumOrString
     , none
     , some .invalidCompareToDate, some .invalidCompareToDate
@@ -55,7 +55,7 @@ example : kinds.map (constantAssignmentDiagnostic? .stringLike) =
    is a failing change rather than a silent one. They agree only on the two temporal families —
    every other kind, including the ones each column admits, is decided differently. -/
 example : (kinds.filter (fun kind =>
-    numericComparisonDiagnostic? kind != constantAssignmentDiagnostic? .stringLike kind)).length
+    numericComparisonDiagnostic? kind != literalComparisonDiagnostic? .stringLike kind)).length
       = 6 := by
   native_decide
 
