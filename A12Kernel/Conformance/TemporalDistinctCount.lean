@@ -22,6 +22,14 @@ private def yearMonth : TemporalComponents :=
   { year := true, month := true, day := false
     hour := false, minute := false, second := false }
 
+private def monthOnly : TemporalComponents :=
+  { year := false, month := true, day := false
+    hour := false, minute := false, second := false }
+
+private def monthDay : TemporalComponents :=
+  { year := false, month := true, day := true
+    hour := false, minute := false, second := false }
+
 private def dateField (id : FieldId) (name format : String)
     (components : TemporalComponents := TemporalComponents.fullDate) :
     FlatFieldDecl := {
@@ -81,14 +89,28 @@ private def model : FlatModel := {
       policy := { kind := .number { scale := 0, signed := false } } },
     { id := 17, groupPath := ["Probe", "NumFirstBox"], name := "ANum",
       policy := { kind := .number { scale := 0, signed := false } } },
-    groupField 18 "NumFirstBox" "BDate" "yyyy-MM-dd"]
+    groupField 18 "NumFirstBox" "BDate" "yyyy-MM-dd",
+    -- Yearless declarations, for the Base Year supplementation rows. Two `MM` fields, because a
+    -- single one could only pair with itself and the duplicate gate answers first.
+    dateField 23 "MonthOnly" "MM" monthOnly,
+    dateField 24 "MonthOnly2" "MM" monthOnly,
+    dateField 25 "MonthDay" "MM-dd" monthDay]
 }
+
+/-- The identical model with a Base Year declared. Every supplementation row below pairs against its
+    own `model` control, so the verdict attaches to the Base Year and not to the fixture. -/
+private def baseYearModel : FlatModel := { model with baseYear := some 2024 }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
 private def pair (first second : String) : SurfaceFieldEntitySource :=
   { first := .field (bare first), rest := [.field (bare second)] }
+
+/-- Whether one authored pair elaborates against an arbitrary model, so a row can vary the model's
+    Base Year while holding the pair fixed. -/
+private def admits (candidate : FlatModel) (first second : String) : Bool :=
+  (elaborateTemporalDistinctCountSource candidate ["Probe"] (pair first second)).toOption.isSome
 
 /-- This operator's verdict on one authored pair. -/
 private def distinct? (first second : String) : Option KernelStaticDiagnostic :=
@@ -119,6 +141,43 @@ example :
    admitted row above and this one differ only in the second operand's component set, so a gate that
    admitted everything would satisfy the first and fail here. The Kernel's message names both
    formats rather than the sets, which is why the error carries formats. -/
+/- **A declared Base Year supplements YEAR into every operand's set before they are compared, and
+   the gate stays exact after that.** Measured on this operator: at `baseYear: "2024"` a yearless
+   `MM` operand is admitted beside `yyyy-MM` and `MM-dd` beside a complete date, while `MM-dd`
+   beside `yyyy-MM` is still refused because the remaining components disagree
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-component-omitting-fold)). The last two
+   rows are the controls that make this the Base Year's doing: the same mixed pair is refused when
+   no Base Year is declared, and a same-set yearless pair is admitted without one. -/
+example :
+    (admits baseYearModel "MonthOnly" "CoverFrom",
+      admits baseYearModel "MonthDay" "FiledOn",
+      admits baseYearModel "MonthDay" "CoverFrom",
+      admits model "MonthOnly" "CoverFrom",
+      admits model "MonthOnly" "MonthOnly2") =
+      (true, true, false, false, true) := by
+  native_decide
+
+/- **Supplementation widens admission, so the runtime restriction must read every operand and not
+   only the first.** A complete date beside a supplemented `MM-dd` is an admitted list whose leading
+   declared set *is* the complete date; if the run certificate read the leading set alone it would
+   admit this list and fold the yearless cell as though it were complete. Locked at `none` in both
+   orders, against the same-set complete pair that does have an evaluator. -/
+example :
+    ((match (elaborateTemporalDistinctCountSource baseYearModel ["Probe"]
+        (pair "FiledOn" "MonthDay")).toOption with
+      | some source => (checkTemporalDistinctCountRun source).toOption.isSome
+      | none => false),
+      (match (elaborateTemporalDistinctCountSource baseYearModel ["Probe"]
+        (pair "MonthDay" "FiledOn")).toOption with
+      | some source => (checkTemporalDistinctCountRun source).toOption.isSome
+      | none => false),
+      (match (elaborateTemporalDistinctCountSource baseYearModel ["Probe"]
+        (pair "FiledOn" "ClosedOn")).toOption with
+      | some source => (checkTemporalDistinctCountRun source).toOption.isSome
+      | none => false)) =
+      (false, false, true) := by
+  native_decide
+
 example : distinct? "FiledOn" "CoverFrom" = some .dateFormatsNotCompatible := by
   native_decide
 

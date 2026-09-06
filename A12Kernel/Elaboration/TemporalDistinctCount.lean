@@ -7,7 +7,8 @@ The temporal overload of the distinct count, and the operator that sits closest 
 shared shape rules are that neighbour's and are reused unchanged; what differs is the one thing
 this module owns.
 
-**Admission is the operand list's shared component set, not its shared declared format.** Two DATE
+**Admission is the operand list's shared component set — after Base Year supplementation — and not
+its shared declared format.** Two DATE
 fields spelled `yyyy-MM-dd` and `dd.MM.yyyy` name the same components and are **admitted** here,
 while the neighbouring uniqueness operator refuses that exact pair; a differing set such as
 `yyyy-MM-dd` beside `yyyy-MM` is refused `MVK_DATEFORMATS_NOT_COMPATIBLE` naming both formats
@@ -49,7 +50,11 @@ def CheckedTemporalUniquenessOperand.components :
 
 /-- Find the first expanded declaration whose component set differs from the group's own, reporting
     its path and its declared format. The group's **internal** agreement obligation, which is this
-    operator's gate and not the neighbour's. -/
+    operator's gate and not the neighbour's.
+
+    Deliberately **exact**, where the operand-list gate supplements a declared Base Year: no row
+    measures a group expansion mixing a yearless declaration with a year-bearing one, so extending
+    the supplementation here would cross a carrier boundary on an assumption. -/
 def firstMismatchedTemporalFieldComponents?
     (expected : TemporalComponents) :
     List CheckedTemporalUniquenessField → Option (List String × String)
@@ -154,16 +159,35 @@ inductive TemporalDistinctCountElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+/-- The set this gate actually compares: the declared one with YEAR supplied when the model declares
+    a **Base Year**.
+
+    Measured on this operator at `baseYear: "2024"`: a yearless `MM` operand is admitted beside
+    `yyyy-MM`, and `MM-dd` beside a complete date, while `MM-dd` beside `yyyy-MM` stays refused and
+    both mixed pairs stay refused with no Base Year declared
+    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)).
+    Supplement-then-require-equality reproduces all four rows; plain equality refuses the first two,
+    which are legal models. The Base Year supplies only the year, so a set that disagrees on any
+    other component is refused exactly as before. -/
+def TemporalComponents.supplementedByBaseYear
+    (components : TemporalComponents) (hasBaseYear : Bool) : TemporalComponents :=
+  if hasBaseYear then { components with year := true } else components
+
 /-- Find the first operand whose component set differs from the list's, reporting its path, its own
-    declared format, and the list's. Public because the certificate states its gate in terms of it. -/
-def firstMismatchedTemporalComponents?
+    declared format, and the list's. Public because the certificate states its gate in terms of it.
+
+    Both sides are supplemented, not just the yearless one: the rule is agreement of the sets the
+    model can actually supply, and asking which side "needs" the year would make the gate
+    order-sensitive where it is not. -/
+def firstMismatchedTemporalComponents? (hasBaseYear : Bool)
     (expectedComponents : TemporalComponents) (expectedFormat : String) :
     List (CheckedTemporalDistinctCountOperand model) →
       Option (List String × String × String)
   | [] => none
   | operand :: remaining =>
-      if operand.components == expectedComponents then
-        firstMismatchedTemporalComponents? expectedComponents expectedFormat remaining
+      if operand.components.supplementedByBaseYear hasBaseYear
+          == expectedComponents.supplementedByBaseYear hasBaseYear then
+        firstMismatchedTemporalComponents? hasBaseYear expectedComponents expectedFormat remaining
       else
         some (operand.path, operand.format, expectedFormat)
 
@@ -176,7 +200,7 @@ structure CheckedTemporalDistinctCountSource (model : FlatModel) where
   first : CheckedTemporalDistinctCountOperand model
   rest : List (CheckedTemporalDistinctCountOperand model)
   oneComponentSet :
-    firstMismatchedTemporalComponents? first.components first.format rest = none
+    firstMismatchedTemporalComponents? model.hasBaseYear first.components first.format rest = none
 
 namespace CheckedTemporalDistinctCountSource
 
@@ -314,7 +338,7 @@ def elaborateTemporalDistinctCountSource (model : FlatModel)
   | some (path, mode) => throw (.partialDate path mode)
   | none => pure ()
   match hComponents :
-      firstMismatchedTemporalComponents? first.components first.format rest with
+      firstMismatchedTemporalComponents? model.hasBaseYear first.components first.format rest with
   | some (path, found, expected) =>
       throw (.mixedComponentSets path found expected)
   | none => pure { shape, first, rest, oneComponentSet := hComponents }
@@ -348,12 +372,19 @@ The compared identity here is the **decoded date**, not the stored text its neig
 are one value here and two values there, and the same list can be legal for both operators.
 
 The runtime is narrower than the static certificate on purpose, and both narrowings are certificates
-rather than silent behaviour. It requires the shared component set to be the **complete** calendar
-date, because `FullDate` is the atom and a component-omitting declaration has no complete date to
-decode; and it requires every operand to be a **slot**, because a group expansion has no retained row
-at this operator. A source outside either restriction is certified statically and simply has no
-evaluator, which is the honest shape — the alternative would decode a partial value into a
-`malformed` UNKNOWN and report a formal failure the Kernel does not.
+rather than silent behaviour. It requires **every operand's** declared component set to be the
+**complete** calendar date, because `FullDate` is the atom and a component-omitting declaration has
+no complete date to decode; and it requires every operand to be a **slot**, because a group
+expansion has no retained row at this operator. A source outside either restriction is certified
+statically and simply has no evaluator, which is the honest shape — the alternative would decode a
+partial value into a `malformed` UNKNOWN and report a formal failure the Kernel does not.
+
+The component-set restriction is a **measured under-service**, not an untested limit: the Kernel does
+fold a component-omitting list, at the shared set's own precision and after Base Year supplementation
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)).
+Widening it is [SG24](../../docs/SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold)'s, which
+records the shape; the restriction stays exact meanwhile so no list is folded at a precision its
+operands do not carry.
 -/
 
 /-- Project one addressed temporal cell to this operator's compared identity, the **decoded** date.
@@ -379,13 +410,29 @@ def temporalDistinctCountSlots? :
   | .slot operand :: remaining =>
       (temporalDistinctCountSlots? remaining).map (operand :: ·)
 
-/-- One statically certified temporal distinct count that this project can also **evaluate**: its
-    shared component set is the complete calendar date and every operand is a slot. -/
+/-- The first operand whose **declared** set is not the complete calendar date, which is what the
+    fold's `FullDate` atom requires.
+
+    Read over the whole list rather than the leading operand. Base Year supplementation admits a
+    list whose declared sets differ — a complete date beside a supplemented `MM-dd` — and such a
+    list *leads* with the complete set, so a leading-operand test would admit it here and fold the
+    yearless cell as though it carried a day. -/
+def firstNonCompleteDateComponents? :
+    List (CheckedTemporalDistinctCountOperand model) → Option TemporalComponents
+  | [] => none
+  | operand :: remaining =>
+      if operand.components == TemporalComponents.fullDate then
+        firstNonCompleteDateComponents? remaining
+      else
+        some operand.components
+
+/-- One statically certified temporal distinct count that this project can also **evaluate**: every
+    operand's declared component set is the complete calendar date and every operand is a slot. -/
 structure CheckedTemporalDistinctCountRun (model : FlatModel) where
   source : CheckedTemporalDistinctCountSource model
   slots : List (CheckedTemporalUniquenessOperand model)
   slotsOwned : temporalDistinctCountSlots? source.operands = some slots
-  completeDates : source.components = TemporalComponents.fullDate
+  completeDates : firstNonCompleteDateComponents? source.operands = none
 
 /-- Why a statically certified source has no evaluator here. **Neither is a Kernel refusal** — the
     Kernel admits both shapes — so this is its own type rather than an arm of the elaboration error,
@@ -403,10 +450,9 @@ def checkTemporalDistinctCountRun
   match hSlots : temporalDistinctCountSlots? source.operands with
   | none => throw .groupOperand
   | some slots =>
-      if hComplete : source.components = TemporalComponents.fullDate then
-        .ok { source, slots, slotsOwned := hSlots, completeDates := hComplete }
-      else
-        throw (.componentSetNotComplete source.components)
+      match hComplete : firstNonCompleteDateComponents? source.operands with
+      | none => .ok { source, slots, slotsOwned := hSlots, completeDates := hComplete }
+      | some components => throw (.componentSetNotComplete components)
 
 namespace CheckedTemporalDistinctCountRun
 
