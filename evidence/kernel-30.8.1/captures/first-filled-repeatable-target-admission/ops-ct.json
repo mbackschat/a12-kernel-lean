@@ -1,0 +1,425 @@
+[
+ {
+  "id": "001|ff|string|nonrep|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c001.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/SkuText",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "002|ff|string|nonrep|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c002.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/SkuText",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "003|ff|string|samegroup|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c003.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTextT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "004|ff|string|samegroup|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c004.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTextT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "005|ff|string|othergroup|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c005.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Other/OtherText",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "006|ff|string|othergroup|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c006.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Other/OtherText",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "007|ff|boolean|nonrep|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c007.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Flag",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowFlag)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "008|ff|boolean|nonrep|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c008.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Flag",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowFlag)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "009|ff|boolean|samegroup|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c009.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowFlagT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowFlag)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "010|ff|boolean|samegroup|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c010.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowFlagT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowFlag)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "011|ff|temporal|nonrep|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c011.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/FiledOn",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "012|ff|temporal|nonrep|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c012.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/FiledOn",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "013|ff|temporal|samegroup|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c013.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowDateT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "014|ff|temporal|samegroup|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c014.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowDateT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "015|ff|number|nonrep|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c015.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Amount",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowVal)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "016|ff|number|nonrep|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c016.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Amount",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowVal)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "017|ff|number|samegroup|defaultgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c017.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowValT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowVal)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ]
+  }
+ },
+ {
+  "id": "018|ff|number|samegroup|rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c018.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowValT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowVal)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "first filled"
+    }
+   ],
+   "group": "/Probe"
+  }
+ }
+]

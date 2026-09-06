@@ -1,0 +1,41 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "0ca44debbd15bdc1863bcadae74709205dcf2211",
+    "state" : "CLEAN"
+  },
+  "model" : "72c1df0cb39867ce72ac57213294c6477618bb735d0e5dabba44143d737fbf5e",
+  "observations" : [ {
+    "id" : "101|ctrl|unstarred-perrow-to-nonrep",
+    "inputHash" : "9464b6b6b31e99e8d5ef0f2a17956d0da79d89698a98d5b6c3b5a8254eba425c",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "102|ctrl|reads-its-own-target",
+    "inputHash" : "64f4afe3fbe14d3871c1a933123b2396d3fa82adc38c0e22525080304f6a2449",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" ]
+  }, {
+    "id" : "103|ctrl|wrong-kind-string-into-number",
+    "inputHash" : "266630a8607d9ac722062ada4a16a9c9c5640453c43226b6107789fb1437c54f",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "104|ctrl|unrelated-group-for-iterating",
+    "inputHash" : "31285db0ff077f7bef6dbb19bfb16f3bd6f7ff833d25c453235ecfeab2c29873",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "105|ctrl|nonexistent-group",
+    "inputHash" : "17181f87a275e0218271c0637292cc2761a9d5a682b96b8d99617c3220868bf6",
+    "ok" : false,
+    "codes" : [ "RK_NO_SUCH_GROUP" ]
+  } ]
+}

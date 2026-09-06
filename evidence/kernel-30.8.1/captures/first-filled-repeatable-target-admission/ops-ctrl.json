@@ -1,0 +1,119 @@
+[
+ {
+  "id": "101|ctrl|unstarred-perrow-to-nonrep",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "n101.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/SkuText",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows/RowText, /Probe/Store/FixedText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "102|ctrl|reads-its-own-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "n102.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTextT",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowTextT)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "103|ctrl|wrong-kind-string-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "n103.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Amount",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "104|ctrl|unrelated-group-for-iterating",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "n104.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTextT",
+   "group": "/Probe/Other",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "105|ctrl|nonexistent-group",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "n105.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/SkuText",
+   "group": "/Probe/Nope",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowText)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ }
+]
