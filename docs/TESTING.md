@@ -245,6 +245,22 @@ A kernel **runtime** question is checked against the maintained `:adapter:kernel
 
 Use it demand-driven, one coherent family at a time, exactly like every other evidence route: an internally closed capsule may still land `external evidence pending`. The route has been exercised from this repository; [`SOURCES.md`](SOURCES.md) owns each family checkpoint and its exact hashes. Every further use must choose a family whose observation shape the artifact plainly carries and include a negative control in the same request.
 
+### Three batch preconditions, each paid for by a wasted round trip
+
+The batch mechanism is not the bottleneck — 52 `rule check` children run in under seven seconds, so a cell costs about a tenth of a second and a wider cross is effectively free. What costs time is authoring a row wrong and reading a grid wrong. These three preconditions are measured, not stylistic: every one of them has been paid for more than once.
+
+**1. Consult `dmtool operators <id>` before authoring any condition, and treat it as a required step rather than advice.** Every surface failure recorded so far was already documented in that entry's `validExample` or `constraints`: an infix operator spelled as a call, `AtLeastOneDateRangeOverlaps` given a comma list where it takes `A In B`, `AddHours` given a clock where it takes a date-time, a bare `Time` where it takes components. Each cost a batch or a round trip, and each was one command away from being avoided.
+
+**2. Put the liveness control and the diagonal control in the same batch as the question.** A grid whose every cell agrees establishes nothing until something in it fires the other way. All-refused has meant a fixture defect (a separator the format does not take), a reader defect (a computation preview carries no `valid` key when admitted), and a wrong error field (the customary `FieldFilled(Anchor) And` prefix dropped so every row drew `MVK_ERROR_FIELD_NOT_REFERENCED`). All-admitted has meant a gate that was never reached. In each case the control is what distinguished the measurement from the mistake, and adding it afterwards costs a second window.
+
+**3. Read the whole grid before attributing any cell.** The tell for a mis-authored row sits in a *neighbouring* row more often than in the row being read — a bare date literal lexing as a Number was diagnosed from the adjacent cell drawing a scale code, and a spelling defect was identified because its own matching control refused too.
+
+### Measure a gap's premise before weighing its options
+
+When a gap carries a **representation decision** across sessions, the next action is to measure the premise it rests on, not to weigh the options again. Two long-standing decisions dissolved this way rather than being taken: the temporal distinct count's atom question (a checked cell already carries a decoded value, so neither rejected candidate was needed) and the extrema's interval element type (the Kernel refuses the operand outright, so there was no element type to design). Both premises were one batch away and had never been measured; both had been re-weighed instead. [`LF157`](LEAN-FINDINGS.md) owns the pattern and [`LF142`](LEAN-FINDINGS.md) the earlier instance.
+
+The specific reading error to watch for is an operator's **absence from an upstream restriction list** taken as permission. A list that says "the following restrictions apply" promises a set of restrictions, never the whole set; inferring admission from silence is a positive claim resting on a negative existential, which only measurement discharges.
+
 ### Two static routes, not one: `rule check` and `computation add --dry-run`
 
 `dmtool rule check` answers a validation-rule question. A **computation** question has its own static route, and it is the same cost: `dmtool computation add --dry-run <spec.json>` is a read-only, kernel-gated preflight that writes nothing, and `batch` dispatches the `computation` verb exactly as it dispatches `rule` — so a mixed queue runs in one JVM start like any other. Together they put every static gate in the estate, validation and computation alike, on a route measured in seconds.
