@@ -1421,6 +1421,8 @@ run_cmd do
 #print axioms A12Kernel.checkedNumberEntitySource_checkedDocumentPartial_skipsHaving
 #print axioms A12Kernel.checkedNumberEntitySource_partialView_skipsHaving
 #print axioms A12Kernel.tokenDistinctCount_equal_pair
+#print axioms A12Kernel.maskedDateComponents_congr
+#print axioms A12Kernel.maskedDateComponents_fullDate_injective
 #print axioms A12Kernel.tokenValueCount_singleton_match_fixed
 #print axioms A12Kernel.checkedTokenValueCount_expectedAllowed
 #print axioms A12Kernel.checkedTokenValueCount_scaleSummary

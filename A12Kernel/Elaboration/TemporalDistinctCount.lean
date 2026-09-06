@@ -409,6 +409,21 @@ def temporalDistinctCountFoldArm
     TemporalDistinctCountFoldArm :=
   if components.year || hasBaseYear then .dated else .yearless
 
+/-- The component triple this operator compares for one operand: the cell's decoded parts reduced to
+    the operand's **declared** set, with a yearless declaration's year taken from the model's Base
+    Year. Each component the set omits takes the set's canonical representative and never the cell's
+    value, which is what makes the count depend on the model rather than on whichever value the
+    admitting classifier happened to pair with the stored text.
+
+    The `.dated` arm is reached only when the declared set names a year or the model declares one, so
+    the `0` fallback is unreachable there; it is written as a total function rather than gated on that
+    reachability, because a partial one would put the arm's precondition into every caller. -/
+def maskedDateComponents (components : TemporalComponents) (baseYear : Option Int)
+    (parts : DateParts) : Int × Nat × Nat :=
+  (if components.year then parts.year else baseYear.getD 0,
+    if components.month then parts.month else 1,
+    if components.day then parts.day else 1)
+
 /-- Project one addressed temporal cell to the identity this list compares: the **decoded** date
     reduced to the operand's declared component set, with a yearless declaration's year taken from
     the model's Base Year. The stored text is deliberately discarded, which is the exact inverse of
@@ -431,11 +446,8 @@ private def temporalDistinctCountCell
   | .dated, addressed =>
       match observeCell .validation addressed.cell with
       | .value (.temporal (.date dateValue)) =>
-          -- A yearless declaration carries no year of its own, so the Base Year supplies it; the
-          -- `.dated` arm is reached only when one of the two is available.
-          let year := if components.year then dateValue.parts.year else baseYear.getD 0
-          let month := if components.month then dateValue.parts.month else 1
-          let day := if components.day then dateValue.parts.day else 1
+          let (year, month, day) :=
+            maskedDateComponents components baseYear dateValue.parts
           match FullDate.ofYmd? year month day with
           | some date => .present date
           | none => .unknown .malformed
@@ -445,8 +457,9 @@ private def temporalDistinctCountCell
   | .yearless, addressed =>
       match observeCell .validation addressed.cell with
       | .value (.temporal (.date dateValue)) =>
-          .present { month := dateValue.parts.month
-                     day := if components.day then dateValue.parts.day else 1 }
+          let (_, month, day) :=
+            maskedDateComponents components baseYear dateValue.parts
+          .present { month, day }
       | .value _ => .unknown .malformed
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause
