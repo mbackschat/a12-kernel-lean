@@ -1,0 +1,1 @@
+{"model": "Rev_DM2.json", "locale": "en_US", "observe": ["validateFull"], "rows": [{"name": "date-text-in-all-three", "document": "doc-date.json"}, {"name": "clock-text-in-time-declared-date", "document": "doc-clocktext.json"}]}

@@ -1,0 +1,28 @@
+[
+ {
+  "id": "1-time-declared-date-beside-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rev_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(TDate, DDate) == 1",
+   "--code",
+   "V1"
+  ]
+ },
+ {
+  "id": "2-datetime-declared-date-beside-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rev_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(DTDate, DDate) == 1",
+   "--code",
+   "V2"
+  ]
+ }
+]

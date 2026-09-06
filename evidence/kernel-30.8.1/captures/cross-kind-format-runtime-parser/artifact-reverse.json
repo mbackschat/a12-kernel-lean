@@ -1,0 +1,152 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Rev_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "date-text-in-all-three",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RD1",
+              "field" : "Rev_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "datetime-declared-date pair counts one",
+              "referenced" : [
+                "Rev_DM/DDate",
+                "Rev_DM/DTDate",
+                "Rev_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RT1",
+              "field" : "Rev_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "time-declared-date pair counts one",
+              "referenced" : [
+                "Rev_DM/DDate",
+                "Rev_DM/Reference",
+                "Rev_DM/TDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RD1",
+              "field" : "Rev_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "datetime-declared-date pair counts one",
+              "referenced" : [
+                "Rev_DM/DDate",
+                "Rev_DM/DTDate",
+                "Rev_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RT1",
+              "field" : "Rev_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "time-declared-date pair counts one",
+              "referenced" : [
+                "Rev_DM/DDate",
+                "Rev_DM/Reference",
+                "Rev_DM/TDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "clock-text-in-time-declared-date",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RD1",
+              "field" : "Rev_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "datetime-declared-date pair counts one",
+              "referenced" : [
+                "Rev_DM/DDate",
+                "Rev_DM/DTDate",
+                "Rev_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Rev_DM/TDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Rev_DM/TDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RD1",
+              "field" : "Rev_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "datetime-declared-date pair counts one",
+              "referenced" : [
+                "Rev_DM/DDate",
+                "Rev_DM/DTDate",
+                "Rev_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Rev_DM/TDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Rev_DM/TDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

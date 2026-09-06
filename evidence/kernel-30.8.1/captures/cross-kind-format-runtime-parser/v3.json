@@ -1,0 +1,1 @@
+{"field": "/Rev_DM/Reference", "code": "RD1", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(DTDate, DDate) == 1", "messages": [{"locale": "en_US", "text": "datetime-declared-date pair counts one"}]}
