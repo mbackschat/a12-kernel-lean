@@ -152,7 +152,11 @@ a12-dmkits revision `7bdfa7470f7aa0baea539ffea7bd36828af19445` is the reviewed h
 
 Two facts travel with it. Their diagnostic ledger had recorded `MVK_INCONSISTENT_TYPES_COMPARED`, `MVK_INVALID_COMPARE_TO_YES`, and `MVK_INVALID_COMPARE_TO_YESNO` as unconstructible on the strength of the **comparison** surface, where their references are kind-typed; assignment is a second live firing site those rows did not name, and all three are amended there. And the kernel lexer has **one** string-literal syntax, so a temporal constant is a string literal whose content parses as a date rather than a distinct spelling — [the ladder checkpoint](sources/evaluation-and-application-routes.md#src-constant-assignment-diagnostic-ladder) carries the local witness for that, which is prior to and independent of the grammar reading.
 
-This inbound revision answers an existing pending entry, so it updates that entry's disposition and creates no new outbound request.
+Revision `33411f1e2a7bc4e7dcd7b8c3cf6eba84ed911eb6` follows it and carries a third carrier for the same vocabulary, measured after this project reported the filter one: `[Handler] == "05.03.2024"` on a String field in an **ordinary rule condition** — no computation, no assignment, no filter — draws `MVK_INVALID_COMPARE_TO_DATE`, with a non-date literal at the identical site admitted as the control. That is the cleanest of the three carriers, because it removes both constructs the other two could otherwise be about. The same revision corrects the corrective shipped an hour earlier, whose text spoke of a "target" that has no referent on the two non-assignment carriers.
+
+Both sessions independently reached the **generated equality rule** as the account of why an assignment lands in comparison vocabulary, and both record it as an open hypothesis rather than a measured mechanism: it fits every row and no rival has been eliminated.
+
+These inbound revisions answer an existing pending entry, so they update that entry's disposition and create no new outbound request.
 
 
 

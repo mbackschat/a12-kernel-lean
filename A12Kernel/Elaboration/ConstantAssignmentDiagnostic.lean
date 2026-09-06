@@ -31,8 +31,10 @@ pairs this returns `none` for are the ones no kind gate refuses.
 second carrier measures it independently: inside a `Having` filter, a field compared against a String
 literal draws this function's `stringLike` row cell for cell, on every kind and on all three
 operators tested ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)).
-That is consistent with the assignment reaching the gate through its *generated equality rule*, which
-is why these codes name a comparison. A **numeric** comparison is a different column and gets its own
+A **plain rule comparison** carrying neither construct draws the same class, so the vocabulary is the
+comparison's and not either carrier's. *Why* an assignment reaches it is a separate, undischarged
+question: the natural account is the generated equality rule, which would also explain the `COMPARE_TO`
+naming, but no witness separates that from a classifier both routes call, so it stays a hypothesis. A **numeric** comparison is a different column and gets its own
 function below rather than being forced through this one — measured, its non-Number kinds collapse to
 a single class where the literal column spreads them across five.
 -/
