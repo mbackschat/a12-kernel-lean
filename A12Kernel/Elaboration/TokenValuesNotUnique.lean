@@ -85,6 +85,12 @@ def diagnostic? : TokenValuesNotUniqueElabError → Option KernelStaticDiagnosti
   -- operator with its own message vocabulary, so delegating the rest of that projection here would
   -- read one carrier's table onto another. Its shape half is delegated above, where the gate is
   -- genuinely the shared checker's.
+  -- The filter's class is the **filter's own**, measured identical across three structurally
+  -- different wrapping carriers ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)),
+  -- so it delegates here rather than being dropped. Only the filter half delegates: the shared
+  -- token checker's **kind** classes were measured against a String-literal value list and this is
+  -- a different operator with its own message vocabulary.
+  | .source (.having error) => error.diagnostic?
   | .source _ => none
 
 end TokenValuesNotUniqueElabError

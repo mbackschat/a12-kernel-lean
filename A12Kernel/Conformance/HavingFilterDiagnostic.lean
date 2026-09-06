@@ -1,4 +1,6 @@
 import A12Kernel.Elaboration.Correlation
+import A12Kernel.Elaboration.NumberValuesNotUnique
+import A12Kernel.Elaboration.TokenDistinctCount
 
 /-! # A12Kernel.Conformance.HavingFilterDiagnostic — the `Having` filter's refusal classes
 
@@ -85,6 +87,21 @@ example : [KernelStaticDiagnostic.invalidTypeForComparison,
     ["MVK_INVALID_TYPE_FOR_COMPARISON", "MVK_INVALID_TYPES_FOR_COMPARISON",
       "MVK_NO_ITERATION_FOR_WILDCARD",
       "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"] := by
+  native_decide
+
+/- **The class survives the wrapping carrier**, which is the whole point of projecting it once. Two
+   structurally different wrappers — a token distinct count and a Number uniqueness overload, the
+   latter reaching the filter through its star operand rather than directly — report the filter's
+   own class for the same refusal. A carrier that drops it instead reports nothing, which reads as
+   "no class established" and is what these rows exist to prevent. -/
+example : (TokenDistinctCountElabError.source
+      (.having .wildcardOnRuleGroup)).diagnostic? =
+    some .noWildcardsAllowed := by
+  native_decide
+
+example : (NumberValuesNotUniqueElabError.source
+      (.star (.having (.fieldNotNumber ["Probe", "Rows", "RowText"] .string)))).diagnostic? =
+    some .invalidTypeForComparison := by
   native_decide
 
 end A12Kernel.Conformance.HavingFilterDiagnostic

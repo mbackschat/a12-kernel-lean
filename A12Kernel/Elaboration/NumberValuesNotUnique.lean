@@ -44,6 +44,11 @@ def diagnostic? : NumberValuesNotUniqueElabError → Option KernelStaticDiagnost
   | .shape error => error.diagnostic?
   | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
+  -- The filter's class is the **filter's own**, measured identical across three structurally
+  -- different wrapping carriers ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)),
+  -- so it delegates here rather than being dropped. Only the filter half delegates: this overload's
+  -- kind classes are its own.
+  | .source (.star (.having error)) => error.diagnostic?
   | .source _ => none
 
 end NumberValuesNotUniqueElabError

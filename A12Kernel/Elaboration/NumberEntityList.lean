@@ -248,6 +248,10 @@ private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
 def aggregateDiagnostic? (op : NumericAggregateOp) :
     NumberEntityElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
+  -- The filter's class is the filter's own and does not vary by wrapping carrier
+  -- ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)), so it
+  -- reaches every aggregate alike and needs no `op` split.
+  | .star (.having error) => error.diagnostic?
   | .groupExpansionNotNumber _ kinds =>
       match op with
       | .sum => some .noNumber

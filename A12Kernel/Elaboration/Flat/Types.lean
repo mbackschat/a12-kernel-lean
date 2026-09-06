@@ -429,8 +429,17 @@ inductive ResolveError where
 /-- The Kernel class a resolution failure reports, projected once for every wrapping error type.
 An unstarred repeatable operand read from a rule locus that does not iterate its level is the
 shared missing-wildcard class; whether that same operand is *admitted* from an iterating locus is a
-separate question this projection does not answer. Every other resolution failure stays uncovered
-here until its own class is established. -/
+separate question this projection does not answer.
+
+**This is the one projection that keeps a wildcard, deliberately.** Elsewhere a `_ => none` arm is
+the anti-pattern this estate sweeps out, because it silently absorbs a form a later change adds and
+hides whether the silence is a local boundary or an unmeasured Kernel refusal. Here the denominator
+is 42 arms and all but a handful are **model-declaration validity** failures — a duplicate field id,
+a raw String carrying a pattern, an enumeration without a declaration — reached while building the
+flat model rather than while refusing a rule. A new arm is overwhelmingly one of those, so the
+compile error an exhaustive list would raise is noise in the case that matters least and the list
+itself would obscure the two arms that do carry a class. Add an explicit arm the moment a resolution
+failure is measured to report an `MVK_` class. -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
   | _ => none
