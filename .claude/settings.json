@@ -1,6 +1,9 @@
 {
   "permissions": {
     "allow": [
+      "Bash(../a12-rulekit-measure/scripts/prepare-dmtool-source.sh*)",
+      "Bash(../a12-rulekit-measure/cli/build/install/dmtool/bin/dmtool*)",
+      "Bash(../a12-rulekit-measure/gradlew*)",
       "Bash(lake test*)",
       "Bash(lake exe checkCandidateConformance *)",
       "Bash(lake exe checkReferenceProcess*)",
