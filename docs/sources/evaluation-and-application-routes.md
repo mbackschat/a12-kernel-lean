@@ -49,6 +49,20 @@
 - `limit`: static admission only, one model, `en_US`. The Enumeration and DATE_RANGE rows are `AtLeastOne…` only. Nothing here evaluates a membership test.
 - `sync`: none yet. The kind partition is this project's own under-projection; the arity and Enumeration findings are recorded as gaps, and enter `spec/` with the capsules that represent them.
 
+<a id="src-suppress-warning-directive-scopes-the-whole-condition"></a>
+#### `@SuppressWarning` is a condition preamble whose scope is the **whole condition**, and only one warning is suppressible, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `0ca44debbd15bdc1863bcadae74709205dcf2211`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Eight `rule check` children in one `batch`.
+- `retained-bytes`: `Probe_SW.json` SHA-256 `890e6a60f4af905c6b632e44b4ab4a03c9c3257f6a6a6ad552bca265ce7778fc`; ops `608c656f2cfc72f5ae41612cb79401239a482f3b88e2653278af0c179eae291d`; results `71939616acc023ef02807d24debf835161af4af95254ede60161324aee956008`.
+- `question`: whether the directive's scope is the rule, the model, or the one comparison it precedes. a12-dmkits' [`KF75`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf75) already establishes the surface and that exactly one warning name is supported; it does not settle the scope, because every row it reports carries a single comparison.
+- `claim`: **the scope is the whole condition.** A condition with two cross-scale equalities and one leading directive is admitted, where the same condition without it draws `MVK_INVALID_COMPARE_DEC_PLACES`; the directive also covers a comparison that is not the condition's first operand. So it is neither per-model nor per-next-comparison, and a rule-refactoring consumer may not move a suppressed comparison out of a directive-bearing condition without carrying the directive with it.
+- `claim`: **the directive is a preamble position, not a modifier.** Placed mid-condition after an admitted conjunct it draws `MVK_UNEXPECTED_TOKEN` rather than applying to what follows.
+- `claim`: **only the one warning is suppressible, and a real-but-unsupported code is refused like an invented one.** Both `MVK_NOT_A_WARNING` and the genuine `MVK_NO_NUMBER` draw `MVK_INVALID_SUPPRESSED_WARNING`.
+- `a-confound-caught-by-its-control`: the first pass dropped the customary `FieldFilled(SkuText) And` prefix, because the directive must lead the condition, which left the error field unreferenced; every directive row then reported `MVK_ERROR_FIELD_NOT_REFERENCED` and could have read as the suppression failing. The same-scale control drew that identical code, which is what identified it as the confound rather than the verdict. Re-run against a referenced error field, the rows admit outright.
+- `differs-from-the-peer-record-on-one-point`: `KF75` states that for a rejected name the diagnostic's *code* is the attempted name itself, with `MVK_INVALID_SUPPRESSED_WARNING` supplying only the message text. Through this route the reported code is `MVK_INVALID_SUPPRESSED_WARNING` for both a fabricated and a genuine unsupported name. The two are not necessarily in conflict — this route may normalize the code it reports — so it is raised with the a12-dmkits session as a question about the observation channel, not as a defect claim against the finding.
+- `limit`: static admission only, one model, `en_US`. Nothing here evaluates a suppressed comparison, and the German spelling `@UnterdrueckeWarnung` is untested.
+- `sync`: no clause changes yet; the directive has no `spec/` representation and enters with the capsule that models it.
+
 <a id="src-value-list-literal-domain-is-the-union"></a>
 #### A value list's Enumeration literals must name a token in the **union** of the selected domains, and the duplicate-operand gate splits by read form, measured 2026-09-06
 

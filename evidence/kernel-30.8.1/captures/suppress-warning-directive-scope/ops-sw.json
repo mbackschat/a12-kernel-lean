@@ -1,0 +1,106 @@
+[
+ {
+  "id": "001|sw|no-directive-one-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "[Amount] == [FixedScaled]",
+   "--code",
+   "T001"
+  ]
+ },
+ {
+  "id": "002|sw|directive-one-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) [Amount] == [FixedScaled]",
+   "--code",
+   "T002"
+  ]
+ },
+ {
+  "id": "003|sw|directive-two-cmps",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) [Amount] == [FixedScaled] And [Amount] == [FixedScaled2]",
+   "--code",
+   "T003"
+  ]
+ },
+ {
+  "id": "004|sw|no-directive-two-cmps",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "[Amount] == [FixedScaled] And [Amount] == [FixedScaled2]",
+   "--code",
+   "T004"
+  ]
+ },
+ {
+  "id": "005|sw|directive-covers-later",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) [Amount] > 0 And [Amount] == [FixedScaled2]",
+   "--code",
+   "T005"
+  ]
+ },
+ {
+  "id": "006|sw|bad-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "@SuppressWarning(MVK_NOT_A_WARNING) [Amount] == [FixedScaled]",
+   "--code",
+   "T006"
+  ]
+ },
+ {
+  "id": "007|sw|bad-name-real-code",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "@SuppressWarning(MVK_NO_NUMBER) [Amount] == [FixedScaled]",
+   "--code",
+   "T007"
+  ]
+ },
+ {
+  "id": "008|sw|same-scale-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "[Amount] == [FixedVal]",
+   "--code",
+   "T008"
+  ]
+ }
+]

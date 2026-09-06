@@ -491,6 +491,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
 - [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/evaluation-and-application-routes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
+<a id="src-suppress-warning-directive-scopes-the-whole-condition"></a>
+- [`@SuppressWarning` is a condition preamble whose scope is the whole condition, and only one warning is suppressible](sources/evaluation-and-application-routes.md#src-suppress-warning-directive-scopes-the-whole-condition)
 <a id="src-value-list-literal-domain-is-the-union"></a>
 - [A value list's Enumeration literals must name a token in the union of the selected domains, and the duplicate-operand gate splits by read form](sources/evaluation-and-application-routes.md#src-value-list-literal-domain-is-the-union)
 <a id="src-having-filter-class-is-carrier-independent-and-first-defect-wins"></a>
