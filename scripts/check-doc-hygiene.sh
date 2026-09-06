@@ -223,7 +223,9 @@ done < <(grep -Ein '^- (\*\*)?(closed|resolved|corrected|partly resolved|upstrea
 # that carrier means comparing added 64-hex strings against the capture directories' real hashes.
 revision_range="${A12_REVISION_RANGE:-HEAD~1..HEAD}"
 range_base="${revision_range%%..*}"
-if git rev-parse --verify --quiet "$range_base" >/dev/null; then
+if ! git rev-parse --verify --quiet "${range_base}^{commit}" >/dev/null; then
+  echo "documentation hygiene guard: range base ${range_base} is unresolvable, so the revision-citation check did NOT run; deepen the checkout or set A12_REVISION_RANGE" >&2
+else
   hex_of() { grep -hoE '(^|[^0-9a-f])[0-9a-f]{40}([^0-9a-f]|$)' | grep -oE '[0-9a-f]{40}' | sort -u; }
   added_citations="$(git diff "$revision_range" -- docs/ spec/ | grep '^+' | hex_of || true)"
   existing_citations="$(git grep -hI -e '' "$range_base" -- docs/ spec/ 2>/dev/null | hex_of || true)"
@@ -248,7 +250,9 @@ if git rev-parse --verify --quiet "$range_base" >/dev/null; then
 fi
 
 # An absence claim must name the surface it searched. Triggered on the phrasing CLAUDE.md MANDATES
-# ("no witness known as of", "unmeasured", "untested", "never") rather than the spellings it forbids,
+# ("no witness known as of", "unmeasured", "not measured", "untested") rather than the spellings it
+# forbids. "never" is deliberately NOT a trigger: 10 of its 12 corpus hits are behavioural universals
+# such as "DateRange never reaches a homogeneity gate", whose correct row is `limit`, not a denominator.
 # because 0 of the 283 existing `limit` rows contain a forbidden spelling: a compliant author never
 # writes one, so a gate keyed to them would fire on nothing. `limit` is untouched and keeps bounding
 # positive claims. Scoped to records this range adds or modifies, because a denominator can only be
@@ -256,7 +260,9 @@ fi
 # LIMIT: this reaches a claim phrased as a negative existential, not an absence stated without one.
 # A claim like "an over-limit row receives no outcome at all" carries no trigger word and is missed.
 denominator_range="${A12_REVISION_RANGE:-HEAD~1..HEAD}"
-if git rev-parse --verify --quiet "${denominator_range%%..*}" >/dev/null; then
+if ! git rev-parse --verify --quiet "${denominator_range%%..*}^{commit}" >/dev/null; then
+  echo "documentation hygiene guard: range base ${denominator_range%%..*} is unresolvable, so the denominator check did NOT run; deepen the checkout or set A12_REVISION_RANGE" >&2
+else
   while IFS= read -r shard; do
     [[ -f "$shard" ]] || continue
     added_claims="$(git diff "$denominator_range" -- "$shard" | grep '^+- `claim`:' | sed 's/^+//' || true)"
@@ -273,7 +279,7 @@ if git rev-parse --verify --quiet "${denominator_range%%..*}" >/dev/null; then
         neg = 0; den = 0; next
       }
       /^- `claim`:/ {
-        if ($0 in added && tolower($0) ~ /no witness|unmeasured|not measured|untested|never/) neg = 1
+        if ($0 in added && tolower($0) ~ /no witness|unmeasured|not measured|untested/) neg = 1
         next
       }
       /^- `denominator`:/ { den = 1 }

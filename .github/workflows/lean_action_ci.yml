@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          # The doc-hygiene guard resolves revision citations a commit range introduces,
+          # so the range base must exist. Default depth 1 has no HEAD~1 and skipped it.
+          fetch-depth: 2
       - uses: leanprover/lean-action@v1
         # Uses the pinned toolchain (lean-toolchain) and runs `lake build`, which also
         # elaborates the #eval / example smoke checks.
