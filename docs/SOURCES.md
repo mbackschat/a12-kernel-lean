@@ -691,6 +691,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+<a id="src-distinct-count-temporal-identity-both-strategies"></a>
+- [The distinct count's temporal identity is the decoded date on both codegen strategies](sources/evaluation-and-application-routes.md#src-distinct-count-temporal-identity-both-strategies)
 <a id="src-filter-reference-two-levels-above"></a>
 - [Both filter gates read path membership and nothing about depth, and the admitted constant is keyed to the referenced level](sources/having-filter-probes.md#src-filter-reference-two-levels-above)
 <a id="src-filter-reference-level-runtime"></a>

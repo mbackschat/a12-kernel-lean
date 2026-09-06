@@ -1,0 +1,1 @@
+{"field": "/Dist_DM/Reference", "code": "DX2", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(A, B) == 2", "messages": [{"locale": "en_US", "text": "cross-spelling counts two"}]}

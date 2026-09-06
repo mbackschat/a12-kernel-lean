@@ -1,0 +1,156 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Dist_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "cross-and-same-spelling-equal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DX1",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-spelling counts one",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/B",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SM1",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "same-spelling counts one",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/C",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DX1",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-spelling counts one",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/B",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SM1",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "same-spelling counts one",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/C",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "cross-and-same-spelling-unequal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DX2",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-spelling counts two",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/B",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SM2",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "same-spelling counts two",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/C",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DX2",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-spelling counts two",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/B",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SM2",
+              "field" : "Dist_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "same-spelling counts two",
+              "referenced" : [
+                "Dist_DM/A",
+                "Dist_DM/C",
+                "Dist_DM/Reference"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

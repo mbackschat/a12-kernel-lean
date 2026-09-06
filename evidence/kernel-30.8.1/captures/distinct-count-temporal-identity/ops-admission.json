@@ -1,0 +1,28 @@
+[
+ {
+  "id": "admit-cross-format",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Dist_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(A, B) == 1",
+   "--code",
+   "DX1"
+  ]
+ },
+ {
+  "id": "admit-same-format",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Dist_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(A, C) == 1",
+   "--code",
+   "SM1"
+  ]
+ }
+]
