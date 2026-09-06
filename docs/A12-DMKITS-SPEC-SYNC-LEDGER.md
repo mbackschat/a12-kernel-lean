@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-06-09"></a>
+### `SPEC-2026-09-06-09` — the runtime text parser follows the declared format, and the declared kind supplies no fallback
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md` kind-independence](../spec/05-dates-and-time.md)
+- `delta`: the clause established that the declared **format** and not the kind gates temporal comparison, operand admission, and computed-target admission, and that stored Date parsing is format-aware within a kind's own format family. It said nothing about the runtime parser following a **cross-kind** declared format. Added: it does, and the kind offers no second chance — a DATE declared `HH:mm:ss` reads `12:30:00` as a clock reading, and a valid date text stored in that field is formally invalid rather than parsed as the kind would allow.
+- `mechanism`: one rule reaches the parser too, so there is no place in the declaration where the kind is authoritative and the format advisory. The consequence a consumer feels is that the declared kind cannot be used to select a parser, a value domain, or a fallback at any stage.
+- `evidence`: one `dmtool model check`, one `dmtool batch --observations` and one `:adapter:kernelProbe` request at a12-dmkits `fc2b3187c43d0ac29cb335628dde676b69464260`, `source.state: CLEAN`, `enginesAgree: true` on both rows, Kernel `30.8.1` built and runtime. A DATE declared `HH:mm:ss` beside a TIME declared the same, read through `NumberOfDifferentValues`: `12:30:00` in both counts **one** value; `2024-03-05` in the DATE-declared field draws `datumFormatFalsch` on that field and the count answers neither 1 nor 2 ([checkpoint](sources/evaluation-and-application-routes.md#src-cross-kind-format-runtime-parser)).
+- `separator`: the two documents differ in one cell and the control pair fires in both. Row one alone leaves a lenient two-parser account standing — a parser that tries the format and falls back to the kind would also count one there — and row two is what refutes it.
+- `limit`: the DATE-declared clock format against a TIME control, at one nesting level, `en_US`, validation arm, UTC model with no Base Year, read through the distinct count. The reverse direction — a TIME declared a date format — a DATETIME declared either, the computation arm, and any other reading construct are unmeasured.
+- `surfaces`: any peer clause, evaluator, or importer that selects a temporal parser or value domain from the declared kind. It accepts a kind-valid text the Kernel rejects, and separates two values the Kernel counts as one.
+- `local-scope`: Lean already reads the declared component set rather than the kind at the carriers this session touched, and the value domain confirmed it from the other side: a cell's value shape follows its declared set, so a DATETIME declared the degenerate clock format holds a `.time`. No Lean change follows from this row; it discharges the assumption those carriers were relying on.
+
 <a id="spec-2026-09-06-08"></a>
 ### `SPEC-2026-09-06-08` — the distinct count folds a component-omitting date at its declared precision
 

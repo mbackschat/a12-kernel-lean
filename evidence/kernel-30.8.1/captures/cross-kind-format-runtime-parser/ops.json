@@ -1,0 +1,28 @@
+[
+ {
+  "id": "1-date-clock-beside-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kind_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(DClock, TClock) == 1",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "2-time-pair-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kind_DM/Reference",
+   "--condition",
+   "FieldFilled(Reference) And NumberOfDifferentValues(TClock, TClock2) == 1",
+   "--code",
+   "K2"
+  ]
+ }
+]

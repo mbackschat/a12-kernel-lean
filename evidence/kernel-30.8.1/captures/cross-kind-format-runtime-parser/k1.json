@@ -1,0 +1,1 @@
+{"field": "/Kind_DM/Reference", "code": "XF1", "condition": "FieldFilled(Reference) And NumberOfDifferentValues(DClock, TClock) == 1", "messages": [{"locale": "en_US", "text": "cross-kind clock pair counts one"}]}

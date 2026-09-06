@@ -1,0 +1,95 @@
+{
+ "header": {
+  "id": "Kind_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Kind_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Kind_DM",
+     "name": "Kind_DM",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Kind_DM/Reference",
+        "name": "Reference",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/DClock",
+        "name": "DClock",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/TClock",
+        "name": "TClock",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/TClock2",
+        "name": "TClock2",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -691,6 +691,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+<a id="src-cross-kind-format-runtime-parser"></a>
+- [The runtime text parser is the declared format's, not the declared kind's](sources/evaluation-and-application-routes.md#src-cross-kind-format-runtime-parser)
 <a id="src-distinct-count-group-expansion-fold"></a>
 - [A group operand's distinct count reaches its whole subtree at runtime, and an uninstantiated row contributes nothing](sources/evaluation-and-application-routes.md#src-distinct-count-group-expansion-fold)
 <a id="src-distinct-count-time-bearing-fold"></a>

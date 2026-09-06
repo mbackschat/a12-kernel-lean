@@ -1,0 +1,152 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Kind_DM2.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "clock-text-in-both",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CT1",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "control pair counts one",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "XF1",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-kind clock pair counts one",
+              "referenced" : [
+                "Kind_DM/DClock",
+                "Kind_DM/Reference",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CT1",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "control pair counts one",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "XF1",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "cross-kind clock pair counts one",
+              "referenced" : [
+                "Kind_DM/DClock",
+                "Kind_DM/Reference",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "date-text-in-date-declared-clock",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CT1",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "control pair counts one",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Kind_DM/DClock",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Kind_DM/DClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CT1",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "control pair counts one",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Kind_DM/DClock",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Kind_DM/DClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
