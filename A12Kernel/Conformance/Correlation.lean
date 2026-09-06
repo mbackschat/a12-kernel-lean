@@ -919,4 +919,48 @@ example :
         (correlatedGreater.select (captured ascendingKeys 3)) = .value 0 := by
   native_decide
 
+/-! ## A filter that cannot see the candidate is all-or-nothing
+
+Measured on the Kernel at both carriers a non-reopened level can take: an above-the-star reference
+on the operand's own path is constant within one host row, and a nonrepeatable leaf is constant
+across the whole document ([checkpoint](../../docs/SOURCES.md#src-filter-reference-level-runtime)).
+Three `Items` rows under one host row therefore all pass together or all fail together, and the
+Kernel's own numbers were `30, 0, 50` against `30, 70, 50` on the same three rows — the middle cell
+is the separator, identical candidates under two filters. Both filters below reference only the
+captured environment, which is what makes them candidate-invariant. -/
+
+private def hostEnv : Env := [(items, 2)]
+
+private def candidateEnvs : List Env := [[(items, 1)], [(items, 2)], [(items, 3)]]
+
+private def capturedOnly (op : CorrelationComparisonOp) : CorrelatedHaving :=
+  CorrelatedHaving.compareRepetitions op
+    { origin := .outer, level := items } { origin := .outer, level := items }
+
+/-- The satisfied filter keeps **every** candidate, which is the host row whose gate holds. -/
+example :
+    (capturedOnly .equal).selectEnvironments distinct.asCorrelationContext hostEnv
+      candidateEnvs = candidateEnvs := by
+  native_decide
+
+/-- The unsatisfied one keeps **none**, which is the sibling host row whose gate does not — and it
+    is the same three candidates, so the difference is the filter and not the data. -/
+example :
+    (capturedOnly .lessThan).selectEnvironments distinct.asCorrelationContext hostEnv
+      candidateEnvs = [] := by
+  native_decide
+
+/-- The law's hypothesis is discharged concretely, so
+    `correlatedHaving_selectEnvironments_all_or_none` is not vacuous here: truth at
+    this filter does not move when the candidate does. -/
+example :
+    ∀ first second : Env,
+      (capturedOnly .equal).evalTruthIn distinct.asCorrelationContext
+          { innerEnv := first, outerEnv := hostEnv }
+        = (capturedOnly .equal).evalTruthIn distinct.asCorrelationContext
+          { innerEnv := second, outerEnv := hostEnv } := by
+  intro first second
+  rfl
+
+
 end A12Kernel.Conformance.Correlation

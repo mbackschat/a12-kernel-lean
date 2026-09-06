@@ -1,0 +1,4 @@
+{"Rep_DM":{"Anchor":"a","Meta":{"M":"1"},"Rows":[
+ {"Gate":"1","Items":[{"Val":"10"},{"Val":"20"}]},
+ {"Gate":"0","Items":[{"Val":"30"},{"Val":"40"}]},
+ {"Gate":"1","Items":[{"Val":"50"},{"Val":"0"}]}]}}

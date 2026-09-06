@@ -748,4 +748,39 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
     innerSelected, outerSelected,
     CorrelationComparisonOp.holdsRat, NumericComparisonOp.holds]
 
+/-- **A filter whose truth does not depend on the candidate selects all of them or none.** This is
+    the internal law behind a measured runtime fact: a filter reference naming a repeatable level the
+    star does **not** reopen — an unstarred ancestor of the operand's own path, or a nonrepeatable
+    leaf — resolves to the same row in the candidate and captured environments alike, so its leaf is
+    candidate-invariant and the whole filter is all-or-nothing within one host row. The Kernel agrees
+    on both carriers: an above-level `Gate` gives one host row every candidate and its sibling none,
+    and a nonrepeatable leaf does the same across the whole document
+    ([checkpoint](../../docs/SOURCES.md#src-filter-reference-level-runtime)).
+
+    Stated on the truth function rather than on any reference shape, so it covers every leaf and
+    connective at once; the addressing supplies the invariance hypothesis for a non-reopened level. -/
+theorem correlatedHaving_selectEnvironments_all_or_none
+    (condition : CorrelatedHaving) (context : CorrelationContext) (outerEnv : Env)
+    (candidates : List Env)
+    (candidateInvariant : ∀ first second : Env,
+      condition.evalTruthIn context { innerEnv := first, outerEnv }
+        = condition.evalTruthIn context { innerEnv := second, outerEnv }) :
+    condition.selectEnvironments context outerEnv candidates = candidates
+      ∨ condition.selectEnvironments context outerEnv candidates = [] := by
+  simp only [CorrelatedHaving.selectEnvironments]
+  match candidates with
+  | [] => exact Or.inr rfl
+  | first :: rest =>
+      by_cases hFirst : condition.keepsEnvironment context outerEnv first = true
+      · refine Or.inl (List.filter_eq_self.mpr ?_)
+        intro candidate _
+        simp only [CorrelatedHaving.keepsEnvironment] at hFirst ⊢
+        rw [candidateInvariant candidate first]
+        exact hFirst
+      · refine Or.inr (List.filter_eq_nil_iff.mpr ?_)
+        intro candidate _
+        simp only [CorrelatedHaving.keepsEnvironment] at hFirst ⊢
+        rw [candidateInvariant candidate first]
+        exact hFirst
+
 end A12Kernel

@@ -1,0 +1,3 @@
+{"computedField":"/Rep_DM/Rows/Total","group":"/Rep_DM/Rows",
+ "alternatives":[{"operation":"Sum(/Rep_DM/Rows/Items*/Val Having [/Rep_DM/Rows/Gate] > 0 And [/Rep_DM/Rows/Items/Val] > 0)"}],
+ "messages":[{"locale":"en_US","text":"above-level"}]}
