@@ -49,6 +49,19 @@
 - `limit`: static admission only, one model, `en_US`. The Enumeration and DATE_RANGE rows are `AtLeastOne…` only. Nothing here evaluates a membership test.
 - `sync`: none yet. The kind partition is this project's own under-projection; the arity and Enumeration findings are recorded as gaps, and enter `spec/` with the capsules that represent them.
 
+<a id="src-keyed-date-range-overlap-admits-both-sides"></a>
+#### A semantic-index keyed operand is admitted on **both** sides of either overlap operator, and the duplicate identity includes the key, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `0ca44debbd15bdc1863bcadae74709205dcf2211`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Fourteen `rule check` children across two `batch` runs, every envelope `KERNEL_CONFIRMED`.
+- `retained-bytes`: `Probe_SI.json` SHA-256 `0cce1c50632a40af29d191a5458b24bf227b8c6bf8afecb3b528d0b78323c467`; ops `63eadced655f59f2e2780aa81d7335316445485d1232ea6b78c398b559345d57`, `713094b029371ba30dc7e902b8b0ee148e8a99acaaa793df53120e0d3a97d1a5`; results `e2d262265fb13647446743f0f47e192f43065a2876feee952d55f417e7413e82`, `5f1eb490f8de4ceae9372f1d4cf982e05b52546c256c4e98643dd1b33f488b8e`. The index field is designated with `group modify --index-field`, the route recorded at [the keyed-parameter checkpoint](message-and-pointer-probes.md#src-keyed-parameter-admits-the-index-field-only).
+- `question`: both DateRange overlap carriers record "a keyed operand on **both** sides, which no measurement covers" as an open shape, and this project represents the pairing as `keyedFirst : Bool` — exactly one keyed side — so the shape is structurally unrepresentable rather than refused.
+- `claim`: **keyed on both sides is admitted, on both operators.** `DateRangesOverlap(Spans/Span For "a", Spans/Span For "b")` is admitted, as is the same pairing across two different DateRange fields of the indexed group, and `AtLeastOneDateRangeOverlaps(Spans/Span For "a" In Spans/Span For "b")` likewise. One-sided keying is admitted in either position that the operator's own arity allows. So this project's representation is an over-refusal by omission.
+- `claim`: **the duplicate-operand identity includes the key.** The same field under two different keys is admitted; the same field under the **same** key draws `MVK_DUPLICATE_PARAM1`, on both operators. A keyed reference is therefore an exact reference whose identity is the (field, key) pair, which fits the read-form split measured the same day: an exact reference repeats, a starred scan does not.
+- `claim`: **the keyed form has its own two gates.** A keyed reference into a group carrying no index field draws `MVK_NO_INDEX_FIELD`, and a keyed reference to a non-DateRange field at an overlap operand draws `MVK_NO_DATE_RANGE`.
+- `an-attribution-withdrawn-by-its-control`: `AtLeastOneDateRangeOverlaps` with comma-separated operands drew `MVK_UNEXPECTED_TOKEN`, which read as the keyed form being refused at that operator. Its plain-operand control drew the same code, identifying the spelling as the defect: the operator takes `A In B`, not a comma list. The catalog's `validExample` carries the correct form and would have prevented the row, which is the second time in this session that consulting `dmtool operators <id>` first would have been cheaper than authoring from memory.
+- `limit`: static admission only, one model, `en_US`. Nothing here evaluates a keyed overlap, and no row tests a key naming an absent row.
+- `sync`: no clause changes. The single-keyed-side restriction is this project's own representation limit and never entered `spec/`.
+
 <a id="src-first-filled-admits-a-repeatable-target"></a>
 #### A first-filled computation reading a starred source admits a **repeatable** target, on four carriers, measured 2026-09-06
 

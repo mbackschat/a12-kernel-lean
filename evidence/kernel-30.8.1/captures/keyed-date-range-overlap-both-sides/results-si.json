@@ -1,0 +1,66 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "0ca44debbd15bdc1863bcadae74709205dcf2211",
+    "state" : "CLEAN"
+  },
+  "model" : "0cce1c50632a40af29d191a5458b24bf227b8c6bf8afecb3b528d0b78323c467",
+  "observations" : [ {
+    "id" : "001|si|keyed-both-sides|same-field",
+    "inputHash" : "6f3b7ff86f70a7ca66549f85905691a923bd03d7e6ea8142266f66bb4955e501",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "002|si|keyed-both-sides|diff-fields",
+    "inputHash" : "0f4e3868af8bf0bbe6cf32682869f823292c379aa388c45c45147bf83b1c4172",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "003|si|keyed-both-sides|same-key",
+    "inputHash" : "9b75409e79a2421baafe136be20f43a9f6e781109d1a0c42f5101584c61110db",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  }, {
+    "id" : "004|si|keyed-left-only",
+    "inputHash" : "24867bf72b14db7121961b5c7d5bca1482719505d8ecc3288e9ea30836c4e226",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "005|si|keyed-right-only",
+    "inputHash" : "02d5a392cca6a666732eb9fb1c0136e0176ee3074a3e93f271f04b9581c915fb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "006|si|unkeyed-control",
+    "inputHash" : "6e9e1b532971c4b5b82c60a63d98f3246a0b2a562ce3c06d887113f682be54fc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "007|si|atleastone-keyed-both",
+    "inputHash" : "27dacce1d9b8e6174c8a0f874c0a39874c005ec974a12194698a2c0ad66b246e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "008|si|keyed-nonindexed-group",
+    "inputHash" : "19501747de0c279d8f1a9a144d44b6de6de3f068da25008d1a3a277414c02f4a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_INDEX_FIELD" ]
+  }, {
+    "id" : "009|si|keyed-nonrange-field",
+    "inputHash" : "dc82932a799e92774d78018999f734825c7c5947d3d5d06b5e13b0f8dc8a8880",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_DATE_RANGE" ]
+  } ]
+}

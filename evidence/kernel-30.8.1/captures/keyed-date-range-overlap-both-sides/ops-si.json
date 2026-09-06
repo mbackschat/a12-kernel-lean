@@ -1,0 +1,119 @@
+[
+ {
+  "id": "001|si|keyed-both-sides|same-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(Spans/Span For \"a\", Spans/Span For \"b\")",
+   "--code",
+   "K001"
+  ]
+ },
+ {
+  "id": "002|si|keyed-both-sides|diff-fields",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(Spans/Span For \"a\", Spans/Span2 For \"a\")",
+   "--code",
+   "K002"
+  ]
+ },
+ {
+  "id": "003|si|keyed-both-sides|same-key",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(Spans/Span For \"a\", Spans/Span For \"a\")",
+   "--code",
+   "K003"
+  ]
+ },
+ {
+  "id": "004|si|keyed-left-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(Spans/Span For \"a\", /Probe/Rows*/RowSpan)",
+   "--code",
+   "K004"
+  ]
+ },
+ {
+  "id": "005|si|keyed-right-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(/Probe/Rows*/RowSpan, Spans/Span For \"a\")",
+   "--code",
+   "K005"
+  ]
+ },
+ {
+  "id": "006|si|unkeyed-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(/Probe/Rows*/RowSpan, /Probe/Spans*/Span)",
+   "--code",
+   "K006"
+  ]
+ },
+ {
+  "id": "007|si|atleastone-keyed-both",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Spans/Span For \"a\", Spans/Span For \"b\")",
+   "--code",
+   "K007"
+  ]
+ },
+ {
+  "id": "008|si|keyed-nonindexed-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"a\", Rows/RowSpan For \"b\")",
+   "--code",
+   "K008"
+  ]
+ },
+ {
+  "id": "009|si|keyed-nonrange-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And DateRangesOverlap(Spans/Key For \"a\", Spans/Key For \"b\")",
+   "--code",
+   "K009"
+  ]
+ }
+]

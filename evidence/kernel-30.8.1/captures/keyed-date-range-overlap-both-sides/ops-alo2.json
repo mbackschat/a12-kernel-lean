@@ -1,0 +1,67 @@
+[
+ {
+  "id": "301|alo|plain-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe/Spans*/Span In /Probe/Rows*/RowSpan)",
+   "--code",
+   "B301"
+  ]
+ },
+ {
+  "id": "302|alo|keyed-left",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Spans/Span For \"a\" In /Probe/Rows*/RowSpan)",
+   "--code",
+   "B302"
+  ]
+ },
+ {
+  "id": "303|alo|keyed-right",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe/Rows*/RowSpan In Spans/Span For \"a\")",
+   "--code",
+   "B303"
+  ]
+ },
+ {
+  "id": "304|alo|keyed-both",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Spans/Span For \"a\" In Spans/Span For \"b\")",
+   "--code",
+   "B304"
+  ]
+ },
+ {
+  "id": "305|alo|keyed-both-same",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Spans/Span For \"a\" In Spans/Span For \"a\")",
+   "--code",
+   "B305"
+  ]
+ }
+]
