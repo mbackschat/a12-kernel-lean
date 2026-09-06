@@ -1,0 +1,244 @@
+[
+ {
+  "id": "comp-two-above-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-two-above-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Gate] > 0) == 0",
+   "--code",
+   "S1"
+  ]
+ },
+ {
+  "id": "comp-two-above-with-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-two-above-with-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Gate] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "S2"
+  ]
+ },
+ {
+  "id": "comp-two-above-marked-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-two-above-marked-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having [$/Rep_DM/Outer/Gate] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "S3"
+  ]
+ },
+ {
+  "id": "comp-one-above-with-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-one-above-with-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Rows/Mid] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "S4"
+  ]
+ },
+ {
+  "id": "comp-grp-two-above-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-grp-two-above-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having GroupFilled(/Rep_DM/Outer/Info)) == 0",
+   "--code",
+   "S5"
+  ]
+ },
+ {
+  "id": "comp-grp-two-above-with-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-grp-two-above-with-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having GroupFilled(/Rep_DM/Outer/Info) And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "S6"
+  ]
+ },
+ {
+  "id": "comp-grp-rootlevel-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-grp-rootlevel-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having GroupFilled(/Rep_DM/RootInfo)) == 0",
+   "--code",
+   "S7"
+  ]
+ },
+ {
+  "id": "comp-grp-rootlevel-with-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-grp-rootlevel-with-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having GroupFilled(/Rep_DM/RootInfo) And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "S8"
+  ]
+ },
+ {
+  "id": "comp-grp-offpath-repeatable-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-grp-offpath-repeatable-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having GroupFilled(/Rep_DM/Other/Sub)) == 0",
+   "--code",
+   "S9"
+  ]
+ },
+ {
+  "id": "comp-grp-offpath-repeatable-conj",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-grp-offpath-repeatable-conj",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having GroupFilled(/Rep_DM/Other/Sub) And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "S10"
+  ]
+ },
+ {
+  "id": "comp-in-scope-only",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-in-scope-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "FieldFilled(/Rep_DM/Outer/Rows/Mid) And Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "S11"
+  ]
+ }
+]

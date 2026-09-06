@@ -1,0 +1,1 @@
+{"computedField": "/Rep_DM/Outer/Rows/Total", "group": "/Rep_DM/Outer/Rows", "alternatives": [{"operation": "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [$/Rep_DM/Other/Sub/OVal] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0)"}], "messages": [{"locale": "en_US", "text": "off-two-marked-conjunct"}]}

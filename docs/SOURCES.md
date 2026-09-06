@@ -691,6 +691,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+<a id="src-filter-reference-two-levels-above"></a>
+- [Both filter gates read path membership and nothing about depth, and the admitted constant is keyed to the referenced level](sources/having-filter-probes.md#src-filter-reference-two-levels-above)
 <a id="src-filter-reference-level-runtime"></a>
 - [An admitted filter reference the star does not reopen is a constant, per host row or per document](sources/having-filter-probes.md#src-filter-reference-level-runtime)
 <a id="src-repeatable-computation-row-extent"></a>

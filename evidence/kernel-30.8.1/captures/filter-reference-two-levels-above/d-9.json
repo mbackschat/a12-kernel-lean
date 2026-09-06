@@ -1,0 +1,1 @@
+{"computedField": "/Rep_DM/Outer/Rows/Total", "group": "/Rep_DM/Outer/Rows", "alternatives": [{"operation": "Sum(/Rep_DM/Outer/Rows/Items*/Val Having GroupFilled(/Rep_DM/Other/Sub))"}], "messages": [{"locale": "en_US", "text": "grp-offpath-repeatable-sole"}]}

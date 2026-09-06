@@ -1,0 +1,222 @@
+[
+ {
+  "id": "comp-two-above-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-two-above-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Gate] > 0) == 0",
+   "--code",
+   "R1"
+  ]
+ },
+ {
+  "id": "comp-two-above-with-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-two-above-with-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Gate] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "R2"
+  ]
+ },
+ {
+  "id": "comp-two-above-marked-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-two-above-marked-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [$/Rep_DM/Outer/Gate] > 0) == 0",
+   "--code",
+   "R3"
+  ]
+ },
+ {
+  "id": "comp-two-above-marked-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-two-above-marked-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [$/Rep_DM/Outer/Gate] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "R4"
+  ]
+ },
+ {
+  "id": "comp-one-above-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-one-above-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Rows/Mid] > 0) == 0",
+   "--code",
+   "R5"
+  ]
+ },
+ {
+  "id": "comp-one-above-with-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-one-above-with-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Rows/Mid] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "R6"
+  ]
+ },
+ {
+  "id": "comp-off-two-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-off-two-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Other/Sub/OVal] > 0) == 0",
+   "--code",
+   "R7"
+  ]
+ },
+ {
+  "id": "comp-off-two-with-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-off-two-with-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Other/Sub/OVal] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "R8"
+  ]
+ },
+ {
+  "id": "comp-off-two-marked-conjunct",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-off-two-marked-conjunct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [$/Rep_DM/Other/Sub/OVal] > 0 And [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "R9"
+  ]
+ },
+ {
+  "id": "comp-in-scope-only",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rule-in-scope-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Rep_DM/Outer/Rows/Mid",
+   "--condition",
+   "Sum(/Rep_DM/Outer/Rows/Items*/Val Having [/Rep_DM/Outer/Rows/Items/Val] > 0) == 0",
+   "--code",
+   "R10"
+  ]
+ }
+]

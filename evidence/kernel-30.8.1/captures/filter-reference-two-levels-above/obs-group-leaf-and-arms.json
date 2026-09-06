@@ -1,0 +1,138 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+    "state" : "CLEAN"
+  },
+  "model" : "32a6948305afa2127dbed1fc55930147ac6ed10f8663e63e960bd3812b164759",
+  "observations" : [ {
+    "id" : "comp-two-above-sole",
+    "inputHash" : "3210536e942c146ec03ee73df11f1a64d82032e1d57b4e785f869cce340eced4",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-two-above-sole",
+    "inputHash" : "e3f0ad9720766d1ca19f25f4103ad80ff7e3d014bb0a2af6c61b8000e3adb69e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-two-above-with-conjunct",
+    "inputHash" : "b6ba02305f4f558366f166c432ea9fd4d6b64efc2d9db7de5759b6735a167fd2",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-two-above-with-conjunct",
+    "inputHash" : "3197c1a73a2ff8a0a0e2f7025d95afbb4437d2ee7189f368f8dc5a0a509f4819",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-two-above-marked-conjunct",
+    "inputHash" : "64069b260561ce73a0a176d0310c7b04b6036ccbc8f702d3189f52560b45da02",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-two-above-marked-conjunct",
+    "inputHash" : "b94f6f0e98196c5db2bf5c08578600c335dc7a63ab6341940fddb7f7f12c2dd5",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-one-above-with-conjunct",
+    "inputHash" : "48f187f11fb8a7f3447e70bade0d3f083e216b4743a279829a5bb77820a7e582",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-one-above-with-conjunct",
+    "inputHash" : "8414a7a10da12fe92a04ca2a72ec6ed3e73a72fcea0d05e231f0d9baf86508df",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-grp-two-above-sole",
+    "inputHash" : "4c721b6718b1ed6fce26d309a817b30b2415ab549ba2de22eef58f6058c6c99a",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-grp-two-above-sole",
+    "inputHash" : "a234ed78f65f680bb580224a3f1a1dd5cc68dd2ee324d03dd8ab1bef4025c2d0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-grp-two-above-with-conjunct",
+    "inputHash" : "2cf37843de6259739b27038ef6611b1ae7ac14dbc8c95ea759b5c52dd9a76a24",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-grp-two-above-with-conjunct",
+    "inputHash" : "075ed4c1dc7efd4148c1353c1ce52814d63d3f8cea2e05d70770613b14c1e8be",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-grp-rootlevel-sole",
+    "inputHash" : "eb9809947bdbfc5182e04acc20ac91590aa766773c5848f2c8b2f568f53e9687",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-grp-rootlevel-sole",
+    "inputHash" : "ac21c306687268ede3535b0e5b29be286e1dff2a4a6a25d1576be5d40458a5d1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-grp-rootlevel-with-conjunct",
+    "inputHash" : "336799efdabeae07fe2f578e73ae567474c5f6ba8e5afb72c1e2631bf4685b54",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-grp-rootlevel-with-conjunct",
+    "inputHash" : "ae0207a7318a1c6d77b63ed7ea4a9896932f57e9e446e7da02eb12326550ceef",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-grp-offpath-repeatable-sole",
+    "inputHash" : "f537fa3ea5815dd635e64a08cc303c50bc918f733810a38f6e78a3c31b3751d5",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "rule-grp-offpath-repeatable-sole",
+    "inputHash" : "6e4a8fd0fad502b164d28ed883f14b7c08467936b0945cbbd0fa5c431308742f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "comp-grp-offpath-repeatable-conj",
+    "inputHash" : "830f9b0eecd2c462ae5d9220851a50d02311efc9bd55ef2f6a32a1cccae2b845",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "rule-grp-offpath-repeatable-conj",
+    "inputHash" : "f4b07f8aeb0051413ce8b9d1e579ed4beff56ba17e251bfd2d5ca4293339d984",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "comp-in-scope-only",
+    "inputHash" : "aa0c5cd0bd02e4d0ab8c17fb87513d259e300800133eb3fd5fb3116d981a0adb",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-in-scope-only",
+    "inputHash" : "00de542ff16d8721a1d98d80507bd0d52b9d7071dbbd0c2aef78f16b59d01db9",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

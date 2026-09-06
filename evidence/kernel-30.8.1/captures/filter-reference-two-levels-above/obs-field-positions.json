@@ -1,0 +1,128 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "fc2b3187c43d0ac29cb335628dde676b69464260",
+    "state" : "CLEAN"
+  },
+  "model" : "9e367ff9f6bea2f079d22557b9cb06a20def0a37b70571f0596386b1ffedd5c5",
+  "observations" : [ {
+    "id" : "comp-two-above-sole",
+    "inputHash" : "3210536e942c146ec03ee73df11f1a64d82032e1d57b4e785f869cce340eced4",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-two-above-sole",
+    "inputHash" : "93c6f5156f83e45427c8e140376e3d641e058a4035d1be915985393cf255c77f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-two-above-with-conjunct",
+    "inputHash" : "b6ba02305f4f558366f166c432ea9fd4d6b64efc2d9db7de5759b6735a167fd2",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-two-above-with-conjunct",
+    "inputHash" : "8482611fc62062b19207a6d8ffe3c19817a36bb93ae385c3eac54b1fa63f3f88",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_REFERENCED" ]
+  }, {
+    "id" : "comp-two-above-marked-sole",
+    "inputHash" : "ff4aba6dd838f7728823cd9e95b404e78fc4f36d6ce8f90281dd94fd3214877a",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-two-above-marked-sole",
+    "inputHash" : "26ad0f7c88bc111bf0689087387f37dc5df3982404944f09069789ae546ad69e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-two-above-marked-conjunct",
+    "inputHash" : "64069b260561ce73a0a176d0310c7b04b6036ccbc8f702d3189f52560b45da02",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-two-above-marked-conjunct",
+    "inputHash" : "d488cf6d39e15c427b979998d8c1c7e99d8bf647259f7040adc976ceabdd0f24",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_REFERENCED" ]
+  }, {
+    "id" : "comp-one-above-sole",
+    "inputHash" : "7d35baa6eaeb6ec9ca09dfc520861abea5ddb774d71958828a6e558d264fd62d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-one-above-sole",
+    "inputHash" : "5ccabe8d5c7b3d13094513cfd466bc461f8856cdc3fab5bd804c090fe9cafda5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-one-above-with-conjunct",
+    "inputHash" : "48f187f11fb8a7f3447e70bade0d3f083e216b4743a279829a5bb77820a7e582",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-one-above-with-conjunct",
+    "inputHash" : "ca22c6b1e4097a3fb5d6ab0e93ba62282d0d3bbb8f0b2c2ff1262da8b59c94a8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_REFERENCED" ]
+  }, {
+    "id" : "comp-off-two-sole",
+    "inputHash" : "988620c687f28421d664d60bc7d4e687596849ce59bb772cbae85d76c06957dc",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "rule-off-two-sole",
+    "inputHash" : "796683ba778ccec64a0918e906efe5768b8f9c7bc5217e74ee1f01462b269109",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "comp-off-two-with-conjunct",
+    "inputHash" : "50703e1347cbce4e8bd909c29a56684d1f72c2a2f0eedf2a7e2d9fe490e3c117",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "rule-off-two-with-conjunct",
+    "inputHash" : "e5fa95328d5d955dc022deef5192d971ac5f5fa7ac4cf28dc72587dc3509bc3f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" ]
+  }, {
+    "id" : "comp-off-two-marked-conjunct",
+    "inputHash" : "33babd77eb2bb792ebe9f039f19e7327772f239f8b49bf3acb4deba4720f96ee",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "rule-off-two-marked-conjunct",
+    "inputHash" : "ded911d614ec6d43727b364b4e7b94f1377853c0cd061c3464f0605ec664bae6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "comp-in-scope-only",
+    "inputHash" : "aa0c5cd0bd02e4d0ab8c17fb87513d259e300800133eb3fd5fb3116d981a0adb",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-in-scope-only",
+    "inputHash" : "d7ef9367357437b64ef773c88beb7d4b0ddc94ca0091834d96e89f7042e347ac",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_REFERENCED" ]
+  } ]
+}
