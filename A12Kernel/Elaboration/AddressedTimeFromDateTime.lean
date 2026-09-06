@@ -19,7 +19,7 @@ inductive AddressedTimeFromDateTimeElabError where
 structure CheckedAddressedTimeFromDateTime (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
-  target : CheckedTimeTarget model
+  target : CheckedClockFormatTarget model
   sourceBinding : CheckedBoundCompleteDateTimeSource model declaringGroup
     target.checked.declaration.repeatableScope
   declaringGroupValid : GroupPath.isValid declaringGroup = true
@@ -34,7 +34,7 @@ def checkAddressedTimeFromDateTime
     Except AddressedTimeFromDateTimeElabError
       (CheckedAddressedTimeFromDateTime model) := do
   let targetDeclaration ← model.lookupUniqueId targetField |>.mapError .targetLookup
-  let target ← elaborateTimeTargetIn model
+  let target ← elaborateClockFormatTargetIn model
       targetDeclaration.repeatableScope targetField
     |>.mapError .target
   if hValid : GroupPath.isValid declaringGroup = true then

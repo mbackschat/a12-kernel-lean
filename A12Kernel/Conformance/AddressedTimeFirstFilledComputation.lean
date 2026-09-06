@@ -27,9 +27,19 @@ private def wrongFormatTarget := timeField 4 "WrongClock"
 private def fixedTarget := timeField 5 "FixedClock" ["Summary"] []
 private def unrelated := timeField 6 "UnrelatedClock" ["Summary"] []
 
+/-- A **DATE**-declared repeatable target at the complete-clock format and component set. The Kernel
+admits a clock computation into it exactly as into the TIME-declared target beside it, from the
+target's own declaring group and from the root alike
+([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)). -/
+private def clockShapedDateTarget : FlatFieldDecl :=
+  { id := 7, name := "SelectedDateShaped", groupPath := ["Projects", "Tasks"]
+    repeatableScope := [10, 30]
+    policy := { kind := .temporal .date TemporalComponents.time }
+    temporalTargetPolicy := some { format := "HH:mm:ss" } }
+
 private def model : FlatModel := {
   fields := [source, dateTimeSource, target, wrongFormatTarget, fixedTarget,
-    unrelated]
+    unrelated, clockShapedDateTarget]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 4 },
     { level := 20, path := ["Projects", "Choices"], repeatability := some 3,
@@ -273,6 +283,19 @@ example : formalInputSummary? = some {
     errorsEmpty := true
     cleared := [address target.id [2, 1]]
   } := by
+  native_decide
+
+
+/- **The addressed target gate reads the format, not the kind**, and the wrong-format sibling shows
+   it still gates: a DATE-declared repeatable target at the complete clock is admitted, while the
+   TIME-declared `yyyy-MM-dd` one beside it is refused. Dropping the kind test widened this carrier
+   by the cross-kind cell and by nothing else. -/
+example :
+    ((checkAddressedTimeFirstFilledComputation model ["Projects", "Tasks"]
+        clockShapedDateTarget.id (siblingStar source.name)).toOption.isSome,
+      (checkAddressedTimeFirstFilledComputation model ["Projects", "Tasks"]
+        wrongFormatTarget.id (siblingStar source.name)).toOption.isSome) =
+    (true, false) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedTimeFirstFilledComputation

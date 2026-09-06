@@ -1,0 +1,190 @@
+[
+ {
+  "id": "701|addressed|clocksrc|rep-D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w701.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtDClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "702|addressed|clocksrc-rootgroup|rep-D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w702.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtDClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "703|addressed|clocksrc|rep-T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w703.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtTClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "704|addressed|clocksrc-rootgroup|rep-T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w704.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtTClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "705|addressed|clocksrc|rep-T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w705.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtTDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "706|addressed|clocksrc-rootgroup|rep-T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w706.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtTDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ],
+   "group": "/Probe"
+  }
+ },
+ {
+  "id": "707|addressed|clocksrc|rep-D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w707.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtDDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "708|addressed|clocksrc-rootgroup|rep-D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "w708.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/Rows/RowTgtDDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowClock)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ],
+   "group": "/Probe"
+  }
+ }
+]

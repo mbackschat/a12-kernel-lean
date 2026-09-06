@@ -24,7 +24,7 @@ inductive AddressedTimeFirstFilledComputationElabError where
 structure CheckedAddressedTimeFirstFilledComputation (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedFirstFilledTarget model
-  targetPolicy : CheckedTimeTarget model
+  targetPolicy : CheckedClockFormatTarget model
   checkedSource : CheckedStarFieldPath model
   sourceCarrier :
     checkedSource.declaration.temporalFirstFilledStarCarrier? =
@@ -73,7 +73,7 @@ def checkAddressedTimeFirstFilledComputation
       (CheckedAddressedTimeFirstFilledComputation model) := do
   let target ← checkAddressedFirstFilledTarget model declaringGroup targetField
     |>.mapError mapAddressedTimeTargetError
-  let targetPolicy ← elaborateTimeTargetIn model
+  let targetPolicy ← elaborateClockFormatTargetIn model
       target.declaration.repeatableScope targetField
     |>.mapError .targetPolicy
   let source ← elaborateStarFieldPath model declaringGroup authored
