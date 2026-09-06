@@ -1,0 +1,1 @@
+{"model": "Comp_DM2.json", "locale": "en_US", "observe": ["validateFull", "compute"], "rows": [{"name": "clock-equal", "document": "doc-eq.json"}, {"name": "clock-unequal", "document": "doc-ne.json"}, {"name": "date-text-in-date-declared-clock", "document": "doc-bad.json"}]}
