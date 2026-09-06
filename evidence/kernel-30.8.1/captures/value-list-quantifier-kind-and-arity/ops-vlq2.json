@@ -1,0 +1,106 @@
+[
+ {
+  "id": "1-NoFiel-number",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(Amount In \"x\")",
+   "--code",
+   "Q1"
+  ]
+ },
+ {
+  "id": "2-NoFiel-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(FiledOn In \"x\")",
+   "--code",
+   "Q2"
+  ]
+ },
+ {
+  "id": "3-NoFiel-boolean",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(Flag In \"x\")",
+   "--code",
+   "Q3"
+  ]
+ },
+ {
+  "id": "4-NoFiel-string-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(SkuText In \"x\")",
+   "--code",
+   "Q4"
+  ]
+ },
+ {
+  "id": "5-NotAll-number",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(Amount In \"x\")",
+   "--code",
+   "Q5"
+  ]
+ },
+ {
+  "id": "6-NotAll-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(FiledOn In \"x\")",
+   "--code",
+   "Q6"
+  ]
+ },
+ {
+  "id": "7-NotAll-boolean",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(Flag In \"x\")",
+   "--code",
+   "Q7"
+  ]
+ },
+ {
+  "id": "8-NotAll-string-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(SkuText In \"x\")",
+   "--code",
+   "Q8"
+  ]
+ }
+]

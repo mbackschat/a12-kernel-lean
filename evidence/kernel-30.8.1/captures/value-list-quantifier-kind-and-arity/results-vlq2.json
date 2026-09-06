@@ -1,0 +1,205 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 8 ops; 6 of 8 exited nonzero (0 failed, 6 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 8,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-NoFiel-number",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(Amount In \"x\")", "--code", "Q1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPES_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NoFieldValueIncludedInValueList': It is not allowed to compare strings and numbers. [MVK_INVALID_TYPES_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a number field needs integer values: FieldValueNotIncludedInValueList(Quantity, 1, 2)"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-NoFiel-date",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(FiledOn In \"x\")", "--code", "Q2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NoFieldValueIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'FiledOn'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — value lists work on string/enum/number fields — compare a boolean with == True/False"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-NoFiel-boolean",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(Flag In \"x\")", "--code", "Q3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NoFieldValueIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'Flag'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — value lists work on string/enum/number fields — compare a boolean with == True/False"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-NoFiel-string-control",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(SkuText In \"x\")", "--code", "Q4" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-NotAll-number",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(Amount In \"x\")", "--code", "Q5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPES_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NotAllFieldValuesIncludedInValueList': It is not allowed to compare strings and numbers. [MVK_INVALID_TYPES_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a number field needs integer values: FieldValueNotIncludedInValueList(Quantity, 1, 2)"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-NotAll-date",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(FiledOn In \"x\")", "--code", "Q6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NotAllFieldValuesIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'FiledOn'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — value lists work on string/enum/number fields — compare a boolean with == True/False"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-NotAll-boolean",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(Flag In \"x\")", "--code", "Q7" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NotAllFieldValuesIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'Flag'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — value lists work on string/enum/number fields — compare a boolean with == True/False"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "8-NotAll-string-control",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(SkuText In \"x\")", "--code", "Q8" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}
