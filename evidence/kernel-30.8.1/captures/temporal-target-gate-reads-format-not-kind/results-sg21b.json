@@ -1,0 +1,52 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "0ca44debbd15bdc1863bcadae74709205dcf2211",
+    "state" : "DIRTY"
+  },
+  "model" : "2a8a6d9904f48dd260b3bb51e38bfb3d6736ed07ba4d4d0898e21c827b201a3d",
+  "observations" : [ {
+    "id" : "401|now|target-DATETIME-kind",
+    "inputHash" : "d4069984bfd920d4c9abb334994e1d845f0c501c37a445de7f1b1031c169b2b0",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "402|now|target-DATE-kind-dt-format",
+    "inputHash" : "86bb567edf02fb8077f8545d57fefacdb028bf7c52d41179992414c0f123a2e5",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "403|shift|dtsrc-into-dt-format-target",
+    "inputHash" : "182bbac33b32aaa4e18929eee15faebd856acf44122dceea3ef22a5c4db7c4f0",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" ]
+  }, {
+    "id" : "404|shift|datesrc-into-dt-format-target",
+    "inputHash" : "074126c6dfc060eb25e638e7c254abef685439a7d2de9b029e8e94e62c3d4cdd",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "405|shift|dtsrc-into-datetime-kind",
+    "inputHash" : "5f8399376b389417499636b1896db59925fabf9c22058959d0ba701c587df35d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" ]
+  }, {
+    "id" : "406|today|target-DATE-kind-dt-format",
+    "inputHash" : "bf5786ebb4d630bc04fef7b9241e47d98493e840132878b33c5968472da6c070",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "407|datefromdt|target-DATE-kind-dt-format",
+    "inputHash" : "fd00b3774a4e2d70573b87e7dbd71932cfb847309746d7ef17ae19fd27ebdb15",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  } ]
+}

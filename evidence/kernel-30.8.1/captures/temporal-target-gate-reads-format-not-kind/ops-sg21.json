@@ -1,0 +1,646 @@
+[
+ {
+  "id": "001|sg21|today|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c001.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "Today"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "002|sg21|today|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c002.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "Today"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "003|sg21|today|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c003.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "Today"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "004|sg21|today|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c004.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "Today"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "005|sg21|now|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c005.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "Now"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "006|sg21|now|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c006.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "Now"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "007|sg21|now|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c007.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "Now"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "008|sg21|now|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c008.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "Now"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "009|sg21|shift|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c009.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "AddDays(SrcDate, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "010|sg21|shift|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c010.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "AddDays(SrcDate, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "011|sg21|shift|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c011.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "AddDays(SrcDate, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "012|sg21|shift|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c012.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "AddDays(SrcDate, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "013|sg21|datefromdt|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c013.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "014|sg21|datefromdt|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c014.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "015|sg21|datefromdt|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c015.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "016|sg21|datefromdt|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c016.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "017|sg21|timefromdt|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c017.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "TimeFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "018|sg21|timefromdt|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c018.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "TimeFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "019|sg21|timefromdt|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c019.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "TimeFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "020|sg21|timefromdt|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c020.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "TimeFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "021|sg21|firstfilled|D-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c021.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "022|sg21|firstfilled|D-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c022.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "023|sg21|firstfilled|T-clockfmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c023.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TClock",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "024|sg21|firstfilled|T-datefmt",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c024.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/TDate",
+   "alternatives": [
+    {
+     "operation": "FirstFilledValue(/Probe/Rows*/RowDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "025|operand|datefromdt|src-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c025.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "026|operand|datefromdt|src-date-kind-dt-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c026.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(DStampDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "027|operand|datefromdt|src-plain-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c027.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(SrcDate)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "028|operand|shift|src-date-kind-dt-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "c028.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DDate",
+   "alternatives": [
+    {
+     "operation": "AddDays(DStampDate, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ }
+]

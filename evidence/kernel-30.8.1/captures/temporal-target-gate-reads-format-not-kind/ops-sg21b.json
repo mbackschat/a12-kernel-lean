@@ -1,0 +1,163 @@
+[
+ {
+  "id": "401|now|target-DATETIME-kind",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "x401.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DTStamp",
+   "alternatives": [
+    {
+     "operation": "Now"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "402|now|target-DATE-kind-dt-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "x402.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DStampDate",
+   "alternatives": [
+    {
+     "operation": "Now"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "403|shift|dtsrc-into-dt-format-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "x403.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DStampDate",
+   "alternatives": [
+    {
+     "operation": "AddDays(DStampDate, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "404|shift|datesrc-into-dt-format-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "x404.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DStampDate",
+   "alternatives": [
+    {
+     "operation": "AddDays(SrcDate, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "405|shift|dtsrc-into-datetime-kind",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "x405.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DTStamp",
+   "alternatives": [
+    {
+     "operation": "AddDays(DTStamp, 7)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "406|today|target-DATE-kind-dt-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "x406.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DStampDate",
+   "alternatives": [
+    {
+     "operation": "Today"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "407|datefromdt|target-DATE-kind-dt-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "x407.json"
+  ],
+  "spec": {
+   "computedField": "/Probe/DStampDate",
+   "alternatives": [
+    {
+     "operation": "DateFromDateTime(DTStamp)"
+    }
+   ],
+   "messages": [
+    {
+     "locale": "en_US",
+     "text": "t"
+    }
+   ]
+  }
+ }
+]

@@ -506,6 +506,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
 - [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/evaluation-and-application-routes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
+<a id="src-temporal-computed-target-gate-reads-format-not-kind"></a>
+- [A temporal computed target admits a value by its declared format, never by its declared kind, across five computation families](sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)
 <a id="src-keyed-date-range-overlap-admits-both-sides"></a>
 - [A semantic-index keyed operand is admitted on both sides of either overlap operator, and the duplicate identity includes the key](sources/evaluation-and-application-routes.md#src-keyed-date-range-overlap-admits-both-sides)
 <a id="src-first-filled-admits-a-repeatable-target"></a>
