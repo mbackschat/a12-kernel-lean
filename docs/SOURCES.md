@@ -147,6 +147,15 @@ Its maintained owners include [`MixedDateTimeOrderingDiffTest`](../../a12-ruleki
 
 The peer revision is inbound reviewed provenance, so its accepted canonical corrections do not create a second outbound sync-ledger request.
 
+<a id="src-2026-09-06-ladder-handback-detail"></a>
+a12-dmkits revision `7bdfa7470f7aa0baea539ffea7bd36828af19445` is the reviewed handback on [`SPEC-2026-09-06-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md). It re-derives all three ladder rungs and both pair-dependent cells on an independently built fixture, carries them as `ConstantAssignmentDiagnosticLadderLawsTest` and `KF257`, and ships the corrective the ladder implied — `MVK_INVALID_COMPARE_TO_DATE` previously had none, so an author assigning a date-shaped literal to a String field was told about dates and sent to inspect the target rather than the constant.
+
+Two facts travel with it. Their diagnostic ledger had recorded `MVK_INCONSISTENT_TYPES_COMPARED`, `MVK_INVALID_COMPARE_TO_YES`, and `MVK_INVALID_COMPARE_TO_YESNO` as unconstructible on the strength of the **comparison** surface, where their references are kind-typed; assignment is a second live firing site those rows did not name, and all three are amended there. And the kernel lexer has **one** string-literal syntax, so a temporal constant is a string literal whose content parses as a date rather than a distinct spelling — [the ladder checkpoint](sources/evaluation-and-application-routes.md#src-constant-assignment-diagnostic-ladder) carries the local witness for that, which is prior to and independent of the grammar reading.
+
+This inbound revision answers an existing pending entry, so it updates that entry's disposition and creates no new outbound request.
+
+
+
 ### Reviewed group-count multiplicity batch
 
 a12-dmkits revision `856465c37` (clean) carries two Kernel observations this project consumes at the [starred group-count checkpoint](sources/group-and-iteration-probes.md#src-starred-group-count-computation): the compute arm's over-limit exclusion reproduced on the peer's own fixture with the four-row control this project's capture lacked, and the first measurement anywhere of a list holding **two starred operands**, including the same group named twice. Both live in [`NestedGroupFillCountLawsTest`](../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/NestedGroupFillCountLawsTest.java) and were read here rather than taken on report; that suite drives the real Kernel runtime rather than the peer interpreter.
@@ -424,6 +433,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-2026-09-05-reconciliation"></a>
 - [Reviewed 2026-09-04 a12-dmkits letter closing all four outbound entries, correcting one clause of ours, and shipping all four instrument fixes](sources/computation-placement-and-constant-probes.md#src-2026-09-05-reconciliation)
 
+<a id="src-2026-09-06-ladder-handback"></a>
+- [Reviewed 2026-09-06 a12-dmkits handback re-deriving the constant-assignment ladder and shipping its corrective](#src-2026-09-06-ladder-handback-detail)
 <a id="src-2026-09-04-reconciliation"></a>
 - [Reviewed 2026-09-04 a12-dmkits handback adopting both temporal corrections, and refuting one claim of ours](sources/computation-placement-and-constant-probes.md#src-2026-09-04-reconciliation)
 <a id="src-2026-09-03-reconciliation"></a>

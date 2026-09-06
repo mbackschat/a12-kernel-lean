@@ -102,6 +102,21 @@ example : (constantAssignmentDiagnostic? .stringLike .number,
     (some .invalidCompareToEnumOrString, some .inconsistentTypesCompared) := by
   native_decide
 
+/- **A CUSTOM target has no rung of its own.** A custom declaration must carry the String kind —
+   `customTypeRequiresString` — so its surface kind *is* `.string` and the ladder answers it by
+   construction. This row is the model's own statement of that, beside the measurement confirming
+   the Kernel agrees cell for cell; an assumption that happens to hold produces no signal, so it is
+   asserted rather than left implicit. -/
+example :
+    ((FieldKind.string.surfaceKind, SurfaceScalarKind.string),
+      families.map (constantAssignmentDiagnostic? · .string)) =
+    ((SurfaceScalarKind.string, SurfaceScalarKind.string),
+      [ none
+      , some .invalidCompareToEnumOrString
+      , some .invalidCompareToDate
+      , some .invalidCompareToEnumOrString ]) := by
+  native_decide
+
 /- **The exact Kernel identifiers**, so the classes above are pinned to the observable strings and
    not merely to this project's constructor names. -/
 example : [KernelStaticDiagnostic.invalidCompareToYesNo,

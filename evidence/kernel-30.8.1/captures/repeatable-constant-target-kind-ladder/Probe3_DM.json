@@ -284,6 +284,18 @@
                     }
                   }
                 }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe3/Rows/RowCustom",
+                "name" : "RowCustom",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "CustomFieldType",
+                    "CustomFieldType" : {
+                      "name" : "IStringType"
+                    }
+                  }
+                }
               } ]
             }
           }, {

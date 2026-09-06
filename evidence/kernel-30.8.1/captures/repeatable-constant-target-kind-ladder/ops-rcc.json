@@ -90,7 +90,7 @@
   ]
  },
  {
-  "id": "011-enumtok-into-string",
+  "id": "011-str-into-custom",
   "verb": "computation",
   "args": [
    "add",
@@ -99,7 +99,7 @@
   ]
  },
  {
-  "id": "012-enumtok-into-enum",
+  "id": "012-enumtok-into-string",
   "verb": "computation",
   "args": [
    "add",
@@ -108,7 +108,7 @@
   ]
  },
  {
-  "id": "013-enumtok-into-number",
+  "id": "013-enumtok-into-enum",
   "verb": "computation",
   "args": [
    "add",
@@ -117,7 +117,7 @@
   ]
  },
  {
-  "id": "014-enumtok-into-dateiso",
+  "id": "014-enumtok-into-number",
   "verb": "computation",
   "args": [
    "add",
@@ -126,7 +126,7 @@
   ]
  },
  {
-  "id": "015-enumtok-into-datede",
+  "id": "015-enumtok-into-dateiso",
   "verb": "computation",
   "args": [
    "add",
@@ -135,7 +135,7 @@
   ]
  },
  {
-  "id": "016-enumtok-into-time",
+  "id": "016-enumtok-into-datede",
   "verb": "computation",
   "args": [
    "add",
@@ -144,7 +144,7 @@
   ]
  },
  {
-  "id": "017-enumtok-into-datetime",
+  "id": "017-enumtok-into-time",
   "verb": "computation",
   "args": [
    "add",
@@ -153,7 +153,7 @@
   ]
  },
  {
-  "id": "018-enumtok-into-daterange",
+  "id": "018-enumtok-into-datetime",
   "verb": "computation",
   "args": [
    "add",
@@ -162,7 +162,7 @@
   ]
  },
  {
-  "id": "019-enumtok-into-boolean",
+  "id": "019-enumtok-into-daterange",
   "verb": "computation",
   "args": [
    "add",
@@ -171,7 +171,7 @@
   ]
  },
  {
-  "id": "020-enumtok-into-confirm",
+  "id": "020-enumtok-into-boolean",
   "verb": "computation",
   "args": [
    "add",
@@ -180,7 +180,7 @@
   ]
  },
  {
-  "id": "021-num-into-string",
+  "id": "021-enumtok-into-confirm",
   "verb": "computation",
   "args": [
    "add",
@@ -189,7 +189,7 @@
   ]
  },
  {
-  "id": "022-num-into-enum",
+  "id": "022-enumtok-into-custom",
   "verb": "computation",
   "args": [
    "add",
@@ -198,7 +198,7 @@
   ]
  },
  {
-  "id": "023-num-into-number",
+  "id": "023-num-into-string",
   "verb": "computation",
   "args": [
    "add",
@@ -207,7 +207,7 @@
   ]
  },
  {
-  "id": "024-num-into-dateiso",
+  "id": "024-num-into-enum",
   "verb": "computation",
   "args": [
    "add",
@@ -216,7 +216,7 @@
   ]
  },
  {
-  "id": "025-num-into-datede",
+  "id": "025-num-into-number",
   "verb": "computation",
   "args": [
    "add",
@@ -225,7 +225,7 @@
   ]
  },
  {
-  "id": "026-num-into-time",
+  "id": "026-num-into-dateiso",
   "verb": "computation",
   "args": [
    "add",
@@ -234,7 +234,7 @@
   ]
  },
  {
-  "id": "027-num-into-datetime",
+  "id": "027-num-into-datede",
   "verb": "computation",
   "args": [
    "add",
@@ -243,7 +243,7 @@
   ]
  },
  {
-  "id": "028-num-into-daterange",
+  "id": "028-num-into-time",
   "verb": "computation",
   "args": [
    "add",
@@ -252,7 +252,7 @@
   ]
  },
  {
-  "id": "029-num-into-boolean",
+  "id": "029-num-into-datetime",
   "verb": "computation",
   "args": [
    "add",
@@ -261,7 +261,7 @@
   ]
  },
  {
-  "id": "030-num-into-confirm",
+  "id": "030-num-into-daterange",
   "verb": "computation",
   "args": [
    "add",
@@ -270,7 +270,7 @@
   ]
  },
  {
-  "id": "031-date-into-string",
+  "id": "031-num-into-boolean",
   "verb": "computation",
   "args": [
    "add",
@@ -279,7 +279,7 @@
   ]
  },
  {
-  "id": "032-date-into-enum",
+  "id": "032-num-into-confirm",
   "verb": "computation",
   "args": [
    "add",
@@ -288,7 +288,7 @@
   ]
  },
  {
-  "id": "033-date-into-number",
+  "id": "033-num-into-custom",
   "verb": "computation",
   "args": [
    "add",
@@ -297,7 +297,7 @@
   ]
  },
  {
-  "id": "034-date-into-dateiso",
+  "id": "034-date-into-string",
   "verb": "computation",
   "args": [
    "add",
@@ -306,7 +306,7 @@
   ]
  },
  {
-  "id": "035-date-into-datede",
+  "id": "035-date-into-enum",
   "verb": "computation",
   "args": [
    "add",
@@ -315,7 +315,7 @@
   ]
  },
  {
-  "id": "036-date-into-time",
+  "id": "036-date-into-number",
   "verb": "computation",
   "args": [
    "add",
@@ -324,7 +324,7 @@
   ]
  },
  {
-  "id": "037-date-into-datetime",
+  "id": "037-date-into-dateiso",
   "verb": "computation",
   "args": [
    "add",
@@ -333,7 +333,7 @@
   ]
  },
  {
-  "id": "038-date-into-daterange",
+  "id": "038-date-into-datede",
   "verb": "computation",
   "args": [
    "add",
@@ -342,7 +342,7 @@
   ]
  },
  {
-  "id": "039-date-into-boolean",
+  "id": "039-date-into-time",
   "verb": "computation",
   "args": [
    "add",
@@ -351,7 +351,7 @@
   ]
  },
  {
-  "id": "040-date-into-confirm",
+  "id": "040-date-into-datetime",
   "verb": "computation",
   "args": [
    "add",
@@ -360,7 +360,7 @@
   ]
  },
  {
-  "id": "041-clock-into-string",
+  "id": "041-date-into-daterange",
   "verb": "computation",
   "args": [
    "add",
@@ -369,7 +369,7 @@
   ]
  },
  {
-  "id": "042-clock-into-enum",
+  "id": "042-date-into-boolean",
   "verb": "computation",
   "args": [
    "add",
@@ -378,7 +378,7 @@
   ]
  },
  {
-  "id": "043-clock-into-number",
+  "id": "043-date-into-confirm",
   "verb": "computation",
   "args": [
    "add",
@@ -387,7 +387,7 @@
   ]
  },
  {
-  "id": "044-clock-into-dateiso",
+  "id": "044-date-into-custom",
   "verb": "computation",
   "args": [
    "add",
@@ -396,7 +396,7 @@
   ]
  },
  {
-  "id": "045-clock-into-datede",
+  "id": "045-clock-into-string",
   "verb": "computation",
   "args": [
    "add",
@@ -405,7 +405,7 @@
   ]
  },
  {
-  "id": "046-clock-into-time",
+  "id": "046-clock-into-enum",
   "verb": "computation",
   "args": [
    "add",
@@ -414,7 +414,7 @@
   ]
  },
  {
-  "id": "047-clock-into-datetime",
+  "id": "047-clock-into-number",
   "verb": "computation",
   "args": [
    "add",
@@ -423,7 +423,7 @@
   ]
  },
  {
-  "id": "048-clock-into-daterange",
+  "id": "048-clock-into-dateiso",
   "verb": "computation",
   "args": [
    "add",
@@ -432,7 +432,7 @@
   ]
  },
  {
-  "id": "049-clock-into-boolean",
+  "id": "049-clock-into-datede",
   "verb": "computation",
   "args": [
    "add",
@@ -441,7 +441,7 @@
   ]
  },
  {
-  "id": "050-clock-into-confirm",
+  "id": "050-clock-into-time",
   "verb": "computation",
   "args": [
    "add",
@@ -450,7 +450,7 @@
   ]
  },
  {
-  "id": "051-stamp-into-string",
+  "id": "051-clock-into-datetime",
   "verb": "computation",
   "args": [
    "add",
@@ -459,7 +459,7 @@
   ]
  },
  {
-  "id": "052-stamp-into-enum",
+  "id": "052-clock-into-daterange",
   "verb": "computation",
   "args": [
    "add",
@@ -468,7 +468,7 @@
   ]
  },
  {
-  "id": "053-stamp-into-number",
+  "id": "053-clock-into-boolean",
   "verb": "computation",
   "args": [
    "add",
@@ -477,7 +477,7 @@
   ]
  },
  {
-  "id": "054-stamp-into-dateiso",
+  "id": "054-clock-into-confirm",
   "verb": "computation",
   "args": [
    "add",
@@ -486,7 +486,7 @@
   ]
  },
  {
-  "id": "055-stamp-into-datede",
+  "id": "055-clock-into-custom",
   "verb": "computation",
   "args": [
    "add",
@@ -495,7 +495,7 @@
   ]
  },
  {
-  "id": "056-stamp-into-time",
+  "id": "056-stamp-into-string",
   "verb": "computation",
   "args": [
    "add",
@@ -504,7 +504,7 @@
   ]
  },
  {
-  "id": "057-stamp-into-datetime",
+  "id": "057-stamp-into-enum",
   "verb": "computation",
   "args": [
    "add",
@@ -513,7 +513,7 @@
   ]
  },
  {
-  "id": "058-stamp-into-daterange",
+  "id": "058-stamp-into-number",
   "verb": "computation",
   "args": [
    "add",
@@ -522,7 +522,7 @@
   ]
  },
  {
-  "id": "059-stamp-into-boolean",
+  "id": "059-stamp-into-dateiso",
   "verb": "computation",
   "args": [
    "add",
@@ -531,7 +531,7 @@
   ]
  },
  {
-  "id": "060-stamp-into-confirm",
+  "id": "060-stamp-into-datede",
   "verb": "computation",
   "args": [
    "add",
@@ -540,7 +540,7 @@
   ]
  },
  {
-  "id": "061-bool-into-string",
+  "id": "061-stamp-into-time",
   "verb": "computation",
   "args": [
    "add",
@@ -549,7 +549,7 @@
   ]
  },
  {
-  "id": "062-bool-into-enum",
+  "id": "062-stamp-into-datetime",
   "verb": "computation",
   "args": [
    "add",
@@ -558,7 +558,7 @@
   ]
  },
  {
-  "id": "063-bool-into-number",
+  "id": "063-stamp-into-daterange",
   "verb": "computation",
   "args": [
    "add",
@@ -567,7 +567,7 @@
   ]
  },
  {
-  "id": "064-bool-into-dateiso",
+  "id": "064-stamp-into-boolean",
   "verb": "computation",
   "args": [
    "add",
@@ -576,7 +576,7 @@
   ]
  },
  {
-  "id": "065-bool-into-datede",
+  "id": "065-stamp-into-confirm",
   "verb": "computation",
   "args": [
    "add",
@@ -585,7 +585,7 @@
   ]
  },
  {
-  "id": "066-bool-into-time",
+  "id": "066-stamp-into-custom",
   "verb": "computation",
   "args": [
    "add",
@@ -594,7 +594,7 @@
   ]
  },
  {
-  "id": "067-bool-into-datetime",
+  "id": "067-bool-into-string",
   "verb": "computation",
   "args": [
    "add",
@@ -603,7 +603,7 @@
   ]
  },
  {
-  "id": "068-bool-into-daterange",
+  "id": "068-bool-into-enum",
   "verb": "computation",
   "args": [
    "add",
@@ -612,7 +612,7 @@
   ]
  },
  {
-  "id": "069-bool-into-boolean",
+  "id": "069-bool-into-number",
   "verb": "computation",
   "args": [
    "add",
@@ -621,7 +621,7 @@
   ]
  },
  {
-  "id": "070-bool-into-confirm",
+  "id": "070-bool-into-dateiso",
   "verb": "computation",
   "args": [
    "add",
@@ -630,7 +630,7 @@
   ]
  },
  {
-  "id": "071-baredate-into-string",
+  "id": "071-bool-into-datede",
   "verb": "computation",
   "args": [
    "add",
@@ -639,7 +639,7 @@
   ]
  },
  {
-  "id": "072-baredate-into-enum",
+  "id": "072-bool-into-time",
   "verb": "computation",
   "args": [
    "add",
@@ -648,7 +648,7 @@
   ]
  },
  {
-  "id": "073-baredate-into-number",
+  "id": "073-bool-into-datetime",
   "verb": "computation",
   "args": [
    "add",
@@ -657,7 +657,7 @@
   ]
  },
  {
-  "id": "074-baredate-into-dateiso",
+  "id": "074-bool-into-daterange",
   "verb": "computation",
   "args": [
    "add",
@@ -666,7 +666,7 @@
   ]
  },
  {
-  "id": "075-baredate-into-datede",
+  "id": "075-bool-into-boolean",
   "verb": "computation",
   "args": [
    "add",
@@ -675,7 +675,7 @@
   ]
  },
  {
-  "id": "076-baredate-into-time",
+  "id": "076-bool-into-confirm",
   "verb": "computation",
   "args": [
    "add",
@@ -684,7 +684,7 @@
   ]
  },
  {
-  "id": "077-baredate-into-datetime",
+  "id": "077-bool-into-custom",
   "verb": "computation",
   "args": [
    "add",
@@ -693,7 +693,7 @@
   ]
  },
  {
-  "id": "078-baredate-into-daterange",
+  "id": "078-baredate-into-string",
   "verb": "computation",
   "args": [
    "add",
@@ -702,7 +702,7 @@
   ]
  },
  {
-  "id": "079-baredate-into-boolean",
+  "id": "079-baredate-into-enum",
   "verb": "computation",
   "args": [
    "add",
@@ -711,12 +711,84 @@
   ]
  },
  {
-  "id": "080-baredate-into-confirm",
+  "id": "080-baredate-into-number",
   "verb": "computation",
   "args": [
    "add",
    "--dry-run",
    "rcc-080.json"
+  ]
+ },
+ {
+  "id": "081-baredate-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-081.json"
+  ]
+ },
+ {
+  "id": "082-baredate-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-082.json"
+  ]
+ },
+ {
+  "id": "083-baredate-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-083.json"
+  ]
+ },
+ {
+  "id": "084-baredate-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-084.json"
+  ]
+ },
+ {
+  "id": "085-baredate-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-085.json"
+  ]
+ },
+ {
+  "id": "086-baredate-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-086.json"
+  ]
+ },
+ {
+  "id": "087-baredate-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-087.json"
+  ]
+ },
+ {
+  "id": "088-baredate-into-custom",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-088.json"
   ]
  }
 ]

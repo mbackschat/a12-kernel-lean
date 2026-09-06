@@ -30,8 +30,14 @@ pairs this returns `none` for are the ones no kind gate refuses.
 
 namespace A12Kernel
 
-/-- The constant families the assignment ladder distinguishes. The three temporal families collapse
-into one because the Kernel's own class does not separate them at this gate. -/
+/-- The constant families the assignment ladder distinguishes.
+
+These are **content** classifications, not authored surfaces. The Kernel lexer has one string-literal
+syntax, so `"x"` and `"05.03.2024"` are the same authored form and differ only in what their content
+parses as — witnessed directly by the grid, where the two draw different classes at the *same* String
+target. Rung 2 is therefore the Kernel reinterpreting a string literal, not a separate surface
+reaching the gate. The three temporal families then collapse into one because the Kernel's own class
+does not separate them here. -/
 inductive ConstantAssignmentFamily where
   | stringLike
   | number
