@@ -101,7 +101,14 @@ inductive DateRangeFirstFilledDirectComputationElabError where
 
 namespace DateRangeFirstFilledDirectComputationElabError
 
-/-- Project the shared entity-list classes, measured profile mismatch, and established target self-reference class. Wider local refusals stay unmapped. -/
+/-- Project the shared entity-list classes, measured profile mismatch, and established target
+self-reference class.
+
+The three unmapped arms are named rather than wildcarded and are not one kind of thing. `target` is
+resolution routing and claims nothing by construction. `source` and `unsupportedSourceShape` are
+this carrier's own representation limits — a source shape it declines to certify — so the Kernel's
+treatment of them is unmeasured rather than absent, and each is a measurement target the moment a
+consumer needs the class. -/
 def diagnostic? : DateRangeFirstFilledDirectComputationElabError →
     Option KernelStaticDiagnostic
   | .sourceShape cause => cause.diagnostic?

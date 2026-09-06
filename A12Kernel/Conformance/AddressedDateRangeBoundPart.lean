@@ -76,13 +76,18 @@ example :
         | .ok _ => false) = true := by
   native_decide
 
-/- Every date component derives scale 0, so a fractional target is refused. The Kernel reports
-`MVK_INVALID_COMPARE_DEC_PLACES` on this shape; the local class stays unmapped because it does not
-distinguish that code's suppression branch. -/
+/- Every date component derives scale 0, so a fractional target is refused, and it reports the
+   Kernel's own `MVK_INVALID_COMPARE_DEC_PLACES` — the same class two sibling carriers already report
+   for the same gate. The suppression branch that code also covers is an **admission** question this
+   carrier does not model, so it over-refuses a suppressing model; withholding the class would not
+   have helped that and only hid the code, which is why the projection is asserted here beside the
+   exact arm. -/
 example :
-    (match checked scaledTarget.id (bare "RowDates") .start .month with
+    ((match checked scaledTarget.id (bare "RowDates") .start .month with
       | .error (.scaleMismatch 2 0) => true
-      | _ => false) = true := by
+      | _ => false),
+      (AddressedDateRangeBoundPartElabError.scaleMismatch 2 0).diagnostic?) =
+    (true, some .invalidCompareDecimalPlaces) := by
   native_decide
 
 /- Two placement gates remain the shared ones. A nonrepeatable target is not an addressed operation

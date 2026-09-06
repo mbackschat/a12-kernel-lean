@@ -21,13 +21,23 @@ inductive AddressedDateRangeBoundPartElabError where
 
 namespace AddressedDateRangeBoundPartElabError
 
-/-- Only the component refusal has a measured Kernel diagnostic; the derived-scale refusal reports
-`MVK_INVALID_COMPARE_DEC_PLACES` at the Kernel but is not projected here, because this library error
-does not distinguish the suppression branch that code also covers. -/
+/-- Both refusals this carrier can reach carry a Kernel class.
+
+The derived-scale one had been withheld on the grounds that this library error does not distinguish
+the suppression branch the same Kernel code also covers. That is a real limitation and it is the
+wrong reason: withholding the class does not model suppression, it only hides the code a consumer
+needs, and two sibling carriers — the correlated filter's equality gate and the repeatable Number
+constant's assignment gate — already report it for the same gate without hedging. What suppression
+actually threatens is *admission*: this carrier does not model `@SuppressWarning`, so it refuses a
+model the Kernel would accept, which is a separate over-refusal tracked in
+[`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) rather than something a projection can fix.
+
+Placement is this project's own routing and claims nothing. -/
 def diagnostic? :
     AddressedDateRangeBoundPartElabError → Option KernelStaticDiagnostic
   | .componentNotExposed _ _ => some .wrongDateFormatForOp
-  | .placement _ | .scaleMismatch _ _ => none
+  | .scaleMismatch _ _ => some .invalidCompareDecimalPlaces
+  | .placement _ => none
 
 end AddressedDateRangeBoundPartElabError
 
