@@ -14,9 +14,12 @@ namespace A12Kernel
     (TimeConstructionResult.unavailable cause).asTimeComputationResult =
       .poison cause := rfl
 
-/-- Every selected clock is retained exactly through target rendering. -/
+/-- Every selected clock is retained exactly through target rendering.
+
+Stated on the **kind-independent** certificate, which is the one every clock carrier now takes; the
+TIME-narrowed refinement inherits it. -/
 theorem timeTarget_evaluate_value
-    (target : CheckedTimeTarget model) (time : TimeOfDay) :
+    (target : CheckedClockFormatTarget model) (time : TimeOfDay) :
     target.evaluate (.value time) =
       .accepted (target.format.render time) := rfl
 

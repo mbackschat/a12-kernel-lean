@@ -21,7 +21,7 @@ inductive TimeConstructionComputationElabError where
 /-- One checked nonrepeatable Time component prefix and its distinct exact target. -/
 structure CheckedTimeConstructionComputation (model : FlatModel) where
   components : CheckedTimeComponents model
-  target : CheckedTimeTarget model
+  target : CheckedClockFormatTarget model
   targetNotReferenced :
     components.referencesField target.checked.target.id = false
 
@@ -32,7 +32,7 @@ def certifyTimeConstructionComputation
     Except TimeConstructionComputationElabError
       (CheckedTimeConstructionComputation model) := do
   let target ←
-    elaborateTimeTarget model targetField |>.mapError .target
+    elaborateClockFormatTarget model targetField |>.mapError .target
   if hReference :
       components.referencesField target.checked.target.id = true then
     throw (.targetSelfReference targetField)
@@ -62,7 +62,7 @@ inductive WorldTimeConstructionComputationElabError where
 /-- One checked world-aware Time component prefix and its distinct exact target. -/
 structure CheckedWorldTimeConstructionComputation (model : FlatModel) where
   components : CheckedWorldTimeComponents model
-  target : CheckedTimeTarget model
+  target : CheckedClockFormatTarget model
   targetNotReferenced :
     components.referencesField target.checked.target.id = false
 
@@ -335,7 +335,7 @@ structure CheckedAddressedTimeConstructionComputation
     (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedRepeatableTarget model
-  target : CheckedTimeTarget model
+  target : CheckedClockFormatTarget model
   components : CheckedAddressedTimeComponents model
     checkedTarget.declaration.repeatableScope
   targetNotReferenced :
@@ -350,7 +350,7 @@ def checkAddressedTimeConstructionComputation
   let checkedTarget ←
     checkAddressedRepeatableTarget model declaringGroup targetField
       |>.mapError mapAddressedTimeConstructionTargetError
-  let target ← elaborateTimeTargetIn model
+  let target ← elaborateClockFormatTargetIn model
     checkedTarget.declaration.repeatableScope targetField
       |>.mapError .targetPolicy
   let components ← checkAddressedTimeComponents model declaringGroup targetField
@@ -391,7 +391,7 @@ def certifyWorldTimeConstructionComputation
     Except WorldTimeConstructionComputationElabError
       (CheckedWorldTimeConstructionComputation model) := do
   let target ←
-    elaborateTimeTarget model targetField |>.mapError .target
+    elaborateClockFormatTarget model targetField |>.mapError .target
   if hReference :
       components.referencesField target.checked.target.id = true then
     throw (.targetSelfReference targetField)

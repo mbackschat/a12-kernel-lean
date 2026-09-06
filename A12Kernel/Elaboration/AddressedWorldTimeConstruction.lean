@@ -252,7 +252,7 @@ structure CheckedAddressedWorldTimeConstructionComputation
     (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedRepeatableTarget model
-  target : CheckedTimeTarget model
+  target : CheckedClockFormatTarget model
   components : CheckedAddressedWorldTimeComponents model
     checkedTarget.declaration.repeatableScope
   targetNotReferenced :
@@ -266,7 +266,7 @@ def checkAddressedWorldTimeConstructionComputation
       (CheckedAddressedWorldTimeConstructionComputation model) := do
   let checkedTarget ← checkAddressedRepeatableTarget model declaringGroup targetField
     |>.mapError .target
-  let target ← elaborateTimeTargetIn model
+  let target ← elaborateClockFormatTargetIn model
     checkedTarget.declaration.repeatableScope targetField
       |>.mapError .targetPolicy
   let components ← checkComponents model declaringGroup targetField

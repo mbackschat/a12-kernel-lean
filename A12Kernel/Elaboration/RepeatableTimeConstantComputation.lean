@@ -20,8 +20,9 @@ without seconds is not one — and every admitted clock passes the target's basi
 field's kind.** A DATE-declared field whose format is `HH:mm:ss` admits this constant and stores
 `12:30:00`; a TIME-declared field whose format is `yyyy-MM-dd` refuses it and takes a date literal
 instead. This carrier therefore takes `CheckedClockFormatTarget`, the certificate that reads the format and
-not the kind, and is the one family entitled to it: the cross-kind cell is measured here and nowhere
-else, so the sibling families keep the TIME-only `CheckedTimeTarget` until each earns its own row.
+not the kind. It was once the only family entitled to it; every scalar clock carrier now takes it,
+each having earned its own measured row
+([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)).
 What survives as a refusal is the format gate, which claims no Kernel class.
 
 A clock carries no date and no zone: it reaches the declared renderer directly, never an `Instant`,
