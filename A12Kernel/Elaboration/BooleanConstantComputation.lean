@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
 import A12Kernel.Elaboration.BooleanComputationResult
+import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 
@@ -40,19 +41,11 @@ namespace BooleanConstantOperationElabError
 /-- Project only the measured Confirm/False refusal. Unsupported target kinds retain their local identity because no Kernel class has been established for them. -/
 def diagnostic? : BooleanConstantOperationElabError → Option KernelStaticDiagnostic
   | .falseConfirm => some .invalidCompareToYes
-  -- The target-kind refusal is **not one class** — it partitions the kinds, which is why this arm
-  -- carries the kind and maps rather than returning a single code
-  -- ([checkpoint](../../docs/SOURCES.md#src-boolean-constant-target-kind-partitions-into-four-classes)).
-  -- The three temporal families share one, and String with Enumeration share another.
-  | .targetKind actual =>
-      match actual with
-      | .string | .enumeration => some .invalidCompareToEnumOrString
-      | .number => some .inconsistentTypesCompared
-      | .temporal _ => some .invalidCompareToDate
-      | .dateRange => some .invalidCompareToDateRange
-      -- Boolean and Confirm never reach this arm: both are admitted targets, and the Confirm
-      -- asymmetry is `falseConfirm`'s business above.
-      | .boolean | .confirm => none
+  -- The target-kind refusal is **not one class** — it partitions the kinds, and the partition is
+  -- the shared ladder's `booleanLike` row. The Number cell is one of the two the ladder's own
+  -- grid shows to be pair-dependent, so specializing is what keeps this carrier from drifting
+  -- into a per-carrier table that would be wrong there.
+  | .targetKind actual => constantAssignmentDiagnostic? .booleanLike actual
 
 end BooleanConstantOperationElabError
 

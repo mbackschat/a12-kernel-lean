@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Date constant computation into a repeatable target
@@ -46,14 +47,20 @@ inductive RepeatableDateConstantComputationElabError where
 
 namespace RepeatableDateConstantComputationElabError
 
-/-- Two refusals carry a measured Kernel identity: the shared placement one, and a yearless target
-in a model declaring no Base Year, which the Kernel refuses with the same code and admits once a
-Base Year is declared ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). A target
-this project simply cannot render claims no class, because the Kernel admits it. -/
+/-- Three refusals carry a measured Kernel identity: the shared placement one; a yearless target in
+a model declaring no Base Year, which the Kernel refuses with the same code and admits once a Base
+Year is declared ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)); and a target
+whose declared kind is not temporal at all, which draws the shared assignment ladder's `temporal`
+row and therefore the same class at every kind but Boolean and Confirm.
+
+A target this project simply cannot **render** still claims no class, and that gap is the opposite
+kind of thing: the Kernel admits those, so there is no refusal to name. -/
 def diagnostic? :
     RepeatableDateConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
   | .targetNotRenderableDate _ (.yearlessWithoutBaseYear _ _) => some .invalidCompareToDate
+  | .targetNotRenderableDate _ (.targetPolicy (.targetNotTemporal _ actual)) =>
+      constantAssignmentDiagnostic? .temporal actual
   | .target (.target _) | .target (.targetNotRepeatable _)
   | .targetNotRenderableDate _ _ => none
 

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.StringComputationRunApplication
+import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Ordinary String constant computation into a repeatable target
@@ -25,18 +26,29 @@ namespace A12Kernel
 
 inductive RepeatableStringConstantComputationElabError where
   | target (cause : AddressedRepeatableTargetElabError)
-  | targetNotOrdinaryString (path : List String)
+  /-- Carries the kind it refused, because the class the Kernel reports is decided by the
+  (constant family, target kind) pair and not by this carrier alone. -/
+  | targetNotOrdinaryString (path : List String) (actual : SurfaceScalarKind)
   deriving Repr, DecidableEq
 
 namespace RepeatableStringConstantComputationElabError
 
-/-- Containment carries the measured Kernel identity. An unresolvable, non-repeatable, or
-non-ordinary target is this project's own routing and claims no Kernel class. -/
+/-- Containment carries its own measured identity, and a wrong-kind target draws the shared
+assignment ladder's `stringLike` row.
+
+The ladder returns `none` for the two shapes this carrier still refuses without the Kernel
+refusing them. A **raw** String target is one: it has the String kind and so passes every kind
+gate, and it is declined here because a raw declaration closes the checked value-reading route,
+not because the Kernel objects. An **Enumeration** target is the other, and there the Kernel gates
+the literal rather than the kind — a declared token is admitted outright. Both are stated
+representation boundaries tracked in [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md), not
+unmeasured declines. -/
 def diagnostic? :
     RepeatableStringConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
-  | .target (.target _) | .target (.targetNotRepeatable _)
-  | .targetNotOrdinaryString _ => none
+  | .targetNotOrdinaryString _ actual =>
+      constantAssignmentDiagnostic? .stringLike actual
+  | .target (.target _) | .target (.targetNotRepeatable _) => none
 
 end RepeatableStringConstantComputationElabError
 
@@ -62,7 +74,8 @@ def checkRepeatableStringConstantComputation
       checkedTarget.declaration.isOrdinaryStringComputationCarrier = true then
     pure { checkedTarget, literal, targetOrdinary := hOrdinary }
   else
-    throw (.targetNotOrdinaryString checkedTarget.declaration.path)
+    throw (.targetNotOrdinaryString checkedTarget.declaration.path
+      checkedTarget.declaration.policy.kind.surfaceKind)
 
 inductive RepeatableStringConstantComputationFault where
   | targetRows (cause : ActualRowEnvironmentError)

@@ -4,15 +4,6 @@ import A12Kernel.Elaboration.Flat.Condition.Core
 
 namespace A12Kernel
 
-def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
-  | .number _ => .number
-  | .boolean => .boolean
-  | .confirm => .confirm
-  | .string => .string
-  | .enumeration => .enumeration
-  | .temporal kind _ => .temporal kind
-  | .dateRange => .dateRange
-
 def SurfaceComparisonOp.toEquality? : SurfaceComparisonOp → Option EqualityOp
   | .equal => some .equal
   | .notEqual => some .notEqual

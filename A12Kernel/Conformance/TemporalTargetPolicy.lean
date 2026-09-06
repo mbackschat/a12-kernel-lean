@@ -101,7 +101,7 @@ example :
       name := "Amount"
       policy := { kind := .number { scale := 0, signed := true } } }
     errorOf (elaborateTemporalTargetPolicy { fields := [target] } 0) =
-      some (.targetNotTemporal 0) := by
+      some (.targetNotTemporal 0 .number) := by
   native_decide
 
 /- The exact complete Time declaration exposes its policy without inventing a model-zone instant. -/
@@ -250,7 +250,7 @@ example :
       FullDateTargetElabError.partialTargetDiagnostic?
           (.partialPrecision 0 .full) = none ∧
       [ FullDateTargetElabError.partialTargetDiagnostic?
-          (.targetPolicy (.targetNotTemporal 0))
+          (.targetPolicy (.targetNotTemporal 0 .number))
       , FullDateTargetElabError.partialTargetDiagnostic?
           (.targetKind 0 .dateTime)
       , FullDateTargetElabError.partialTargetDiagnostic?

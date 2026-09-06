@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Time constant computation into a repeatable target
@@ -36,14 +37,21 @@ inductive RepeatableTimeConstantComputationElabError where
 
 namespace RepeatableTimeConstantComputationElabError
 
-/-- Only the shared placement refusal carries a measured Kernel identity. A target this carrier
-declines for its declared **format** — a clock constant into a date-shaped declaration — is refused
-by the Kernel too, but with no observed class here, so it borrows none. -/
+/-- Placement carries its own class, and every target refusal draws the shared assignment
+ladder's `temporal` row.
+
+That row is the ladder's inversion: a temporal constant reports its **own** family's class at every
+target the ladder does not outrank, so a clock constant into a String or Number declaration draws
+the date class rather than that target's. Only a Boolean or Confirm target outranks it. A target
+refused for its declared **format** — a clock constant into a date-shaped declaration — draws the
+same class, which is why the format and kind refusals need not be told apart here. -/
 def diagnostic? :
     RepeatableTimeConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
-  | .target (.target _) | .target (.targetNotRepeatable _)
-  | .targetNotTime _ => none
+  | .targetNotTime (.targetPolicy (.targetNotTemporal _ actual)) =>
+      constantAssignmentDiagnostic? .temporal actual
+  | .targetNotTime _ => some .invalidCompareToDate
+  | .target (.target _) | .target (.targetNotRepeatable _) => none
 
 end RepeatableTimeConstantComputationElabError
 

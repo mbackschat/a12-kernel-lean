@@ -309,6 +309,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Computation conditions](implementation/computations.md#11-computations)
 <a id="cap-computation-conditions"></a>
 - [Computation conditions](implementation/computations.md#cap-computation-conditions)
+<a id="cap-constant-assignment-diagnostic-ladder"></a>
+- [The wrong-kind constant assignment's diagnostic ladder](implementation/computations.md#cap-constant-assignment-diagnostic-ladder)
 <a id="cap-boolean-confirm-constant-computation-target-admission"></a>
 - [Boolean/Confirm constant computation target and result/application](implementation/computations.md#cap-boolean-confirm-constant-computation-target-admission)
 <a id="cap-first-selected-tables"></a>

@@ -25,6 +25,8 @@ inductive KernelStaticDiagnostic where
   | noBoolyAllowed
   /-- A Confirm computation target received the constant False. True is accepted, and Boolean targets accept either constant. -/
   | invalidCompareToYes
+  /-- A Boolean computation target received a constant of any other family. It is the **top** of the constant-assignment ladder: measured across an eight-constant by ten-target grid, a Boolean target reports this class even against a temporal constant, which outranks every other target ([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)). Its Confirm neighbour reports `invalidCompareToYes` in the same position, so the two kinds do not share a class even though they share the ladder rung. -/
+  | invalidCompareToYesNo
   /-- A computation's target does not lie at or below its declaring group while the computation
   iterates. Iteration is derived from the target's own repeatable scope or from a per-row operand of
   a repeatable declaring group, so a bare constant into a repeatable target reaches this class with
@@ -158,6 +160,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
   | .noBoolyAllowed => "MVK_NO_BOOLY_ALLOWED"
   | .invalidCompareToYes => "MVK_INVALID_COMPARE_TO_YES"
+  | .invalidCompareToYesNo => "MVK_INVALID_COMPARE_TO_YESNO"
   | .fieldNotInRuleGroup => "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
   | .paramSizeInvalidN => "MVK_PARAMSIZE_INVALIDN"
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
@@ -226,6 +229,7 @@ def all : List KernelStaticDiagnostic :=
     .invalidTypesForComparison,
     .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
+    .invalidCompareToYesNo,
     .fieldNotInRuleGroup,
     .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,

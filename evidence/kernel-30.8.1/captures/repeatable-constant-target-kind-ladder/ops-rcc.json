@@ -1,0 +1,722 @@
+[
+ {
+  "id": "001-str-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-001.json"
+  ]
+ },
+ {
+  "id": "002-str-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-002.json"
+  ]
+ },
+ {
+  "id": "003-str-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-003.json"
+  ]
+ },
+ {
+  "id": "004-str-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-004.json"
+  ]
+ },
+ {
+  "id": "005-str-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-005.json"
+  ]
+ },
+ {
+  "id": "006-str-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-006.json"
+  ]
+ },
+ {
+  "id": "007-str-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-007.json"
+  ]
+ },
+ {
+  "id": "008-str-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-008.json"
+  ]
+ },
+ {
+  "id": "009-str-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-009.json"
+  ]
+ },
+ {
+  "id": "010-str-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-010.json"
+  ]
+ },
+ {
+  "id": "011-enumtok-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-011.json"
+  ]
+ },
+ {
+  "id": "012-enumtok-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-012.json"
+  ]
+ },
+ {
+  "id": "013-enumtok-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-013.json"
+  ]
+ },
+ {
+  "id": "014-enumtok-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-014.json"
+  ]
+ },
+ {
+  "id": "015-enumtok-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-015.json"
+  ]
+ },
+ {
+  "id": "016-enumtok-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-016.json"
+  ]
+ },
+ {
+  "id": "017-enumtok-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-017.json"
+  ]
+ },
+ {
+  "id": "018-enumtok-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-018.json"
+  ]
+ },
+ {
+  "id": "019-enumtok-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-019.json"
+  ]
+ },
+ {
+  "id": "020-enumtok-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-020.json"
+  ]
+ },
+ {
+  "id": "021-num-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-021.json"
+  ]
+ },
+ {
+  "id": "022-num-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-022.json"
+  ]
+ },
+ {
+  "id": "023-num-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-023.json"
+  ]
+ },
+ {
+  "id": "024-num-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-024.json"
+  ]
+ },
+ {
+  "id": "025-num-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-025.json"
+  ]
+ },
+ {
+  "id": "026-num-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-026.json"
+  ]
+ },
+ {
+  "id": "027-num-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-027.json"
+  ]
+ },
+ {
+  "id": "028-num-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-028.json"
+  ]
+ },
+ {
+  "id": "029-num-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-029.json"
+  ]
+ },
+ {
+  "id": "030-num-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-030.json"
+  ]
+ },
+ {
+  "id": "031-date-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-031.json"
+  ]
+ },
+ {
+  "id": "032-date-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-032.json"
+  ]
+ },
+ {
+  "id": "033-date-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-033.json"
+  ]
+ },
+ {
+  "id": "034-date-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-034.json"
+  ]
+ },
+ {
+  "id": "035-date-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-035.json"
+  ]
+ },
+ {
+  "id": "036-date-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-036.json"
+  ]
+ },
+ {
+  "id": "037-date-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-037.json"
+  ]
+ },
+ {
+  "id": "038-date-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-038.json"
+  ]
+ },
+ {
+  "id": "039-date-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-039.json"
+  ]
+ },
+ {
+  "id": "040-date-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-040.json"
+  ]
+ },
+ {
+  "id": "041-clock-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-041.json"
+  ]
+ },
+ {
+  "id": "042-clock-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-042.json"
+  ]
+ },
+ {
+  "id": "043-clock-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-043.json"
+  ]
+ },
+ {
+  "id": "044-clock-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-044.json"
+  ]
+ },
+ {
+  "id": "045-clock-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-045.json"
+  ]
+ },
+ {
+  "id": "046-clock-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-046.json"
+  ]
+ },
+ {
+  "id": "047-clock-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-047.json"
+  ]
+ },
+ {
+  "id": "048-clock-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-048.json"
+  ]
+ },
+ {
+  "id": "049-clock-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-049.json"
+  ]
+ },
+ {
+  "id": "050-clock-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-050.json"
+  ]
+ },
+ {
+  "id": "051-stamp-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-051.json"
+  ]
+ },
+ {
+  "id": "052-stamp-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-052.json"
+  ]
+ },
+ {
+  "id": "053-stamp-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-053.json"
+  ]
+ },
+ {
+  "id": "054-stamp-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-054.json"
+  ]
+ },
+ {
+  "id": "055-stamp-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-055.json"
+  ]
+ },
+ {
+  "id": "056-stamp-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-056.json"
+  ]
+ },
+ {
+  "id": "057-stamp-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-057.json"
+  ]
+ },
+ {
+  "id": "058-stamp-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-058.json"
+  ]
+ },
+ {
+  "id": "059-stamp-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-059.json"
+  ]
+ },
+ {
+  "id": "060-stamp-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-060.json"
+  ]
+ },
+ {
+  "id": "061-bool-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-061.json"
+  ]
+ },
+ {
+  "id": "062-bool-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-062.json"
+  ]
+ },
+ {
+  "id": "063-bool-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-063.json"
+  ]
+ },
+ {
+  "id": "064-bool-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-064.json"
+  ]
+ },
+ {
+  "id": "065-bool-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-065.json"
+  ]
+ },
+ {
+  "id": "066-bool-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-066.json"
+  ]
+ },
+ {
+  "id": "067-bool-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-067.json"
+  ]
+ },
+ {
+  "id": "068-bool-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-068.json"
+  ]
+ },
+ {
+  "id": "069-bool-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-069.json"
+  ]
+ },
+ {
+  "id": "070-bool-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-070.json"
+  ]
+ },
+ {
+  "id": "071-baredate-into-string",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-071.json"
+  ]
+ },
+ {
+  "id": "072-baredate-into-enum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-072.json"
+  ]
+ },
+ {
+  "id": "073-baredate-into-number",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-073.json"
+  ]
+ },
+ {
+  "id": "074-baredate-into-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-074.json"
+  ]
+ },
+ {
+  "id": "075-baredate-into-datede",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-075.json"
+  ]
+ },
+ {
+  "id": "076-baredate-into-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-076.json"
+  ]
+ },
+ {
+  "id": "077-baredate-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-077.json"
+  ]
+ },
+ {
+  "id": "078-baredate-into-daterange",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-078.json"
+  ]
+ },
+ {
+  "id": "079-baredate-into-boolean",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-079.json"
+  ]
+ },
+ {
+  "id": "080-baredate-into-confirm",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "rcc-080.json"
+  ]
+ }
+]

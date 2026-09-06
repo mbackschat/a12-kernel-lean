@@ -122,7 +122,7 @@ measured counterpart, and a **starred** operand is not expressible at this bound
 because it resolves a field id rather than an authored path. -/
 def diagnostic? : DateRangeEndpointElabError → Option KernelStaticDiagnostic
   | .targetKind _ _ | .unsupportedPolicy _ _ _ => some .wrongDateFormatForOp
-  | .targetPolicy (.targetNotTemporal _) => some .wrongDateFormatForOp
+  | .targetPolicy (.targetNotTemporal _ _) => some .wrongDateFormatForOp
   | .targetPolicy (.resolve error) => error.diagnostic?
   | .targetPolicy _ | .unsupportedZone _ => none
 

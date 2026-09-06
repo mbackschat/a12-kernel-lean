@@ -96,14 +96,15 @@ example : (outcomes? ["Probe"] clock.id 2, outcomes? ["Probe", "Rows"] clock.id 
    format is `HH:mm:ss` is admitted and stores `12:30:00`, because what the Kernel reads at this
    position is the declared format and not the declared kind — this carrier takes the
    kind-independent clock certificate, the one family with a row for that cell. The surviving
-   refusal claims no Kernel class, since its decline is the format gate rather than a measured
-   diagnostic. -/
+   refusal draws the assignment ladder's temporal class, which the Kernel reports for a
+   format-refused temporal target exactly as it does for a wrong-kind one. -/
 example : ((outcome? ["Probe"] dateShapedTime.id, outcome? ["Probe"] clockShapedDate.id),
     [dateShapedTime.id, clockShapedDate.id].map fun target =>
       match checkRepeatableTimeConstantComputation model ["Probe"] target halfPastTwelve with
-      | .error cause => cause.diagnostic?.isSome
-      | .ok _ => true) =
-    ((none, some (.accepted (stored "12:30:00"))), [false, true]) := by
+      | .error cause => some cause.diagnostic?
+      | .ok _ => none) =
+    ((none, some (.accepted (stored "12:30:00"))),
+      [some (some .invalidCompareToDate), none]) := by
   native_decide
 
 /- Placement is containment: the target's own group and every ancestor admit it, and only a group the

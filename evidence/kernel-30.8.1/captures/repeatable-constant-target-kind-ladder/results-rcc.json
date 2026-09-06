@@ -1,0 +1,2012 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 80 ops; 70 of 80 exited nonzero (0 failed, 70 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 80,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "001-str-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-001.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowTextComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowTextComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "002-str-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-002.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': 'x' is not valid in the used enumeration. [MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowChoiceComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — EXPRESS is an enum value; compare to a SpeedClass category value (NORMAL/FAST)"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "003-str-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-003.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowValComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "004-str-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-004.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "005-str-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-005.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateDeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "006-str-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-006.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "007-str-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-007.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowStampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "008-str-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-008.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "009-str-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-009.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowFlagComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "010-str-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-010.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowAgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "011-enumtok-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-011.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowTextComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowTextComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "012-enumtok-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-012.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowChoiceComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowChoiceComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "013-enumtok-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-013.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowValComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "014-enumtok-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-014.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 14,
+      "id" : "015-enumtok-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-015.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateDeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 15,
+      "id" : "016-enumtok-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-016.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 16,
+      "id" : "017-enumtok-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-017.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowStampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 17,
+      "id" : "018-enumtok-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-018.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 18,
+      "id" : "019-enumtok-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-019.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowFlagComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 19,
+      "id" : "020-enumtok-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-020.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowAgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 20,
+      "id" : "021-num-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-021.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowTextComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 21,
+      "id" : "022-num-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-022.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowChoiceComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 22,
+      "id" : "023-num-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-023.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowValComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowValComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 23,
+      "id" : "024-num-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-024.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 24,
+      "id" : "025-num-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-025.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateDeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 25,
+      "id" : "026-num-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-026.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 26,
+      "id" : "027-num-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-027.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowStampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 27,
+      "id" : "028-num-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-028.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 28,
+      "id" : "029-num-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-029.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowFlagComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 29,
+      "id" : "030-num-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-030.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowAgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 30,
+      "id" : "031-date-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-031.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowTextComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 31,
+      "id" : "032-date-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-032.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowChoiceComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 32,
+      "id" : "033-date-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-033.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowValComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 33,
+      "id" : "034-date-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-034.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowDateComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowDateComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 34,
+      "id" : "035-date-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-035.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowDateDeComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowDateDeComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 35,
+      "id" : "036-date-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-036.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 36,
+      "id" : "037-date-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-037.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowStampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 37,
+      "id" : "038-date-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-038.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 38,
+      "id" : "039-date-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-039.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowFlagComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 39,
+      "id" : "040-date-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-040.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowAgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 40,
+      "id" : "041-clock-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-041.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowTextComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 41,
+      "id" : "042-clock-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-042.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowChoiceComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 42,
+      "id" : "043-clock-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-043.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowValComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 43,
+      "id" : "044-clock-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-044.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 44,
+      "id" : "045-clock-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-045.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateDeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 45,
+      "id" : "046-clock-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-046.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowClockComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowClockComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 46,
+      "id" : "047-clock-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-047.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowStampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 47,
+      "id" : "048-clock-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-048.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 48,
+      "id" : "049-clock-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-049.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowFlagComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 49,
+      "id" : "050-clock-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-050.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowAgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 50,
+      "id" : "051-stamp-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-051.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowTextComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 51,
+      "id" : "052-stamp-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-052.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowChoiceComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 52,
+      "id" : "053-stamp-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-053.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowValComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 53,
+      "id" : "054-stamp-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-054.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 54,
+      "id" : "055-stamp-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-055.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateDeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 55,
+      "id" : "056-stamp-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-056.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 56,
+      "id" : "057-stamp-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-057.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowStampComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowStampComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 57,
+      "id" : "058-stamp-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-058.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 58,
+      "id" : "059-stamp-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-059.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowFlagComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 59,
+      "id" : "060-stamp-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-060.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowAgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 60,
+      "id" : "061-bool-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-061.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowTextComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 61,
+      "id" : "062-bool-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-062.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowChoiceComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 62,
+      "id" : "063-bool-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-063.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INCONSISTENT_TYPES_COMPARED",
+          "summary" : "Rule with path '/Probe3/Rows/RowValComp': Invalid comparison. [MVK_INCONSISTENT_TYPES_COMPARED]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowValComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 63,
+      "id" : "064-bool-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-064.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 64,
+      "id" : "065-bool-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-065.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateDeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 65,
+      "id" : "066-bool-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-066.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 66,
+      "id" : "067-bool-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-067.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowStampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 67,
+      "id" : "068-bool-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-068.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 68,
+      "id" : "069-bool-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-069.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowFlagComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowFlagComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 69,
+      "id" : "070-bool-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-070.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe3/Rows/RowAgreedComp",
+        "changed" : {
+          "computation" : "/Probe3/Rows/RowAgreedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 70,
+      "id" : "071-baredate-into-string",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-071.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowTextComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 71,
+      "id" : "072-baredate-into-enum",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-072.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowChoiceComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 72,
+      "id" : "073-baredate-into-number",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-073.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
+          "summary" : "Rule with path '/Probe3/Rows/RowValComp': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (2) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowValComp"
+          },
+          "fix" : "The kernel could not establish compatible DERIVED decimal scales here. Numeric == / != carries a known SIGNED scale or unknown plus an independent multiplicative-constant capability: when known scales differ, only a capable SMALLER-scale side may be padded; an unknown scale rejects. ORDERING (< <= > >=) is exempt. TWO contexts trigger this code: (1) a COMPUTED FIELD whose declared scale is incompatible with its expression (e.g. a field re-scaled to 2 places while the Sum-computed field stays scale 0) — re-scale the computed field or explicitly round the expression, doing both edits in ONE `apply` so the terminal gate sees a consistent model; expect a SECOND rejection to surface if the operation also reads its own computed field, because this scale comparison is decided ahead of that refusal; (2) numeric == / != with incompatible derived scales — round one side to a known compatible scale, or accept it with allowDifferingDecimals:true on the rule spec (the kernel's one suppressible warning — it prepends @SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)).",
+          "explain" : "MVK_INVALID_COMPARE_DEC_PLACES (\"the fractional digits of lhs and rhs are different\") fires when numeric == / != cannot reconcile the operands' derived signed-scale/capability summaries, OR when a computed field is incompatible with its expression. It is not specific to any one operator (Sum, Equal, …); the scale-coupling is the constraint, so the corrective is context-dependent."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 73,
+      "id" : "074-baredate-into-dateiso",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-074.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 74,
+      "id" : "075-baredate-into-datede",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-075.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowDateDeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 75,
+      "id" : "076-baredate-into-time",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-076.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowClockComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 76,
+      "id" : "077-baredate-into-datetime",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-077.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowStampComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 77,
+      "id" : "078-baredate-into-daterange",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-078.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowSpanComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 78,
+      "id" : "079-baredate-into-boolean",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-079.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowFlagComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 79,
+      "id" : "080-baredate-into-confirm",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "rcc-080.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe3/Rows/RowAgreedComp"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

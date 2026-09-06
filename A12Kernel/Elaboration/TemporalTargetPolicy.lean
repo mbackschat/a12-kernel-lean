@@ -12,7 +12,10 @@ namespace A12Kernel
 /-- Fail-closed reasons before a temporal target can expose its declaration-owned policy. -/
 inductive TemporalTargetElabError where
   | resolve (error : ResolveError)
-  | targetNotTemporal (target : FieldId)
+  /-- The target's declared kind is not temporal at all. It carries that kind because a consuming
+  carrier's Kernel class can depend on it: at a constant assignment a Boolean or Confirm target
+  outranks the constant's own family, which no other information at this position recovers. -/
+  | targetNotTemporal (target : FieldId) (actual : SurfaceScalarKind)
   | targetPolicyUnavailable (target : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -50,7 +53,8 @@ def elaborateTemporalTargetPolicyIn
       let declaration ← resolved.requireRepetitionBoundBy scope
         |>.mapError .resolve
       match hTarget : declaration.toTemporalField? with
-      | none => throw (.targetNotTemporal targetField)
+      | none =>
+          throw (.targetNotTemporal targetField declaration.policy.kind.surfaceKind)
       | some target =>
           let policy ←
             match declaration.temporalTargetPolicy,

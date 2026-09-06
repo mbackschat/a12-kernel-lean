@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.NumericComputation.RunApplication
 import A12Kernel.Elaboration.NumericComputation.SourceTarget
 import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Number constant computation into a repeatable target
@@ -31,21 +32,25 @@ namespace A12Kernel
 
 inductive RepeatableNumberConstantComputationElabError where
   | target (cause : AddressedRepeatableTargetElabError)
-  | targetNotNumber (path : List String)
+  /-- Carries the kind it refused, because the class the Kernel reports is decided by the
+  (constant family, target kind) pair and not by this carrier alone. -/
+  | targetNotNumber (path : List String) (actual : SurfaceScalarKind)
   | constantScaleExceedsTarget (path : List String)
       (constantScale targetScale : Nat)
   deriving Repr, DecidableEq
 
 namespace RepeatableNumberConstantComputationElabError
 
-/-- Both refusals this carrier can reach carry a measured Kernel identity. A target this project
-cannot resolve, or one that is not a repeatable Number, is its own routing and claims no class. -/
+/-- Every refusal but target routing carries a measured Kernel identity. A wrong-kind target draws
+the shared assignment ladder's `number` row, whose String and Enumeration cells report the
+string-like class rather than a numeric one — the code names the *pair*, and reading it off this
+carrier's own kind would name the wrong side. -/
 def diagnostic? :
     RepeatableNumberConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
   | .constantScaleExceedsTarget _ _ _ => some .invalidCompareDecimalPlaces
-  | .target (.target _) | .target (.targetNotRepeatable _)
-  | .targetNotNumber _ => none
+  | .targetNotNumber _ actual => constantAssignmentDiagnostic? .number actual
+  | .target (.target _) | .target (.targetNotRepeatable _) => none
 
 end RepeatableNumberConstantComputationElabError
 
@@ -74,7 +79,9 @@ def checkRepeatableNumberConstantComputation
     checkAddressedRepeatableTarget model declaringGroup targetField
       |>.mapError .target
   match hPolicy : checkedTarget.declaration.toNumericTargetPolicy? with
-  | none => throw (.targetNotNumber checkedTarget.declaration.path)
+  | none =>
+      throw (.targetNotNumber checkedTarget.declaration.path
+        checkedTarget.declaration.policy.kind.surfaceKind)
   | some targetPolicy =>
       if hScale : constant.scale ≤ targetPolicy.info.scale then
         pure {

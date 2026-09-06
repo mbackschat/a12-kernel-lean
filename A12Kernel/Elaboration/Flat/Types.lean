@@ -112,6 +112,18 @@ inductive SurfaceScalarKind where
   | dateRange
   deriving Repr, DecidableEq
 
+/-- Drop a declaration kind's per-kind configuration, keeping only the surface kind. Several static
+gates are decided by the kind alone, so they share this projection rather than each matching the
+configured form. -/
+def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
+  | .number _ => .number
+  | .boolean => .boolean
+  | .confirm => .confirm
+  | .string => .string
+  | .enumeration => .enumeration
+  | .temporal kind _ => .temporal kind
+  | .dateRange => .dateRange
+
 /-- Whether a String declaration exposes an evaluation value. Raw Strings retain storage presence but close every checked value-reading route. -/
 inductive StringValueMode where
   | evaluated

@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-06-03"></a>
+### `SPEC-2026-09-06-03` — a wrong-kind constant assignment's diagnostic is an ordered ladder over the (constant family, target kind) pair
+
+- `status`: pending
+- `clause`: [`09-computations.md` the ground rules](../spec/09-computations.md)
+- `delta`: the clause named the Confirm asymmetry's class and left every other wrong-kind constant assignment unclassified. Measured: the class is a total function of the pair, in three rungs — a Boolean target reports `MVK_INVALID_COMPARE_TO_YESNO` and a Confirm target `MVK_INVALID_COMPARE_TO_YES` whatever the constant is; a temporal constant then reports `MVK_INVALID_COMPARE_TO_DATE` at every remaining target; otherwise the target's kind decides.
+- `mechanism`: two cells depend on the pair and the rest are a function of the target alone, which is why a sample keyed on one constant family reproduces the table and still gets those two wrong. Rung 2 is the first: a date constant at a **String** target reports the date class, not the string one. The second is the Number target, which reports `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a string-like constant and `MVK_INCONSISTENT_TYPES_COMPARED` for a Boolean one — the only rung-3 cell that reads the constant at all.
+- `evidence`: eighty `computation add --dry-run` children in one `batch` at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, a complete eight-constant by ten-target grid on repeatable targets ([checkpoint](sources/evaluation-and-application-routes.md#src-constant-assignment-diagnostic-ladder)).
+- `limit`: static preflight only, one model, `en_US`, every target repeatable. The literal-**value** gates beneath the kind ladder are named only where a cell exposed one, namely the Enumeration target's stored-token membership and the Number target's decimal scale. CUSTOM targets are untouched. `KF222` and `KF239` already own the temporal half's mechanism and are cited rather than re-derived.
+- `surfaces`: any peer clause, checker, or Explain consumer that maps a wrong-kind constant assignment to one class, or that keys the class on the target alone. The second reading survives every non-temporal constant and fails on all four temporal-constant columns at once.
+- `local-scope`: closed in Lean by one shared `constantAssignmentDiagnostic?` ladder that six carriers specialize, replacing five arms that projected nothing and one per-carrier table.
+- `acceptance`: a12-dmkits confirms the ladder on its own fixture, or supplies the contrary measurement — in particular whether a CUSTOM target has its own rung, which this grid does not reach.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-06-02"></a>
 ### `SPEC-2026-09-06-02` — a temporal field may declare no format, and the Kernel resolves the default from its declared kind
 

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.ComputationMessage
 
@@ -39,14 +40,17 @@ inductive RepeatableDateTimeConstantComputationElabError where
 
 namespace RepeatableDateTimeConstantComputationElabError
 
-/-- Only the shared placement refusal carries a measured Kernel identity. A target this carrier
-declines for its declared kind, component set, format, or zone is a stated exclusion of a shape whose
-Kernel treatment is unmeasured, so it claims no class rather than borrowing a plausible one. -/
+/-- Placement carries its own class, and every target refusal draws the shared assignment
+ladder's `temporal` row — the same row the Date and Time constant carriers draw, because the
+Kernel's class does not separate the three temporal families at this gate. A Boolean or Confirm
+target outranks it; a kind, component-set, format, or zone refusal does not. -/
 def diagnostic? :
     RepeatableDateTimeConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
-  | .target (.target _) | .target (.targetNotRepeatable _)
-  | .targetNotDateTime _ => none
+  | .targetNotDateTime (.targetPolicy (.targetNotTemporal _ actual)) =>
+      constantAssignmentDiagnostic? .temporal actual
+  | .targetNotDateTime _ => some .invalidCompareToDate
+  | .target (.target _) | .target (.targetNotRepeatable _) => none
 
 end RepeatableDateTimeConstantComputationElabError
 

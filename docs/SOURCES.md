@@ -486,6 +486,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The custom-validity operand gate names its admitted set: every refused kind draws one class, where the Boolean constant's target gate partitions four ways](sources/evaluation-and-application-routes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)
 <a id="src-temporal-declaration-without-a-format"></a>
 - [A temporal field may declare no format, and the Kernel resolves the default from its declared kind](sources/evaluation-and-application-routes.md#src-temporal-declaration-without-a-format)
+<a id="src-constant-assignment-diagnostic-ladder"></a>
+- [A wrong-kind constant assignment's diagnostic is an ordered ladder over the (constant, target) pair; the complete eighty-cell grid is what makes it legible](sources/evaluation-and-application-routes.md#src-constant-assignment-diagnostic-ladder)
 <a id="src-boolean-constant-target-kind-partitions-into-four-classes"></a>
 - [The Boolean constant computation's wrong-kind target draws four different classes, not one; first use of the `computation add --dry-run` route](sources/evaluation-and-application-routes.md#src-boolean-constant-target-kind-partitions-into-four-classes)
 <a id="src-daterange-scalar-slot-rejects-every-nonscalar-form"></a>
