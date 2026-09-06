@@ -77,7 +77,7 @@ inductive SingleGroupElabError where
   | invalidGroupReference (reference : SurfaceGroupPath)
   | wildcardOnRuleGroup
   | wildcardWithParentNavigation (parents : Nat)
-  | fieldNotNumber (path : List String)
+  | fieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   | fieldOutsideGroup (fieldPath expectedGroup : List String)
   | fieldScopeMismatch (fieldPath : List String)
       (expected actual : List RepeatableLevel)
@@ -351,7 +351,9 @@ def FlatModel.resolveNumberInGroup (model : FlatModel)
     throw (.fieldScopeMismatch declaration.path expectedScope declaration.repeatableScope)
   let field ← match declaration.toNumberField? with
     | some field => pure field
-    | none => throw (.fieldNotNumber declaration.path)
+    | none =>
+        throw (.fieldNotNumber declaration.path
+          declaration.policy.kind.surfaceKind)
   pure (declaration, field)
 
 /-- A Number field is admitted only when its unique declaration is a direct child of the exact repeatable group, carries exactly that singleton scope, and has identical numeric metadata. -/

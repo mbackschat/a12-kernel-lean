@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-06-04"></a>
+### `SPEC-2026-09-06-04` — a `Having` filter's refusal classes belong to the filter, and its two comparison columns disagree on six kinds of eight
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` correlated filters](../spec/07-repetition-and-iteration.md)
+- `delta`: the clause described the filter's admitted surface and said nothing about which class a refused filter reports. Measured: the class is a property of the **filter**, identical across every wrapping operator, and the filter has two comparison columns keyed on the literal's family.
+- `mechanism`: against a **numeric** literal the field side collapses — String, Boolean, Confirm, Enumeration and DATE_RANGE all report `MVK_INVALID_TYPE_FOR_COMPARISON`, with only the two temporal families separating out as `MVK_INVALID_COMPARE_TO_DATE`. Against a **String** literal the same kinds spread across four classes, and that column is the [constant-assignment ladder's](sources/evaluation-and-application-routes.md#src-constant-assignment-diagnostic-ladder) `stringLike` row cell for cell. The two columns agree only on the temporal rows, so a consumer holding one table is wrong six ways on the other carrier.
+- `mechanism`: the scope classes separate the two shapes an "iteration does not cover this" account would merge — a **root-level** field draws `MVK_NO_ITERATION_FOR_WILDCARD` where a **different repeatable group's** unstarred field draws `MVK_INVALID_ITERATION_IN_FILTER_CONDITION`, and a star written inside the filter draws `MVK_NO_WILDCARDS_ALLOWED`.
+- `evidence`: seventy-five `rule check` children in one `batch` at a12-dmkits `7bdfa7470f7aa0baea539ffea7bd36828af19445`, twenty-five filters crossed against three carriers ([checkpoint](sources/evaluation-and-application-routes.md#src-having-filter-comparison-and-scope-classes)).
+- `limit`: static admission only, one model, `en_US`, one filter leaf per condition, every filter qualifying a star over one repeatable level. Connectives, nested filters, multi-leaf filters, and all runtime behaviour are untouched. The `$` capture leaf's refusal is measured on this shape only.
+- `surfaces`: any peer clause, checker, or Explain consumer that reports one class for a refused filter, that keys the class on the wrapping operator, or that shares one comparison table between the numeric and String-literal columns. `MVK_INVALID_TYPE_FOR_COMPARISON` is singular and is not the plural constant the value-list quantifiers draw.
+- `local-scope`: closed in Lean by `CorrelationElabError.diagnostic?`, which did not exist; the eight carriers wrapping the type now delegate to it instead of dropping every arm.
+- `acceptance`: a12-dmkits confirms the two columns and the three scope classes on its own fixture, or supplies the contrary measurement — in particular whether a multi-leaf or nested filter changes which leaf reports.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-06-03"></a>
 ### `SPEC-2026-09-06-03` — a wrong-kind constant assignment's diagnostic is an ordered ladder over the (constant family, target kind) pair
 

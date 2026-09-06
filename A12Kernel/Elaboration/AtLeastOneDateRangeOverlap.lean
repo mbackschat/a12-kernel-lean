@@ -57,9 +57,10 @@ def diagnostic? : AtLeastOneDateRangeOverlapsElabError →
   | .measuredNumberPairNotDateRange _ _ => some .noDateRange
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .yearInterpretationNotSupported _ _ => some .invalidDateRangeFormat
-  | .sourceNotDateRange _ _ _ | .unsupportedPolicy _ _ _ _ |
-      .unsupportedReadForm _ _ _ | .groupExpansionEmpty _ |
-      .groupExpansionNotDateRange _ | .having _ | .incoherentCore => none
+  | .having error => error.diagnostic?
+  | .sourceNotDateRange _ _ _ | .unsupportedPolicy _ _ _ _
+  | .unsupportedReadForm _ _ _ | .groupExpansionEmpty _
+  | .groupExpansionNotDateRange _ | .incoherentCore => none
 
 end AtLeastOneDateRangeOverlapsElabError
 

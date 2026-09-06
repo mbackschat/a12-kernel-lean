@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ConstantAssignmentDiagnostic
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
@@ -70,10 +71,10 @@ inductive CorrelationElabError where
   | invalidGroupReference (reference : SurfaceGroupPath)
   | wildcardOnRuleGroup
   | wildcardWithParentNavigation (parents : Nat)
-  | fieldNotNumber (path : List String)
+  | fieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   /-- The reference does not name a String field carrying evaluated values. A raw-mode String
       declaration reaches this arm too, matching every other checked String consumer. -/
-  | fieldNotStringValue (path : List String)
+  | fieldNotStringValue (path : List String) (actual : SurfaceScalarKind)
   /-- A String **or presence** leaf reached a route that admits only the numeric and repetition
       leaves. The legacy one-group adapter is the only such route; it fails closed here rather than
       being widened. The name predates the presence leaf and is kept because it is a public
@@ -100,6 +101,52 @@ inductive CorrelationElabError where
   | errorGuardMismatch (errorPath guardPath : List String)
   | incoherentCore
   deriving Repr, DecidableEq
+
+namespace CorrelationElabError
+
+/-- The Kernel class one refused `Having` filter reports.
+
+**The class is the filter's, not the wrapping operator's**, and that was the open question this
+projection existed to answer. Measured as a fourteen-filter cross against three carriers — a
+temporal extremum, a distinct count, and a filled-field count — every filter drew the identical
+class on all three ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)).
+One shared projection is therefore right, where a per-carrier table would have been three copies of
+one fact.
+
+The two comparison arms carry the field's kind because **one arm reports several classes**. A
+numeric comparison collapses every non-Number, non-temporal kind into one class; a String-literal
+comparison spreads the same kinds across four, and that column is the constant-assignment ladder's
+`stringLike` row cell for cell — the same Kernel vocabulary reached through a generated equality.
+Reading either column off the other is wrong for six kinds of eight; the two temporal families are
+the only agreement.
+
+The three scope classes separate cleanly: a **root-level** field the filter's star cannot bind
+reports `noIterationForWildcard`, a **different repeatable group's** field read without a star
+reports `invalidIterationInFilterCondition`, and a star written *inside* the filter reports
+`noWildcardsAllowed`. The remaining arms are this project's own narrow-route boundaries, its
+resolution routing, or unreachable by construction, and claim nothing. -/
+def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
+  | .fieldNotStringValue _ actual =>
+      constantAssignmentDiagnostic? .stringLike actual
+  | .fieldOutsideGroup _ _ _ => some .noIterationForWildcard
+  | .fieldOutsideEnvironment _ _ _ _ => some .invalidIterationInFilterCondition
+  | .repetitionOutsideEnvironment _ _ _ _ =>
+      some .invalidIterationInFilterCondition
+  | .wildcardOnRuleGroup | .wildcardWithParentNavigation _ =>
+      some .noWildcardsAllowed
+  | .equalityScaleMismatch _ _ _ _ => some .invalidCompareDecimalPlaces
+  | .resolve error => error.diagnostic?
+  -- Named rather than wildcarded. `stringLeafOutsideStarRoute` and `disjunctionOutsideStarRoute`
+  -- are the legacy one-group route's own narrowness — the Kernel accepts both — and the rest are
+  -- routing, an unmeasured operator gate, or unreachable by construction.
+  | .invalidGroupReference _ | .fieldScopeMismatch _ _ _
+  | .repetitionGroupMismatch _ _ | .stringLeafOutsideStarRoute
+  | .disjunctionOutsideStarRoute | .unsupportedOperator _
+  | .missingInner | .missingOuter | .errorGuardMismatch _ _
+  | .incoherentCore => none
+
+end CorrelationElabError
 
 private def SurfaceComparisonOp.toCorrelation? : SurfaceComparisonOp →
     Option CorrelationComparisonOp
@@ -149,7 +196,7 @@ private def CorrelationElabError.ofSingleGroup (origin : HavingOrigin) :
   | .invalidGroupReference reference => .invalidGroupReference reference
   | .wildcardOnRuleGroup => .wildcardOnRuleGroup
   | .wildcardWithParentNavigation parents => .wildcardWithParentNavigation parents
-  | .fieldNotNumber path => .fieldNotNumber path
+  | .fieldNotNumber path actual => .fieldNotNumber path actual
   | .fieldOutsideGroup fieldPath expectedGroup =>
       .fieldOutsideGroup origin fieldPath expectedGroup
   | .fieldScopeMismatch fieldPath expected actual =>
@@ -244,7 +291,9 @@ private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
     (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
   let field ← match declaration.toNumberField? with
     | some field => pure field
-    | none => throw (.fieldNotNumber declaration.path)
+    | none =>
+        throw (.fieldNotNumber declaration.path
+          declaration.policy.kind.surfaceKind)
   let available := origin.availableLevels candidateLevels outerLevels
   if !repeatableScopeAvailable declaration.repeatableScope available then
     throw (.fieldOutsideEnvironment origin declaration.path available
@@ -262,7 +311,9 @@ private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
     (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
   let field ← match declaration.toStringValueField? with
     | some field => pure field
-    | none => throw (.fieldNotStringValue declaration.path)
+    | none =>
+        throw (.fieldNotStringValue declaration.path
+          declaration.policy.kind.surfaceKind)
   let available := origin.availableLevels candidateLevels outerLevels
   if !repeatableScopeAvailable declaration.repeatableScope available then
     throw (.fieldOutsideEnvironment origin declaration.path available

@@ -1,0 +1,1806 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 75 ops; 57 of 75 exited nonzero (0 failed, 57 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 75,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "001|maxdate|num-RowVal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0) > [FiledOn]", "--code", "H001" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "002|maxdate|lit-RowVal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] == \"x\") > [FiledOn]", "--code", "H002" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "003|maxdate|num-RowText",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] > 0) > [FiledOn]", "--code", "H003" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "004|maxdate|lit-RowText",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] == \"x\") > [FiledOn]", "--code", "H004" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "005|maxdate|num-RowDate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowDate] > 0) > [FiledOn]", "--code", "H005" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "006|maxdate|lit-RowDate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowDate] == \"x\") > [FiledOn]", "--code", "H006" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "007|maxdate|num-RowClock",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowClock] > 0) > [FiledOn]", "--code", "H007" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "008|maxdate|lit-RowClock",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowClock] == \"x\") > [FiledOn]", "--code", "H008" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "009|maxdate|num-RowFlag",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowFlag] > 0) > [FiledOn]", "--code", "H009" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "010|maxdate|lit-RowFlag",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowFlag] == \"x\") > [FiledOn]", "--code", "H010" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "011|maxdate|num-RowAgreed",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowAgreed] > 0) > [FiledOn]", "--code", "H011" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "012|maxdate|lit-RowAgreed",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowAgreed] == \"x\") > [FiledOn]", "--code", "H012" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "013|maxdate|num-RowChoice",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice] > 0) > [FiledOn]", "--code", "H013" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "014|maxdate|lit-RowChoice",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice] == \"x\") > [FiledOn]", "--code", "H014" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'x' is not valid in the used enumeration. [MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — EXPRESS is an enum value; compare to a SpeedClass category value (NORMAL/FAST)"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 14,
+      "id" : "015|maxdate|num-RowSpan",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowSpan] > 0) > [FiledOn]", "--code", "H015" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 15,
+      "id" : "016|maxdate|lit-RowSpan",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowSpan] == \"x\") > [FiledOn]", "--code", "H016" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 16,
+      "id" : "017|maxdate|ctl-number-abs",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Rows/RowVal] > 0) > [FiledOn]", "--code", "H017" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 17,
+      "id" : "018|maxdate|scale-mismatch",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] == 1.5) > [FiledOn]", "--code", "H018" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
+          "summary" : "Rule with path '/Probe/CheckRule': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (1) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "The kernel could not establish compatible DERIVED decimal scales here. Numeric == / != carries a known SIGNED scale or unknown plus an independent multiplicative-constant capability: when known scales differ, only a capable SMALLER-scale side may be padded; an unknown scale rejects. ORDERING (< <= > >=) is exempt. TWO contexts trigger this code: (1) a COMPUTED FIELD whose declared scale is incompatible with its expression (e.g. a field re-scaled to 2 places while the Sum-computed field stays scale 0) — re-scale the computed field or explicitly round the expression, doing both edits in ONE `apply` so the terminal gate sees a consistent model; expect a SECOND rejection to surface if the operation also reads its own computed field, because this scale comparison is decided ahead of that refusal; (2) numeric == / != with incompatible derived scales — round one side to a known compatible scale, or accept it with allowDifferingDecimals:true on the rule spec (the kernel's one suppressible warning — it prepends @SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)).",
+          "explain" : "MVK_INVALID_COMPARE_DEC_PLACES (\"the fractional digits of lhs and rhs are different\") fires when numeric == / != cannot reconcile the operands' derived signed-scale/capability summaries, OR when a computed field is incompatible with its expression. It is not specific to any one operator (Sum, Equal, …); the scale-coupling is the constraint, so the corrective is context-dependent."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 18,
+      "id" : "019|maxdate|scale-fits",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowScaled] == 1.5) > [FiledOn]", "--code", "H019" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 19,
+      "id" : "020|maxdate|root-field",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Amount] > 0) > [FiledOn]", "--code", "H020" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_ITERATION_FOR_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': In filter conditions, iteration must be specified for at least one level, that specified asterisk for the filtered field. [MVK_NO_ITERATION_FOR_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 20,
+      "id" : "021|maxdate|star-inside",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Other*/OtherVal] > 0) > [FiledOn]", "--code", "H021" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARDS_ALLOWED",
+          "summary" : "Rule with path '/Probe/CheckRule': At 'Field value operation.': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 21,
+      "id" : "022|maxdate|sub-abs",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Rows/Sub/Leaf] > 0) > [FiledOn]", "--code", "H022" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 22,
+      "id" : "023|maxdate|current-rep",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > CurrentRepetition(/Probe/Rows)) > [FiledOn]", "--code", "H023" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 23,
+      "id" : "024|maxdate|other-unstarred",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Other/OtherVal] > 0) > [FiledOn]", "--code", "H024" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+          "summary" : "Rule with path '/Probe/CheckRule': Error for 'Other' in '/Probe/Other/OtherVal': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 24,
+      "id" : "025|maxdate|dollar-capture",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [$/Probe/Rows/RowVal] > 0) > [FiledOn]", "--code", "H025" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe/Rows/RowVal'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 25,
+      "id" : "026|distinct|num-RowVal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] > 0) < 2", "--code", "H026" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 26,
+      "id" : "027|distinct|lit-RowVal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] == \"x\") < 2", "--code", "H027" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 27,
+      "id" : "028|distinct|num-RowText",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowText] > 0) < 2", "--code", "H028" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 28,
+      "id" : "029|distinct|lit-RowText",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowText] == \"x\") < 2", "--code", "H029" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 29,
+      "id" : "030|distinct|num-RowDate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowDate] > 0) < 2", "--code", "H030" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 30,
+      "id" : "031|distinct|lit-RowDate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowDate] == \"x\") < 2", "--code", "H031" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 31,
+      "id" : "032|distinct|num-RowClock",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowClock] > 0) < 2", "--code", "H032" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 32,
+      "id" : "033|distinct|lit-RowClock",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowClock] == \"x\") < 2", "--code", "H033" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 33,
+      "id" : "034|distinct|num-RowFlag",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowFlag] > 0) < 2", "--code", "H034" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 34,
+      "id" : "035|distinct|lit-RowFlag",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowFlag] == \"x\") < 2", "--code", "H035" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 35,
+      "id" : "036|distinct|num-RowAgreed",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowAgreed] > 0) < 2", "--code", "H036" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 36,
+      "id" : "037|distinct|lit-RowAgreed",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowAgreed] == \"x\") < 2", "--code", "H037" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 37,
+      "id" : "038|distinct|num-RowChoice",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowChoice] > 0) < 2", "--code", "H038" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 38,
+      "id" : "039|distinct|lit-RowChoice",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowChoice] == \"x\") < 2", "--code", "H039" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'x' is not valid in the used enumeration. [MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — EXPRESS is an enum value; compare to a SpeedClass category value (NORMAL/FAST)"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 39,
+      "id" : "040|distinct|num-RowSpan",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowSpan] > 0) < 2", "--code", "H040" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 40,
+      "id" : "041|distinct|lit-RowSpan",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowSpan] == \"x\") < 2", "--code", "H041" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 41,
+      "id" : "042|distinct|ctl-number-abs",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Rows/RowVal] > 0) < 2", "--code", "H042" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 42,
+      "id" : "043|distinct|scale-mismatch",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] == 1.5) < 2", "--code", "H043" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
+          "summary" : "Rule with path '/Probe/CheckRule': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (1) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "The kernel could not establish compatible DERIVED decimal scales here. Numeric == / != carries a known SIGNED scale or unknown plus an independent multiplicative-constant capability: when known scales differ, only a capable SMALLER-scale side may be padded; an unknown scale rejects. ORDERING (< <= > >=) is exempt. TWO contexts trigger this code: (1) a COMPUTED FIELD whose declared scale is incompatible with its expression (e.g. a field re-scaled to 2 places while the Sum-computed field stays scale 0) — re-scale the computed field or explicitly round the expression, doing both edits in ONE `apply` so the terminal gate sees a consistent model; expect a SECOND rejection to surface if the operation also reads its own computed field, because this scale comparison is decided ahead of that refusal; (2) numeric == / != with incompatible derived scales — round one side to a known compatible scale, or accept it with allowDifferingDecimals:true on the rule spec (the kernel's one suppressible warning — it prepends @SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)).",
+          "explain" : "MVK_INVALID_COMPARE_DEC_PLACES (\"the fractional digits of lhs and rhs are different\") fires when numeric == / != cannot reconcile the operands' derived signed-scale/capability summaries, OR when a computed field is incompatible with its expression. It is not specific to any one operator (Sum, Equal, …); the scale-coupling is the constraint, so the corrective is context-dependent."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 43,
+      "id" : "044|distinct|scale-fits",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowScaled] == 1.5) < 2", "--code", "H044" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 44,
+      "id" : "045|distinct|root-field",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Amount] > 0) < 2", "--code", "H045" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_ITERATION_FOR_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': In filter conditions, iteration must be specified for at least one level, that specified asterisk for the filtered field. [MVK_NO_ITERATION_FOR_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 45,
+      "id" : "046|distinct|star-inside",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Other*/OtherVal] > 0) < 2", "--code", "H046" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARDS_ALLOWED",
+          "summary" : "Rule with path '/Probe/CheckRule': At 'Field value operation.': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 46,
+      "id" : "047|distinct|sub-abs",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Rows/Sub/Leaf] > 0) < 2", "--code", "H047" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 47,
+      "id" : "048|distinct|current-rep",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] > CurrentRepetition(/Probe/Rows)) < 2", "--code", "H048" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 48,
+      "id" : "049|distinct|other-unstarred",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Other/OtherVal] > 0) < 2", "--code", "H049" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+          "summary" : "Rule with path '/Probe/CheckRule': Error for 'Other' in '/Probe/Other/OtherVal': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 49,
+      "id" : "050|distinct|dollar-capture",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [$/Probe/Rows/RowVal] > 0) < 2", "--code", "H050" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe/Rows/RowVal'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 50,
+      "id" : "051|filled|num-RowVal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] > 0) < 2", "--code", "H051" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 51,
+      "id" : "052|filled|lit-RowVal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] == \"x\") < 2", "--code", "H052" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 52,
+      "id" : "053|filled|num-RowText",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowText] > 0) < 2", "--code", "H053" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 53,
+      "id" : "054|filled|lit-RowText",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowText] == \"x\") < 2", "--code", "H054" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 54,
+      "id" : "055|filled|num-RowDate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowDate] > 0) < 2", "--code", "H055" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 55,
+      "id" : "056|filled|lit-RowDate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowDate] == \"x\") < 2", "--code", "H056" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 56,
+      "id" : "057|filled|num-RowClock",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowClock] > 0) < 2", "--code", "H057" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 57,
+      "id" : "058|filled|lit-RowClock",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowClock] == \"x\") < 2", "--code", "H058" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "Check the CONSTANT before the target. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant — `\"05.03.2024\"` is one — and it reports this date class wherever it lands, including at a String, Enumeration or Number target that has nothing temporal about it. So this code does NOT imply the target is a date field. If the target really is textual, the fix is to stop the literal looking like a date, not to change the field.",
+          "explain" : "Which class a wrong-kind constant assignment reports is an ordered ladder over the (constant, target) PAIR, not a function of the target: a BOOLEAN target reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM target MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code at every remaining target; only then does the target's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 58,
+      "id" : "059|filled|num-RowFlag",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowFlag] > 0) < 2", "--code", "H059" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 59,
+      "id" : "060|filled|lit-RowFlag",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowFlag] == \"x\") < 2", "--code", "H060" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YESNO",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a boolean compares only to True/False or another boolean field, never to a string"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 60,
+      "id" : "061|filled|num-RowAgreed",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowAgreed] > 0) < 2", "--code", "H061" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 61,
+      "id" : "062|filled|lit-RowAgreed",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowAgreed] == \"x\") < 2", "--code", "H062" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_YES",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — a confirm compares only to True (or another confirm field) — use [TermsConfirmed] != True"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 62,
+      "id" : "063|filled|num-RowChoice",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowChoice] > 0) < 2", "--code", "H063" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 63,
+      "id" : "064|filled|lit-RowChoice",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowChoice] == \"x\") < 2", "--code", "H064" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'x' is not valid in the used enumeration. [MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is documented for the construct(s) below; the corrective applies if that is what you used — EXPRESS is an enum value; compare to a SpeedClass category value (NORMAL/FAST)"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 64,
+      "id" : "065|filled|num-RowSpan",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowSpan] > 0) < 2", "--code", "H065" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_TYPE_FOR_COMPARISON",
+          "summary" : "Rule with path '/Probe/CheckRule': 'Less than' or 'greater than' comparative is only allowed to be used for numbers, amounts and dates. [MVK_INVALID_TYPE_FOR_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — for DATE versus a quoted literal, write dd.MM.yyyy (for example \"31.12.2024\"), not ISO \"2024-12-31\"; this operator cannot order strings; use NUMBER or DATE operands, or == / != only when equality was intended"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 65,
+      "id" : "066|filled|lit-RowSpan",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowSpan] == \"x\") < 2", "--code", "H066" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
+          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 66,
+      "id" : "067|filled|ctl-number-abs",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Rows/RowVal] > 0) < 2", "--code", "H067" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 67,
+      "id" : "068|filled|scale-mismatch",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] == 1.5) < 2", "--code", "H068" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
+          "summary" : "Rule with path '/Probe/CheckRule': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (1) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "The kernel could not establish compatible DERIVED decimal scales here. Numeric == / != carries a known SIGNED scale or unknown plus an independent multiplicative-constant capability: when known scales differ, only a capable SMALLER-scale side may be padded; an unknown scale rejects. ORDERING (< <= > >=) is exempt. TWO contexts trigger this code: (1) a COMPUTED FIELD whose declared scale is incompatible with its expression (e.g. a field re-scaled to 2 places while the Sum-computed field stays scale 0) — re-scale the computed field or explicitly round the expression, doing both edits in ONE `apply` so the terminal gate sees a consistent model; expect a SECOND rejection to surface if the operation also reads its own computed field, because this scale comparison is decided ahead of that refusal; (2) numeric == / != with incompatible derived scales — round one side to a known compatible scale, or accept it with allowDifferingDecimals:true on the rule spec (the kernel's one suppressible warning — it prepends @SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)).",
+          "explain" : "MVK_INVALID_COMPARE_DEC_PLACES (\"the fractional digits of lhs and rhs are different\") fires when numeric == / != cannot reconcile the operands' derived signed-scale/capability summaries, OR when a computed field is incompatible with its expression. It is not specific to any one operator (Sum, Equal, …); the scale-coupling is the constraint, so the corrective is context-dependent."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 68,
+      "id" : "069|filled|scale-fits",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowScaled] == 1.5) < 2", "--code", "H069" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 69,
+      "id" : "070|filled|root-field",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Amount] > 0) < 2", "--code", "H070" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_ITERATION_FOR_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': In filter conditions, iteration must be specified for at least one level, that specified asterisk for the filtered field. [MVK_NO_ITERATION_FOR_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 70,
+      "id" : "071|filled|star-inside",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Other*/OtherVal] > 0) < 2", "--code", "H071" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARDS_ALLOWED",
+          "summary" : "Rule with path '/Probe/CheckRule': At 'Field value operation.': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 71,
+      "id" : "072|filled|sub-abs",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Rows/Sub/Leaf] > 0) < 2", "--code", "H072" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 72,
+      "id" : "073|filled|current-rep",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] > CurrentRepetition(/Probe/Rows)) < 2", "--code", "H073" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 73,
+      "id" : "074|filled|other-unstarred",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Other/OtherVal] > 0) < 2", "--code", "H074" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+          "summary" : "Rule with path '/Probe/CheckRule': Error for 'Other' in '/Probe/Other/OtherVal': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 74,
+      "id" : "075|filled|dollar-capture",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [$/Probe/Rows/RowVal] > 0) < 2", "--code", "H075" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Probe/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe/Rows/RowVal'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Probe/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

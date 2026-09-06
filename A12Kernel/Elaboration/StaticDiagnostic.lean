@@ -19,6 +19,12 @@ inductive KernelStaticDiagnostic where
   | onlyStringEnumNumberAllowed
   /-- A field whose kind the operator admits, paired with a value list its kind cannot be compared against. Distinct from the admitted-set class above, and the distinction is the operator's own message vocabulary: a Number field passes a `STRING_ENUM_NUMBER` gate and then fails the **literal** comparison, where a Date never reaches that stage. -/
   | invalidTypesForComparison
+  /-- A **numeric** comparison whose field side is neither a Number nor a temporal field. The Kernel spells this one singular, and it is a different constant from the plural neighbour above: measured inside a `Having` filter, String, Boolean, Confirm, Enumeration and DATE_RANGE all draw it, while a temporal field draws `invalidCompareToDate` instead ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)). -/
+  | invalidTypeForComparison
+  /-- A filter leaf reads a field that no iteration in scope binds — measured with an absolute root-level field inside a starred operand's filter. The message names a wildcard because the filter's own binding comes from the star it qualifies. -/
+  | noIterationForWildcard
+  /-- A filter leaf reads a **different** repeatable group's field without a star. Distinct from the class above: the field is repeatable rather than root-level, so an iteration exists and is the wrong one. -/
+  | invalidIterationInFilterCondition
   /-- Operands drawn from two different comparability categories, each individually admissible. -/
   | varyingTypesNotAllowed
   /-- `FirstFilledValue` received the measured homogeneous two-Confirm operand expansion. -/
@@ -157,6 +163,10 @@ def kernelCode : KernelStaticDiagnostic → String
   | .onlyStringEnumNumberDateAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED"
   | .onlyStringEnumNumberAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED"
   | .invalidTypesForComparison => "MVK_INVALID_TYPES_FOR_COMPARISON"
+  | .invalidTypeForComparison => "MVK_INVALID_TYPE_FOR_COMPARISON"
+  | .noIterationForWildcard => "MVK_NO_ITERATION_FOR_WILDCARD"
+  | .invalidIterationInFilterCondition =>
+      "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
   | .noBoolyAllowed => "MVK_NO_BOOLY_ALLOWED"
   | .invalidCompareToYes => "MVK_INVALID_COMPARE_TO_YES"
@@ -226,7 +236,8 @@ def kernelCode : KernelStaticDiagnostic → String
 def all : List KernelStaticDiagnostic :=
   [.invalidStringConstantForEnumComparison,
     .onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
-    .invalidTypesForComparison,
+    .invalidTypesForComparison, .invalidTypeForComparison,
+    .noIterationForWildcard, .invalidIterationInFilterCondition,
     .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .invalidCompareToYesNo,

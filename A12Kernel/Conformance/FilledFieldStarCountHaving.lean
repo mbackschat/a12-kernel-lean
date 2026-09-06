@@ -381,13 +381,13 @@ example : tagCount? "K" [
     declaration, so a Number field named through it is refused at elaboration — and the exact arm is
     asserted, because a bare `none` is equally consistent with a scope or environment refusal. -/
 example : sourceError? (some numberThroughStringLeaf) =
-    some (.having (.fieldNotStringValue ["Form", "Rows", "Flag"])) := by
+    some (.having (.fieldNotStringValue ["Form", "Rows", "Flag"] .number)) := by
   native_decide
 
 /-- The star's own target field refuses through the identical arm, so the kind is the cause rather
     than the reference coinciding with the counted field. -/
 example : sourceError? (some targetThroughStringLeaf) =
-    some (.having (.fieldNotStringValue ["Form", "Rows", "Amount"])) := by
+    some (.having (.fieldNotStringValue ["Form", "Rows", "Amount"] .number)) := by
   native_decide
 
 /- Inequality is the one operator that separates an operand which *participates* with an empty value

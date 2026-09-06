@@ -31,8 +31,9 @@ def diagnostic? : DateRangesOverlapElabError → Option KernelStaticDiagnostic
   | .groupsNotAllowed _ => some .noGroupsAllowed
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .yearInterpretationNotSupported _ => some .invalidDateRangeFormat
-  | .sourceNotDateRange _ _ | .unsupportedPolicy _ _ _ |
-      .unsupportedReadForm _ _ | .having _ | .incoherentCore => none
+  | .having error => error.diagnostic?
+  | .sourceNotDateRange _ _ | .unsupportedPolicy _ _ _
+  | .unsupportedReadForm _ _ | .incoherentCore => none
 
 end DateRangesOverlapElabError
 

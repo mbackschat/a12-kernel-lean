@@ -1,0 +1,977 @@
+[
+ {
+  "id": "001|maxdate|num-RowVal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0) > [FiledOn]",
+   "--code",
+   "H001"
+  ]
+ },
+ {
+  "id": "002|maxdate|lit-RowVal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] == \"x\") > [FiledOn]",
+   "--code",
+   "H002"
+  ]
+ },
+ {
+  "id": "003|maxdate|num-RowText",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] > 0) > [FiledOn]",
+   "--code",
+   "H003"
+  ]
+ },
+ {
+  "id": "004|maxdate|lit-RowText",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] == \"x\") > [FiledOn]",
+   "--code",
+   "H004"
+  ]
+ },
+ {
+  "id": "005|maxdate|num-RowDate",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowDate] > 0) > [FiledOn]",
+   "--code",
+   "H005"
+  ]
+ },
+ {
+  "id": "006|maxdate|lit-RowDate",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowDate] == \"x\") > [FiledOn]",
+   "--code",
+   "H006"
+  ]
+ },
+ {
+  "id": "007|maxdate|num-RowClock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowClock] > 0) > [FiledOn]",
+   "--code",
+   "H007"
+  ]
+ },
+ {
+  "id": "008|maxdate|lit-RowClock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowClock] == \"x\") > [FiledOn]",
+   "--code",
+   "H008"
+  ]
+ },
+ {
+  "id": "009|maxdate|num-RowFlag",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowFlag] > 0) > [FiledOn]",
+   "--code",
+   "H009"
+  ]
+ },
+ {
+  "id": "010|maxdate|lit-RowFlag",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowFlag] == \"x\") > [FiledOn]",
+   "--code",
+   "H010"
+  ]
+ },
+ {
+  "id": "011|maxdate|num-RowAgreed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowAgreed] > 0) > [FiledOn]",
+   "--code",
+   "H011"
+  ]
+ },
+ {
+  "id": "012|maxdate|lit-RowAgreed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowAgreed] == \"x\") > [FiledOn]",
+   "--code",
+   "H012"
+  ]
+ },
+ {
+  "id": "013|maxdate|num-RowChoice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice] > 0) > [FiledOn]",
+   "--code",
+   "H013"
+  ]
+ },
+ {
+  "id": "014|maxdate|lit-RowChoice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice] == \"x\") > [FiledOn]",
+   "--code",
+   "H014"
+  ]
+ },
+ {
+  "id": "015|maxdate|num-RowSpan",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowSpan] > 0) > [FiledOn]",
+   "--code",
+   "H015"
+  ]
+ },
+ {
+  "id": "016|maxdate|lit-RowSpan",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowSpan] == \"x\") > [FiledOn]",
+   "--code",
+   "H016"
+  ]
+ },
+ {
+  "id": "017|maxdate|ctl-number-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Rows/RowVal] > 0) > [FiledOn]",
+   "--code",
+   "H017"
+  ]
+ },
+ {
+  "id": "018|maxdate|scale-mismatch",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] == 1.5) > [FiledOn]",
+   "--code",
+   "H018"
+  ]
+ },
+ {
+  "id": "019|maxdate|scale-fits",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowScaled] == 1.5) > [FiledOn]",
+   "--code",
+   "H019"
+  ]
+ },
+ {
+  "id": "020|maxdate|root-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Amount] > 0) > [FiledOn]",
+   "--code",
+   "H020"
+  ]
+ },
+ {
+  "id": "021|maxdate|star-inside",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Other*/OtherVal] > 0) > [FiledOn]",
+   "--code",
+   "H021"
+  ]
+ },
+ {
+  "id": "022|maxdate|sub-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Rows/Sub/Leaf] > 0) > [FiledOn]",
+   "--code",
+   "H022"
+  ]
+ },
+ {
+  "id": "023|maxdate|current-rep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > CurrentRepetition(/Probe/Rows)) > [FiledOn]",
+   "--code",
+   "H023"
+  ]
+ },
+ {
+  "id": "024|maxdate|other-unstarred",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [/Probe/Other/OtherVal] > 0) > [FiledOn]",
+   "--code",
+   "H024"
+  ]
+ },
+ {
+  "id": "025|maxdate|dollar-capture",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [$/Probe/Rows/RowVal] > 0) > [FiledOn]",
+   "--code",
+   "H025"
+  ]
+ },
+ {
+  "id": "026|distinct|num-RowVal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] > 0) < 2",
+   "--code",
+   "H026"
+  ]
+ },
+ {
+  "id": "027|distinct|lit-RowVal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] == \"x\") < 2",
+   "--code",
+   "H027"
+  ]
+ },
+ {
+  "id": "028|distinct|num-RowText",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowText] > 0) < 2",
+   "--code",
+   "H028"
+  ]
+ },
+ {
+  "id": "029|distinct|lit-RowText",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowText] == \"x\") < 2",
+   "--code",
+   "H029"
+  ]
+ },
+ {
+  "id": "030|distinct|num-RowDate",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowDate] > 0) < 2",
+   "--code",
+   "H030"
+  ]
+ },
+ {
+  "id": "031|distinct|lit-RowDate",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowDate] == \"x\") < 2",
+   "--code",
+   "H031"
+  ]
+ },
+ {
+  "id": "032|distinct|num-RowClock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowClock] > 0) < 2",
+   "--code",
+   "H032"
+  ]
+ },
+ {
+  "id": "033|distinct|lit-RowClock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowClock] == \"x\") < 2",
+   "--code",
+   "H033"
+  ]
+ },
+ {
+  "id": "034|distinct|num-RowFlag",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowFlag] > 0) < 2",
+   "--code",
+   "H034"
+  ]
+ },
+ {
+  "id": "035|distinct|lit-RowFlag",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowFlag] == \"x\") < 2",
+   "--code",
+   "H035"
+  ]
+ },
+ {
+  "id": "036|distinct|num-RowAgreed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowAgreed] > 0) < 2",
+   "--code",
+   "H036"
+  ]
+ },
+ {
+  "id": "037|distinct|lit-RowAgreed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowAgreed] == \"x\") < 2",
+   "--code",
+   "H037"
+  ]
+ },
+ {
+  "id": "038|distinct|num-RowChoice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowChoice] > 0) < 2",
+   "--code",
+   "H038"
+  ]
+ },
+ {
+  "id": "039|distinct|lit-RowChoice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowChoice] == \"x\") < 2",
+   "--code",
+   "H039"
+  ]
+ },
+ {
+  "id": "040|distinct|num-RowSpan",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowSpan] > 0) < 2",
+   "--code",
+   "H040"
+  ]
+ },
+ {
+  "id": "041|distinct|lit-RowSpan",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowSpan] == \"x\") < 2",
+   "--code",
+   "H041"
+  ]
+ },
+ {
+  "id": "042|distinct|ctl-number-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Rows/RowVal] > 0) < 2",
+   "--code",
+   "H042"
+  ]
+ },
+ {
+  "id": "043|distinct|scale-mismatch",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] == 1.5) < 2",
+   "--code",
+   "H043"
+  ]
+ },
+ {
+  "id": "044|distinct|scale-fits",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowScaled] == 1.5) < 2",
+   "--code",
+   "H044"
+  ]
+ },
+ {
+  "id": "045|distinct|root-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Amount] > 0) < 2",
+   "--code",
+   "H045"
+  ]
+ },
+ {
+  "id": "046|distinct|star-inside",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Other*/OtherVal] > 0) < 2",
+   "--code",
+   "H046"
+  ]
+ },
+ {
+  "id": "047|distinct|sub-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Rows/Sub/Leaf] > 0) < 2",
+   "--code",
+   "H047"
+  ]
+ },
+ {
+  "id": "048|distinct|current-rep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] > CurrentRepetition(/Probe/Rows)) < 2",
+   "--code",
+   "H048"
+  ]
+ },
+ {
+  "id": "049|distinct|other-unstarred",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [/Probe/Other/OtherVal] > 0) < 2",
+   "--code",
+   "H049"
+  ]
+ },
+ {
+  "id": "050|distinct|dollar-capture",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [$/Probe/Rows/RowVal] > 0) < 2",
+   "--code",
+   "H050"
+  ]
+ },
+ {
+  "id": "051|filled|num-RowVal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] > 0) < 2",
+   "--code",
+   "H051"
+  ]
+ },
+ {
+  "id": "052|filled|lit-RowVal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] == \"x\") < 2",
+   "--code",
+   "H052"
+  ]
+ },
+ {
+  "id": "053|filled|num-RowText",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowText] > 0) < 2",
+   "--code",
+   "H053"
+  ]
+ },
+ {
+  "id": "054|filled|lit-RowText",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowText] == \"x\") < 2",
+   "--code",
+   "H054"
+  ]
+ },
+ {
+  "id": "055|filled|num-RowDate",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowDate] > 0) < 2",
+   "--code",
+   "H055"
+  ]
+ },
+ {
+  "id": "056|filled|lit-RowDate",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowDate] == \"x\") < 2",
+   "--code",
+   "H056"
+  ]
+ },
+ {
+  "id": "057|filled|num-RowClock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowClock] > 0) < 2",
+   "--code",
+   "H057"
+  ]
+ },
+ {
+  "id": "058|filled|lit-RowClock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowClock] == \"x\") < 2",
+   "--code",
+   "H058"
+  ]
+ },
+ {
+  "id": "059|filled|num-RowFlag",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowFlag] > 0) < 2",
+   "--code",
+   "H059"
+  ]
+ },
+ {
+  "id": "060|filled|lit-RowFlag",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowFlag] == \"x\") < 2",
+   "--code",
+   "H060"
+  ]
+ },
+ {
+  "id": "061|filled|num-RowAgreed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowAgreed] > 0) < 2",
+   "--code",
+   "H061"
+  ]
+ },
+ {
+  "id": "062|filled|lit-RowAgreed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowAgreed] == \"x\") < 2",
+   "--code",
+   "H062"
+  ]
+ },
+ {
+  "id": "063|filled|num-RowChoice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowChoice] > 0) < 2",
+   "--code",
+   "H063"
+  ]
+ },
+ {
+  "id": "064|filled|lit-RowChoice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowChoice] == \"x\") < 2",
+   "--code",
+   "H064"
+  ]
+ },
+ {
+  "id": "065|filled|num-RowSpan",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowSpan] > 0) < 2",
+   "--code",
+   "H065"
+  ]
+ },
+ {
+  "id": "066|filled|lit-RowSpan",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowSpan] == \"x\") < 2",
+   "--code",
+   "H066"
+  ]
+ },
+ {
+  "id": "067|filled|ctl-number-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Rows/RowVal] > 0) < 2",
+   "--code",
+   "H067"
+  ]
+ },
+ {
+  "id": "068|filled|scale-mismatch",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] == 1.5) < 2",
+   "--code",
+   "H068"
+  ]
+ },
+ {
+  "id": "069|filled|scale-fits",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowScaled] == 1.5) < 2",
+   "--code",
+   "H069"
+  ]
+ },
+ {
+  "id": "070|filled|root-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Amount] > 0) < 2",
+   "--code",
+   "H070"
+  ]
+ },
+ {
+  "id": "071|filled|star-inside",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Other*/OtherVal] > 0) < 2",
+   "--code",
+   "H071"
+  ]
+ },
+ {
+  "id": "072|filled|sub-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Rows/Sub/Leaf] > 0) < 2",
+   "--code",
+   "H072"
+  ]
+ },
+ {
+  "id": "073|filled|current-rep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [RowVal] > CurrentRepetition(/Probe/Rows)) < 2",
+   "--code",
+   "H073"
+  ]
+ },
+ {
+  "id": "074|filled|other-unstarred",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [/Probe/Other/OtherVal] > 0) < 2",
+   "--code",
+   "H074"
+  ]
+ },
+ {
+  "id": "075|filled|dollar-capture",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfFilledFields(/Probe/Rows*/RowVal Having [$/Probe/Rows/RowVal] > 0) < 2",
+   "--code",
+   "H075"
+  ]
+ }
+]

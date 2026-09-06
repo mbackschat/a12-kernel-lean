@@ -203,7 +203,8 @@ def diagnostic? : TokenEntityElabError → Option KernelStaticDiagnostic
           some .onlyStringEnumNumberAllowed
       -- Both are admitted against a String-literal list, so neither reaches this arm.
       | .string | .enumeration => none
-  | .rawStringValue _ | .enumerationOperand _ _ | .having _ | .group _
+  | .having error => error.diagnostic?
+  | .rawStringValue _ | .enumerationOperand _ _ | .group _
   | .incoherentCore => none
 
 end TokenEntityElabError

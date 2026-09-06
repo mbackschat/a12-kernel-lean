@@ -300,7 +300,8 @@ def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagno
   | .mixedDeclaredFormats _ _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
   | .missingDeclaredFormat _ => none
-  | .groupExpansionEmpty _ | .having _ | .incoherentCore => none
+  | .having error => error.diagnostic?
+  | .groupExpansionEmpty _ | .incoherentCore => none
 
 end TemporalValuesNotUniqueElabError
 

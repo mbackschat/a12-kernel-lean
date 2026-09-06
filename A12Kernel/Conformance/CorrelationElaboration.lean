@@ -394,7 +394,7 @@ example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
     (absoluteRule (.compareNumbers .equal
       (numberRef .inner (absolute items.path "Flag"))
       (numberRef .outer (absolute items.path "Count"))))) =
-    some (.fieldNotNumber flagDecl.path) := by
+    some (.fieldNotNumber flagDecl.path .boolean) := by
   native_decide
 
 example : errorOf (elaborateSingleCorrelatedRule model ["Order"]

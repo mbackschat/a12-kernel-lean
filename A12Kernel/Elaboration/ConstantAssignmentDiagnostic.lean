@@ -26,6 +26,15 @@ pair rather than a per-carrier map of the target kind.
 The function answers a **kind** question only. Whether an admitted pair then survives the target's
 own format, decimal scale, or declared enumeration domain belongs to that target's policy, and the
 pairs this returns `none` for are the ones no kind gate refuses.
+
+**The ladder is the Kernel's comparison vocabulary rather than an assignment-specific table**, and a
+second carrier measures it independently: inside a `Having` filter, a field compared against a String
+literal draws this function's `stringLike` row cell for cell, on every kind and on all three
+operators tested ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)).
+That is consistent with the assignment reaching the gate through its *generated equality rule*, which
+is why these codes name a comparison. A **numeric** comparison is a different column and gets its own
+function below rather than being forced through this one — measured, its non-Number kinds collapse to
+a single class where the literal column spreads them across five.
 -/
 
 namespace A12Kernel
@@ -73,5 +82,22 @@ def constantAssignmentDiagnostic? :
   | .number, .string | .number, .enumeration
   | .booleanLike, .string | .booleanLike, .enumeration =>
       some .invalidCompareToEnumOrString
+
+/-- The class a **numeric** comparison reports for a field side of the given kind, or `none` where
+the kind is admitted.
+
+This is deliberately not the ladder above at a `number` family, and the measurement is what forces
+the separation: a numeric comparison collapses String, Enumeration, Boolean, Confirm and DATE_RANGE
+into one class, where the same kinds against a String *literal* spread across four
+([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)). Only the
+temporal row agrees. Reading one column off the other would report the literal column's spread at a
+numeric comparison, which is wrong for six kinds out of eight — the two temporal families are the
+only ones the two columns agree on. -/
+def numericComparisonDiagnostic? :
+    SurfaceScalarKind → Option KernelStaticDiagnostic
+  | .number => none
+  | .temporal _ => some .invalidCompareToDate
+  | .string | .enumeration | .boolean | .confirm | .dateRange =>
+      some .invalidTypeForComparison
 
 end A12Kernel

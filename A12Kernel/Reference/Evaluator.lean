@@ -291,7 +291,7 @@ private def correlationElaborationResult : CorrelationElabError →
       pure (.make .pathForm "$.rule.valueField"
         (Json.mkObj [("form", toJson "parentNavigatingStar"),
           ("parents", toJson parents)]))
-  | .fieldNotNumber path =>
+  | .fieldNotNumber path _ =>
       pure (.make .fieldKindMismatch "$.rule"
         (Json.mkObj [("path", toJson path), ("expected", toJson "number")]))
   -- The public filter vocabulary carries `compareNumbers`, `compareRepetitions`, and `and` only
@@ -299,7 +299,7 @@ private def correlationElaborationResult : CorrelationElabError →
   -- disjunction, and none of these arms is reachable on this route. Reaching one means the checked
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
-  | .fieldNotStringValue _ | .stringLeafOutsideStarRoute
+  | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute => throw .incoherentCore
   | .fieldOutsideGroup origin fieldPath expectedGroup =>
       pure (.make .fieldOutsideGroup "$.rule.having"
