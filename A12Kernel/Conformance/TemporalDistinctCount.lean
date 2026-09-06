@@ -49,6 +49,10 @@ private def model : FlatModel := {
     dateField 1 "FiledOn" "yyyy-MM-dd",
     dateField 2 "ClosedOn" "dd.MM.yyyy",
     dateField 3 "CoverFrom" "yyyy-MM" yearMonth,
+    -- A second root-level year-month field. Without it the component-omitting runtime case below
+    -- could only pair `CoverFrom` with itself, which the duplicate gate refuses before the runtime
+    -- restriction is reached — the case would pass without ever exercising it.
+    dateField 20 "CoverTo" "yyyy-MM" yearMonth,
     dateField 6 "SupersededFrom" "yyyy-MM-dd",
     { id := 4, groupPath := ["Probe"], name := "SkuText",
       policy := { kind := .string } },
@@ -220,5 +224,97 @@ example :
         (groupOperand "NumFirstBox")).toOption.isNone = true := by
   native_decide
 
+/-! ## The runtime fold, and the identity that separates it from its neighbour
+
+`spec/07` states that these two operators compare **different things** over the same entity lists:
+`FieldValuesNotUnique` compares the exact stored text, this one the decoded date. The pair of cases
+below is the mirror of the separator in that operator's own module — the same two cells, holding one
+decoded date under two distinct stored texts, are *not* a duplicate there and *are* one value here.
+Either case alone is consistent with both accounts; together they pin the contrast the clause makes.
+-/
+
+private def prepared : PreparedFlatStringContext model builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption.get (by native_decide)
+
+private def dateValue (year month day : Nat) : TemporalValue :=
+  .date {
+    instant := { epochMillis := 0 }
+    parts := { year := (year : Int), month, day }
+    basis := .storedGregorian }
+
+/-- One placed temporal cell whose stored text and decoded value are supplied independently, so a
+    case can hold the decoded value fixed while varying the text. -/
+private def temporalCell (field : FieldId) (stored : String)
+    (value : TemporalValue) : ClassifiedCellInput :=
+  { address := { field, path := [] }, stored, raw := .parsed (.temporal value) }
+
+private def count? (first second : String) (cells : List ClassifiedCellInput) :
+    Option NumericOperand := do
+  let source ←
+    (elaborateTemporalDistinctCountSource model ["Probe"] (pair first second)).toOption
+  let run ← (checkTemporalDistinctCountRun source).toOption
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
+  (run.evaluate document []).toOption
+
+/- **The compared identity is the decoded date.** One date under two distinct stored texts counts
+   once; two dates count twice. The first row is the one a stored-text account gets wrong, and it is
+   the exact pair the uniqueness operator's own module locks as a non-duplicate. -/
+example :
+    count? "FiledOn" "ClosedOn"
+        [temporalCell 1 "2024-03-05" (dateValue 2024 3 5),
+          temporalCell 2 "05.03.2024" (dateValue 2024 3 5)] =
+      some (.value 1 .fixed) ∧
+    count? "FiledOn" "ClosedOn"
+        [temporalCell 1 "2024-03-05" (dateValue 2024 3 5),
+          temporalCell 2 "06.03.2024" (dateValue 2024 3 6)] =
+      some (.value 2 .fixed) := by
+  native_decide
+
+/- An absent cell does not contribute a value and leaves the count able to grow, which is the shared
+   aggregate's rule reaching this carrier rather than a second one. -/
+example :
+    count? "FiledOn" "ClosedOn"
+        [temporalCell 1 "2024-03-05" (dateValue 2024 3 5)] =
+      some (.value 1 .growOnly) := by
+  native_decide
+
+/- **Both runtime restrictions are certificates, and each refuses for its own reason.** A
+   component-omitting list is statically admitted and has no evaluator, because `FullDate` has no
+   partial value to hold; a group operand likewise. Neither is a Kernel refusal, which is why they
+   carry their own limit type rather than an elaboration error arm. -/
+example :
+    (match (elaborateTemporalDistinctCountSource model ["Probe"]
+        (pair "CoverFrom" "CoverTo")).toOption with
+      | some source =>
+          match checkTemporalDistinctCountRun source with
+          | .error (.componentSetNotComplete components) =>
+              components == yearMonth
+          | _ => false
+      | none => false) = true := by
+  native_decide
+
+/- The group restriction is the other one, and it is reachable rather than hypothetical: `MixBox` is
+   a group expansion this operator **admits statically**, locked above, and it still has no evaluator
+   because no retained row measures a group expansion's runtime here. -/
+example :
+    (match (elaborateTemporalDistinctCountSource model ["Probe"]
+        (groupOperand "MixBox")).toOption with
+      | some source =>
+          match checkTemporalDistinctCountRun source with
+          | .error .groupOperand => true
+          | _ => false
+      | none => false) = true := by
+  native_decide
+
+/- And the complete-date pair the same gate admits, which keeps the rows above from reading as "this
+   runtime refuses everything". -/
+example :
+    (match (elaborateTemporalDistinctCountSource model ["Probe"]
+        (pair "FiledOn" "ClosedOn")).toOption with
+      | some source => (checkTemporalDistinctCountRun source).toOption.isSome
+      | none => false) = true := by
+  native_decide
 
 end A12Kernel.Conformance.TemporalDistinctCount

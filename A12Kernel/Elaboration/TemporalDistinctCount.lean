@@ -259,9 +259,14 @@ private def certifyDistinctCountOperands (model : FlatModel)
 /-- Certify one authored operand list for the temporal distinct count.
 
     Slot certification is the shared one; the list gate is this operator's own. A **group** slot is
-    declined here rather than certified, because the shared group certificate carries the
-    neighbouring operator's format-equality gate and no retained row measures a group expansion at
-    this operator — the decline claims no Kernel class. -/
+    certified here by `certifyDistinctCountGroup` rather than by the shared group certificate, which
+    carries the neighbouring operator's format-equality gate and would refuse an expansion this
+    operator admits — one component set in two spellings
+    ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)).
+
+    An earlier version of this comment said a group slot was *declined*. It was already wrong when
+    written and a conformance case locking the admitted expansion sat beside it, which is the shape
+    a stale comment takes: nothing executes prose, so only a reader loses. -/
 def elaborateTemporalDistinctCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
     Except TemporalDistinctCountElabError
@@ -298,5 +303,93 @@ def diagnostic? : TemporalDistinctCountElabError → Option KernelStaticDiagnost
   | .incoherentCore => none
 
 end TemporalDistinctCountElabError
+
+/-! ## The runtime fold
+
+The compared identity here is the **decoded date**, not the stored text its neighbour compares
+([`spec/07`](../../spec/07-repetition-and-iteration.md)). That is why this operator needs the
+`date` value-list atom rather than reusing the token one: two admitted spellings of one calendar day
+are one value here and two values there, and the same list can be legal for both operators.
+
+The runtime is narrower than the static certificate on purpose, and both narrowings are certificates
+rather than silent behaviour. It requires the shared component set to be the **complete** calendar
+date, because `FullDate` is the atom and a component-omitting declaration has no complete date to
+decode; and it requires every operand to be a **slot**, because a group expansion has no retained row
+at this operator. A source outside either restriction is certified statically and simply has no
+evaluator, which is the honest shape — the alternative would decode a partial value into a
+`malformed` UNKNOWN and report a formal failure the Kernel does not.
+-/
+
+/-- Project one addressed temporal cell to this operator's compared identity, the **decoded** date.
+    The stored text is deliberately discarded, which is the exact inverse of the neighbouring
+    uniqueness operator's projection over the same cells. -/
+private def temporalDistinctCountCell (addressed : CheckedAddressedCell) :
+    ValueListCell .date :=
+  match observeCell .validation addressed.cell with
+  | .value (.temporal (.date dateValue)) =>
+      match dateValue.toFullDate? with
+      | some date => .present date
+      | none => .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .empty => .empty
+  | .unknown cause | .poison cause => .unknown cause
+
+/-- Every operand as a slot, or `none` as soon as one is a group expansion. -/
+def temporalDistinctCountSlots? :
+    List (CheckedTemporalDistinctCountOperand model) →
+      Option (List (CheckedTemporalUniquenessOperand model))
+  | [] => some []
+  | .group _ :: _ => none
+  | .slot operand :: remaining =>
+      (temporalDistinctCountSlots? remaining).map (operand :: ·)
+
+/-- One statically certified temporal distinct count that this project can also **evaluate**: its
+    shared component set is the complete calendar date and every operand is a slot. -/
+structure CheckedTemporalDistinctCountRun (model : FlatModel) where
+  source : CheckedTemporalDistinctCountSource model
+  slots : List (CheckedTemporalUniquenessOperand model)
+  slotsOwned : temporalDistinctCountSlots? source.operands = some slots
+  completeDates : source.components = TemporalComponents.fullDate
+
+/-- Why a statically certified source has no evaluator here. **Neither is a Kernel refusal** — the
+    Kernel admits both shapes — so this is its own type rather than an arm of the elaboration error,
+    which exists to carry measured Kernel codes and would have to project `none` for both. -/
+inductive TemporalDistinctCountRunLimit where
+  | groupOperand
+  | componentSetNotComplete (components : TemporalComponents)
+  deriving Repr, DecidableEq
+
+/-- Admit one checked source to the runtime, or report which restriction it falls outside. -/
+def checkTemporalDistinctCountRun
+    (source : CheckedTemporalDistinctCountSource model) :
+    Except TemporalDistinctCountRunLimit
+      (CheckedTemporalDistinctCountRun model) :=
+  match hSlots : temporalDistinctCountSlots? source.operands with
+  | none => throw .groupOperand
+  | some slots =>
+      if hComplete : source.components = TemporalComponents.fullDate then
+        .ok { source, slots, slotsOwned := hSlots, completeDates := hComplete }
+      else
+        throw (.componentSetNotComplete source.components)
+
+namespace CheckedTemporalDistinctCountRun
+
+/-- Count distinct decoded dates from one immutable model-certified checked document. Slots resolve
+    in authored order through the shared entity core, and the count itself is the kind-generic
+    aggregate every distinct-count carrier already uses. -/
+def evaluate (operation : CheckedTemporalDistinctCountRun model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  let sides ← operation.slots.mapM fun slot => do
+    let core ← slot.resolveValidationCore document outer
+    pure ({
+      cells := core.addressedCells.map temporalDistinctCountCell
+      hasUninstantiatedTail := core.hasUninstantiatedTail
+      hasHaving := core.hasHaving
+      hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide .date)
+  pure (evalDistinctCountAggregate
+    (sides.foldl ResolvedValueListSide.append ResolvedValueListSide.empty))
+
+end CheckedTemporalDistinctCountRun
 
 end A12Kernel

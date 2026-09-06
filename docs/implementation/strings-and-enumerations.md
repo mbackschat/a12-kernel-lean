@@ -41,13 +41,15 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `remains`: Remaining list shapes: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion), [SG8](../SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion)
 
 <a id="cap-temporal-distinct-count"></a>
-#### Temporal `NumberOfDifferentValues` static admission
+#### Temporal `NumberOfDifferentValues` admission and distinct-date fold
 
-- `boundary`: the temporal overload of the distinct count, certifying slots through the shared temporal certifier and applying its own list gate — one shared **component set**, not one shared declared format. Direct field and starred operands; a group slot is declined with no Kernel class because the shared group certificate carries the neighbouring operator's format gate and no row measures a group expansion here.
+- `boundary`: the temporal overload of the distinct count, certifying slots through the shared temporal certifier and applying its own list gate — one shared **component set**, not one shared declared format. Direct field, starred, and group operands; a group is certified by this operator's own gate rather than the shared one, because the shared group certificate carries the neighbouring operator's format gate and no row measures a group expansion here.
 - `boundary`: the component set is read from the declaration, equivalent to reading it off the declared format on every model this project admits, since the stored-text classifiers refuse a declaration whose format and components contradict. Stated as a total function, so no reachability question gates the clause.
 - `owner`: [`TemporalDistinctCount.lean`](../../A12Kernel/Elaboration/TemporalDistinctCount.lean), [cases](../../A12Kernel/Conformance/TemporalDistinctCount.lean)
 - `assurance`: E closed for static admission and Kernel-measured at [the component-set checkpoint](../sources/evaluation-and-application-routes.md#src-distinct-count-component-set-and-locus): an equal-set pair spelled differently is admitted, a differing set draws `MVK_DATEFORMATS_NOT_COMPATIBLE`, and date-first cross-family draws `MVK_DATE_AND_NONDATE`. Every row is paired with the neighbour's answer on the identical list, which is what separates the two gates rather than assuming them distinct. P none; C static only, no row evaluates a count.
-- `remains`: the runtime fold and its compared identity, peer-measured as the decoded date and not locally derivable through `rule check`: [SG22](../SEMANTICS-GAPS.md#sg22--numberofdifferentvalues-operand-domain-and-its-two-homogeneity-codes)
+- `boundary`: the **fold** counts distinct decoded dates over the `date` value-list atom, and is narrower than the static certificate by two explicit certificates: the shared component set must be the complete calendar date, and every operand must be a slot. Neither restriction is a Kernel refusal, so both carry their own limit type.
+- `assurance`: E closed for the fold on complete-date slot lists. Its compared identity is locked against the neighbouring operator rather than asserted — the same two cells that `FieldValuesNotUnique` pins as a non-duplicate count as one value here — and stays **peer-measured** as to the kernel, this project's `spec/07` having asserted it since 2026-08-05 without an independent measurement.
+- `remains`: the component-omitting and group-expansion runtimes, and independent re-derivation of the compared identity: [SG22](../SEMANTICS-GAPS.md#sg22--numberofdifferentvalues-operand-domain-and-its-two-homogeneity-codes)
 
 <a id="cap-string-computation-execution"></a>
 #### String computation execution

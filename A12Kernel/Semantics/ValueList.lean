@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericComparison
+import A12Kernel.Semantics.FullDate
 
 /-! # A12Kernel.Semantics.ValueList — resolved value-list quantifiers
 
@@ -7,10 +8,13 @@ This capsule starts after both operands have been expanded per cell and filtered
 
 namespace A12Kernel
 
-/-- The two comparable runtime domains admitted by this resolved capsule. String and Enumeration values share the token domain only after a checked layer has established their comparability and canonicalized the stored value. -/
+/-- The three comparable runtime domains admitted by this resolved capsule. String and Enumeration values share the token domain only after a checked layer has established their comparability and canonicalized the stored value.
+
+The `date` domain is **not** the token domain reused for temporal text. The two neighbouring temporal operators compare different things over the same entity lists — `FieldValuesNotUnique` compares the operand's exact stored text, which the token atom holds exactly, while `NumberOfDifferentValues` compares the decoded date ([`spec/07`](../../spec/07-repetition-and-iteration.md)) — so collapsing them would make a leniently spelled duplicate distinct for the second operator. -/
 inductive ValueListKind where
   | number
   | token
+  | date
   deriving Repr, DecidableEq
 
 /-- Partial all-rows aggregate evaluation distinguishes the kernel's rule-level filtered skip, a relevance failure, and an evaluated numeric result. Nonrelevance is not forged into a formal cell cause. -/
@@ -24,6 +28,7 @@ inductive PartialValidationAggregateResult where
 abbrev ValueListAtom : ValueListKind → Type
   | .number => Rat
   | .token => String
+  | .date => FullDate
 
 /-- One expanded operand cell after validation-phase observation. Empty is not substituted, and UNKNOWN remains distinct from an absent cell. -/
 inductive ValueListCell (kind : ValueListKind) where
@@ -74,6 +79,9 @@ def equal : {kind : ValueListKind} →
     ValueListAtom kind → ValueListAtom kind → Bool
   | .number, left, right => NumericComparisonOp.equal.holds left right
   | .token, left, right => left == right
+  -- Decoded identity, so two admitted spellings of one calendar day are one value. `FullDate`
+  -- carries a proof field, and its `DecidableEq` compares the civil date the proof is about.
+  | .date, left, right => left == right
 
 end ValueListAtom
 
