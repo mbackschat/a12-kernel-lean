@@ -153,6 +153,8 @@ def toCheckedTokenValueCountSource
     first := .group checked.group
     rest := []
     modelWellFormed := checked.modelWellFormed
+    -- A group slot is already-many by itself, so this recovery needs no arity relaxation.
+    arity := .manyRequired
     requiredMultiplicity := by rfl
     uniqueDirectOperands := by rfl }
   { expected := checked.expected

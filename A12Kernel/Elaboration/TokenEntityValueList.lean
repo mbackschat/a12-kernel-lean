@@ -135,7 +135,13 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     (authored : SurfaceTokenEntityStringLiteralValueListSource) :
     Except TokenEntityStringLiteralValueListElabError
       (CheckedTokenEntityStringLiteralValueListSource model) := do
+  -- **A sole unstarred field is legal here**, on all three quantifiers, where the entity-list
+  -- carriers refuse one with `MVK_PARAMSIZE_INVALIDN`
+  -- ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+  -- The rule is the carrier's, not the shared checker's: comparing fields against *literals* is a
+  -- complete question with one field, where comparing them against each other is not.
   let shape ← elaborateFieldEntityShape model declaringGroup authored.fields
+      .soleAllowed
     |>.mapError .shape
   let (firstValue, restValues) ←
     match authored.values with

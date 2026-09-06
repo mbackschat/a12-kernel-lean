@@ -34,8 +34,9 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 #### String aggregates/value lists
 
 - `boundary`: Direct/plain-star/filtered-star String entity lists, membership, quantifiers, token counts, and mixed first-filled selection
-- `owner`: [`ValueList.lean`](../../A12Kernel/Semantics/ValueList.lean), [`TokenEntityValueList.lean`](../../A12Kernel/Elaboration/TokenEntityValueList.lean), token count/first-filled owners
-- `assurance`: E/P closed for named shapes; upstream L partial; C none
+- `boundary`: **The operand-arity rule is per carrier, and the shared shape takes it as an argument.** All three String-literal value-list quantifiers admit a sole unstarred field, where the entity-list carriers refuse one with `MVK_PARAMSIZE_INVALIDN` ([checkpoint](../SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)). `EntityListArity` carries which rule a shape was built under, defaulting to the entity-list one so an unmeasured carrier keeps refusing; the four exported multiplicity theorems take it as a hypothesis, which tells a consumer which gate applied instead of assuming one. The field-valued value list and `FirstFilledValue` are unmeasured on this axis and keep the default.
+- `owner`: [`ValueList.lean`](../../A12Kernel/Semantics/ValueList.lean), [`TokenEntityValueList.lean`](../../A12Kernel/Elaboration/TokenEntityValueList.lean), the shared [`FieldEntityList.lean`](../../A12Kernel/Elaboration/FieldEntityList.lean) arity rule, token count/first-filled owners
+- `assurance`: E/P closed for named shapes, including the kind gate's three-way partition and the arity rule on both sides — a sole field admitted at all three quantifiers and refused at the distinct count, on one fixture, with the kind gate still firing under the relaxed arity ([cases](../../A12Kernel/Conformance/ValueListQuantifierKindGate.lean)); upstream L partial; C none
 - `remains`: Remaining list shapes: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion), [SG8](../SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion)
 
 <a id="cap-temporal-distinct-count"></a>

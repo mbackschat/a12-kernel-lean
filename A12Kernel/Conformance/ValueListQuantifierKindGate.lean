@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.TokenEntityValueList
 
 /-! # A12Kernel.Conformance.ValueListQuantifierKindGate — which field kinds a String-literal value list admits
@@ -11,10 +12,10 @@ so it passes that gate and then fails the **literal** comparison with
 stage ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
 Collapsing the two would report the admitted-set class for a kind the Kernel calls admitted.
 
-The rows use same-kind **pairs**. This carrier's shared shape gate demands two operands, while the
-Kernel admits a sole field here and refuses one at the entity-list carriers — a per-carrier arity
-divergence this project does not yet represent, recorded in the checkpoint above and in
-[SG8](../../docs/SEMANTICS-GAPS.md). Pairs reach the kind gate without arguing with the arity one.
+The kind rows use same-kind **pairs**, which reach that gate without arguing with the arity one.
+The arity rows below are the separate measured fact: the Kernel admits a sole field here and refuses
+one at the entity-list carriers, so the shared shape takes its arity rule as an argument rather than
+applying one gate to both.
 -/
 
 namespace A12Kernel.Conformance.ValueListQuantifierKindGate
@@ -101,5 +102,37 @@ example :
    class — so this row locks a **known** shortfall rather than asserting the Kernel refuses the
    shape. Closing it is a representation extension, not a projection fix. -/
 example : pairAdmission "Choice" "Choice2" = .refused none := by native_decide
+
+private def soleAdmission (quantifier : ValueListQuantifier) (name : String) :
+    Admission :=
+  match elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
+      { quantifier, fields := { first := field name, rest := [] }
+        values := ["x", "y"] } with
+  | .ok _ => .admitted
+  | .error error => .refused error.diagnostic?
+
+/- **A sole unstarred field is legal at all three quantifiers**, and refused at the entity-list
+   carriers on the same fixture. The arity rule is per carrier, so the shared shape now takes it as
+   an argument instead of applying one gate to both; this row is what that argument is for. -/
+example : [ValueListQuantifier.atLeastOne, .no, .notAll].map
+    (soleAdmission · "Email") = List.replicate 3 Admission.admitted := by
+  native_decide
+
+/- The other side of the same argument, on the carrier measured to refuse. Without it the row above
+   would be equally well explained by this project having dropped the arity gate altogether, which
+   is the mistake the shared checker's single rule was protecting against. -/
+example :
+    (match elaborateTokenDistinctCountSource probeModel ["Probe"]
+        { first := field "Email", rest := [] } with
+      | .ok _ => Admission.admitted
+      | .error error => Admission.refused error.diagnostic?) =
+      .refused (some .paramSizeInvalidN) := by
+  native_decide
+
+/- The kind gate still fires under the relaxed arity: a sole Number field reaches the literal
+   comparison exactly as the pair does, so widening the arity did not widen anything else. -/
+example : soleAdmission .atLeastOne "AVal" =
+    .refused (some .invalidTypesForComparison) := by
+  native_decide
 
 end A12Kernel.Conformance.ValueListQuantifierKindGate

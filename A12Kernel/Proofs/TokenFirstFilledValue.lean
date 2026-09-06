@@ -87,11 +87,17 @@ theorem checkedTokenStar_nonRelevantFirstFilledHeadBeforeRead
         (environment :: environments) state = .inr .nonRelevant := by
   simp [CheckedTokenStarSource.scanPartialFirstFilledState, nonRelevant]
 
-/-- Checked token first-filled authoring retains the common multiplicity invariant. -/
+/-- Checked token first-filled authoring retains the common multiplicity invariant under the
+many-required arity rule, which is the one this carrier applies. Whether the Kernel accepts a sole
+unstarred field here is unmeasured, so the carrier keeps refusing and the hypothesis records which
+rule that refusal came from. -/
 theorem checkedFirstFilledTokenSource_requiredMultiplicity
-    (checked : CheckedFirstFilledTokenSource model) :
-    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
-  checked.requiredMultiplicity
+    (checked : CheckedFirstFilledTokenSource model)
+    (hArity : checked.arity = .manyRequired) :
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true := by
+  have := checked.requiredMultiplicity
+  rw [hArity] at this
+  simpa [EntityListArity.allowsSole] using this
 
 /-- Checked token first-filled authoring contains no repeated direct field reference. -/
 theorem checkedFirstFilledTokenSource_uniqueDirectOperands

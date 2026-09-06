@@ -146,7 +146,11 @@ structure CheckedTokenEntitySource (model : FlatModel) where
   first : CheckedTokenEntityOperand model
   rest : List (CheckedTokenEntityOperand model)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
+  /-- The arity rule the certifying carrier applies, carried through from the shared shape so a
+  consumer can tell a sole-operand list that was *admitted* from one that never occurred. -/
+  arity : EntityListArity
+  requiredMultiplicity :
+    (arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateDirectTokenField? (first :: rest) = none
 
@@ -301,9 +305,11 @@ private def certifyTokenEntityOperands (model : FlatModel)
 def assembleTokenEntitySource
     (modelWellFormed : model.validate.isOk = true)
     (first : CheckedTokenEntityOperand model)
-    (rest : List (CheckedTokenEntityOperand model)) :
+    (rest : List (CheckedTokenEntityOperand model))
+    (arity : EntityListArity := .manyRequired) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) :=
-  if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
+  if hMultiplicity :
+      (arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectTokenField? (first :: rest) with
     | some field => throw (.shape (.duplicateOperand field))
@@ -311,6 +317,7 @@ def assembleTokenEntitySource
         first
         rest
         modelWellFormed
+        arity
         requiredMultiplicity := hMultiplicity
         uniqueDirectOperands := hDuplicate }
   else
@@ -323,13 +330,17 @@ def certifyTokenEntityShape (model : FlatModel)
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
   let first ← certifyTokenEntityOperand model declaringGroup shape.first
   let rest ← certifyTokenEntityOperands model declaringGroup shape.rest
-  assembleTokenEntitySource shape.modelWellFormed first rest
+  -- The shape's own rule carries through rather than being re-decided here: the arity gate has
+  -- already fired (or not) upstream, so re-applying `manyRequired` would refuse a list the
+  -- carrier's rule admitted.
+  assembleTokenEntitySource shape.modelWellFormed first rest shape.arity
 
 /-- Resolve duplicate/cardinality shape before certifying the complete list as String/ordinary stored-Enumeration. -/
 def elaborateTokenEntitySource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource) :
+    (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource)
+    (arity : EntityListArity := .manyRequired) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored arity
     |>.mapError .shape
   certifyTokenEntityShape model declaringGroup shape
 

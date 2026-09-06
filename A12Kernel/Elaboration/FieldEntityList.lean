@@ -345,12 +345,40 @@ def firstResolvedOperandOverlap? :
       | some overlapping => some (operand.entityPath, overlapping.entityPath)
       | none => firstResolvedOperandOverlap? remaining
 
+/-- Whether a carrier's operand list may consist of one unstarred field.
+
+**This is measured to be per carrier, and the two sides have a reason.** All three value-list
+quantifiers accept a sole unstarred field, where `FieldValuesNotUnique` and `NumberOfDifferentValues`
+refuse one with `MVK_PARAMSIZE_INVALIDN`
+([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)). A
+value-list quantifier compares its fields against *literals*, so one field is a complete question; an
+entity-list carrier compares them against *each other*, where one field asks nothing.
+
+`manyRequired` is the default because it is the gate the shared checker has always applied, so an
+unmeasured carrier keeps refusing — the loud direction — rather than silently widening. -/
+inductive EntityListArity where
+  | manyRequired
+  | soleAllowed
+  deriving Repr, DecidableEq
+
+namespace EntityListArity
+
+def allowsSole : EntityListArity → Bool
+  | .soleAllowed => true
+  | .manyRequired => false
+
+end EntityListArity
+
 /-- A resolved, model-owned entity-list shape before homogeneous family certification. -/
 structure CheckedFieldEntityShape (model : FlatModel) where
   first : ResolvedFieldEntityOperand model
   rest : List (ResolvedFieldEntityOperand model)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
+  /-- Which arity rule the carrier that built this shape applies. Retained rather than discharged so
+  a consumer can tell a sole-operand list that was *admitted* from one that never occurred. -/
+  arity : EntityListArity
+  requiredMultiplicity :
+    (arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true
   uniqueExactOperands :
     firstDuplicateResolvedEntityOperand? (first :: rest) = none
   disjointOperands : firstResolvedOperandOverlap? (first :: rest) = none
@@ -418,7 +446,8 @@ private def resolveFieldEntityOperands (model : FlatModel)
     Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair. -/
 def elaborateFieldEntityShapeIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceFieldEntitySource) :
+    (authored : SurfaceFieldEntitySource)
+    (arity : EntityListArity := .manyRequired) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -434,11 +463,13 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
           | some (ancestor, descendant) =>
               throw (.overlappingOperands ancestor descendant)
           | none =>
-              if hMultiplicity : first.isAlreadyMany || !rest.isEmpty then
+              if hMultiplicity :
+                  arity.allowsSole || first.isAlreadyMany || !rest.isEmpty then
                 pure {
                   first
                   rest
                   modelWellFormed := by rw [hModel]; rfl
+                  arity
                   requiredMultiplicity := hMultiplicity
                   uniqueExactOperands := hDuplicate
                   disjointOperands := hOverlap }
@@ -447,9 +478,10 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
 
 /-- The scalar instance of the shared shape gates. -/
 def elaborateFieldEntityShape (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
+    (arity : EntityListArity := .manyRequired) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
-  elaborateFieldEntityShapeIn model declaringGroup [] authored
+  elaborateFieldEntityShapeIn model declaringGroup [] authored arity
 
 /-- One direct `Having` operand after origin-sensitive scope resolution. The resolved declaration,
     read form, and origin together are its exact authored identity. -/

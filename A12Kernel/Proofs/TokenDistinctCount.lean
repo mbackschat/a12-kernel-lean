@@ -18,17 +18,33 @@ theorem tokenDistinctCount_equal_pair (value : String) :
     ResolvedValueListSide.hasEmpty, ValueListCell.isEmpty,
     ValueListAtom.equal]
 
-/-- Every checked generic entity-list shape has either an already-many first slot or a trailing slot. A group slot is already-many by itself, so this is weaker than requiring a star. -/
-theorem checkedFieldEntityShape_requiredMultiplicity
-    (checked : CheckedFieldEntityShape model) :
-    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
-  checked.requiredMultiplicity
+/-- A checked generic entity-list shape built under the **many-required** arity rule has either an
+already-many first slot or a trailing slot. A group slot is already-many by itself, so this is
+weaker than requiring a star.
 
-/-- Every checked token distinct-count source retains the common cardinality invariant after family certification. -/
+The hypothesis is what the measurement made necessary: the value-list quantifiers apply
+`soleAllowed` and a sole unstarred field is legal there, so an unconditional statement would now be
+false. It is also the more informative form, since a consumer reading it learns which rule the
+carrier applied rather than assuming one. -/
+theorem checkedFieldEntityShape_requiredMultiplicity
+    (checked : CheckedFieldEntityShape model)
+    (hArity : checked.arity = .manyRequired) :
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true := by
+  have := checked.requiredMultiplicity
+  rw [hArity] at this
+  simpa [EntityListArity.allowsSole] using this
+
+/-- Every checked token distinct-count source retains the common cardinality invariant after family
+certification. This carrier is **measured** to be many-required — a sole unstarred field draws
+`MVK_PARAMSIZE_INVALIDN` — so the hypothesis is discharged wherever it is applied rather than
+constraining the result. -/
 theorem checkedTokenDistinctSource_requiredMultiplicity
-    (checked : CheckedTokenDistinctSource model) :
-    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
-  checked.requiredMultiplicity
+    (checked : CheckedTokenDistinctSource model)
+    (hArity : checked.arity = .manyRequired) :
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true := by
+  have := checked.requiredMultiplicity
+  rw [hArity] at this
+  simpa [EntityListArity.allowsSole] using this
 
 /-- Repeated direct references are impossible at the checked token boundary. -/
 theorem checkedTokenDistinctSource_uniqueDirectOperands
