@@ -95,13 +95,33 @@ example :
       List.replicate 4 (.refused (some .onlyStringEnumNumberAllowed)) := by
   native_decide
 
-/- **An Enumeration field side is refused here and admitted by the Kernel**, provided every literal
-   is a valid stored token; a non-token literal draws
-   `MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY`. The local refusal is
-   `unsupportedFieldsFamily`, a representation limit rather than a Kernel gate, and it claims no
-   class — so this row locks a **known** shortfall rather than asserting the Kernel refuses the
-   shape. Closing it is a representation extension, not a projection fix. -/
-example : pairAdmission "Choice" "Choice2" = .refused none := by native_decide
+private def enumAdmission (values : List String) : Admission :=
+  match values with
+  | [] => .refused none
+  | firstValue :: restValues =>
+      match elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
+          { quantifier := .atLeastOne
+            fields := { first := field "Choice", rest := [field "Choice2"] }
+            values := firstValue :: restValues } with
+      | .ok _ => .admitted
+      | .error error => .refused error.diagnostic?
+
+/- **An Enumeration field side is legal against String literals**, and the gate is on the literal's
+   **value** rather than on the field's kind — the one place a value list's own literals are
+   constrained statically. Declared tokens are admitted; a literal naming none draws the Kernel's
+   own class. The pair is what makes this a value gate: without the admitted row the refusal would
+   read as this operator rejecting Enumeration outright, which is what this project used to do. -/
+example : (enumAdmission ["A", "B"], enumAdmission ["A"], enumAdmission ["x", "y"],
+    enumAdmission ["A", "x"]) =
+    (.admitted, .admitted,
+      .refused (some .invalidStringConstantForEnumComparison),
+      .refused (some .invalidStringConstantForEnumComparison)) := by
+  native_decide
+
+/- One undeclared literal beside a declared one is enough, which is the row that keeps the gate from
+   reading as "at least one literal must be a token". -/
+example : pairAdmission "Choice" "Choice2" =
+    .refused (some .invalidStringConstantForEnumComparison) := by native_decide
 
 private def soleAdmission (quantifier : ValueListQuantifier) (name : String) :
     Admission :=

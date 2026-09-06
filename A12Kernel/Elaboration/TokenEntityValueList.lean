@@ -39,6 +39,43 @@ def valueListFamily? (checked : CheckedTokenEntitySource model) :
       if rest.all (fun candidate => candidate == family) then some family
       else none
 
+/-- The selected stored or category token domain of every Enumeration operand this side reads
+through, in operand order. A String operand contributes nothing, so a String-family list yields the
+empty list and every membership question over it is vacuously satisfied.
+
+The `.stored` domain is read from the declaration rather than from the operand, because a resolved
+stored projection carries only the selection; a `.category` one already carries its own tokens. A
+declaration this model cannot resolve, or one carrying no enumeration, contributes the **empty**
+domain, which refuses every literal — the closed direction, since the alternative would accept a
+literal against a domain that was never read. -/
+def selectedTokenDomains (checked : CheckedTokenEntitySource model) :
+    List (List String) :=
+  checked.operands.flatMap fun operand =>
+    operand.tokenOperands.filterMap fun token =>
+      match token with
+      | .string _ => none
+      | .enumeration source =>
+          match source.projection with
+          | .category mapping => some mapping.categoryTokens
+          | .stored =>
+              match model.lookupUniqueId source.field.id with
+              | .ok declaration =>
+                  some (declaration.enumeration.map (·.storedTokens) |>.getD [])
+              | .error _ => some []
+
+/-- Whether every literal belongs to every selected domain this side exposes.
+
+Vacuously true for a String-family list, which exposes none — the measured Kernel rule constrains a
+literal's *value* only where an Enumeration declaration supplies a domain to constrain it against
+([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+Requiring membership in **every** domain is this project's reading of a multi-declaration list; the
+measured rows carry one domain, so a list whose operands declare *different* domains is an untested
+shape and the conservative side is taken deliberately. -/
+def admitsLiterals (checked : CheckedTokenEntitySource model)
+    (literals : List String) : Bool :=
+  checked.selectedTokenDomains.all fun domain =>
+    literals.all domain.contains
+
 end CheckedTokenEntitySource
 
 /-- The established token entity-list syntax currently checks direct and starred stored projections. Projection-bearing checked sources can enter through `assembleTokenEntityValueListSource` without weakening their certificates. -/
@@ -55,9 +92,9 @@ structure SurfaceProjectedTokenEntityValueListSource where
   values : SurfaceProjectedTokenEntitySource
   deriving Repr, DecidableEq
 
-/-- A parser-independent plural token-entity fields side against decoded String literals. This
-    capsule retains the measured String-family form; Enumeration literal-domain admission remains
-    with its existing dedicated owners. -/
+/-- A parser-independent plural token-entity fields side against decoded String literals. Both base
+    families are admitted, the Enumeration one under the declared-token gate its checked form
+    carries. -/
 structure SurfaceTokenEntityStringLiteralValueListSource where
   quantifier : ValueListQuantifier
   fields : SurfaceTokenEntitySource
@@ -77,13 +114,24 @@ structure CheckedTokenEntityValueListSource (model : FlatModel) where
       (fields.operands ++ values.operands) = none
 
 /-- The measured plural String-literal form after the complete fields side has been resolved,
-    certified as one String family, and retained without lowering a group operand into fields. -/
+    certified as one base family, and retained without lowering a group operand into fields.
+
+    **Both families are admitted**, which is the measured rule rather than the narrower String-only
+    one this carrier first shipped: an Enumeration field side is legal against String literals
+    provided every literal is a declared token, and one that is not draws
+    `MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY`
+    ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+    The literal certificate is stated unconditionally because a String side exposes no domain and
+    satisfies it vacuously, so one field serves both families without a per-family branch. -/
 structure CheckedTokenEntityStringLiteralValueListSource (model : FlatModel) where
   quantifier : ValueListQuantifier
+  family : TokenEntityValueListFamily
   fields : CheckedTokenEntitySource model
-  fieldsFamily : fields.valueListFamily? = some .string
+  fieldsFamily : fields.valueListFamily? = some family
   firstValue : String
   restValues : List String
+  literalsAdmitted :
+    fields.admitsLiterals (firstValue :: restValues) = true
 
 inductive TokenEntityValueListElabError where
   | fields (error : TokenEntityElabError)
@@ -97,6 +145,9 @@ inductive TokenEntityStringLiteralValueListElabError where
   | fields (error : TokenEntityElabError)
   | dateGroupAgainstStringValues (path : GroupPath)
   | unsupportedFieldsFamily (found : Option TokenEntityValueListFamily)
+  /-- A literal naming no token in a selected Enumeration domain. The Kernel checks the literal's
+  **value** here, which is the one place a value list's own literals are constrained statically. -/
+  | literalOutsideSelectedDomain (literals : List String)
   | emptyValues
   deriving Repr, DecidableEq
 
@@ -153,14 +204,22 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
   let fields ← certifyTokenEntityShape model declaringGroup shape
     |>.mapError .fields
   match hFamily : fields.valueListFamily? with
-  | some .string =>
-      pure {
-        quantifier := authored.quantifier
-        fields
-        fieldsFamily := hFamily
-        firstValue
-        restValues }
-  | found => throw (.unsupportedFieldsFamily found)
+  | none => throw (.unsupportedFieldsFamily none)
+  | some family =>
+      -- The literal gate is the Enumeration side's alone in effect, but it is applied to both
+      -- without branching: a String side exposes no domain and passes vacuously, so one call
+      -- keeps the rule in one place rather than duplicating it under a family match.
+      if hLiterals : fields.admitsLiterals (firstValue :: restValues) = true then
+        pure {
+          quantifier := authored.quantifier
+          family
+          fields
+          fieldsFamily := hFamily
+          firstValue
+          restValues
+          literalsAdmitted := hLiterals }
+      else
+        throw (.literalOutsideSelectedDomain (firstValue :: restValues))
 
 namespace TokenEntityStringLiteralValueListElabError
 
@@ -173,6 +232,11 @@ def diagnostic? : TokenEntityStringLiteralValueListElabError →
   -- Delegated rather than dropped: the field side's own projection now carries the three-way kind
   -- partition this carrier's message vocabulary draws.
   | .fields error => error.diagnostic?
+  | .literalOutsideSelectedDomain _ =>
+      some .invalidStringConstantForEnumComparison
+  -- A mixed-family list is refused here with no class: the Kernel's own mixing refusal is measured
+  -- at the shape checker, and this arm is reached only when the two families disagree *within* one
+  -- side, which no row covers. `emptyValues` is a surface impossibility rather than a gate.
   | .unsupportedFieldsFamily _ | .emptyValues => none
 
 end TokenEntityStringLiteralValueListElabError
