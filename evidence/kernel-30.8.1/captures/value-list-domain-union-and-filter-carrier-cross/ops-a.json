@@ -1,0 +1,678 @@
+[
+ {
+  "id": "001|q2|maxdate|ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0) > [FiledOn]",
+   "--code",
+   "Q001"
+  ]
+ },
+ {
+  "id": "002|q2|maxdate|numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] > 0) > [FiledOn]",
+   "--code",
+   "Q002"
+  ]
+ },
+ {
+  "id": "003|q2|maxdate|litOnNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] == \"x\") > [FiledOn]",
+   "--code",
+   "Q003"
+  ]
+ },
+ {
+  "id": "004|q2|notuniq|ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowText Having [RowVal] > 0)",
+   "--code",
+   "Q004"
+  ]
+ },
+ {
+  "id": "005|q2|notuniq|numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowText Having [RowText] > 0)",
+   "--code",
+   "Q005"
+  ]
+ },
+ {
+  "id": "006|q2|notuniq|litOnNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowText Having [RowVal] == \"x\")",
+   "--code",
+   "Q006"
+  ]
+ },
+ {
+  "id": "007|q2|firstfill|ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FirstFilledValue(/Probe/Rows*/RowVal Having [RowVal] > 0) > 10",
+   "--code",
+   "Q007"
+  ]
+ },
+ {
+  "id": "008|q2|firstfill|numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FirstFilledValue(/Probe/Rows*/RowVal Having [RowText] > 0) > 10",
+   "--code",
+   "Q008"
+  ]
+ },
+ {
+  "id": "009|q2|firstfill|litOnNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FirstFilledValue(/Probe/Rows*/RowVal Having [RowVal] == \"x\") > 10",
+   "--code",
+   "Q009"
+  ]
+ },
+ {
+  "id": "010|q2|ndv-tok|ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowText Having [RowVal] > 0) < 2",
+   "--code",
+   "Q010"
+  ]
+ },
+ {
+  "id": "011|q2|ndv-tok|numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowText Having [RowText] > 0) < 2",
+   "--code",
+   "Q011"
+  ]
+ },
+ {
+  "id": "012|q2|ndv-tok|litOnNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowText Having [RowVal] == \"x\") < 2",
+   "--code",
+   "Q012"
+  ]
+ },
+ {
+  "id": "013|q2|ndv-num|ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] > 0) < 2",
+   "--code",
+   "Q013"
+  ]
+ },
+ {
+  "id": "014|q2|ndv-num|numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowText] > 0) < 2",
+   "--code",
+   "Q014"
+  ]
+ },
+ {
+  "id": "015|q2|ndv-num|litOnNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal Having [RowVal] == \"x\") < 2",
+   "--code",
+   "Q015"
+  ]
+ },
+ {
+  "id": "016|q2|sum|ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And Sum(/Probe/Rows*/RowVal Having [RowVal] > 0) > 10",
+   "--code",
+   "Q016"
+  ]
+ },
+ {
+  "id": "017|q2|sum|numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And Sum(/Probe/Rows*/RowVal Having [RowText] > 0) > 10",
+   "--code",
+   "Q017"
+  ]
+ },
+ {
+  "id": "018|q2|sum|litOnNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And Sum(/Probe/Rows*/RowVal Having [RowVal] == \"x\") > 10",
+   "--code",
+   "Q018"
+  ]
+ },
+ {
+  "id": "019|q1|numOnStr-then-litOnNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] > 0 And [RowVal] == \"x\") > [FiledOn]",
+   "--code",
+   "Q019"
+  ]
+ },
+ {
+  "id": "020|q1|litOnNum-then-numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] == \"x\" And [RowText] > 0) > [FiledOn]",
+   "--code",
+   "Q020"
+  ]
+ },
+ {
+  "id": "021|q1|or-numOnStr-first",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] > 0 Or [RowVal] == \"x\") > [FiledOn]",
+   "--code",
+   "Q021"
+  ]
+ },
+ {
+  "id": "022|q1|or-litOnNum-first",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] == \"x\" Or [RowText] > 0) > [FiledOn]",
+   "--code",
+   "Q022"
+  ]
+ },
+ {
+  "id": "023|q1|ok-then-numOnStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowVal] > 0 And [RowText] > 0) > [FiledOn]",
+   "--code",
+   "Q023"
+  ]
+ },
+ {
+  "id": "024|q1|numOnStr-then-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowText] > 0 And [RowVal] > 0) > [FiledOn]",
+   "--code",
+   "Q024"
+  ]
+ },
+ {
+  "id": "025|q1|nested-defect-inner",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having ([RowText] > 0 And [RowVal] > 0) Or [RowVal] == \"x\") > [FiledOn]",
+   "--code",
+   "Q025"
+  ]
+ },
+ {
+  "id": "026|q1|nested-both-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having ([RowVal] > 0 And [RowVal] > 0) Or [RowVal] > 0) > [FiledOn]",
+   "--code",
+   "Q026"
+  ]
+ },
+ {
+  "id": "027|q3|ndv|enum-disjoint",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2) < 2",
+   "--code",
+   "Q027"
+  ]
+ },
+ {
+  "id": "028|q3|ndv|enum-same",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice) < 2",
+   "--code",
+   "Q028"
+  ]
+ },
+ {
+  "id": "029|q3|ndv|enum-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowChoice, /Probe/Rows*/RowText) < 2",
+   "--code",
+   "Q029"
+  ]
+ },
+ {
+  "id": "030|q3|uniq|enum-disjoint",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2)",
+   "--code",
+   "Q030"
+  ]
+ },
+ {
+  "id": "031|q3|uniq|enum-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowChoice, /Probe/Rows*/RowText)",
+   "--code",
+   "Q031"
+  ]
+ },
+ {
+  "id": "032|q3|lit|choice1|in-choice1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice] == \"A\") > [FiledOn]",
+   "--code",
+   "Q032"
+  ]
+ },
+ {
+  "id": "033|q3|lit|choice2|in-choice1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice2] == \"A\") > [FiledOn]",
+   "--code",
+   "Q033"
+  ]
+ },
+ {
+  "id": "034|q3|lit|choice1|in-choice2-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice] == \"C\") > [FiledOn]",
+   "--code",
+   "Q034"
+  ]
+ },
+ {
+  "id": "035|q3|lit|choice2|in-choice2-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice2] == \"C\") > [FiledOn]",
+   "--code",
+   "Q035"
+  ]
+ },
+ {
+  "id": "036|q3|lit|choice1|in-neither",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice] == \"Z\") > [FiledOn]",
+   "--code",
+   "Q036"
+  ]
+ },
+ {
+  "id": "037|q3|lit|choice2|in-neither",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowDate Having [RowChoice2] == \"Z\") > [FiledOn]",
+   "--code",
+   "Q037"
+  ]
+ },
+ {
+  "id": "038|q4|firstfill|one-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FirstFilledValue(Amount) > 10",
+   "--code",
+   "Q038"
+  ]
+ },
+ {
+  "id": "039|q4|firstfill|two-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FirstFilledValue(Amount, /Probe/Store/FixedVal) > 10",
+   "--code",
+   "Q039"
+  ]
+ },
+ {
+  "id": "040|q4|firstfill|one-list",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FirstFilledValue(/Probe/Rows*/RowVal) > 10",
+   "--code",
+   "Q040"
+  ]
+ },
+ {
+  "id": "041|q4|ndv|one-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(Amount) < 2",
+   "--code",
+   "Q041"
+  ]
+ },
+ {
+  "id": "042|q4|ndv|two-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(Amount, /Probe/Store/FixedVal) < 2",
+   "--code",
+   "Q042"
+  ]
+ },
+ {
+  "id": "043|q4|ndv|one-list",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowVal) < 2",
+   "--code",
+   "Q043"
+  ]
+ },
+ {
+  "id": "044|q4|notuniq|one-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(Amount)",
+   "--code",
+   "Q044"
+  ]
+ },
+ {
+  "id": "045|q4|notuniq|two-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(Amount, /Probe/Store/FixedVal)",
+   "--code",
+   "Q045"
+  ]
+ },
+ {
+  "id": "046|q4|notuniq|one-list",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowVal)",
+   "--code",
+   "Q046"
+  ]
+ },
+ {
+  "id": "047|q4|sum|one-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And Sum(Amount) > 10",
+   "--code",
+   "Q047"
+  ]
+ },
+ {
+  "id": "048|q4|sum|two-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And Sum(Amount, /Probe/Store/FixedVal) > 10",
+   "--code",
+   "Q048"
+  ]
+ },
+ {
+  "id": "049|q4|sum|one-list",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And Sum(/Probe/Rows*/RowVal) > 10",
+   "--code",
+   "Q049"
+  ]
+ },
+ {
+  "id": "050|q4|maxval|one-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(Amount) > 10",
+   "--code",
+   "Q050"
+  ]
+ },
+ {
+  "id": "051|q4|maxval|two-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(Amount, /Probe/Store/FixedVal) > 10",
+   "--code",
+   "Q051"
+  ]
+ },
+ {
+  "id": "052|q4|maxval|one-list",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowVal) > 10",
+   "--code",
+   "Q052"
+  ]
+ }
+]

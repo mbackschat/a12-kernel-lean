@@ -491,6 +491,10 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
 - [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/evaluation-and-application-routes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
+<a id="src-value-list-literal-domain-is-the-union"></a>
+- [A value list's Enumeration literals must name a token in the union of the selected domains, and the duplicate-operand gate splits by read form](sources/evaluation-and-application-routes.md#src-value-list-literal-domain-is-the-union)
+<a id="src-having-filter-class-is-carrier-independent-and-first-defect-wins"></a>
+- [A Having filter's static class is carrier-independent across six wrappers, and a multi-leaf filter reports its first defective leaf](sources/evaluation-and-application-routes.md#src-having-filter-class-is-carrier-independent-and-first-defect-wins)
 <a id="src-temporal-group-operand-follows-its-own-operator"></a>
 - [A group operand is admitted at both temporal uniqueness carriers, and its expansion is gated by that operator's own rule](sources/evaluation-and-application-routes.md#src-temporal-group-operand-follows-its-own-operator)
 <a id="src-constant-computation-admits-a-repeatable-target"></a>

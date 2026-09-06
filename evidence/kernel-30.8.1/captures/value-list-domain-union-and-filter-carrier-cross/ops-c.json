@@ -1,0 +1,132 @@
+[
+ {
+  "id": "001|dup|vl|direct-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice, Choice In \"A\")",
+   "--code",
+   "D001"
+  ]
+ },
+ {
+  "id": "002|dup|vl|direct-distinct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice, ChoiceAlt In \"A\")",
+   "--code",
+   "D002"
+  ]
+ },
+ {
+  "id": "003|dup|vl|starred-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice In \"A\")",
+   "--code",
+   "D003"
+  ]
+ },
+ {
+  "id": "004|dup|ndv|direct-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(Choice, Choice) < 2",
+   "--code",
+   "D004"
+  ]
+ },
+ {
+  "id": "005|dup|ndv|starred-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice) < 2",
+   "--code",
+   "D005"
+  ]
+ },
+ {
+  "id": "006|dup|uniq|direct-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(Choice, Choice)",
+   "--code",
+   "D006"
+  ]
+ },
+ {
+  "id": "007|dup|uniq|starred-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice)",
+   "--code",
+   "D007"
+  ]
+ },
+ {
+  "id": "008|dup|sum|direct-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And Sum(Amount, Amount) > 10",
+   "--code",
+   "D008"
+  ]
+ },
+ {
+  "id": "009|union|vl|direct-disjoint",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice, ChoiceAlt In \"A\")",
+   "--code",
+   "D009"
+  ]
+ },
+ {
+  "id": "010|union|vl|direct-neither",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice, ChoiceAlt In \"Z\")",
+   "--code",
+   "D010"
+  ]
+ }
+]

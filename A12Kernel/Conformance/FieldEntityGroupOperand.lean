@@ -268,6 +268,21 @@ example :
       starredGroup [{ name := "Probe" }, { name := "Rows", starred := true }]] = none := by
   native_decide
 
+/- The same holds for a starred **field** twice, and the pair with the unstarred repetition is what
+   makes the gate legible: the Kernel refuses `(F, F)` `MVK_DUPLICATE_PARAM1` and admits
+   `(G*/F, G*/F)`, measured together on four carriers
+   ([checkpoint](../../docs/SOURCES.md#src-duplicate-operand-gate-splits-by-read-form)). A starred
+   occurrence is a repetition-wide read rather than an exact reference, so two of them are two
+   independent scans; without the refusing row beside it, the admission would read as this project
+   having no duplicate gate at all. -/
+example :
+    (diagnostic? [starField [{ name := "Probe" }, { name := "Rows", starred := true }] "RowVal",
+        starField [{ name := "Probe" }, { name := "Rows", starred := true }] "RowVal"],
+      diagnostic? [field ["Probe", "B", "Sub"] "SubVal",
+        field ["Probe", "B", "Sub"] "SubVal"]) =
+      (none, some .duplicateParam1) := by
+  native_decide
+
 /- Two disjoint subtrees are not an overlap even across repetition shapes, which is what keeps the
    arm above from being a groupness refusal in disguise. -/
 example :

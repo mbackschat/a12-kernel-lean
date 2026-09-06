@@ -58,7 +58,12 @@ private def probeModel : FlatModel :=
         enumeration := some { storedTokens := ["A", "B"] } },
       { id := 14, groupPath := ["Probe"], name := "Choice2",
         policy := { kind := .enumeration },
-        enumeration := some { storedTokens := ["A", "B"] } }] }
+        enumeration := some { storedTokens := ["A", "B"] } },
+      -- A **disjoint** third domain. Without it the two enum fields above share one domain, and a
+      -- union rule is indistinguishable from an every-domain one on every row they can form.
+      { id := 15, groupPath := ["Probe"], name := "Choice3",
+        policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["C", "D"] } }] }
 
 example : probeModel.validate.isOk = true := by native_decide
 
@@ -122,6 +127,45 @@ example : (enumAdmission ["A", "B"], enumAdmission ["A"], enumAdmission ["x", "y
    reading as "at least one literal must be a token". -/
 example : pairAdmission "Choice" "Choice2" =
     .refused (some .invalidStringConstantForEnumComparison) := by native_decide
+
+private def disjointAdmission (values : List String) : Admission :=
+  match values with
+  | [] => .refused none
+  | firstValue :: restValues =>
+      match elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
+          { quantifier := .atLeastOne
+            fields := { first := field "Choice", rest := [field "Choice3"] }
+            values := firstValue :: restValues } with
+      | .ok _ => .admitted
+      | .error error => .refused error.diagnostic?
+
+/- **The domain a literal must name is the UNION of the selected fields' domains, not every one.**
+   Over disjoint `{A,B}` and `{C,D}`: a literal from either side alone is admitted, one from each is
+   admitted together, and only a literal in neither is refused. This project required membership in
+   *every* selected domain until it was measured, which refused all three admitted rows here — the
+   conservative side, but the wrong one. The disjointness is what separates the accounts; on the
+   equal-domain pair above, union and intersection agree on every row. -/
+example : (disjointAdmission ["A"], disjointAdmission ["C"], disjointAdmission ["A", "C"],
+    disjointAdmission ["Z"]) =
+    (.admitted, .admitted, .admitted,
+      .refused (some .invalidStringConstantForEnumComparison)) := by
+  native_decide
+
+private def repeatedRefAdmission : Admission :=
+  match elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
+      { quantifier := .atLeastOne
+        fields := { first := field "Choice", rest := [field "Choice"] }
+        values := ["A"] } with
+  | .ok _ => .admitted
+  | .error error => .refused error.diagnostic?
+
+/- The same **unstarred** reference twice draws `MVK_DUPLICATE_PARAM1` at this carrier as at the
+   entity-list ones, measured on all four together; the starred form of the same repetition is
+   admitted and is the shared shape's own row. The literal is a **declared** token here on purpose:
+   with an undeclared one the row would refuse for the value reason and establish nothing about
+   repetition. -/
+example : repeatedRefAdmission = .refused (some .duplicateParam1) := by
+  native_decide
 
 private def soleAdmission (quantifier : ValueListQuantifier) (name : String) :
     Admission :=

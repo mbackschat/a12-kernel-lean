@@ -63,18 +63,26 @@ def selectedTokenDomains (checked : CheckedTokenEntitySource model) :
                   some (declaration.enumeration.map (·.storedTokens) |>.getD [])
               | .error _ => some []
 
-/-- Whether every literal belongs to every selected domain this side exposes.
+/-- Whether every literal belongs to the **union** of the selected domains this side exposes.
 
 Vacuously true for a String-family list, which exposes none — the measured Kernel rule constrains a
 literal's *value* only where an Enumeration declaration supplies a domain to constrain it against
 ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
-Requiring membership in **every** domain is this project's reading of a multi-declaration list; the
-measured rows carry one domain, so a list whose operands declare *different* domains is an untested
-shape and the conservative side is taken deliberately. -/
+
+The union is measured, over disjoint declared domains on all three quantifiers
+([checkpoint](../../docs/SOURCES.md#src-value-list-literal-domain-is-the-union)). This project
+previously required membership in **every** selected domain, which refuses a literal the Kernel
+admits whenever the operands declare different domains; an equal-domain list cannot tell the two
+apart, which is why the reading survived until a disjoint pair was measured.
+
+The empty-domain case keeps its closed direction under the union: a declaration this model cannot
+resolve contributes no token, so a list whose only Enumeration operand is unreadable still admits no
+literal. -/
 def admitsLiterals (checked : CheckedTokenEntitySource model)
     (literals : List String) : Bool :=
-  checked.selectedTokenDomains.all fun domain =>
-    literals.all domain.contains
+  match checked.selectedTokenDomains with
+  | [] => true
+  | domains => literals.all domains.flatten.contains
 
 end CheckedTokenEntitySource
 

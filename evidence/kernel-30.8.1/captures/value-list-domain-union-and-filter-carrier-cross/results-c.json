@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "0ca44debbd15bdc1863bcadae74709205dcf2211",
+    "state" : "CLEAN"
+  },
+  "model" : "3e6b7e8c10805ba029c0f26bb24a0c9ec7d113cfc173c433007ebda77d3da2f3",
+  "observations" : [ {
+    "id" : "001|dup|vl|direct-twice",
+    "inputHash" : "01e445d7cb303d3ac5ff33c420afb64b257cb6f87ed3dce0d11394b55aae25f0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  }, {
+    "id" : "002|dup|vl|direct-distinct",
+    "inputHash" : "5174f39b93f5c754b0528ccfbf3e2fc9bc3c479d363ad31a531755a17d7fe271",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "003|dup|vl|starred-twice",
+    "inputHash" : "c9db09bd6d4a25e7d9d07ce1dde2988353367de7aca1b3ee3517f4e89ff38315",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "004|dup|ndv|direct-twice",
+    "inputHash" : "7144b7ba744f5e19280e0e73b2da14a621f58671229669f365971c40d7403f97",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  }, {
+    "id" : "005|dup|ndv|starred-twice",
+    "inputHash" : "2991dadb38afbbc58fd9554e906cf50f4937e8e4dc0272675a4d56145b2e17b2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "006|dup|uniq|direct-twice",
+    "inputHash" : "5365b456de5b10d807268939b72452e7c8d8879888b6d9bfc006e57d8372117e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  }, {
+    "id" : "007|dup|uniq|starred-twice",
+    "inputHash" : "3bf70fb08e130bc22fb7f08a3a9553a6cc11954078476ddfe48f799397ca6d16",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "008|dup|sum|direct-twice",
+    "inputHash" : "5d81f26e8661e76fe8e466d8323edfc2871ffe366fc4b9328493e5ce2cf97233",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  }, {
+    "id" : "009|union|vl|direct-disjoint",
+    "inputHash" : "5174f39b93f5c754b0528ccfbf3e2fc9bc3c479d363ad31a531755a17d7fe271",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "010|union|vl|direct-neither",
+    "inputHash" : "c55be29855df3d78e48f7e15313edad1a69fefed3ee953c21a37fbbf5a429962",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY" ]
+  } ]
+}

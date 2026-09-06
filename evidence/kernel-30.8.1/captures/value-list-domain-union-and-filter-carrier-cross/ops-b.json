@@ -1,0 +1,392 @@
+[
+ {
+  "id": "001|q3v|AtLeas|pair|lit-in-first-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"A\")",
+   "--code",
+   "R001"
+  ]
+ },
+ {
+  "id": "002|q3v|AtLeas|pair|lit-in-second-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"C\")",
+   "--code",
+   "R002"
+  ]
+ },
+ {
+  "id": "003|q3v|AtLeas|pair|lit-in-neither",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"Z\")",
+   "--code",
+   "R003"
+  ]
+ },
+ {
+  "id": "004|q3v|AtLeas|pair|one-lit-from-each",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"A\", \"C\")",
+   "--code",
+   "R004"
+  ]
+ },
+ {
+  "id": "005|q3v|AtLeas|sole|lit-in-domain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice In \"A\")",
+   "--code",
+   "R005"
+  ]
+ },
+ {
+  "id": "006|q3v|AtLeas|sole|lit-outside-domain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice In \"C\")",
+   "--code",
+   "R006"
+  ]
+ },
+ {
+  "id": "007|q3v|AtLeas|dup|same-ref-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice In \"A\")",
+   "--code",
+   "R007"
+  ]
+ },
+ {
+  "id": "008|q3v|AtLeas|entity|field-valued",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(/Probe/Rows*/RowChoice In /Probe/Rows*/RowChoice2)",
+   "--code",
+   "R008"
+  ]
+ },
+ {
+  "id": "009|q3v|NoFiel|pair|lit-in-first-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"A\")",
+   "--code",
+   "R009"
+  ]
+ },
+ {
+  "id": "010|q3v|NoFiel|pair|lit-in-second-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"C\")",
+   "--code",
+   "R010"
+  ]
+ },
+ {
+  "id": "011|q3v|NoFiel|pair|lit-in-neither",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"Z\")",
+   "--code",
+   "R011"
+  ]
+ },
+ {
+  "id": "012|q3v|NoFiel|pair|one-lit-from-each",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"A\", \"C\")",
+   "--code",
+   "R012"
+  ]
+ },
+ {
+  "id": "013|q3v|NoFiel|sole|lit-in-domain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice In \"A\")",
+   "--code",
+   "R013"
+  ]
+ },
+ {
+  "id": "014|q3v|NoFiel|sole|lit-outside-domain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice In \"C\")",
+   "--code",
+   "R014"
+  ]
+ },
+ {
+  "id": "015|q3v|NoFiel|dup|same-ref-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice In \"A\")",
+   "--code",
+   "R015"
+  ]
+ },
+ {
+  "id": "016|q3v|NoFiel|entity|field-valued",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NoFieldValueIncludedInValueList(/Probe/Rows*/RowChoice In /Probe/Rows*/RowChoice2)",
+   "--code",
+   "R016"
+  ]
+ },
+ {
+  "id": "017|q3v|NotAll|pair|lit-in-first-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"A\")",
+   "--code",
+   "R017"
+  ]
+ },
+ {
+  "id": "018|q3v|NotAll|pair|lit-in-second-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"C\")",
+   "--code",
+   "R018"
+  ]
+ },
+ {
+  "id": "019|q3v|NotAll|pair|lit-in-neither",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"Z\")",
+   "--code",
+   "R019"
+  ]
+ },
+ {
+  "id": "020|q3v|NotAll|pair|one-lit-from-each",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice2 In \"A\", \"C\")",
+   "--code",
+   "R020"
+  ]
+ },
+ {
+  "id": "021|q3v|NotAll|sole|lit-in-domain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice In \"A\")",
+   "--code",
+   "R021"
+  ]
+ },
+ {
+  "id": "022|q3v|NotAll|sole|lit-outside-domain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice In \"C\")",
+   "--code",
+   "R022"
+  ]
+ },
+ {
+  "id": "023|q3v|NotAll|dup|same-ref-twice",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice, /Probe/Rows*/RowChoice In \"A\")",
+   "--code",
+   "R023"
+  ]
+ },
+ {
+  "id": "024|q3v|NotAll|entity|field-valued",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NotAllFieldValuesIncludedInValueList(/Probe/Rows*/RowChoice In /Probe/Rows*/RowChoice2)",
+   "--code",
+   "R024"
+  ]
+ },
+ {
+  "id": "025|q7|uniq|span-alone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowSpan)",
+   "--code",
+   "R025"
+  ]
+ },
+ {
+  "id": "026|q7|ndv|span-alone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowSpan) < 2",
+   "--code",
+   "R026"
+  ]
+ },
+ {
+  "id": "027|q7|ndv|span-vs-altfmt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowSpan, /Probe/Rows*/RowSpanAlt) < 2",
+   "--code",
+   "R027"
+  ]
+ },
+ {
+  "id": "028|q7|ndv|span-vs-month",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe/Rows*/RowSpan, /Probe/Rows*/RowMonthSpan) < 2",
+   "--code",
+   "R028"
+  ]
+ },
+ {
+  "id": "029|q7|uniq|span-vs-altfmt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And FieldValuesNotUnique(/Probe/Rows*/RowSpan, /Probe/Rows*/RowSpanAlt)",
+   "--code",
+   "R029"
+  ]
+ },
+ {
+  "id": "030|q7|maxval|span",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And MaxValue(/Probe/Rows*/RowSpan) > [FiledOn]",
+   "--code",
+   "R030"
+  ]
+ }
+]
