@@ -105,12 +105,19 @@ inductive SemanticIndexElabError where
 
 namespace SemanticIndexElabError
 
-/-- Project the two refusals with measured Kernel diagnostics. The reduced-route and coherence
-classes stay unmapped, because they are this project's own boundary rather than the Kernel's. -/
+/-- Project the two refusals with measured Kernel diagnostics.
+
+Every other form is named rather than caught by a wildcard, so that a new arm cannot be absorbed
+into this project's boundary without a decision. `reducedRouteNeedsNumber` and `incoherentCore` are
+that boundary — the reduced raw-context route is narrower than the Kernel by construction. The
+remaining four are unmeasured Kernel refusals: `missingIndexField` carries a measured class on the
+`RuleGroup` suffix alone, through `ruleGroupDiagnostic?` below, and the other carriers need their
+own evidence before inheriting it. -/
 def diagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
   | .keyContainedInIndexedGroup _ _ => some .semanticIndexContainedInIndex
   | .resolve error => error.diagnostic?
-  | _ => none
+  | .group _ | .missingIndexField _ | .indexKeyDomainMismatch _ _
+  | .keyFieldNotNumber _ | .reducedRouteNeedsNumber _ | .incoherentCore => none
 
 /-- Exact diagnostic projection measured for the `RuleGroup` literal suffix. A missing index on
 other carriers requires its own evidence before it can inherit this code

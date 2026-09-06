@@ -123,7 +123,12 @@ def diagnostic? :
         some .wrongDateFormatForOp
       else
         none
-  | _ => none
+  -- Named rather than wildcarded. A `sourceKind` at the two other temporal families and a
+  -- `sourceComponents` off the clock profile are the adjacent profiles this carrier has no rows
+  -- for, alongside the `else` branches above; the last two are resolution routing and a zone
+  -- outside the modeled profile set, neither of which is a Kernel model refusal.
+  | .sourceKind _ .time _ | .sourceKind _ .dateTime _
+  | .source _ | .unsupportedZone _ => none
 
 end DateFromDateTimeElabError
 

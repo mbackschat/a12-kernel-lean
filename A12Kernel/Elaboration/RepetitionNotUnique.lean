@@ -63,13 +63,19 @@ inductive RepetitionNotUniqueElabError where
 
 namespace RepetitionNotUniqueElabError
 
-/-- Project the measured `RepetitionNotUnique` key-admission classes. Three shapes draw one Kernel class: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group. The first two have distinct local errors; the third reaches the missing-reference-group arm in either absolute or relative spelling. Parallel repeatable paths remain unmapped because the two observed fixtures differ without an established discriminator. Every other unmeasured refusal returns `none`. -/
+/-- Project the measured `RepetitionNotUnique` key-admission classes. Three shapes draw one Kernel class: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group. The first two have distinct local errors; the third reaches the missing-reference-group arm in either absolute or relative spelling. Parallel repeatable paths remain unmapped because the two observed fixtures differ without an established discriminator.
+
+Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. Two are that boundary — a raw String key and a custom String key needing prepared checking are this theory's value-reading limits, not Kernel gates — and `incoherentCore` is the unreachable-by-construction arm. The other five are unmeasured Kernel refusals whose class this carrier has no evidence for. -/
 def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .duplicateKeyField _ => some .duplicateParam1
   | .keyPathMismatch _ _ | .missingReferenceGroup _ =>
       some .repeatableGroupMissing
   | .resolve (.invalidEntity _) => some .invalidEntity
-  | _ => none
+  | .resolve _ | .scope _ | .unsupportedParallelRepeatableKeyPaths _ _
+  | .unsupportedKeyKind _ _ | .rawStringValue _
+  | .customStringRequiresPreparedChecking _
+  | .referenceGroupNotRepeatable _ | .referenceGroupDoesNotContainKey _ _
+  | .path _ | .incoherentCore => none
 
 end RepetitionNotUniqueElabError
 

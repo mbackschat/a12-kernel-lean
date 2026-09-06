@@ -29,7 +29,12 @@ def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
       some KernelStaticDiagnostic.errorFieldNotReferenced
   | .negativeConditionInIteration _ =>
       some KernelStaticDiagnostic.negativeConditionInIteration
-  | _ => none
+  -- Named rather than wildcarded: a new assembly refusal must be classified, not absorbed. The
+  -- error-field forms are unmeasured through this project's own route, which refuses an error field
+  -- outside the declaring group before the Kernel sees it, and the two iteration-scope forms are
+  -- this project's rule-assembly boundary.
+  | .errorField _ | .repeatableErrorField _
+  | .iterationScope _ | .iterationScopeMismatch _ _ _ => none
 
 end FlatRuleAssemblyError
 

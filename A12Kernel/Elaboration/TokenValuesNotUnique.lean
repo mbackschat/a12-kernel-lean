@@ -80,7 +80,12 @@ def diagnostic? : TokenValuesNotUniqueElabError → Option KernelStaticDiagnosti
   | .source (.shape error) => error.diagnostic?
   | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
-  | _ => none
+  -- The one remaining form, named rather than caught by a wildcard. The shared token checker's
+  -- **kind** classes were measured against a String-literal value list and this is a different
+  -- operator with its own message vocabulary, so delegating the rest of that projection here would
+  -- read one carrier's table onto another. Its shape half is delegated above, where the gate is
+  -- genuinely the shared checker's.
+  | .source _ => none
 
 end TokenValuesNotUniqueElabError
 

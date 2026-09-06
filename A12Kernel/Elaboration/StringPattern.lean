@@ -327,7 +327,12 @@ def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnos
       some .invalidTypeForPatternComparison
   | .pattern .javaSyntax
   | .pattern .kernelRestriction => some .invalidPattern
-  | _ => none
+  -- Named rather than wildcarded, so a new refusal must be classified instead of absorbed. The two
+  -- String-value forms are this theory's own reading limits — a raw declaration and a custom one
+  -- needing prepared checking both carry the admitted String kind and clear the gate above — while
+  -- the two resolution forms and `incoherentCore` are routing rather than model refusals.
+  | .model _ | .fieldReference _ | .rawStringValue _
+  | .preparedCustomFieldRequired _ | .incoherentCore => none
 
 end StringPatternConditionElabError
 
