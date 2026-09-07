@@ -580,6 +580,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated](sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)
 <a id="src-later-position-kinds-and-group-expansion-class"></a>
 - [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/static-admission-and-class-probes.md#src-later-position-kinds-and-group-expansion-class)
+<a id="src-filtered-star-supplies-the-leading-kind"></a>
+- [A `Having`-filtered star supplies the extremum's leading kind exactly as a plain star does, measured on the pairing](sources/static-admission-and-class-probes.md#src-filtered-star-supplies-the-leading-kind)
 <a id="src-filtered-star-temporal-carriers-and-binding-depth"></a>
 - [A `Having`-filtered star is admitted wherever a plain star is on all three temporal carriers, the component gate reads through it, and the binding relation re-derives independently](sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)
 <a id="src-distinct-count-component-set-and-locus"></a>

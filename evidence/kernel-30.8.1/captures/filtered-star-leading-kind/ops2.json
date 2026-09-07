@@ -1,0 +1,12 @@
+[
+ {"id":"max-str-filtered","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MaxValue(/Ext/Rows*/Str Having [/Ext/Rows/Guard] > 0, /Ext/Rows*/Num) == [Cap]","--code","M1"]},
+ {"id":"max-str-plain","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MaxValue(/Ext/Rows*/Str, /Ext/Rows*/Num) == [Cap]","--code","M2"]},
+ {"id":"max-num-liveness","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MaxValue(/Ext/Rows*/Num Having [/Ext/Rows/Guard] > 0, /Ext/Rows*/Num2) == [Cap]","--code","M3"]},
+ {"id":"bool-filtered","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MinValue(/Ext/Rows*/Flag Having [/Ext/Rows/Guard] > 0, /Ext/Rows*/Num) == [Cap]","--code","M4"]},
+ {"id":"bool-plain","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MinValue(/Ext/Rows*/Flag, /Ext/Rows*/Num) == [Cap]","--code","M5"]},
+ {"id":"confirm-filtered","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MinValue(/Ext/Rows*/Conf Having [/Ext/Rows/Guard] > 0, /Ext/Rows*/Num) == [Cap]","--code","M6"]},
+ {"id":"confirm-plain","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MinValue(/Ext/Rows*/Conf, /Ext/Rows*/Num) == [Cap]","--code","M7"]},
+ {"id":"group-slot-filtered","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MinValue(/Ext/Rows*/Sub Having [/Ext/Rows/Guard] > 0, /Ext/Rows*/Num) == [Cap]","--code","M8"]},
+ {"id":"group-slot-plain","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MinValue(/Ext/Rows*/Sub, /Ext/Rows*/Num) == [Cap]","--code","M9"]},
+ {"id":"group-slot-num-only-filtered","verb":"rule","args":["check","--field","/Ext/Cap","--condition","FieldFilled(Cap) And MinValue(/Ext/Rows*/Sub Having [/Ext/Rows/Guard] > 0) == [Cap]","--code","M10"]}
+]

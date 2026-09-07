@@ -547,10 +547,20 @@ example : havingErrorOf ["Shop"] source
 
 A starred single-field operand takes the same verdict **and the same Kernel code** as a plain field
 of that kind, in either operand position, measured across the whole declared-kind grid
-([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). The sortable leader
-set is exactly `{NUMBER, DATE}`: STRING, ENUM, BOOLEAN, CONFIRM and DATERANGE each draw
-`MVK_NOT_SORTABLE` leading the list, and every non-Number kind draws it after a Number — DATE
-included, which is the one kind whose class depends on its position. -/
+([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). STRING, ENUM,
+BOOLEAN, CONFIRM and DATERANGE each draw `MVK_NOT_SORTABLE` leading the list, and every non-Number
+kind draws it after a Number — DATE included, which is the one kind whose class depends on its
+position. An earlier version of this note added that the sortable leader set was "exactly
+`{NUMBER, DATE}`"; that was refuted — the set is `{NUMBER}` plus **every** temporal kind
+([provenance](../../docs/SOURCES.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)),
+which is why the rows below assert the five refused kinds and never the set's complement.
+
+**A `Having`-filtered star reads the declaration too**, measured on the pairing rather than on the
+absolute class: each filtered row below is twinned with the plain-star row it must equal, which is
+the claim that survives even where a comparison gate reports before the operand gate
+([checkpoint](../../docs/SOURCES.md#src-filtered-star-supplies-the-leading-kind)). The filter here is
+a presence leaf rather than the measured numeric one, because `SurfaceCorrelatedHaving` carries no
+number-against-literal arm; the filter's *content* is not what the gate reads. -/
 
 private def entityDiagnostic (op : NumericAggregateOp)
     (first : SurfaceFieldEntityOperand)
@@ -562,6 +572,39 @@ private def entityDiagnostic (op : NumericAggregateOp)
 
 private def starOperand (field : String) : SurfaceFieldEntityOperand :=
   .star (source field)
+
+private def filteredStarOperand (field : String) : SurfaceFieldEntityOperand :=
+  .starHaving (source field) surfaceInScope
+
+/-- **The filtered star agrees with the plain star on every leading kind that decides a class.** The
+    pairing is the assertion: a filter that changed the gate would break one side of a pair. -/
+example :
+    (entityDiagnostic .minimum (filteredStarOperand "Note"),
+      entityDiagnostic .minimum (starOperand "Note")) =
+      (some .notSortable, some .notSortable) := by
+  native_decide
+
+/-- The admitted twin, so the pair above is not two refusals that agree by refusing everything. -/
+example :
+    (entityDiagnostic .minimum (filteredStarOperand "Amount"),
+      entityDiagnostic .minimum (starOperand "Amount")) = (none, none) := by
+  native_decide
+
+/-- **A filtered Date leads out of this family exactly as a plain one does**, which is the row that
+    separates "the filter is transparent" from "a filtered operand is refused uniformly": a uniform
+    refusal cannot answer `none` here while answering `notSortable` above. -/
+example :
+    (entityDiagnostic .minimum (filteredStarOperand "Due"),
+      entityDiagnostic .minimum (starOperand "Due")) = (none, none) := by
+  native_decide
+
+/-- And in a **later** position the filtered star re-keys with the plain one, so the agreement is not
+    an artifact of leading. -/
+example :
+    (entityDiagnostic .minimum (starOperand "Amount") [filteredStarOperand "Note"],
+      entityDiagnostic .minimum (starOperand "Amount") [starOperand "Note"]) =
+      (some .notSortable, some .notSortable) := by
+  native_decide
 
 /-- A starred String leading the list draws the sortable class, exactly as the plain field does. -/
 example : entityDiagnostic .minimum (starOperand "Note") = some .notSortable := by
