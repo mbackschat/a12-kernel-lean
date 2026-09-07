@@ -83,6 +83,8 @@ private def keywordProfile : ValidationMessageKeywordProfile := {
   valueSuffixTerminal := "value"
   rootGroupTerminal := "RootGroup"
   ruleGroupTerminal := "RuleGroup"
+  formLineTerminal := "Vordruckzeile"
+  formNameTerminal := "Vordruckname"
   retiredGroupTerminals := ["Zeile", "Usb"]
 }
 
@@ -209,6 +211,7 @@ private def baseYearRender? (template : String) : Option ResolvedMessageText := 
       { providerResult := none, modelLabel := none, debugDisplay := "A" }
     fieldValue := fun _ => { displayValue := none, defaultDisplay := "0" }
     fieldStoredToken := fun _ => none
+    formPointer := fun _ _ => ""
   }).render
 
 /- The Base Year parameter applies its authored offset at authoring, because nothing about it depends
@@ -287,6 +290,12 @@ private def inputs : ValidationMessageInputs where
     else
       { displayValue := none, defaultDisplay := "" }
   fieldStoredToken field := if field == status.id then some "open" else none
+  -- Distinct per terminal so a render case can tell which word was written, which is the only thing
+  -- a caller can be asked for while what the Kernel renders here is unmeasured.
+  formPointer _ pointer :=
+    match pointer with
+    | .line => "L"
+    | .name => "N"
 
 private def render? (template : String) : Option ResolvedMessageText := do
   let condition ← condition?
@@ -302,6 +311,15 @@ private def renderOn? (group : GroupPath) (reference : SurfaceFieldPath)
     (elaborateValidationMessageTemplate model keywordProfile condition
       template).toOption
   pure (checked.toRenderPlan inputs).render
+
+/- The checked part retains **which** of the two form-pointer words was authored, so a caller can
+   answer for each one separately. That is the whole reason the two are one form with a terminal field
+   rather than one undifferentiated part: what either renders is unmeasured, and a part that had
+   collapsed them could not even pose the question to its caller. -/
+example :
+    render? "at $Other.Vordruckzeile$/$Other.Vordruckname$" =
+      some { text := "at L/N" } := by
+  native_decide
 
 /- A category access renders the category token the field's **current stored value** maps to, through
 the declaration's own mapping rather than through anything the caller decides. `open` is the first
@@ -323,6 +341,11 @@ example :
         fieldStoredToken := fun _ => none }).render) =
     some { text := "Is  now" } := by
   native_decide
+
+private def templateOk? (template : String) : Option Bool := do
+  let condition ← condition?
+  pure (elaborateValidationMessageTemplate model keywordProfile condition
+    template).toOption.isSome
 
 private def templateError? (template : String) :
     Option ValidationMessageTemplateError := do
@@ -409,6 +432,31 @@ example :
         some (.reference "Nopß" (.invalidEntity (bare "Nopß"))) ∧
       templateError? "row $ÄÜÖäüöß$" =
         some (.reference "ÄÜÖäüöß" (.invalidEntity (bare "ÄÜÖäüöß"))) := by
+  native_decide
+
+/- **The two form-pointer terminals are the one field form that skips the condition-membership gate.**
+   The Kernel admits `$Entity.Vordruckzeile$` and `$Entity.Vordruckname$` on a field the condition
+   never references — measured on a Number field, a repeatable-group field, and the bare, relative and
+   absolute spellings alike — where every other name-position form on an unreferenced field is refused.
+   `Other` is unreferenced here, `Amount` is the condition's own operand, and the third row is the
+   contrast that makes the exemption a fact about the suffix rather than about the model. -/
+example :
+    templateOk? "row $Other.Vordruckzeile$" = some true ∧
+      templateOk? "row $Other.Vordruckname$" = some true ∧
+      templateOk? "row $Amount.Vordruckzeile$" = some true ∧
+      templateError? "row $Other$" = some (.fieldNotReferenced "Other" other.id) := by
+  native_decide
+
+/- Their only measured gate resolves the entity to a **field**: an undeclared name draws its own
+   reference failure, and the bare terminal without an entity is an ordinary entity lookup rather than
+   a terminal at all. Neither composes with a further suffix. -/
+example :
+    templateError? "row $Nope.Vordruckzeile$" =
+        some (.reference "Nope.Vordruckzeile" (.invalidEntity (bare "Nope"))) ∧
+      templateError? "row $Vordruckzeile$" =
+        some (.reference "Vordruckzeile" (.invalidEntity (bare "Vordruckzeile"))) ∧
+      templateError? "row $Amount.Vordruckzeile.value$" =
+        some (.invalidParameter "Amount.Vordruckzeile.value") := by
   native_decide
 
 /- The **semantic-index suffix** on a parameter. A keyed parameter names a semantic index over a

@@ -66,11 +66,17 @@ One **non-field** parameter form is admitted: the Base Year terminal with an opt
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
 because nothing about it depends on the document.
 
+Two **form-pointer** forms are admitted beside those, `<entity>.Vordruckzeile` and
+`<entity>.Vordruckname`. They share the name position's entity spec and nothing else: their one gate
+resolves that entity to a field, and the condition-membership requirement every other field form
+carries **does not apply** — the Kernel admits both on a field the condition never references, which
+is why the checked part has no membership witness to carry rather than an unset one. What either
+renders is unmeasured and stays caller-supplied.
+
 What stays outside is the rest of the parameter grammar: the remaining non-field forms, the semantic
-index suffix, and repeatable targets. Two of the Kernel's own `.value` gates are
-unreachable in this fragment rather than modelled — a star reference needs a repeatable path, and a
-declaration's "no value validation" flag has no representation here. The bounded-ASCII template gate
-also refuses a name carrying one of the grammar's accented letters before the name rules see it.
+index suffix, and repeatable targets. Two of the Kernel's own `.value` gates are unreachable in this
+fragment rather than modelled — a star reference needs a repeatable path, and a declaration's "no
+value validation" flag has no representation here.
 -/
 
 namespace A12Kernel
@@ -156,6 +162,14 @@ inductive ValidationMessageTemplateError where
   | semanticIndexUnsupported (parameter : String)
   deriving Repr, DecidableEq
 
+/-- Which of the two form-pointer terminals a parameter carries. They are one form with two words
+rather than two forms: the grammar gives them the same shape and the checker the same single gate, and
+no measured row separates them anywhere ([checkpoint](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)). -/
+inductive MessageFormPointer where
+  | line
+  | name
+  deriving Repr, DecidableEq
+
 /-- Which suffix a keyed field reference carries. The grammar puts the suffix **before** the key, so
 a keyed parameter is one shape with three suffix cases rather than three keyed shapes. -/
 inductive MessageParameterSuffix where
@@ -193,6 +207,11 @@ private inductive ParsedValidationMessagePart where
   | baseYear (offset : Int)
   /-- A group-position argument, beside the authored spelling a diagnostic quotes. -/
   | group (parameter : String) (authored : AuthoredMessageGroup)
+  /-- A form-pointer parameter. It shares the name position's entity spec and nothing else: its one
+  gate resolves that entity to a field, and the condition-membership requirement every other field
+  form carries does not apply. -/
+  | formPointer (parameter : String) (reference : AuthoredFieldPath)
+      (pointer : MessageFormPointer)
   /-- Any field form above, keyed. The suffix travels so one arm serves all three. -/
   | keyed (parameter : String) (reference : AuthoredFieldPath)
       (suffix : MessageParameterSuffix) (key : AuthoredMessageKey)
@@ -265,6 +284,11 @@ structure ValidationMessageKeywordProfile where
   rootGroupTerminal : String
   /-- The selected language's spelling of the group position's own-group shorthand. -/
   ruleGroupTerminal : String
+  /-- The two form-pointer terminals. The Kernel's own bundles spell both identically in English and
+  German, but they are data like every sibling terminal rather than literals, because the one exception
+  to that discipline was a latent bilingual defect ([`LF166`](../../docs/LEAN-FINDINGS.md)). -/
+  formLineTerminal : String
+  formNameTerminal : String
   /-- The historic group terminals the Kernel recognizes in the group position and refuses on the
   modern route. Measured under the English condition language the set is `Zeile` and `Usb`; whether it
   is selected by language at all is unmeasured, so the caller supplies it like the other terminals. -/
@@ -427,6 +451,27 @@ private def splitMessageKey (profile : ValidationMessageKeywordProfile)
   | spec :: rest => (spec, some (String.intercalate s!" {profile.forTerminal} " rest))
   | [] => (parameter, none)
 
+/-- Recognize a form-pointer parameter, `<entity>.Vordruckzeile` or `<entity>.Vordruckname`. Returns
+`none` when neither terminal ends the parameter, so the caller falls through to the ordinary forms —
+the bare terminal without an entity is therefore an entity lookup and not a parameter of this shape,
+which is what the Kernel does with it. -/
+private def parseFormPointer (profile : ValidationMessageKeywordProfile)
+    (parameter : String) :
+    Option (Except ValidationMessageTemplateError ParsedValidationMessagePart) :=
+  let attempt (terminal : String) (pointer : MessageFormPointer) :
+      Option (Except ValidationMessageTemplateError ParsedValidationMessagePart) :=
+    match parameter.splitOn ("." ++ terminal) with
+    | [spec, ""] =>
+        if spec.isEmpty then none
+        else some ((.formPointer parameter · pointer) <$>
+          parseMessagePath parameter spec)
+    -- A further suffix after this one is refused by the Kernel, so it stays this fragment's single
+    -- parse class rather than becoming a second admitted spelling.
+    | [_, _] => some (.error (.invalidParameter parameter))
+    | _ => none
+  (attempt profile.formLineTerminal .line).orElse fun _ =>
+    attempt profile.formNameTerminal .name
+
 /-- Strip the value suffix, then decode the remaining entity spec as a path. The suffix is taken at
 the end of the whole spec, which is this fragment's committed reading of a grammar that also lets a
 trailing reserved word belong to the name itself. -/
@@ -484,6 +529,13 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
       else (.fieldCategoryWithTrailingSyntax parameter · category) <$>
         parseMessagePath parameter spec
   | [_] =>
+      -- The two form-pointer terminals are tried before the value suffix, which cannot occur inside
+      -- either word, so the order is a reading convenience rather than a precedence claim. A suffix
+      -- written *after* one is not an alternative spelling: the Kernel refuses it, so a nonempty tail
+      -- falls through to this fragment's single parse class exactly as a doubled value suffix does.
+      match parseFormPointer profile parameter with
+      | some parsed => parsed
+      | none =>
       match parameter.splitOn ("." ++ profile.valueSuffixTerminal) with
       | [spec, ""] => .fieldValue parameter <$> parseMessagePath parameter spec
       | [spec] => .fieldName parameter <$> parseMessagePath parameter spec
@@ -554,6 +606,20 @@ structure CheckedValidationMessageReference
       .ok declaration
   conditionReferenced :
     condition.core.referencesField declaration.id = true
+
+/-- One checked form-pointer parameter. It is deliberately **not** a `CheckedValidationMessageReference`
+carrying a flag: the difference between the two is precisely that this one has no membership witness to
+carry, and a shared record with an optional field would let a consumer read the exemption as missing
+data rather than as the measured rule. -/
+structure CheckedValidationMessageFormPointer
+    (model : FlatModel) (condition : CheckedFlatCondition model) where
+  parameter : String
+  reference : SurfaceFieldPath
+  declaration : FlatFieldDecl
+  pointer : MessageFormPointer
+  resolved :
+    model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+      .ok declaration
 
 /-- One checked category access: the field reference beside the resolved projection, with witnesses
 that the projection belongs to *that* field's own Enumeration declaration and selects *that* category.
@@ -634,6 +700,9 @@ inductive CheckedValidationMessagePart
   | baseYear (offset year : Int)
       (declared : model.baseYear = some (year - offset))
   | group (access : CheckedValidationMessageGroup model condition)
+  /-- A form-pointer parameter, whose resolved entity carries no membership witness because the
+  Kernel requires none here. -/
+  | formPointer (access : CheckedValidationMessageFormPointer model condition)
 
 structure CheckedValidationMessageTemplate
     (model : FlatModel) (condition : CheckedFlatCondition model) where
@@ -747,6 +816,20 @@ private def checkMessageParts (model : FlatModel)
   | .group parameter authored :: rest => do
       pure (.group (← checkMessageGroup condition parameter authored) ::
         (← checkMessageParts model profile condition rest))
+  | .formPointer parameter reference pointer :: rest => do
+      -- `resolveMessageEntity`, not `resolveMessageReference`: this is the one field form the Kernel
+      -- admits on a field the condition never references, measured on six admitted spellings against
+      -- the same model's own membership refusals.
+      let entity ←
+        resolveMessageEntity model profile condition parameter reference
+      pure (.formPointer {
+          parameter
+          reference := entity.reference
+          declaration := entity.declaration
+          pointer
+          resolved := entity.resolved
+        } ::
+        (← checkMessageParts model profile condition rest))
   | .keyed parameter reference _suffix key :: rest => do
       -- A keyed parameter is *not* subject to the condition-membership gate an unkeyed one carries,
       -- but its own admitted set is only the condition's keyed field plus the group's declared index
@@ -787,6 +870,9 @@ structure ValidationMessageInputs where
   /-- The field's current stored token. The category mapping is applied by the checked part, not by
   the caller, because the mapping is the declaration's and is measured. -/
   fieldStoredToken : FieldId → Option String
+  /-- What a form pointer renders. Caller-supplied because it is unmeasured; the field and which of
+  the two terminals was written are both passed, so a caller need not re-derive either. -/
+  formPointer : FieldId → MessageFormPointer → String
 
 def CheckedValidationMessagePart.toRenderPart
     (inputs : ValidationMessageInputs) :
@@ -804,6 +890,8 @@ def CheckedValidationMessagePart.toRenderPart
   -- admissible here is nonrepeatable — see `MessageGroupInput` — so the index is the constant the
   -- Kernel renders for that case, and no caller-supplied bytes enter the message any more.
   | .group _ => .group { repetitionIndex := 1 }
+  | .formPointer access =>
+      .formPointer { text := inputs.formPointer access.declaration.id access.pointer }
 
 def CheckedValidationMessageTemplate.toRenderPlan
     (template : CheckedValidationMessageTemplate model condition)

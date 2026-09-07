@@ -76,6 +76,15 @@ structure MessageGroupInput where
   repetitionIndex : Nat
   deriving Repr, DecidableEq
 
+/-- One form-pointer parameter, the Kernel's `Vordruckzeile` and `Vordruckname` terminals applied to a
+field. What either **renders** is unmeasured, so the bytes are caller-supplied exactly as a name or a
+value input's are. It keeps its own record rather than folding into `text` because the two are not
+interchangeable to a reader of the plan: a form pointer is a resolved parameter position, and an
+Explain consumer that cannot tell it from authored text loses the parameter. -/
+structure MessageFormPointerInput where
+  text : String
+  deriving Repr, DecidableEq
+
 /-- One already-decoded rule-message part. Field references and `$` syntax have been checked before this point; replacement strings are opaque and are never parsed again. -/
 inductive MessageRenderPart where
   | text (value : String)
@@ -87,6 +96,8 @@ inductive MessageRenderPart where
   | baseYear (year : Int)
   /-- A group-position parameter, which renders the firing row's coordinate for the named group. -/
   | group (input : MessageGroupInput)
+  /-- A form-pointer parameter, whose rendered text stays caller-supplied while it is unmeasured. -/
+  | formPointer (input : MessageFormPointerInput)
   deriving Repr, DecidableEq
 
 namespace MessageRenderPart
@@ -98,6 +109,7 @@ def render : MessageRenderPart → String
   | .fieldCategory input => input.categoryToken.getD ""
   | .baseYear year => toString year
   | .group input => toString input.repetitionIndex
+  | .formPointer input => input.text
 
 end MessageRenderPart
 
