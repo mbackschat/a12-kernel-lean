@@ -1,0 +1,285 @@
+{
+  "model": "FfvMal_expanded.json",
+  "locale": "en_US",
+  "clock": "2026-09-07T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "c1-both-filled",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "c2-first-empty",
+      "documentInline": {
+        "Fm": {
+          "D1": null,
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "c3-both-empty",
+      "documentInline": {
+        "Fm": {
+          "D1": null,
+          "D2": null,
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "c4-both-empty-stale",
+      "documentInline": {
+        "Fm": {
+          "D1": null,
+          "D2": null,
+          "Tgt": "2020-12-31",
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "q1-first-malformed",
+      "documentInline": {
+        "Fm": {
+          "D1": "nonsense",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "q2-second-malformed",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "nonsense",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "q3-only-malformed",
+      "documentInline": {
+        "Fm": {
+          "D1": "nonsense",
+          "D2": null,
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "q4-empty-then-malformed",
+      "documentInline": {
+        "Fm": {
+          "D1": null,
+          "D2": "nonsense",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "q5-first-malformed-stale",
+      "documentInline": {
+        "Fm": {
+          "D1": "nonsense",
+          "D2": "2026-02-02",
+          "Tgt": "2020-12-31",
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "q6-second-malformed-stale",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "nonsense",
+          "Tgt": "2020-12-31",
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "s1-row1-clean",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            },
+            {
+              "SD": "2026-04-04"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "s2-row1-malformed",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "nonsense"
+            },
+            {
+              "SD": "2026-04-04"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "s3-row2-malformed",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            },
+            {
+              "SD": "nonsense"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "s4-row2-malformed-stale",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": "2020-11-30",
+          "Rows": [
+            {
+              "SD": "2026-03-03"
+            },
+            {
+              "SD": "nonsense"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "s5-row1-empty-row2-malformed",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": null,
+          "Rows": [
+            {
+              "SD": null
+            },
+            {
+              "SD": "nonsense"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "s6-row1-malformed-stale",
+      "documentInline": {
+        "Fm": {
+          "D1": "2026-01-01",
+          "D2": "2026-02-02",
+          "Tgt": null,
+          "STgt": "2020-11-30",
+          "Rows": [
+            {
+              "SD": "nonsense"
+            },
+            {
+              "SD": "2026-04-04"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

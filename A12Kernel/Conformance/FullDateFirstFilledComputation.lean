@@ -264,7 +264,9 @@ example : (do
       .presentValue destinationDate) := by
   native_decide
 
-/- Exhaustion and a reached formal cause both retain a source-filled clear. Application materializes an absent destination target as present-empty without disturbing unrelated state. -/
+/- Exhaustion and a reached formal cause both retain a source-filled clear. Application materializes an absent destination target as present-empty without disturbing unrelated state. Both halves are Kernel-calibrated on both codegen strategies at the [malformed-prefix checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports), whose control pair also shows the clear is reported only for a *seeded* target.
+
+   The held-fixed axis is the residual channel, which both halves supply EMPTY. `noErrorOccurred` is `withErrors.isEmpty && formalErrorsInOperands.isEmpty`, so the `true` below says nothing about a malformed source's diagnostics — the same checkpoint measures the full-call composition reporting that operand in `formalErrorsInOperands`, which makes `noErrorOccurred` false. Read this case as the clear channel alone. -/
 example :
     (do
       let view ← runViewFor? target source "2000-01-01"
@@ -306,7 +308,7 @@ example :
     }] = some "VALUE|20.03.2024" := by
   native_decide
 
-/- First-present and first-formal terminals both hide the suffix; these order branches remain externally uncalibrated. -/
+/- First-present and first-formal terminals both hide the suffix. Both order branches are now Kernel-calibrated on both codegen strategies at the [malformed-prefix checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports), including the separator that keeps them apart: an *empty* first row falls through and returns the second, so a malformed one terminating is a real asymmetry rather than an artifact of always taking the first row. The suffix is hidden from the VALUE only — the same checkpoint measures the eager operand inventory reporting a malformed suffix the scan never reached. -/
 example :
     signature? [
       {

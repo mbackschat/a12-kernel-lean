@@ -1,0 +1,1289 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FfvMal_expanded.json",
+    "locale" : "en_US",
+    "clock" : "2026-09-07T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "c1-both-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "c2-first-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "c3-both-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "c4-both-empty-stale",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q1-first-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q2-second-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q3-only-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q4-empty-then-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q5-first-malformed-stale",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q6-second-malformed-stale",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TgtComp",
+              "field" : "Fm/Tgt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "t",
+              "referenced" : [
+                "Fm/D1",
+                "Fm/D2",
+                "Fm/Tgt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TgtComp",
+              "field" : "Fm/Tgt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "t",
+              "referenced" : [
+                "Fm/D1",
+                "Fm/D2",
+                "Fm/Tgt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/D2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/D2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/D2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/D2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "s1-row1-clean",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "s2-row1-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "s3-row2-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows[2]/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows[2]/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows[2]/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows[2]/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows[2]/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows[2]/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows[2]/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows[2]/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "s4-row2-malformed-stale",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "STgtComp",
+              "field" : "Fm/STgt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "s",
+              "referenced" : [
+                "/Fm[1]/Rows[0]/SD",
+                "Fm/STgt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows[2]/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows[2]/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows[2]/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows[2]/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "STgtComp",
+              "field" : "Fm/STgt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "s",
+              "referenced" : [
+                "/Fm[1]/Rows[0]/SD",
+                "Fm/STgt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows[2]/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows[2]/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-03"
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows[2]/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows[2]/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "s5-row1-empty-row2-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows[2]/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows[2]/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows[2]/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows[2]/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows[2]/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows[2]/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows[2]/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows[2]/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "s6-row1-malformed-stale",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fm/Rows/SD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Fm/Rows/SD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fm/STgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fm/Tgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fm/Rows/SD",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Fm/Rows/SD"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

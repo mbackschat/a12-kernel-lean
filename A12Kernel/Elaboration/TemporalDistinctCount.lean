@@ -259,7 +259,7 @@ private def certifyDistinctCountGroup (model : FlatModel)
     -- another overload, which draws its own code; a later one is this overload's date/non-date
     -- refusal. The offending declaration is found and re-certified either way, so the refusal names
     -- its own kind and path rather than the group path with a fabricated one.
-    match hFirst : declarations.head? with
+    match declarations.head? with
     | some leading =>
         if leading.toTemporalUniquenessField?.isNone then
           throw (.groupExpansionFirstNotTemporal leading.path
