@@ -1,0 +1,47 @@
+{
+  "model": "Sg21_expanded.json",
+  "locale": "en_US",
+  "clock": "2026-09-07T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "date-declared-clock-filled",
+      "documentInline": {
+        "Kf": {
+          "DateAsClock": "08:30:45",
+          "TTgt": null
+        }
+      }
+    },
+    {
+      "name": "date-declared-clock-empty",
+      "documentInline": {
+        "Kf": {
+          "DateAsClock": null,
+          "TTgt": null
+        }
+      }
+    },
+    {
+      "name": "date-declared-clock-seeded",
+      "documentInline": {
+        "Kf": {
+          "DateAsClock": "08:30:45",
+          "TTgt": "01:02:03"
+        }
+      }
+    },
+    {
+      "name": "date-declared-clock-malformed",
+      "documentInline": {
+        "Kf": {
+          "DateAsClock": "nonsense",
+          "TTgt": null
+        }
+      }
+    }
+  ]
+}

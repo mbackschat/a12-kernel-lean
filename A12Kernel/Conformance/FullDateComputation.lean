@@ -23,8 +23,30 @@ private def target : FlatFieldDecl := {
     format := "dd.MM.yyyy"
     partialMode := .full } }
 
+/-- Three further legal declarations whose declared **kind** and declared **format** disagree, which
+    is what makes this gate's keying observable at all. A same-kind, same-format source cannot
+    separate a kind test from a component test, so the conjunct this fixture now refutes survived
+    every earlier row here. -/
+private def timeAsDate : FlatFieldDecl := {
+  id := 3
+  groupPath := ["Order"]
+  name := "TimeAsDate"
+  policy := { kind := .temporal .time fullDate } }
+
+private def stampAsDate : FlatFieldDecl := {
+  id := 4
+  groupPath := ["Order"]
+  name := "StampAsDate"
+  policy := { kind := .temporal .dateTime fullDate } }
+
+private def dateAsClock : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Order"]
+  name := "DateAsClock"
+  policy := { kind := .temporal .date TemporalComponents.time } }
+
 private def modelFor (zoneId : String) : FlatModel := {
-  fields := [source, target]
+  fields := [source, target, timeAsDate, stampAsDate, dateAsClock]
   timeZoneId := zoneId
   baseYear := some 2020 }
 
@@ -185,6 +207,27 @@ example :
     (fieldView? (input "bad" oldDate.text (.rejected .malformed) oldRaw)).map
       (fun view => (view.cleared, view.noErrorOccurred)) =
         some ([target.id], true) := by
+  native_decide
+
+/- The source gate reads the declared **format** and never the declared kind, Kernel-calibrated on
+both codegen strategies at the [difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format),
+whose bare-copy rows are exactly this carrier. All three declared kinds carrying a complete-date
+format are admitted, and a DATE declaration carrying a bare clock is refused — so each kind appears
+on both sides, and no row reads as one kind being singled out. The conjunct these rows replaced
+refused the two cross-kind admissions, a wrong refusal rather than a wrong message. Kernel-side this
+carrier is also the one whose refusal code differs from its siblings' — `MVK_INVALID_COMPARE_TO_DATE`
+rather than `MVK_WRONG_DATE_FORMAT_FOR_OP` — so the shared rule is the gate and not the diagnostic,
+and the local cause below claims no Kernel code. -/
+example :
+    (elaborateFullDateFieldComputation (modelFor "UTC")
+      source.id target.id).isOk = true ∧
+      (elaborateFullDateFieldComputation (modelFor "UTC")
+        timeAsDate.id target.id).isOk = true ∧
+      (elaborateFullDateFieldComputation (modelFor "UTC")
+        stampAsDate.id target.id).isOk = true ∧
+      errorOf (elaborateFullDateFieldComputation (modelFor "UTC")
+          dateAsClock.id target.id) =
+        some (.sourceComponents dateAsClock.id TemporalComponents.time) := by
   native_decide
 
 example :

@@ -134,7 +134,11 @@ def FlatModel.admitsTimeExtractorField (model : FlatModel)
       declaration.repeatableScope.isEmpty &&
         model.admitsTimeExtractorComponentField position part source
 
-/-- One ordinary Time or DateTime field under its matching extraction token. -/
+/-- One nonrepeatable temporal field whose declared **format** exposes the extracted part, under its
+    matching extraction token. Any of the three temporal kinds qualifies: the declared kind is not
+    read here, so a DATE-declared field formatted `HH:mm:ss` is an admitted hour source while a
+    DATE-declared complete date is refused
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)). -/
 structure CheckedTimeExtractorField (model : FlatModel) where
   position : TimeComponentPosition
   part : TimeNumericPart
@@ -384,15 +388,23 @@ end CheckedTimeStringField
 
 namespace CheckedTimeExtractorField
 
-private def clockObservation? (kind : TemporalKind) :
+/-- Project a clock from whichever temporal payload carries one.
+
+    **The declared kind is deliberately not consulted.** A cell's value family is its declared
+    format's, so a DATE-declared field formatted `HH:mm:ss` holds a clock and the Kernel reads it:
+    `Time(HoursFromTime(…), …)` over such a field is admitted and computes `08:30:45` from a stored
+    `08:30:45`, on both codegen strategies
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+    Earlier guards here required the kind to match the payload, which turned that admitted source
+    into a `payloadKind` fault. `.value _` still fails, so a payload carrying no clock at all
+    remains a real refusal. -/
+private def clockObservation? :
     CellObservation Value → Option (CellObservation TimeOfDay)
   | .empty => some .empty
   | .unknown cause => some (.unknown cause)
   | .poison cause => some (.poison cause)
-  | .value (.temporal (.time _ clock)) =>
-      if kind == .time then some (.value clock) else none
-  | .value (.temporal (.dateTime _ _ clock _)) =>
-      if kind == .dateTime then some (.value clock) else none
+  | .value (.temporal (.time _ clock)) => some (.value clock)
+  | .value (.temporal (.dateTime _ _ clock _)) => some (.value clock)
   | .value _ => none
 
 private def componentOfNumericOperand (field : FieldId) :
@@ -407,11 +419,11 @@ private def componentOfNumericOperand (field : FieldId) :
   | .unknown cause => pure (.unavailable cause)
 
 /-- Project a selected clock component without imposing placement. Empty temporal input follows the extractor's symmetric numeric-zero rule; formal unavailability retains its exact cause. -/
-def classifyTimeExtractorComponent (field : FieldId) (kind : TemporalKind)
+def classifyTimeExtractorComponent (field : FieldId)
     (part : TimeNumericPart)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
-  match clockObservation? kind observation with
+  match clockObservation? observation with
   | some projected =>
       componentOfNumericOperand field (part.fromTimeObservation projected)
   | none => throw (.payloadKind field)
@@ -420,8 +432,7 @@ def classifyTimeExtractorComponent (field : FieldId) (kind : TemporalKind)
 def classify (checked : CheckedTimeExtractorField model)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
-  classifyTimeExtractorComponent checked.source.id checked.source.kind
-    checked.part observation
+  classifyTimeExtractorComponent checked.source.id checked.part observation
 
 /-- Read one certified scalar temporal source through the immutable checked document. -/
 def read (checked : CheckedTimeExtractorField model)

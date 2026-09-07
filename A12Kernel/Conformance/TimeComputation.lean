@@ -141,8 +141,24 @@ private def componentField (id : FieldId) : FlatFieldDecl := {
     leadingZerosAllowed := true
   } }
 
+/-- Two legal declarations whose declared **kind** and declared **format** disagree, which is what
+    makes this extractor's keying observable: a same-kind source cannot separate a kind test from a
+    component test, so the conjuncts these fields refute survived every other row here. -/
+private def dateAsClockSource : FlatFieldDecl := {
+  id := 20
+  groupPath := ["Order"]
+  name := "DateAsClock"
+  policy := { kind := .temporal .date TemporalComponents.time } }
+
+private def dateAsDateSource : FlatFieldDecl := {
+  id := 21
+  groupPath := ["Order"]
+  name := "DateAsDate"
+  policy := { kind := .temporal .date TemporalComponents.fullDate } }
+
 private def executionModel : FlatModel := {
-  fields := [target, componentField 2, componentField 3, componentField 4]
+  fields := [target, componentField 2, componentField 3, componentField 4,
+    dateAsClockSource, dateAsDateSource]
   timeZoneId := "UTC" }
 
 private def componentCell (field : FieldId) (stored : String)
@@ -398,6 +414,22 @@ example :
       (.number 2) (.number 3) (.number 4))).isSome = true ∧
       operationError? (.hour (.extractor .hour 1)) =
         some (.targetSelfReference 1) := by
+  native_decide
+
+/- The extractor source's admitted family is its declared **format**'s, never its declared kind,
+Kernel-calibrated on both codegen strategies at the [difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format).
+A DATE-declared field whose format is a bare clock is an admitted hour source, while a DATE-declared
+complete date is refused — same declared kind on both sides, so the verdict follows the format alone
+and the pair rules out "DATE is permissive" as well as "DATE is refused". Two conjuncts were needed
+for this: the static gate's, and a payload guard at the read that turned the admitted source into a
+`payloadKind` fault after the static one was lifted, which is why the runtime row below matters as
+much as the admission. -/
+example :
+    (operation? (.hour (.extractor .hour dateAsClockSource.id))).isSome
+        = true ∧
+      operationError? (.hour (.extractor .hour dateAsDateSource.id)) =
+        some (.components
+          (.declarationNotAdmitted .hour dateAsDateSource.id)) := by
   native_decide
 
 /- One checked component defaults the omitted suffix to zero and flows through source-relative result classification. -/

@@ -13,7 +13,13 @@ inductive FullDateComputationElabError where
   | target (error : FullDateTargetElabError)
   | source (error : ResolveError)
   | sourceNotTemporal (source : FieldId)
-  | sourceKind (source : FieldId) (actual : TemporalKind)
+  /-- The declared format is not a complete date. This is the **whole** source refusal, with no
+      companion wrong-kind cause: the Kernel reads the declared format here and never the declared
+      kind, so all three temporal kinds carrying a complete-date format are admitted while a
+      DATE-declared bare clock is refused
+      ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+      This carrier's Kernel code is `MVK_INVALID_COMPARE_TO_DATE`, unlike its siblings' — the shared
+      rule is the gate, not the diagnostic. -/
   | sourceComponents (source : FieldId) (actual : TemporalComponents)
   | targetSelfReference (field : FieldId)
   | baseYearNotDeclared
@@ -63,25 +69,27 @@ def elaborateFullDateFieldComputation
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.sourceNotTemporal sourceField)
-  if _hKind : source.kind = .date then
-    if _hComponents : source.components = TemporalComponents.fullDate then
-      if _hDistinct : source.id = target.checked.target.id then
-        throw (.targetSelfReference targetField)
-      else
-        let operand := FlatTemporalOperand.fieldValue source
-        if hOperand :
-            model.admitsFullDateComputationOperand
-              target.checked.target.id operand = true then
-          pure {
-            operand
-            target
-            operandAdmitted := hOperand }
-        else
-          throw .incoherentCore
+  -- No declared-kind guard: the Kernel reads the declared format here, so a TIME- or
+  -- DATE_TIME-declared field carrying a complete-date format is an admitted bare-copy source while
+  -- a DATE-declared bare clock is refused (checkpoint cited on `sourceComponents` below). A former
+  -- guard here refused the first two even after the operand gate stopped testing the kind, which is
+  -- why the widened gate alone was not enough for this carrier.
+  if _hComponents : source.components = TemporalComponents.fullDate then
+    if _hDistinct : source.id = target.checked.target.id then
+      throw (.targetSelfReference targetField)
     else
-      throw (.sourceComponents source.id source.components)
+      let operand := FlatTemporalOperand.fieldValue source
+      if hOperand :
+          model.admitsFullDateComputationOperand
+            target.checked.target.id operand = true then
+        pure {
+          operand
+          target
+          operandAdmitted := hOperand }
+      else
+        throw .incoherentCore
   else
-    throw (.sourceKind source.id source.kind)
+    throw (.sourceComponents source.id source.components)
 
 /-- Build the dynamic `Today` operand from the checked model's exact zone id. No clock sample is retained in the operation. -/
 def elaborateFullDateTodayComputation

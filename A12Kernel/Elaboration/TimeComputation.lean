@@ -558,7 +558,7 @@ def readWith (checked : CheckedAddressedTimeExtractorField model targetScope)
   let cell ← read { field := checked.source.id, path }
     |>.mapError (fun cause => .component (.document cause))
   CheckedTimeExtractorField.classifyTimeExtractorComponent checked.source.id
-    checked.source.kind checked.part (observeCell .computation cell)
+    checked.part (observeCell .computation cell)
       |>.mapError .component
 
 def read (checked : CheckedAddressedTimeExtractorField model targetScope)

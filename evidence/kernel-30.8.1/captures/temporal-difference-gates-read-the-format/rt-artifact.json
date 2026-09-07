@@ -1,0 +1,211 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Sg21_expanded.json",
+    "locale" : "en_US",
+    "clock" : "2026-09-07T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "date-declared-clock-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Kf/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "08:30:45"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Kf/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "08:30:45"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "date-declared-clock-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "date-declared-clock-seeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TTgtComp",
+              "field" : "Kf/TTgt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Kf/DateAsClock",
+                "Kf/TTgt"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Kf/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "08:30:45"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TTgtComp",
+              "field" : "Kf/TTgt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Kf/DateAsClock",
+                "Kf/TTgt"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Kf/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "08:30:45"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "date-declared-clock-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Kf/DateAsClock",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Kf/DateAsClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Kf/DateAsClock",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Kf/DateAsClock"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Kf/DateAsClock",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Kf/DateAsClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Kf/DateAsClock",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Kf/DateAsClock"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
