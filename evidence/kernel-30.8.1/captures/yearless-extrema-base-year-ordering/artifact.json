@@ -1,0 +1,102 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "BYOrd_expanded.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "ordered",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BY_MAX",
+              "field" : "Ord/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "max is M2",
+              "referenced" : [
+                "Ord/Anchor",
+                "Ord/M1",
+                "Ord/M2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "BY_MIN",
+              "field" : "Ord/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "min is M1",
+              "referenced" : [
+                "Ord/Anchor",
+                "Ord/M1",
+                "Ord/M2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BY_MAX",
+              "field" : "Ord/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "max is M2",
+              "referenced" : [
+                "Ord/Anchor",
+                "Ord/M1",
+                "Ord/M2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "BY_MIN",
+              "field" : "Ord/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "min is M1",
+              "referenced" : [
+                "Ord/Anchor",
+                "Ord/M1",
+                "Ord/M2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "reversed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    }
+  ]
+}

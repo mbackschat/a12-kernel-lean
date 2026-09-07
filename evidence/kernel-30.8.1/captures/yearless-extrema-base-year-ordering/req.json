@@ -1,0 +1,9 @@
+{
+  "model": "BYOrd_expanded.json",
+  "locale": "en_US",
+  "observe": ["validateFull"],
+  "rows": [
+    { "name": "ordered",  "document": "doc-ordered.json" },
+    { "name": "reversed", "document": "doc-reversed.json" }
+  ]
+}

@@ -725,6 +725,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+<a id="src-yearless-extrema-base-year-ordering"></a>
+- [The extrema order a yearless list under a declared Base Year on both strategies, and no document on such a model can say what they order on](sources/evaluation-and-application-routes.md#src-yearless-extrema-base-year-ordering)
 <a id="src-extrema-component-omitting-fold"></a>
 - [The extrema fold a component-omitting operand, yearless included, and order it correctly](sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)
 <a id="src-cross-kind-format-runtime-parser"></a>

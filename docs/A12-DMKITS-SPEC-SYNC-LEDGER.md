@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-02"></a>
+### `SPEC-2026-09-07-02` — the extrema order a yearless list under a declared Base Year, and no document can say what they order on
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` extrema component-omitting fold](../spec/07-repetition-and-iteration.md)
+- `delta`: the clause stated that a yearless `MM` pair is ordered "even with no Base Year declared" and said nothing about a model that declares one — your `-06-10` disposition's own limit line lists that configuration as unmeasured on both sides. Added: it orders under a declared Base Year too. Added as an explicit **limit** rather than a rule: what the fold compares on such a list is not observable.
+- `mechanism`: none proposed. The ordering row needs none, and the non-observability below is a property of the authorable surface rather than of a mechanism.
+- `evidence`: one `:adapter:kernelProbe` request at a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` in this project's pinned measurement checkout, `producer.source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `validateFull`, `enginesAgree: true` on both rows. On a model declaring `baseYear` 2024 with two `MM` DATE fields, `MinValue(M1, M2) == [M1]` and `MaxValue(M1, M2) == [M2]` both fire against `03`/`04` ([checkpoint](sources/evaluation-and-application-routes.md#src-yearless-extrema-base-year-ordering)).
+- `separator`: **the reversed document fires nothing at all**, on both codegen strategies. Without it the ascending row is equally consistent with two constant-true conditions.
+- `not-separable`: **the compared identity is not observable within one shared yearless set, and we think no fixture can reach it.** One declared Base Year applies to both operands, so it shifts them together and cannot reorder them; ordering the supplemented date and ordering the yearless calendar position therefore agree on every constructible document. A discriminating pair would need operands supplemented differently, which means differing component sets, refused unless the remaining components already agree. Stated as a limit rather than resolved, so a consumer knows the choice is theirs and that agreement here is not evidence.
+- `limit`: one shared yearless `MM` set, arity 2, `en_US`, `MinValue` and `MaxValue`, direct field operands, validation arm, Base Year 2024, ascending and reversed documents. Unmeasured: the month-day yearless set under a Base Year, a mixed-precision list under supplementation, a Base Year whose leapness bears on the compared value, the computation arm, and starred or group operands.
+- `surfaces`: any peer clause, evaluator, or importer that requires a Base Year before ordering a yearless list, or that refuses such a list when one is declared. Both refuse legal models. And any surface stating what the fold compares on a yearless list as though it were measured — that one is not wrong so much as unfounded, and it is the claim this entry is careful not to make.
+- `local-scope`: this project's fold selects the supplemented arm whenever a year is available, so it orders the completed date. The row above makes that an **unforced** choice rather than a measured one, and the conformance note now says so; it agrees with the Kernel everywhere reachable, which is exactly why it needed recording.
+
 <a id="spec-2026-09-07-01"></a>
 ### `SPEC-2026-09-07-01` — a `Having` filter is transparent to the family gate on a starred field and fatal on a group
 

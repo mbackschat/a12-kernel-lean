@@ -1,0 +1,1 @@
+{"field":"/Ord/Anchor","condition":"FieldFilled(Anchor) And MinValue(M1, M2) == [M1]","code":"BY_MIN","messages":[{"locale":"en_US","text":"min is M1"}]}

@@ -1,0 +1,105 @@
+{
+  "header" : {
+    "id" : "BYOrd_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "BYOrd_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false,
+      "baseYear" : "2024"
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Ord",
+        "name" : "Ord",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Ord/M1",
+            "name" : "M1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ord/M2",
+            "name" : "M2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Ord/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Ord/BY_MIN",
+            "name" : "BY_MIN",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "BY_MIN",
+              "errorCondition" : "FieldFilled(Anchor) And MinValue(M1, M2) == [M1]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "min is M1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Ord/BY_MAX",
+            "name" : "BY_MAX",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "BY_MAX",
+              "errorCondition" : "FieldFilled(Anchor) And MaxValue(M1, M2) == [M2]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "max is M2"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

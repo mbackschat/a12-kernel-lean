@@ -851,12 +851,18 @@ example :
       (some .dated, some .yearless) := by
   native_decide
 
-/- **A declared Base Year moves the yearless list to the dated arm.** This is an internal
-   consistency lock rather than a Kernel row: the admission gate applies `withBaseYear` to every
-   declaration before fixing the expected set — measured on *that* gate
-   ([cases](TemporalExtremumOperands.lean)) — and the selector must agree with the certificate it
-   reads rather than re-deriving the supplementation. The extrema's own *ordering* under a declared
-   Base Year is listed as not searched by the checkpoint above, so no fold row is claimed here. -/
+/- **A declared Base Year moves the yearless list to the dated arm**, which stays an internal
+   consistency lock: the admission gate applies `withBaseYear` to every declaration before fixing
+   the expected set — measured on *that* gate ([cases](TemporalExtremumOperands.lean)) — and the
+   selector must agree with the certificate it reads rather than re-deriving the supplementation.
+
+   The extrema's *ordering* under a declared Base Year is now measured and it works, on both codegen
+   strategies with the reversed document firing nothing
+   ([checkpoint](../../docs/SOURCES.md#src-yearless-extrema-base-year-ordering)). What that cannot
+   settle is which value the fold compares, and no document can: one Base Year shifts both operands
+   together, so ordering the supplemented date and ordering the yearless position agree everywhere a
+   shared set is authorable. **So selecting `.dated` here is an unforced choice, not a measured
+   one** — recorded because a later reader would otherwise take the agreement for evidence. -/
 example : armOf baseYearModel ["MOnly", "MOnly2"] = some .dated := by native_decide
 
 private def starGroups : List SurfaceStarGroupSegment :=

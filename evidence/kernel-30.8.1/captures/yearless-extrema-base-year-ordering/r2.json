@@ -1,0 +1,1 @@
+{"field":"/Ord/Anchor","condition":"FieldFilled(Anchor) And MaxValue(M1, M2) == [M2]","code":"BY_MAX","messages":[{"locale":"en_US","text":"max is M2"}]}
