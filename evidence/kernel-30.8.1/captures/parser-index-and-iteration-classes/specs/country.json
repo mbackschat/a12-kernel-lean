@@ -1,0 +1,1 @@
+{"group":"/Idx","name":"Country","kind":"ENUM","enum":{"values":[{"value":"DE"},{"value":"FR"},{"value":"JP"}],"categories":[{"name":"Continent","values":["EU","EU","AS"]}]}}

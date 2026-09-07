@@ -1,0 +1,102 @@
+[
+ {
+  "id": "A01",
+  "verb": "rule",
+  "args": ["check", "--code", "A01", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for Peers/PeerAmount for Ledger/LedgerNote)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A02",
+  "verb": "rule",
+  "args": ["check", "--code", "A02", "--field", "/Idx/Total", "--condition", "[Rows/Amount for Country -> Continent] == 20", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A03",
+  "verb": "rule",
+  "args": ["check", "--code", "A03", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Outer*/Inner/InnerAmount for \"1\")", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A04",
+  "verb": "rule",
+  "args": ["check", "--code", "A04", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for Ledger/LedgerNote)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A05",
+  "verb": "rule",
+  "args": ["check", "--code", "A05", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for Peers/PeerAmount)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A06",
+  "verb": "rule",
+  "args": ["check", "--code", "A06", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for \"1\")", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A07",
+  "verb": "rule",
+  "args": ["check", "--code", "A07", "--field", "/Idx/Total", "--condition", "RepetitionNotUnique(Rows*/Amount) And GroupsNotCollectivelyFilled(Rows, Peers)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A08",
+  "verb": "rule",
+  "args": ["check", "--code", "A08", "--field", "/Idx/Total", "--condition", "NoFieldFilled(Rows/Amount, Peers*/PeerAmount)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A09",
+  "verb": "rule",
+  "args": ["check", "--code", "A09", "--field", "/Idx/Total", "--condition", "[Rows/Amount] == [Peers/PeerAmount]", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A10",
+  "verb": "rule",
+  "args": ["check", "--code", "A10", "--field", "/Idx/Total", "--condition", "[Rows/Amount] == [Ledger/LedgerNote]", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A11",
+  "verb": "rule",
+  "args": ["check", "--code", "A11", "--field", "/Idx/Total", "--condition", "SumOfProducts(Rows*/Amount) >= 100", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A12",
+  "verb": "rule",
+  "args": ["check", "--code", "A12", "--field", "/Idx/Total", "--condition", "SumOfProducts(Rows*/Amount, Peers*/PeerAmount, Ledger*/LedgerNote) >= 100", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A13",
+  "verb": "rule",
+  "args": ["check", "--code", "A13", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows.*/Amount)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A14",
+  "verb": "rule",
+  "args": ["check", "--code", "A14", "--field", "/Idx/Total", "--condition", "RepetitionNotUnique(Total, Rows/Amount)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A15",
+  "verb": "rule",
+  "args": ["check", "--code", "A15", "--field", "/Idx/Total", "--condition", "RepetitionNotUnique(Total, Outer/Inner/InnerAmount @From Outer/Inner)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A16",
+  "verb": "rule",
+  "args": ["check", "--code", "A16", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Outer*/Inner*/InnerAmount)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A17",
+  "verb": "rule",
+  "args": ["check", "--code", "A17", "--field", "/Idx/Total", "--condition", "FieldFilled(Outer/Inner/InnerAmount for Rows/Amount)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A18",
+  "verb": "rule",
+  "args": ["check", "--code", "A18", "--field", "/Idx/Rows/Amount", "--condition", "FieldFilled(Rows/Amount for Peers/PeerAmount for Ledger/LedgerNote)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A19",
+  "verb": "rule",
+  "args": ["check", "--code", "A19", "--field", "/Idx/Rows/Amount", "--condition", "RepetitionNotUnique(Rows*/Amount) And GroupsNotCollectivelyFilled(Rows, Peers)", "--message", "en_US=g m Problem here."]
+ },
+ {
+  "id": "A20",
+  "verb": "rule",
+  "args": ["check", "--code", "A20", "--field", "/Idx/Outer/Inner/InnerAmount", "--condition", "AtLeastOneFieldFilled(Outer*/Inner/InnerAmount for \"1\")", "--message", "en_US=g m Problem here."]
+ }
+]

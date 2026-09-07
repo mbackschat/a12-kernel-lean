@@ -1,0 +1,415 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 15 ops; 15 of 15 exited nonzero (0 failed, 15 reported a negative verdict or comparison) ? earlier writes were not rolled back",
+  "data" : {
+    "ops" : 15,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "B01",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B01", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Peers/PeerAmount for Ledger/LedgerNote)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': Corrupt input or condition not complete (yet): Unexpected found 'for'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED ? write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED ? `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase ? `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED ? `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error ? a token appeared where the grammar did not allow it ? and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "B02",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B02", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount for Country -> Continent] == 20", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': Corrupt input or condition not complete (yet): Unexpected found 'for'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED ? write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED ? `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase ? `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED ? `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error ? a token appeared where the grammar did not allow it ? and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "B03",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B03", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Ledger/LedgerNote)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': Corrupt input or condition not complete (yet): Unexpected found 'for'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED ? write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED ? `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase ? `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED ? `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error ? a token appeared where the grammar did not allow it ? and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "B04",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B04", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Peers/PeerAmount)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': Corrupt input or condition not complete (yet): Unexpected found 'for'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED ? write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED ? `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase ? `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED ? `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error ? a token appeared where the grammar did not allow it ? and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "B05",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B05", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for \"1\")", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': Corrupt input or condition not complete (yet): Unexpected found 'for'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED ? write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED ? `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase ? `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED ? `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error ? a token appeared where the grammar did not allow it ? and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "B06",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B06", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Peers/PeerAmount]", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': The group or field 'Peers' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name ? a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name ? almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "B07",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B07", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Ledger/LedgerNote]", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': The group or field 'Ledger' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name ? a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name ? almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "B08",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B08", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Peers*/PeerAmount]", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': The group or field 'Peers' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name ? a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name ? almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "B09",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B09", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "RepetitionNotUnique(Total, Amount)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NOT_IN_RULEGROUP",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': At 'RepetitionNotUnique': Only fields in subgroups of RuleGroup or directly contained in the repeatable root group are allowed to be referenced. Corrupt: 'Total'. [MVK_NOT_IN_RULEGROUP]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "B10",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B10", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "RepetitionNotUnique(Amount, Outer/Inner/InnerAmount @From Outer/Inner)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': The group or field 'Outer' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name ? a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name ? almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "B11",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B11", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount.*)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_POINT_IN_A12_MODEL",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': It is not allowed to use the character period to specify the line in A12 models. Corrupt: 'Amount'. [MVK_POINT_IN_A12_MODEL]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "B12",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B12", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "SumOfProducts(Amount) >= 100", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALID_2",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': 'SumOfProducts' must contain exactly two parameters. [MVK_PARAMSIZE_INVALID_2]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "B13",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B13", "--field", "/Idx/Outer/Inner/InnerAmount", "--group", "/Idx/Outer/Inner", "--condition", "FieldFilled(InnerAmount for Rows/Amount)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Idx/Outer/Inner/CheckRule': Corrupt input or condition not complete (yet): Unexpected found 'for'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Idx/Outer/Inner/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED ? write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED ? `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase ? `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED ? `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error ? a token appeared where the grammar did not allow it ? and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "B14",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B14", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Outer*/Inner/InnerAmount for \"1\")", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Outer/Inner' in 'Outer/Inner/InnerAmount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 14,
+      "id" : "B15",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "B15", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Amount)", "--message", "en_US=Problem detected." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': Corrupt input or condition not complete (yet): Unexpected found 'for'. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED ? write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED ? `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase ? `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED ? `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error ? a token appeared where the grammar did not allow it ? and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "/Users/mbackschat/Projects/oss/a12/a12-kernel-lean/evidence/kernel-30.8.1/captures/parser-index-and-iteration-classes/obs2.json"
+}

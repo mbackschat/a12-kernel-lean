@@ -1,0 +1,132 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "77fd362178da8b9b66c80d7f7cf49011bd2717729277897e888c70ff035b7acb",
+  "observations" : [ {
+    "id" : "A01",
+    "inputHash" : "9f5a4abe444893295193efb9032b907252a3b3c584fb917d30c43beb73ca9ba9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A02",
+    "inputHash" : "5ef0ab7a61ee43b99aa013725e008971428f8200e614f52c74b7f353d625f5cb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A03",
+    "inputHash" : "5e3353059961bfc9091e16c2168eaae5afb74b354a893464bfdab30dbbd5feaa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A04",
+    "inputHash" : "30ccda6b7893228e52e9ce8d52c9fff2032ad015360ce55cfd298f14ca5362b3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A05",
+    "inputHash" : "53c9989adaeaae13768fb6d854bedfa88b24616b9891bb425ec1d4e732067063",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A06",
+    "inputHash" : "36e8f26664e163b18d08bca87a474de99a0db2c4c1122e61d53279069b3a5934",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A07",
+    "inputHash" : "64f7406aacfc2370fafe31f0145069b7c137669eb6683ae3b0a31bbc444ae87f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "A08",
+    "inputHash" : "29579c1036563ae19f19c9b3e04d67d3c025faf27749743c4165cdd3bdfd268d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A09",
+    "inputHash" : "421729d94f18c3a57bfd2b22af61a2d4b47d705cdfb51548304281c48e205d06",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A10",
+    "inputHash" : "2bfd3d93a5f30d6dd4ff9f3e55025e90499f87e99887d06cdb838e6b19cb3a56",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A11",
+    "inputHash" : "ae774bcdb18914b84d5cde453ed7c813e51b184a4b1a5639c83b8d161b229a9e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALID_2" ]
+  }, {
+    "id" : "A12",
+    "inputHash" : "3987d56a91075ef8c740c0b2d86bcf805d3476ffb101b8c576cb2e1b0c625cdb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALID_2" ]
+  }, {
+    "id" : "A13",
+    "inputHash" : "037f18f55acf8cbc316d3d86fdfa0e2c4f49764e59444f1b7bb92e270311b051",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_POINT_IN_A12_MODEL" ]
+  }, {
+    "id" : "A14",
+    "inputHash" : "5be44d85ab30c6b6413c2bbc2e9e19f69d0500bbf36bfa4ed121a4fd43fa90d0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A15",
+    "inputHash" : "2902bb55dc70b36c386d5cb1d28cedb8eeb6ba0a8bdb1980a10f5951803c6194",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A16",
+    "inputHash" : "aedab3d06871b300bb77e7bf8118b6704045c93492812f3325fd0ccb48a454e6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_REFERENCED" ]
+  }, {
+    "id" : "A17",
+    "inputHash" : "18e59a24549297386270357231fbcffa46436690e5a24ffb7747afa9c779db67",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "A18",
+    "inputHash" : "9f5a4abe444893295193efb9032b907252a3b3c584fb917d30c43beb73ca9ba9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "A19",
+    "inputHash" : "64f7406aacfc2370fafe31f0145069b7c137669eb6683ae3b0a31bbc444ae87f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "A20",
+    "inputHash" : "5e3353059961bfc9091e16c2168eaae5afb74b354a893464bfdab30dbbd5feaa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  } ]
+}

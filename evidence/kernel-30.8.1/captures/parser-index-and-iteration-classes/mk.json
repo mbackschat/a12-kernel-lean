@@ -1,0 +1,179 @@
+[
+ {
+  "id": "g1",
+  "verb": "group",
+  "args": [
+   "add",
+   "--name",
+   "Rows",
+   "--parent",
+   "/Idx",
+   "--repeatable",
+   "5"
+  ]
+ },
+ {
+  "id": "f1",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx/Rows",
+   "--name",
+   "Key",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "f2",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx/Rows",
+   "--name",
+   "Amount",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "g2",
+  "verb": "group",
+  "args": [
+   "add",
+   "--name",
+   "Peers",
+   "--parent",
+   "/Idx",
+   "--repeatable",
+   "5"
+  ]
+ },
+ {
+  "id": "f3",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx/Peers",
+   "--name",
+   "Key",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "f4",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx/Peers",
+   "--name",
+   "PeerAmount",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "g3",
+  "verb": "group",
+  "args": [
+   "add",
+   "--name",
+   "Ledger",
+   "--parent",
+   "/Idx",
+   "--repeatable",
+   "5"
+  ]
+ },
+ {
+  "id": "f5",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx/Ledger",
+   "--name",
+   "LedgerKey",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "f6",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx/Ledger",
+   "--name",
+   "LedgerNote",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "g4",
+  "verb": "group",
+  "args": [
+   "add",
+   "--name",
+   "Outer",
+   "--parent",
+   "/Idx",
+   "--repeatable",
+   "5"
+  ]
+ },
+ {
+  "id": "g5",
+  "verb": "group",
+  "args": [
+   "add",
+   "--name",
+   "Inner",
+   "--parent",
+   "/Idx/Outer",
+   "--repeatable",
+   "5"
+  ]
+ },
+ {
+  "id": "f7",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx/Outer/Inner",
+   "--name",
+   "InnerAmount",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "f8",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/Idx",
+   "--name",
+   "Total",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "f9",
+  "verb": "field",
+  "args": [
+   "add",
+   "specs/country.json"
+  ]
+ }
+]

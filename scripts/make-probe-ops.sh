@@ -18,8 +18,14 @@
 #   field <alias> <absolute field path>
 #   cond  <alias> <condition text>
 #   msg   <alias> <message text>
-#   row   <id> <field alias> <cond alias> <msg alias>
+#   group <alias> <absolute group path>
+#   row   <id> <field alias> <cond alias> <msg alias> [group alias]
 #   cross <id prefix> <field aliases> <cond aliases> <msg aliases>    (comma-separated, no spaces)
+#
+# A `row`'s optional fifth token names a rule group, which is what lets the error field sit INSIDE a
+# repeatable group. Without it every reference into a repeatable group needs an explicit star, and the
+# missing-star refusal fires before whatever gate the row was actually aimed at — measured 2026-09-07,
+# where it swallowed twelve of twenty rows.
 #
 # `cross` emits the full product with generated ids `<prefix>00`, `<prefix>01`, … in field-major then
 # condition-major order. Message text may carry `\n`, `\t`, `\\` and `\u{XXXX}` for any code point,
@@ -97,17 +103,19 @@ function expand(s,   result, rest, brace, hex, cp, high, low) {
   return result
 }
 
-function emit(id, fieldAlias, condAlias, msgAlias) {
+function emit(id, fieldAlias, condAlias, msgAlias, groupAlias,   groupArgs) {
   if (!(fieldAlias in field)) { fail("unknown field alias: " fieldAlias); return }
   if (!(condAlias in cond)) { fail("unknown cond alias: " condAlias); return }
   if (!(msgAlias in msg)) { fail("unknown msg alias: " msgAlias); return }
+  if (groupAlias != "" && !(groupAlias in grp)) { fail("unknown group alias: " groupAlias); return }
   if (id in seen) { fail("duplicate row id: " id); return }
   seen[id] = 1
   # The Kernel rejects a rule code carrying anything but letters and digits.
   if (id ~ /[^A-Za-z0-9]/) { fail("row id must be alphanumeric: " id); return }
   rows++
-  body[rows] = sprintf("%s {\n%s  \"id\": \"%s\",\n%s  \"verb\": \"rule\",\n%s  \"args\": [\"check\", \"--code\", \"%s\", \"--field\", \"%s\", \"--condition\", \"%s\", \"--message\", \"en_US=%s\"]\n%s }",
-    "", "", id, "", "", id, expand(field[fieldAlias]), expand(cond[condAlias]), expand(msg[msgAlias]), "")
+  groupArgs = (groupAlias == "") ? "" : sprintf(", \"--group\", \"%s\"", expand(grp[groupAlias]))
+  body[rows] = sprintf(" {\n  \"id\": \"%s\",\n  \"verb\": \"rule\",\n  \"args\": [\"check\", \"--code\", \"%s\", \"--field\", \"%s\"%s, \"--condition\", \"%s\", \"--message\", \"en_US=%s\"]\n }",
+    id, id, expand(field[fieldAlias]), groupArgs, expand(cond[condAlias]), expand(msg[msgAlias]))
 }
 
 function split_list(text, target,   n, i, parts) {
@@ -120,19 +128,25 @@ function split_list(text, target,   n, i, parts) {
 
 {
   directive = $1
-  if (directive == "field" || directive == "cond" || directive == "msg") {
+  if (directive == "field" || directive == "cond" || directive == "msg" || directive == "group") {
     if (NF < 3) { fail(directive " needs an alias and a value"); next }
     alias = $2
-    value = substr($0, index($0, $2) + length($2) + 1)
-    sub(/^[[:space:]]+/, "", value)
+    # Strip the directive and the alias POSITIONALLY. Searching for the alias with index() is the
+    # obvious shape and is wrong: a one-character alias matches inside the directive keyword itself, so
+    # `msg m Hi.` yielded "g m Hi." — a silently corrupted probe row rather than an error. Found by a
+    # self-test of this generator on 2026-09-07. Note the awk program is single-quoted in the shell, so
+    # an apostrophe here terminates it; keep this comment apostrophe-free.
+    value = $0
+    sub(/^[[:space:]]*[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]*/, "", value)
     if (directive == "field") field[alias] = value
     else if (directive == "cond") cond[alias] = value
+    else if (directive == "group") grp[alias] = value
     else msg[alias] = value
     next
   }
   if (directive == "row") {
-    if (NF != 5) { fail("row needs: row <id> <field> <cond> <msg>"); next }
-    emit($2, $3, $4, $5)
+    if (NF != 5 && NF != 6) { fail("row needs: row <id> <field> <cond> <msg> [group]"); next }
+    emit($2, $3, $4, $5, (NF == 6) ? $6 : "")
     next
   }
   if (directive == "cross") {
@@ -143,7 +157,7 @@ function split_list(text, target,   n, i, parts) {
     for (fi = 1; fi <= fn; fi++)
       for (ci = 1; ci <= cn; ci++)
         for (mi = 1; mi <= mn; mi++) {
-          emit(sprintf("%s%02d", prefix, counter), fs[fi], cs[ci], ms[mi])
+          emit(sprintf("%s%02d", prefix, counter), fs[fi], cs[ci], ms[mi], "")
           counter++
         }
     next

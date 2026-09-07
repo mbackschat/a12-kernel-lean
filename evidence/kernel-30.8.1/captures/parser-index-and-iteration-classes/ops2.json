@@ -1,0 +1,77 @@
+[
+ {
+  "id": "B01",
+  "verb": "rule",
+  "args": ["check", "--code", "B01", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Peers/PeerAmount for Ledger/LedgerNote)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B02",
+  "verb": "rule",
+  "args": ["check", "--code", "B02", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount for Country -> Continent] == 20", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B03",
+  "verb": "rule",
+  "args": ["check", "--code", "B03", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Ledger/LedgerNote)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B04",
+  "verb": "rule",
+  "args": ["check", "--code", "B04", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Peers/PeerAmount)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B05",
+  "verb": "rule",
+  "args": ["check", "--code", "B05", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for \"1\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B06",
+  "verb": "rule",
+  "args": ["check", "--code", "B06", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Peers/PeerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B07",
+  "verb": "rule",
+  "args": ["check", "--code", "B07", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Ledger/LedgerNote]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B08",
+  "verb": "rule",
+  "args": ["check", "--code", "B08", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Peers*/PeerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B09",
+  "verb": "rule",
+  "args": ["check", "--code", "B09", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "RepetitionNotUnique(Total, Amount)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B10",
+  "verb": "rule",
+  "args": ["check", "--code", "B10", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "RepetitionNotUnique(Amount, Outer/Inner/InnerAmount @From Outer/Inner)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B11",
+  "verb": "rule",
+  "args": ["check", "--code", "B11", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount.*)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B12",
+  "verb": "rule",
+  "args": ["check", "--code", "B12", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "SumOfProducts(Amount) >= 100", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B13",
+  "verb": "rule",
+  "args": ["check", "--code", "B13", "--field", "/Idx/Outer/Inner/InnerAmount", "--group", "/Idx/Outer/Inner", "--condition", "FieldFilled(InnerAmount for Rows/Amount)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B14",
+  "verb": "rule",
+  "args": ["check", "--code", "B14", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Outer*/Inner/InnerAmount for \"1\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "B15",
+  "verb": "rule",
+  "args": ["check", "--code", "B15", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Amount for Amount)", "--message", "en_US=Problem detected."]
+ }
+]

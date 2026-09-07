@@ -1,0 +1,78 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 3 ops; all children exited zero",
+  "data" : {
+    "ops" : 3,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "i1",
+      "verb" : "group",
+      "args" : [ "modify", "/Idx/Rows", "--index-field", "Key" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "group",
+        "op" : "modify",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "set /Idx/Rows: index field Key",
+        "changed" : {
+          "group" : "/Idx/Rows",
+          "indexField" : "Key"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "IdxProbe_DM.json"
+      }
+    }, {
+      "op" : 1,
+      "id" : "i2",
+      "verb" : "group",
+      "args" : [ "modify", "/Idx/Peers", "--index-field", "Key" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "group",
+        "op" : "modify",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "set /Idx/Peers: index field Key",
+        "changed" : {
+          "group" : "/Idx/Peers",
+          "indexField" : "Key"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "IdxProbe_DM.json"
+      }
+    }, {
+      "op" : 2,
+      "id" : "i3",
+      "verb" : "group",
+      "args" : [ "modify", "/Idx/Ledger", "--index-field", "LedgerKey" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "group",
+        "op" : "modify",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "set /Idx/Ledger: index field LedgerKey",
+        "changed" : {
+          "group" : "/Idx/Ledger",
+          "indexField" : "LedgerKey"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "IdxProbe_DM.json"
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

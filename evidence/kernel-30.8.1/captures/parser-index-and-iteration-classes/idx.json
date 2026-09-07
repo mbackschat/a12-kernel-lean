@@ -1,0 +1,32 @@
+[
+ {
+  "id": "i1",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/Idx/Rows",
+   "--index-field",
+   "Key"
+  ]
+ },
+ {
+  "id": "i2",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/Idx/Peers",
+   "--index-field",
+   "Key"
+  ]
+ },
+ {
+  "id": "i3",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/Idx/Ledger",
+   "--index-field",
+   "LedgerKey"
+  ]
+ }
+]

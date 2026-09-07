@@ -1,0 +1,548 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 20 ops; 20 of 20 exited nonzero (0 failed, 20 reported a negative verdict or comparison) ? earlier writes were not rolled back",
+  "data" : {
+    "ops" : 20,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "A01",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A01", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for Peers/PeerAmount for Ledger/LedgerNote)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "A02",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A02", "--field", "/Idx/Total", "--condition", "[Rows/Amount for Country -> Continent] == 20", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "A03",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A03", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Outer*/Inner/InnerAmount for \"1\")", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Outer/Inner' in 'Outer/Inner/InnerAmount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "A04",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A04", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for Ledger/LedgerNote)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "A05",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A05", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for Peers/PeerAmount)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "A06",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A06", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows/Amount for \"1\")", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "A07",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A07", "--field", "/Idx/Total", "--condition", "RepetitionNotUnique(Rows*/Amount) And GroupsNotCollectivelyFilled(Rows, Peers)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARDS_ALLOWED",
+          "summary" : "Rule with path '/Idx/CheckRule': At 'RepetitionNotUnique': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "A08",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A08", "--field", "/Idx/Total", "--condition", "NoFieldFilled(Rows/Amount, Peers*/PeerAmount)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "A09",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A09", "--field", "/Idx/Total", "--condition", "[Rows/Amount] == [Peers/PeerAmount]", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "A10",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A10", "--field", "/Idx/Total", "--condition", "[Rows/Amount] == [Ledger/LedgerNote]", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "A11",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A11", "--field", "/Idx/Total", "--condition", "SumOfProducts(Rows*/Amount) >= 100", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALID_2",
+          "summary" : "Rule with path '/Idx/CheckRule': 'SumOfProducts' must contain exactly two parameters. [MVK_PARAMSIZE_INVALID_2]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "A12",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A12", "--field", "/Idx/Total", "--condition", "SumOfProducts(Rows*/Amount, Peers*/PeerAmount, Ledger*/LedgerNote) >= 100", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALID_2",
+          "summary" : "Rule with path '/Idx/CheckRule': 'SumOfProducts' must contain exactly two parameters. [MVK_PARAMSIZE_INVALID_2]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "A13",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A13", "--field", "/Idx/Total", "--condition", "FieldFilled(Rows.*/Amount)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_POINT_IN_A12_MODEL",
+          "summary" : "Rule with path '/Idx/CheckRule': It is not allowed to use the character period to specify the line in A12 models. Corrupt: 'Rows'. [MVK_POINT_IN_A12_MODEL]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "A14",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A14", "--field", "/Idx/Total", "--condition", "RepetitionNotUnique(Total, Rows/Amount)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Rows' in 'Rows/Amount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 14,
+      "id" : "A15",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A15", "--field", "/Idx/Total", "--condition", "RepetitionNotUnique(Total, Outer/Inner/InnerAmount @From Outer/Inner)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Outer' in 'Outer/Inner/InnerAmount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 15,
+      "id" : "A16",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A16", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Outer*/Inner*/InnerAmount)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
+          "summary" : "Rule with path '/Idx/CheckRule': The error field '/Idx/Total' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path ? reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And ?`.",
+          "explain" : "Every rule's error field must appear among the fields its condition references ? the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 16,
+      "id" : "A17",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A17", "--field", "/Idx/Total", "--condition", "FieldFilled(Outer/Inner/InnerAmount for Rows/Amount)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Idx/CheckRule': Missing specification of an asterisk for 'Outer' in 'Outer/Inner/InnerAmount'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Idx/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it ? the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it ? via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 17,
+      "id" : "A18",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A18", "--field", "/Idx/Rows/Amount", "--condition", "FieldFilled(Rows/Amount for Peers/PeerAmount for Ledger/LedgerNote)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': The group or field 'Rows' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name ? a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name ? almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 18,
+      "id" : "A19",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A19", "--field", "/Idx/Rows/Amount", "--condition", "RepetitionNotUnique(Rows*/Amount) And GroupsNotCollectivelyFilled(Rows, Peers)", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Idx/Rows/CheckRule': The group or field 'Rows' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Idx/Rows/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name ? a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name ? almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 19,
+      "id" : "A20",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "A20", "--field", "/Idx/Outer/Inner/InnerAmount", "--condition", "AtLeastOneFieldFilled(Outer*/Inner/InnerAmount for \"1\")", "--message", "en_US=g m Problem here." ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "Rule with path '/Idx/Outer/Inner/CheckRule': The group or field 'Outer' is not valid. [MVK_INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Idx/Outer/Inner/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name ? a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name ? almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "/Users/mbackschat/Projects/oss/a12/a12-kernel-lean/evidence/kernel-30.8.1/captures/parser-index-and-iteration-classes/obs.json"
+}
