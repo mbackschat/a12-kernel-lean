@@ -609,6 +609,17 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `prerequisite`: the first item needs either a Kernel route that accepts raw display text, or a peer measurement naming which of their routes bypasses canonicalisation; `SPEC-2026-09-07-13`'s acceptance asks exactly that. The second needs only two more probed declarations and can close whenever a Number batch is next authored.
 - `route-state`: probe-ready for the money text split; discovery-required for the conversion route.
 
+### SG28 — refusal-class reachability and the shared denominator
+
+- `state`: open
+- `owner`: this project's conformance denominator, reported by [`CONFORMANCE-COVERAGE.md`](CONFORMANCE-COVERAGE.md); the peer's equivalent is a12-dmkits `docs/MVK-LEDGER.md`, whose bucket vocabulary (`erased`, `n/a-structural`, `kernel-delegated`, `pre-checked`, `pending`, `unclassified`) already names this distinction.
+- `closed`: the code-generation catalog's carrier. Its classes reach ordinary authoring because a registered consistency rule runs the validation generator on every consistency check ([checkpoint](sources/static-admission-and-class-probes.md#src-codegen-classes-reach-ordinary-authoring)).
+- `missing`: a per-class reachability verdict with a citation, separating two categories this project conflated once already and must not conflate again. **Structurally unreachable** means no A12 model can produce it — dead Kernel code with zero emitters, a feature with no DM-JSON representation, an H-model-only construct. **Instrument-limited** means the Kernel computes the diagnostic and the tooling discards or cannot author it, which a tool change fixes. Only the first kind may leave the denominator.
+- `missing`: reconciliation with the peer's count. Their ledger scopes the codegen enum out on the grounds that they never invoke code generation; the checkpoint above measures the opposite, so at least one estate's denominator is wrong by roughly the size of that enum.
+- `discriminator`: for any class proposed as structurally unreachable, the settling question is whether a Kernel emitter exists at all and whether the shape it tests has a DM-JSON encoding. A source grep answering the first is cheap; the second needs the serializer's own property set, not the API's.
+- `prerequisite`: none for the classification itself. The instrument-limited classes need the upstream capability described in the 2026-09-07 instrument note.
+- `route-state`: probe-ready — every candidate is settled by a source grep plus, where a shape exists, one authoring probe.
+
 ## Cross-family conformance gap
 
 ### SG12 — retained Kernel correspondence coverage

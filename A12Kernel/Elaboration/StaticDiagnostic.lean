@@ -186,6 +186,8 @@ inductive KernelStaticDiagnostic where
   | errorEmptyPrecondition
   /-- A computation whose computed field is a repeatable group's declared index field. -/
   | errorIndexAsCalculatedField
+  /-- An Enumeration value carrying a character outside the model's declared supported set. This class belongs to the Kernel's **code-generation** check family, and it is reachable from ordinary authoring because the consistency check runs the validation code generator: one registered consistency rule generates the validator and turns every notification it collects into a consistency problem. The Kernel reports one diagnostic per offending **character**, not one per value. -/
+  | enumValueWithInvalidCharacter
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -283,6 +285,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidFieldInParameter => "INVALID_FIELD_IN_PARAMETER"
   | .errorEmptyPrecondition => "MVK_ERROR_EMPTY_PRECONDITION"
   | .errorIndexAsCalculatedField => "MVK_ERROR_INDEX_AS_CALCULATED_FIELD"
+  | .enumValueWithInvalidCharacter => "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -320,7 +323,7 @@ def all : List KernelStaticDiagnostic :=
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
     .invalidCompareEnumToString, .paramSizeInvalidTwo, .pointInA12Model,
     .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter,
-    .errorEmptyPrecondition, .errorIndexAsCalculatedField]
+    .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter]
 
 end KernelStaticDiagnostic
 
