@@ -336,6 +336,25 @@ Two readings the peer supplied with it. Vacuity is excluded by the sibling tripl
 
 The peer flagged their own epistemic position: they expected the computation rows and every row matched, which is weaker than a run that surprised them, and invited independent re-derivation. Done — seven of the nine rows reproduce on this project's own fixture, plus a depth-2 row their table does not carry ([checkpoint](sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)).
 
+<a id="inbound-2026-09-08"></a>
+### Reviewed 2026-09-08 handback — four pending entries answered, three declaration knobs made authorable, and two kernel derivations opened
+
+a12-dmkits revision `6a669c56d` on `main`, which is that checkout's HEAD with no commits after it, dated 2026-09-08. It answers every acceptance line of `SPEC-2026-09-07-10`, `-11`, `-12` and `-13` and the three instrument items of the 2026-09-07 `dmtool` note. Its five findings are anchored `kf276` through `kf280` in the peer's `docs/KERNEL-FINDINGS.md` at that revision, each naming the test class that locks it; the revision, its position on `main`, and the presence of those findings were read off the checkout rather than taken from the letter.
+
+**The pre-1900 check's year co-requirement holds on DATE_FRAGMENT and not on DATE_RANGE**, measured over the same denominators the DATE grid used — twelve fragment formats, eight admitted range `(format, separator)` pairs. [`spec/05`](../spec/05-dates-and-time.md) carried the co-requirement for DATE alone and explicitly excluded TIME and DATE_TIME, so it was silent rather than wrong on these two; the clause now names all four carriers. Their `kf276`, locked in `adapter.laws.TemporalAdditionalCheckCarrierDiffTest`.
+
+**The fuzz-net route question in `SPEC-2026-09-07-13` is settled, and it settles both readings.** The peer's oracles set cell values directly through `IDocumentFactory.createFieldInstance(path, reps, value)`, where the value string is returned unchanged, with no Document-JSON deserializer anywhere on the chain. They independently measured A12's own Document-JSON ingress and reproduced this project's canonicalisation reading end to end — `-0.0`, `-0`, `-0e5` and `"-0.00"` all reach a sign-free zero with no code, `"+250.00"` reaches `250.00`, and `"-5"` keeps its sign — so the predicate is a leading plus **or** a minus on a zero magnitude, not "the sign is dropped".
+
+**That makes a third route, and it is not this project's open conversion-route gap.** Direct-cell assignment bypasses canonicalisation without being the display-to-internal conversion entry point: one route canonicalises (Document JSON), one passes the string through untouched (direct cell), and one converts a display value. The peer's signed-zero grid is evidence for the second; the [Number formal cascade](IMPLEMENTATION-MAP.md#cap-number-formal-cascade) models the first. Do not fold that grid into either the modelled clause or the conversion-route gap without measuring the route it belongs to.
+
+**One row of the modelled cascade gains an upstream lock rather than a status change.** The peer's ladder neighbours — `zahlMitPlus`, `zahlHatUngueltigeZeichen` and `stelligkeitZuLang` observably ahead of the sign class, and the separator, leading-zero, zero-not-allowed, length and range classes observably behind it — agree with this project's implemented order exactly, derived independently on a different route. `-5.00` on an unsigned money declaration reporting `zahlMitVorzeichen` is the row that applies to the document-loaded domain too.
+
+**`KF37` row 5 is corrected upstream to `zahlMitVorzeichen`**, re-derived from `IFormaleFehlerConstants` before the row was changed, and the peer reports carrying this project's one-code-per-abstract-error axis in their `FormalError.kt` documentation.
+
+**Two kernel derivations now have an observation route**, closing the largest instrument gap this project had reported: the twelve dynamic-enumeration classes behind `getDynamicEnumerationStringValues`, and the two rule-collection restriction classes behind `getChangesAsSpecifiedByRules`. The peer corrected this project's framing in the same step — the method named in the instrument note carries only rule-parser problems and returned nothing on any of thirteen consistency-clean models, so flipping its reporter would have surfaced nothing. Their `kf277`.
+
+**Two of this project's own rows are corrected.** `INVALID_INDEX_FIELD_NONREP_ENUM` **is** reachable and was reached, which this project had listed as unauthorable. `INVALID_INDEX_FIELD_COMPOSED_INDEX` is argued structurally unreachable on the A12 path by source enumeration over the 30.8.1 checkout, with the peer's own stated recall limit: another `IEC` implementation may populate several index names, and a reflective writer would escape the search. That is the same negative-existential class this project holds itself to, so it is recorded as a source-enumerated reading with its limit and not as a measured impossibility.
+
 <a id="inbound-2026-09-07-dispositions"></a>
 ### Reviewed 2026-09-07 dispositions — nine entries answered at one revision, one of ours refuted, one assumption discharged, and two rows sent unasked
 
@@ -820,6 +839,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The thirteen shipped custom field types and their thirty-six refusal keys](sources/static-admission-and-class-probes.md#src-shipped-custom-field-type-vocabulary)
 <a id="src-universal-value-formal-precheck"></a>
 - [The type-independent formal pre-check every stored value passes](sources/static-admission-and-class-probes.md#src-universal-value-formal-precheck)
+<a id="src-unraised-diagnostic-runtime-corroboration"></a>
+- [A second carrier for the never-raised form-line diagnostic](sources/static-admission-and-class-probes.md#src-unraised-diagnostic-runtime-corroboration)
 <a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
 - [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>
