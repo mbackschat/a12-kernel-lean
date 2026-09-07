@@ -1,0 +1,132 @@
+[
+ {
+  "id": "R00",
+  "verb": "rule",
+  "args": ["check", "--code", "R00", "--field", "/Probe/Flag", "--condition", "FieldFilled(Flag)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R01",
+  "verb": "rule",
+  "args": ["check", "--code", "R01", "--field", "/Probe/Due", "--condition", "FieldFilled(Due)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R10",
+  "verb": "rule",
+  "args": ["check", "--code", "R10", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And NumberOfFilledFields(/Probe/Cases*/Grade -> Band) > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R11",
+  "verb": "rule",
+  "args": ["check", "--code", "R11", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And RoundDown([Grade -> Band], 0) < 1", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R12",
+  "verb": "rule",
+  "args": ["check", "--code", "R12", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And RepetitionNotUnique(/Probe/Cases/Grade)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R13",
+  "verb": "rule",
+  "args": ["check", "--code", "R13", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And RepetitionNotUnique(/Probe/Claims/ClaimNo @From /Probe)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R14",
+  "verb": "rule",
+  "args": ["check", "--code", "R14", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And RangeAsNumber(Anchor, 0, 3) == 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R15",
+  "verb": "rule",
+  "args": ["check", "--code", "R15", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And RangeAsString(Anchor, 0, 3) == \"AB\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R20",
+  "verb": "rule",
+  "args": ["check", "--code", "R20", "--field", "/Probe/Flag", "--condition", "FieldFilled(Flag) And [Flag] == [Anchor]", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R21",
+  "verb": "rule",
+  "args": ["check", "--code", "R21", "--field", "/Probe/Flag", "--condition", "FieldFilled(Flag) And [Flag] == True", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R22",
+  "verb": "rule",
+  "args": ["check", "--code", "R22", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And [Amount] == True", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R30",
+  "verb": "rule",
+  "args": ["check", "--code", "R30", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And FieldValueIncludedInValueList(Grade, \"ZZZ\")", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R31",
+  "verb": "rule",
+  "args": ["check", "--code", "R31", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And [Grade -> Band] == \"ZZZ\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R32",
+  "verb": "rule",
+  "args": ["check", "--code", "R32", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And [/Probe/Cases/Grade] == [/Probe/Cases2/Grade]", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R33",
+  "verb": "rule",
+  "args": ["check", "--code", "R33", "--field", "/Probe/Flag", "--condition", "FieldFilled(Flag) And FieldValueIncludedInValueList(Flag, \"x\")", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R40",
+  "verb": "rule",
+  "args": ["check", "--code", "R40", "--field", "/Probe/Due", "--condition", "AllFieldsFilled(Due, Due2) And [Due2] > AddDays(Due, Anchor)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R41",
+  "verb": "rule",
+  "args": ["check", "--code", "R41", "--field", "/Probe/Due", "--condition", "FieldFilled(Due) And DifferenceInDays(\"01.01.2020\", \"01.01.2021\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R42",
+  "verb": "rule",
+  "args": ["check", "--code", "R42", "--field", "/Probe/Due", "--condition", "FieldFilled(Due) And DifferenceInDays(Due, \"99.99.9999\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R43",
+  "verb": "rule",
+  "args": ["check", "--code", "R43", "--field", "/Probe/Due", "--condition", "FieldFilled(Due) And DifferenceInDays(Due, \"31.12\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R44",
+  "verb": "rule",
+  "args": ["check", "--code", "R44", "--field", "/Probe/Due", "--condition", "FieldFilled(Due) And Length(Due) > 2", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R45",
+  "verb": "rule",
+  "args": ["check", "--code", "R45", "--field", "/Probe/Due", "--condition", "FieldFilled(Due) And YearFromDate(Due) < 2020", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R50",
+  "verb": "rule",
+  "args": ["check", "--code", "R50", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And FieldFilled(Payout For /Probe/Claims)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R51",
+  "verb": "rule",
+  "args": ["check", "--code", "R51", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And FieldFilled(Score For /Probe/Cases/Grade -> Band)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R60",
+  "verb": "rule",
+  "args": ["check", "--code", "R60", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And [Anchor] != [Amount] + \"-X\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R61",
+  "verb": "rule",
+  "args": ["check", "--code", "R61", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And Length(Amount) > 2", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "R70",
+  "verb": "rule",
+  "args": ["check", "--code", "R70", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And NumberOfFilledGroups(RuleGroup*) > 0", "--message", "en_US=plain text"]
+ }
+]
