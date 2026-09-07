@@ -592,6 +592,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated](sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)
 <a id="src-later-position-kinds-and-group-expansion-class"></a>
 - [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/static-admission-and-class-probes.md#src-later-position-kinds-and-group-expansion-class)
+<a id="src-typedef-resolves-to-base-kind"></a>
+- [A typedef field is its base kind at three independent gates, which makes `spec/01`'s model-expansion exclusion measured rather than assumed](sources/static-admission-and-class-probes.md#src-typedef-resolves-to-base-kind)
 <a id="src-first-filled-reads-the-format-string"></a>
 - [The four entity-list carriers split two-and-two on one field pair: the extrema and the distinct count read the component set, `FirstFilledValue` and `FieldValuesNotUnique` read the format string](sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string)
 <a id="src-filtered-star-supplies-the-leading-kind"></a>

@@ -1,0 +1,12 @@
+[
+ {"id":"sum-typedef-number","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And Sum(TdNum, PlainNum) > 0","--code","T1"]},
+ {"id":"sum-plain-number-control","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And Sum(PlainNum, TdNum) > 0","--code","T2"]},
+ {"id":"sum-typedef-string","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And Sum(TdStr, PlainNum) > 0","--code","T3"]},
+ {"id":"sum-plain-string-control","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And Sum(PlainStr, PlainNum) > 0","--code","T4"]},
+ {"id":"distinct-typedef-string-with-string","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And NumberOfDifferentValues(TdStr, PlainStr) == 2","--code","T5"]},
+ {"id":"distinct-typedef-string-with-number","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And NumberOfDifferentValues(TdStr, PlainNum) == 2","--code","T6"]},
+ {"id":"distinct-plain-mixed-control","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And NumberOfDifferentValues(PlainStr, PlainNum) == 2","--code","T7"]},
+ {"id":"compare-typedef-number-to-literal","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And [TdNum] > 0","--code","T8"]},
+ {"id":"compare-typedef-string-to-literal","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And [TdStr] > 0","--code","T9"]},
+ {"id":"compare-plain-string-to-literal-control","verb":"rule","args":["check","--field","/Td/PlainNum","--condition","FieldFilled(PlainNum) And [PlainStr] > 0","--code","T10"]}
+]

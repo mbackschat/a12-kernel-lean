@@ -1,0 +1,101 @@
+{
+  "header" : {
+    "id" : "TdBase_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TdBase_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Td",
+        "name" : "Td",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Td/TdNum",
+            "name" : "TdNum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TypeDefType",
+                "TypeDefType" : {
+                  "typeDefinitionId" : "NumTd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Td/TdStr",
+            "name" : "TdStr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TypeDefType",
+                "TypeDefType" : {
+                  "typeDefinitionId" : "StrTd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Td/PlainNum",
+            "name" : "PlainNum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Td/PlainStr",
+            "name" : "PlainStr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    },
+    "typeDefinitions" : [ {
+      "id" : "NumTd",
+      "name" : "NumTd",
+      "fieldType" : {
+        "type" : "NumberType",
+        "NumberType" : {
+          "maxFractionalDigits" : 0
+        }
+      }
+    }, {
+      "id" : "StrTd",
+      "name" : "StrTd",
+      "fieldType" : {
+        "type" : "StringType"
+      }
+    } ]
+  }
+}

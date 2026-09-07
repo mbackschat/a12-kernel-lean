@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-05"></a>
+### `SPEC-2026-09-07-05` — a typedef field is its base kind at every gate, which is what makes a model-expansion exclusion sound
+
+- `status`: pending
+- `clause`: [`01-data-model.md` scope exclusions](../spec/01-data-model.md)
+- `delta`: the clause put model include/expansion out of scope and assumed an already-expanded model, without saying what makes that safe. Added: a typedef field is its **base kind** at every gate tested, so expansion loses no observable distinction. Your own letter measured this at the extrema; this extends it to a general declaration-layer rule and states the consequence for anyone who excludes expansion.
+- `mechanism`: none proposed. The three gates agreeing is the observation; whether resolution happens at deserialization or at each gate is not separable from outside, and either would produce these rows.
+- `evidence`: one `dmtool batch --observations`, ten `rule check` children over one model, at a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` in this project's pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, every envelope `KERNEL_CONFIRMED`. `Sum` admits a NUMBER-based typedef and refuses a STRING-based one `MVK_NO_NUMBER`; `NumberOfDifferentValues` admits a STRING-based typedef beside a String and refuses it beside a Number `MVK_STRING_ENUM_AND_NON_STRING_ENUM`; an ordering comparison against a numeric literal admits the NUMBER-based one and refuses the STRING-based one `MVK_INVALID_TYPE_FOR_COMPARISON` ([checkpoint](sources/static-admission-and-class-probes.md#src-typedef-resolves-to-base-kind)).
+- `separator`: **each gate carries its own plain-base-kind control and the three gates report three different codes.** A typedef treated as an opaque kind would refuse uniformly, and one silently admitted everywhere would pass no control, so both rival readings die on the spread rather than on any single row.
+- `corroborates-your-row`: the ordering pair independently reproduces your §10 orderability mechanism on our fixture — STRING is not orderable, so an ordering comparison reports the orderability class before any kind match. Recorded as corroboration; the entry it belongs to stays yours.
+- `limit`: NUMBER-based and STRING-based typedefs declared inline, three gates, each with a plain control, arity 1 or 2, `en_US`, validation arm. Unmeasured: a typedef over a config-bearing base kind such as DATE or ENUM, where a declared format or domain might not survive resolution; a typedef imported from a separate `_TDM` model rather than declared inline; and the computation arm.
+- `surfaces`: any peer clause, evaluator, or importer that excludes model expansion — as this project does and as any consumer of an expanded model implicitly does. The exclusion is only sound because of this rule, so a surface that documents the exclusion without it is resting on an unmeasured premise rather than stating a wrong fact.
+- `local-scope`: this row **retired** an open gap instead of scheduling work. A typedef arm looked owed because `FieldKind` has none; the measurement shows nothing is, because the declared exclusion is safe. That is the outcome we want from measuring a representation premise before building on it, and it is why the row was run before any Lean was written.
+
 <a id="spec-2026-09-07-04"></a>
 ### `SPEC-2026-09-07-04` — the four entity-list carriers split two-and-two: two read the component set, two read the format string
 
