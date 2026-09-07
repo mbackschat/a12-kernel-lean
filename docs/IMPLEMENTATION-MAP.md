@@ -438,6 +438,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Custom-condition callback](implementation/validation-messages-and-custom.md#cap-custom-condition-callback)
 <a id="cap-custom-field-validation"></a>
 - [Custom-field validation](implementation/validation-messages-and-custom.md#cap-custom-field-validation)
+<a id="cap-shipped-custom-field-type-vocabulary"></a>
+- [Shipped custom field types and their refusal vocabulary](implementation/validation-messages-and-custom.md#cap-shipped-custom-field-type-vocabulary)
 <a id="cap-explicit-validity-predicates"></a>
 - [Explicit validity predicates](implementation/validation-messages-and-custom.md#cap-explicit-validity-predicates)
 

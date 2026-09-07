@@ -139,6 +139,15 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: E/P/Q closed for admitted route; upstream L now locks the **per-cell** observation cardinality at a12-dmkits [source registry](../SOURCES.md) across both kernel strategies and the interpreter, which the pure-oracle account satisfies by construction because only an impure validator could observe the count; C/X none
 - `remains`: Complete integration: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion), [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
+<a id="cap-shipped-custom-field-type-vocabulary"></a>
+#### Shipped custom field types and their refusal vocabulary
+
+- `boundary`: Which predefined types the Kernel itself ships a validator for, and what those validators can report. Thirteen types, fourteen surfaced codes, thirty-six detail keys, and the mapping between them. This is the concrete content the [registered-validator interface](#cap-custom-field-validation) deliberately leaves open, so that a host may register its own: the codes here are exactly the values a `RegisteredCustomRejection` carries when the resolved validator is one of the Kernel's own.
+- `owner`: [`CustomFieldTypeVocabulary.lean`](../../A12Kernel/Semantics/CustomFieldTypeVocabulary.lean), [cases](../../A12Kernel/Conformance/CustomFieldTypeVocabulary.lean)
+- `boundary`: The family answers on two axes and neither is a function of the other, which is the whole reason it is modelled rather than listed. The identification number surfaces a **second** code for a structurally valid value in the reserved test range, and it is the only detail in the catalog whose code is not its type's. Both date types share a **single** detail key, whose message takes the expected format as a parameter, so the key does not identify the type.
+- `assurance`: E locks the counts, the distinctness of both axes, the partition by owning type, and both counterexamples; the German and international IBAN validators are locked as disjoint rather than as modes of one. **C none — `external evidence pending`.** The vocabulary and mapping are read from the validator sources and the catalog at the [checkpoint](../SOURCES.md#src-shipped-custom-field-type-vocabulary); no observation of a running validator is retained. No P, L, X or Q.
+- `remains`: the per-type ordered cascades — what each validator checks and in what order — at [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion).
+
 <a id="cap-explicit-validity-predicates"></a>
 #### Explicit validity predicates
 
