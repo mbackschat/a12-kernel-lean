@@ -45,6 +45,7 @@ import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.TemporalApplication
 import A12Kernel.Semantics.NumericLiteral
 import A12Kernel.Semantics.NumericStoredNumber
+import A12Kernel.Semantics.ValueFormalCheck
 import A12Kernel.Semantics.NumberFormalCheck
 import A12Kernel.Semantics.RuntimeFormalMessageKey
 import A12Kernel.Semantics.NumericTarget

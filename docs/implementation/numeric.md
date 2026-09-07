@@ -111,6 +111,15 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: Its joint checked-model fixture isolates conversion, interval, wrapper, mode, scale, and ordered-list changes and the universal identity relation covers both rich outcome and result-view boundaries; it adds no harness or intermediate representation
 - `remains`: Any nonidentity Transform requires its own semantic relation and consumer hypothesis
 
+<a id="cap-universal-value-formal-precheck"></a>
+#### Universal formal pre-check
+
+- `boundary`: the type-independent, first-match-wins pipeline every stored value passes before its declaration's own cascade runs — a String declaration's value-validation switch, a technical 99,999-character ceiling, the declared character set, a leading blank, a trailing blank. Parameterised by the declaration stage, so [the Number cascade](#cap-number-formal-cascade) composes with it unchanged and every later kind will too.
+- `owner`: [`ValueFormalCheck.lean`](../../A12Kernel/Semantics/ValueFormalCheck.lean), [locks](../../A12Kernel/Conformance/ValueFormalCheck.lean)
+- `boundary`: two distinctions a consumer collapses by default. The technical ceiling is not a declared maximum — it needs no declaration, is fixed, and reports its own code where the String cascade reports `stringZuLang`. And the per-type cascade receives the value **as authored** while the stored value is line-break normalised, so a declared length constraint measures text that may be shorter by exactly the number of CRLF pairs.
+- `assurance`: E locks each step's order against a value breaching two steps at once, verified by mutation rather than by re-reading: five mutations — both order swaps, moving the switch behind the ceiling, handing the cascade normalised text, and an off-by-one ceiling — each fail a retained case. **C none, `external evidence pending`**; the order and the ceiling are read from the runtime checker at the [checkpoint](../SOURCES.md#src-universal-value-formal-precheck) with no retained observation. No P, L, X or Q.
+- `remains`: the String declaration's own cascade, which is read but unmodelled, at [SG7](../gaps/strings-and-messages.md#gap-sg7). The charset predicate stays caller-supplied: the Kernel resolves it from a grapheme trie whose concatenation rules are a declaration-layer question.
+
 <a id="cap-number-formal-cascade"></a>
 #### Ordered Number formal cascade
 

@@ -309,6 +309,7 @@ import A12Kernel.Conformance.TokenValueCount
 import A12Kernel.Conformance.TokenValuesNotUnique
 import A12Kernel.Conformance.CustomFieldTypeVocabulary
 import A12Kernel.Conformance.UnraisedDiagnostic
+import A12Kernel.Conformance.ValueFormalCheck
 import A12Kernel.Conformance.ValidationCondition
 import A12Kernel.Conformance.ValidationCondition.CurrentRepetition
 import A12Kernel.Conformance.ValidationFillQuantifier

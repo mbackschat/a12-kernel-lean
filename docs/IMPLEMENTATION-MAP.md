@@ -154,6 +154,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Scalar Number computation](implementation/numeric.md#cap-scalar-number-computation)
 <a id="cap-addressed-numeric-operation-consumer"></a>
 - [Addressed numeric-operation consumer](implementation/numeric.md#cap-addressed-numeric-operation-consumer)
+<a id="cap-universal-value-formal-precheck"></a>
+- [Universal formal pre-check](implementation/numeric.md#cap-universal-value-formal-precheck)
 <a id="cap-number-formal-cascade"></a>
 - [Ordered Number formal cascade](implementation/numeric.md#cap-number-formal-cascade)
 <a id="cap-runtime-formal-message-keys"></a>

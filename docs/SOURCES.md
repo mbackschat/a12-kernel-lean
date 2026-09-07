@@ -818,6 +818,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The default-locale message bundle is a placeholder for every tool-time catalog](sources/static-admission-and-class-probes.md#src-default-locale-message-bundles)
 <a id="src-shipped-custom-field-type-vocabulary"></a>
 - [The thirteen shipped custom field types and their thirty-six refusal keys](sources/static-admission-and-class-probes.md#src-shipped-custom-field-type-vocabulary)
+<a id="src-universal-value-formal-precheck"></a>
+- [The type-independent formal pre-check every stored value passes](sources/static-admission-and-class-probes.md#src-universal-value-formal-precheck)
 <a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
 - [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>
