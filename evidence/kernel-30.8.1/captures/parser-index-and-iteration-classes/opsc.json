@@ -1,0 +1,47 @@
+[
+ {
+  "id": "F01",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "calc/c1.json"
+  ]
+ },
+ {
+  "id": "F02",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "calc/c2.json"
+  ]
+ },
+ {
+  "id": "F03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "calc/c3.json"
+  ]
+ },
+ {
+  "id": "F04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "calc/c4.json"
+  ]
+ },
+ {
+  "id": "F05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "calc/c5.json"
+  ]
+ }
+]

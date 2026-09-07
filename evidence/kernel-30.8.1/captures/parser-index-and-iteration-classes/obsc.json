@@ -1,0 +1,40 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "922d7f43d51e28b9551e684449b2552e07ba8c52b1b5c590afce9bd7e330d37a",
+  "observations" : [ {
+    "id" : "F01",
+    "inputHash" : "0a3faa0969fadfb20f7065e12936eac976caf882675f990d4b7ad01e1c687eaa",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_EMPTY_PRECONDITION" ]
+  }, {
+    "id" : "F02",
+    "inputHash" : "154438b4ef814100ddf6653732b32d1efc440edd5b3063d12fa96d238f8b016b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_INDEX_AS_CALCULATED_FIELD" ]
+  }, {
+    "id" : "F03",
+    "inputHash" : "aea4da3e5f0ade5c407fdf2d37039230c979b8ba2ab57ef0068e892daa3e9bf4",
+    "ok" : false,
+    "codes" : [ ]
+  }, {
+    "id" : "F04",
+    "inputHash" : "e1af5e6607453adb68c6102e3f0c7c3b963fefa755c861792710a2179fec7101",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_ENUM_TO_STRING" ]
+  }, {
+    "id" : "F05",
+    "inputHash" : "d853935ebb058e079f4181c20fee902b497f9edfe93c2a5dda6ad54a3eff51a8",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

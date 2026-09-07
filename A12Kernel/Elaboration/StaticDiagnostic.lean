@@ -182,6 +182,10 @@ inductive KernelStaticDiagnostic where
   | indexTypeInconsistent
   /-- A message parameter naming a form-pointer target that resolves to a group rather than to a field. The parameter grammar admits the shape, so the refusal is the resolution's and not the parser's. -/
   | invalidFieldInParameter
+  /-- A computation with more than one alternative whose tier carries no precondition. The single-tier form admits the bare comparison, so this class is about tier *arity* rather than about preconditions being mandatory. -/
+  | errorEmptyPrecondition
+  /-- A computation whose computed field is a repeatable group's declared index field. -/
+  | errorIndexAsCalculatedField
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -277,6 +281,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .notInRuleGroup => "MVK_NOT_IN_RULEGROUP"
   | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
   | .invalidFieldInParameter => "INVALID_FIELD_IN_PARAMETER"
+  | .errorEmptyPrecondition => "MVK_ERROR_EMPTY_PRECONDITION"
+  | .errorIndexAsCalculatedField => "MVK_ERROR_INDEX_AS_CALCULATED_FIELD"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -313,7 +319,8 @@ def all : List KernelStaticDiagnostic :=
     .missingYear, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
     .invalidCompareEnumToString, .paramSizeInvalidTwo, .pointInA12Model,
-    .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter]
+    .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter,
+    .errorEmptyPrecondition, .errorIndexAsCalculatedField]
 
 end KernelStaticDiagnostic
 
