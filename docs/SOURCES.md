@@ -583,6 +583,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
+<a id="src-index-terminal-refusal-classes"></a>
+- [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+
 <a id="src-index-terminal-admitting-spelling"></a>
 - [`index(...)` **is** admissible — a bare index-field short name plus the mandatory lowercase `.value` suffix, with the index field on the error field's own path — refuting the earlier no-witness row](sources/message-and-pointer-probes.md#src-index-terminal-admitting-spelling)
 
@@ -643,6 +646,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Extensible Enumeration is a String type's runtime quality with no DM-JSON carrier](sources/static-admission-and-class-probes.md#src-extensible-enumeration-has-no-dm-json-carrier)
 <a id="src-validtype-operand-gates"></a>
 - [The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals](sources/static-admission-and-class-probes.md#src-validtype-operand-gates)
+<a id="src-entity-list-sole-operand-arity"></a>
+- [`FirstFilledValue`'s sole-operand rule is the disjunction its own Kernel message states — more than one field **or** at least one group — while the entity-valued value list admits a sole field on each side](sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)
+
 <a id="src-notind-declaration-properties-are-mapping-provenance"></a>
 - [The six `@NotInD` declaration properties never reach validation codegen or the runtime, the structural-mapping tool is their sole semantic consumer and overrides the format there, and the annotation's own no-effect Javadoc is falsified by its use on the decimal separator](sources/static-admission-and-class-probes.md#src-notind-declaration-properties-are-mapping-provenance)
 

@@ -1,0 +1,711 @@
+[
+ {
+  "id": "A1-ffv-sole-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "A1",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FirstFilledValue(Amount) > 10"
+  ]
+ },
+ {
+  "id": "A2-ffv-two-direct-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "A2",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FirstFilledValue(Amount, Total) > 10"
+  ]
+ },
+ {
+  "id": "A3-ffv-sole-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "A3",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FirstFilledValue(Claims*/Payout) > 10"
+  ]
+ },
+ {
+  "id": "A4-ffv-sole-starred-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "A4",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FirstFilledValue(Claims*) > 10"
+  ]
+ },
+ {
+  "id": "A5-ffv-sole-fixed-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "A5",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FirstFilledValue(Cases*) > 10"
+  ]
+ },
+ {
+  "id": "B1-vl-entity-sole-both",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "B1",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Alpha In Beta)"
+  ]
+ },
+ {
+  "id": "B2-vl-entity-two-fields",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "B2",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Alpha, Anchor In Beta)"
+  ]
+ },
+ {
+  "id": "B3-vl-literal-sole-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "B3",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Alpha In \"x\")"
+  ]
+ },
+ {
+  "id": "B4-vl-entity-sole-two-values",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "B4",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Alpha In Beta, Anchor)"
+  ]
+ },
+ {
+  "id": "C0-msg-control-no-param",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "C0",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "C1-index-enum-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "C1",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "C2-index-enum-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "C2",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Grade)->Band$"
+  ]
+ },
+ {
+  "id": "C3-index-enum-unknown-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "C3",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Grade)->Nope$"
+  ]
+ },
+ {
+  "id": "C4-index-string-category-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "C4",
+   "--field",
+   "/Probe/Claims/Payout",
+   "--condition",
+   "FieldFilled(Payout)",
+   "--message",
+   "en_US=row $index(ClaimNo)->Band$"
+  ]
+ },
+ {
+  "id": "C5-index-string-value-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "C5",
+   "--field",
+   "/Probe/Claims/Payout",
+   "--condition",
+   "FieldFilled(Payout)",
+   "--message",
+   "en_US=row $index(ClaimNo).value$"
+  ]
+ },
+ {
+  "id": "C6-index-enum-no-suffix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "C6",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Grade)$"
+  ]
+ },
+ {
+  "id": "A6-ffv-sole-homogeneous-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "A6",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FirstFilledValue(Notes*) == \"x\""
+  ]
+ },
+ {
+  "id": "A7-ffv-sole-nonrep-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "A7",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FirstFilledValue(Claims*/Note) == \"x\""
+  ]
+ },
+ {
+  "id": "B5-vl-entity-duplicate-diagonal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "B5",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Alpha In Alpha)"
+  ]
+ },
+ {
+  "id": "B6-vl-entity-crosskind-diagonal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "B6",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Alpha In Amount)"
+  ]
+ },
+ {
+  "id": "D1-index-ambiguous",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "D1",
+   "--field",
+   "/Probe/Outer/Inner/InnerVal",
+   "--condition",
+   "FieldFilled(InnerVal)",
+   "--message",
+   "en_US=row $index(Key).value$"
+  ]
+ },
+ {
+  "id": "D2-index-unambiguous-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "D2",
+   "--field",
+   "/Probe/Outer/Inner/InnerVal",
+   "--condition",
+   "FieldFilled(InnerVal)",
+   "--message",
+   "en_US=row $index(Other).value$"
+  ]
+ },
+ {
+  "id": "D3-index-outer-only-errorfield",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "D3",
+   "--field",
+   "/Probe/Outer/OuterVal",
+   "--condition",
+   "FieldFilled(OuterVal)",
+   "--message",
+   "en_US=row $index(Key).value$"
+  ]
+ },
+ {
+  "id": "D4-index-plain-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "D4",
+   "--field",
+   "/Probe/Outer/Inner/InnerVal",
+   "--condition",
+   "FieldFilled(InnerVal)",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "E1-keyed-condition-plus-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E1",
+   "--field",
+   "/Probe/Outer/OuterVal",
+   "--condition",
+   "FieldFilled(OuterVal) And [/Probe/Outer/OuterVal For \"k1\"] > 5",
+   "--message",
+   "en_US=row $index(Key).value$"
+  ]
+ },
+ {
+  "id": "E2-keyed-condition-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E2",
+   "--field",
+   "/Probe/Outer/OuterVal",
+   "--condition",
+   "FieldFilled(OuterVal) And [/Probe/Outer/OuterVal For \"k1\"] > 5",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "E3-keyed-enum-index-plus-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E3",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And [/Probe/Cases/Score For \"A\"] > 5",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "E4-keyed-enum-index-plus-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E4",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And [/Probe/Cases/Score For \"A\"] > 5",
+   "--message",
+   "en_US=row $index(Grade)->Band$"
+  ]
+ },
+ {
+  "id": "E5-keyed-enum-condition-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E5",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And [/Probe/Cases/Score For \"A\"] > 5",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "F0-iter-cond-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F0",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2*/Grade)",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "F1-iter-both-index-fields",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F1",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2*/Grade)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "F2-iter-both-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F2",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2*/Grade)",
+   "--message",
+   "en_US=row $index(Grade)->Band$"
+  ]
+ },
+ {
+  "id": "F3-iter-own-index-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F3",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases*/Grade)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "F4-iter-own-index-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F4",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases*/Grade)",
+   "--message",
+   "en_US=row $index(Grade)->Band$"
+  ]
+ },
+ {
+  "id": "F5-plain-index-cond-nostar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F5",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(Grade)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "F6-plain-index-cond-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F6",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(Grade)",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "F7-string-index-iterated",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F7",
+   "--field",
+   "/Probe/Claims/Payout",
+   "--condition",
+   "FieldFilled(Payout) And FieldFilled(/Probe/Claims*/ClaimNo)",
+   "--message",
+   "en_US=row $index(ClaimNo).value$"
+  ]
+ },
+ {
+  "id": "F8-two-string-index-iterated",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F8",
+   "--field",
+   "/Probe/Claims/Payout",
+   "--condition",
+   "FieldFilled(Payout) And FieldFilled(/Probe/Outer*/Key)",
+   "--message",
+   "en_US=row $index(ClaimNo).value$"
+  ]
+ },
+ {
+  "id": "F9-mixed-enum-string-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "F9",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Claims*/ClaimNo)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "G0-sibling-iter-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G0",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And NumberOfFilledFields(/Probe/Cases2*/Grade) < 2",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "G1-sibling-iter-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G1",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And NumberOfFilledFields(/Probe/Cases2*/Grade) < 2",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "G2-sibling-iter-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G2",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And NumberOfFilledFields(/Probe/Cases2*/Grade) < 2",
+   "--message",
+   "en_US=row $index(Grade)->Band$"
+  ]
+ },
+ {
+  "id": "G3-own-iter-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G3",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And NumberOfFilledFields(/Probe/Cases*/Grade) < 2",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "G4-own-iter-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G4",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And NumberOfFilledFields(/Probe/Cases*/Grade) < 2",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "G5-mixed-enum-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G5",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And NumberOfFilledFields(/Probe/Claims*/ClaimNo) < 2",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "G6-string-index-iterated",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G6",
+   "--field",
+   "/Probe/Claims/Payout",
+   "--condition",
+   "FieldFilled(Payout) And NumberOfFilledFields(/Probe/Claims*/ClaimNo) < 2",
+   "--message",
+   "en_US=row $index(ClaimNo).value$"
+  ]
+ },
+ {
+  "id": "G7-string-index-other-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G7",
+   "--field",
+   "/Probe/Claims/Payout",
+   "--condition",
+   "FieldFilled(Payout) And NumberOfFilledFields(/Probe/Outer*/Key) < 2",
+   "--message",
+   "en_US=row $index(ClaimNo).value$"
+  ]
+ },
+ {
+  "id": "G8-nonindex-name-suffix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G8",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Score).value$"
+  ]
+ },
+ {
+  "id": "G9-index-value-then-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "G9",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Grade).value->Band$"
+  ]
+ }
+]
