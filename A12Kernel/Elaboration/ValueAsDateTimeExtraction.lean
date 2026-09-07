@@ -26,7 +26,6 @@ inductive ValueAsDateTimeExtractionElabError where
   | construction (error : ValueAsDateTimeElabError)
   | source (error : ResolveError)
   | sourceNotTemporal (field : FieldId)
-  | sourceKind (field : FieldId) (actual : TemporalKind)
   | sourceComponents (field : FieldId) (actual : TemporalComponents)
   | amount (error : ResolveError)
   | amountNotNumber (field : FieldId)
@@ -694,28 +693,27 @@ def elaborateValueAsDateTimeExtraction
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.sourceNotTemporal dateTimeField)
-  -- `unmeasured`: this kind guard stays while its sibling `elaborateDateTimeSource` lost one, and
-  -- the asymmetry is deliberate. Every other gate in this class turned out to read the declared
-  -- format, but this is a distinct operator — a partial-Date endpoint combined with a DateTime
-  -- extraction — and no row measures its source half. Widening it on the pattern's strength is the
-  -- reuse-across-a-carrier crossing declined throughout this class ([`LF116`](../../docs/LEAN-FINDINGS.md)),
-  -- and a conjunct that happens to hold produces no signal. Missing witness: this operator's own
-  -- surface, with a DATE- or TIME-declared complete instant in the DateTime position.
-  if _hKind : source.kind = .dateTime then
-    if _hComponents : source.components.isFullDateTime = true then
-      if hAdmitted :
-          model.admitsValueAsDateTimeExtractionSource source = true then
-        pure {
-          construction
-          source
-          sourceAdmitted := hAdmitted
-        }
-      else
-        throw .incoherentCore
+  -- The source gate reads the declared format's components and no kind, measured on **this**
+  -- operator's own surface rather than inherited from its sibling: with
+  -- `DateTime(ValueAsDate(partial, FirstDay), TimeFromDateTime(field))`, a DATE- and a TIME-declared
+  -- complete instant are admitted beside the DATE_TIME control, while a DATE_TIME-declared bare
+  -- clock and a DATE-declared complete date are both refused on components
+  -- ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+  -- The guard this replaced was the last of eleven in the class, kept while its witness was thought
+  -- unavailable; reaching this operator needs a precision-declared source for `ValueAsDate`, which
+  -- is what the earlier search had not authored ([`LF164`](../../docs/LEAN-FINDINGS.md)).
+  if _hComponents : source.components.isFullDateTime = true then
+    if hAdmitted :
+        model.admitsValueAsDateTimeExtractionSource source = true then
+      pure {
+        construction
+        source
+        sourceAdmitted := hAdmitted
+      }
     else
-      throw (.sourceComponents source.id source.components)
+      throw .incoherentCore
   else
-    throw (.sourceKind source.id source.kind)
+    throw (.sourceComponents source.id source.components)
 
 /-- Resolve one checked direct extraction, then retain one source-closed sub-day unit and authored numeric literal for exact-instant shifting. -/
 def elaborateValueAsDateTimeShiftExtraction

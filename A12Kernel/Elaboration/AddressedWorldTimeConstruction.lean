@@ -157,8 +157,6 @@ private def mapBoundShiftedDateTimeSourceError :
   | .source cause => .shifted (.shifted (.source cause))
   | .sourceNotTemporal field =>
       .shifted (.shifted (.sourceNotTemporal field))
-  | .sourceKind field actual =>
-      .shifted (.shifted (.sourceKind field actual))
   | .sourceComponents field actual =>
       .shifted (.shifted (.sourceComponents field actual))
   | .scopeMismatch target source => .addressed (.sourceScope target source)

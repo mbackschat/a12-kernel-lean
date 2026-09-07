@@ -55,16 +55,31 @@ private def extractionError?
   | .ok _ => none
   | .error error => some error
 
-/- Static admission requires a complete DateTime source, not merely a temporal value with a Time half. -/
+/- **Static admission requires a complete instant's components and reads no declared kind.** All
+three date-bearing kinds declared a complete instant are admitted, while a component set missing any
+piece is refused whatever the kind — so every kind appears on both sides. Kernel-calibrated on this
+operator's own surface, `DateTime(ValueAsDate(partial, FirstDay), TimeFromDateTime(field))`, at the
+[difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format).
+
+An earlier version of this case asserted the TIME row as a **kind** refusal, which is how the
+conjunct survived: the row's own fixture was the witness that refutes it, constructed here and
+expected the wrong way round. -/
 example :
     let incomplete := { TemporalComponents.now with second := false }
-    extractionError? (elaborateValueAsDateTimeExtraction
-        (modelWith (dateTimeSource .time)) 0 .firstDay 1) =
-        some (.sourceKind 1 .time) ∧
+    let admitted (kind : TemporalKind) (components : TemporalComponents) :=
+      (elaborateValueAsDateTimeExtraction
+        (modelWith (dateTimeSource kind components)) 0 .firstDay 1).isOk
+    admitted .dateTime TemporalComponents.now = true ∧
+      admitted .time TemporalComponents.now = true ∧
+      admitted .date TemporalComponents.now = true ∧
       extractionError? (elaborateValueAsDateTimeExtraction
         (modelWith (dateTimeSource .dateTime incomplete))
         0 .firstDay 1) =
-        some (.sourceComponents 1 incomplete) := by
+        some (.sourceComponents 1 incomplete) ∧
+      extractionError? (elaborateValueAsDateTimeExtraction
+        (modelWith (dateTimeSource .time TemporalComponents.time))
+        0 .firstDay 1) =
+        some (.sourceComponents 1 TemporalComponents.time) := by
   native_decide
 
 /- Time extraction uses the retained wall-clock half; exact instant identity and the date half are irrelevant after static DateTime admission. -/

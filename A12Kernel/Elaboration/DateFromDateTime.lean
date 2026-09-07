@@ -41,7 +41,6 @@ def FlatModel.admitsCompleteDateTimeSource
 inductive BoundCompleteDateTimeSourceElabError where
   | source (error : ResolveError)
   | sourceNotTemporal (field : FieldId)
-  | sourceKind (field : FieldId) (actual : TemporalKind)
   | sourceComponents (field : FieldId) (actual : TemporalComponents)
   | scopeMismatch (reading source : List String)
   deriving Repr, DecidableEq

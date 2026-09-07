@@ -1,0 +1,92 @@
+[
+ {
+  "id": "ext-stamp-iso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_ext-stamp-iso.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ext-date-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_ext-date-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ext-time-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_ext-time-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ext-stamp-clock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_ext-stamp-clock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ext-date-iso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_ext-date-iso.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "sh-stamp-iso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_sh-stamp-iso.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "sh-date-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_sh-date-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "sh-time-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_sh-time-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "sh-stamp-clock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_sh-stamp-clock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "sh-date-iso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x_sh-date-iso.json",
+   "--dry-run"
+  ]
+ }
+]

@@ -80,21 +80,67 @@ private def extractionError?
   | .ok _ => none
   | .error error => some error
 
-/- Shift admission requires a complete DateTime source, not merely a temporal value with a Time half. -/
+/- **Shift admission requires a complete instant's components and reads no declared kind**, measured
+on the shifted carrier itself rather than inherited from the direct one: with
+`TimeFromDateTime(AddHours(field, 1))` under the same constructor, all three date-bearing kinds
+declared a complete instant are admitted, while a bare clock and a complete date are refused — and
+they draw *different* Kernel codes, `MVK_INVALID_TIME` for the missing date half against
+`MVK_WRONG_DATE_FORMAT_FOR_OP` for the missing time half
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+So the uniform rule is the gate and not the diagnostic, exactly as the difference families report it.
+An earlier version of this case expected the TIME row as a kind refusal. -/
 example :
     let incomplete := { TemporalComponents.now with second := false }
-    extractionError? (elaborateValueAsDateTimeShiftExtraction
-        (modelWith (dateTimeSource .time)) 0 .firstDay 1 .hours 1) =
-        some (.sourceKind 1 .time) ∧
+    let admitted (kind : TemporalKind) (components : TemporalComponents) :=
+      (elaborateValueAsDateTimeShiftExtraction
+        (modelWith (dateTimeSource kind components)) 0 .firstDay 1 .hours 1).isOk
+    admitted .dateTime TemporalComponents.now = true ∧
+      admitted .time TemporalComponents.now = true ∧
+      admitted .date TemporalComponents.now = true ∧
       extractionError? (elaborateValueAsDateTimeShiftExtraction
         (modelWith (dateTimeSource .dateTime incomplete))
         0 .firstDay 1 .hours 1) =
-        some (.sourceComponents 1 incomplete) := by
+        some (.sourceComponents 1 incomplete) ∧
+      extractionError? (elaborateValueAsDateTimeShiftExtraction
+        (modelWith (dateTimeSource .date TemporalComponents.fullDate))
+        0 .firstDay 1 .hours 1) =
+        some (.sourceComponents 1 TemporalComponents.fullDate) := by
   native_decide
 
 /- A sub-day shift acts on the exact DateTime instant before `TimeFromDateTime` projects the model-zone clock. Spring-forward therefore skips the nonexistent Berlin hour rather than adding to the wall label. -/
 example :
     let model := modelWith
+    let sourceLocal := (LocalDateTime.ofYmdHms?
+      2024 3 31 1 30 0).get (by native_decide)
+    let sourceInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        sourceLocal).get (by native_decide)
+    let expectedLocal := (LocalDateTime.ofYmdHms?
+      2024 2 29 3 30 0).get (by native_decide)
+    let expectedInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        expectedLocal).get (by native_decide)
+    let result := do
+      let checked ← (elaborateValueAsDateTimeShiftExtraction
+        model 0 .lastDay 1 .hours 1).toOption
+      let input ← document? model [{
+        address := { field := 1, path := [] }
+        stored := "2024-03-31T01:30:00"
+        raw := dateTimeRaw sourceInstant sourceLocal.date.civil.parts sourceLocal.time
+      }]
+      pure (checked.evaluateRaw .validation input
+        (.parsed "00.02.2024") |>.toOption)
+    result = some (some (.value expectedLocal expectedInstant false)) := by
+  native_decide
+
+/- **The widened gate's read, on the declaration the kind conjunct used to refuse.** The same shift
+over a **DATE**-declared complete instant answers identically, because a cell's value shape follows
+the declared component set and not the declared kind, so the reader's `.dateTime` payload arm needs
+no kind of its own. Without this row the admission row above would leave the newly admitted
+declaration reaching a `sourcePayloadMismatch` fault where the Kernel computes a value — the failure
+mode this class has already produced twice. -/
+example :
+    let model := modelWith (dateTimeSource .date)
     let sourceLocal := (LocalDateTime.ofYmdHms?
       2024 3 31 1 30 0).get (by native_decide)
     let sourceInstant :=
