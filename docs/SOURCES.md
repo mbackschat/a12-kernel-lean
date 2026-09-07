@@ -747,6 +747,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`FirstFilledValue` selects a Boolean `false` because its filled predicate is presence, and an all-empty selection mints no outcome](sources/evaluation-and-application-routes.md#src-boolean-first-filled-false-is-filled)
 <a id="src-first-filled-malformed-terminates-and-inventory-reports"></a>
 - [A malformed `FirstFilledValue` source terminates the scan where an empty one falls through, and the eager operand inventory still reports the suffix the scan never read](sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports)
+<a id="src-first-filled-formal-branch-four-carriers"></a>
+- [The `FirstFilledValue` formal-failure branch is the same on Boolean, DateFragment, Time and DateTime as on full Date, closing six of the seven carriers](sources/evaluation-and-application-routes.md#src-first-filled-formal-branch-four-carriers)
 <a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
 - [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>

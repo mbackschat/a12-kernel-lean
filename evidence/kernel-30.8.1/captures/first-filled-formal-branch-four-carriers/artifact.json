@@ -1,0 +1,1057 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FfvCar_expanded.json",
+    "locale" : "en_US",
+    "clock" : "2026-09-07T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "c-first-empty-second-good",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07"
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-08T09:45:00"
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:45:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07"
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-08T09:45:00"
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:45:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "c-both-empty-stale",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q-first-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q-first-malformed-stale",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B1"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T1"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B1",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B1"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q-second-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-04T08:30:00"
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "08:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Fc/BTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "Fc/GTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "Fc/MTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-04T08:30:00"
+              },
+              {
+                "field" : "Fc/TTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "08:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "q-empty-then-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/G2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "referenced" : [
+                "Fc/G2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/M2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/M2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Fc/T2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "referenced" : [
+                "Fc/T2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Fc/B2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "referenced" : [
+                "Fc/B2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/G2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "referenced" : [
+                  "Fc/G2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/M2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/M2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Fc/T2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Fc/T2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Fc/B2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "referenced" : [
+                  "Fc/B2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

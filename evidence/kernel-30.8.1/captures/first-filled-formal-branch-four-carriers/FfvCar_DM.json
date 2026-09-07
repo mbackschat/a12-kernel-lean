@@ -1,0 +1,231 @@
+{
+  "header" : {
+    "id" : "FfvCar_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FfvCar_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Fc",
+        "name" : "Fc",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Fc/B1",
+            "name" : "B1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/B2",
+            "name" : "B2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/BTgt",
+            "name" : "BTgt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/G1",
+            "name" : "G1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/G2",
+            "name" : "G2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/GTgt",
+            "name" : "GTgt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/T1",
+            "name" : "T1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/T2",
+            "name" : "T2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/TTgt",
+            "name" : "TTgt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/M1",
+            "name" : "M1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/M2",
+            "name" : "M2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fc/MTgt",
+            "name" : "MTgt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Fc/BTgtComp",
+            "name" : "BTgtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BTgt",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(B1, B2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Fc/GTgtComp",
+            "name" : "GTgtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GTgt",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(G1, G2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Fc/TTgtComp",
+            "name" : "TTgtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TTgt",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(T1, T2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Fc/MTgtComp",
+            "name" : "MTgtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MTgt",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(M1, M2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

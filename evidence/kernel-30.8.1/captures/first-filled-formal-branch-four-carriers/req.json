@@ -1,0 +1,125 @@
+{
+  "model": "FfvCar_expanded.json",
+  "locale": "en_US",
+  "clock": "2026-09-07T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "c-first-empty-second-good",
+      "documentInline": {
+        "Fc": {
+          "B1": null,
+          "G1": null,
+          "T1": null,
+          "M1": null,
+          "B2": false,
+          "G2": "2026-07",
+          "T2": "09:45:00",
+          "M2": "2026-07-08T09:45:00",
+          "BTgt": null,
+          "GTgt": null,
+          "TTgt": null,
+          "MTgt": null
+        }
+      }
+    },
+    {
+      "name": "c-both-empty-stale",
+      "documentInline": {
+        "Fc": {
+          "B1": null,
+          "G1": null,
+          "T1": null,
+          "M1": null,
+          "B2": null,
+          "G2": null,
+          "T2": null,
+          "M2": null,
+          "BTgt": true,
+          "GTgt": "2020-01",
+          "TTgt": "01:02:03",
+          "MTgt": "2020-01-01T01:02:03"
+        }
+      }
+    },
+    {
+      "name": "q-first-malformed",
+      "documentInline": {
+        "Fc": {
+          "B1": "maybe",
+          "G1": "nonsense",
+          "T1": "99:99:99",
+          "M1": "nonsense",
+          "B2": false,
+          "G2": "2026-07",
+          "T2": "09:45:00",
+          "M2": "2026-07-08T09:45:00",
+          "BTgt": null,
+          "GTgt": null,
+          "TTgt": null,
+          "MTgt": null
+        }
+      }
+    },
+    {
+      "name": "q-first-malformed-stale",
+      "documentInline": {
+        "Fc": {
+          "B1": "maybe",
+          "G1": "nonsense",
+          "T1": "99:99:99",
+          "M1": "nonsense",
+          "B2": false,
+          "G2": "2026-07",
+          "T2": "09:45:00",
+          "M2": "2026-07-08T09:45:00",
+          "BTgt": true,
+          "GTgt": "2020-01",
+          "TTgt": "01:02:03",
+          "MTgt": "2020-01-01T01:02:03"
+        }
+      }
+    },
+    {
+      "name": "q-second-malformed",
+      "documentInline": {
+        "Fc": {
+          "B1": true,
+          "G1": "2026-05",
+          "T1": "08:30:00",
+          "M1": "2026-05-04T08:30:00",
+          "B2": "maybe",
+          "G2": "nonsense",
+          "T2": "99:99:99",
+          "M2": "nonsense",
+          "BTgt": null,
+          "GTgt": null,
+          "TTgt": null,
+          "MTgt": null
+        }
+      }
+    },
+    {
+      "name": "q-empty-then-malformed",
+      "documentInline": {
+        "Fc": {
+          "B1": null,
+          "G1": null,
+          "T1": null,
+          "M1": null,
+          "B2": "maybe",
+          "G2": "nonsense",
+          "T2": "99:99:99",
+          "M2": "nonsense",
+          "BTgt": null,
+          "GTgt": null,
+          "TTgt": null,
+          "MTgt": null
+        }
+      }
+    }
+  ]
+}
