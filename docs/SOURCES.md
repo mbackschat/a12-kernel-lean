@@ -596,6 +596,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A typedef field is its base kind at three independent gates, which makes `spec/01`'s model-expansion exclusion measured rather than assumed](sources/static-admission-and-class-probes.md#src-typedef-resolves-to-base-kind)
 <a id="src-first-filled-reads-the-format-string"></a>
 - [The four entity-list carriers split two-and-two on one field pair: the extrema and the distinct count read the component set, `FirstFilledValue` and `FieldValuesNotUnique` read the format string](sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string)
+<a id="src-equal-set-spelling-families-carrier-split"></a>
+- [The two-and-two carrier split holds across all three equal-set spelling families, the extrema ignore component order as well as spelling, and a declared Base Year changes none of it](sources/static-admission-and-class-probes.md#src-equal-set-spelling-families-carrier-split)
 <a id="src-filtered-star-supplies-the-leading-kind"></a>
 - [A `Having`-filtered star supplies the extremum's leading kind exactly as a plain star does, measured on the pairing](sources/static-admission-and-class-probes.md#src-filtered-star-supplies-the-leading-kind)
 <a id="src-filtered-star-temporal-carriers-and-binding-depth"></a>

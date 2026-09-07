@@ -1,0 +1,221 @@
+{
+  "header" : {
+    "id" : "XFmt2_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "XFmt2_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false,
+      "baseYear" : "2024"
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Xf",
+        "name" : "Xf",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Xf/YmDash",
+            "name" : "YmDash",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/YmDash2",
+            "name" : "YmDash2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/YmCompact",
+            "name" : "YmCompact",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyyMM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/YmTarget",
+            "name" : "YmTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/FfvYm",
+            "name" : "FfvYm",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/MdDash",
+            "name" : "MdDash",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/MdDash2",
+            "name" : "MdDash2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/MdCompact",
+            "name" : "MdCompact",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MMdd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/DmCompact",
+            "name" : "DmCompact",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "ddMM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/MdTarget",
+            "name" : "MdTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/FfvMd",
+            "name" : "FfvMd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/Dotted",
+            "name" : "Dotted",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/Iso",
+            "name" : "Iso",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/Iso2",
+            "name" : "Iso2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/DateTarget",
+            "name" : "DateTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

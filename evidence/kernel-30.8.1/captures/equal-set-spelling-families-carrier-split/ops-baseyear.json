@@ -1,0 +1,77 @@
+[
+ {
+  "id": "by-ffv-ym-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cA1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "by-ffv-ym-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cA2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "by-ffv-md-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cB1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "by-ffv-md-order-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cB3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "by-min-ym-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And MinValue(YmDash, YmCompact) == [YmTarget]",
+   "--code",
+   "D1"
+  ]
+ },
+ {
+  "id": "by-min-md-order-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/MdTarget",
+   "--condition",
+   "FieldFilled(MdTarget) And MinValue(MdDash, DmCompact) == [MdTarget]",
+   "--code",
+   "D2"
+  ]
+ },
+ {
+  "id": "by-unique-ym-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And FieldValuesNotUnique(YmDash, YmCompact)",
+   "--code",
+   "D3"
+  ]
+ }
+]

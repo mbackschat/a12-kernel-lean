@@ -1,0 +1,242 @@
+[
+ {
+  "id": "ffv-ym-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cA1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-ym-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cA2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-md-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cB1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-md-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cB2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-md-order-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cB3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "min-ym-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And MinValue(YmDash, YmCompact) == [YmTarget]",
+   "--code",
+   "A1"
+  ]
+ },
+ {
+  "id": "min-ym-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And MinValue(YmDash, YmDash2) == [YmTarget]",
+   "--code",
+   "A2"
+  ]
+ },
+ {
+  "id": "max-ym-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And MaxValue(YmDash, YmCompact) == [YmTarget]",
+   "--code",
+   "A3"
+  ]
+ },
+ {
+  "id": "max-ym-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And MaxValue(YmDash, YmDash2) == [YmTarget]",
+   "--code",
+   "A3b"
+  ]
+ },
+ {
+  "id": "ndv-ym-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And NumberOfDifferentValues(YmDash, YmCompact) == 2",
+   "--code",
+   "A4"
+  ]
+ },
+ {
+  "id": "unique-ym-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And FieldValuesNotUnique(YmDash, YmCompact)",
+   "--code",
+   "A5"
+  ]
+ },
+ {
+  "id": "unique-ym-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/YmTarget",
+   "--condition",
+   "FieldFilled(YmTarget) And FieldValuesNotUnique(YmDash, YmDash2)",
+   "--code",
+   "A5b"
+  ]
+ },
+ {
+  "id": "min-md-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/MdTarget",
+   "--condition",
+   "FieldFilled(MdTarget) And MinValue(MdDash, MdCompact) == [MdTarget]",
+   "--code",
+   "B1"
+  ]
+ },
+ {
+  "id": "min-md-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/MdTarget",
+   "--condition",
+   "FieldFilled(MdTarget) And MinValue(MdDash, MdDash2) == [MdTarget]",
+   "--code",
+   "B2"
+  ]
+ },
+ {
+  "id": "max-md-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/MdTarget",
+   "--condition",
+   "FieldFilled(MdTarget) And MaxValue(MdDash, MdCompact) == [MdTarget]",
+   "--code",
+   "B3"
+  ]
+ },
+ {
+  "id": "ndv-md-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/MdTarget",
+   "--condition",
+   "FieldFilled(MdTarget) And NumberOfDifferentValues(MdDash, MdCompact) == 2",
+   "--code",
+   "B4"
+  ]
+ },
+ {
+  "id": "unique-md-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/MdTarget",
+   "--condition",
+   "FieldFilled(MdTarget) And FieldValuesNotUnique(MdDash, MdCompact)",
+   "--code",
+   "B5"
+  ]
+ },
+ {
+  "id": "min-md-order-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/MdTarget",
+   "--condition",
+   "FieldFilled(MdTarget) And MinValue(MdDash, DmCompact) == [MdTarget]",
+   "--code",
+   "B6"
+  ]
+ },
+ {
+  "id": "max-date-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/DateTarget",
+   "--condition",
+   "FieldFilled(DateTarget) And MaxValue(Dotted, Iso) == [DateTarget]",
+   "--code",
+   "C1"
+  ]
+ },
+ {
+  "id": "max-date-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/DateTarget",
+   "--condition",
+   "FieldFilled(DateTarget) And MaxValue(Iso, Iso2) == [DateTarget]",
+   "--code",
+   "C2"
+  ]
+ }
+]

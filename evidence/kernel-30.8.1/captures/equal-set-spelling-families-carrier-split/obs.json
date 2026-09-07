@@ -1,0 +1,130 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "492e13b726b5de9bba2cef6cd6794ed8186cd1de9359756049e6212e05e23801",
+  "observations" : [ {
+    "id" : "ffv-ym-cross",
+    "inputHash" : "00f8a9641cf1635dd23b56b89389157f0ab4463072068b88ad423c9cc8965023",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "ffv-ym-control",
+    "inputHash" : "27a43286e1d97399e7cebebb1af2c1e2a3bc91fefc80cb647526295328b99058",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ffv-md-cross",
+    "inputHash" : "9c0f841deb3ab2df537212a8a3b6f38a6fded4155c361e3ed97d554530584c07",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "ffv-md-control",
+    "inputHash" : "2e036b80d9f9424bdab0303ee11cdc9a5b1b4d470feacf453357f8224572ef11",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ffv-md-order-cross",
+    "inputHash" : "a843018538fb894eede4bccc106a2c93d89b5a1875003f1f6c1275e7c27ff5d3",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "min-ym-cross",
+    "inputHash" : "207a080f56339249834b627b5c5136c583a3ce353960fea7b95d86ffc0e159db",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "min-ym-control",
+    "inputHash" : "2333b3ee9f8d9d93d06d2026609e9d5d9a12800126c136159f6e262fb61f9efc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "max-ym-cross",
+    "inputHash" : "b895af807ffa5254482a342b0c13f2d803656d5ce8a0c93fb6792386184307f1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "max-ym-control",
+    "inputHash" : "3845d8550453eab3308873809dcc73cd77fc8aa7aa59d52847ea2ef3fd7687f4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ndv-ym-cross",
+    "inputHash" : "6a574f66fbf00e11b8e30f9651ffeb0ac7f6e12fb94acf894f1a90f921847c1c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "unique-ym-cross",
+    "inputHash" : "7e77551229866e5186e19b101f3749804ba5a8d8d3ee4922675070c3d73253d1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED" ]
+  }, {
+    "id" : "unique-ym-control",
+    "inputHash" : "db89c53baa55e38337dba4460df25658372d52bc434d7d52d89f649c6aefa9af",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "min-md-cross",
+    "inputHash" : "054b112eac7654ce05896cc83596367f2a7568a8e9885064e3edeca484784e6c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "min-md-control",
+    "inputHash" : "be6e8be9683e150e8bee6f573f1efeed68d20da11b7e1c473dece59e79df0ed7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "max-md-cross",
+    "inputHash" : "5203931177851ac27666566b372a8a2f64c8f39845bdd08e77a63c73116a449e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ndv-md-cross",
+    "inputHash" : "16e3d46b46bcb3304e4bb6e1e4bf931db1cc148a80bdaf15818719455477eb45",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "unique-md-cross",
+    "inputHash" : "3742cc5c836f88276988a91548176c4037acb3c7a88c3cf92028e9f0f8292edf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED" ]
+  }, {
+    "id" : "min-md-order-cross",
+    "inputHash" : "a9ab85ce4949a81309b67d9debf08abeef489b64f36cc6108d2c117287049801",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "max-date-cross",
+    "inputHash" : "891783a52d3bfc5ac4e99ff9508972041c901e805cf81b9edc2b0b2af731dc0f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "max-date-control",
+    "inputHash" : "b2b6b1b93abf81b0aee7ee0dbc520e1aad279ebd1e5519aca56b7a29e9eea495",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}
