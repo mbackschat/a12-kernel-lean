@@ -180,6 +180,8 @@ inductive KernelStaticDiagnostic where
   | notInRuleGroup
   /-- Two groups related by parallel iteration whose declared index fields differ in base type. Distinct from the missing-index class: both groups **have** an index here, and only their types disagree. -/
   | indexTypeInconsistent
+  /-- A message parameter naming a form-pointer target that resolves to a group rather than to a field. The parameter grammar admits the shape, so the refusal is the resolution's and not the parser's. -/
+  | invalidFieldInParameter
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -274,6 +276,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
   | .notInRuleGroup => "MVK_NOT_IN_RULEGROUP"
   | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
+  | .invalidFieldInParameter => "INVALID_FIELD_IN_PARAMETER"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -310,7 +313,7 @@ def all : List KernelStaticDiagnostic :=
     .missingYear, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
     .invalidCompareEnumToString, .paramSizeInvalidTwo, .pointInA12Model,
-    .notInRuleGroup, .indexTypeInconsistent]
+    .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter]
 
 end KernelStaticDiagnostic
 

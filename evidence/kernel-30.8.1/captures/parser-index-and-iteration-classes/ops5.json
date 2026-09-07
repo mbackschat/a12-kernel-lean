@@ -1,0 +1,47 @@
+[
+ {
+  "id": "E01",
+  "verb": "rule",
+  "args": ["check", "--code", "E01", "--field", "/Idx/Total", "--condition", "FieldFilled(Total)", "--message", "en_US=Text $BadToken@@@$ here."]
+ },
+ {
+  "id": "E02",
+  "verb": "rule",
+  "args": ["check", "--code", "E02", "--field", "/Idx/Total", "--condition", "FieldFilled(Total)", "--message", "en_US=Text $Rows.Vordruckzeile$ here."]
+ },
+ {
+  "id": "E03",
+  "verb": "rule",
+  "args": ["check", "--code", "E03", "--field", "/Idx/Total", "--condition", "FieldFilled(Total)", "--message", "en_US=Text $Rows.Vordruckname$ here."]
+ },
+ {
+  "id": "E04",
+  "verb": "rule",
+  "args": ["check", "--code", "E04", "--field", "/Idx/Total", "--condition", "FieldFilled(", "--message", "en_US=Text $Total$ here."]
+ },
+ {
+  "id": "E05",
+  "verb": "rule",
+  "args": ["check", "--code", "E05", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Rows*/Amount)", "--message", "en_US=Row $#Rows$ is wrong."]
+ },
+ {
+  "id": "E06",
+  "verb": "rule",
+  "args": ["check", "--code", "E06", "--field", "/Idx/Total", "--condition", "FieldFilled(Total)", "--message", "en_US=Text $$ here."]
+ },
+ {
+  "id": "E07",
+  "verb": "rule",
+  "args": ["check", "--code", "E07", "--field", "/Idx/Total", "--condition", "FieldFilled(Total)", "--message", "en_US=Text $Total here."]
+ },
+ {
+  "id": "E08",
+  "verb": "rule",
+  "args": ["check", "--code", "E08", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "AtLeastOneFieldFilled(Rows*/Amount)", "--message", "en_US=Row $#Rows$ is wrong."]
+ },
+ {
+  "id": "E09",
+  "verb": "rule",
+  "args": ["check", "--code", "E09", "--field", "/Idx/Total", "--condition", "FieldFilled(Total)", "--message", "en_US=Text $Total$ here."]
+ }
+]
