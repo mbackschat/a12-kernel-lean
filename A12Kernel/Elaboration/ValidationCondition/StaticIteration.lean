@@ -254,7 +254,6 @@ def ordinaryNumericAtomFieldDeclarations?
         | .fieldValue source => do
             let declaration ← model.lookupUniqueId source.id |>.toOption
             if declaration.toTemporalField? == some source &&
-                source.kind == .dateTime &&
                 unit.admittedBy source.components then
               some [declaration]
             else
@@ -273,7 +272,7 @@ def ordinaryNumericAtomFieldDeclarations?
         none
       let declarations := temporalDifferenceOperandDeclarations? model
         (fun source =>
-          CalendarDayDifference.admittedBy source.kind source.components)
+          CalendarDayDifference.admittedBy source.components)
       let leftDeclarations ← declarations left
       let rightDeclarations ← declarations right
       if CalendarDayDifference.yearCompatible model.hasBaseYear

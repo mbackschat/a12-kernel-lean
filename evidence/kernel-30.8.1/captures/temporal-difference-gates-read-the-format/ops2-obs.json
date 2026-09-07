@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "4e7ed710dd317704d09d45523a5c010e2ca0024efc45ecf796cae092fb2c85aa",
+  "observations" : [ {
+    "id" : "mon-control-date-iso",
+    "inputHash" : "e26c4d8ad75a303682b1424247def586d8bf0679fa07dfbf57b22e37db6a6647",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "mon-time-as-date",
+    "inputHash" : "f6a1751c56f623954db8e20cb514001943af256a34edf5c6554050e1286eb4ec",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "mon-stamp-as-date",
+    "inputHash" : "d4cf42c1e912df2a1f7427159ff1949432615e4f4493b4ad3836e82f3b6e6859",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "mon-control-time-clock",
+    "inputHash" : "315a2c7640fc2be96b5e79641b58dcbefcc0da22ef956d5a9fd50f370ea726cb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "mon-date-as-clock",
+    "inputHash" : "a0f44be3ac7a8fc3feea2e2301a895905bda36c434a3d54cef034938c062bac0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "yr-control-date-iso",
+    "inputHash" : "eaba3929d51d0692d3c796a002ec1c423630caededbd61f18a0e9a23ceded6f4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "yr-time-as-date",
+    "inputHash" : "1b1acfd40c58299c7373304dcc57554790f1d4f2f9f6b6341101191e52b62d9b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "yr-stamp-as-date",
+    "inputHash" : "7ce9182b911fc58e7789311ed43c5b39cddbe383647d0d8b91af7fd3a42b717a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "yr-control-time-clock",
+    "inputHash" : "539928a14c486af28f690d8de22a90ba09c792501b7e44fff5c665fd3cf21d03",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "yr-date-as-clock",
+    "inputHash" : "d3e5888421158826e0292da63dc379d56ed47459da44d9134388951ca829eb34",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  } ]
+}

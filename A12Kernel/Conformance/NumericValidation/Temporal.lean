@@ -32,10 +32,33 @@ private def timeAsDateField : FlatFieldDecl := {
   name := "TimeAsDate"
   policy := { kind := .temporal .time TemporalComponents.fullDate } }
 
+/-- The same idea one family further: a DATE- and a TIME-declared carrier whose formats are a
+    complete instant, beside a DATE_TIME-declared one whose format is a bare date. These are the
+    witnesses the sub-day and day gates had no way to see, since every earlier row declared DATE or
+    TIME with a date- or clock-only format and so left kind and format agreeing on the answer. -/
+private def dateAsStampField : FlatFieldDecl := {
+  id := 27
+  groupPath := ["Order"]
+  name := "DateAsStamp"
+  policy := { kind := .temporal .date TemporalComponents.now } }
+
+private def timeAsStampField : FlatFieldDecl := {
+  id := 28
+  groupPath := ["Order"]
+  name := "TimeAsStamp"
+  policy := { kind := .temporal .time TemporalComponents.now } }
+
+private def stampAsDateField : FlatFieldDecl := {
+  id := 29
+  groupPath := ["Order"]
+  name := "StampAsDate"
+  policy := { kind := .temporal .dateTime TemporalComponents.fullDate } }
+
 private def crossCarrierModel : FlatModel :=
   { dateCarrierModel with
     fields :=
-      dateAsClockField :: timeAsDateField :: dateCarrierModel.fields }
+      dateAsClockField :: timeAsDateField :: dateAsStampField ::
+        timeAsStampField :: stampAsDateField :: dateCarrierModel.fields }
 
 private def temporalPartDiagnostic? (surface : SurfaceNumericComparison)
     (sourceModel : FlatModel := model) : Option KernelStaticDiagnostic :=
@@ -240,6 +263,35 @@ example :
         (dayDifference (dateOperand "DateTime")
           (dateOperand "LaterDateTime")) 0) unsupportedZoneModel =
           some (.unsupportedCalendarProfile "Pacific/Apia") := by
+  native_decide
+
+/- The sub-day and day gates read the declared **format** and never the declared kind, which is the
+same rule the completed-period difference above already followed
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+Each kind appears on both sides of both outcomes, so no row here is consistent with one kind simply
+being permissive: a DATE- or TIME-declared instant is admitted at `DifferenceInHours` where a
+DATE_TIME-declared bare clock is refused, and a DATE_TIME- or TIME-declared complete date is
+admitted at `DifferenceInDays` where a DATE-declared bare clock is refused. The kind conjuncts these
+rows replaced refused every admission here — a wrong refusal, not a wrong message. -/
+example :
+    errorOf (comparison .equal
+        (dateTimeDifference .hours (dateOperand "DateAsStamp")
+          (dateOperand "DateTime")) 0)
+        crossCarrierModel = none ∧
+      errorOf (comparison .equal
+          (dateTimeDifference .hours (dateOperand "TimeAsStamp")
+            (dateOperand "DateTime")) 0)
+        crossCarrierModel = none ∧
+      errorOf (comparison .equal
+          (dayDifference (dateOperand "TimeAsDate") (dateOperand "Date")) 0)
+        crossCarrierModel = none ∧
+      errorOf (comparison .equal
+          (dayDifference (dateOperand "StampAsDate") (dateOperand "Date")) 0)
+        crossCarrierModel = none ∧
+      errorOf (comparison .equal
+          (dayDifference (dateOperand "DateAsClock") (dateOperand "Date")) 0)
+          crossCarrierModel =
+        some (.incompatibleTemporalSource ["Order", "DateAsClock"]) := by
   native_decide
 
 example : errorOf

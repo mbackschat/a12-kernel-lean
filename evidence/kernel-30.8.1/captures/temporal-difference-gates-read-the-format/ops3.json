@@ -1,0 +1,173 @@
+[
+ {
+  "id": "dfdt-stampiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_dfdt-stampiso.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dfdt-dateasstamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_dfdt-dateasstamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dfdt-timeasstamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_dfdt-timeasstamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dfdt-stampasclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_dfdt-stampasclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dfdt-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_dfdt-dateiso.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dfdt-timeclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_dfdt-timeclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dfdt-stampasdate",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_dfdt-stampasdate.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tfdt-stampiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tfdt-stampiso.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tfdt-dateasstamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tfdt-dateasstamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tfdt-timeclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tfdt-timeclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tfdt-stampasdate",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tfdt-stampasdate.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "copy-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_copy-dateiso.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "copy-timeasdate",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_copy-timeasdate.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "copy-stampasdate",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_copy-stampasdate.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "copy-dateasclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_copy-dateasclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tctor-timeclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tctor-timeclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tctor-dateasclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tctor-dateasclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tctor-stampasclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tctor-stampasclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tctor-dateiso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s_tctor-dateiso.json",
+   "--dry-run"
+  ]
+ }
+]

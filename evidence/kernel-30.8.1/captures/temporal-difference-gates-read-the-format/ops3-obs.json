@@ -1,0 +1,115 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "4e7ed710dd317704d09d45523a5c010e2ca0024efc45ecf796cae092fb2c85aa",
+  "observations" : [ {
+    "id" : "dfdt-stampiso",
+    "inputHash" : "a17deabfbc7abe2b77eb27956d3ca4c8365e0059292b627f31b8feab67d3c833",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "dfdt-dateasstamp",
+    "inputHash" : "0dc4e20eb2d4a75cf84b26f3aba2246483689f40341957c3cb945bfb7af103cb",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "dfdt-timeasstamp",
+    "inputHash" : "8f19b9e4b16b6710b30a63485283fcf0128e0bfb965c0da975b00bebe58634ba",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "dfdt-stampasclock",
+    "inputHash" : "5eb19ce34262ec930264a4b51912ad2ffc2d55debdc92bcaddaf0c0eea71a09e",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "dfdt-dateiso",
+    "inputHash" : "bc570a4050703ae152a17f865b47d9d110b08265d970b509b1faa310a6b83493",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "dfdt-timeclock",
+    "inputHash" : "50fe306a5131ad890d52e71d2be7bb02c5105b41de24e043508c264369dd7629",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "dfdt-stampasdate",
+    "inputHash" : "fc3582199085582ce67901a4eb1377bc206ba7be8cfe766a700d3602cc835c56",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "tfdt-stampiso",
+    "inputHash" : "afcb40d46ad7e84ca30d37cafeeeba1c3525a304b97149786e968e9d53d1a7cf",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "tfdt-dateasstamp",
+    "inputHash" : "d50d8b2b3d4613cd508069c7a0902ba37fee25960f5624c6c778e7855ce2ef55",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "tfdt-timeclock",
+    "inputHash" : "c2d87a15c2122fbc728b3f0e14f22d0a7f034c9750eae2c81fcc9f43f6d500ef",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "tfdt-stampasdate",
+    "inputHash" : "2508112d447f18b4885a255bfc0e8c6c7b3a2a20da03b815e2bec2deb6dd10f6",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "copy-dateiso",
+    "inputHash" : "9284853310d5585d290de71a57676aa83ff754271b07049525e05b82a35b8273",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "copy-timeasdate",
+    "inputHash" : "8a7c675310e35d4f8453295411c1e725bdb685e6d2e4d14fe64c37affe135f0c",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "copy-stampasdate",
+    "inputHash" : "ec8c6379cad13d4045f68d9ca36e4268aa72a855a7d9e579d00be5738c5efab4",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "copy-dateasclock",
+    "inputHash" : "40786949c79bc61e881da0fcc2250f3871e4d743aa6c58bb7793d2e04e681059",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "tctor-timeclock",
+    "inputHash" : "83f4ce52492696d4bda35e9088311bfb2822d9a16efebcc474c234fdbb7ccaf9",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "tctor-dateasclock",
+    "inputHash" : "b1ec9fc80358288e936e6b5137bcea21daa8cdfe67ca453ad42262d5607e8a66",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "tctor-stampasclock",
+    "inputHash" : "b773d555f65b7de292b6461af2150e579aba9812265760f4684eba3f5f54c024",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "tctor-dateiso",
+    "inputHash" : "63460911e9fc3de72af30a7a25e51b5bebe4c0b2cf21c4b514cf0c0c6b9c5cb9",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  } ]
+}

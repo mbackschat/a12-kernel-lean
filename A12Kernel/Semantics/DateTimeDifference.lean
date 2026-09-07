@@ -12,7 +12,14 @@ namespace A12Kernel
 
 namespace DateTimeSubdayUnit
 
-/-- Static DateTime-format admission requires a date half and the selected time component. Kind admission remains with the checked field owner. -/
+/-- Static DateTime-format admission requires a date half and the selected time component.
+
+    **There is no companion kind gate.** The Kernel reads the declared format here and never the
+    declared kind, so a DATE- or TIME-declared field whose format is a complete instant is admitted,
+    while a DATE_TIME-declared field whose format is a bare clock is refused `MVK_INVALID_TIME`
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+    Every checked owner previously carried a `kind == .dateTime` conjunct beside this call; those
+    refused the first case, so this component test is now the whole gate. -/
 def admittedBy (unit : DateTimeSubdayUnit)
     (components : TemporalComponents) : Bool :=
   components.hasDate &&

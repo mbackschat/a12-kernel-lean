@@ -156,9 +156,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         | .now => pure .nowValue
         | .field path => do
             let field ← resolveTemporalNumericField model rowGroup path
-              (fun source =>
-                source.kind == .dateTime &&
-                  unit.admittedBy source.components)
+              (fun source => unit.admittedBy source.components)
             pure (.fieldValue field)
       let resolvedLeft ← resolveOperand left
       let resolvedRight ← resolveOperand right
@@ -178,8 +176,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         (fun reference =>
           resolveTemporalNumericField model rowGroup reference
             (fun source =>
-              CalendarDayDifference.admittedBy
-                source.kind source.components))
+              CalendarDayDifference.admittedBy source.components))
       let resolvedLeft ← resolveOperand left
       let resolvedRight ← resolveOperand right
       if CalendarDayDifference.yearCompatible model.hasBaseYear
@@ -292,8 +289,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
               resolveAddressedNumericDeclaration model rowGroup reference
             match declaration.toTemporalField? with
             | some field =>
-                if field.kind == .dateTime &&
-                    unit.admittedBy field.components then
+                if unit.admittedBy field.components then
                   pure (.fieldValue field)
                 else
                   throw (.incompatibleTemporalSource declaration.path)
@@ -318,8 +314,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
             resolveAddressedNumericDeclaration model rowGroup reference
           match declaration.toTemporalField? with
           | some field =>
-              if CalendarDayDifference.admittedBy
-                  field.kind field.components then
+              if CalendarDayDifference.admittedBy field.components then
                 pure field
               else
                 throw (.incompatibleTemporalSource declaration.path)

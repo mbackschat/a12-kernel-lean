@@ -1,0 +1,158 @@
+[
+ {
+  "id": "days-control-date-iso",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInDays(DateIso, DateIso2) == [N]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "days-date-as-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInDays(DateAsClock, DateIso) == [N]",
+   "--code",
+   "K2"
+  ]
+ },
+ {
+  "id": "days-time-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInDays(TimeAsDate, DateIso) == [N]",
+   "--code",
+   "K3"
+  ]
+ },
+ {
+  "id": "days-control-time-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInDays(TimeClock, DateIso) == [N]",
+   "--code",
+   "K4"
+  ]
+ },
+ {
+  "id": "days-time-as-date-both",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInDays(TimeAsDate, TimeAsDate) == [N]",
+   "--code",
+   "K5"
+  ]
+ },
+ {
+  "id": "days-stamp-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInDays(StampAsDate, DateIso) == [N]",
+   "--code",
+   "K6"
+  ]
+ },
+ {
+  "id": "hours-control-stamp-iso",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInHours(StampIso, StampIso2) == [N]",
+   "--code",
+   "H1"
+  ]
+ },
+ {
+  "id": "hours-stamp-as-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInHours(StampAsClock, StampIso) == [N]",
+   "--code",
+   "H2"
+  ]
+ },
+ {
+  "id": "hours-date-as-stamp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInHours(DateAsStamp, StampIso) == [N]",
+   "--code",
+   "H3"
+  ]
+ },
+ {
+  "id": "hours-time-as-stamp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInHours(TimeAsStamp, StampIso) == [N]",
+   "--code",
+   "H4"
+  ]
+ },
+ {
+  "id": "hours-control-date-iso",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInHours(DateIso, StampIso) == [N]",
+   "--code",
+   "H5"
+  ]
+ },
+ {
+  "id": "hours-date-as-stamp-both",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInHours(DateAsStamp, DateAsStamp) == [N]",
+   "--code",
+   "H6"
+  ]
+ }
+]

@@ -1,0 +1,132 @@
+[
+ {
+  "id": "mon-control-date-iso",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInMonths(DateIso, DateIso2) == [N]",
+   "--code",
+   "mon1"
+  ]
+ },
+ {
+  "id": "mon-time-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInMonths(TimeAsDate, DateIso) == [N]",
+   "--code",
+   "mon2"
+  ]
+ },
+ {
+  "id": "mon-stamp-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInMonths(StampAsDate, DateIso) == [N]",
+   "--code",
+   "mon3"
+  ]
+ },
+ {
+  "id": "mon-control-time-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInMonths(TimeClock, DateIso) == [N]",
+   "--code",
+   "mon4"
+  ]
+ },
+ {
+  "id": "mon-date-as-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInMonths(DateAsClock, DateIso) == [N]",
+   "--code",
+   "mon5"
+  ]
+ },
+ {
+  "id": "yr-control-date-iso",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInYears(DateIso, DateIso2) == [N]",
+   "--code",
+   "yr1"
+  ]
+ },
+ {
+  "id": "yr-time-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInYears(TimeAsDate, DateIso) == [N]",
+   "--code",
+   "yr2"
+  ]
+ },
+ {
+  "id": "yr-stamp-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInYears(StampAsDate, DateIso) == [N]",
+   "--code",
+   "yr3"
+  ]
+ },
+ {
+  "id": "yr-control-time-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInYears(TimeClock, DateIso) == [N]",
+   "--code",
+   "yr4"
+  ]
+ },
+ {
+  "id": "yr-date-as-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DifferenceInYears(DateAsClock, DateIso) == [N]",
+   "--code",
+   "yr5"
+  ]
+ }
+]

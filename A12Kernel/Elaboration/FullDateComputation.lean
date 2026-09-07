@@ -28,7 +28,6 @@ def FlatModel.admitsFullDateComputationSource
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
         declaration.toTemporalField? == some source &&
-        source.kind == .date &&
         source.components == TemporalComponents.fullDate
 
 /-- Admit exactly an ordinary distinct full-Date field or `Today` in this model's zone. This is a refinement of the shared temporal operand, not another expression tree. -/

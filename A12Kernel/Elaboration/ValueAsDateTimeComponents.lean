@@ -121,7 +121,6 @@ def FlatModel.admitsTimeExtractorComponentField (model : FlatModel)
   | .error _ => false
   | .ok declaration =>
       declaration.toTemporalField? == some source &&
-        (source.kind == .time || source.kind == .dateTime) &&
         part.admittedBy source.components &&
         position.extractor == part
 

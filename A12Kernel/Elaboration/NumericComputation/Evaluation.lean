@@ -434,19 +434,25 @@ def NumericComputationAtom.numericComputationFault? :
   | .stringLength _ => none
   | .stringRange _ _ _ => none
   | .fieldValueAsNumber _ => none
-  | .dateDifference _ left right =>
+  -- Each difference arm preflights through the SAME predicate its checked owner gates with, rather
+  -- than restating the rule, so the two cannot drift. All three previously tested the declared
+  -- kind, which is not what the Kernel reads: the declared format is
+  -- ([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+  -- `hasBaseYear` is unavailable on this model-free route, so the completed-period arm passes the
+  -- permissive value; a preflight must never be stricter than the gate it guards.
+  | .dateDifference unit left right =>
       let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
         | .field source =>
-            if source.kind == .date then none
+            if unit.admittedBy true source.components then none
             else some (.fieldKindMismatch source.id)
         | .baseYear _ _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right
-  | .dateTimeDifference _ left right =>
+  | .dateTimeDifference unit left right =>
       let fault? : FlatTemporalOperand → Option NumericComputationFault
         | .fieldValue source =>
-            if source.kind == .dateTime then none
+            if unit.admittedBy source.components then none
             else some (.fieldKindMismatch source.id)
         | .nowValue => none
         | _ => some .unsupportedDateTimeDifferenceOperand
@@ -456,7 +462,7 @@ def NumericComputationAtom.numericComputationFault? :
   | .dayDifference _ left right =>
       let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
         | .field source =>
-            if CalendarDayDifference.admitsKind source.kind then none
+            if CalendarDayDifference.admittedBy source.components then none
             else some (.fieldKindMismatch source.id)
         | .baseYear _ _ => none
       match fault? left with

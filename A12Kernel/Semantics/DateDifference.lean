@@ -38,14 +38,14 @@ end DateDifferenceUnit
 
 namespace CalendarDayDifference
 
-/-- The day operation accepts both date-bearing scalar kinds and rejects Time. -/
-def admitsKind : TemporalKind → Bool
-  | .date | .dateTime => true
-  | .time => false
-
-/-- Static day-difference admission requires a date-bearing format with a day component; a time half is permitted. -/
-def admittedBy (kind : TemporalKind) (components : TemporalComponents) : Bool :=
-  admitsKind kind && components.hasDate && components.day
+/-- Static day-difference admission requires a date-bearing format with a day component; a time half
+    is permitted. The declared **kind** is deliberately absent: the Kernel reads the declared format
+    here and never the kind, so a TIME- or DATE_TIME-declared field whose format is a complete date
+    is admitted while a DATE-declared field whose format is a bare clock is refused
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+    An earlier `admitsKind` conjunct here refused the first of those, which was a wrong refusal. -/
+def admittedBy (components : TemporalComponents) : Bool :=
+  components.hasDate && components.day
 
 /-- Day differences share the date-difference year-presence gate after each operand's kind/component admission. -/
 def yearCompatible (hasBaseYear : Bool)

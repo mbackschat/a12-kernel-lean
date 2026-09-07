@@ -370,8 +370,7 @@ def NumericValidationAtom.admitted
   | .dateTimeDifference unit left right =>
       let admitted : FlatTemporalOperand → Bool
         | .fieldValue source =>
-            source.kind == .dateTime &&
-              unit.admittedBy source.components &&
+            unit.admittedBy source.components &&
               match scope with
               | .sameGroup => model.admitsTemporalInGroup rowGroup source
               | .sameGroupAddressed =>
@@ -395,7 +394,7 @@ def NumericValidationAtom.admitted
                   model.admitsAddressedTemporal rowGroup source
               | .modelWideNonrepeatable | .modelWideCheckedComputation =>
                   model.admitsTemporalModelWide source) &&
-              CalendarDayDifference.admittedBy source.kind source.components
+              CalendarDayDifference.admittedBy source.components
         | .baseYear year _ => model.baseYear == some year
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
         admitted left && admitted right &&

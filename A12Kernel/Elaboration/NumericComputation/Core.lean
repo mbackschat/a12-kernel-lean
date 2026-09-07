@@ -199,9 +199,8 @@ def FlatModel.admitsNumericComputationOperand
   | .numeric (.dateTimeDifference unit left right) =>
       let admitted : FlatTemporalOperand → Bool
         | .fieldValue source =>
-            source.kind == .dateTime &&
-              model.admitsTemporalComputationOperand source
-                (unit.admittedBy source.components)
+            model.admitsTemporalComputationOperand source
+              (unit.admittedBy source.components)
         | .nowValue => unit.admittedBy TemporalComponents.now
         | _ => false
       match left.dateTimeDifferenceComponents?,
@@ -214,8 +213,7 @@ def FlatModel.admitsNumericComputationOperand
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
             model.admitsTemporalComputationOperand source
-              (CalendarDayDifference.admittedBy
-                source.kind source.components)
+              (CalendarDayDifference.admittedBy source.components)
         | .baseYear year _ => model.baseYear == some year
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
         admitted left && admitted right &&
@@ -508,9 +506,7 @@ private def FlatModel.resolveNumericComputationExpression
           | .field reference => do
               let field ← model.resolveTemporalNumericComputationField
                 declaringGroup target reference
-                (fun source =>
-                  source.kind == .dateTime &&
-                    unit.admittedBy source.components)
+                (fun source => unit.admittedBy source.components)
               pure (.fieldValue field)
         let resolvedLeft ← resolveOperand left
         let resolvedRight ← resolveOperand right
@@ -533,8 +529,7 @@ private def FlatModel.resolveNumericComputationExpression
               let field ← model.resolveTemporalNumericComputationField
                 declaringGroup target reference
                 (fun source =>
-                  CalendarDayDifference.admittedBy
-                    source.kind source.components)
+                  CalendarDayDifference.admittedBy source.components)
               pure (.field field)
           | .baseYear source =>
               match model.baseYear with

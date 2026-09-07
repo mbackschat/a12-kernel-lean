@@ -30,7 +30,6 @@ def FlatModel.admitsCompleteDateTimeSourceIn
   | .ok declaration =>
       declaration.repetitionBoundBy scope &&
         declaration.toTemporalField? == some source &&
-        source.kind == .dateTime &&
         source.components.isFullDateTime
 
 /-- The scalar instance shared by both nonrepeatable DateTime component extractors. -/
@@ -76,9 +75,7 @@ def checkBoundCompleteDateTimeSource
       match hSource : sourceDeclaration.toTemporalField? with
       | none => .error (.sourceNotTemporal sourceDeclaration.id)
       | some source =>
-          if source.kind != .dateTime then
-            .error (.sourceKind source.id source.kind)
-          else if !source.components.isFullDateTime then
+          if !source.components.isFullDateTime then
             .error (.sourceComponents source.id source.components)
           else if hScope :
               sourceDeclaration.repetitionBoundBy readingScope = true then
@@ -100,9 +97,12 @@ def checkBoundCompleteDateTimeSource
 inductive DateFromDateTimeElabError where
   | source (error : ResolveError)
   | sourceNotTemporal (field : FieldId)
-  | sourceKind (field : FieldId) (actual : TemporalKind)
-      (components : TemporalComponents)
-  /-- A DateTime whose component set is incomplete, which is the degenerate time-only declaration. -/
+  /-- The declared format is not a complete DateTime. This is the **whole** source refusal: there is
+      no companion wrong-kind cause, because the Kernel reads the declared format here and never the
+      declared kind, so a DATE- or TIME-declared field formatted `yyyy-MM-dd'T'HH:mm:ss` is admitted
+      while a DATE_TIME-declared field formatted `HH:mm:ss` is refused
+      ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+      A former `sourceKind` cause refused the first of those. -/
   | sourceComponents (field : FieldId) (actual : TemporalComponents)
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
@@ -113,21 +113,18 @@ namespace DateFromDateTimeElabError
 def diagnostic? :
     DateFromDateTimeElabError → Option KernelStaticDiagnostic
   | .sourceNotTemporal _ => some .noDate
-  | .sourceKind _ .date components =>
-      if components == TemporalComponents.fullDate then
-        some .wrongDateFormatForOp
-      else
-        none
   | .sourceComponents _ components =>
-      if components == TemporalComponents.time then
+      -- Both measured refusal profiles map here now that the ground is uniformly the component set:
+      -- a bare clock and a complete date each draw `MVK_WRONG_DATE_FORMAT_FOR_OP`, measured on a
+      -- DATE_TIME- and a DATE-declared source respectively at the checkpoint cited above. The
+      -- `else` stays unmapped for the component sets this carrier still has no row for.
+      if components == TemporalComponents.time
+          || components == TemporalComponents.fullDate then
         some .wrongDateFormatForOp
       else
         none
-  -- Named rather than wildcarded. A `sourceKind` at the two other temporal families and a
-  -- `sourceComponents` off the clock profile are the adjacent profiles this carrier has no rows
-  -- for, alongside the `else` branches above; the last two are resolution routing and a zone
-  -- outside the modeled profile set, neither of which is a Kernel model refusal.
-  | .sourceKind _ .time _ | .sourceKind _ .dateTime _
+  -- Resolution routing and a zone outside the modeled profile set, neither of which is a Kernel
+  -- model refusal.
   | .source _ | .unsupportedZone _ => none
 
 end DateFromDateTimeElabError
@@ -148,9 +145,7 @@ def elaborateDateFromDateTime (model : FlatModel) (sourceField : FieldId) :
   match declaration.toTemporalField? with
   | none => throw (.sourceNotTemporal sourceField)
   | some source =>
-      if source.kind != .dateTime then
-        throw (.sourceKind sourceField source.kind source.components)
-      else if !source.components.isFullDateTime then
+      if !source.components.isFullDateTime then
         throw (.sourceComponents sourceField source.components)
       else
         if hSource : model.admitsCompleteDateTimeSource source then

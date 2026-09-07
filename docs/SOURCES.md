@@ -624,6 +624,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A temporal field's value family is its declared format's, not its declared kind's](sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)
 <a id="src-temporal-operand-family-is-the-formats-not-the-kinds"></a>
 - [A temporal operand's admitted family is its declared format's too, extractors and completed-period differences alike, with a Base Year completing the year the format omits](sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)
+<a id="src-temporal-difference-gates-read-the-format"></a>
+- [All three temporal difference operand gates read the declared format and never the declared kind, which removed three under-admitting kind conjuncts across nine sites](sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)
 <a id="src-yearless-day-bound-reads-the-base-year"></a>
 - [A yearless stored day is bounded by its month's length in the declared Base Year](sources/computation-placement-and-constant-probes.md#src-yearless-day-bound-reads-the-base-year)
 <a id="src-datetime-carrier-stores-by-its-format"></a>

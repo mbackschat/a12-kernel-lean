@@ -155,28 +155,36 @@ private def elabError? (field : FieldId) (zoneId : String := "Europe/Berlin") :
 private def diagnostic? (field : FieldId) : Option KernelStaticDiagnostic :=
   (elabError? field).bind DateFromDateTimeElabError.diagnostic?
 
-/- The complete DateTime source is admitted; the degenerate time-only declaration and a plain Date field
-are refused, which is the pair the Kernel reports under one code at the operator. The two refusals stay
-distinguishable here: an incomplete component set is not a wrong kind. -/
+/- The complete DateTime source is admitted and every refusal here has **one** ground: the declared
+format is not a complete DateTime. The earlier version of this case split the refusals into a
+wrong-kind and a wrong-components pair and called them "distinguishable"; the Kernel makes no such
+split, reporting one code for a DATE_TIME-declared bare clock and for a DATE-declared complete date
+alike, and admitting a DATE- or TIME-declared complete instant that the kind ground refused
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+All four kind/format combinations below therefore refuse on components, with each declared kind
+appearing among them, which is what keeps this from reading as one kind being singled out. -/
 example :
     (model.validate).isOk = true ∧
       (elaborateDateFromDateTime (model) 1).isOk = true ∧
       elabError? 2 = some (.sourceComponents 2 TemporalComponents.time) ∧
-      elabError? 3 =
-        some (.sourceKind 3 .date TemporalComponents.fullDate) ∧
-      elabError? 5 =
-        some (.sourceKind 5 .time TemporalComponents.time) ∧
+      elabError? 3 = some (.sourceComponents 3 TemporalComponents.fullDate) ∧
+      elabError? 5 = some (.sourceComponents 5 TemporalComponents.time) ∧
       elabError? 6 =
         some (.sourceComponents 6 TemporalComponents.fullDate) := by
   native_decide
 
-/- Exact measured diagnostic controls are retained beside both locally representable unmeasured temporal branches and the separate unknown-field resolution branch. -/
+/- Exact measured diagnostic controls are retained beside the separate unknown-field resolution
+branch. **Both measured component profiles now carry the code**, where before only the clock did and
+the complete-date refusal reached it through the deleted kind ground: the clock and complete-date
+sources map to `MVK_WRONG_DATE_FORMAT_FOR_OP` whichever kind declares them, so fields 2 and 5 agree
+on one profile and 3 and 6 on the other across three declared kinds. Nothing here is unmapped any
+more except resolution routing, which is not a Kernel model refusal. -/
 example :
     diagnostic? 4 = some .noDate ∧
       diagnostic? 2 = some .wrongDateFormatForOp ∧
       diagnostic? 3 = some .wrongDateFormatForOp ∧
-      diagnostic? 5 = none ∧
-      diagnostic? 6 = none ∧
+      diagnostic? 5 = some .wrongDateFormatForOp ∧
+      diagnostic? 6 = some .wrongDateFormatForOp ∧
       diagnostic? 9 = none ∧
       KernelStaticDiagnostic.noDate.kernelCode = "MVK_NO_DATE" := by
   native_decide
