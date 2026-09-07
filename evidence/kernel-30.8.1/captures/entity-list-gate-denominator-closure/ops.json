@@ -1,0 +1,139 @@
+[
+ {
+  "id": "ffv-star-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-star-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-group-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-group-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-arity3-late-cross",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-arity3-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-dotted-compact",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-iso-compact",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "min-dotted-compact",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xg/CmpDate",
+   "--condition",
+   "FieldFilled(CmpDate) And MinValue(Dotted, Compact) == [CmpDate]",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "min-iso-compact",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xg/CmpDate",
+   "--condition",
+   "FieldFilled(CmpDate) And MinValue(Iso, Compact) == [CmpDate]",
+   "--code",
+   "E2"
+  ]
+ },
+ {
+  "id": "min-star-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xg/CmpYm",
+   "--condition",
+   "FieldFilled(CmpYm) And MinValue(Rows*/YmDash, Rows*/YmCompact) == [CmpYm]",
+   "--code",
+   "E3"
+  ]
+ },
+ {
+  "id": "min-group-cross",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xg/CmpYm",
+   "--condition",
+   "FieldFilled(CmpYm) And MinValue(Blk) == [CmpYm]",
+   "--code",
+   "E4"
+  ]
+ },
+ {
+  "id": "unique-dotted-compact",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xg/CmpDate",
+   "--condition",
+   "FieldFilled(CmpDate) And FieldValuesNotUnique(Dotted, Compact)",
+   "--code",
+   "E5"
+  ]
+ }
+]
