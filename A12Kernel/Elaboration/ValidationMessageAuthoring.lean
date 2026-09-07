@@ -223,6 +223,13 @@ structure ValidationMessageKeywordProfile where
   baseYearTerminal : String
   /-- The selected language's spelling of the semantic-index key terminal. -/
   forTerminal : String
+  /-- The selected language's spelling of the **value suffix**, without the grammar's leading dot.
+  It is data for the same reason the terminals around it are: the Kernel's own terminal tables give
+  `value` under an English condition language and `Wert` under German, and each draws a lexer refusal
+  in the other's model ([checkpoint](../../docs/SOURCES.md#src-index-terminal-admitting-spelling)).
+  This was the one suffix the parser matched as a literal while every sibling was supplied, so a
+  German model would have been read with the English word. -/
+  valueSuffixTerminal : String
   /-- The selected language's spelling of the group position's root shorthand. -/
   rootGroupTerminal : String
   /-- The selected language's spelling of the group position's own-group shorthand. -/
@@ -417,7 +424,7 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
               pure (.keyed parameter (← parseMessagePath parameter inner)
                 (.category category) key)
         | [_] =>
-            match spec.splitOn ".value" with
+            match spec.splitOn ("." ++ profile.valueSuffixTerminal) with
             | [inner, ""] =>
                 pure (.keyed parameter (← parseMessagePath parameter inner) .value
                   key)
@@ -446,7 +453,7 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
       else (.fieldCategoryWithTrailingSyntax parameter · category) <$>
         parseMessagePath parameter spec
   | [_] =>
-      match parameter.splitOn ".value" with
+      match parameter.splitOn ("." ++ profile.valueSuffixTerminal) with
       | [spec, ""] => .fieldValue parameter <$> parseMessagePath parameter spec
       | [spec] => .fieldName parameter <$> parseMessagePath parameter spec
       | _ => .error (.invalidParameter parameter)

@@ -80,6 +80,7 @@ private def keywordProfile : ValidationMessageKeywordProfile := {
   ]
   baseYearTerminal := "BaseYear"
   forTerminal := "For"
+  valueSuffixTerminal := "value"
   rootGroupTerminal := "RootGroup"
   ruleGroupTerminal := "RuleGroup"
   retiredGroupTerminals := ["Zeile", "Usb"]
@@ -599,6 +600,32 @@ example : render? "[rtg=$#RootGroup$]" = some { text := "[rtg=1]" } := by
     unreachable from this host rather than that it renders something. A rendered `RuleGroup` needs a
     rule one level down, which this fixture's nonrepeatable spine does not carry. -/
 example : render? "[rg=$#RuleGroup$]" = none := by
+  native_decide
+
+/- **The value suffix is the profile's word, not a literal in the parser.** Every sibling terminal was
+already supplied by the caller and this one was matched as `.value`, so a German-language profile
+would have been read with the English word — the Kernel's own terminal tables give `value` under an
+English condition language and `Wert` under German, and each is a lexer refusal in the other's model
+([checkpoint](../../docs/SOURCES.md#src-index-terminal-admitting-spelling)).
+
+Each language sits on **both** sides here, which is what distinguishes a parametric parser from one
+that happens to accept both words: under the English profile `.value` selects the value part while
+`.Wert` is not recognized as the suffix at all, leaving a residue that is no legal entity spec and
+drawing `invalidParameter` — and under a German profile the two swap. So the other language's word
+fails as a *parse*, not at the unquoted-terminal gate. This locks *this fragment's* parametricity;
+the spellings themselves are the caller's data, and no row here claims which word a given Kernel
+model takes. -/
+example :
+    let germanProfile := { keywordProfile with valueSuffixTerminal := "Wert" }
+    let parsedAs (profile : ValidationMessageKeywordProfile)
+        (template : String) : Option Bool := do
+      let condition ← conditionOn? ["Order"] (bare "Amount")
+      pure (elaborateValidationMessageTemplate model profile condition
+        template).toOption.isSome
+    parsedAs keywordProfile "$Amount.value$" = some true ∧
+      parsedAs keywordProfile "$Amount.Wert$" = some false ∧
+      parsedAs germanProfile "$Amount.Wert$" = some true ∧
+      parsedAs germanProfile "$Amount.value$" = some false := by
   native_decide
 
 end A12Kernel.Conformance.ValidationMessageAuthoring
