@@ -1,4 +1,5 @@
 import A12Kernel.Proofs.FullDate
+import A12Kernel.Proofs.TimeComparison
 import A12Kernel.Semantics.DateTime
 
 /-! # Decoded DateTime and selected overlap laws -/
@@ -429,5 +430,85 @@ theorem instant_shiftHours_inverse
       instant_shiftHours_add instant hours (-hours)
     _ = instant.shiftHours 0 := by congr; omega
     _ = instant := instant_shiftHours_zero instant
+
+/-! ## Label recoverability
+
+These are the coordinate-injectivity laws a zone consumer needs to reason backwards from an exact
+instant to the wall label that produced it. They are stated here, at the coordinate owner, so a
+profile's own law reduces to one application rather than repeating calendar arithmetic. -/
+
+/-- Lexicographic date order is trichotomous, which is what turns the strict-monotonicity law below
+into an injectivity law without needing an inverse construction. -/
+theorem dateParts_before_trichotomy (left right : DateParts) :
+    left = right ∨ left.Before right ∨ right.Before left := by
+  unfold DateParts.Before
+  rcases left with ⟨leftYear, leftMonth, leftDay⟩
+  rcases right with ⟨rightYear, rightMonth, rightDay⟩
+  simp only [DateParts.mk.injEq]
+  omega
+
+/-- A real civil date is determined by its parts; its reality proof is irrelevant. -/
+theorem civilDate_eq_of_parts {left right : CivilDate}
+    (same : left.parts = right.parts) : left = right := by
+  cases left with | mk _ _ =>
+  cases right with | mk _ _ =>
+  cases same
+  rfl
+
+/-- An admitted full Date is determined by its civil date; its floor proof is irrelevant. -/
+theorem fullDate_eq_of_civil {left right : FullDate}
+    (same : left.civil = right.civil) : left = right := by
+  cases left with | mk _ _ =>
+  cases right with | mk _ _ =>
+  cases same
+  rfl
+
+/-- An exact instant is determined by its epoch-millisecond coordinate. -/
+theorem instant_eq_of_epochMillis {left right : Instant}
+    (same : left.epochMillis = right.epochMillis) : left = right := by
+  cases left
+  cases right
+  simp only [Instant.mk.injEq]
+  exact same
+
+/-- The executable civil-day coordinate is injective on real proleptic-Gregorian dates. -/
+theorem civilDate_unixEpochDay_injective (left right : CivilDate)
+    (same : left.unixEpochDay = right.unixEpochDay) :
+    left = right := by
+  rcases dateParts_before_trichotomy left.parts right.parts with
+    equal | before | before
+  · exact civilDate_eq_of_parts equal
+  · have := civilDate_before_unixEpochDay left right before
+    omega
+  · have := civilDate_before_unixEpochDay right left before
+    omega
+
+/-- **UTC resolution is injective on admitted local wall labels.** The label is recoverable from the
+exact instant because the day coordinate and the second-of-day coordinate each determine their
+component, and the second coordinate is bounded by one day so the two do not interfere.
+
+This is the law that makes wall-label identity and instant identity interchangeable *within one
+offset*. A zone profile needs one more step — recovering which offset was in force — and only then
+is the interchange sound at that profile. -/
+theorem localDateTime_resolveUtc_injective (left right : LocalDateTime)
+    (same : left.resolveUtc = right.resolveUtc) :
+    left = right := by
+  have leftBound := timeOfDay_secondsSinceMidnight_lt left.time
+  have rightBound := timeOfDay_secondsSinceMidnight_lt right.time
+  have millis : (left.date.unixEpochDay * 86400 +
+        (left.time.secondsSinceMidnight : Int)) * 1000 =
+      (right.date.unixEpochDay * 86400 +
+        (right.time.secondsSinceMidnight : Int)) * 1000 := by
+    rw [← localDateTime_resolveUtc_epochMillis,
+      ← localDateTime_resolveUtc_epochMillis, same]
+  have dayEq : left.date.unixEpochDay = right.date.unixEpochDay := by omega
+  have secondEq :
+      left.time.secondsSinceMidnight = right.time.secondsSinceMidnight := by
+    omega
+  cases left with | mk _ _ =>
+  cases right with | mk _ _ =>
+  simp only [LocalDateTime.mk.injEq]
+  exact ⟨fullDate_eq_of_civil (civilDate_unixEpochDay_injective _ _ dayEq),
+    timeOfDay_secondsSinceMidnight_injective secondEq⟩
 
 end A12Kernel

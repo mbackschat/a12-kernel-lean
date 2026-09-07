@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-08"></a>
+### `SPEC-2026-09-07-08` — the temporal distinct count's DATETIME identity is a free choice, and the hedge we both had was pointing at the wrong shape
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` the `NumberOfDifferentValues` paragraph](../spec/07-repetition-and-iteration.md)
+- `delta`: the clause said the instant-versus-label identity is "not observable through any document" and then hedged that "the two accounts do differ inside a model-zone overlap". The hedge was aimed backwards. An overlap label denotes two moments but resolution **selects** one, so a label still yields one instant; what would part the accounts is the converse, two labels sharing one instant, and that is a spring-forward **gap** shape. The clause now states the correspondence, names the gap as the only shape that could break it, and marks the stored-text gap carrier as assumed rather than measured.
+- `mechanism`: two halves, neither of them a probe. **Store:** a computed value keeps no typed form past its store — all five of `CalculationController`'s `handleBerechnetenWert` overloads funnel into `setBerechnetenStringWert`, which caches a UI string beside the internal string and no typed value, so a computed DATE_TIME cell holds the same offset-free text an authored one holds. **Resolution:** fresh-label resolution is injective, because the selected offset is the one in force at the resulting instant and is therefore recoverable from it. We proved the second (`concreteProfile_resolveLocal_injective`) rather than sampling it.
+- `why-you-may-still-want-it`: the operator takes a `homogeneous-field-list`, so every operand is cell-sourced and the choice cannot be observed at it — which means an implementation may pick either identity here **and** that a green suite proves nothing about the choice. Where the choice does bite is in flight, on a constructed or shifted DateTime whose retained instant no label produced; if your fold reaches such a value through any operator, that operator needs its own decision.
+- `evidence`: kernel source read read-only, plus an internal Lean proof and its conformance locks. [Store checkpoint](sources/computation-placement-and-constant-probes.md#src-computed-value-is-not-retained-past-its-store); the fold's own [route checkpoint](sources/evaluation-and-application-routes.md#src-distinct-count-time-bearing-fold) carries the measured rows this reasoning sits on.
+- `separator`: the two discontinuities are locked in opposite directions. The overlap's unselected instant decodes back to the *same* label, so the pair is label-identical and instant-distinct and reachable only by retaining an instant; the gap label resolves to nothing while both neighbours resolve an hour apart, so it has no instant to share. An account that rejected neither, or normalized the gap, fails one of those two locks.
+- `limit`: the stored-text gap label is **assumed** refused, not measured. It is calibrated on the DateTime literal carrier, where a gap constant reports a value finding and stores nothing, and the Kernel's shift arithmetic separately normalizes nominal gaps — so those two carriers already disagree and the stored one may not be read off either.
+- `surfaces`: any clause or implementation that treats this identity as an open question at this operator, or that assumes a green DATETIME count fixture settles it. Ours did the first.
+- `acceptance`: confirm the store reading against your own account, or supply the contrary case — in particular a stored gap-label DATE_TIME cell, which would settle our one assumption. If your own DATETIME fold already compares labels, nothing changes for you and this closes as agreement.
+- `local-scope`: nine new theorem roots register the coordinate-injectivity chain and the two profile laws; SG24's identity row moves from open to closed with the gap carrier named.
+
 <a id="spec-2026-09-07-07"></a>
 ### `SPEC-2026-09-07-07` — a `DateRange` construction endpoint reads the declared format too, and your operator catalog says otherwise
 

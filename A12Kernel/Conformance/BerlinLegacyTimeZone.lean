@@ -145,4 +145,37 @@ example :
         (dateTime 2024 10 27 2 30 0 (by native_decide)) := by
   native_decide
 
+/- **The overlap's second instant is not label-reachable, which is what makes the fresh-label
+injection meaningful rather than a statement about a single sample.** The fall-back label `02:15`
+denotes two instants an hour apart, and resolution selects exactly one of them — the later, CET
+reading. The earlier CEST instant decodes back to that *same* label, so the two are label-identical
+and instant-distinct: a value carrying it can only have obtained it by retaining an instant, never
+by resolving text. This is the pair the extremum fixtures use to keep exact-instant ordering, and
+these rows are why that pair does not also make a *cell* ambiguous. -/
+example :
+    let label := dateTime 2024 10 27 2 15 0 (by native_decide)
+    let selected : Instant := { epochMillis := 1729991700000 }
+    let earlier : Instant := { epochMillis := 1729988100000 }
+    EuropeBerlinLegacyProfile.resolveLocal? label = some selected ∧
+      earlier.epochMillis + 3600000 = selected.epochMillis ∧
+      (EuropeBerlinLegacyProfile.offsetSecondsAt? earlier,
+        EuropeBerlinLegacyProfile.offsetSecondsAt? selected) =
+        (some 7200, some 3600) := by
+  native_decide
+
+/- The other discontinuity is a **partial** injection rather than a collision: a spring-forward gap
+label matches no candidate offset, so it has no instant to share with a neighbour, while both
+neighbours resolve an hour apart. An account that mapped the gap onto its post-gap instant would
+make two labels one value, and this row is what excludes it. -/
+example :
+    let gap := dateTime 2024 3 31 2 30 0 (by native_decide)
+    let before := dateTime 2024 3 31 1 30 0 (by native_decide)
+    let after := dateTime 2024 3 31 3 30 0 (by native_decide)
+    EuropeBerlinLegacyProfile.resolveLocal? gap = none ∧
+      (EuropeBerlinLegacyProfile.resolveLocal? before).map (·.epochMillis) =
+        some 1711845000000 ∧
+      (EuropeBerlinLegacyProfile.resolveLocal? after).map (·.epochMillis) =
+        some 1711848600000 := by
+  native_decide
+
 end A12Kernel.Conformance.BerlinLegacyTimeZone

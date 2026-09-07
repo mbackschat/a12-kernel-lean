@@ -637,6 +637,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Neither the computed target's admission nor its store can read which carrier produced the value — a computation is a comparison condition, and one render locus erases the carrier — retiring four declared-kind narrowings without a per-family measurement](sources/computation-placement-and-constant-probes.md#src-computed-target-gate-is-carrier-invariant)
 <a id="src-daterange-endpoint-reads-the-format"></a>
 - [A `DateRange` construction endpoint is admitted by its declared format alone, with all three declared kinds on both sides of both outcomes](sources/computation-placement-and-constant-probes.md#src-daterange-endpoint-reads-the-format)
+<a id="src-computed-value-is-not-retained-past-its-store"></a>
+- [A computed value keeps no typed form past its store — all five store overloads render to text, so a computed DATE_TIME cell retains no instant and is indistinguishable from an authored one](sources/computation-placement-and-constant-probes.md#src-computed-value-is-not-retained-past-its-store)
 
 <a id="src-two-positions-share-the-root-gate"></a>
 - [Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)

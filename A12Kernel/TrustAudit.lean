@@ -200,6 +200,15 @@ run_cmd do
 #print axioms A12Kernel.localDateTime_ofYmdHms_isSome_iff
 #print axioms A12Kernel.localDateTime_resolveUtc_epochMillis
 #print axioms A12Kernel.localDateTime_before_resolveUtc
+#print axioms A12Kernel.dateParts_before_trichotomy
+#print axioms A12Kernel.civilDate_eq_of_parts
+#print axioms A12Kernel.fullDate_eq_of_civil
+#print axioms A12Kernel.instant_eq_of_epochMillis
+#print axioms A12Kernel.civilDate_unixEpochDay_injective
+#print axioms A12Kernel.localDateTime_resolveUtc_injective
+#print axioms A12Kernel.berlinLegacy_resolveLocal_offset_in_force
+#print axioms A12Kernel.berlinLegacy_resolveLocal_injective
+#print axioms A12Kernel.concreteProfile_resolveLocal_injective
 #print axioms A12Kernel.localDateTime_sameDate_difference
 #print axioms A12Kernel.dateTimeComparison_equal_iff
 #print axioms A12Kernel.dateTimeComparison_notEqual_iff

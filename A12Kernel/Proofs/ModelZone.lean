@@ -1,4 +1,6 @@
+import A12Kernel.Proofs.BerlinLegacyTimeZone
 import A12Kernel.Semantics.FlatValidation
+import A12Kernel.Semantics.ModelZone
 
 namespace A12Kernel
 
@@ -70,5 +72,37 @@ theorem baseYearRangeOperand_unsupported
   unfold World.resolveLocal? at unsupported
   simp [FlatTemporalOperand.resolve,
     FlatContext.resolveLocalDateComparisonOperand, World.resolveLocal?, unsupported]
+
+/-- **Fresh-label resolution is injective on every concrete profile**, so within one model zone a
+wall label and the exact instant it resolves to determine each other.
+
+    Both arms hold for their own reason. UTC resolves every label and is injective because the label
+    is its own coordinate; Europe/Berlin recovers the offset from the resolved instant and reduces to
+    the same coordinate law. A wider profile added later must carry its own instance of this proof —
+    a resolver that selected an offset without checking it is in force at the resulting instant
+    could map two labels onto one instant, and then the two identities below would come apart.
+
+    **Why a consumer cares.** Any value read out of a *cell* has its instant derived from a stored
+    wall label, because A12's document form carries a model-format string with no offset and a
+    computed value is rendered into that same text before it is stored. So for cell-sourced values,
+    comparing exact instants and comparing decoded labels are the **same** relation, and an operator
+    such as the temporal distinct count returns the same answer under either account. The two come
+    apart only for a value that *retains* an instant a label never produced — a constructed or
+    shifted DateTime compared in flight — which is exactly where this project's extrema fixtures
+    keep the exact-instant distinction. -/
+theorem concreteProfile_resolveLocal_injective
+    (profile : ModelZone.ConcreteProfile)
+    {left right : LocalDateTime} {instant : Instant}
+    (leftResolved : profile.resolveLocal? left = some instant)
+    (rightResolved : profile.resolveLocal? right = some instant) :
+    left = right := by
+  cases profile with
+  | utc =>
+      simp only [ModelZone.ConcreteProfile.resolveLocal?, Option.some.injEq]
+        at leftResolved rightResolved
+      exact localDateTime_resolveUtc_injective _ _
+        (leftResolved.trans rightResolved.symm)
+  | europeBerlin =>
+      exact berlinLegacy_resolveLocal_injective leftResolved rightResolved
 
 end A12Kernel
