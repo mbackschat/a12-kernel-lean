@@ -14,11 +14,11 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `d9079138` on 2026-09-07.
+Measured at `199106fc` on 2026-09-07.
 
 ## Headline
 
-**170 of 441 Kernel refusal classes touched (38%); 78 modelled in Lean (17%); 271 untouched.**
+**194 of 495 Kernel refusal classes touched (39%); 92 modelled in Lean (18%); 301 untouched.**
 
 The two figures differ because *touched* counts a class named anywhere in the account — including a
 checkpoint's own list of what it did **not** reach — while *modelled* counts one the Lean theory names.
@@ -28,18 +28,18 @@ Read the first as an upper bound on knowledge and the second as the floor on imp
 
 | | classes | share |
 |---|---|---|
-| Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 441 | 100% |
-| Named in `spec/` or `docs/` prose | 170 | 38% |
-| Named in tracked Lean source | 78 | 17% |
-| Observed in a retained probe artifact | 100 | 22% |
-| Touched by any of the three | 170 | 38% |
-| **Untouched everywhere** | **271** | **61%** |
+| Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
+| Named in `spec/` or `docs/` prose | 194 | 39% |
+| Named in tracked Lean source | 92 | 18% |
+| Observed in a retained probe artifact | 111 | 22% |
+| Touched by any of the three | 194 | 39% |
+| **Untouched everywhere** | **301** | **60%** |
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
 - **Observed but absent from the written account: 0.** A class seen in a probe and never
   written down is a measurement whose result was lost.
-- **Known only from archived material: 5.** These are facts this repository holds but no
+- **Known only from archived material: 29.** These are facts this repository holds but no
   longer reads; they belong in a live owner or should be re-measured.
 
 ### Where the untouched classes are
@@ -48,9 +48,10 @@ Ordered by size, because that is the order in which they are worth attacking.
 
 | untouched | catalog | route |
 |---|---|---|
-| 99 | `_30_8` | runtime formal errors — needs a **document** probe (`:adapter:kernelProbe` → `validateFull`), a route we hold and have barely driven |
+| 99 | `_30_8` | runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text |
 | 60 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
 | 36 | `custom_field_types` | host-registered custom field types — **scope question**, may sit outside the Kernel-owned target |
+| 30 | `runtime_formal_codes` | runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe |
 | 22 | `vk_codegen_no_meta_model_ckecks_error_messages` | codegen-time model checks — reachable through `model check` |
 | 17 | `kernel_core_errortext_error_messages` | shared error-text base utilities — carrier not yet identified |
 | 16 | `vk_calc_error_messages` | computation authoring — the `computation add --dry-run` batch route |
@@ -118,4 +119,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-07 | `3db574b1` | 149 | 78 | 292 | 82 | 23 |
 | 2026-09-07 | `0fe98007` | 160 | 78 | 281 | 82 | 23 |
 | 2026-09-07 | `d9079138` | 170 | 78 | 271 | 82 | 23 |
+| 2026-09-07 | `199106fc` | 194 | 92 | 301 | 82 | 23 |
 <!-- velocity-history:end -->

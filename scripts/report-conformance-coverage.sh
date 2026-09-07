@@ -71,6 +71,25 @@ awk '
   /^[A-Z][A-Z0-9_]*=/ { split($0, kv, "="); print kv[1] "\t" catalog }
 ' $(cat "$work/catalogs") | sort -u > "$work/class-catalog"
 
+# The runtime formal checks answer on TWO independent axes, and the message bundles above carry only
+# one of them. `FehlerHandler.addFehler(errorKey, fehlerText, …)` takes the surfaced code and the
+# already-resolved text as separate arguments: `getFehlertext` picks the bundle key from the abstract
+# error AND the number art, while the code comes from the abstract error alone. So the four
+# ZAHL_ZUVIELE_VORKOMMASTELLEN_* keys are four texts behind one observable `zahlZuvieleVorkommastellen`
+# — and conversely no bundle key names the code a `validateFull` consumer actually reads. Counting the
+# codes as their own catalog is what keeps the consumer-visible vocabulary in the denominator.
+formal_codes="$kernel_root/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/util/IFormaleFehlerConstants.java"
+if [[ -f "$formal_codes" ]]; then
+  grep -o '= *"[A-Za-z0-9_]*"' "$formal_codes" \
+    | sed 's/= *"//; s/"$//' \
+    | awk 'NF { print $0 "\truntime_formal_codes" }' \
+    | sort -u >> "$work/class-catalog"
+  sort -u -o "$work/class-catalog" "$work/class-catalog"
+else
+  echo "runtime formal-code vocabulary not found at ${formal_codes}; the Kernel layout has changed" >&2
+  exit 1
+fi
+
 cut -f1 "$work/class-catalog" | sort -u > "$work/classes"
 total_classes="$(count "$work/classes")"
 
@@ -79,14 +98,17 @@ if [[ "$total_classes" -eq 0 ]]; then
   exit 1
 fi
 
-# Primary mechanism: extract every **maximal** identifier run, keep only runs whose whole shape is a
-# class name, then intersect with the class set. Taking the maximal run is what makes it exact in both
-# directions — `vergleicheDATUM` yields that whole identifier, which fails the anchored shape filter,
-# so the Kernel class DATUM is not reported as covered, while a standalone occurrence always is.
+# Primary mechanism: extract every **maximal** identifier run, then intersect with the class set.
+# Taking the maximal run is what makes it exact in both directions — `vergleicheDATUM` yields that
+# whole identifier, which is not equal to `DATUM`, so the Kernel class is not reported as covered,
+# while a standalone occurrence always is. The anchored shape filter that follows only shrinks the set
+# before the join; exactness lives in the join, which is why widening it to admit the camelCase
+# `runtime_formal_codes` names cannot introduce a partial match. `--verify` re-derives the same answer
+# through whole-word fixed-string matching, a mechanism that shares neither step.
 class_hits() { # $1 out, $2 include glob, rest: named content roots (never the repository root)
   local out="$1" include="$2"; shift 2
   grep -oh -E '[A-Za-z0-9_]+' -r "$@" --include="$include" 2>/dev/null \
-    | grep -E '^[A-Z][A-Z0-9_]+$' | sort -u > "$work/tokens" || : > "$work/tokens"
+    | grep -E '^[A-Za-z][A-Za-z0-9_]+$' | sort -u > "$work/tokens" || : > "$work/tokens"
   comm -12 "$work/classes" "$work/tokens" > "$out"
 }
 
@@ -206,7 +228,8 @@ today="$(date +%Y-%m-%d)"
 
 route_for() {
   case "$1" in
-    _30_8) echo 'runtime formal errors — needs a **document** probe (`:adapter:kernelProbe` → `validateFull`), a route we hold and have barely driven' ;;
+    _30_8) echo 'runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text' ;;
+    runtime_formal_codes) echo 'runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe' ;;
     vk_parser_error_messages) echo 'condition/DSL static legality — the fast `dmtool rule check` batch route' ;;
     vk_service_errortext_error_messages) echo 'message templates and parameters — the fast `rule check --message` batch route' ;;
     custom_field_types) echo 'host-registered custom field types — **scope question**, may sit outside the Kernel-owned target' ;;
