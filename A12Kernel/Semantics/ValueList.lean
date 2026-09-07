@@ -103,8 +103,12 @@ def equal : {kind : ValueListKind} →
   -- `DecidableEq` compares the components the proof is about, as `FullDate`'s does.
   | .timeOfDay, left, right => left == right
   -- The exact moment. Whether the engine's identity here is the instant or the decoded local label
-  -- is not separable by stored text within one model zone, since a wall label resolves to a single
-  -- instant there; this arm holds the instant and says so rather than claiming the question settled.
+  -- is not observable through any *document*: A12's canonical document form stores a DATE_TIME as a
+  -- model-format string with no offset, so one label yields one instant on every route. The accounts
+  -- do differ inside a model-zone overlap, where a single label names two moments, so this is a
+  -- limit of what a document expresses and not an agreement between them. This arm holds the
+  -- instant, which keeps the finer distinction and is locked by a separating case in the distinct
+  -- count's conformance ([SG24](../../docs/SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold)).
   | .instant, left, right => left == right
 
 end ValueListAtom

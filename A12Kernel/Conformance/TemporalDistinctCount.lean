@@ -48,6 +48,11 @@ private def noonHalf : TimeOfDay :=
 private def afternoonHalf : TimeOfDay :=
   { hour := 13, minute := 30, second := 0, valid := by decide }
 
+/-- The wall clock Europe/Berlin passes through twice on 2024-10-27, which is what lets one label
+    carry two instants without an incoherent payload. -/
+private def overlapQuarter : TimeOfDay :=
+  { hour := 2, minute := 15, second := 0, valid := by decide }
+
 private def dateField (id : FieldId) (name format : String)
     (components : TemporalComponents := TemporalComponents.fullDate) :
     FlatFieldDecl := {
@@ -509,9 +514,21 @@ example :
       | none => false) = true := by
   native_decide
 
-/- **An instant list folds on the exact moment.** This arm holds the instant rather than the decoded
-   label because the two are not separable by stored text within one model zone, and the arm says so
-   rather than claiming the question settled; the pair below differs in the instant alone. -/
+/- **An instant list folds on the exact moment.** The first two rows move label and instant together,
+   so they fix that the arm folds at all but not which field it reads; the **third** is the separator
+   and it is the mirror of the clock arm's row above. Two cells carry one label and two instants, and
+   the count is 2 — a decoded-label identity answers 1.
+
+   That pair is a real authored shape rather than a contrived payload: Europe/Berlin passes through
+   `2024-10-27T02:15:00` twice, at UTC `00:15` and `01:15`, which are these two `epochMillis` an hour
+   apart, and the extrema's conformance separates its own DateTime family on the same pair.
+
+   **This claims nothing about the Kernel**, and the boundary is a property of the document format
+   rather than of the zone: A12's canonical document form stores a DATE_TIME as a model-format string
+   with no offset, so no serialized document carries one label with two instants and no route
+   observes which field the engine reads. Holding the instant keeps the finer distinction, so a later
+   measurement can correct this without re-deriving anything
+   ([SG24](../../docs/SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold)). -/
 example :
     count? "Stamp1" "Stamp2"
         [temporalCell 29 "2024-03-05T12:30:00"
@@ -528,6 +545,14 @@ example :
           temporalCell 30 "2024-03-05T13:30:00"
             (.dateTime { epochMillis := 1709645400000 }
               { year := 2024, month := 3, day := 5 } afternoonHalf .storedGregorian)] =
+      some (.value 2 .fixed) ∧
+    count? "Stamp1" "Stamp2"
+        [temporalCell 29 "2024-10-27T02:15:00"
+            (.dateTime { epochMillis := 1729988100000 }
+              { year := 2024, month := 10, day := 27 } overlapQuarter .storedGregorian),
+          temporalCell 30 "2024-10-27T02:15:00"
+            (.dateTime { epochMillis := 1729991700000 }
+              { year := 2024, month := 10, day := 27 } overlapQuarter .storedGregorian)] =
       some (.value 2 .fixed) := by
   native_decide
 
