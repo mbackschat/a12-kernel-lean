@@ -1,0 +1,197 @@
+[
+ {
+  "id": "ctl-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad"
+  ]
+ },
+ {
+  "id": "witness-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key).value$ bad"
+  ]
+ },
+ {
+  "id": "de-Wert",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key).Wert$ bad"
+  ]
+ },
+ {
+  "id": "cap-Value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key).Value$ bad"
+  ]
+ },
+ {
+  "id": "upper-keyword",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $Index(Key).value$ bad"
+  ]
+ },
+ {
+  "id": "no-suffix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key)$ bad"
+  ]
+ },
+ {
+  "id": "category-suffix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key)->Cat$ bad"
+  ]
+ },
+ {
+  "id": "abs-path",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(/Kf/Rows/Key).value$ bad"
+  ]
+ },
+ {
+  "id": "rel-path",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Rows/Key).value$ bad"
+  ]
+ },
+ {
+  "id": "nonexistent",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Nope).value$ bad"
+  ]
+ },
+ {
+  "id": "nonindex-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Amount).value$ bad"
+  ]
+ },
+ {
+  "id": "off-path-error",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And [N] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=root $index(Key).value$ bad"
+  ]
+ },
+ {
+  "id": "ctl-off-path",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And [N] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=root bad"
+  ]
+ }
+]

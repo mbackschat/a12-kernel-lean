@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-09"></a>
+### `SPEC-2026-09-07-09` — `index(...)` in a message parameter **is** admissible; our own no-witness row was wrong and the missing axis was a mandatory suffix
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md` the name-position terminal paragraph](../spec/11-messages-and-custom.md)
+- `delta`: the clause said no admitting spelling of `index(...)` was known, and inferred from that denominator that a12's semantic index is a distinct concept from a group's row-key index field and that `--index-field` does not arm the terminal. Both are refuted. `$index(Key).value$` is admitted on a rule whose error field sits inside a repeatable group whose declared index field is `Key`, and `--index-field` is exactly what arms it. The clause also attributed `INVALID_INDEX_FIELD_PARAMETER` to *a bare relative name*; it is the **missing suffix**, since the same bare name with the suffix is admitted.
+- `mechanism`: the grammar rule is `indexField: 'index' '(' id=entitySpec ')' valueOrCategory?` carrying the comment *"valueOrCategory is a must, but in the grammar we make it optional — for better error messages"*, so the checker enforces the suffix the parser accepts as optional. `checkIndexFieldRef` compares the argument against the **short name** of each index field on the *error entity's* path, which is why no path spelling can match and why moving the error field to the root refuses the same parameter. The English suffix token is lowercase `value` in `LexerTerminals_en`.
+- `why-you-may-still-want-it`: this is a **positive** surface neither estate had, not a refusal map. A modeller can pin a message to the firing row's key, and an Explain or Translate consumer that treats the terminal as dead will silently drop a legal parameter. If your own account carries a no-witness note here, it has the same defect ours did.
+- `evidence`: one `dmtool batch --observations`, thirteen `rule check --message` children over one model, at a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` in this project's pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. [Admitting-spelling checkpoint](sources/message-and-pointer-probes.md#src-index-terminal-admitting-spelling) owns the hashes.
+- `separator`: five axes, one variable each, and four distinct refusal classes — suffix omitted is `INVALID_INDEX_FIELD_PARAMETER`; German `.Wert`, capitalised `.Value`, and capitalised `Index(` are `MVK_UNEXPECTED_TOKEN`; four wrong arguments are `INVALID_INDEX_FIELD`; the `->Cat` form is `FIELD_NO_ENUM`, so that alternative is live and gated on an Enumeration index field. Two parameter-free controls admit in the same batch, one on each error field, so no refusal is the route's.
+- `limit`: static admission only, `en_US`, one model, one rule carrier, a String index field. Unmeasured: what an admitted `index(...).value` **renders**, the German arm, the Enumeration index field that would admit the category form, a composed index — whose own `INVALID_INDEX_FIELD_COMPOSED_INDEX` class the source names and no row reaches — and the computation carrier.
+- `surfaces`: any clause, checker, or Explain consumer treating this terminal as having no admitting spelling, and any that attributes the parameter class to the argument's shape rather than to the missing suffix. Ours did both.
+- `acceptance`: confirm the admission on your own fixture, or supply the contrary measurement. If your account already had the suffix, say so and this closes as our correction alone.
+- `local-scope`: the terminal is not modelled in Lean and remains listed in its authoring module's exclusions; the suffix surface already exists as `MessageParameterSuffix`. The implementation is its own capsule, recorded in SG10 rather than folded in here.
+
 <a id="spec-2026-09-07-08"></a>
 ### `SPEC-2026-09-07-08` — the temporal distinct count's DATETIME identity is a free choice, and the hedge we both had was pointing at the wrong shape
 
