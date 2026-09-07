@@ -145,11 +145,12 @@ in_lean="$(count "$work/in-lean")"
 observed="$(count "$work/in-observed")"
 touched="$(count "$work/touched")"
 untouched="$(( total_classes - touched ))"
+modelled_untouched="$(( total_classes - in_lean ))"
 unaccounted="$(comm -23 "$work/in-observed" "$work/in-account" | count /dev/stdin)"
 
 # A class known only from an archived receipt is a fact this repository holds but no longer reads.
 grep -oh -E '[A-Za-z0-9_]+' -r spec docs --include='*.md' --exclude-dir=archived 2>/dev/null \
-  | grep -E '^[A-Z][A-Z0-9_]+$' | sort -u > "$work/live-tokens" || : > "$work/live-tokens"
+  | grep -E '^[A-Za-z][A-Za-z0-9_]+$' | sort -u > "$work/live-tokens" || : > "$work/live-tokens"
 comm -12 "$work/classes" "$work/live-tokens" > "$work/live-account"
 archived_only="$(comm -23 "$work/in-account" "$work/live-account" | count /dev/stdin)"
 
@@ -248,8 +249,9 @@ if [[ "$mode" == "verify" ]]; then
 fi
 
 if [[ "$mode" == "print" ]]; then
-  echo "static legality : ${touched}/${total_classes} touched ($(percent "$touched" "$total_classes")%), ${in_lean} modelled ($(percent "$in_lean" "$total_classes")%), ${untouched} untouched"
-  echo "  in prose ${in_account} | in Lean ${in_lean} | observed ${observed} | archived-only ${archived_only} | observed-unaccounted ${unaccounted} (want 0)"
+  echo "MODELLED        : ${in_lean}/${total_classes} ($(percent "$in_lean" "$total_classes")%) — the figure that counts; ${modelled_untouched} not yet modelled"
+  echo "  also touched in prose only: ${touched} ($(percent "$touched" "$total_classes")%) — an upper bound on knowledge, trivially inflatable, never the target"
+  echo "  in prose ${in_account} | observed ${observed} | archived-only ${archived_only} | observed-unaccounted ${unaccounted} (want 0)"
   echo "capabilities    : ${capability_records} records, ${calibrated} calibrated, ${evidence_pending} evidence-pending"
   echo "obligations     : ${gap_records} gaps, ${remaining_rows} remaining rows, ${route_blocked} route-blocked, ${ledger_pending} pending / ${ledger_handed} handed-off"
   echo "estate          : theory ${theory_lines}, support ${support_lines} ($(percent "$support_lines" "$theory_lines")%), evidence ${evidence_lines} ($(percent "$evidence_lines" "$theory_lines")%) nonblank Lean lines, ${unclassified} unclassified"
@@ -282,11 +284,14 @@ Measured at \`${revision}\` on ${today}.
 
 ## Headline
 
-**${touched} of ${total_classes} Kernel refusal classes touched ($(percent "$touched" "$total_classes")%); ${in_lean} modelled in Lean ($(percent "$in_lean" "$total_classes")%); ${untouched} untouched.**
+**${in_lean} of ${total_classes} Kernel refusal classes modelled in Lean ($(percent "$in_lean" "$total_classes")%). ${modelled_untouched} are not.**
 
-The two figures differ because *touched* counts a class named anywhere in the account — including a
-checkpoint's own list of what it did **not** reach — while *modelled* counts one the Lean theory names.
-Read the first as an upper bound on knowledge and the second as the floor on implemented behaviour.
+That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
+at ${touched} ($(percent "$touched" "$total_classes")%): it counts a class named anywhere in the written
+account, **including a checkpoint's own list of what it deliberately did not reach**. Touched is an upper
+bound on what this repository knows about, and it can be raised to 100% in an afternoon by writing prose,
+so it is reported to expose that gap rather than to stand in for progress. When the two are quoted
+together the modelled figure leads.
 
 ## Axis 1 — static legality, the one axis with a real denominator
 

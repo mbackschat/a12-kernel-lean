@@ -14,32 +14,35 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `a80be08d` on 2026-09-07.
+Measured at `6eb95a7e` on 2026-09-07.
 
 ## Headline
 
-**202 of 495 Kernel refusal classes touched (40%); 106 modelled in Lean (21%); 293 untouched.**
+**204 of 495 Kernel refusal classes modelled in Lean (41%). 291 are not.**
 
-The two figures differ because *touched* counts a class named anywhere in the account — including a
-checkpoint's own list of what it did **not** reach — while *modelled* counts one the Lean theory names.
-Read the first as an upper bound on knowledge and the second as the floor on implemented behaviour.
+That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
+at 300 (60%): it counts a class named anywhere in the written
+account, **including a checkpoint's own list of what it deliberately did not reach**. Touched is an upper
+bound on what this repository knows about, and it can be raised to 100% in an afternoon by writing prose,
+so it is reported to expose that gap rather than to stand in for progress. When the two are quoted
+together the modelled figure leads.
 
 ## Axis 1 — static legality, the one axis with a real denominator
 
 | | classes | share |
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 198 | 40% |
-| Named in tracked Lean source | 106 | 21% |
+| Named in `spec/` or `docs/` prose | 201 | 40% |
+| Named in tracked Lean source | 204 | 41% |
 | Observed in a retained probe artifact | 121 | 24% |
-| Touched by any of the three | 202 | 40% |
-| **Untouched everywhere** | **293** | **59%** |
+| Touched by any of the three | 300 | 60% |
+| **Untouched everywhere** | **195** | **39%** |
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
-- **Observed but absent from the written account: 4.** A class seen in a probe and never
+- **Observed but absent from the written account: 3.** A class seen in a probe and never
   written down is a measurement whose result was lost.
-- **Known only from archived material: 33.** These are facts this repository holds but no
+- **Known only from archived material: 6.** These are facts this repository holds but no
   longer reads; they belong in a live owner or should be re-measured.
 
 ### Where the untouched classes are
@@ -48,15 +51,15 @@ Ordered by size, because that is the order in which they are worth attacking.
 
 | untouched | catalog | route |
 |---|---|---|
-| 99 | `_30_8` | runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text |
 | 60 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
-| 36 | `custom_field_types` | host-registered custom field types — **scope question**, may sit outside the Kernel-owned target |
+| 35 | `custom_field_types` | host-registered custom field types — **scope question**, may sit outside the Kernel-owned target |
 | 22 | `vk_codegen_no_meta_model_ckecks_error_messages` | codegen-time model checks — reachable through `model check` |
-| 22 | `runtime_formal_codes` | runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe |
+| 21 | `runtime_formal_codes` | runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe |
 | 17 | `kernel_core_errortext_error_messages` | shared error-text base utilities — carrier not yet identified |
 | 16 | `vk_calc_error_messages` | computation authoring — the `computation add --dry-run` batch route |
 | 12 | `vk_dynEnum_error_messages` | dynamic enumerations — needs a dynamic-enum declaration shape |
 | 8 | `vk_service_errortext_error_messages` | message templates and parameters — the fast `rule check --message` batch route |
+| 2 | `_30_8` | runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text |
 | 1 | `vk_parser_common_error_messages` | shared parser diagnostics — the fast `rule check` batch route |
 | 1 | `test_rule_error_messages` | on-the-fly rule testing — likely instrument-only, not a semantic class |
 
@@ -68,7 +71,7 @@ one: it counts whether a record cites external calibration, not how much of its 
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 177 | 100% |
+| Capability records in [`implementation/`](implementation/) | 178 | 100% |
 | Citing a Kernel checkpoint or calibration | 83 | 46% |
 | Carrying an explicit evidence-pending note | 45 | 25% |
 
@@ -92,7 +95,7 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 197858 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 198090 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8479 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -121,4 +124,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-07 | `d9079138` | 170 | 78 | 271 | 82 | 23 |
 | 2026-09-07 | `199106fc` | 194 | 92 | 301 | 82 | 23 |
 | 2026-09-07 | `a80be08d` | 202 | 106 | 293 | 83 | 24 |
+| 2026-09-07 | `6eb95a7e` | 300 | 204 | 195 | 83 | 24 |
 <!-- velocity-history:end -->
