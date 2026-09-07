@@ -597,6 +597,18 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `blocked-on`: none
 - `route-state`: discovery-required
 
+### SG27 — the Number formal cascade's conversion route and its two unmodelled readings
+
+- `state`: open
+- `owner`: [`NumberFormalCheck.lean`](../A12Kernel/Semantics/NumberFormalCheck.lean), clause [`04-numbers-and-decimals.md` §4](../spec/04-numbers-and-decimals.md), outbound [`SPEC-2026-09-07-13`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-07-13).
+- `closed`: the eleven refusals reachable from a document-loaded value, their order, and their surfaced codes, replayed against 278 measured observations with zero disagreements ([checkpoint](sources/evaluation-and-application-routes.md#src-number-formal-cascade-code-axis-and-load-canonicalisation)).
+- `missing`: the **display-to-internal conversion** entry point, whose input is raw text rather than a canonical value. Four Kernel refusals live only there — leading plus, signed zero, leading zeros, and a missing separator where fractional places are declared. This project has no route to it: `:adapter:kernelProbe` observes `validateFull` and `compute`, both of which consume an already-loaded document.
+- `missing`: the money **text** split. The Kernel selects the with-cents message bundle at exactly two declared fractional places and the without-cents bundle otherwise, so a one- or three-place money field renders without-cents text under a with-cents type name. Read from the Kernel's own dispatch, never measured; no probed declaration used one or three places.
+- `missing`: a declaration retaining **leading zeros** keeps them in the stored text, so its rendered length exceeds what the numeric value implies. `StoredNumber` cannot represent that, so the length checks are unmodelled for `leadingZerosAllowed: true` and the one probed field carrying it is excluded from the replay.
+- `discriminator`: for the conversion route, a value whose canonical and raw forms differ in length — a leading `+` on a field whose minimum rendered length the canonical form fails and the raw form passes — separates the two entry points without needing either to be named.
+- `prerequisite`: the first item needs either a Kernel route that accepts raw display text, or a peer measurement naming which of their routes bypasses canonicalisation; `SPEC-2026-09-07-13`'s acceptance asks exactly that. The second needs only two more probed declarations and can close whenever a Number batch is next authored.
+- `route-state`: probe-ready for the money text split; discovery-required for the conversion route.
+
 ## Cross-family conformance gap
 
 ### SG12 — retained Kernel correspondence coverage

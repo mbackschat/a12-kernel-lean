@@ -154,6 +154,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Scalar Number computation](implementation/numeric.md#cap-scalar-number-computation)
 <a id="cap-addressed-numeric-operation-consumer"></a>
 - [Addressed numeric-operation consumer](implementation/numeric.md#cap-addressed-numeric-operation-consumer)
+<a id="cap-number-formal-cascade"></a>
+- [Ordered Number formal cascade](implementation/numeric.md#cap-number-formal-cascade)
 <a id="resolved-date-range-overlap-truth-and-operator-scans"></a>
 - [Date construction and Base Year](implementation/date-range.md#resolved-date-range-overlap-truth-and-operator-scans)
 <a id="resolved-direct-date-construction-and-base-year-date-sources"></a>

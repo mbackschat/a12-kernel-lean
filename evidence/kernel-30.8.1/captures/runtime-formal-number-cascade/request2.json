@@ -1,0 +1,191 @@
+{
+ "model": "FormalNum_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "w01",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "+5",
+     "PosMoney": "+5",
+     "PosOc": "+5",
+     "NoLeadZero": "+5",
+     "LeadZeroOk": "+5",
+     "Capped": "+5",
+     "Frac2": "+5"
+    }
+   }
+  },
+  {
+   "name": "w02",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "-5",
+     "PosMoney": "-5",
+     "PosOc": "-5",
+     "NoLeadZero": "-5",
+     "LeadZeroOk": "-5",
+     "Capped": "-5",
+     "Frac2": "-5"
+    }
+   }
+  },
+  {
+   "name": "w03",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "-0",
+     "PosMoney": "-0",
+     "PosOc": "-0",
+     "NoLeadZero": "-0",
+     "LeadZeroOk": "-0",
+     "Capped": "-0",
+     "Frac2": "-0"
+    }
+   }
+  },
+  {
+   "name": "w04",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "0123",
+     "PosMoney": "0123",
+     "PosOc": "0123",
+     "NoLeadZero": "0123",
+     "LeadZeroOk": "0123",
+     "Capped": "0123",
+     "Frac2": "0123"
+    }
+   }
+  },
+  {
+   "name": "w05",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "0000",
+     "PosMoney": "0000",
+     "PosOc": "0000",
+     "NoLeadZero": "0000",
+     "LeadZeroOk": "0000",
+     "Capped": "0000",
+     "Frac2": "0000"
+    }
+   }
+  },
+  {
+   "name": "w06",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "25",
+     "PosMoney": "25",
+     "PosOc": "25",
+     "NoLeadZero": "25",
+     "LeadZeroOk": "25",
+     "Capped": "25",
+     "Frac2": "25"
+    }
+   }
+  },
+  {
+   "name": "w07",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "5",
+     "PosMoney": "5",
+     "PosOc": "5",
+     "NoLeadZero": "5",
+     "LeadZeroOk": "5",
+     "Capped": "5",
+     "Frac2": "5"
+    }
+   }
+  },
+  {
+   "name": "w08",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "1.50",
+     "PosMoney": "1.50",
+     "PosOc": "1.50",
+     "NoLeadZero": "1.50",
+     "LeadZeroOk": "1.50",
+     "Capped": "1.50",
+     "Frac2": "1.50"
+    }
+   }
+  },
+  {
+   "name": "w09",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "5.00",
+     "PosMoney": "5.00",
+     "PosOc": "5.00",
+     "NoLeadZero": "5.00",
+     "LeadZeroOk": "5.00",
+     "Capped": "5.00",
+     "Frac2": "5.00"
+    }
+   }
+  },
+  {
+   "name": "w10",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "-0.00",
+     "PosMoney": "-0.00",
+     "PosOc": "-0.00",
+     "NoLeadZero": "-0.00",
+     "LeadZeroOk": "-0.00",
+     "Capped": "-0.00",
+     "Frac2": "-0.00"
+    }
+   }
+  },
+  {
+   "name": "w11",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "+12.50",
+     "PosMoney": "+12.50",
+     "PosOc": "+12.50",
+     "NoLeadZero": "+12.50",
+     "LeadZeroOk": "+12.50",
+     "Capped": "+12.50",
+     "Frac2": "+12.50"
+    }
+   }
+  },
+  {
+   "name": "w12",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "0.5",
+     "PosMoney": "0.5",
+     "PosOc": "0.5",
+     "NoLeadZero": "0.5",
+     "LeadZeroOk": "0.5",
+     "Capped": "0.5",
+     "Frac2": "0.5"
+    }
+   }
+  },
+  {
+   "name": "w13",
+   "documentInline": {
+    "FormalNum": {
+     "PosOnly": "1234",
+     "PosMoney": "1234",
+     "PosOc": "1234",
+     "NoLeadZero": "1234",
+     "LeadZeroOk": "1234",
+     "Capped": "1234",
+     "Frac2": "1234"
+    }
+   }
+  }
+ ]
+}

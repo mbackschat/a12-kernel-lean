@@ -14,11 +14,11 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `199106fc` on 2026-09-07.
+Measured at `a80be08d` on 2026-09-07.
 
 ## Headline
 
-**194 of 495 Kernel refusal classes touched (39%); 92 modelled in Lean (18%); 301 untouched.**
+**202 of 495 Kernel refusal classes touched (40%); 106 modelled in Lean (21%); 293 untouched.**
 
 The two figures differ because *touched* counts a class named anywhere in the account — including a
 checkpoint's own list of what it did **not** reach — while *modelled* counts one the Lean theory names.
@@ -29,17 +29,17 @@ Read the first as an upper bound on knowledge and the second as the floor on imp
 | | classes | share |
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 194 | 39% |
-| Named in tracked Lean source | 92 | 18% |
-| Observed in a retained probe artifact | 111 | 22% |
-| Touched by any of the three | 194 | 39% |
-| **Untouched everywhere** | **301** | **60%** |
+| Named in `spec/` or `docs/` prose | 198 | 40% |
+| Named in tracked Lean source | 106 | 21% |
+| Observed in a retained probe artifact | 121 | 24% |
+| Touched by any of the three | 202 | 40% |
+| **Untouched everywhere** | **293** | **59%** |
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
-- **Observed but absent from the written account: 0.** A class seen in a probe and never
+- **Observed but absent from the written account: 4.** A class seen in a probe and never
   written down is a measurement whose result was lost.
-- **Known only from archived material: 29.** These are facts this repository holds but no
+- **Known only from archived material: 33.** These are facts this repository holds but no
   longer reads; they belong in a live owner or should be re-measured.
 
 ### Where the untouched classes are
@@ -51,8 +51,8 @@ Ordered by size, because that is the order in which they are worth attacking.
 | 99 | `_30_8` | runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text |
 | 60 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
 | 36 | `custom_field_types` | host-registered custom field types — **scope question**, may sit outside the Kernel-owned target |
-| 30 | `runtime_formal_codes` | runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe |
 | 22 | `vk_codegen_no_meta_model_ckecks_error_messages` | codegen-time model checks — reachable through `model check` |
+| 22 | `runtime_formal_codes` | runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe |
 | 17 | `kernel_core_errortext_error_messages` | shared error-text base utilities — carrier not yet identified |
 | 16 | `vk_calc_error_messages` | computation authoring — the `computation add --dry-run` batch route |
 | 12 | `vk_dynEnum_error_messages` | dynamic enumerations — needs a dynamic-enum declaration shape |
@@ -68,18 +68,18 @@ one: it counts whether a record cites external calibration, not how much of its 
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 176 | 100% |
-| Citing a Kernel checkpoint or calibration | 82 | 46% |
+| Capability records in [`implementation/`](implementation/) | 177 | 100% |
+| Citing a Kernel checkpoint or calibration | 83 | 46% |
 | Carrying an explicit evidence-pending note | 45 | 25% |
 
 ## Axis 3 — open obligation load
 
 | | count |
 |---|---|
-| Open gap records in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 23 |
+| Open gap records in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
 | `remaining` rows across those gaps | 231 |
 | Gaps whose route is **blocked** | 0 |
-| Ledger entries `pending` with a12-dmkits | 3 |
+| Ledger entries `pending` with a12-dmkits | 4 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route is the only figure here that should stop work; a `remaining` row is ordinary scope. If
@@ -92,7 +92,7 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 197856 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 197858 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8479 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -103,7 +103,7 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 165 |
+| Retained capture directories under `../evidence/` | 166 |
 | Retained observation rows across all artifacts | 439 |
 
 ## Velocity
@@ -120,4 +120,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-07 | `0fe98007` | 160 | 78 | 281 | 82 | 23 |
 | 2026-09-07 | `d9079138` | 170 | 78 | 271 | 82 | 23 |
 | 2026-09-07 | `199106fc` | 194 | 92 | 301 | 82 | 23 |
+| 2026-09-07 | `a80be08d` | 202 | 106 | 293 | 83 | 24 |
 <!-- velocity-history:end -->

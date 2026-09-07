@@ -1,0 +1,315 @@
+{
+ "header": {
+  "id": "FormalNum_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "FormalNum_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/FormalNum",
+     "name": "FormalNum",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/FormalNum/MC",
+        "name": "MC",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2,
+           "minValue": 1,
+           "maxValue": 5000,
+           "zeroNotAllowed": true,
+           "trait": "amount",
+           "minLength": 4,
+           "maxLength": 8,
+           "maxIntegerDigits": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/MCSigned",
+        "name": "MCSigned",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2,
+           "minValue": -500,
+           "maxValue": 5000,
+           "trait": "amount",
+           "maxIntegerDigits": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/OC",
+        "name": "OC",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minFractionalDigits": 0,
+           "minValue": 1,
+           "maxValue": 5000,
+           "zeroNotAllowed": true,
+           "trait": "amount",
+           "minLength": 2,
+           "maxLength": 5,
+           "maxIntegerDigits": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/OCSigned",
+        "name": "OCSigned",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minFractionalDigits": 0,
+           "minValue": -500,
+           "maxValue": 5000,
+           "trait": "amount",
+           "maxIntegerDigits": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/ZFix2",
+        "name": "ZFix2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/ZNoZero",
+        "name": "ZNoZero",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "zeroNotAllowed": true,
+           "minLength": 2,
+           "maxLength": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/ZOpt02",
+        "name": "ZOpt02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/ZPlain",
+        "name": "ZPlain",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/ZSigned",
+        "name": "ZSigned",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -9999,
+           "maxValue": 9999,
+           "maxIntegerDigits": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/ZVar13",
+        "name": "ZVar13",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 3,
+           "minFractionalDigits": 1
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/Capped",
+        "name": "Capped",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": 10,
+           "maxValue": 20
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/Frac2",
+        "name": "Frac2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2,
+           "minLength": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/LeadZeroOk",
+        "name": "LeadZeroOk",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "leadingZerosAllowed": true,
+           "minLength": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/NoLeadZero",
+        "name": "NoLeadZero",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minLength": 4
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/PosMoney",
+        "name": "PosMoney",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2,
+           "trait": "amount",
+           "positivesOnly": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/PosOc",
+        "name": "PosOc",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minFractionalDigits": 0,
+           "trait": "amount",
+           "positivesOnly": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/FormalNum/PosOnly",
+        "name": "PosOnly",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": true
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

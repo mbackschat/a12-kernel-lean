@@ -806,6 +806,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A malformed `FirstFilledValue` source terminates the scan where an empty one falls through, and the eager operand inventory still reports the suffix the scan never read](sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports)
 <a id="src-first-filled-formal-branch-four-carriers"></a>
 - [The `FirstFilledValue` formal-failure branch is the same on Boolean, DateFragment, Time and DateTime as on full Date, closing six of the seven carriers](sources/evaluation-and-application-routes.md#src-first-filled-formal-branch-four-carriers)
+<a id="src-number-formal-cascade-code-axis-and-load-canonicalisation"></a>
+- [The Number formal cascade's surfaced code and its message text are independent axes, and the canonical Document JSON load removes four refusals' preconditions](sources/evaluation-and-application-routes.md#src-number-formal-cascade-code-axis-and-load-canonicalisation)
 <a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
 - [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>

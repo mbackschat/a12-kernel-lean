@@ -1,0 +1,1196 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FormalNum_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "w01",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w02",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosMoney",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid sign: Money amounts must be provided without a sign.",
+              "referenced" : [
+                "FormalNum/PosMoney"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid sign: Money amounts must be provided without a sign.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values without a sign are allowed.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosMoney",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid sign: Money amounts must be provided without a sign.",
+              "referenced" : [
+                "FormalNum/PosMoney"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid sign: Money amounts must be provided without a sign.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values without a sign are allowed.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w03",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w04",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values smaller than or equal to 20 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values smaller than or equal to 20 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w05",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w06",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values smaller than or equal to 20 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values smaller than or equal to 20 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w07",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w08",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w09",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w10",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values greater or equal to 10 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w11",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w12",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w13",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values smaller than or equal to 20 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values smaller than or equal to 20 are allowed.",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

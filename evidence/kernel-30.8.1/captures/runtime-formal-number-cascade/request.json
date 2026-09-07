@@ -1,0 +1,349 @@
+{
+ "model": "FormalNum_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "v01",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "+5",
+     "ZSigned": "+5",
+     "ZNoZero": "+5",
+     "ZFix2": "+5",
+     "ZVar13": "+5",
+     "ZOpt02": "+5",
+     "MC": "+5",
+     "MCSigned": "+5",
+     "OC": "+5",
+     "OCSigned": "+5"
+    }
+   }
+  },
+  {
+   "name": "v02",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "abc",
+     "ZSigned": "abc",
+     "ZNoZero": "abc",
+     "ZFix2": "abc",
+     "ZVar13": "abc",
+     "ZOpt02": "abc",
+     "MC": "abc",
+     "MCSigned": "abc",
+     "OC": "abc",
+     "OCSigned": "abc"
+    }
+   }
+  },
+  {
+   "name": "v03",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "1234567890123456",
+     "ZSigned": "1234567890123456",
+     "ZNoZero": "1234567890123456",
+     "ZFix2": "1234567890123456",
+     "ZVar13": "1234567890123456",
+     "ZOpt02": "1234567890123456",
+     "MC": "1234567890123456",
+     "MCSigned": "1234567890123456",
+     "OC": "1234567890123456",
+     "OCSigned": "1234567890123456"
+    }
+   }
+  },
+  {
+   "name": "v04",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "-0",
+     "ZSigned": "-0",
+     "ZNoZero": "-0",
+     "ZFix2": "-0",
+     "ZVar13": "-0",
+     "ZOpt02": "-0",
+     "MC": "-0",
+     "MCSigned": "-0",
+     "OC": "-0",
+     "OCSigned": "-0"
+    }
+   }
+  },
+  {
+   "name": "v05",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "-5",
+     "ZSigned": "-5",
+     "ZNoZero": "-5",
+     "ZFix2": "-5",
+     "ZVar13": "-5",
+     "ZOpt02": "-5",
+     "MC": "-5",
+     "MCSigned": "-5",
+     "OC": "-5",
+     "OCSigned": "-5"
+    }
+   }
+  },
+  {
+   "name": "v06",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "5.5",
+     "ZSigned": "5.5",
+     "ZNoZero": "5.5",
+     "ZFix2": "5.5",
+     "ZVar13": "5.5",
+     "ZOpt02": "5.5",
+     "MC": "5.5",
+     "MCSigned": "5.5",
+     "OC": "5.5",
+     "OCSigned": "5.5"
+    }
+   }
+  },
+  {
+   "name": "v07",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "5",
+     "ZSigned": "5",
+     "ZNoZero": "5",
+     "ZFix2": "5",
+     "ZVar13": "5",
+     "ZOpt02": "5",
+     "MC": "5",
+     "MCSigned": "5",
+     "OC": "5",
+     "OCSigned": "5"
+    }
+   }
+  },
+  {
+   "name": "v08",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "5.1234",
+     "ZSigned": "5.1234",
+     "ZNoZero": "5.1234",
+     "ZFix2": "5.1234",
+     "ZVar13": "5.1234",
+     "ZOpt02": "5.1234",
+     "MC": "5.1234",
+     "MCSigned": "5.1234",
+     "OC": "5.1234",
+     "OCSigned": "5.1234"
+    }
+   }
+  },
+  {
+   "name": "v09",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "123456",
+     "ZSigned": "123456",
+     "ZNoZero": "123456",
+     "ZFix2": "123456",
+     "ZVar13": "123456",
+     "ZOpt02": "123456",
+     "MC": "123456",
+     "MCSigned": "123456",
+     "OC": "123456",
+     "OCSigned": "123456"
+    }
+   }
+  },
+  {
+   "name": "v10",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "0",
+     "ZSigned": "0",
+     "ZNoZero": "0",
+     "ZFix2": "0",
+     "ZVar13": "0",
+     "ZOpt02": "0",
+     "MC": "0",
+     "MCSigned": "0",
+     "OC": "0",
+     "OCSigned": "0"
+    }
+   }
+  },
+  {
+   "name": "v11",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "0123",
+     "ZSigned": "0123",
+     "ZNoZero": "0123",
+     "ZFix2": "0123",
+     "ZVar13": "0123",
+     "ZOpt02": "0123",
+     "MC": "0123",
+     "MCSigned": "0123",
+     "OC": "0123",
+     "OCSigned": "0123"
+    }
+   }
+  },
+  {
+   "name": "v12",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "1",
+     "ZSigned": "1",
+     "ZNoZero": "1",
+     "ZFix2": "1",
+     "ZVar13": "1",
+     "ZOpt02": "1",
+     "MC": "1",
+     "MCSigned": "1",
+     "OC": "1",
+     "OCSigned": "1"
+    }
+   }
+  },
+  {
+   "name": "v13",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "123456789",
+     "ZSigned": "123456789",
+     "ZNoZero": "123456789",
+     "ZFix2": "123456789",
+     "ZVar13": "123456789",
+     "ZOpt02": "123456789",
+     "MC": "123456789",
+     "MCSigned": "123456789",
+     "OC": "123456789",
+     "OCSigned": "123456789"
+    }
+   }
+  },
+  {
+   "name": "v14",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "-99999",
+     "ZSigned": "-99999",
+     "ZNoZero": "-99999",
+     "ZFix2": "-99999",
+     "ZVar13": "-99999",
+     "ZOpt02": "-99999",
+     "MC": "-99999",
+     "MCSigned": "-99999",
+     "OC": "-99999",
+     "OCSigned": "-99999"
+    }
+   }
+  },
+  {
+   "name": "v15",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "99999",
+     "ZSigned": "99999",
+     "ZNoZero": "99999",
+     "ZFix2": "99999",
+     "ZVar13": "99999",
+     "ZOpt02": "99999",
+     "MC": "99999",
+     "MCSigned": "99999",
+     "OC": "99999",
+     "OCSigned": "99999"
+    }
+   }
+  },
+  {
+   "name": "v16",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "1.5",
+     "ZSigned": "1.5",
+     "ZNoZero": "1.5",
+     "ZFix2": "1.5",
+     "ZVar13": "1.5",
+     "ZOpt02": "1.5",
+     "MC": "1.5",
+     "MCSigned": "1.5",
+     "OC": "1.5",
+     "OCSigned": "1.5"
+    }
+   }
+  },
+  {
+   "name": "v17",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "0.00",
+     "ZSigned": "0.00",
+     "ZNoZero": "0.00",
+     "ZFix2": "0.00",
+     "ZVar13": "0.00",
+     "ZOpt02": "0.00",
+     "MC": "0.00",
+     "MCSigned": "0.00",
+     "OC": "0.00",
+     "OCSigned": "0.00"
+    }
+   }
+  },
+  {
+   "name": "v18",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "-0.00",
+     "ZSigned": "-0.00",
+     "ZNoZero": "-0.00",
+     "ZFix2": "-0.00",
+     "ZVar13": "-0.00",
+     "ZOpt02": "-0.00",
+     "MC": "-0.00",
+     "MCSigned": "-0.00",
+     "OC": "-0.00",
+     "OCSigned": "-0.00"
+    }
+   }
+  },
+  {
+   "name": "v19",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "12.345",
+     "ZSigned": "12.345",
+     "ZNoZero": "12.345",
+     "ZFix2": "12.345",
+     "ZVar13": "12.345",
+     "ZOpt02": "12.345",
+     "MC": "12.345",
+     "MCSigned": "12.345",
+     "OC": "12.345",
+     "OCSigned": "12.345"
+    }
+   }
+  },
+  {
+   "name": "v20",
+   "documentInline": {
+    "FormalNum": {
+     "ZPlain": "1 234",
+     "ZSigned": "1 234",
+     "ZNoZero": "1 234",
+     "ZFix2": "1 234",
+     "ZVar13": "1 234",
+     "ZOpt02": "1 234",
+     "MC": "1 234",
+     "MCSigned": "1 234",
+     "OC": "1 234",
+     "OCSigned": "1 234"
+    }
+   }
+  }
+ ]
+}

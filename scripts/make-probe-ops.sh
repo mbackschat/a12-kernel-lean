@@ -7,8 +7,9 @@
 # smuggled past the shell. All three are authoring costs, not instrument costs — the kernel answers a
 # row in about 0.12 seconds.
 #
-# Scope is `rule check` only. `computation add --dry-run` takes spec *files* rather than argv, so it
-# does not share this shape and is not served here.
+# Scope is `rule check` only, because it is the verb whose whole probe varies in argv. `computation
+# add --dry-run` batches just as well but takes a spec *file* per row, so its matrix is a directory of
+# specs rather than the argv template this generator emits.
 #
 #   ./scripts/make-probe-ops.sh <spec> <out.json>
 #

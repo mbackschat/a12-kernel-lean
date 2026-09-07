@@ -1,0 +1,1 @@
+{"group":"/FormalNum","name":"MCSigned","kind":"NUMBER","number":{"unit":"AMOUNT","minFractionalDigits":2,"maxFractionalDigits":2,"maxIntegerDigits":4,"min":"-500","max":"5000"}}

@@ -1,0 +1,2604 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FormalNum_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "v01",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v02",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v03",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v04",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v05",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too small: The value must be greater or equal to 1.00.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too small: The value must be greater or equal to 1.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too small: The value must be greater or equal to 1.00.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too small: The value must be greater or equal to 1.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v06",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v07",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v08",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v09",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v10",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v11",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "v12",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with at least 2 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v13",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v14",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v15",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v16",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v17",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v18",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values not equal to 0 are allowed.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v19",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v20",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
