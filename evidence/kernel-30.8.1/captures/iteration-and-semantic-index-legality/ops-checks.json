@@ -1,0 +1,242 @@
+[
+ {
+  "id": "PIbase",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldsNotCollectivelyFilled(/It/L/V, /It/M/W)",
+   "--code",
+   "PIbase",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIrepunq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldsNotCollectivelyFilled(/It/L/V, /It/M/W) And RepetitionNotUnique(/It/L/V)",
+   "--code",
+   "PIrepunq",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIneg",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldNotFilled(/It/M/W)",
+   "--code",
+   "PIneg",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PInegpos",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldFilled(/It/L/V) And FieldNotFilled(/It/M/W)",
+   "--code",
+   "PInegpos",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIhaving",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "AtLeastOneFieldFilled(/It/M*/W Having [/It/M/K] == \"k1\")",
+   "--code",
+   "PIhaving",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIbase",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/V For \"k1\"]",
+   "--code",
+   "SIbase",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIkeyfld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/V For B]",
+   "--code",
+   "SIkeyfld",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIcat",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/V For C -> Band]",
+   "--code",
+   "SIcat",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIdouble",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [[/It/L/V For \"k1\"] For \"k2\"]",
+   "--code",
+   "SIdouble",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIwild",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L*/Sub/S For \"s1\"]",
+   "--code",
+   "SIwild",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIiter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/Sub/S For \"s1\"]",
+   "--code",
+   "SIiter",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIfilter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And AtLeastOneFieldFilled(/It/M*/W Having [/It/L/V For \"k1\"] == \"x\")",
+   "--code",
+   "SIfilter",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIonself",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldFilled(V) And [V] != [/It/L/V For \"k1\"]",
+   "--code",
+   "SIonself",
+   "--group",
+   "/It/L"
+  ]
+ },
+ {
+  "id": "SIsubkey",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/Sub/S For /It/L/Sub/SK]",
+   "--code",
+   "SIsubkey",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "ITwild",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L*/V]",
+   "--code",
+   "ITwild",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "ITsub",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldFilled(V) And [V] != [Sub/S]",
+   "--code",
+   "ITsub",
+   "--group",
+   "/It/L"
+  ]
+ }
+]

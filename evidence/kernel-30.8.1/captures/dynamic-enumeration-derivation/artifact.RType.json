@@ -1,29 +1,29 @@
 {
-  "schemaVersion" : 1,
-  "producer" : {
-    "dmtoolVersion" : "0.13.0",
-    "kernel" : {
-      "builtAgainst" : "30.8.1",
-      "runtime" : "30.8.1"
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
     },
-    "source" : {
-      "revision" : "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
-      "state" : "CLEAN"
+    "source": {
+      "revision": "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
+      "state": "CLEAN"
     }
   },
-  "request" : {
-    "model" : "M_RType.json",
-    "locale" : "en_US"
+  "request": {
+    "model": "M_RType.json",
+    "locale": "en_US"
   },
-  "rows" : [ ],
-  "dynamicEnumerations" : {
-    "valuesByField" : { },
-    "diagnostics" : [
+  "rows": [],
+  "dynamicEnumerations": {
+    "valuesByField": {},
+    "diagnostics": [
       {
-        "code" : "MVK_DYNENUM_INVALID_TYPE",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "The target field is of an invalid type. Only fields of type string without restriction, of type number without fractional digits or enumerations are allowed. [MVK_DYNENUM_INVALID_TYPE]"
+        "code": "MVK_DYNENUM_INVALID_TYPE",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       }
     ]
   }

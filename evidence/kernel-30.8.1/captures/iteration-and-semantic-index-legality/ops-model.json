@@ -1,0 +1,152 @@
+[
+ {
+  "id": "g1",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/It",
+   "--name",
+   "L",
+   "--repeatable",
+   "5"
+  ]
+ },
+ {
+  "id": "g2",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/It",
+   "--name",
+   "M",
+   "--repeatable",
+   "5"
+  ]
+ },
+ {
+  "id": "f1",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It",
+   "--name",
+   "A",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "f2",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It",
+   "--name",
+   "B",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "f3",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/L",
+   "--name",
+   "K",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "f4",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/L",
+   "--name",
+   "V",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "f5",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/M",
+   "--name",
+   "K",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "f6",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/M",
+   "--name",
+   "W",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "g3",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/It/L",
+   "--name",
+   "Sub",
+   "--repeatable",
+   "3"
+  ]
+ },
+ {
+  "id": "f7",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/L/Sub",
+   "--name",
+   "S",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "m1",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/It/L",
+   "--index-field",
+   "K"
+  ]
+ },
+ {
+  "id": "m2",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/It/M",
+   "--index-field",
+   "K"
+  ]
+ }
+]

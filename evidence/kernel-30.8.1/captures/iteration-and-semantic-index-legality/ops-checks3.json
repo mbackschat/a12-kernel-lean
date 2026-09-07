@@ -1,0 +1,182 @@
+[
+ {
+  "id": "SIgrp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And GroupNotFilled(/It/L For \"k1\")",
+   "--code",
+   "SIgrp",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIgrpfld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L For \"k1\"/V]",
+   "--code",
+   "SIgrpfld",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIdbl4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L For \"k1\"/Sub/S For \"s1\"]",
+   "--code",
+   "SIdbl4",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIdbl5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/P/Q For \"q1\"/QV For \"q2\"]",
+   "--code",
+   "SIdbl5",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIkeySI",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/V For /It/P/Q/QV]",
+   "--code",
+   "SIkeySI",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIfilt3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And AtLeastOneFieldFilled(/It/L*/V Having [/It/M/W] == \"x\")",
+   "--code",
+   "PIfilt3",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIfilt4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/M/W",
+   "--condition",
+   "FieldFilled(/It/M/W) And AtLeastOneFieldFilled(/It/L*/V Having [/It/L/K] == \"k1\")",
+   "--code",
+   "PIfilt4",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIfilt5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldFilled(/It/L/V) And [/It/M/W] != \"x\" And AtLeastOneFieldFilled(/It/P*/Q/QV Having [/It/M/W] == \"y\")",
+   "--code",
+   "PIfilt5",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIfilt6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldsNotCollectivelyFilled(/It/L/V, /It/M/W) And AtLeastOneFieldFilled(/It/P*/Q/QV Having [/It/M/W] == \"y\")",
+   "--code",
+   "PIfilt6",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIrepunq2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldsNotCollectivelyFilled(/It/L/V, /It/M/W) And RepetitionNotUnique(/It/M/W)",
+   "--code",
+   "PIrepunq2",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIctrl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "RepetitionNotUnique(/It/L/V)",
+   "--code",
+   "PIctrl",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIctrl2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/P/Q/QV For \"q1\"]",
+   "--code",
+   "SIctrl2",
+   "--group",
+   "/It"
+  ]
+ }
+]

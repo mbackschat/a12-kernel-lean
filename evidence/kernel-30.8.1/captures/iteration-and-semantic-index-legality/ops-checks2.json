@@ -1,0 +1,332 @@
+[
+ {
+  "id": "PIinvalid",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldNotFilled(/It/L/V) And FieldNotFilled(/It/M/W)",
+   "--code",
+   "PIinvalid",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIinvalid2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "NoFieldFilled(/It/L/V, /It/M/W)",
+   "--code",
+   "PIinvalid2",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIfilt1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldFilled(/It/L/V) And AtLeastOneFieldFilled(/It/M*/W Having [/It/M/W] == \"x\")",
+   "--code",
+   "PIfilt1",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "PIfilt2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldFilled(/It/L/V) And AtLeastOneFieldFilled(/It/L*/V Having [/It/M/W] == \"x\")",
+   "--code",
+   "PIfilt2",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIwild2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/P*/Q/QV For \"q1\"]",
+   "--code",
+   "SIwild2",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIwild3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/P/Q/QV For \"q1\"]",
+   "--code",
+   "SIwild3",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIenum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/E/EV For C]",
+   "--code",
+   "SIenum",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIenumcat",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/E/EV For C -> Band]",
+   "--code",
+   "SIenumcat",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIenumcat2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/E/EV For /It/E/EK -> Band]",
+   "--code",
+   "SIenumcat2",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIdbl2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/P/Q/QV For \"q1\" For \"p1\"]",
+   "--code",
+   "SIdbl2",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SIdbl3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/V For [/It/E/EV For \"e1\"]]",
+   "--code",
+   "SIdbl3",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "EFnotref",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(B)",
+   "--code",
+   "EFnotref",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "EFmissing",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "True",
+   "--code",
+   "EFmissing",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "NotInGrp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/V",
+   "--condition",
+   "FieldFilled(/It/L/V)",
+   "--code",
+   "NotInGrp",
+   "--group",
+   "/It/M"
+  ]
+ },
+ {
+  "id": "CondWild",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And AtLeastOneFieldFilled(/It/L*/V)",
+   "--code",
+   "CondWild",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "RefIf1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [B] != \"x\"",
+   "--code",
+   "RefIf1",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "RefIf2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldNotFilled(A) And [B] != \"x\"",
+   "--code",
+   "RefIf2",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "MultiIdx",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/Sub/S For \"s1\" ]",
+   "--code",
+   "MultiIdx",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "IdxInval",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/K",
+   "--condition",
+   "FieldFilled(K) And [K] != [/It/L/V For \"k1\"]",
+   "--code",
+   "IdxInval",
+   "--group",
+   "/It/L"
+  ]
+ },
+ {
+  "id": "DeepSub",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/It/L/Sub/S]",
+   "--code",
+   "DeepSub",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "SubIter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/L/Sub/S",
+   "--condition",
+   "FieldFilled(S) And [S] != [/It/M/W]",
+   "--code",
+   "SubIter",
+   "--group",
+   "/It"
+  ]
+ },
+ {
+  "id": "QIter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/It/P/Q/QV",
+   "--condition",
+   "FieldFilled(QV) And [QV] != [/It/L/V]",
+   "--code",
+   "QIter",
+   "--group",
+   "/It"
+  ]
+ }
+]

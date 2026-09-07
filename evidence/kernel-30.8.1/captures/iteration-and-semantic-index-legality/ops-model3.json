@@ -1,0 +1,108 @@
+[
+ {
+  "id": "gP",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/It",
+   "--name",
+   "P",
+   "--repeatable",
+   "4"
+  ]
+ },
+ {
+  "id": "gQ",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/It/P",
+   "--name",
+   "Q",
+   "--repeatable",
+   "4"
+  ]
+ },
+ {
+  "id": "fQK",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/P/Q",
+   "--name",
+   "QK",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fQV",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/P/Q",
+   "--name",
+   "QV",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "mQ",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/It/P/Q",
+   "--index-field",
+   "QK"
+  ]
+ },
+ {
+  "id": "gE",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/It",
+   "--name",
+   "E",
+   "--repeatable",
+   "3"
+  ]
+ },
+ {
+  "id": "fEK",
+  "verb": "field",
+  "args": [
+   "add",
+   "f-ek.json"
+  ]
+ },
+ {
+  "id": "fEV",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/E",
+   "--name",
+   "EV",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "mE",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/It/E",
+   "--index-field",
+   "EK"
+  ]
+ }
+]

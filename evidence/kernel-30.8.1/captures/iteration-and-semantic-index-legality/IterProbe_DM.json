@@ -1,0 +1,232 @@
+{
+  "header" : {
+    "id" : "IterProbe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "IterProbe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/It",
+        "name" : "It",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/It/L",
+            "name" : "L",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/It/L/K",
+                "name" : "K",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/It/L/V",
+                "name" : "V",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/It/L/Sub",
+                "name" : "Sub",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/It/L/Sub/S",
+                    "name" : "S",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/It/L/Sub/SK",
+                    "name" : "SK",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ],
+                  "indexFieldName" : "SK"
+                }
+              } ],
+              "indexFieldName" : "K"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/It/M",
+            "name" : "M",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/It/M/K",
+                "name" : "K",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/It/M/W",
+                "name" : "W",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "K"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/It/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/It/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/It/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "ALPHA"
+                  }, {
+                    "value" : "BETA"
+                  } ],
+                  "categories" : [ {
+                    "name" : "Band",
+                    "values" : [ "LOW", "HIGH" ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/It/P",
+            "name" : "P",
+            "Group" : {
+              "repeatability" : 4,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/It/P/Q",
+                "name" : "Q",
+                "Group" : {
+                  "repeatability" : 4,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/It/P/Q/QK",
+                    "name" : "QK",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/It/P/Q/QV",
+                    "name" : "QV",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ],
+                  "indexFieldName" : "QK"
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/It/E",
+            "name" : "E",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/It/E/EK",
+                "name" : "EK",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "ALPHA"
+                      }, {
+                        "value" : "BETA"
+                      } ],
+                      "categories" : [ {
+                        "name" : "Band",
+                        "values" : [ "LOW", "HIGH" ]
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/It/E/EV",
+                "name" : "EV",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "EK"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

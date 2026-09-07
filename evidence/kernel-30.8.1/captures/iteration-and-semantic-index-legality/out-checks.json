@@ -1,0 +1,383 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 16 ops; 11 of 16 exited nonzero (0 failed, 11 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 16,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "PIbase",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldsNotCollectivelyFilled(/It/L/V, /It/M/W)", "--code", "PIbase", "--group", "/It" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "PIrepunq",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldsNotCollectivelyFilled(/It/L/V, /It/M/W) And RepetitionNotUnique(/It/L/V)", "--code", "PIrepunq", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARALLEL_ITERATION_NOT_ALLOWED",
+          "summary" : "Rule with path '/It/CheckRule': At 'RepetitionNotUnique': Parallel iteration is not allowed. [MVK_PARALLEL_ITERATION_NOT_ALLOWED]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "PIneg",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldNotFilled(/It/M/W)", "--code", "PIneg", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
+          "summary" : "Rule with path '/It/CheckRule': The error field '/It/L/V' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          },
+          "fix" : "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path — reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And …`.",
+          "explain" : "Every rule's error field must appear among the fields its condition references — the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "PInegpos",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldFilled(/It/L/V) And FieldNotFilled(/It/M/W)", "--code", "PInegpos", "--group", "/It" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "PIhaving",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/L/V", "--condition", "AtLeastOneFieldFilled(/It/M*/W Having [/It/M/K] == \"k1\")", "--code", "PIhaving", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
+          "summary" : "Rule with path '/It/CheckRule': The error field '/It/L/V' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          },
+          "fix" : "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path — reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And …`.",
+          "explain" : "Every rule's error field must appear among the fields its condition references — the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "SIbase",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/V For \"k1\"]", "--code", "SIbase", "--group", "/It" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "SIkeyfld",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/V For B]", "--code", "SIkeyfld", "--group", "/It" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "SIcat",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/V For C -> Band]", "--code", "SIcat", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_TYPE_INCONSISTENT",
+          "summary" : "Rule with path '/It/CheckRule': The type of the field 'C' does not match the type of the index field '/It/L/K'. [MVK_INDEX_TYPE_INCONSISTENT]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "SIdouble",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [[/It/L/V For \"k1\"] For \"k2\"]", "--code", "SIdouble", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "Rule with path '/It/CheckRule': Corrupt input or condition not complete (yet): Unexpected found '['. [MVK_UNEXPECTED_TOKEN]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED — write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED — `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase — `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED — `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error — a token appeared where the grammar did not allow it — and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "SIwild",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L*/Sub/S For \"s1\"]", "--code", "SIwild", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_MULTIPLE_INDEX_FIELDS",
+          "summary" : "Rule with path '/It/CheckRule': For '/It/L/Sub/S' there is more than one group with an index field. [MVK_MULTIPLE_INDEX_FIELDS]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "SIiter",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/Sub/S For \"s1\"]", "--code", "SIiter", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_MULTIPLE_INDEX_FIELDS",
+          "summary" : "Rule with path '/It/CheckRule': For '/It/L/Sub/S' there is more than one group with an index field. [MVK_MULTIPLE_INDEX_FIELDS]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "SIfilter",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And AtLeastOneFieldFilled(/It/M*/W Having [/It/L/V For \"k1\"] == \"x\")", "--code", "SIfilter", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_SEMANTIC_INDEX_NOT_ALLOWED",
+          "summary" : "Rule with path '/It/CheckRule': For 'Having' semantic indexes must not be specified. [MVK_SEMANTIC_INDEX_NOT_ALLOWED]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "SIonself",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldFilled(V) And [V] != [/It/L/V For \"k1\"]", "--code", "SIonself", "--group", "/It/L" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "SIsubkey",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/Sub/S For /It/L/Sub/SK]", "--code", "SIsubkey", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_SEMANTIC_INDEX_INVALID_ITER",
+          "summary" : "Rule with path '/It/CheckRule': Field '/It/L/Sub/SK' specifies an iteration that is not allowed and therefore must not be used as semantic index. [MVK_SEMANTIC_INDEX_INVALID_ITER]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 14,
+      "id" : "ITwild",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L*/V]", "--code", "ITwild", "--group", "/It" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARDS_ALLOWED",
+          "summary" : "Rule with path '/It/CheckRule': At 'Field value operation.': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "where" : {
+            "rule" : "/It/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 15,
+      "id" : "ITsub",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldFilled(V) And [V] != [Sub/S]", "--code", "ITsub", "--group", "/It/L" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/It/L/CheckRule': Missing specification of an asterisk for 'Sub' in 'Sub/S'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/It/L/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

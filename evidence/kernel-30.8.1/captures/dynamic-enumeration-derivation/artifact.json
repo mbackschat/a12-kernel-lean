@@ -1,93 +1,93 @@
 {
-  "schemaVersion" : 1,
-  "producer" : {
-    "dmtoolVersion" : "0.13.0",
-    "kernel" : {
-      "builtAgainst" : "30.8.1",
-      "runtime" : "30.8.1"
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
     },
-    "source" : {
-      "revision" : "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
-      "state" : "CLEAN"
+    "source": {
+      "revision": "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
+      "state": "CLEAN"
     }
   },
-  "request" : {
-    "model" : "DynProbe_DM.json",
-    "locale" : "en_US"
+  "request": {
+    "model": "DynProbe_DM.json",
+    "locale": "en_US"
   },
-  "rows" : [ ],
-  "dynamicEnumerations" : {
-    "valuesByField" : {
-      "/Dyn/Target" : [
+  "rows": [],
+  "dynamicEnumerations": {
+    "valuesByField": {
+      "/Dyn/Target": [
         "PREMIUM"
       ]
     },
-    "diagnostics" : [
+    "diagnostics": [
       {
-        "code" : "MVK_DYNENUM_INDEX_FIELD",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "Dynamic enumeration fields must not also be index fields. [MVK_DYNENUM_INDEX_FIELD]"
+        "code": "MVK_DYNENUM_INDEX_FIELD",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_INVALID_ITERATION",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "When calculating values for dynamic enumerations only simple iteration is allowed. Neither field expansion nor semantic index are allowed. The iteration of the target field must be consistent in the rule. [MVK_INVALID_ITERATION]"
+        "code": "MVK_INVALID_ITERATION",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_DYNENUM_INVALID_GATE",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "Rules for dynamic enumerations have to use the canonical form. After an optional safe guard statement, \"FieldFilled(<targetfield>) And \" must be specified followed by the list of calculation operations separated by \"And\". [MVK_DYNENUM_INVALID_GATE]"
+        "code": "MVK_DYNENUM_INVALID_GATE",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_DYNENUM_INVALID_CALCOP",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "Rules for dynamic enumerations have to use the canonical form. The individual calculation operations for the values consist of a comparison of the target field value with the calculation function. Optionally, a negative precondition can be prepended with \"Or\". [MVK_DYNENUM_INVALID_CALCOP]"
+        "code": "MVK_DYNENUM_INVALID_CALCOP",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_DYNENUM_INVALID_CALCOP_OP",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "Rules for dynamic enumerations have to use the canonical form. The operation \"!=\" has to be used for the comparison of the target field and the calculation function. Alternatively, the consistency of the field may be checked using ValueNotConsistent. [MVK_DYNENUM_INVALID_CALCOP_OP]"
+        "code": "MVK_DYNENUM_INVALID_CALCOP_OP",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_ERROR_WRONG_DYNENUM_FIELD",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "The target field '/Dyn/Target' does not correspond to the error field of the rule '/Dyn/Guard'. [MVK_ERROR_WRONG_DYNENUM_FIELD]"
+        "code": "MVK_ERROR_WRONG_DYNENUM_FIELD",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_DYNENUM_INVALID_TYPE",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "The target field is of an invalid type. Only fields of type string without restriction, of type number without fractional digits or enumerations are allowed. [MVK_DYNENUM_INVALID_TYPE]"
+        "code": "MVK_DYNENUM_INVALID_TYPE",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_DYNENUM_INVALID_FIELD_REFERENCE",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "In preconditions or calculation functions operands may only be referenced if they are checked in the safe guard. '/Dyn/Guard' is not a checked operand. [MVK_DYNENUM_INVALID_FIELD_REFERENCE]"
+        "code": "MVK_DYNENUM_INVALID_FIELD_REFERENCE",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_ERROR_DYNENUM_FIELD_WITH_CATEGORY",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "Category access is not allowed for the target field of dynamic enumeration value calculation rules. [MVK_ERROR_DYNENUM_FIELD_WITH_CATEGORY]"
+        "code": "MVK_ERROR_DYNENUM_FIELD_WITH_CATEGORY",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_DYNENUM_PARALLEL_ITERATION",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "Parallel iteration is not allowed in rules for dynamic enumerations. [MVK_DYNENUM_PARALLEL_ITERATION]"
+        "code": "MVK_DYNENUM_PARALLEL_ITERATION",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       },
       {
-        "code" : "MVK_DYNENUM_REPETITION_NOT_UNIQUE",
-        "severity" : "ERROR",
-        "rule" : null,
-        "message" : "RepetitionNotUnique cannot be used in rules for dynamic enumerations. [MVK_DYNENUM_REPETITION_NOT_UNIQUE]"
+        "code": "MVK_DYNENUM_REPETITION_NOT_UNIQUE",
+        "severity": "ERROR",
+        "rule": null,
+        "message": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>"
       }
     ]
   }

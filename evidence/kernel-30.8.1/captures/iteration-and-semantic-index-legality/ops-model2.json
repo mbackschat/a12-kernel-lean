@@ -1,0 +1,33 @@
+[
+ {
+  "id": "f8",
+  "verb": "field",
+  "args": [
+   "add",
+   "f-enum.json"
+  ]
+ },
+ {
+  "id": "f9",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/It/L/Sub",
+   "--name",
+   "SK",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "m3",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/It/L/Sub",
+   "--index-field",
+   "SK"
+  ]
+ }
+]

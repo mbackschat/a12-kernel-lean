@@ -1,0 +1,3 @@
+{"group":"/It/E","name":"EK","kind":"ENUM",
+ "enum":{"values":[{"value":"ALPHA"},{"value":"BETA"}],
+         "categories":[{"name":"Band","values":["LOW","HIGH"]}]}}
