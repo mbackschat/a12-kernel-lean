@@ -111,7 +111,7 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 - A claim line has a soft ceiling of 500 characters. Split by semantic claim, never by visual width.
 - Write inside that soft ceiling rather than discovering the hard one. The guard's rejection is cheap to fix but never free: each retry costs a rewrite, and a row split *after* the guard fires tends to break where the character count fell rather than where the claim did. A row that wants more than 500 characters is usually two claims that have not been separated yet, so separating them first is both the faster path and the better record.
 - One record must be understandable in a window of at most 80 physical lines including its anchor and heading.
-- One detailed capability or source record must stay below 24,000 bytes, and one SG block below 12,000 bytes. Split at a semantic sub-capability before crossing the bound.
+- One detailed capability or source record must stay below 24,000 bytes, and one SG block below 12,000 bytes. Split at a semantic sub-capability before crossing the bound. The SG measure counts a record's prose and not its link targets, so the bound means the same thing wherever the shard sits; moving the gap records one directory deeper on 2026-09-07 would otherwise have pushed two of them over a bound they had passed that morning, with five more within a hundred bytes.
 - One operational hub or shard must stay below 200,000 bytes. Create a family shard and retain a stable compatibility entry in the hub before crossing the bound.
 - Links target the narrowest stable owner or record anchor. Record text states current truth only; Git owns chronology unless an intentional historical owner applies.
 - A link labelled “source checkpoint” targets a specific `src-` anchor. Use “source registry” for an intentional hub-level link when no narrower reusable checkpoint exists.
@@ -128,7 +128,7 @@ When handed-off selected work relies on an external source, the selected gap's e
 
 The 500-character threshold is an agent-efficiency guard, not a readability target. Review an over-limit line for multiple claims and choose the representation that makes retrieval and mutation cheapest. Prefer a semantic split; an indivisible claim may stay on one line or use a structured continuation when that is more efficient for agents.
 
-The executable [`documentation-hygiene guard`](../scripts/check-doc-hygiene.sh) applies these limits to the implementation and source hubs, every shard, and `SEMANTICS-GAPS.md`. It also rejects records above 80 physical lines, semicolon-packed omnibus claims, exact revision/hash identities outside provenance owners, completed or correction chronology introduced as an open-gap bullet, generic hub links labelled as source checkpoints, wide legacy capability tables, duplicate detailed anchors, and a shard anchor missing or unlinked from its hub. There are no path or line exceptions: split or consolidate the record at its semantic boundary.
+The executable [`documentation-hygiene guard`](../scripts/check-doc-hygiene.sh) applies these limits to the implementation, source, and gap hubs and every one of their shards. It also rejects records above 80 physical lines, semicolon-packed omnibus claims, exact revision/hash identities outside provenance owners, completed or correction chronology introduced as an open-gap bullet, generic hub links labelled as source checkpoints, wide legacy capability tables, duplicate detailed anchors, and a shard anchor missing or unlinked from its hub. There are no path or line exceptions: split or consolidate the record at its semantic boundary.
 
 ### `limit` bounds a positive claim; `denominator` names the surface searched for a negative one
 
@@ -173,7 +173,7 @@ rg -n '^<a id="src-' docs/SOURCES.md
 rg -n '^<a id="cap-' docs/implementation
 rg -n '^<a id="src-' docs/sources
 rg -n '^- `state`:|^- `blocked-on`:|^- `reopen-when`:' docs/SEMANTICS-GAPS.md
-rg -n '^- `route-state`:|^- `(red|green|supporting)-locus`:|^- `route-limit`:' docs/SEMANTICS-GAPS.md
+rg -n '^- `route-state`:|^- `(red|green|supporting)-locus`:|^- `route-limit`:' docs/gaps
 rg -n '^- `assurance`:|^- `remains`:' docs/implementation
 ```
 

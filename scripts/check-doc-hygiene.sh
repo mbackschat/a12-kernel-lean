@@ -15,6 +15,7 @@ operational_documents=(
   docs/IMPLEMENTATION-MAP.md
   docs/implementation/*.md
   docs/SEMANTICS-GAPS.md
+  docs/gaps/*.md
   docs/SOURCES.md
   docs/sources/*.md
 )
@@ -51,6 +52,7 @@ status_owners=(
   docs/IMPLEMENTATION-MAP.md
   docs/implementation/*.md
   docs/SEMANTICS-GAPS.md
+  docs/gaps/*.md
 )
 
 for status_owner in "${status_owners[@]}"; do
@@ -122,41 +124,53 @@ for document in docs/sources/*.md; do
   check_anchored_record_lines "$document" "src-"
 done
 
-while IFS=$'\t' read -r line_number record_size heading; do
-  [[ -z "$line_number" ]] && continue
-  echo "docs/SEMANTICS-GAPS.md:${line_number}: ${heading} has ${record_size} bytes; split the open obligation before the 12000-byte hard ceiling" >&2
-  failed=true
-done < <(awk '
-  function flush() {
-    if (heading != "" && bytes > 12000) print start "\t" bytes "\t" heading
-  }
-  /^### SG[0-9]+ / {
-    flush()
-    heading = $0
-    start = NR
-    bytes = 0
-  }
-  heading != "" { bytes += length($0) + 1 }
-  END { flush() }
-' docs/SEMANTICS-GAPS.md)
+# The gap records live in the family shards; the hub carries only their compatibility entries, so
+# both per-record ceilings are checked wherever a record actually is.
+#
+# The byte ceiling counts a record's PROSE and deliberately not its link targets. The ceiling bounds
+# what an agent must read to use a record, and a link target is machine addressing rather than claim
+# text -- but it is also the one part of a record whose length depends on where the file sits. Moving
+# these records one directory deeper on 2026-09-07 added three bytes per link and pushed two of them
+# over a bound they had passed unchanged that morning, with five more within a hundred bytes; counting
+# targets would make every future shard boundary force splits that no claim asked for. Labels are
+# still counted, so prose stays bounded, and the whole-file ceiling above still counts every byte.
+for document in docs/SEMANTICS-GAPS.md docs/gaps/*.md; do
+  while IFS=$'\t' read -r line_number record_size heading; do
+    [[ -z "$line_number" ]] && continue
+    echo "${document}:${line_number}: ${heading} has ${record_size} bytes; split the open obligation before the 12000-byte hard ceiling" >&2
+    failed=true
+  done < <(awk '
+    function flush() {
+      if (heading != "" && bytes > 12000) print start "\t" bytes "\t" heading
+    }
+    /^### SG[0-9]+ / {
+      flush()
+      heading = $0
+      start = NR
+      bytes = 0
+    }
+    heading != "" { prose = $0; gsub(/\]\([^)]*\)/, "]()", prose); bytes += length(prose) + 1 }
+    END { flush() }
+  ' "$document")
 
-while IFS=$'\t' read -r line_number record_lines heading; do
-  [[ -z "$line_number" ]] && continue
-  echo "docs/SEMANTICS-GAPS.md:${line_number}: ${heading} spans ${record_lines} lines; split the open obligation before the 80-line hard ceiling" >&2
-  failed=true
-done < <(awk '
-  function flush() {
-    if (heading != "" && lines > 80) print start "\t" lines "\t" heading
-  }
-  /^### SG[0-9]+ / {
-    flush()
-    heading = $0
-    start = NR
-    lines = 0
-  }
-  heading != "" { lines += 1 }
-  END { flush() }
-' docs/SEMANTICS-GAPS.md)
+  while IFS=$'\t' read -r line_number record_lines heading; do
+    [[ -z "$line_number" ]] && continue
+    echo "${document}:${line_number}: ${heading} spans ${record_lines} lines; split the open obligation before the 80-line hard ceiling" >&2
+    failed=true
+  done < <(awk '
+    function flush() {
+      if (heading != "" && lines > 80) print start "\t" lines "\t" heading
+    }
+    /^### SG[0-9]+ / {
+      flush()
+      heading = $0
+      start = NR
+      lines = 0
+    }
+    heading != "" { lines += 1 }
+    END { flush() }
+  ' "$document")
+done
 
 if grep -Fq '| Capability | Exists | Owner | Assurance | Remains |' docs/implementation/*.md; then
   echo "docs/implementation/: capability tables are not allowed; use one anchored keyed record per capability" >&2
@@ -169,14 +183,21 @@ while IFS=: read -r file line_number _; do
   failed=true
 done < <(grep -HnF '[source checkpoint](../SOURCES.md)' docs/implementation/*.md || true)
 
-for prefix in cap src; do
-  if [[ "$prefix" == cap ]]; then
-    hub="docs/IMPLEMENTATION-MAP.md"
-    shards=(docs/implementation/*.md)
-  else
-    hub="docs/SOURCES.md"
-    shards=(docs/sources/*.md)
-  fi
+for prefix in cap src gap; do
+  case "$prefix" in
+    cap)
+      hub="docs/IMPLEMENTATION-MAP.md"
+      shards=(docs/implementation/*.md)
+      ;;
+    src)
+      hub="docs/SOURCES.md"
+      shards=(docs/sources/*.md)
+      ;;
+    gap)
+      hub="docs/SEMANTICS-GAPS.md"
+      shards=(docs/gaps/*.md)
+      ;;
+  esac
 
   while IFS= read -r duplicate; do
     [[ -z "$duplicate" ]] && continue
@@ -206,11 +227,11 @@ for prefix in cap src; do
   done < <(grep -h "^<a id=\"${prefix}-" "${shards[@]}" | sort -u)
 done
 
-while IFS=: read -r line_number _; do
+while IFS=: read -r chronology_file line_number _; do
   [[ -z "$line_number" ]] && continue
-  echo "docs/SEMANTICS-GAPS.md:${line_number}: completed or correction chronology does not belong in the open-only gap owner" >&2
+  echo "${chronology_file}:${line_number}: completed or correction chronology does not belong in the open-only gap owner" >&2
   failed=true
-done < <(grep -Ein '^- (\*\*)?(closed|resolved|corrected|partly resolved|upstream reconciliation closed)(\*\*)?([ :,.]|$)' docs/SEMANTICS-GAPS.md || true)
+done < <(grep -Ein '^- (\*\*)?(closed|resolved|corrected|partly resolved|upstream reconciliation closed)(\*\*)?([ :,.]|$)' docs/SEMANTICS-GAPS.md docs/gaps/*.md || true)
 
 # Revision citations newly written in this range must resolve. A citation is "new" only when it
 # does not already appear in the tree at the range's start, so moving or re-quoting a record does
