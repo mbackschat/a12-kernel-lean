@@ -127,6 +127,14 @@ done
 # The gap records live in the family shards; the hub carries only their compatibility entries, so
 # both per-record ceilings are checked wherever a record actually is.
 #
+# The bound is 24,000 bytes, the same one capability and source records carry. It was 12,000 until
+# 2026-09-08, which held an open obligation to half the budget of a closed capability for no recorded
+# reason -- and inverted, since a gap carries discriminators, prerequisites and remaining rows that a
+# finished capability does not. Measured when the bound was raised: the largest gap record was 10,981
+# prose bytes against 19,428 for the largest capability and 19,726 for the largest checkpoint, and no
+# record of any family was near its bound except the gaps. DOC-DISCIPLINE.md keeps 12,000 as the soft
+# target to write inside, the same soft/hard pair the 500/1000-character claim line uses.
+#
 # The byte ceiling counts a record's PROSE and deliberately not its link targets. The ceiling bounds
 # what an agent must read to use a record, and a link target is machine addressing rather than claim
 # text -- but it is also the one part of a record whose length depends on where the file sits. Moving
@@ -137,11 +145,11 @@ done
 for document in docs/SEMANTICS-GAPS.md docs/gaps/*.md; do
   while IFS=$'\t' read -r line_number record_size heading; do
     [[ -z "$line_number" ]] && continue
-    echo "${document}:${line_number}: ${heading} has ${record_size} bytes; split the open obligation before the 12000-byte hard ceiling" >&2
+    echo "${document}:${line_number}: ${heading} has ${record_size} bytes; split the open obligation before the 24000-byte hard ceiling" >&2
     failed=true
   done < <(awk '
     function flush() {
-      if (heading != "" && bytes > 12000) print start "\t" bytes "\t" heading
+      if (heading != "" && bytes > 24000) print start "\t" bytes "\t" heading
     }
     /^### SG[0-9]+ / {
       flush()
