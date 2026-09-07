@@ -614,6 +614,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Extensible Enumeration is a String type's runtime quality with no DM-JSON carrier](sources/static-admission-and-class-probes.md#src-extensible-enumeration-has-no-dm-json-carrier)
 <a id="src-validtype-operand-gates"></a>
 - [The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals](sources/static-admission-and-class-probes.md#src-validtype-operand-gates)
+<a id="src-notind-declaration-properties-are-mapping-provenance"></a>
+- [The six `@NotInD` declaration properties never reach validation codegen or the runtime, the structural-mapping tool is their sole semantic consumer and overrides the format there, and the annotation's own no-effect Javadoc is falsified by its use on the decimal separator](sources/static-admission-and-class-probes.md#src-notind-declaration-properties-are-mapping-provenance)
 
 <a id="src-aggregate-operand-list-takes-paths-only"></a>
 - [Composition is one-way: an aggregate nests inside a wrapper, but no expression nests inside an aggregate's operand list](sources/computation-placement-and-constant-probes.md#src-aggregate-operand-list-takes-paths-only)
