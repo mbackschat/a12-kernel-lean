@@ -266,6 +266,40 @@ A kernel **runtime** question is checked against the maintained `:adapter:kernel
 
 Use it demand-driven, one coherent family at a time, exactly like every other evidence route: an internally closed capsule may still land `external evidence pending`. The route has been exercised from this repository; [`SOURCES.md`](SOURCES.md) owns each family checkpoint and its exact hashes. Every further use must choose a family whose observation shape the artifact plainly carries and include a negative control in the same request.
 
+### Five measured throughput rules — apply all five to every sweep
+
+**The instrument is not the bottleneck and never has been.** A `rule check` row costs about 0.12 seconds,
+so a 140-row session spends roughly 35 seconds inside the Kernel. Everything else is authoring rows and
+writing prose. These five rules each address a measured cost, and they are standing practice rather than
+advice; a sweep that skips one is slower for a reason already paid for.
+
+1. **Select the batch from the untouched list, never from the family the session happens to be in.**
+   [`CONFORMANCE-COVERAGE.md`](CONFORMANCE-COVERAGE.md) — regenerated in about four seconds — carries the
+   untouched refusal classes by catalog with the observation route for each. Working forward from a
+   family measures what is convenient; working backward from that table measures what is missing. This is
+   the rule with the largest effect on yield per row and it costs nothing.
+2. **Generate the rows; never type a matrix by hand.** [`make-probe-ops.sh`](../scripts/make-probe-ops.sh)
+   emits `ops.json` from a declarative spec with field/condition/message aliases and a `cross` product,
+   so the same authoring effort produces hundreds of rows instead of dozens. It also expands `\n`, `\t`
+   and `\u{XXXX}`, which is how a control character or a supplementary-plane scalar reaches the Kernel
+   without being smuggled past the shell. Eleven rows were lost to hand-typed repetition in one session
+   before this existed.
+3. **One checkpoint per sweep, not one per family.** Prose cost is roughly fixed per checkpoint at around
+   eighteen keyed rows, so a 400-row sweep across four catalogs costs the same writing as a 40-row batch.
+   Widening the sweep is therefore the cheapest way to cut documentation overhead per measured class.
+4. **Pay for a missing route once, deliberately, rather than avoiding it repeatedly.** The largest
+   untouched block needs a document probe rather than a static one, and it stays untouched precisely
+   because no session has set that route up. A session spent opening a route is worth more than the same
+   session spent adding rows to a route already open.
+5. **Pre-flight every distinct condition before the matrix depends on it.** One throwaway batch of plain
+   message rows, one per distinct condition, catches an illegal operand or an undeclared index value
+   before a hundred rows inherit it. Eight percent of one session's rows died this way, and it was the
+   fourth recorded instance.
+
+Rules 1 and 3 also compose: select several untouched blocks that share one model, generate their rows in
+one spec, dispatch them in one `batch`, and write one checkpoint whose `denominator` row names every
+block the sweep covered.
+
 ### Read the grammar or the checker first, then measure only the residual
 
 **The highest-yield move measured so far is not a wider batch — it is reading the Kernel's own grammar,
