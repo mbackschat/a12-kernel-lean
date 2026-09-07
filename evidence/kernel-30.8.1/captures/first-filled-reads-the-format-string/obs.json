@@ -1,0 +1,58 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "ef0f38d68416112ffc89c22afb23ab21370f7c70d281dec8bdcb227e25fbe0ff",
+  "observations" : [ {
+    "id" : "ffv-cross-format",
+    "inputHash" : "5436c43ee025abebc211d4ae185270f0edbbfec214d4c134cf07ab4e258f6078",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "ffv-same-format-control",
+    "inputHash" : "78c366fe8913662f953ba034a325436a97ca4d39645529673305b029fef94bd2",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "extremum-cross-format",
+    "inputHash" : "696f145df8e96cebbbbae452d17c5b1d0e9ad4f1c9bd2e47955932a9a493fc0e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "extremum-same-format-control",
+    "inputHash" : "388bc5a66542884a22efaee4277006ac1fc6d5cf232c2a5605fc4b760f3c9634",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "distinct-count-cross-format",
+    "inputHash" : "99e03acc13a2177e09222e5060c952a09f1c7c31a0ca05520e0f324967e934ee",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "unique-cross-format",
+    "inputHash" : "b32064ae8577988227be8d53fe724d33b5ec0568f0f3aba0980117c94c69d371",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED" ]
+  }, {
+    "id" : "unique-same-format-control",
+    "inputHash" : "a76a03176fd534a3088a1dfec655f665ae92b7728a2c0b55410839a73f591b33",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ffv-cross-kind-shared-format",
+    "inputHash" : "83648999711bf667854ed2ed3027885dfa046009de69ab0243f6a75a66eadbe1",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

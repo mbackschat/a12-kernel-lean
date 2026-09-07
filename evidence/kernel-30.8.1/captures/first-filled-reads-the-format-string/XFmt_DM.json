@@ -1,0 +1,124 @@
+{
+  "header" : {
+    "id" : "XFmt_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "XFmt_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Xf",
+        "name" : "Xf",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Xf/Dotted",
+            "name" : "Dotted",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/Iso",
+            "name" : "Iso",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/Target",
+            "name" : "Target",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/Iso2",
+            "name" : "Iso2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/YrDate",
+            "name" : "YrDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/YrFrag",
+            "name" : "YrFrag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Xf/YrTarget",
+            "name" : "YrTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy"
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

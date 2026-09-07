@@ -1,0 +1,94 @@
+[
+ {
+  "id": "ffv-cross-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ffv-same-format-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "extremum-cross-format",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/Target",
+   "--condition",
+   "FieldFilled(Target) And MinValue(Dotted, Iso) == [Target]",
+   "--code",
+   "X1"
+  ]
+ },
+ {
+  "id": "extremum-same-format-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/Target",
+   "--condition",
+   "FieldFilled(Target) And MinValue(Iso, Iso2) == [Target]",
+   "--code",
+   "X2"
+  ]
+ },
+ {
+  "id": "distinct-count-cross-format",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/Target",
+   "--condition",
+   "FieldFilled(Target) And NumberOfDifferentValues(Dotted, Iso) == 2",
+   "--code",
+   "X3"
+  ]
+ },
+ {
+  "id": "unique-cross-format",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/Target",
+   "--condition",
+   "FieldFilled(Target) And FieldValuesNotUnique(Dotted, Iso)",
+   "--code",
+   "X4"
+  ]
+ },
+ {
+  "id": "unique-same-format-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Xf/Target",
+   "--condition",
+   "FieldFilled(Target) And FieldValuesNotUnique(Iso, Iso2)",
+   "--code",
+   "X5"
+  ]
+ },
+ {
+  "id": "ffv-cross-kind-shared-format",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c3.json",
+   "--dry-run"
+  ]
+ }
+]

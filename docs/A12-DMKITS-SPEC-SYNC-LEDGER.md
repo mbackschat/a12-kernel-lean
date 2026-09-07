@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-04"></a>
+### `SPEC-2026-09-07-04` — the four entity-list carriers split two-and-two: two read the component set, two read the format string
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` temporal operand gates](../spec/07-repetition-and-iteration.md)
+- `delta`: the clause said `FirstFilledValue`'s temporal gate "reads the format's **component set** and not the kind", citing a DATE `yyyy` beside a DATE_FRAGMENT `yyyy`. That witness holds the format **string** fixed, so it separates set from kind and never separates set from string. Corrected: the gate is the format **string**. Added: the four carriers split two-and-two on the pair that separates them, and the two refusing carriers report **different** codes.
+- `mechanism`: none proposed. Two carriers reading the string and two the set is the observation; nothing here says why, and the shared entity-list checker is common to all four, so the split lives in each operator's own question about its operands rather than in the shared shape gates.
+- `evidence`: one `dmtool batch --observations`, eight children over one model, at a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` in this project's pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, every envelope `KERNEL_CONFIRMED`. Two complete-date fields declared `dd.MM.yyyy` and `yyyy-MM-dd` carry one component set; `FirstFilledValue` over them is refused `MVK_VARYING_TYPES_NOT_ALLOWED` and `FieldValuesNotUnique` `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`, while `MinValue` and `NumberOfDifferentValues` admit them ([checkpoint](sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string)).
+- `separator`: **one model, one field pair, the carrier the only variable**, with a same-format control admitted at every carrier. That is what makes this a split rather than four independent verdicts, and it is the reason the row is worth sending rather than the individual refusals.
+- `how-it-was-missed`: the clause's own witness could not discriminate the axis it asserted — the same shape as the two clauses your 2026-09-07 letter refuted here, and the third instance in this repository in one day. We now state a grid's held-fixed axes beside its varied ones for exactly this reason, and this row was found by deliberately running the pair the old witness held constant.
+- `limit`: one complete-date spelling pair across four carriers each with a same-format control, plus the cross-kind `yyyy` pair, arity 2, `en_US`. Unmeasured: other equal-set pairs such as `yyyy-MM` against `yyyyMM`; a cross-format pair under a declared Base Year; `MaxValue`; and group and starred operand forms.
+- `kind-half-confirmed`: the old witness's other half was **re-run rather than inherited**, since a witness wrong about one axis earns no trust on its neighbour: DATE `yyyy` beside DATE_FRAGMENT `yyyy` is admitted, so the gate is the format string and not the kind, and both halves now rest on this project's own fixture.
+- `surfaces`: any peer clause, evaluator, importer or catalog entry that gives these four carriers one temporal operand gate. Reading the set onto `FirstFilledValue` or `FieldValuesNotUnique` admits lists the Kernel refuses; reading the string onto the extrema or the distinct count refuses lists it admits. Both are silent on same-format models, which is most of them.
+- `local-scope`: this project's `CheckedFullDateFirstFilledComputation` already requires target and source to share one exact admitted declaration format, so a cross-format list is unrepresentable here and no code changed. The value of the row is that the restriction is now **known correct** rather than merely safe: widening it to component-set equality was the obvious next generalization and would have been an over-admission.
+
 <a id="spec-2026-09-07-03"></a>
 ### `SPEC-2026-09-07-03` — `FirstFilledValue`'s filled predicate is presence, not truthiness, and an all-empty selection mints no outcome
 
