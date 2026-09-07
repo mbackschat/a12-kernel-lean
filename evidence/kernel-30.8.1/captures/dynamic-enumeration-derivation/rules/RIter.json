@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Items/Code",
+ "condition": "FieldFilled(Code) And [Code For \"K1\"] != \"X\"",
+ "code": "RIter",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RIter."
+  }
+ ]
+}

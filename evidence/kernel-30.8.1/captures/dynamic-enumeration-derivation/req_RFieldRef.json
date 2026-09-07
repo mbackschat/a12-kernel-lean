@@ -1,0 +1,7 @@
+{
+ "model": "M_RFieldRef.json",
+ "locale": "en_US",
+ "observe": [
+  "dynamicEnumerations"
+ ]
+}

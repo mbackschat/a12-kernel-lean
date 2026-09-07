@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Guard",
+ "condition": "FieldFilled(Target) And [Target] != \"X\" And FieldFilled(Guard)",
+ "code": "RWrong",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RWrong."
+  }
+ ]
+}

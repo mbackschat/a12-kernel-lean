@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "M_RIter.json",
+    "locale" : "en_US"
+  },
+  "rows" : [ ],
+  "dynamicEnumerations" : {
+    "valuesByField" : { },
+    "diagnostics" : [
+      {
+        "code" : "MVK_INVALID_ITERATION",
+        "severity" : "ERROR",
+        "rule" : null,
+        "message" : "When calculating values for dynamic enumerations only simple iteration is allowed. Neither field expansion nor semantic index are allowed. The iteration of the target field must be consistent in the rule. [MVK_INVALID_ITERATION]"
+      }
+    ]
+  }
+}

@@ -219,6 +219,7 @@ import A12Kernel.Elaboration.TokenValuesNotUnique
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.CustomFieldTypeVocabulary
 import A12Kernel.Elaboration.UnraisedDiagnostic
+import A12Kernel.Elaboration.DynamicEnumerationLegality
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.FirstFilledValue

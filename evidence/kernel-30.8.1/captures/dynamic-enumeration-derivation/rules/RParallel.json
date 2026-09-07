@@ -1,0 +1,12 @@
+{
+ "field": "/Dyn/Items/Code",
+ "condition": "FieldsNotCollectivelyFilled(/Dyn/Items/Code, /Dyn/Peers/PeerCode)",
+ "group": "/Dyn",
+ "code": "RParallel",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RParallel."
+  }
+ ]
+}

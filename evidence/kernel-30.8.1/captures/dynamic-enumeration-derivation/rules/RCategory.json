@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Cat",
+ "condition": "FieldFilled(Cat) And [Cat -> Band] != \"LOW\"",
+ "code": "RCategory",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RCategory."
+  }
+ ]
+}

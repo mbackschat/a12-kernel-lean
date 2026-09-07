@@ -1,0 +1,9 @@
+[
+ {"id":"g1","verb":"group","args":["add","--parent","/Dyn","--name","Items","--repeatable","5"]},
+ {"id":"g2","verb":"group","args":["add","--parent","/Dyn","--name","Peers","--repeatable","5"]},
+ {"id":"f3","verb":"field","args":["add","--group","/Dyn/Items","--name","Code","--kind","STRING"]},
+ {"id":"f4","verb":"field","args":["add","--group","/Dyn/Items","--name","IKey","--kind","STRING"]},
+ {"id":"f5","verb":"field","args":["add","--group","/Dyn/Peers","--name","PeerCode","--kind","STRING"]},
+ {"id":"f6","verb":"field","args":["add","--group","/Dyn/Peers","--name","PKey","--kind","STRING"]},
+ {"id":"f7","verb":"field","args":["add","--group","/Dyn","--name","Num2","--kind","NUMBER"]}
+]

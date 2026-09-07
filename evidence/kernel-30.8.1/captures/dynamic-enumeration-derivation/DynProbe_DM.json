@@ -1,0 +1,321 @@
+{
+  "header" : {
+    "id" : "DynProbe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "DynProbe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Dyn",
+        "name" : "Dyn",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Dyn/Target",
+            "name" : "Target",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Dyn/Guard",
+            "name" : "Guard",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Dyn/Items",
+            "name" : "Items",
+            "Group" : {
+              "repeatability" : 5,
+              "indexFieldName" : "IKey",
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Dyn/Items/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Dyn/Items/IKey",
+                "name" : "IKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Dyn/Items/RIndexF",
+                "name" : "RIndexF",
+                "Rule" : {
+                  "errorEntityRelPath" : "../IKey",
+                  "errorCode" : "RIndexF",
+                  "errorCondition" : "FieldFilled(IKey) And [IKey] != \"K1\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Row RIndexF."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Dyn/Items/RIter",
+                "name" : "RIter",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Code",
+                  "errorCode" : "RIter",
+                  "errorCondition" : "FieldFilled(Code) And [Code For \"K1\"] != \"X\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Row RIter."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Dyn/Peers",
+            "name" : "Peers",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Dyn/Peers/PeerCode",
+                "name" : "PeerCode",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Dyn/Peers/IKey",
+                "name" : "IKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "IKey"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Dyn/Num2",
+            "name" : "Num2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Dyn/Cat",
+            "name" : "Cat",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "ALPHA"
+                  }, {
+                    "value" : "BETA"
+                  } ],
+                  "categories" : [ {
+                    "name" : "Band",
+                    "values" : [ "LOW", "HIGH" ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Dyn/Frac",
+            "name" : "Frac",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/ROk",
+            "name" : "ROk",
+            "Rule" : {
+              "errorEntityRelPath" : "../Target",
+              "errorCode" : "ROk",
+              "errorCondition" : "FieldFilled(Target) And [Target] != \"PREMIUM\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row ROk."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RGate",
+            "name" : "RGate",
+            "Rule" : {
+              "errorEntityRelPath" : "../Target",
+              "errorCode" : "RGate",
+              "errorCondition" : "FieldFilled(Target)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RGate."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RCalcop",
+            "name" : "RCalcop",
+            "Rule" : {
+              "errorEntityRelPath" : "../Target",
+              "errorCode" : "RCalcop",
+              "errorCondition" : "FieldFilled(Target) And FieldFilled(Guard)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RCalcop."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/ROp",
+            "name" : "ROp",
+            "Rule" : {
+              "errorEntityRelPath" : "../Target",
+              "errorCode" : "ROp",
+              "errorCondition" : "FieldFilled(Target) And [Target] == \"X\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row ROp."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RWrong",
+            "name" : "RWrong",
+            "Rule" : {
+              "errorEntityRelPath" : "../Guard",
+              "errorCode" : "RWrong",
+              "errorCondition" : "FieldFilled(Target) And [Target] != \"X\" And FieldFilled(Guard)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RWrong."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RType",
+            "name" : "RType",
+            "Rule" : {
+              "errorEntityRelPath" : "../Frac",
+              "errorCode" : "RType",
+              "errorCondition" : "FieldFilled(Frac) And [Frac] != 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RType."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RFieldRef",
+            "name" : "RFieldRef",
+            "Rule" : {
+              "errorEntityRelPath" : "../Target",
+              "errorCode" : "RFieldRef",
+              "errorCondition" : "FieldFilled(Target) And [Target] != [Guard]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RFieldRef."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RCategory",
+            "name" : "RCategory",
+            "Rule" : {
+              "errorEntityRelPath" : "../Cat",
+              "errorCode" : "RCategory",
+              "errorCondition" : "FieldFilled(Cat) And [Cat -> Band] != \"LOW\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RCategory."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RParallel",
+            "name" : "RParallel",
+            "Rule" : {
+              "errorEntityRelPath" : "../Items/Code",
+              "errorCode" : "RParallel",
+              "errorCondition" : "FieldsNotCollectivelyFilled(/Dyn/Items/Code, /Dyn/Peers/PeerCode)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RParallel."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Dyn/RRepUnq",
+            "name" : "RRepUnq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Items/Code",
+              "errorCode" : "RRepUnq",
+              "errorCondition" : "RepetitionNotUnique(/Dyn/Items/Code)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Row RRepUnq."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

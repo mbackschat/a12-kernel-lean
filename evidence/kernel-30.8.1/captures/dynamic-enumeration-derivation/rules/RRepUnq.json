@@ -1,0 +1,12 @@
+{
+ "field": "/Dyn/Items/Code",
+ "condition": "RepetitionNotUnique(/Dyn/Items/Code)",
+ "code": "RRepUnq",
+ "group": "/Dyn",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RRepUnq."
+  }
+ ]
+}

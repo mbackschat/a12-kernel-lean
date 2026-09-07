@@ -1,0 +1,196 @@
+{
+ "header": {
+  "id": "DynProbe_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "DynProbe_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Dyn",
+     "name": "Dyn",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Dyn/Target",
+        "name": "Target",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Dyn/Guard",
+        "name": "Guard",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Dyn/Items",
+        "name": "Items",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "IKey",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Dyn/Items/Code",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Dyn/Items/IKey",
+           "name": "IKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Dyn/Items/RIter",
+           "name": "RIter",
+           "Rule": {
+            "errorEntityRelPath": "../Code",
+            "errorCode": "RIter",
+            "errorCondition": "FieldFilled(Code) And [Code For \"K1\"] != \"X\"",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "Row RIter."
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Dyn/Peers",
+        "name": "Peers",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Dyn/Peers/PeerCode",
+           "name": "PeerCode",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Dyn/Peers/IKey",
+           "name": "IKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "IKey"
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Dyn/Num2",
+        "name": "Num2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Dyn/Cat",
+        "name": "Cat",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "ALPHA"
+            },
+            {
+             "value": "BETA"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "LOW",
+              "HIGH"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Dyn/Frac",
+        "name": "Frac",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

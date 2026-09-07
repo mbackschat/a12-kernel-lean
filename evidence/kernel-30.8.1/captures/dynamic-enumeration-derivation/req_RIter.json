@@ -1,0 +1,7 @@
+{
+ "model": "M_RIter.json",
+ "locale": "en_US",
+ "observe": [
+  "dynamicEnumerations"
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Items/IKey",
+ "condition": "FieldFilled(IKey) And [IKey] != \"K1\"",
+ "code": "RIndexF",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RIndexF."
+  }
+ ]
+}

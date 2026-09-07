@@ -1,0 +1,7 @@
+{
+ "model": "M_RType.json",
+ "locale": "en_US",
+ "observe": [
+  "dynamicEnumerations"
+ ]
+}

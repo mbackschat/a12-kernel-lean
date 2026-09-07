@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "M_ROp.json",
+    "locale" : "en_US"
+  },
+  "rows" : [ ],
+  "dynamicEnumerations" : {
+    "valuesByField" : { },
+    "diagnostics" : [
+      {
+        "code" : "MVK_DYNENUM_INVALID_CALCOP_OP",
+        "severity" : "ERROR",
+        "rule" : null,
+        "message" : "Rules for dynamic enumerations have to use the canonical form. The operation \"!=\" has to be used for the comparison of the target field and the calculation function. Alternatively, the consistency of the field may be checked using ValueNotConsistent. [MVK_DYNENUM_INVALID_CALCOP_OP]"
+      }
+    ]
+  }
+}

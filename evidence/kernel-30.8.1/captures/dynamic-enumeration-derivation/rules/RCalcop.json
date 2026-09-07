@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Target",
+ "condition": "FieldFilled(Target) And FieldFilled(Guard)",
+ "code": "RCalcop",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RCalcop."
+  }
+ ]
+}

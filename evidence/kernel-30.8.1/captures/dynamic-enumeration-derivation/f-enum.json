@@ -1,0 +1,3 @@
+{"group":"/Dyn","name":"Cat","kind":"ENUM",
+ "enum":{"values":[{"value":"ALPHA"},{"value":"BETA"}],
+         "categories":[{"name":"Band","values":["LOW","HIGH"]}]}}

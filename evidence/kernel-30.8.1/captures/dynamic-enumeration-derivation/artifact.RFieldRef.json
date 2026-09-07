@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "M_RFieldRef.json",
+    "locale" : "en_US"
+  },
+  "rows" : [ ],
+  "dynamicEnumerations" : {
+    "valuesByField" : { },
+    "diagnostics" : [
+      {
+        "code" : "MVK_DYNENUM_INVALID_FIELD_REFERENCE",
+        "severity" : "ERROR",
+        "rule" : null,
+        "message" : "In preconditions or calculation functions operands may only be referenced if they are checked in the safe guard. '/Dyn/Guard' is not a checked operand. [MVK_DYNENUM_INVALID_FIELD_REFERENCE]"
+      }
+    ]
+  }
+}

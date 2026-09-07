@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Target",
+ "condition": "FieldFilled(Target) And [Target] != \"PREMIUM\"",
+ "code": "ROk",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row ROk."
+  }
+ ]
+}

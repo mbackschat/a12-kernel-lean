@@ -1,0 +1,7 @@
+{
+ "model": "M_RCalcop.json",
+ "locale": "en_US",
+ "observe": [
+  "dynamicEnumerations"
+ ]
+}

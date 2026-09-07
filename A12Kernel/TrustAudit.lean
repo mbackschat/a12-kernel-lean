@@ -2634,3 +2634,9 @@ run_cmd do
 #print axioms A12Kernel.checkedRepeatableStringConstantComputation_execute_ignoresDeclaringGroup
 #print axioms A12Kernel.checkedRepeatableStringConstantComputation_execute_delegatesTargetCheck
 #print axioms A12Kernel.booleanConstantComputationRun_applyToChecked_delegates
+#print axioms A12Kernel.dynEnumValueCalcRefusal_stage
+#print axioms A12Kernel.dynEnumLegality_eq_first_violation
+#print axioms A12Kernel.dynEnumLegality_none_iff
+#print axioms A12Kernel.dynEnumLegality_stage_minimal
+#print axioms A12Kernel.dynEnumLegality_valueCalc_implies_earlier_passed
+#print axioms A12Kernel.dynEnumLegality_mem_all

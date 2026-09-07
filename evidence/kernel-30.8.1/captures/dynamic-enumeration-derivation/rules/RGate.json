@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Target",
+ "condition": "FieldFilled(Target)",
+ "code": "RGate",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RGate."
+  }
+ ]
+}

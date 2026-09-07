@@ -1,0 +1,11 @@
+{
+ "field": "/Dyn/Frac",
+ "condition": "FieldFilled(Frac) And [Frac] != 7",
+ "code": "RType",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "Row RType."
+  }
+ ]
+}

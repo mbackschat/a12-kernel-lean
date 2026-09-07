@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "M_RRepUnq.json",
+    "locale" : "en_US"
+  },
+  "rows" : [ ],
+  "dynamicEnumerations" : {
+    "valuesByField" : { },
+    "diagnostics" : [
+      {
+        "code" : "MVK_DYNENUM_REPETITION_NOT_UNIQUE",
+        "severity" : "ERROR",
+        "rule" : null,
+        "message" : "RepetitionNotUnique cannot be used in rules for dynamic enumerations. [MVK_DYNENUM_REPETITION_NOT_UNIQUE]"
+      }
+    ]
+  }
+}

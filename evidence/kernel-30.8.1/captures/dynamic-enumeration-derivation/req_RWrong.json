@@ -1,0 +1,7 @@
+{
+ "model": "M_RWrong.json",
+ "locale": "en_US",
+ "observe": [
+  "dynamicEnumerations"
+ ]
+}

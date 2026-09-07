@@ -1,0 +1,7 @@
+{
+ "model": "M_ROk.json",
+ "locale": "en_US",
+ "observe": [
+  "dynamicEnumerations"
+ ]
+}
