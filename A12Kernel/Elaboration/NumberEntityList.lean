@@ -230,9 +230,12 @@ private def extremaRefuseKind : SurfaceScalarKind → Bool
   | .number => false
   -- A first-position temporal operand is the temporal list's, not a Kernel refusal here.
   | .temporal _ => false
-  -- Measured: the sortable leader set is exactly `{NUMBER, DATE}`, so these four lead no overload
-  -- and are refused outright where they once claimed nothing
-  -- ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)).
+  -- Measured to lead no overload, so each is refused outright where it once claimed nothing
+  -- ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). The comment
+  -- here used to add "the sortable leader set is exactly `{NUMBER, DATE}`", which was refuted: the
+  -- set is `{NUMBER}` plus **every** temporal kind, which is why the arm above returns `false` for
+  -- `.temporal _` without inspecting the kind
+  -- ([provenance](../../docs/SOURCES.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)).
   | .enumeration | .boolean | .confirm | .dateRange => true
 
 /-- Whether the extrema are measured to refuse an operand of this declared kind **after** a Number one. Temporal joins String here, which is the whole difference from first position. -/
