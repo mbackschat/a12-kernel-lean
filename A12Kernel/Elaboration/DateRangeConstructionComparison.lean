@@ -95,17 +95,23 @@ def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
 
 end DateRangeEndpointFormat
 
+/-- One construction endpoint, admitted by its declared **format** alone.
+
+    The endpoint is an operand position — its refusal reports the operand class below, not a target
+    class — so it follows the operand rule rather than the target one: every temporal operand gate
+    reads the declared format and never the declared kind
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+    The format test already admits only Date-shaped formats, which is why the retired kind conjunct
+    changed nothing except to refuse the cross-kind declaration the Kernel accepts. -/
 structure CheckedDateRangeEndpoint (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : DateRangeEndpointFormat
   profile : ModelZone.ConcreteProfile
-  targetIsDate : checked.target.kind = .date
   formatMatches : DateRangeEndpointFormat.ofPolicy? model.baseYear checked.policy = some format
   profileMatches : ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
 
 inductive DateRangeEndpointElabError where
   | targetPolicy (cause : TemporalTargetElabError)
-  | targetKind (target : FieldId) (actual : TemporalKind)
   | unsupportedPolicy (target : FieldId) (mode : TemporalPartialMode)
       (format : String)
   | unsupportedZone (zoneId : String)
@@ -114,14 +120,14 @@ inductive DateRangeEndpointElabError where
 namespace DateRangeEndpointElabError
 
 /-- The Kernel diagnostic one refused construction endpoint reports. Every operand whose declared
-kind is not a Date-shaped temporal field — Number, String, DateTime, DateRange, and a partial
-Date outside the admitted fragment set — reports the one wrong-format class, so the operand kind
-is not recoverable from the code. A repeatable operand reached from outside its group reports the
-missing-wildcard class instead. The remaining causes are local ingestion insufficiency with no
-measured counterpart, and a **starred** operand is not expressible at this boundary at all,
+**format** is not a Date-shaped one — a clock, a DateTime, a DateRange, and a partial Date outside
+the admitted fragment set — reports the one wrong-format class, so nothing about the operand's
+declaration is recoverable from the code. A repeatable operand reached from outside its group
+reports the missing-wildcard class instead. The remaining causes are local ingestion insufficiency
+with no measured counterpart, and a **starred** operand is not expressible at this boundary at all,
 because it resolves a field id rather than an authored path. -/
 def diagnostic? : DateRangeEndpointElabError → Option KernelStaticDiagnostic
-  | .targetKind _ _ | .unsupportedPolicy _ _ _ => some .wrongDateFormatForOp
+  | .unsupportedPolicy _ _ _ => some .wrongDateFormatForOp
   | .targetPolicy (.targetNotTemporal _ _) => some .wrongDateFormatForOp
   | .targetPolicy (.resolve error) => error.diagnostic?
   | .targetPolicy _ | .unsupportedZone _ => none
@@ -134,21 +140,17 @@ def elaborateDateRangeEndpointIn (model : FlatModel)
     Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) := do
   let checked ← elaborateTemporalTargetPolicyIn model scope field
     |>.mapError .targetPolicy
-  if hKind : checked.target.kind = .date then
-    match hFormat : DateRangeEndpointFormat.ofPolicy? model.baseYear checked.policy with
-    | none => throw (.unsupportedPolicy field checked.policy.partialMode checked.policy.format)
-    | some format =>
-        match hProfile : ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
-        | none => throw (.unsupportedZone checked.timeZoneId)
-        | some profile => pure {
-            checked
-            format
-            profile
-            targetIsDate := hKind
-            formatMatches := hFormat
-            profileMatches := hProfile }
-  else
-    throw (.targetKind field checked.target.kind)
+  match hFormat : DateRangeEndpointFormat.ofPolicy? model.baseYear checked.policy with
+  | none => throw (.unsupportedPolicy field checked.policy.partialMode checked.policy.format)
+  | some format =>
+      match hProfile : ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+      | none => throw (.unsupportedZone checked.timeZoneId)
+      | some profile => pure {
+          checked
+          format
+          profile
+          formatMatches := hFormat
+          profileMatches := hProfile }
 
 /-- The scalar instance: an endpoint read where the reading rule iterates no level. -/
 def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :

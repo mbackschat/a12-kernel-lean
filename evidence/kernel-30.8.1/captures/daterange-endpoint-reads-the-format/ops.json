@@ -1,0 +1,119 @@
+[
+ {
+  "id": "ctl-date-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(DateIso, DateIso2) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "time-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(TimeAsDate, DateIso2) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "stamp-as-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(StampAsDate, DateIso2) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "cross-both",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(TimeAsDate, StampAsDate) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "finish-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(DateIso, TimeAsDate) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "date-as-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(DateAsClock, DateIso2) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "ctl-time-clock",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(TimeClock, DateIso2) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "ctl-stamp-iso",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(StampIso, DateIso2) == [Win]",
+   "--code",
+   "K1"
+  ]
+ },
+ {
+  "id": "ctl-number",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/N",
+   "--condition",
+   "FieldFilled(N) And DateRange(N, DateIso2) == [Win]",
+   "--code",
+   "K1"
+  ]
+ }
+]

@@ -65,9 +65,24 @@ private def repeatableEndpoint : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+/-- A TIME declaration carrying the endpoint's own date format. The declared kind and the declared
+component set both disagree with the format here, which is what makes it the separating cell. -/
+private def timeDeclaredEndpoint : FlatFieldDecl := {
+  dateField 9 "TimeDeclared" with
+  policy := { kind := .temporal .time TemporalComponents.time }
+}
+
+/-- A DATETIME declaration carrying that same date format, so the cross-kind cell is measured on
+both of the kinds the endpoint used to refuse rather than on one of them. -/
+private def stampDeclaredEndpoint : FlatFieldDecl := {
+  dateField 10 "StampDeclared" with
+  policy := { kind := .temporal .dateTime TemporalComponents.now }
+}
+
 private def model : FlatModel := {
   fields := [start, finish, monthFragment, numberEndpoint, stringEndpoint,
-    dateTimeEndpoint, rangeEndpoint, repeatableEndpoint]
+    dateTimeEndpoint, rangeEndpoint, repeatableEndpoint,
+    timeDeclaredEndpoint, stampDeclaredEndpoint]
   repeatableGroups := [
     { level := 10, path := ["Order", "Rows"], repeatability := some 5 }]
   timeZoneId := "UTC"
@@ -79,11 +94,15 @@ private def diagnostic? (startField finishField : FieldId) :
   | .ok _ => none
   | .error cause => cause.diagnostic?
 
-/- Every operand whose declared kind is not a Date-shaped temporal field reports the one
-wrong-format class, so a Number, a String, a DateTime, and a DateRange operand are
+/- Every operand whose declared **format** is not a Date-shaped one reports the one wrong-format
+class, so a Number, a String, a stamp-formatted DateTime, and a DateRange operand are
 indistinguishable by code, and a pair whose component sets disagree joins them in either
 authored order. A repeatable operand reached from outside its group reports the missing-wildcard
-class instead, which is the one operand refusal this boundary separates. -/
+class instead, which is the one operand refusal this boundary separates.
+
+Read the DateTime row precisely: it is refused for its stamp **format**, not for its kind. The
+cross-kind case below carries the same declared kind on the endpoint's own date format and is
+admitted, which is why the two rows do not contradict each other. -/
 example :
     [diagnostic? numberEndpoint.id finish.id,
       diagnostic? stringEndpoint.id finish.id,
@@ -96,6 +115,20 @@ example :
     diagnostic? repeatableEndpoint.id finish.id = some .noWildcard ∧
     diagnostic? finish.id repeatableEndpoint.id = some .noWildcard ∧
     diagnostic? start.id finish.id = none := by
+  native_decide
+
+/- **An endpoint is admitted by its declared format alone, on all three declared kinds.** A TIME and
+a DATETIME declaration carrying the endpoint's date format pair with the DATE-declared endpoint and
+with each other, so the declared kind reaches neither side of the construction gate — the operand
+rule this position follows ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+Both cells also disagree with their format about the component set, so nothing here is the gate
+reading a component set that happens to match. -/
+example :
+    [diagnostic? timeDeclaredEndpoint.id finish.id,
+      diagnostic? stampDeclaredEndpoint.id finish.id,
+      diagnostic? timeDeclaredEndpoint.id stampDeclaredEndpoint.id,
+      diagnostic? start.id timeDeclaredEndpoint.id] =
+      List.replicate 4 none := by
   native_decide
 
 /- The two reported codes are the Kernel's own, and they are distinct classes rather than one

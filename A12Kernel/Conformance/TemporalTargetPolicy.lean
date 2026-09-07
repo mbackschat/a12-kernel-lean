@@ -275,19 +275,38 @@ example :
           nonempty := by decide } .before1900) := by
   native_decide
 
-/- Every remaining excluded static axis fails explicitly before target execution. -/
+/- **A complete-Date target is admitted by its declared format alone, on all three declared kinds.**
+The three admissions and the `HH:mm:ss` refusal put every kind on both sides of the outcome, which
+is what excludes reading the admitted set off the kind rather than off the format; the remaining two
+rows hold the kind fixed and move the format and the zone.
+
+The DATETIME row is the one that had to be measured rather than assumed: its format *contains* the
+date pattern, so a "has date components" reading would admit it, and the Kernel refuses it because
+presence of **both** component sets makes a format a stamp format
+([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)). This row previously
+asserted it as a **kind** refusal — with a fixture that varied the format too, so it was the witness
+against its own label. -/
 example :
-    let unsupportedFormat := fullDateModel "yyyy/M/d" "UTC"
-    let unsupportedZone := fullDateModel "dd.MM.yyyy" "Pacific/Apia"
-    let dateTime : FlatModel := {
+    let dateFormatted (kind : TemporalKind) : FlatModel := {
+      fields := [temporalTarget 0 "Date" "dd.MM.yyyy" kind fullDate] }
+    let stamp : FlatModel := {
       fields := [temporalTarget 0 "At" "yyyy-MM-dd'T'HH:mm:ss"
         .dateTime TemporalComponents.now] }
-    [ fullDateElabError? unsupportedFormat
-    , fullDateElabError? unsupportedZone
-    , fullDateElabError? dateTime ] =
-      [ some (.unsupportedFormat 0 "yyyy/M/d")
-      , some (.unsupportedZone "Pacific/Apia")
-      , some (.targetKind 0 .dateTime) ] := by
+    [ fullDateElabError? (dateFormatted .date)
+    , fullDateElabError? (dateFormatted .time)
+    , fullDateElabError? (dateFormatted .dateTime)
+    , fullDateElabError? { fields :=
+        [temporalTarget 0 "Date" "HH:mm:ss" .date fullDate] }
+    , fullDateElabError? stamp
+    , fullDateElabError? (fullDateModel "yyyy/M/d" "UTC")
+    , fullDateElabError? (fullDateModel "dd.MM.yyyy" "Pacific/Apia") ] =
+      [ none
+      , none
+      , none
+      , some (.unsupportedFormat 0 "HH:mm:ss")
+      , some (.unsupportedFormat 0 "yyyy-MM-dd'T'HH:mm:ss")
+      , some (.unsupportedFormat 0 "yyyy/M/d")
+      , some (.unsupportedZone "Pacific/Apia") ] := by
   native_decide
 
 /- DateTime target rendering follows the checked model **zone**, and an exact millisecond remainder is
@@ -309,11 +328,20 @@ example :
           nonempty := by decide }) := by
   native_decide
 
-/- The first executable DateTime target remains bounded by kind, complete components, exact format source, and concrete model-zone support. -/
+/- The executable DateTime target is bounded by complete components, exact format source, and
+concrete model-zone support — and **not** by the declared kind, which all three admissions show.
+The DATE-declared row that follows them refuses on its **component set**, which is the gate that
+precedes the format test; it had been expected as a kind refusal while its fixture moved both. -/
 example :
     let missingSeconds : TemporalComponents :=
       { TemporalComponents.now with second := false }
-    [ dateTimeElabError?
+    let stamped (kind : TemporalKind) : FlatModel := {
+      fields := [temporalTarget 0 "At" "yyyy-MM-dd'T'HH:mm:ss"
+        kind TemporalComponents.now] }
+    [ dateTimeElabError? (stamped .dateTime)
+    , dateTimeElabError? (stamped .date)
+    , dateTimeElabError? (stamped .time)
+    , dateTimeElabError?
         (fullDateModel "dd.MM.yyyy" "UTC")
     , dateTimeElabError?
         (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss" "UTC"
@@ -325,7 +353,10 @@ example :
     , dateTimeElabError?
         (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss"
           "Pacific/Apia") ] =
-      [ some (.targetKind 0 .date)
+      [ none
+      , none
+      , none
+      , some (.components 0 fullDate)
       , some (.components 0 missingSeconds)
       , some (.unsupportedFormat 0 "yyyy/MM/dd'T'HH:mm:ss")
       , some (.unsupportedFormat 0 "dd.MM.yyyy'T'HH:mm:ss")
@@ -344,6 +375,62 @@ example :
       DateTimeTargetFormat.ofSource? "dd.MM.yyyy'T'HH:mm:ss" = none ∧
       FullDateTargetFormat.ofSource? "dd.MM.yyyy" =
         some .dayMonthYearDots := by
+  native_decide
+
+/- **The clock target too is admitted by its declared format alone.** A DATE and a DATETIME
+declared the degenerate `HH:mm:ss` are legal clock targets beside the TIME declaration, and the two
+controls hold the kind fixed while moving the format and the component set — so no row here is the
+gate being absent. -/
+example :
+    let clock (kind : TemporalKind) : FlatModel := {
+      fields := [temporalTarget 0 "At" "HH:mm:ss" kind
+        TemporalComponents.time] }
+    let timeElabError? (model : FlatModel) : Option TimeTargetElabError :=
+      match elaborateTimeTarget model 0 with
+      | .ok _ => none
+      | .error error => some error
+    [ timeElabError? (clock .time)
+    , timeElabError? (clock .date)
+    , timeElabError? (clock .dateTime)
+    , timeElabError? { fields :=
+        [temporalTarget 0 "At" "dd.MM.yyyy" .time TemporalComponents.time] }
+    , timeElabError? { fields :=
+        [temporalTarget 0 "At" "HH:mm:ss" .time fullDate] } ] =
+      [ none
+      , none
+      , none
+      , some (.unsupportedFormat 0 "dd.MM.yyyy")
+      , some (.components 0 fullDate) ] := by
+  native_decide
+
+/- **The component-omitting Date target follows the same rule**, which matters here because this
+certificate is the one the `yyyy-MM` DATE_FRAGMENT reaches: the fragment is not a distinct declared
+kind in this model but a Date whose format omits components, so admitting only `.date` would have
+refused the TIME- and DATETIME-declared spellings of the same target. The complete `dd.MM.yyyy`
+control shows the format gate still bites, and the yearless row shows the Base Year gate is
+untouched and still answers before any kind could. -/
+example :
+    let dayOmitted : TemporalComponents := { fullDate with day := false }
+    let fragment (kind : TemporalKind) : FlatModel := {
+      fields := [temporalTarget 0 "Month" "yyyy-MM" kind dayOmitted] }
+    let omittedElabError? (model : FlatModel) :
+        Option OmittedComponentDateTargetElabError :=
+      match elaborateOmittedComponentDateTargetIn model [] 0 with
+      | .ok _ => none
+      | .error error => some error
+    [ omittedElabError? (fragment .date)
+    , omittedElabError? (fragment .time)
+    , omittedElabError? (fragment .dateTime)
+    , omittedElabError? { fields :=
+        [temporalTarget 0 "Month" "dd.MM.yyyy" .date fullDate] }
+    , omittedElabError? { fields :=
+        [temporalTarget 0 "Month" "MM-dd" .date
+          { fullDate with year := false }] } ] =
+      [ none
+      , none
+      , none
+      , some (.unsupportedFormat 0 "dd.MM.yyyy")
+      , some (.yearlessWithoutBaseYear 0 "MM-dd") ] := by
   native_decide
 
 end A12Kernel.Conformance.TemporalTargetPolicy

@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-07"></a>
+### `SPEC-2026-09-07-07` — a `DateRange` construction endpoint reads the declared format too, and your operator catalog says otherwise
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md` the DateRange-construction endpoint paragraph](../spec/05-dates-and-time.md)
+- `delta`: the clause said each endpoint "must be a complete DATE or DATE_FRAGMENT whose declared format has at least one date component and no time component", and listed "a DateTime field" among the refusals. Measured, the declared kind takes no part: a TIME-declared and a DATE_TIME-declared field each carrying `yyyy-MM-dd` are admitted in the start position, the finish position, and both at once. The listed DateTime refusal is real but is its **stamp format** refusing, not its kind.
+- `mechanism`: none proposed beyond yours. This is the same rule your [`KF211`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf211) states, holding at one more gate; the refusal class here is the operand code `MVK_WRONG_DATE_FORMAT_FOR_OP`, which is the format's.
+- `why-you-may-still-want-it`: **your own `dmtool operators DateRange` entry carries the wrong rule.** Its `constraints` string reads "each operand is a bare full DATE or DATE_FRAGMENT entity reference, and both formats contain the same date components and no time component" — the second half is exactly right and the first half is kind-keyed. A modeller following that entry would not author the admitted cross-kind endpoint, and an implementer following it would refuse a legal model.
+- `evidence`: one `dmtool batch --observations`, nine `rule check` children over one model, at a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` in this project's pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. [Endpoint checkpoint](sources/computation-placement-and-constant-probes.md#src-daterange-endpoint-reads-the-format) owns the artifact hashes.
+- `separator`: each of the three declared kinds sits on both sides of both outcomes — admitted on `yyyy-MM-dd`, refused on a clock or stamp format — so no permissive-kind account survives. A Number endpoint is the live control and a DATE-declared clock endpoint is the diagonal one, which together exclude both a dead gate and a "non-DATE kinds refuse" reading.
+- `limit`: static admission only, `yyyy-MM-dd` as the sole admitted endpoint format, equality against one stored `yyyy-MM-dd`/`/` range, `en_US`. Unmeasured: what a cross-kind endpoint contributes to the constructed range's runtime **value**, and whether a component-omitting cross-kind endpoint completes asymmetrically as your catalog's third gotcha describes for the same-kind case.
+- `surfaces`: your operator catalog entry above; any evaluator or importer gating this position on the declared kind; any published clause naming a DATE or DATE_FRAGMENT field. Ours named it, which is why this is a correction and not a report.
+- `acceptance`: confirm the three admissions on your own fixture and correct the catalog's `constraints` string, or supply the contrary measurement. If your account already reads the format here and only the catalog prose is stale, say so and we close this as a documentation-only delta.
+- `local-scope`: the endpoint certificate's kind conjunct is removed here and its unreachable diagnostic arm deleted; this entry reports only the clause and catalog delta.
+
 <a id="spec-2026-09-07-06"></a>
 ### `SPEC-2026-09-07-06` — `KF211`'s rule reaches a constructor operand position, which its own scope note excludes
 

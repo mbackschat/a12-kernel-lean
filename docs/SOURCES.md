@@ -633,6 +633,10 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A yearless stored day is bounded by its month's length in the declared Base Year](sources/computation-placement-and-constant-probes.md#src-yearless-day-bound-reads-the-base-year)
 <a id="src-datetime-carrier-stores-by-its-format"></a>
 - [The DATETIME carrier's cross-kind store is governed by its format too, inbound from a12-dmkits](sources/computation-placement-and-constant-probes.md#src-datetime-carrier-stores-by-its-format)
+<a id="src-computed-target-gate-is-carrier-invariant"></a>
+- [Neither the computed target's admission nor its store can read which carrier produced the value — a computation is a comparison condition, and one render locus erases the carrier — retiring four declared-kind narrowings without a per-family measurement](sources/computation-placement-and-constant-probes.md#src-computed-target-gate-is-carrier-invariant)
+<a id="src-daterange-endpoint-reads-the-format"></a>
+- [A `DateRange` construction endpoint is admitted by its declared format alone, with all three declared kinds on both sides of both outcomes](sources/computation-placement-and-constant-probes.md#src-daterange-endpoint-reads-the-format)
 
 <a id="src-two-positions-share-the-root-gate"></a>
 - [Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)

@@ -1,0 +1,2 @@
+{ "group": "/Kf", "name": "Win", "kind": "DATERANGE",
+  "dateRange": { "format": "yyyy-MM-dd", "separator": "/" } }

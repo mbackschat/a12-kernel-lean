@@ -1,0 +1,66 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "5b6f055b13377d676d4f58d8ce003dfbc6e0d75a3117a6b7f7b717ff37abfc54",
+  "observations" : [ {
+    "id" : "ctl-date-date",
+    "inputHash" : "42c8202675fd62c50528c216fc9d89a310ae7c5a202b70b8232b1fd2d9e7f692",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "time-as-date",
+    "inputHash" : "e62517fe028735b564d19c9bb681579efffc480f5a190dfdfad5ac05394b49f3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "stamp-as-date",
+    "inputHash" : "ecfa0d0f9f09649d48c4b999df752e377c179f349a2dc2113293f247180c4078",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cross-both",
+    "inputHash" : "fdcc654d727152c06607d2c72415d2781a8030fac2654cfa51c3a9b12ed9df9d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "finish-time",
+    "inputHash" : "849a2a8762b43acbe555b5fe8584056056d1774cdd8f5b722063489641b051b6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "date-as-clock",
+    "inputHash" : "ade960376351c6e5232601758ac36ef5ed6e4c029ddd047b4f4c8b232b2085b4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "ctl-time-clock",
+    "inputHash" : "9b0c40904014895d2be76c7134642c751b40453c0525bfef76c2778864aec09f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "ctl-stamp-iso",
+    "inputHash" : "755c4f27901d1b58e19cc6d592e7922b4d46808134499ddeb0107b05c16716a6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "ctl-number",
+    "inputHash" : "283ce89df0313b6a448cfab684a7046ec520d040f50ecd1e6bd2c8d4ed0846dc",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  } ]
+}
