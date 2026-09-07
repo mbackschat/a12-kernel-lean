@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-03"></a>
+### `SPEC-2026-09-07-03` — `FirstFilledValue`'s filled predicate is presence, not truthiness, and an all-empty selection mints no outcome
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` first-filled selection](../spec/07-repetition-and-iteration.md)
+- `delta`: the clause said `FirstFilledValue` "selects the operand's first filled cell" and never said what *filled* means for a kind whose value can be falsy. Added: filled is **presence**, so a Boolean source holding `false` is selected in preference to a later `true`; and an all-empty selection mints **no outcome at all**, leaving the target neither written nor cleared.
+- `mechanism`: none proposed beyond what the rows show. The reading that makes it one rule rather than two is that the selection consults the cell's presence and never its value, which is also why the all-empty case produces no action rather than a default — but nothing here isolates that from a Boolean-specific rule, so it is not asserted.
+- `evidence`: one `:adapter:kernelProbe` request observing `validateFull` and `compute` over five documents, at a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` in this project's pinned measurement checkout, `producer.source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `enginesAgree: true` on all five rows. `FirstFilledValue(S1, S2)` into a Boolean target returns `false` for `S1 = false, S2 = true` ([checkpoint](sources/evaluation-and-application-routes.md#src-boolean-first-filled-false-is-filled)).
+- `separator`: **an absent first source falls through**, returning `true` for `S1` absent with `S2 = true`. Neither row establishes the claim alone — the false-first row by itself is equally consistent with always taking the first operand, and the absent-first row by itself says nothing about falsy values.
+- `limit`: a two-source ordered Boolean selection at arity 2, `en_US`, into a Boolean target, five documents. Unmeasured: a Boolean source under a star or group operand, three or more sources, whether a *seeded* target is cleared by the all-empty selection rather than left untouched, and the same question for any other kind with a falsy value.
+- `surfaces`: any peer clause, evaluator, or importer whose first-filled scan tests a Boolean source for truth rather than presence. It returns the wrong operand on a legal document and the failure is silent — a selection that skips a `false` looks exactly like one where that source was empty. The all-empty row is the second exposure: an implementation defaulting the target rather than leaving it alone writes a value the Kernel does not.
+- `local-scope`: this project already agreed at the mechanism rather than by a coincidence of cases — `booleanFirstFilledCellAt` maps `.value (.bool value)` to `.present value` for either Boolean — and an existing conformance case already locked a `false` source being selected. So this entry proposes a clause the local theory implements, and the measurement upgraded that capability's assurance without changing any code. Four `FirstFilledValue` findings exist on your side and none names a Boolean value, which is why this was measured rather than looked up.
+
 <a id="spec-2026-09-07-02"></a>
 ### `SPEC-2026-09-07-02` — the extrema order a yearless list under a declared Base Year, and no document can say what they order on
 

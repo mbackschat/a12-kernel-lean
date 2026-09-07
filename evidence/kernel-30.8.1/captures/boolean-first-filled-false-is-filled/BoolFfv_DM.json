@@ -1,0 +1,81 @@
+{
+  "header" : {
+    "id" : "BoolFfv_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "BoolFfv_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Bf",
+        "name" : "Bf",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Bf/S1",
+            "name" : "S1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Bf/S2",
+            "name" : "S2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Bf/Target",
+            "name" : "Target",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Bf/TargetComp",
+            "name" : "TargetComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Target",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(S1, S2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "target computed"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
