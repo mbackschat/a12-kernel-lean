@@ -202,7 +202,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `forbidden`: do not read a carrier’s admission off a neighbouring carrier’s row, and do not let an uncertified filter silently fold unfiltered rows.
 - `entry-gate`: a new operand form enters with its own admission row and its own control on the same list; a value row alone cannot tell admission from a skipped gate.
 - `completion-gate`: every admitted operand form folds or declines explicitly, every refusal projects the class a row measured or states which kind is unmeasured, and each element type has a separating case over empty, formally unavailable, and over-limit operands.
-- `next-unit`: the widening is a **cross-module extraction** and should land as its own capsule. The masking projection the distinct count already uses — `maskedDateComponents`, today in [`TemporalDistinctCount.lean`](../A12Kernel/Elaboration/TemporalDistinctCount.lean) — has the identical meaning and result domain here, so this is the second completed user the reuse rule waits for: move it to a `Semantics/` owner, carry `maskedDateComponents_congr` and its trust-audit root with it, then add the two extremum arms through the existing parametric reader. Do not copy it into a second module.
 - `route-state`: ready — `dmtool rule check` for the gate, internal work for the reader.
 
 <a id="sg21--the-declared-kindformat-split-across-temporal-carriers"></a>
