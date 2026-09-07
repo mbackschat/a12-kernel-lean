@@ -14,7 +14,7 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `53d6d3ec` on 2026-09-07.
+Measured at `2fb4ac37` on 2026-09-07.
 
 ## Headline
 
@@ -32,7 +32,7 @@ together the modelled figure leads.
 | | classes | share |
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 214 | 43% |
+| Named in `spec/` or `docs/` prose | 217 | 43% |
 | Named in tracked Lean source | 217 | 43% |
 | Observed in a retained probe artifact | 135 | 27% |
 | Touched by any of the three | 313 | 63% |
@@ -40,7 +40,7 @@ together the modelled figure leads.
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
-- **Observed but absent from the written account: 3.** A class seen in a probe and never
+- **Observed but absent from the written account: 0.** A class seen in a probe and never
   written down is a measurement whose result was lost.
 - **Known only from archived material: 6.** These are facts this repository holds but no
   longer reads; they belong in a live owner or should be re-measured.
