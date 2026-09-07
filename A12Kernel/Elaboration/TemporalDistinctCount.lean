@@ -480,9 +480,15 @@ private def temporalDistinctCountCell
       | .unknown cause | .poison cause => .unknown cause
   | .instant, addressed =>
       match observeCell .validation addressed.cell with
-      -- The exact moment. Whether the engine compares this or the decoded local label is not
-      -- separable by stored text within one model zone — a wall label resolves to a single instant
-      -- there — so this arm holds the instant and the boundary is recorded rather than claimed.
+      -- The exact moment, and holding it is a **stated choice** rather than an indifference. The two
+      -- accounts — this instant, or the decoded local label — genuinely differ inside a model-zone
+      -- overlap, where one label names two moments; the extrema's conformance separates them on that
+      -- pair. What no route reaches is a *document* carrying both: A12's canonical document shape
+      -- stores a DATE_TIME as a model-format string with no offset, so text authoring resolves one
+      -- label to one instant. This arm keeps the finer distinction, so a later measurement can
+      -- correct it without re-deriving anything, and it agrees with the extrema's measured ordering
+      -- on exact instants. The unsearched arm is a *computed* DATE_TIME beside a text-authored one
+      -- ([SG24](../../docs/SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold)).
       | .value (.temporal (.dateTime instant _ _ _)) => .present instant
       | .value _ => .unknown .malformed
       | .empty => .empty
