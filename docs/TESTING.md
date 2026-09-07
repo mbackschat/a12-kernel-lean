@@ -266,6 +266,40 @@ A kernel **runtime** question is checked against the maintained `:adapter:kernel
 
 Use it demand-driven, one coherent family at a time, exactly like every other evidence route: an internally closed capsule may still land `external evidence pending`. The route has been exercised from this repository; [`SOURCES.md`](SOURCES.md) owns each family checkpoint and its exact hashes. Every further use must choose a family whose observation shape the artifact plainly carries and include a negative control in the same request.
 
+### Read the grammar or the checker first, then measure only the residual
+
+**The highest-yield move measured so far is not a wider batch — it is reading the Kernel's own grammar,
+localized terminal bundles, or checker method before authoring a single row.** It converts a guess into a
+denominator, and the denominator is what makes a batch worth running.
+
+Three instances, each of which changed the result rather than merely confirming it. Reading
+`FullChecks_ErrorTextParameterParser.checkIndexFieldRef` replaced a three-arm guess about the index
+terminal with the checker's own **ten** classes, four of which fell in one batch. Reading
+`GrammarOnly_ErrorTextParameterParser.g4` replaced a list of noticed parameter spellings with the
+parser's **eight** alternatives, which is how three live forms that no probe had ever tried were found —
+including two that skip a gate every other form carries. Reading `LexerTerminals_de`/`_en` gave the exact
+**ten**-terminal bilingual table, so `RootGroup` was identified as the English spelling of `LfdNr` rather
+than measured as a mystery.
+
+The method, in order:
+
+1. **Find the production or the checker method** that owns the surface, not the prose about it. A grammar
+   file states the alternatives exhaustively; a checker method states its refusals in throw order.
+2. **Enumerate what it can refuse**, and write that list down as the batch's denominator before authoring
+   any row. A class named with the reason no route reaches it is a result; a class silently absent is not.
+3. **Measure the residual only** — the rows the reading could not settle. Reading never discharges a
+   reachability or value claim ([the discharge rule](../CLAUDE.md#%EF%B8%8F-hard-rule--discharge-a-claim-before-stating-it-or-flag-it-and-surface-it)),
+   so every arm still needs its row; what the reading removes is the rows spent on arms that do not exist.
+4. **Keep the reading's denominator in the checkpoint**, as its own `source-first` and `denominator` rows,
+   so the next session inherits the list instead of re-deriving it.
+
+The catalogs are the same kind of reading at the level of the whole estate:
+`error_messages_en.properties` under `../a12-kernel/` enumerates every refusal class the Kernel can name,
+and [`CONFORMANCE-COVERAGE.md`](CONFORMANCE-COVERAGE.md) turns that into the current untouched list with
+the route for each block. **Select the next batch from that list rather than from whichever family the
+session happens to be in** — working forward from a family measures what is convenient, working backward
+from the untouched list measures what is missing.
+
 ### Three batch preconditions, each paid for by a wasted round trip
 
 The batch mechanism is not the bottleneck — 52 `rule check` children run in under seven seconds, so a cell costs about a tenth of a second and a wider cross is effectively free. What costs time is authoring a row wrong and reading a grid wrong. These three preconditions are measured, not stylistic: every one of them has been paid for more than once.
