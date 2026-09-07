@@ -239,6 +239,26 @@ The shell gate retains source scanning as defense in depth, but environment insp
 
 Kernel differential testing is the empirical backbone, but the kernel never becomes a dependency of this repository. Existing focused scenarios run externally through maintained a12-dmkits corpus or differential facilities in the local `../a12-rulekit/` checkout; a new scenario uses that route only when it exposes the required own-domain observation, otherwise it needs an accepted purpose-specific handback. The Groovy-dynamic kernel result is the observation anchor, the static-Java kernel strategy detects a strategy split, and the a12-dmkits interpreter is a clean-room triangulation peer that may reveal a disagreement but is never the oracle.
 
+### Read the kernel source first, then measure only the residual
+
+A source read is free and instant, while a probe costs a JVM start, an authoring round trip, and a wasted window whenever a row is authored wrong. So when a claim is about a **gate** — which inputs a decision actually reads — open the kernel before opening a batch. This estate's two largest corrections were each re-derived in one read after many per-operator rounds: `DateUtils.checkOperationConsistentToDateFormat` gates the entire declared-kind operand class, and `CheckVergleichsBedingungImpl.checkDateType` gates the comparison and computed-target axis, both consulting the declared format and never the declared kind. [`SOURCES.md`](SOURCES.md#kernel-repository-entry-points) owns the location map and the layer-routing table; the method is here.
+
+**Find the locus by its diagnostic code, not by its concept name.** Every static refusal carries an `MVK_*` code, and the method raising it is the gate. Grep the code across the parser's check tree, exclude generated copies with an anchored `/build/` path, then read the raising method's body and the fields it consults. A concept search for "target" or "assignment" returns the vocabulary the reader brought; a code search returns the branch the kernel actually took to that outcome.
+
+**Read the code, not the comment.** The German Javadoc has matched the body every time it was checked here, which is why it is tempting and still not discharge: a comment is unverified prose, and only the method body and the fields it reads settle the claim. Cite a path and a symbol, never a pasted expression — under the clean-room rule source is read to learn which inputs a decision consults, and the Lean is then written originally.
+
+**Read the absences too, and look for the one shared gate.** A directory listing is a checkable fact where a claim about a class's behaviour is not: no `FormatDefinitionZeit` exists, so all three declared temporal kinds share one `FormatDefinitionDatum`, which is why the runtime's computed-date store renders through the target's declared format whatever the kind. When several call sites are narrowed the same way, look for the single function gating them all; the class then collapses at once instead of one operator per round trip.
+
+What a source read settles depends on the claim class, and the differences are not cosmetic:
+
+| claim class | what the source read gives |
+|---|---|
+| **mechanism** | discharge, because the branch taken *is* the mechanism where an outcome is merely consistent with several. It is not independent of a probe against the same kernel, so a source read plus a matching row is one discharged mechanism and not two witnesses |
+| **value** | a prediction worth authoring red. The executable case still lands in the owning conformance module |
+| **reachability** | nothing at all. Whether a legal model expresses the shape is measurement-only, and reading a gate never shows that a declaration reaches it |
+
+So the order is source first, then a probe for the residual alone: what a **runtime** stores or renders, whether an admitted shape is authorable, and any cross-class interaction one method body cannot show. Record which half came from which layer, because a checkpoint that merges them overstates both.
+
 ### The kernel-runtime probe route
 
 A kernel **runtime** question is checked against the maintained `:adapter:kernelProbe` task before it becomes an `EXP-` request. [`SOURCES.md`](SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit) owns the route's identity, contract pointers, and claim limits; what belongs here is how to drive it without touching the sibling. Author the model with the structured `dmtool` verbs as usual, keep the request file, its model, its documents, and the artifact **outside** `../a12-rulekit/` or under an already ignored path there, and pass absolute paths so nothing resolves into the sibling's tracked tree. Check `git -C ../a12-rulekit status --short` before and after: it must be empty both times, because `producer.source.state` records `CLEAN` or `DIRTY` into the artifact and a `DIRTY` artifact is exploration only, never retained evidence. Record the reviewed revision, `dmtoolVersion`, and both kernel versions from the artifact header rather than from the environment, and pin retained bytes by SHA-256 together with the request that produced them, since `schemaVersion` alone no longer determines the artifact's shape.
