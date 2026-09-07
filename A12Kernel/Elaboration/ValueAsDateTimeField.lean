@@ -17,14 +17,17 @@ private def completeTimeComponents : TemporalComponents := {
   second := true
 }
 
-/-- Whether one resolved declaration is the exact ordinary full-Time field admitted by this capsule.
+/-- Whether one resolved declaration is a field this capsule admits in the Time position: any
+    date-bearing kind whose declared format is exactly a complete clock.
 
-    `unmeasured`: the `kind == .time` conjunct below stays while every measured gate in this class
-    lost one, because this capsule's authored surface was not reached — a `DateTime(date, time)`
-    construction admits every kind/format pairing tried, including a date-formatted time half, so it
-    is not this gate and its admissions are not evidence about it. Missing witness: this capsule's
-    own surface with a DATE-declared `HH:mm:ss` field in the Time position. Widening on the class
-    pattern alone is the crossing declined throughout it ([`LF116`](../../docs/LEAN-FINDINGS.md)). -/
+    The declared **kind** is not read, measured on this capsule's own authored surface —
+    `DateTime(ValueAsDate(partial, FirstDay), field)` — where a DATE- and a DATE_TIME-declared
+    `HH:mm:ss` field are admitted beside the TIME-declared control, while a TIME-declared complete
+    date and a DATE_TIME-declared complete instant are both refused on components
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+    The earlier `kind == .time` conjunct refused the first two, and it had been kept because a plain
+    `DateTime(date, time)` construction does not reach this gate — its admissions were not evidence
+    either way, which is why the witness had to be authored through `ValueAsDate`. -/
 def FlatModel.admitsValueAsDateTimeField
     (model : FlatModel) (source : FlatTemporalField) : Bool :=
   match model.lookupUniqueId source.id with
@@ -32,7 +35,6 @@ def FlatModel.admitsValueAsDateTimeField
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
         declaration.toTemporalField? == some source &&
-        source.kind == .time &&
         source.components == completeTimeComponents
 
 /-- Static refusal before a partial-Date constructor can own one checked Time-field read. -/
@@ -40,7 +42,6 @@ inductive ValueAsDateTimeFieldElabError where
   | construction (error : ValueAsDateTimeElabError)
   | timeSource (error : ResolveError)
   | timeSourceNotTemporal (field : FieldId)
-  | timeSourceKind (field : FieldId) (actual : TemporalKind)
   | timeSourceComponents (field : FieldId) (actual : TemporalComponents)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -99,19 +100,16 @@ def elaborateValueAsDateTimeField
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.timeSourceNotTemporal timeField)
-  if _hKind : source.kind = .time then
-    if _hComponents : source.components = completeTimeComponents then
-      if hAdmitted : model.admitsValueAsDateTimeField source = true then
-        pure {
-          construction := construction
-          timeSource := source
-          timeSourceAdmitted := hAdmitted
-        }
-      else
-        throw .incoherentCore
+  if _hComponents : source.components = completeTimeComponents then
+    if hAdmitted : model.admitsValueAsDateTimeField source = true then
+      pure {
+        construction := construction
+        timeSource := source
+        timeSourceAdmitted := hAdmitted
+      }
     else
-      throw (.timeSourceComponents source.id source.components)
+      throw .incoherentCore
   else
-    throw (.timeSourceKind source.id source.kind)
+    throw (.timeSourceComponents source.id source.components)
 
 end A12Kernel

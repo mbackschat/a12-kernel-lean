@@ -1,0 +1,47 @@
+[
+ {
+  "id": "vad-time-clock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "v_vad-time-clock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vad-date-clock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "v_vad-date-clock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vad-stamp-clock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "v_vad-stamp-clock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vad-time-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "v_vad-time-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vad-stamp-iso",
+  "verb": "computation",
+  "args": [
+   "add",
+   "v_vad-stamp-iso.json",
+   "--dry-run"
+  ]
+ }
+]

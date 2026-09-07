@@ -77,12 +77,13 @@ private def fullTimeComponents : TemporalComponents := {
 }
 
 private def timeSource
-    (components : TemporalComponents := fullTimeComponents) :
+    (components : TemporalComponents := fullTimeComponents)
+    (kind : TemporalKind := .time) :
     FlatFieldDecl := {
   id := 1
   groupPath := ["Order"]
   name := "PickupTime"
-  policy := { kind := .temporal .time components } }
+  policy := { kind := .temporal kind components } }
 
 private def modelWithTime
     (time : FlatFieldDecl := timeSource) : FlatModel := {
@@ -641,6 +642,46 @@ example :
     valueAsDateTimeFieldError? (elaborateValueAsDateTimeField
       (modelWithTime (timeSource partialComponents)) 0 .firstDay 1) =
         some (.timeSourceComponents 1 partialComponents) := by
+  native_decide
+
+/- **The Time position reads the declared format's components and never the declared kind.** All
+three date-bearing kinds declared a complete clock are admitted here, while each of them declared a
+complete date or a complete instant is refused on components — so every kind appears on both sides
+and no row reads as one kind being privileged. Kernel-calibrated on this capsule's **own** authored
+surface, `DateTime(ValueAsDate(partial, FirstDay), field)`, at the
+[difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format);
+a plain `DateTime(date, time)` construction does not reach this gate, which is why its admissions
+could not settle it and the conjunct these rows replaced survived every other row here. -/
+example :
+    let admitted (kind : TemporalKind) (components : TemporalComponents) :=
+      (elaborateValueAsDateTimeField
+        (modelWithTime (timeSource components kind)) 0 .firstDay 1).isOk
+    admitted .time fullTimeComponents = true ∧
+      admitted .date fullTimeComponents = true ∧
+      admitted .dateTime fullTimeComponents = true ∧
+      admitted .date TemporalComponents.fullDate = false ∧
+      admitted .time TemporalComponents.fullDate = false ∧
+      admitted .dateTime TemporalComponents.now = false := by
+  native_decide
+
+/- **The widened gate's read, checked rather than assumed.** A gate widened without its read is
+worse than the refusal it replaced: the newly admitted declaration would become an internal payload
+fault where the Kernel computes a value. A DATE-declared complete-clock field reads its clock and
+constructs the same instant a TIME-declared one does, because the cell's value shape follows the
+declared component set rather than the kind, so the reader's payload arm needs no kind of its own. -/
+example :
+    let model := modelWithTime (timeSource fullTimeComponents .date)
+    let clock := (time? 10 30 45).get (by native_decide)
+    let expectedLocal := (LocalDateTime.ofYmdHms?
+      2024 2 1 10 30 45).get (by native_decide)
+    let expectedInstant := (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+      expectedLocal).get (by native_decide)
+    let result := do
+      let checked ← (elaborateValueAsDateTimeField model 0 .firstDay 1).toOption
+      let input ← timeDocument? model "10:30:45" (timeRaw clock)
+      pure (checked.evaluateRaw .validation input
+        (.parsed "00.02.2024") |>.toOption)
+    result = some (some (.value expectedLocal expectedInstant false)) := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate

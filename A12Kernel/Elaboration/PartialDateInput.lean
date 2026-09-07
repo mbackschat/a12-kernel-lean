@@ -51,11 +51,14 @@ structure CheckedPartialDateInputField where
   mode : TemporalPartialMode
   fieldOwned : declaration.toTemporalField? = some field
   policyOwned : declaration.toTemporalTargetPolicy? = some policy
-  /-- `unmeasured`: this kind obligation stays while every measured gate in this class dropped one.
-      Its missing witness is narrower than the others': a partial-mode *input* needs both a
-      non-`full` `partialMode` on the declaration and a kind/format disagreement, and whether that
-      pairing is authorable at all was not probed. Naming it here rather than widening keeps the
-      obligation honest ([`LF116`](../../docs/LEAN-FINDINGS.md), [checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)). -/
+  /-- Not an independent kind test: a partial mode **implies** a Date declaration. `datePrecision`
+      is a field of the Kernel's `DateType` alone, `TimeType` and `DateTimeType` each declare only
+      `format`, and hand-writing the property onto a `TimeType` is refused by the Kernel's own
+      deserializer before any check runs. So the pairing this obligation would need in order to be
+      wrong — a non-`full` precision on a non-Date kind — is not expressible in the model format,
+      and this equality records a consequence of the precision requirement rather than a second gate
+      ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+      That is why it stays while the ten measured kind conjuncts in this class went. -/
   kindOwned : field.kind = .date
   componentsOwned : field.components = TemporalComponents.fullDate
   modeOwned : policy.partialMode = mode

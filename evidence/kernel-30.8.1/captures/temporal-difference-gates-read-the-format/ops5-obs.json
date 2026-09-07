@@ -1,0 +1,39 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "27bd46277c4f329ea2895cc930283858a29098e1a86bee0711ffad1eacf995ea",
+  "observations" : [ {
+    "id" : "vad-time-clock",
+    "inputHash" : "c8f001438fb38f2053ee3a63c0060b19874ca33e18479cd713ee2617b927a367",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vad-date-clock",
+    "inputHash" : "aaace9dfbe7a9fe0676ca607d7a32ef2647c0a07549ac6ba8aba0d18ff8cf547",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vad-stamp-clock",
+    "inputHash" : "143b236311ea73cd0f497afada47b977cc26c4a48f2666b9118554d5c224ff0a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vad-time-date",
+    "inputHash" : "267789894d3d699810d761d6072aee412fa86e33a02fb349aeb50d68bbb1bb67",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "vad-stamp-iso",
+    "inputHash" : "d13baae1ecdcc4bbcf5a6bc40a40c9a3b9e3fec0ddb09cdbad614b44ea803f56",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  } ]
+}
