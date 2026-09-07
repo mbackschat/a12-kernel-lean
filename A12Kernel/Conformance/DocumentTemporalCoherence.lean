@@ -54,8 +54,19 @@ private def uncertifiedField : FlatFieldDecl := {
   policy := { kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy := some { format := "HH:mm:ss", partialMode := .full } }
 
+/-- A TIME declaration carrying a complete-date format. The Kernel's parser follows that format and
+the declared kind supplies no fallback, so this cell stores a Date and the complete-Date classifier
+owns it ([`SPEC-2026-09-06-09`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-06-09)). -/
+private def dateDeclaredClockField : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Policy"]
+  name := "RenewsOn"
+  policy := { kind := .temporal .time TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .full } }
+
 private def model : FlatModel := {
-  fields := [dateField, momentField, fragmentField, clockField, uncertifiedField]
+  fields := [dateField, momentField, fragmentField, clockField, uncertifiedField,
+    dateDeclaredClockField]
   timeZoneId := "Europe/Berlin" }
 
 private def prepared :
@@ -151,6 +162,16 @@ example :
     coherent? [cell 3 "2024-06" (canonicalDate "1999-01-01")] = some true ∧
     coherent? [cell 4 "14:30:00" (canonicalDate "1999-01-01")] = some true ∧
     coherent? [cell 5 "nonsense" (canonicalDate "1999-01-01")] = some true := by
+  native_decide
+
+/- **The coverage limit is the declared component set, not the declared kind.** A TIME field declared
+`yyyy-MM-dd` stores a Date, because the parser follows the format and the kind supplies no fallback,
+so the complete-Date classifier owns that cell and a contradicted value there is detected. The clock
+row above is the control that keeps this from reading as "every Time declaration is now checked": it
+carries genuine clock components and stays uncovered. -/
+example :
+    coherent? [cell 6 "2024-06-15" (canonicalDate "2024-06-15")] = some true ∧
+    coherent? [cell 6 "2024-06-15" (canonicalDate "1999-01-01")] = some false := by
   native_decide
 
 end A12Kernel.Conformance.DocumentTemporalCoherence

@@ -559,37 +559,44 @@ case that pins which account that clause states needs two cells whose text and d
 `SPEC-2026-08-05-03` records whether a real model can store such a pair as its open residual. Making the
 text a function of the value would delete the clause's own subject from the representation.
 
-The second is coverage. Only a full-precision Date and a DateTime have an owning input classifier. A
-**partial** Date denotes an interval with no `Value` form and a **Time** carries no instant of its own,
-so those two kinds can never be checked here; a gate covering half a family is one no consumer could
-rely on, whereas a property may honestly report on the half it knows.
+The second is coverage, and it is bounded by the declared **component set** rather than the declared
+kind. Only a complete-Date and a complete-DateTime declaration have an owning input classifier, and the
+Kernel's parser follows the declared format with no fallback to the kind
+([`SPEC-2026-09-06-09`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-06-09)) — so a TIME field
+declared `yyyy-MM-dd` stores a Date and is checked here, while a clock or **partial**-precision
+declaration has no derivable `Value` form and can never be. A gate covering half a family is one no
+consumer could rely on, whereas a property may honestly report on the half it knows.
 
-`true` therefore means: no placed Date or DateTime cell contradicts its stored text. It does not certify
-the kinds listed above, and it is not a claim that the kernel would produce this document. -/
+`true` therefore means: no cell on a complete-Date or complete-DateTime declaration contradicts its
+stored text. It does not certify the declarations listed above, and it is not a claim that the kernel
+would produce this document. -/
 def temporallyCoherent (checked : CheckedDocument model) : Bool :=
   checked.source.cells.all fun input =>
     match model.lookupUniqueId input.address.field with
     | .error _ => true
     | .ok declaration =>
         match declaration.policy.kind with
-        | .temporal .date _ =>
-            match certifyFullDateInputField declaration with
-            | .error _ => true
-            | .ok owner =>
-                match owner.classifyStoredForModel model.timeZoneId
-                    input.stored with
-                | .ok canonical => temporalCellAgrees canonical input.raw
-                | .error (.unsupportedZone _)
-                | .error (.unresolvableDate _) => false
-        | .temporal .dateTime _ =>
-            match certifyDateTimeInputField declaration with
-            | .error _ => true
-            | .ok owner =>
-                match owner.classifyStoredForModel model.timeZoneId
-                    input.stored with
-                | .ok canonical => temporalCellAgrees canonical input.raw
-                | .error (.unsupportedZone _)
-                | .error (.unresolvableDateTime _ _) => false
+        | .temporal _ components =>
+            if components == TemporalComponents.fullDate then
+              match certifyFullDateInputField declaration with
+              | .error _ => true
+              | .ok owner =>
+                  match owner.classifyStoredForModel model.timeZoneId
+                      input.stored with
+                  | .ok canonical => temporalCellAgrees canonical input.raw
+                  | .error (.unsupportedZone _)
+                  | .error (.unresolvableDate _) => false
+            else if components == TemporalComponents.now then
+              match certifyDateTimeInputField declaration with
+              | .error _ => true
+              | .ok owner =>
+                  match owner.classifyStoredForModel model.timeZoneId
+                      input.stored with
+                  | .ok canonical => temporalCellAgrees canonical input.raw
+                  | .error (.unsupportedZone _)
+                  | .error (.unresolvableDateTime _ _) => false
+            else
+              true
         | _ => true
 
 end CheckedDocument

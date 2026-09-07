@@ -67,9 +67,9 @@ inductive DateTimeComputationCheckedApplicationError where
   | repeatableTarget (field : FieldId)
   deriving Repr, DecidableEq
 
-private def acceptsActionKind : FieldKind → Bool
-  | .temporal .dateTime components => components == TemporalComponents.now
-  | _ => false
+/-- A DateTime target is its declared complete-stamp component set, per the shared family predicate. -/
+private def acceptsActionKind : FieldKind → Bool :=
+  TemporalComputationApplicationTarget.acceptsDeclaredComponents TemporalComponents.now
 
 def validateActionTargets (model : FlatModel) (targets : List FieldId) :
     Except DateTimeComputationCheckedApplicationError Unit :=

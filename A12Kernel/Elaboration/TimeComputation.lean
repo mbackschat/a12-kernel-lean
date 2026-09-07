@@ -748,9 +748,9 @@ inductive TimeComputationCheckedApplicationError where
   | repeatableTarget (field : FieldId)
   deriving Repr, DecidableEq
 
-private def acceptsActionKind : FieldKind → Bool
-  | .temporal .time components => components == TemporalComponents.time
-  | _ => false
+/-- A clock target is its declared complete-clock component set, per the shared family predicate. -/
+private def acceptsActionKind : FieldKind → Bool :=
+  TemporalComputationApplicationTarget.acceptsDeclaredComponents TemporalComponents.time
 
 def validateActionTargets (model : FlatModel) (targets : List FieldId) :
     Except TimeComputationCheckedApplicationError Unit :=

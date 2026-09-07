@@ -56,13 +56,28 @@ private def repeatedStringTarget : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+private def dateDeclaredTimeTarget : FlatFieldDecl := {
+  target with
+  id := 7
+  name := "TimeAsDate"
+  policy := { kind := .temporal .time TemporalComponents.fullDate }
+}
+
+private def dateDeclaredDateTimeTarget : FlatFieldDecl := {
+  target with
+  id := 8
+  name := "MomentAsDate"
+  policy := { kind := .temporal .dateTime TemporalComponents.fullDate }
+}
+
 private def model : FlatModel := {
   fields := [target, other]
 }
 
 private def validationModel : FlatModel := {
   fields := [stringTarget, repeatedTarget, incompleteTarget,
-    repeatedStringTarget]
+    repeatedStringTarget, dateDeclaredTimeTarget,
+    dateDeclaredDateTimeTarget]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Lines"]
@@ -242,6 +257,21 @@ example : (match FullDateComputationRunView.validateActionTargets
     validationModel [repeatedStringTarget.id] with
   | .error (.nonFullDateTarget field) => field == repeatedStringTarget.id
   | _ => false) = true := by
+  native_decide
+
+/- **The application boundary reads the target's components, never its declared kind.** A Time or a
+   DateTime field declared with a complete-date format is a legal Date target and
+   `elaborateDateFormatTargetIn` admits it, so a kind conjunct here refused at apply time what
+   admission had accepted. The refusals beside them keep the guard load-bearing. -/
+example :
+    (FullDateComputationRunView.validateActionTargets validationModel
+      [dateDeclaredTimeTarget.id]).toOption.isSome = true ∧
+    (FullDateComputationRunView.validateActionTargets validationModel
+      [dateDeclaredDateTimeTarget.id]).toOption.isSome = true ∧
+    (FullDateComputationRunView.validateActionTargets validationModel
+      [incompleteTarget.id]).toOption.isSome = false ∧
+    (FullDateComputationRunView.validateActionTargets validationModel
+      [stringTarget.id]).toOption.isSome = false := by
   native_decide
 
 /- Duplicate actions fail before checked target validation. -/

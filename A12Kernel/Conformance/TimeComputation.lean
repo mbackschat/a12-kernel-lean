@@ -61,6 +61,20 @@ private def repeatedStringTarget : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+private def clockDeclaredDateTimeTarget : FlatFieldDecl := {
+  target with
+  id := 10
+  name := "MomentAsClock"
+  policy := { kind := .temporal .dateTime components }
+}
+
+private def clockDeclaredDateTarget : FlatFieldDecl := {
+  target with
+  id := 11
+  name := "DateAsClock"
+  policy := { kind := .temporal .date components }
+}
+
 private def applicationModel : FlatModel := {
   fields := [target, other]
   timeZoneId := "UTC"
@@ -68,7 +82,8 @@ private def applicationModel : FlatModel := {
 
 private def validationModel : FlatModel := {
   fields := [stringTarget, repeatedTarget, incompleteTarget,
-    repeatedStringTarget]
+    repeatedStringTarget, clockDeclaredDateTimeTarget,
+    clockDeclaredDateTarget]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Lines"]
@@ -391,6 +406,25 @@ example : (match TimeComputationRunView.validateActionTargets
     validationModel [repeatedStringTarget.id] with
   | .error (.nonTimeTarget field) => field == repeatedStringTarget.id
   | _ => false) = true := by
+  native_decide
+
+/- **The application boundary reads the target's components, never its declared kind**, which is
+   what keeps it from refusing a model this capsule's own admission certificate admits. A DateTime
+   or a Date declared with the complete-clock format is a legal clock target, measured across all
+   three temporal families
+   ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)),
+   and `elaborateClockFormatTargetIn` admits all three declared kinds — so a kind conjunct here
+   refused at apply time what admission had already accepted. The two refusals beside them hold the
+   guard load-bearing: a wrong component set and a non-temporal declaration still fail. -/
+example :
+    (TimeComputationRunView.validateActionTargets validationModel
+      [clockDeclaredDateTimeTarget.id]).toOption.isSome = true ∧
+    (TimeComputationRunView.validateActionTargets validationModel
+      [clockDeclaredDateTarget.id]).toOption.isSome = true ∧
+    (TimeComputationRunView.validateActionTargets validationModel
+      [incompleteTarget.id]).toOption.isSome = false ∧
+    (TimeComputationRunView.validateActionTargets validationModel
+      [stringTarget.id]).toOption.isSome = false := by
   native_decide
 
 /- Duplicate actions fail before checked target validation. -/

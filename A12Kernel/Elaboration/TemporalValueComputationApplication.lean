@@ -12,6 +12,20 @@ inductive TemporalValueComputationApplicationError
 
 namespace TemporalComputationApplicationTarget
 
+/-- The family predicate every temporal application boundary passes to `validateAllNonrepeatable`: a
+    target belongs to a family exactly when its declaration carries that family's **component set**.
+
+    The declared kind is deliberately not read. A computed temporal target is admitted by its declared
+    format — `CheckedClockFormatTarget` and its siblings carry that rule — and the Kernel's parser
+    follows the declared format with no fallback to the kind
+    ([`SPEC-2026-09-06-09`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-06-09)), so a TIME
+    field declared `yyyy-MM-dd` is a complete-Date target. Each family had spelled this predicate
+    itself with its own kind conjunct, which refused at apply time exactly the models its own
+    certificate admits; sharing it here is what stops the next family reintroducing that. -/
+def acceptsDeclaredComponents (components : TemporalComponents) : FieldKind → Bool
+  | .temporal _ declared => declared == components
+  | _ => false
+
 /-- Locate the first repeated exact temporal target key in encounter order. -/
 def firstDuplicate? {Target : Type} [DecidableEq Target] :
     List Target → Option Target

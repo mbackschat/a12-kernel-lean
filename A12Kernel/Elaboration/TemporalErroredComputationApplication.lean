@@ -102,9 +102,9 @@ def applyTo {Target : Type} [DecidableEq Target]
     (fun current computed => current.applyOutcome computed.targetField
       (.accepted computed.value))
 
-private def acceptsActionKind : FieldKind → Bool
-  | .temporal .date components => components == TemporalComponents.fullDate
-  | _ => false
+/-- A complete-Date target is its declared complete-date component set, per the shared family predicate. -/
+private def acceptsActionKind : FieldKind → Bool :=
+  TemporalComputationApplicationTarget.acceptsDeclaredComponents TemporalComponents.fullDate
 
 def validateActionTargets (model : FlatModel) (targets : List FieldId) :
     Except FullDateComputationRunApplicationError Unit :=

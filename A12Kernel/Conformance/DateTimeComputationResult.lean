@@ -49,11 +49,26 @@ private def repeatedStringTarget : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+private def stampDeclaredDateTarget : FlatFieldDecl := {
+  target with
+  id := 7
+  name := "DateAsStamp"
+  policy := { kind := .temporal .date TemporalComponents.now }
+}
+
+private def stampDeclaredTimeTarget : FlatFieldDecl := {
+  target with
+  id := 8
+  name := "TimeAsStamp"
+  policy := { kind := .temporal .time TemporalComponents.now }
+}
+
 private def model : FlatModel := { fields := [target, other] }
 
 private def validationModel : FlatModel := {
   fields := [stringTarget, repeatedTarget, incompleteTarget,
-    repeatedStringTarget]
+    repeatedStringTarget, stampDeclaredDateTarget,
+    stampDeclaredTimeTarget]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Lines"]
@@ -241,6 +256,21 @@ example : (match DateTimeComputationRunView.validateActionTargets
     validationModel [repeatedStringTarget.id] with
   | .error (.nonDateTimeTarget field) => field == repeatedStringTarget.id
   | _ => false) = true := by
+  native_decide
+
+/- **The application boundary reads the target's components, never its declared kind.** A Date or a
+   Time field declared with the complete stamp format is a legal DateTime target and
+   `elaborateDateTimeFormatTargetIn` admits it, so a kind conjunct here refused at apply time what
+   admission had accepted. The refusals beside them keep the guard load-bearing. -/
+example :
+    (DateTimeComputationRunView.validateActionTargets validationModel
+      [stampDeclaredDateTarget.id]).toOption.isSome = true ∧
+    (DateTimeComputationRunView.validateActionTargets validationModel
+      [stampDeclaredTimeTarget.id]).toOption.isSome = true ∧
+    (DateTimeComputationRunView.validateActionTargets validationModel
+      [incompleteTarget.id]).toOption.isSome = false ∧
+    (DateTimeComputationRunView.validateActionTargets validationModel
+      [stringTarget.id]).toOption.isSome = false := by
   native_decide
 
 /- Duplicate actions fail before checked target validation. -/
