@@ -1,527 +1,802 @@
 {
-  "target" : "batch",
-  "op" : "run",
-  "outcome" : "completed",
-  "ok" : false,
-  "summary" : "dispatched 22 ops; 16 of 22 exited nonzero (1 failed, 15 reported a negative verdict or comparison) — earlier writes were not rolled back",
-  "data" : {
-    "ops" : 22,
-    "dispatched" : true,
-    "allExitedZero" : false,
-    "results" : [ {
-      "op" : 0,
-      "id" : "PIinvalid",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldNotFilled(/It/L/V) And FieldNotFilled(/It/M/W)", "--code", "PIinvalid", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_PARALLEL_ITERATION_INVALID",
-          "summary" : "Rule with path '/It/CheckRule': Parallel iteration is not allowed as an error can occur for repetitions without filled fields. [MVK_PARALLEL_ITERATION_INVALID]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 22 ops; 16 of 22 exited nonzero (1 failed, 15 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 22,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "PIinvalid",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/L/V",
+          "--condition",
+          "FieldNotFilled(/It/L/V) And FieldNotFilled(/It/M/W)",
+          "--code",
+          "PIinvalid",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_PARALLEL_ITERATION_INVALID",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "PIinvalid2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/L/V",
+          "--condition",
+          "NoFieldFilled(/It/L/V, /It/M/W)",
+          "--code",
+          "PIinvalid2",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_PARALLEL_ITERATION_INVALID",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "PIfilt1",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/L/V",
+          "--condition",
+          "FieldFilled(/It/L/V) And AtLeastOneFieldFilled(/It/M*/W Having [/It/M/W] == \"x\")",
+          "--code",
+          "PIfilt1",
+          "--group",
+          "/It"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "PIfilt2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/L/V",
+          "--condition",
+          "FieldFilled(/It/L/V) And AtLeastOneFieldFilled(/It/L*/V Having [/It/M/W] == \"x\")",
+          "--code",
+          "PIfilt2",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "SIwild2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/P*/Q/QV For \"q1\"]",
+          "--code",
+          "SIwild2",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_BELOW_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "SIwild3",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/P/Q/QV For \"q1\"]",
+          "--code",
+          "SIwild3",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it \u2014 the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it \u2014 via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "SIenum",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/E/EV For C]",
+          "--code",
+          "SIenum",
+          "--group",
+          "/It"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "SIenumcat",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/E/EV For C -> Band]",
+          "--code",
+          "SIenumcat",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_WITH_CATEGORY",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "SIenumcat2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/E/EV For /It/E/EK -> Band]",
+          "--code",
+          "SIenumcat2",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_INVALID_ITER",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "SIdbl2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/P/Q/QV For \"q1\" For \"p1\"]",
+          "--code",
+          "SIdbl2",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it \u2014 the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it \u2014 via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "SIdbl3",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/L/V For [/It/E/EV For \"e1\"]]",
+          "--code",
+          "SIdbl3",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "EFnotref",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(B)",
+          "--code",
+          "EFnotref",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELD_NOT_REFERENCED",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              },
+              "fix": "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path \u2014 reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And \u2026`.",
+              "explain": "Every rule's error field must appear among the fields its condition references \u2014 the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "EFmissing",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "True",
+          "--code",
+          "EFmissing",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INCOMPLETE_INPUT",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "NotInGrp",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/L/V",
+          "--condition",
+          "FieldFilled(/It/L/V)",
+          "--code",
+          "NotInGrp",
+          "--group",
+          "/It/M"
+        ],
+        "exit": 2,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "refused",
+          "ok": false,
+          "summary": "--field /It/L/V must be inside --group /It/M",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "PRECHECK",
+              "code": "RK_ERROR_FIELD_OUTSIDE_GROUP",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "path": "/It/L/V",
+                "arg": "--field"
+              },
+              "fix": "point the error field at a field within the rule's group subtree."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "CondWild",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And AtLeastOneFieldFilled(/It/L*/V)",
+          "--code",
+          "CondWild",
+          "--group",
+          "/It"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "RefIf1",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [B] != \"x\"",
+          "--code",
+          "RefIf1",
+          "--group",
+          "/It"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "RefIf2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldNotFilled(A) And [B] != \"x\"",
+          "--code",
+          "RefIf2",
+          "--group",
+          "/It"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "MultiIdx",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/L/Sub/S For \"s1\" ]",
+          "--code",
+          "MultiIdx",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_MULTIPLE_INDEX_FIELDS",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 18,
+        "id": "IdxInval",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/L/K",
+          "--condition",
+          "FieldFilled(K) And [K] != [/It/L/V For \"k1\"]",
+          "--code",
+          "IdxInval",
+          "--group",
+          "/It/L"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 19,
+        "id": "DeepSub",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/It/L/Sub/S]",
+          "--code",
+          "DeepSub",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it \u2014 the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it \u2014 via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 20,
+        "id": "SubIter",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/L/Sub/S",
+          "--condition",
+          "FieldFilled(S) And [S] != [/It/M/W]",
+          "--code",
+          "SubIter",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_MULTIPLE_INDEX_FIELDS",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 21,
+        "id": "QIter",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/It/P/Q/QV",
+          "--condition",
+          "FieldFilled(QV) And [QV] != [/It/L/V]",
+          "--code",
+          "QIter",
+          "--group",
+          "/It"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELD_INVALID_INDEX",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/It/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
       }
-    }, {
-      "op" : 1,
-      "id" : "PIinvalid2",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/L/V", "--condition", "NoFieldFilled(/It/L/V, /It/M/W)", "--code", "PIinvalid2", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_PARALLEL_ITERATION_INVALID",
-          "summary" : "Rule with path '/It/CheckRule': Parallel iteration is not allowed as an error can occur for repetitions without filled fields. [MVK_PARALLEL_ITERATION_INVALID]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 2,
-      "id" : "PIfilt1",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldFilled(/It/L/V) And AtLeastOneFieldFilled(/It/M*/W Having [/It/M/W] == \"x\")", "--code", "PIfilt1", "--group", "/It" ],
-      "exit" : 0,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : true,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate is kernel-valid",
-        "diagnostics" : [ ],
-        "written" : false
-      }
-    }, {
-      "op" : 3,
-      "id" : "PIfilt2",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldFilled(/It/L/V) And AtLeastOneFieldFilled(/It/L*/V Having [/It/M/W] == \"x\")", "--code", "PIfilt2", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
-          "summary" : "Rule with path '/It/CheckRule': Error for 'M' in '/It/M/W': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 4,
-      "id" : "SIwild2",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/P*/Q/QV For \"q1\"]", "--code", "SIwild2", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_SEMANTIC_INDEX_BELOW_WILDCARD",
-          "summary" : "Rule with path '/It/CheckRule': Field '/It/P/Q/QV' uses a semantic index, but in a parent group an asterisk is specified. This is not allowed. [MVK_SEMANTIC_INDEX_BELOW_WILDCARD]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 5,
-      "id" : "SIwild3",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/P/Q/QV For \"q1\"]", "--code", "SIwild3", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/It/CheckRule': Missing specification of an asterisk for 'P' in '/It/P/Q/QV'. [MVK_NO_WILDCARD]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          },
-          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
-          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 6,
-      "id" : "SIenum",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/E/EV For C]", "--code", "SIenum", "--group", "/It" ],
-      "exit" : 0,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : true,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate is kernel-valid",
-        "diagnostics" : [ ],
-        "written" : false
-      }
-    }, {
-      "op" : 7,
-      "id" : "SIenumcat",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/E/EV For C -> Band]", "--code", "SIenumcat", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_SEMANTIC_INDEX_WITH_CATEGORY",
-          "summary" : "Rule with path '/It/CheckRule': 'C' specifies a semantic index with a category access. This is not allowed. [MVK_SEMANTIC_INDEX_WITH_CATEGORY]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 8,
-      "id" : "SIenumcat2",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/E/EV For /It/E/EK -> Band]", "--code", "SIenumcat2", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_SEMANTIC_INDEX_INVALID_ITER",
-          "summary" : "Rule with path '/It/CheckRule': Field '/It/E/EK' specifies an iteration that is not allowed and therefore must not be used as semantic index. [MVK_SEMANTIC_INDEX_INVALID_ITER]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 9,
-      "id" : "SIdbl2",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/P/Q/QV For \"q1\" For \"p1\"]", "--code", "SIdbl2", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/It/CheckRule': Missing specification of an asterisk for 'P' in '/It/P/Q/QV'. [MVK_NO_WILDCARD]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          },
-          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
-          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 10,
-      "id" : "SIdbl3",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/V For [/It/E/EV For \"e1\"]]", "--code", "SIdbl3", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_UNEXPECTED_TOKEN",
-          "summary" : "Rule with path '/It/CheckRule': Corrupt input or condition not complete (yet): Unexpected found '['. [MVK_UNEXPECTED_TOKEN]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          },
-          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED — write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED — `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase — `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED — `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
-          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error — a token appeared where the grammar did not allow it — and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 11,
-      "id" : "EFnotref",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(B)", "--code", "EFnotref", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
-          "summary" : "Rule with path '/It/CheckRule': The error field '/It/A' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          },
-          "fix" : "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path — reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And …`.",
-          "explain" : "Every rule's error field must appear among the fields its condition references — the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 12,
-      "id" : "EFmissing",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "True", "--code", "EFmissing", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_INCOMPLETE_INPUT",
-          "summary" : "Rule with path '/It/CheckRule': The condition is not complete (yet). [MVK_INCOMPLETE_INPUT]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 13,
-      "id" : "NotInGrp",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/L/V", "--condition", "FieldFilled(/It/L/V)", "--code", "NotInGrp", "--group", "/It/M" ],
-      "exit" : 2,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "refused",
-        "ok" : false,
-        "summary" : "--field /It/L/V must be inside --group /It/M",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "PRECHECK",
-          "code" : "RK_ERROR_FIELD_OUTSIDE_GROUP",
-          "summary" : "--field /It/L/V must be inside --group /It/M",
-          "where" : {
-            "path" : "/It/L/V",
-            "arg" : "--field"
-          },
-          "fix" : "point the error field at a field within the rule's group subtree."
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 14,
-      "id" : "CondWild",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And AtLeastOneFieldFilled(/It/L*/V)", "--code", "CondWild", "--group", "/It" ],
-      "exit" : 0,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : true,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate is kernel-valid",
-        "diagnostics" : [ ],
-        "written" : false
-      }
-    }, {
-      "op" : 15,
-      "id" : "RefIf1",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [B] != \"x\"", "--code", "RefIf1", "--group", "/It" ],
-      "exit" : 0,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : true,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate is kernel-valid",
-        "diagnostics" : [ ],
-        "written" : false
-      }
-    }, {
-      "op" : 16,
-      "id" : "RefIf2",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldNotFilled(A) And [B] != \"x\"", "--code", "RefIf2", "--group", "/It" ],
-      "exit" : 0,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : true,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate is kernel-valid",
-        "diagnostics" : [ ],
-        "written" : false
-      }
-    }, {
-      "op" : 17,
-      "id" : "MultiIdx",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/Sub/S For \"s1\" ]", "--code", "MultiIdx", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_MULTIPLE_INDEX_FIELDS",
-          "summary" : "Rule with path '/It/CheckRule': For '/It/L/Sub/S' there is more than one group with an index field. [MVK_MULTIPLE_INDEX_FIELDS]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 18,
-      "id" : "IdxInval",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/L/K", "--condition", "FieldFilled(K) And [K] != [/It/L/V For \"k1\"]", "--code", "IdxInval", "--group", "/It/L" ],
-      "exit" : 0,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : true,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate is kernel-valid",
-        "diagnostics" : [ ],
-        "written" : false
-      }
-    }, {
-      "op" : 19,
-      "id" : "DeepSub",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/A", "--condition", "FieldFilled(A) And [A] != [/It/L/Sub/S]", "--code", "DeepSub", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/It/CheckRule': Missing specification of an asterisk for 'L' in '/It/L/Sub/S'. [MVK_NO_WILDCARD]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          },
-          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
-          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 20,
-      "id" : "SubIter",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/L/Sub/S", "--condition", "FieldFilled(S) And [S] != [/It/M/W]", "--code", "SubIter", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_MULTIPLE_INDEX_FIELDS",
-          "summary" : "Rule with path '/It/CheckRule': For '/It/L/Sub/S' there is more than one group with an index field. [MVK_MULTIPLE_INDEX_FIELDS]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    }, {
-      "op" : 21,
-      "id" : "QIter",
-      "verb" : "rule",
-      "args" : [ "check", "--field", "/It/P/Q/QV", "--condition", "FieldFilled(QV) And [QV] != [/It/L/V]", "--code", "QIter", "--group", "/It" ],
-      "exit" : 1,
-      "result" : {
-        "target" : "rule",
-        "op" : "check",
-        "outcome" : "read",
-        "ok" : true,
-        "valid" : false,
-        "verification" : "KERNEL_CONFIRMED",
-        "summary" : "candidate has 1 finding(s)",
-        "diagnostics" : [ {
-          "severity" : "ERROR",
-          "source" : "KERNEL",
-          "code" : "MVK_ERROR_FIELD_INVALID_INDEX",
-          "summary" : "Rule with path '/It/CheckRule': For 'L' iteration is specified, but the index field on the error field path has another name. Therefore wildcard has to be specified or another error field must be defined for the rule. [MVK_ERROR_FIELD_INVALID_INDEX]",
-          "where" : {
-            "rule" : "/It/CheckRule"
-          }
-        } ],
-        "written" : false
-      }
-    } ]
+    ]
   },
-  "diagnostics" : [ ],
-  "written" : false
+  "diagnostics": [],
+  "written": false
 }

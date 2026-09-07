@@ -467,6 +467,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Catalog keys the Kernel never reports](implementation/cross-clause.md#cap-unraised-diagnostic-keys)
 <a id="cap-dynamic-enumeration-legality"></a>
 - [Dynamic-enumeration legality](implementation/cross-clause.md#cap-dynamic-enumeration-legality)
+<a id="cap-iteration-and-semantic-index-legality"></a>
+- [Iteration and semantic-index static legality](implementation/cross-clause.md#cap-iteration-and-semantic-index-legality)
 <a id="cap-resolved-firstfilledvalue"></a>
 - [Resolved `FirstFilledValue`](implementation/cross-clause.md#cap-resolved-firstfilledvalue)
 <a id="cap-resolved-number-aggregates"></a>
