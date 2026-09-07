@@ -119,13 +119,19 @@ private def resultView? (input : CheckedDocument model)
   let operation ← checked? target.id (star "Approved")
   operation.executeResult input residualMessages |>.toOption
 
-/- The externally measured empty selection clears a seeded false target, while a filled true source preserves true. -/
+/- The empty selection clears a seeded false target, while a filled true source preserves true. Kernel-calibrated
+   per kind on a seeded target — BOOLEAN, CUSTOM, DATE_FRAGMENT, DATE, STRING, ENUM, TIME, DATE_TIME and DATE_RANGE
+   all clear, NUMBER returns the fillable zero
+   ([provenance](../../docs/SOURCES.md#inbound-2026-09-07-dispositions)). The seed is what makes the clear
+   observable at all: an unseeded target reports nothing under either account, which is how a published clause of
+   this project once came to call the same run "no outcome". -/
 example :
     result? none = some .noValue ∧
       result? (some "true") = some (.value true) := by
   native_decide
 
-/- False is a filled Boolean in the internal total account; external correspondence for this row remains pending. -/
+/- False is a filled Boolean: the scan consults the cell's presence and never its value, Kernel-calibrated on all
+   three engines against an absent-first row that falls through, which is the pair no single row establishes. -/
 example : result? (some "false") = some (.value false) := by
   native_decide
 
