@@ -77,7 +77,8 @@ private def extractorDateModel : FlatModel :=
       temporalField 11 .date TemporalComponents.fullDate,
       stringComponentField 20 2,
       stringComponentField 21 4,
-      formattedTemporalField 30 .date yearOnlyComponents "yyyy"] }
+      formattedTemporalField 30 .date yearOnlyComponents "yyyy",
+      formattedTemporalField 33 .time yearOnlyComponents "yyyy"] }
 
 private def documentFor? (model : FlatModel) (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) := do
@@ -411,16 +412,30 @@ example :
    make a populated `yyyy` field observe as unavailable, so the invariant has to be locked here
    rather than enforced there.
 
-   The second half is the same claim from the other side — the payload is still consulted for its
-   *kind*, so a Time payload under the same stored text is refused rather than silently parsed. -/
+   **The declaration's kind is no part of either half.** Field 33 is the same `yyyy` declaration on
+   a TIME field, which the static gate admits
+   ([difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)),
+   and it reads its year identically — so a read keyed on the declared kind would have turned that
+   admission into an internal fault.
+
+   The third row settles where an incoherent payload is actually caught, which is **not** at this
+   reader: a Time payload under a `yyyy` declaration is rejected by document checking and arrives as
+   an ordinary formal cause, so the constructed date is unavailable rather than faulted. The
+   reader's own payload arm stays as a fail-closed guard; this route does not reach it. -/
 example :
-    let sources : SurfaceConstructedDateComponents := {
-      day := .constant "15"
-      month := .constant "06"
-      year := .complete (.dateYearField 30) }
-    evaluateExtractorSources? sources [
-        temporalCell 30 "1963" (.parsed (.temporal (dateValue 1999 1 1)))] =
-          some (.resolved (.real { year := 1963, month := 6, day := 15 })) := by
+    let yearFrom (field : FieldId) (value : TemporalValue) :=
+      evaluateExtractorSources? {
+        day := .constant "15"
+        month := .constant "06"
+        year := .complete (.dateYearField field) } [
+        temporalCell field "1963" (.parsed (.temporal value))]
+    yearFrom 30 (dateValue 1999 1 1) =
+        some (.resolved (.real { year := 1963, month := 6, day := 15 })) ∧
+      yearFrom 33 (dateValue 1999 1 1) =
+        some (.resolved (.real { year := 1963, month := 6, day := 15 })) ∧
+      yearFrom 30 (.time { epochMillis := 0 }
+        ((TimeOfDay.ofHms? 12 0 0).get (by native_decide))) =
+        some (.unavailable .malformed) := by
   native_decide
 
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=

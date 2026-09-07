@@ -461,25 +461,28 @@ def elaborateDateTimeSource
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.sourceNotTemporal sourceField)
-  if _hKind : source.kind = .dateTime then
-    if _hComponents : source.components.isFullDateTime = true then
-      if hAdmitted :
-          model.admitsValueAsDateTimeExtractionSource source = true then
-        match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
-        | some profile =>
-            pure {
-              source
-              sourceAdmitted := hAdmitted
-              profile
-              profileMatches := hProfile
-            }
-        | none => throw (.unsupportedZone model.timeZoneId)
-      else
-        throw .incoherentCore
+  -- No declared-kind guard: the completeness of the declared **format** is the whole gate, measured
+  -- on every operator this source reaches. `TimeFromDateTime` admits a DATE- or TIME-declared
+  -- complete instant and refuses a DATE_TIME-declared clock or date; a shifted difference admits a
+  -- DATE-declared instant in the shift position and in the other-operand position alike
+  -- (checkpoint cited on `sourceComponents` below). The shift carriers were measured rather than
+  -- inherited from the extractor, because this gate is shared across all three.
+  if _hComponents : source.components.isFullDateTime = true then
+    if hAdmitted :
+        model.admitsValueAsDateTimeExtractionSource source = true then
+      match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+      | some profile =>
+          pure {
+            source
+            sourceAdmitted := hAdmitted
+            profile
+            profileMatches := hProfile
+          }
+      | none => throw (.unsupportedZone model.timeZoneId)
     else
-      throw (.sourceComponents source.id source.components)
+      throw .incoherentCore
   else
-    throw (.sourceKind source.id source.kind)
+    throw (.sourceComponents source.id source.components)
 
 /-- Check the shared field-backed DateTime source and numeric amount before one
     operation selects elapsed or calendar-day shifting. -/
@@ -691,6 +694,13 @@ def elaborateValueAsDateTimeExtraction
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.sourceNotTemporal dateTimeField)
+  -- `unmeasured`: this kind guard stays while its sibling `elaborateDateTimeSource` lost one, and
+  -- the asymmetry is deliberate. Every other gate in this class turned out to read the declared
+  -- format, but this is a distinct operator — a partial-Date endpoint combined with a DateTime
+  -- extraction — and no row measures its source half. Widening it on the pattern's strength is the
+  -- reuse-across-a-carrier crossing declined throughout this class ([`LF116`](../../docs/LEAN-FINDINGS.md)),
+  -- and a conjunct that happens to hold produces no signal. Missing witness: this operator's own
+  -- surface, with a DATE- or TIME-declared complete instant in the DateTime position.
   if _hKind : source.kind = .dateTime then
     if _hComponents : source.components.isFullDateTime = true then
       if hAdmitted :

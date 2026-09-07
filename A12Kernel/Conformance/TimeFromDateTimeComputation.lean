@@ -29,8 +29,29 @@ private def other : FlatFieldDecl := {
   target with id := 3, name := "OtherClock"
 }
 
+/-- Two legal sources whose declared **kind** and declared **format** disagree, plus a DATE_TIME
+    declared with a bare clock. A same-kind source cannot separate a kind test from a component
+    test, so the conjunct these refute survived every other row here. -/
+private def dateAsStamp : FlatFieldDecl :=
+  { source with
+    id := 4
+    name := "DateAsStamp"
+    policy := { kind := .temporal .date TemporalComponents.now } }
+
+private def timeAsStamp : FlatFieldDecl :=
+  { source with
+    id := 5
+    name := "TimeAsStamp"
+    policy := { kind := .temporal .time TemporalComponents.now } }
+
+private def stampAsClock : FlatFieldDecl :=
+  { source with
+    id := 6
+    name := "StampAsClock"
+    policy := { kind := .temporal .dateTime TemporalComponents.time } }
+
 private def model : FlatModel := {
-  fields := [source, target, other]
+  fields := [source, target, other, dateAsStamp, timeAsStamp, stampAsClock]
   timeZoneId := "Europe/Berlin"
 }
 
@@ -119,6 +140,25 @@ private def unrelatedTarget : TimeOfDay := clock 8 45 0 (by decide)
 example : operation?.isSome = true ∧
     outcome? [sourceCell "2024-06-15T00:30:00"
       (.parsed (.temporal moment))] = some (.accepted extracted) := by
+  native_decide
+
+/- The source gate reads the declared **format**'s completeness and never the declared kind,
+Kernel-calibrated on both codegen strategies at the [difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format).
+A DATE- or TIME-declared field formatted as a complete instant is an admitted source, while a
+DATE_TIME-declared bare clock is refused on components — so DATE_TIME appears on both sides and no
+row reads as one kind being privileged. The conjunct these rows replaced refused both cross-kind
+admissions, and this gate is shared with the two shifted-difference carriers, which were measured
+separately rather than inherited. -/
+example :
+    (elaborateTimeFromDateTimeComputation model dateAsStamp.id
+      target.id).isOk = true ∧
+      (elaborateTimeFromDateTimeComputation model timeAsStamp.id
+        target.id).isOk = true ∧
+      (match elaborateTimeFromDateTimeComputation model stampAsClock.id
+          target.id with
+        | .error (.source (.sourceComponents field components)) =>
+            field == stampAsClock.id && components == TemporalComponents.time
+        | _ => false) = true := by
   native_decide
 
 /- A clean source-identical extracted Time remains a value but produces no changed action. -/

@@ -51,6 +51,11 @@ structure CheckedPartialDateInputField where
   mode : TemporalPartialMode
   fieldOwned : declaration.toTemporalField? = some field
   policyOwned : declaration.toTemporalTargetPolicy? = some policy
+  /-- `unmeasured`: this kind obligation stays while every measured gate in this class dropped one.
+      Its missing witness is narrower than the others': a partial-mode *input* needs both a
+      non-`full` `partialMode` on the declaration and a kind/format disagreement, and whether that
+      pairing is authorable at all was not probed. Naming it here rather than widening keeps the
+      obligation honest ([`LF116`](../../docs/LEAN-FINDINGS.md), [checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)). -/
   kindOwned : field.kind = .date
   componentsOwned : field.components = TemporalComponents.fullDate
   modeOwned : policy.partialMode = mode

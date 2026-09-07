@@ -78,7 +78,12 @@ private def extractorModel (baseYear : Option Int := none) : FlatModel :=
         day := false
         hour := true
         minute := false
-        second := false }]
+        second := false },
+      -- Two declarations whose kind and format disagree, in opposite directions. A same-kind
+      -- source cannot separate a kind test from a component test, so the conjunct these refute
+      -- survived every other row in this module.
+      temporalField 14 .time TemporalComponents.fullDate,
+      temporalField 15 .date TemporalComponents.time]
     baseYear }
 
 private def stringModel : FlatModel :=
@@ -94,7 +99,12 @@ private def stringModel : FlatModel :=
       formattedTemporalField 31 .date
         TemporalComponents.fullDate "dd.MM.yyyy",
       formattedTemporalField 32 .dateTime
-        TemporalComponents.now "yyyy"] }
+        TemporalComponents.now "yyyy",
+      formattedTemporalField 33 .time yearOnlyComponents "yyyy",
+      formattedTemporalField 34 .time
+        TemporalComponents.fullDate "yyyy-MM-dd",
+      formattedTemporalField 35 .dateTime
+        TemporalComponents.fullDate "yyyy-MM-dd"] }
 
 /- The exact Date declaration gate accepts the positional maximum or stored width with
    the declaration-default zero fractional scale, but rejects a positive fractional
@@ -199,6 +209,29 @@ example :
         (.constant "15") (.constant "6")
         (.centuryAndShortYear
           (.extractor .year 10) (.constant "63")) = false := by
+  native_decide
+
+/- The extractor gate reads the declared **format**'s components and never the declared kind,
+Kernel-calibrated on both codegen strategies at the [difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format).
+A TIME-declared field formatted as a complete date exposes Day at this very position, while a
+DATE-declared bare clock does not — so each kind appears on both sides of both outcomes and no row
+reads as one kind being privileged. The conjunct these rows replaced refused the TIME-declared
+admission on its declared kind alone. -/
+example :
+    let notAdmitted (field : FieldId) :=
+      match elaborateConstructedDateExtractorField extractorModel .day .day
+          field with
+      | .error error =>
+          error == .extractorDeclarationNotAdmitted .day .day field
+      | .ok _ => false
+    (elaborateConstructedDateExtractorField extractorModel .day .day
+        14).isOk = true ∧
+      (elaborateConstructedDateExtractorField extractorModel .day .day
+        10).isOk = true ∧
+      (elaborateConstructedDateExtractorField extractorModel .day .day
+        11).isOk = true ∧
+      notAdmitted 15 = true ∧
+      notAdmitted 13 = true := by
   native_decide
 
 /- Base Year is a complete Date source for all three matching constructor positions.
@@ -306,17 +339,26 @@ example :
           (.stringField 23) (.stringField 24)) = true := by
   native_decide
 
-/- A direct Date field is a numeric constructor source only for complete Year and exact
-   `yyyy`. Another format, DateTime, and every other position remain rejected. -/
+/- A direct temporal field is a numeric constructor source only for complete Year and the exact
+`yyyy` format, and the declared kind is no part of it — Kernel-calibrated at the
+[difference-gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format).
+All three date-bearing kinds declared `yyyy` are admitted; each declared another format is refused,
+which isolates the format, and a `yyyy` declaration at Day, Month, or either split-year position is
+refused, which isolates the position. Field 32's row read `false` while a `kind == .date` conjunct
+stood here, so this case is where that conjunct's removal is visible. -/
 example :
     let admitted (position : ConstructedDateComponentPosition)
         (field : FieldId) :=
       (elaborateConstructedDateSource stringModel position
         (.dateYearField field)).isOk
     admitted .year 30 = true ∧
+      admitted .year 32 = true ∧
+      admitted .year 33 = true ∧
       admitted .year 31 = false ∧
-      admitted .year 32 = false ∧
+      admitted .year 34 = false ∧
+      admitted .year 35 = false ∧
       admitted .day 30 = false ∧
+      admitted .day 33 = false ∧
       admitted .month 30 = false ∧
       admitted .century 30 = false ∧
       admitted .shortYear 30 = false := by

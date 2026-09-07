@@ -17,7 +17,14 @@ private def completeTimeComponents : TemporalComponents := {
   second := true
 }
 
-/-- Whether one resolved declaration is the exact ordinary full-Time field admitted by this capsule. -/
+/-- Whether one resolved declaration is the exact ordinary full-Time field admitted by this capsule.
+
+    `unmeasured`: the `kind == .time` conjunct below stays while every measured gate in this class
+    lost one, because this capsule's authored surface was not reached — a `DateTime(date, time)`
+    construction admits every kind/format pairing tried, including a date-formatted time half, so it
+    is not this gate and its admissions are not evidence about it. Missing witness: this capsule's
+    own surface with a DATE-declared `HH:mm:ss` field in the Time position. Widening on the class
+    pattern alone is the crossing declined throughout it ([`LF116`](../../docs/LEAN-FINDINGS.md)). -/
 def FlatModel.admitsValueAsDateTimeField
     (model : FlatModel) (source : FlatTemporalField) : Bool :=
   match model.lookupUniqueId source.id with

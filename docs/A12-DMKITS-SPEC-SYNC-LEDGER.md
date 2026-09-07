@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-07-06"></a>
+### `SPEC-2026-09-07-06` — `KF211`'s rule reaches a constructor operand position, which its own scope note excludes
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md` the `Date(Day, Month, Year)` paragraph](../spec/05-dates-and-time.md)
+- `delta`: the clause restricted the complete-Year position's direct-field form to "a **Date** field whose exact declared format is `yyyy`". Measured, all three date-bearing declared kinds are admitted there: `Date("15", "6", F)` with `F` declared `yyyy` is admitted on DATE, TIME **and** DATE_TIME. The same paragraph's extractor sentence said the operand "must resolve to Date or DateTime", which invited the same kind reading; both are corrected to name the declared format's component set.
+- `mechanism`: none proposed beyond yours. This is [`KF211`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf211)'s rule — the declared format decides at every gate, the kind is never read — holding at one more gate. We are not re-deriving it and do not ask you to.
+- `why-you-may-still-want-it`: `KF211`'s own scope note says "rendering, computation targets, and aggregate extrema on such a declaration are untouched here" and predicts "a third if rendering or a computation target is probed on it". This is that third instance. The direct `yyyy` field at the Year position is additionally a gate no row of `KF211` or [`KF261`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf261) reaches, since both measure extractor and comparison operands.
+- `evidence`: one `dmtool batch --observations`, 25 `computation add --dry-run` children over one model, at a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` in this project's pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. [Difference-gate checkpoint](sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format) owns the artifact hashes.
+- `separator`: **both surviving conjuncts are measured necessary, so the admission is attributed rather than inferred.** The format is necessary — the same three kinds declared `yyyy-MM-dd`, and a DATE declared `HH:mm:ss`, are each refused at Year. The position is necessary — a `yyyy` field is refused at Day, at Month, and at Century. A rival account in which any temporal field is admitted at Year, or in which a `yyyy` field is admitted anywhere, fails one of those two sets.
+- `limit`: static admission only, three declared formats of the twelve-format vocabulary, `en_US`. Unmeasured against the Kernel: the runtime *value* a newly admitted TIME- or DATE_TIME-declared `yyyy` field contributes at Year. We lock that read in our own conformance, which is the weaker oracle, and say so.
+- `surfaces`: any evaluator, importer, or catalog that gates this position on the declared kind, and any published clause that describes it as a Date field. This project carried the wrong conjunct here and in the extractor gate, both under-admissions — a silent refusal of a legal model, visible only once a declaration's kind and format disagree.
+- `acceptance`: if your account of this position names a Date field, it widens to any date-bearing kind declared `yyyy`; otherwise reply that `KF211` already covers it and we close this as redundant.
+- `local-scope`: nine kind conjuncts in this project were wrong across this class, all under-admissions. This entry reports only the clause delta; the Lean corrections and the read-path check are local.
+
 <a id="spec-2026-09-07-05"></a>
 ### `SPEC-2026-09-07-05` — a typedef field is its base kind at every gate, which is what makes a model-expansion exclusion sound
 

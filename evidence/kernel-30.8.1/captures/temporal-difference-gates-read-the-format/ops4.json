@@ -1,0 +1,227 @@
+[
+ {
+  "id": "ex-day-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-day-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-day-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-day-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-day-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-day-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-day-dateclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-day-dateclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-day-timeclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-day-timeclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-mon-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-mon-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-mon-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-mon-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-mon-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-mon-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-mon-dateclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-mon-dateclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-yr-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-yr-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-yr-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-yr-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-yr-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-yr-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ex-yr-dateclock",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_ex-yr-dateclock.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-yr-yyyy-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-yr-yyyy-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-yr-yyyy-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-yr-yyyy-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-yr-yyyy-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-yr-yyyy-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-yr-iso-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-yr-iso-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-yr-iso-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-yr-iso-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-yr-iso-stamp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-yr-iso-stamp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-yr-clock-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-yr-clock-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-day-yyyy-date",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-day-yyyy-date.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-day-yyyy-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-day-yyyy-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-mon-yyyy-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-mon-yyyy-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "dir-cent-yyyy-time",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_dir-cent-yyyy-time.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "lit-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c_lit-control.json",
+   "--dry-run"
+  ]
+ }
+]

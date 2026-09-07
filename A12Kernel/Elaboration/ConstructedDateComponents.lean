@@ -142,7 +142,15 @@ structure CheckedConstructedDateStringField (model : FlatModel) where
   admitted :
     model.admitsConstructedDateStringField position source = true
 
-/-- Exact direct Date-field gate used only by the complete-Year constructor position. The retained policy is part of the certificate because component flags do not imply the literal `yyyy` format. -/
+/-- Exact direct temporal-field gate used only by the complete-Year constructor position. The
+    retained policy is part of the certificate because component flags do not imply the literal
+    `yyyy` format.
+
+    Two facts decide admission and the declared **kind** is neither of them: all three date-bearing
+    kinds declared exactly `yyyy` are admitted here, while each of them declared any other format is
+    refused and a `yyyy` declaration is refused at Day, Month, and Century
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+    So both remaining conjuncts are measured necessary and the former `kind == .date` was not. -/
 def FlatModel.admitsConstructedDateYearField (model : FlatModel)
     (position : ConstructedDateComponentPosition)
     (source : FlatTemporalField) (policy : TemporalTargetPolicy) : Bool :=
@@ -153,7 +161,6 @@ def FlatModel.admitsConstructedDateYearField (model : FlatModel)
         declaration.toTemporalField? == some source &&
         declaration.toTemporalTargetPolicy? == some policy &&
         position == .year &&
-        source.kind == .date &&
         policy.format == "yyyy"
 
 /-- One complete-Year Date field with the exact model-owned `yyyy` declaration policy. -/
@@ -164,7 +171,14 @@ structure CheckedConstructedDateYearField (model : FlatModel) where
   admitted :
     model.admitsConstructedDateYearField position source policy = true
 
-/-- Exact direct Date/DateTime field gate for one matching Date-component extractor. -/
+/-- Exact direct field gate for one matching Date-component extractor.
+
+    The declared **kind** is not read: `part.admittedBy` already requires the declared format to
+    expose the extracted component, and a TIME- or DATE_TIME-declared field formatted `yyyy-MM-dd`
+    exposes it while a DATE-declared bare clock does not
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
+    A former `kind != .time` conjunct here refused the TIME-declared case, which the Kernel admits at
+    this very position. -/
 def FlatModel.admitsConstructedDateExtractorField (model : FlatModel)
     (position : ConstructedDateComponentPosition) (part : DateNumericPart)
     (source : FlatTemporalField) : Bool :=
@@ -173,7 +187,6 @@ def FlatModel.admitsConstructedDateExtractorField (model : FlatModel)
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
         declaration.toTemporalField? == some source &&
-        source.kind != .time &&
         position.extractor? == some part &&
         part.admittedBy model.hasBaseYear source.components
 
