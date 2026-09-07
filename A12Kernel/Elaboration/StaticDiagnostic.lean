@@ -154,6 +154,32 @@ inductive KernelStaticDiagnostic where
   | indexForErrorTextInvalid
   /-- A computation assigns an Enumeration target a literal naming no value in its selected domain. This is the one constant family whose target constrains the literal's **value** statically: every other measured kind either renders the constant into the declared format or checks nothing until runtime, while an undeclared token here never reaches runtime at all. The code names a *comparison* because the check is the generated equality's, not the assignment's. -/
   | invalidStringConstantForEnumComparison
+  /-- A `Date(...)` construction supplied a day and a month but no year. The Kernel treats the year as mandatory in the three-argument form rather than defaulting it from the model's Base Year. -/
+  | missingYear
+  /-- A validity wrapper applied to a date construction whose every argument is a literal. Refused because an all-constant date's validity is already settled at construction, so the wrapper could only ever be constant-true or constant-false. -/
+  | onlyConstantsUsed
+  /-- The four-argument `Date(...)` form, whose fourth argument is the split-century year, admits no extraction operator at its third or fourth position. Distinct from the wrong-family class: here the operator's family is irrelevant and only the arity is decisive. -/
+  | extractOpNotAllowedForFourParamDateConstruct
+  /-- A date-shifting operator's amount argument does not evaluate to a number. -/
+  | nonNumeric
+  /-- A constant the operator's grammar reads as a **date** literal, in a slot admitting only number, string, or the two boolean tokens. The content decides the kind, so a quoted value can reach this class purely by looking like a date. -/
+  | noDateConstant
+  /-- A `True`/`False` constant paired with a field list containing a field that is neither Boolean nor Confirm. -/
+  | noTypeYesOrYesNo
+  /-- A range-as-string source that is not string-like. -/
+  | invalidType
+  /-- Multiplication, division, or subtraction applied to an operand that is not a Number. -/
+  | noNumberForCalc
+  /-- Two Enumerations compared where exactly one declares display labels, or an Enumeration with labels compared against a plain string. The label/no-label matrix, not the value domains, is what decides this. -/
+  | invalidCompareEnumToString
+  /-- An operator requiring exactly two field-list parameters received a different count. -/
+  | paramSizeInvalidTwo
+  /-- A dotted line specifier on a path element. The grammar accepts the shape so the Kernel can name it, and A12 models then refuse it semantically — so this class exists precisely because parsing succeeded. -/
+  | pointInA12Model
+  /-- A field-list operand outside the rule's own group or root group, in the form that takes no explicit source group. -/
+  | notInRuleGroup
+  /-- Two groups related by parallel iteration whose declared index fields differ in base type. Distinct from the missing-index class: both groups **have** an index here, and only their types disagree. -/
+  | indexTypeInconsistent
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -234,6 +260,20 @@ def kernelCode : KernelStaticDiagnostic → String
   | .semanticIndexNotAllowed => "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
   | .semanticIndexAndWildcard => "MVK_SEMANTIC_INDEX_AND_WILDCARD"
   | .indexForErrorTextInvalid => "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+  | .missingYear => "MVK_MISSING_YEAR"
+  | .onlyConstantsUsed => "MVK_ONLY_CONSTANTS_USED"
+  | .extractOpNotAllowedForFourParamDateConstruct =>
+      "MVK_EXTRACT_OP_NOT_ALLOWED_4_DATE_CONSTRUCT_WITH_4_PARAMS"
+  | .nonNumeric => "MVK_NON_NUMERIC"
+  | .noDateConstant => "MVK_NO_DATE_CONSTANT"
+  | .noTypeYesOrYesNo => "MVK_NO_TYPE_YES_OR_YESNO"
+  | .invalidType => "MVK_INVALID_TYPE"
+  | .noNumberForCalc => "MVK_NO_NUMBER_FOR_CALC"
+  | .invalidCompareEnumToString => "MVK_INVALID_COMPARE_ENUM_TO_STRING"
+  | .paramSizeInvalidTwo => "MVK_PARAMSIZE_INVALID_2"
+  | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
+  | .notInRuleGroup => "MVK_NOT_IN_RULEGROUP"
+  | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -266,7 +306,11 @@ def all : List KernelStaticDiagnostic :=
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
     .invalidCompareToDate, .noDate, .semanticIndexContainedInIndex,
     .noIndexField, .semanticIndexNotAllowed, .semanticIndexAndWildcard,
-    .indexForErrorTextInvalid]
+    .indexForErrorTextInvalid,
+    .missingYear, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
+    .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
+    .invalidCompareEnumToString, .paramSizeInvalidTwo, .pointInA12Model,
+    .notInRuleGroup, .indexTypeInconsistent]
 
 end KernelStaticDiagnostic
 

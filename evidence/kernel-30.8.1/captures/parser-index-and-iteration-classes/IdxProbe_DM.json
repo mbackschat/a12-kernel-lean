@@ -122,6 +122,18 @@
                     "type" : "StringType"
                   }
                 }
+              }, {
+                "type" : "Field",
+                "id" : "/Idx/Ledger/LedgerAmount",
+                "name" : "LedgerAmount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
               } ],
               "indexFieldName" : "LedgerKey"
             }
@@ -183,6 +195,106 @@
                   "categories" : [ {
                     "name" : "Continent",
                     "values" : [ "EU", "EU", "AS" ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/WhenDate",
+            "name" : "WhenDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/OtherDate",
+            "name" : "OtherDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/Note",
+            "name" : "Note",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/Note2",
+            "name" : "Note2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/Flag",
+            "name" : "Flag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/Flag2",
+            "name" : "Flag2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/Labelled",
+            "name" : "Labelled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Alpha"
+                    } ]
+                  }, {
+                    "value" : "B",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Beta"
+                    } ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Idx/Plain",
+            "name" : "Plain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A"
+                  }, {
+                    "value" : "B"
                   } ]
                 }
               }

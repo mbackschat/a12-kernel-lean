@@ -1,0 +1,42 @@
+[
+ {
+  "id": "C01",
+  "verb": "rule",
+  "args": ["check", "--code", "C01", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Peers/PeerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "C02",
+  "verb": "rule",
+  "args": ["check", "--code", "C02", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [/Idx/Peers/PeerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "C03",
+  "verb": "rule",
+  "args": ["check", "--code", "C03", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [../Peers/PeerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "C04",
+  "verb": "rule",
+  "args": ["check", "--code", "C04", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Peers*/PeerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "C05",
+  "verb": "rule",
+  "args": ["check", "--code", "C05", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [Idx/Peers/PeerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "C06",
+  "verb": "rule",
+  "args": ["check", "--code", "C06", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Peers/PeerAmount)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "C07",
+  "verb": "rule",
+  "args": ["check", "--code", "C07", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(/Idx/Peers/PeerAmount)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "C08",
+  "verb": "rule",
+  "args": ["check", "--code", "C08", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(Peers*/PeerAmount)", "--message", "en_US=Problem detected."]
+ }
+]

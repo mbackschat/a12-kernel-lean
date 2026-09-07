@@ -1,0 +1,92 @@
+[
+ {
+  "id": "D01",
+  "verb": "rule",
+  "args": ["check", "--code", "D01", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount] == [/Idx/Ledger/LedgerAmount]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D02",
+  "verb": "rule",
+  "args": ["check", "--code", "D02", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "[Amount For /Idx/Labelled -> Continent] == 20", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D03",
+  "verb": "rule",
+  "args": ["check", "--code", "D03", "--field", "/Idx/Total", "--condition", "AtLeastOneFieldFilled(Outer*/Inner/InnerAmount For \"1\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D04",
+  "verb": "rule",
+  "args": ["check", "--code", "D04", "--field", "/Idx/Total", "--condition", "RepetitionNotUnique(Rows*/Amount, Outer/Inner/InnerAmount @From Outer/Inner)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D05",
+  "verb": "rule",
+  "args": ["check", "--code", "D05", "--field", "/Idx/Total", "--condition", "NoFieldFilled(Rows*/Amount, Peers*/PeerAmount)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D06",
+  "verb": "rule",
+  "args": ["check", "--code", "D06", "--field", "/Idx/WhenDate", "--condition", "[WhenDate] != Date(\"1\",\"11\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D07",
+  "verb": "rule",
+  "args": ["check", "--code", "D07", "--field", "/Idx/WhenDate", "--condition", "Valid(Date(\"01\",\"01\",\"1990\"))", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D08",
+  "verb": "rule",
+  "args": ["check", "--code", "D08", "--field", "/Idx/WhenDate", "--condition", "[WhenDate] != Date(HoursFromTime(OtherDate),\"11\",\"2022\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D09",
+  "verb": "rule",
+  "args": ["check", "--code", "D09", "--field", "/Idx/WhenDate", "--condition", "[WhenDate] != Date(\"11\",\"11\",YearFromDate(OtherDate),\"89\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D10",
+  "verb": "rule",
+  "args": ["check", "--code", "D10", "--field", "/Idx/WhenDate", "--condition", "[WhenDate] == AddDays(OtherDate, \"text\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D11",
+  "verb": "rule",
+  "args": ["check", "--code", "D11", "--field", "/Idx/Note", "--condition", "NumberOfValueInFields(\"20.02.2022\" In Note, Note2) > 0", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D12",
+  "verb": "rule",
+  "args": ["check", "--code", "D12", "--field", "/Idx/Note", "--condition", "NumberOfValueInFields(\"Berlin\" In Total, Total) > 1", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D13",
+  "verb": "rule",
+  "args": ["check", "--code", "D13", "--field", "/Idx/Note", "--condition", "NumberOfValueInFields(True In Note, Note2) > 1", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D14",
+  "verb": "rule",
+  "args": ["check", "--code", "D14", "--field", "/Idx/Note", "--condition", "FieldValueIncludedInValueList(Labelled -> Continent, \"NotAContinent\")", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D15",
+  "verb": "rule",
+  "args": ["check", "--code", "D15", "--field", "/Idx/Note", "--condition", "[Note] == RangeAsString(Total, 2, 4)", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D16",
+  "verb": "rule",
+  "args": ["check", "--code", "D16", "--field", "/Idx/Note", "--condition", "[Note] * 4 == 7", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D17",
+  "verb": "rule",
+  "args": ["check", "--code", "D17", "--field", "/Idx/Note", "--condition", "[Labelled] == [Plain]", "--message", "en_US=Problem detected."]
+ },
+ {
+  "id": "D18",
+  "verb": "rule",
+  "args": ["check", "--code", "D18", "--field", "/Idx/Total", "--condition", "SumOfProducts(Rows*/Amount, Peers*/PeerAmount) >= 100", "--message", "en_US=Problem detected."]
+ }
+]
