@@ -1,0 +1,157 @@
+[
+ {
+  "id": "P00",
+  "verb": "rule",
+  "args": ["check", "--code", "P00", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P01",
+  "verb": "rule",
+  "args": ["check", "--code", "P01", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P02",
+  "verb": "rule",
+  "args": ["check", "--code", "P02", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P03",
+  "verb": "rule",
+  "args": ["check", "--code", "P03", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P04",
+  "verb": "rule",
+  "args": ["check", "--code", "P04", "--field", "/Probe/Outer/Inner/Other", "--condition", "FieldFilled(Other)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P10",
+  "verb": "rule",
+  "args": ["check", "--code", "P10", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And 1 > 2", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P11",
+  "verb": "rule",
+  "args": ["check", "--code", "P11", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And Anchor + 1 > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P12",
+  "verb": "rule",
+  "args": ["check", "--code", "P12", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And Amount + Anchor > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P13",
+  "verb": "rule",
+  "args": ["check", "--code", "P13", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And Amount > Today", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P20",
+  "verb": "rule",
+  "args": ["check", "--code", "P20", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And EnumCategory(Grade, \"Nope\") == \"Hi\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P21",
+  "verb": "rule",
+  "args": ["check", "--code", "P21", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And EnumCategory(Anchor, \"Band\") == \"Hi\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P22",
+  "verb": "rule",
+  "args": ["check", "--code", "P22", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And Grade == \"ZZZ\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P23",
+  "verb": "rule",
+  "args": ["check", "--code", "P23", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And Grade == Anchor", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P24",
+  "verb": "rule",
+  "args": ["check", "--code", "P24", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And EnumCategory(Score, \"Band\") == \"Hi\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P30",
+  "verb": "rule",
+  "args": ["check", "--code", "P30", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor, Alpha)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P31",
+  "verb": "rule",
+  "args": ["check", "--code", "P31", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And DiffersWithToleranceRange5(Amount)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P32",
+  "verb": "rule",
+  "args": ["check", "--code", "P32", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And DiffersWithToleranceRange5(Anchor, Alpha)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P33",
+  "verb": "rule",
+  "args": ["check", "--code", "P33", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And PatternMatched(\"abc\", \"a.*\")", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P40",
+  "verb": "rule",
+  "args": ["check", "--code", "P40", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And NumberOfFilledGroups(Anchor) > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P41",
+  "verb": "rule",
+  "args": ["check", "--code", "P41", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And CurrentRepetition(/Probe) > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P42",
+  "verb": "rule",
+  "args": ["check", "--code", "P42", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And NumberOfFilledFields(/Probe*/Alpha) > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P50",
+  "verb": "rule",
+  "args": ["check", "--code", "P50", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And FieldFilled(/Nope/Alpha)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P51",
+  "verb": "rule",
+  "args": ["check", "--code", "P51", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And NumberOfFilledFields(/Probe/Claims) > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P60",
+  "verb": "rule",
+  "args": ["check", "--code", "P60", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And FieldFilled(Payout For Claims)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P61",
+  "verb": "rule",
+  "args": ["check", "--code", "P61", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And FieldFilled(Payout For /Probe/Claims*/ClaimNo)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P62",
+  "verb": "rule",
+  "args": ["check", "--code", "P62", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And FieldFilled(Score For Grade)", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P63",
+  "verb": "rule",
+  "args": ["check", "--code", "P63", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And FieldFilled(Payout For \"zz\")", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P70",
+  "verb": "rule",
+  "args": ["check", "--code", "P70", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And NumberOfFilledFields(/Probe/Claims/Payout Having (ClaimNo == \"a\")) > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P80",
+  "verb": "rule",
+  "args": ["check", "--code", "P80", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And DifferenceInDays(Today, \"31.12\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P81",
+  "verb": "rule",
+  "args": ["check", "--code", "P81", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And DifferenceInDays(Today, \"99.99.9999\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "P82",
+  "verb": "rule",
+  "args": ["check", "--code", "P82", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And DifferenceInDays(\"01.01.2020\", \"01.01.2021\") > 0", "--message", "en_US=plain text"]
+ }
+]

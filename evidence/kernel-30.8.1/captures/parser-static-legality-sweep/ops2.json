@@ -1,0 +1,77 @@
+[
+ {
+  "id": "Q00",
+  "verb": "rule",
+  "args": ["check", "--code", "Q00", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And [Amount] < [Anchor] + 1", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q01",
+  "verb": "rule",
+  "args": ["check", "--code", "Q01", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And [Grade -> Nope] == \"Hi\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q02",
+  "verb": "rule",
+  "args": ["check", "--code", "Q02", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And [Anchor -> Band] == \"Hi\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q03",
+  "verb": "rule",
+  "args": ["check", "--code", "Q03", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And [Grade] == \"ZZZ\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q04",
+  "verb": "rule",
+  "args": ["check", "--code", "Q04", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And [Grade] == [Score]", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q05",
+  "verb": "rule",
+  "args": ["check", "--code", "Q05", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And [Anchor] DiffersWithToleranceRange5 [Alpha]", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q06",
+  "verb": "rule",
+  "args": ["check", "--code", "Q06", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And \"abc\" PatternMatched \"a.*\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q07",
+  "verb": "rule",
+  "args": ["check", "--code", "Q07", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And [Anchor] PatternMatched \"[A-Z]{2}\"", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q08",
+  "verb": "rule",
+  "args": ["check", "--code", "Q08", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And NumberOfFilledFields(/Probe/Claims/Payout Having [/Probe/Claims/ClaimNo] == \"a\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q09",
+  "verb": "rule",
+  "args": ["check", "--code", "Q09", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And NumberOfFilledFields(/Probe/Claims*/Payout Having [/Probe/Claims/ClaimNo] == \"a\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q10",
+  "verb": "rule",
+  "args": ["check", "--code", "Q10", "--field", "/Probe/Claims/Note", "--condition", "FieldFilled(Note) And NumberOfFilledGroups(/Probe/Claims* Having [/Probe/Claims/ClaimNo] == \"a\") > 0", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q11",
+  "verb": "rule",
+  "args": ["check", "--code", "Q11", "--field", "/Probe/Amount", "--condition", "FieldFilled(Amount) And [Amount] >= Today", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q12",
+  "verb": "rule",
+  "args": ["check", "--code", "Q12", "--field", "/Probe/Cases/Score", "--condition", "FieldFilled(Score) And [Grade] == [Grade2]", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q13",
+  "verb": "rule",
+  "args": ["check", "--code", "Q13", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And [Anchor] < [Amount]", "--message", "en_US=plain text"]
+ },
+ {
+  "id": "Q14",
+  "verb": "rule",
+  "args": ["check", "--code", "Q14", "--field", "/Probe/Anchor", "--condition", "FieldFilled(Anchor) And AllFieldsFilled(Anchor) And [Anchor] == True", "--message", "en_US=plain text"]
+ }
+]

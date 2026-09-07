@@ -14,11 +14,11 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `3db574b1` on 2026-09-07.
+Measured at `0fe98007` on 2026-09-07.
 
 ## Headline
 
-**149 of 441 Kernel refusal classes touched (33%); 78 modelled in Lean (17%); 292 untouched.**
+**160 of 441 Kernel refusal classes touched (36%); 78 modelled in Lean (17%); 281 untouched.**
 
 The two figures differ because *touched* counts a class named anywhere in the account — including a
 checkpoint's own list of what it did **not** reach — while *modelled* counts one the Lean theory names.
@@ -29,11 +29,11 @@ Read the first as an upper bound on knowledge and the second as the floor on imp
 | | classes | share |
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 441 | 100% |
-| Named in `spec/` or `docs/` prose | 149 | 33% |
+| Named in `spec/` or `docs/` prose | 160 | 36% |
 | Named in tracked Lean source | 78 | 17% |
-| Observed in a retained probe artifact | 80 | 18% |
-| Touched by any of the three | 149 | 33% |
-| **Untouched everywhere** | **292** | **66%** |
+| Observed in a retained probe artifact | 93 | 21% |
+| Touched by any of the three | 160 | 36% |
+| **Untouched everywhere** | **281** | **63%** |
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
@@ -49,7 +49,7 @@ Ordered by size, because that is the order in which they are worth attacking.
 | untouched | catalog | route |
 |---|---|---|
 | 99 | `_30_8` | runtime formal errors — needs a **document** probe (`:adapter:kernelProbe` → `validateFull`), a route we hold and have barely driven |
-| 81 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
+| 70 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
 | 36 | `custom_field_types` | host-registered custom field types — **scope question**, may sit outside the Kernel-owned target |
 | 22 | `vk_codegen_no_meta_model_ckecks_error_messages` | codegen-time model checks — reachable through `model check` |
 | 17 | `kernel_core_errortext_error_messages` | shared error-text base utilities — carrier not yet identified |
@@ -102,8 +102,8 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 164 |
-| Retained observation rows across all artifacts | 367 |
+| Retained capture directories under `../evidence/` | 165 |
+| Retained observation rows across all artifacts | 413 |
 
 ## Velocity
 
@@ -116,4 +116,5 @@ up, rather than more rows on the route it already has.
 | date | revision | touched | modelled | untouched | calibrated caps | open gaps |
 |---|---|---|---|---|---|---|
 | 2026-09-07 | `3db574b1` | 149 | 78 | 292 | 82 | 23 |
+| 2026-09-07 | `0fe98007` | 160 | 78 | 281 | 82 | 23 |
 <!-- velocity-history:end -->

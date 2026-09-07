@@ -1,0 +1,312 @@
+{
+  "header" : {
+    "id" : "Probe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Probe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Alpha",
+            "name" : "Alpha",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Beta",
+            "name" : "Beta",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "lineBreaksPermitted" : true,
+                  "noValueValidation" : true
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Amount",
+            "name" : "Amount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Total",
+            "name" : "Total",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Claims",
+            "name" : "Claims",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Claims/ClaimNo",
+                "name" : "ClaimNo",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Claims/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Claims/Payout",
+                "name" : "Payout",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "ClaimNo"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Cases",
+            "name" : "Cases",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Cases/Score",
+                "name" : "Score",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Cases/Grade",
+                "name" : "Grade",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ],
+                      "categories" : [ {
+                        "name" : "Band",
+                        "values" : [ "Hi", "Lo" ]
+                      } ]
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Grade"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Notes",
+            "name" : "Notes",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Notes/Head",
+                "name" : "Head",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Notes/Tail",
+                "name" : "Tail",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Head"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Outer",
+            "name" : "Outer",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Outer/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Outer/OuterVal",
+                "name" : "OuterVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Outer/Inner",
+                "name" : "Inner",
+                "Group" : {
+                  "repeatability" : 10,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Outer/Inner/Key",
+                    "name" : "Key",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Outer/Inner/Other",
+                    "name" : "Other",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Outer/Inner/InnerVal",
+                    "name" : "InnerVal",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ],
+                  "indexFieldName" : "Key"
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Cases2",
+            "name" : "Cases2",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Cases2/Grade",
+                "name" : "Grade",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "X"
+                      }, {
+                        "value" : "Y"
+                      } ],
+                      "categories" : [ {
+                        "name" : "Band",
+                        "values" : [ "Hi", "Lo" ]
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Cases2/Score2",
+                "name" : "Score2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Grade"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

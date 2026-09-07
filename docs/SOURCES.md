@@ -633,6 +633,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated](sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)
 <a id="src-later-position-kinds-and-group-expansion-class"></a>
 - [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/static-admission-and-class-probes.md#src-later-position-kinds-and-group-expansion-class)
+<a id="src-parser-static-legality-sweep"></a>
+- [Ten condition-level refusal classes named in one generated sweep: the type/arity gates `MVK_NO_STRING_OR_NUMBER_FOR_ADD`, `MVK_INVALID_TYPE_FOR_TOLERANCE_OP`, `MVK_PARAMSIZE_INVALID1`, `MVK_NO_FIELDS_ALLOWED`, the category twins `MVK_CATEGORY_UNKOWN` and `MVK_NO_ENUMERATION`, the constant-pair gate `MVK_INVALID_COMPARE_TO_CONST`, and the filter star gate `MVK_WILDCARDS_REQUIRED`](sources/static-admission-and-class-probes.md#src-parser-static-legality-sweep)
+
 <a id="src-typedef-resolves-to-base-kind"></a>
 - [A typedef field is its base kind at three independent gates, which makes `spec/01`'s model-expansion exclusion measured rather than assumed](sources/static-admission-and-class-probes.md#src-typedef-resolves-to-base-kind)
 <a id="src-first-filled-reads-the-format-string"></a>

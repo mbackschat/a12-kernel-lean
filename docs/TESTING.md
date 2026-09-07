@@ -47,7 +47,7 @@ Before opening a new capability boundary in SG1, SG2, SG4, SG6, SG9, SG10, or an
 
 The packet is capability-scoped. A subordinate capsule inside an already-audited mechanism consumes the existing packet and prepares no new one. Reopen it when the unit needs a source fact not already closed by that packet and its gap entry, crosses into another engine layer or runtime class, makes a new composition claim, changes the semantic result domain or a representation whose adequacy depends on new source behavior, or disproves a discriminator. A conservative wider finite bound over the same checked tables and behavior is not by itself a reopening trigger; a new Kernel behavior class is. Keep the gap's unresolved-fact and reopening account complete even when the rest of the entry is shortened.
 
-Follow that packet with the consumer hypothesis below, then implement through the existing checked plan, runtime, and result owners without collapsing those phases or creating a parallel representation. Add temporary diagnostics only inside an existing conformance example and remove them before closure. A new runner, schema, trace format, generator, or harness remains prohibited unless the same unmet observation has blocked at least two real semantic families, the current mechanisms have been measured and shown insufficient, and the user explicitly approves the resulting infrastructure work.
+Follow that packet with the consumer hypothesis below, then implement through the existing checked plan, runtime, and result owners without collapsing those phases or creating a parallel representation. Add temporary diagnostics only inside an existing conformance example and remove them before closure. A new runner, schema, trace format, or evidence framework remains prohibited unless the same unmet observation has blocked at least two real semantic families, the current mechanisms have been measured and shown insufficient, and the user explicitly approves the resulting infrastructure work. **Instrument-side throughput tooling is the standing exception** and needs no fresh ask, under the conditions the [owner authorization](../CLAUDE.md#%EF%B8%8F-hard-rule--semantics-first-harness-governance-and-redundant-work-require-explicit-approval) states: the mechanism must remove a *measured* repeated cost, and the commit body must name it.
 
 This packet is working context, not another committed template, receipt, registry, or report. Record only its durable outcomes: implemented status in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), live gaps and reopening facts in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md), cross-session sequencing in [`PLAN.md`](PLAN.md) when a handoff fact changes, and a genuinely non-obvious semantic lesson in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md). A cold artifact-only probe remains milestone-triggered rather than per-capsule.
 
@@ -291,10 +291,14 @@ advice; a sweep that skips one is slower for a reason already paid for.
    untouched block needs a document probe rather than a static one, and it stays untouched precisely
    because no session has set that route up. A session spent opening a route is worth more than the same
    session spent adding rows to a route already open.
-5. **Pre-flight every distinct condition before the matrix depends on it.** One throwaway batch of plain
-   message rows, one per distinct condition, catches an illegal operand or an undeclared index value
-   before a hundred rows inherit it. Eight percent of one session's rows died this way, and it was the
-   fourth recorded instance.
+5. **Resolve every operator spelling from the catalog *before* generating, then pre-flight the
+   conditions.** This is precondition 1 below applied to a generated matrix, where the cost multiplies:
+   one wrong spelling in an alias is inherited by every row that uses it. Generation makes the fix cheap
+   — correct the alias, regenerate, re-dispatch — but it does not make the mistake cheap. The first
+   sweep written under these very rules lost eleven of thirty-one rows to bare field names where the
+   expression grammar requires `[Brackets]`, which the catalog's own `validExample` shows; that was the
+   fifth recorded instance. Where a row's condition *is* the subject, a plain message makes every row
+   its own pre-flight and no separate batch is needed.
 
 Rules 1 and 3 also compose: select several untouched blocks that share one model, generate their rows in
 one spec, dispatch them in one `batch`, and write one checkpoint whose `denominator` row names every
@@ -336,7 +340,7 @@ from the untouched list measures what is missing.
 
 ### Three batch preconditions, each paid for by a wasted round trip
 
-The batch mechanism is not the bottleneck — 52 `rule check` children run in under seven seconds, so a cell costs about a tenth of a second and a wider cross is effectively free. What costs time is authoring a row wrong and reading a grid wrong. These three preconditions are measured, not stylistic: every one of them has been paid for more than once.
+The throughput rules above own why the batch mechanism is not the bottleneck; what costs time is authoring a row wrong and reading a grid wrong. These three preconditions are measured, not stylistic: every one of them has been paid for more than once.
 
 **1. Consult `dmtool operators <id>` before authoring any condition, and treat it as a required step rather than advice.** Every surface failure recorded so far was already documented in that entry's `validExample` or `constraints`: an infix operator spelled as a call, `AtLeastOneDateRangeOverlaps` given a comma list where it takes `A In B`, `AddHours` given a clock where it takes a date-time, a bare `Time` where it takes components. Each cost a batch or a round trip, and each was one command away from being avoided.
 
