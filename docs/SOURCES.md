@@ -812,6 +812,10 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Twenty-five parser refusal classes across the index, iteration, date-construction and constant families](sources/static-admission-and-class-probes.md#src-index-iteration-and-constant-refusal-classes)
 <a id="src-codegen-classes-reach-ordinary-authoring"></a>
 - [The Kernel code-generation check family is reachable from ordinary authoring, because the consistency check runs the generator](sources/static-admission-and-class-probes.md#src-codegen-classes-reach-ordinary-authoring)
+<a id="src-unraised-diagnostic-vocabulary"></a>
+- [Fifteen catalog keys the Kernel declares but never reports](sources/static-admission-and-class-probes.md#src-unraised-diagnostic-vocabulary)
+<a id="src-default-locale-message-bundles"></a>
+- [The default-locale message bundle is a placeholder for every tool-time catalog](sources/static-admission-and-class-probes.md#src-default-locale-message-bundles)
 <a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
 - [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>

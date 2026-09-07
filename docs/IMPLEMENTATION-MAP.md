@@ -459,6 +459,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Kernel static-diagnostic classes](implementation/cross-clause.md#checked-group-star-terminals)
 <a id="cap-kernel-static-diagnostic-classes"></a>
 - [Kernel static-diagnostic classes](implementation/cross-clause.md#cap-kernel-static-diagnostic-classes)
+<a id="cap-unraised-diagnostic-keys"></a>
+- [Catalog keys the Kernel never reports](implementation/cross-clause.md#cap-unraised-diagnostic-keys)
 <a id="cap-resolved-firstfilledvalue"></a>
 - [Resolved `FirstFilledValue`](implementation/cross-clause.md#cap-resolved-firstfilledvalue)
 <a id="cap-resolved-number-aggregates"></a>

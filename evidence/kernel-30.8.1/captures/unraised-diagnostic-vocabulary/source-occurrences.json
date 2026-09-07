@@ -1,0 +1,211 @@
+{
+ "measurement": "kernel source occurrences of a catalog key outside its own declaration",
+ "root": "../a12-kernel",
+ "fileKinds": [
+  ".java",
+  ".kt",
+  ".xml",
+  ".adoc",
+  ".properties"
+ ],
+ "includesGitignoredBuildOutput": true,
+ "excludes": [
+  ".git",
+  "**/build/**"
+ ],
+ "note": "paths are relative to the kernel checkout root; message text is deliberately absent",
+ "keys": [
+  {
+   "key": "MVK_CALCULATION_FIELD_AND_NO_CALCULATION_RULE",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3,
+    "documentation": 2
+   }
+  },
+  {
+   "key": "MVK_INVALID_CHAR_IN_RESTRICTED_CHARSET",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3
+   }
+  },
+  {
+   "key": "MVK_INVALID_PREDEFINED_TYPE",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3,
+    "documentation": 2
+   }
+  },
+  {
+   "key": "MVK_NO_FORMAL_ERROR_RESOURCE_BUNDLE",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3
+   }
+  },
+  {
+   "key": "MVK_NOT_ON_ERRORFIELD_PATH",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3,
+    "documentation": 2
+   }
+  },
+  {
+   "key": "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED_NO_FIELD",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3,
+    "documentation": 2
+   }
+  },
+  {
+   "key": "NO_VORDRUCKNAME_IN_H",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3
+   }
+  },
+  {
+   "key": "NO_VORDRUCKZEILE",
+   "status": "declared-never-raised",
+   "useSites": [],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3
+   }
+  },
+  {
+   "key": "ERROR_TEXT_PARAMETER",
+   "status": "interpolated-label-only",
+   "useSites": [
+    {
+     "file": "kernel-tool/kernel-core-service/src/main/java/com/mgmtp/a12/kernel/core/service/internal/errortext/error/RuleErrorTextParameterDefaultErrorStategy.java",
+     "line": 60,
+     "kind": "USE"
+    }
+   ],
+   "siteKinds": {
+    "USE": 1,
+    "declaration": 1,
+    "catalog": 3
+   }
+  },
+  {
+   "key": "FIELD_INVALID_PREFIX",
+   "status": "interpolated-label-only",
+   "useSites": [
+    {
+     "file": "kernel-tool/kernel-core-service/src/main/java/com/mgmtp/a12/kernel/core/service/internal/errortext/FieldErrortextChecker.java",
+     "line": 90,
+     "kind": "USE"
+    }
+   ],
+   "siteKinds": {
+    "declaration": 1,
+    "USE": 1,
+    "catalog": 3
+   }
+  },
+  {
+   "key": "MVK_CATEGORY_REF_OP",
+   "status": "interpolated-label-only",
+   "useSites": [
+    {
+     "file": "kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/check/entity/CheckEntitySpecImpl.java",
+     "line": 82,
+     "kind": "USE"
+    }
+   ],
+   "siteKinds": {
+    "documentation": 2,
+    "declaration": 1,
+    "USE": 1,
+    "catalog": 3
+   }
+  },
+  {
+   "key": "MVK_CONDITION",
+   "status": "interpolated-label-only",
+   "useSites": [
+    {
+     "file": "kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/error/MVKDefaultErrorStrategy.java",
+     "line": 54,
+     "kind": "USE"
+    }
+   ],
+   "siteKinds": {
+    "declaration": 1,
+    "USE": 1,
+    "catalog": 3,
+    "documentation": 2
+   }
+  },
+  {
+   "key": "MVK_FIELD_REF_OP",
+   "status": "interpolated-label-only",
+   "useSites": [
+    {
+     "file": "kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/check/operation/CheckFeldWertOpImpl.java",
+     "line": 74,
+     "kind": "USE"
+    }
+   ],
+   "siteKinds": {
+    "declaration": 1,
+    "catalog": 3,
+    "USE": 1,
+    "documentation": 2
+   }
+  },
+  {
+   "key": "MVK_SEMANTIC_INDEX_REF_OP",
+   "status": "interpolated-label-only",
+   "useSites": [
+    {
+     "file": "kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/check/entity/semanticIndex/CheckSemanticIndexImpl.java",
+     "line": 85,
+     "kind": "USE"
+    }
+   ],
+   "siteKinds": {
+    "declaration": 1,
+    "USE": 1,
+    "catalog": 3,
+    "documentation": 2
+   }
+  },
+  {
+   "key": "RULE_ERRORTEXT_WRONG",
+   "status": "interpolated-label-only",
+   "useSites": [
+    {
+     "file": "kernel-tool/kernel-core-service/src/main/java/com/mgmtp/a12/kernel/core/service/internal/errortext/RuleErrortextChecker.java",
+     "line": 169,
+     "kind": "USE"
+    }
+   ],
+   "siteKinds": {
+    "declaration": 1,
+    "USE": 1,
+    "catalog": 3
+   }
+  }
+ ]
+}

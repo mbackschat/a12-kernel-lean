@@ -1,0 +1,92 @@
+[
+ {
+  "id": "P01",
+  "verb": "rule",
+  "args": ["check", "--code", "P01", "--field", "/Idx/NoSuchField", "--condition", "FieldFilled(Total)", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P02",
+  "verb": "rule",
+  "args": ["check", "--code", "P02", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Peers", "--condition", "FieldFilled(Total)", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P03",
+  "verb": "rule",
+  "args": ["check", "--code", "P03", "--field", "/Idx/Rows/Amount", "--group", "/Idx/Rows", "--condition", "FieldFilled(/Idx/Peers/PeerAmount)", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P04",
+  "verb": "rule",
+  "args": ["check", "--code", "P04", "--field", "/Idx/Outer/Inner/InnerAmount", "--group", "/Idx/Outer", "--condition", "FieldFilled(/Idx/Outer/Inner/InnerAmount)", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P05",
+  "verb": "rule",
+  "args": ["check", "--code", "P05", "--field", "/Idx/Total", "--condition", "[WhenDate] != Date(\"31\",\"02\",\"2026\")", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P06",
+  "verb": "rule",
+  "args": ["check", "--code", "P06", "--field", "/Idx/Total", "--condition", "NumberOfValueInFields(Today In Note, Note2) > 0", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P07",
+  "verb": "rule",
+  "args": ["check", "--code", "P07", "--field", "/Idx/Total", "--condition", "NumberOfValueInFields(\"x\" In Note, Total) > 0", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P08",
+  "verb": "rule",
+  "args": ["check", "--code", "P08", "--field", "/Idx/Total", "--condition", "FieldValueIncludedInValueList(Country, [Total])", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P09",
+  "verb": "rule",
+  "args": ["check", "--code", "P09", "--field", "/Idx/Total", "--condition", "[Flag] == [Flag2]", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P10",
+  "verb": "rule",
+  "args": ["check", "--code", "P10", "--field", "/Idx/Total", "--condition", "Valid(Total, \"IBAN\")", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P11",
+  "verb": "rule",
+  "args": ["check", "--code", "P11", "--field", "/Idx/Total", "--condition", "[Rows/Amount For \"1\"] > 0", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P12",
+  "verb": "rule",
+  "args": ["check", "--code", "P12", "--field", "/Idx/Total", "--condition", "[Rows/Amount For [Peers/PeerAmount For \"1\"]] > 0", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P13",
+  "verb": "rule",
+  "args": ["check", "--code", "P13", "--field", "/Idx/Total", "--condition", "[Outer*/Inner/InnerAmount For \"1\"] > 0", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P14",
+  "verb": "rule",
+  "args": ["check", "--code", "P14", "--field", "/Idx/Total", "--condition", "[Country -> Speed For \"1\"] == \"X\"", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P15",
+  "verb": "rule",
+  "args": ["check", "--code", "P15", "--field", "/Idx/Total", "--condition", "Sum(Rows*/Amount) > Sum(Peers*/PeerAmount)", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P16",
+  "verb": "rule",
+  "args": ["check", "--code", "P16", "--field", "/Idx/Total", "--condition", "NumberOfFilledFields(Rows*/Amount, Peers*/PeerAmount) > 0", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P17",
+  "verb": "rule",
+  "args": ["check", "--code", "P17", "--field", "/Idx/Total", "--condition", "NumberOfFilledFields(Rows*/Amount Having [Peers/PeerAmount] > 0) > 0", "--message", "en_US=Nothing special."]
+ },
+ {
+  "id": "P18",
+  "verb": "rule",
+  "args": ["check", "--code", "P18", "--field", "/Idx/Total", "--condition", "[WhenDate] != Date(YearFromDate(OtherDate),\"02\",\"2026\")", "--message", "en_US=Nothing special."]
+ }
+]

@@ -170,6 +170,10 @@ inductive KernelStaticDiagnostic where
   | invalidType
   /-- Multiplication, division, or subtraction applied to an operand that is not a Number. -/
   | noNumberForCalc
+  /-- A count-of-value operand's sought constant is of a kind the operator's grammar rejects. The grammar admits a boolean, a number, or a string literal, so a temporal constant draws this class before any field in the list is examined — measured with the current-date constant against two String fields. -/
+  | invalidConst
+  /-- A count-of-value field list mixes kinds where the operator requires string-like operands. Reached after the constant clears the class above, which is what orders the two: a temporal constant against the same list never gets here. -/
+  | noStringOrEnum
   /-- Two Enumerations compared where exactly one declares display labels, or an Enumeration with labels compared against a plain string. The label/no-label matrix, not the value domains, is what decides this. -/
   | invalidCompareEnumToString
   /-- An operator requiring exactly two field-list parameters received a different count. -/
@@ -277,6 +281,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noTypeYesOrYesNo => "MVK_NO_TYPE_YES_OR_YESNO"
   | .invalidType => "MVK_INVALID_TYPE"
   | .noNumberForCalc => "MVK_NO_NUMBER_FOR_CALC"
+  | .invalidConst => "MVK_INVALID_CONST"
+  | .noStringOrEnum => "MVK_NO_STRING_OR_ENUM"
   | .invalidCompareEnumToString => "MVK_INVALID_COMPARE_ENUM_TO_STRING"
   | .paramSizeInvalidTwo => "MVK_PARAMSIZE_INVALID_2"
   | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
@@ -323,7 +329,8 @@ def all : List KernelStaticDiagnostic :=
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
     .invalidCompareEnumToString, .paramSizeInvalidTwo, .pointInA12Model,
     .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter,
-    .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter]
+    .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,
+    .invalidConst, .noStringOrEnum]
 
 end KernelStaticDiagnostic
 
