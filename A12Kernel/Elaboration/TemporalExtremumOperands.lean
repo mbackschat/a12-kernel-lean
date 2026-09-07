@@ -75,6 +75,16 @@ inductive TemporalExtremumOperandElabError where
     actually compared on rather than any one declaration's. -/
 structure CheckedTemporalExtremumOperands (model : FlatModel) where
   shape : CheckedFieldEntityShape model
+  /-- The agreed component set, stored **supplemented** by the model Base Year — `withBaseYear` is
+      applied to every declaration before they are compared, which is what makes a yearless operand
+      agree with a year-bearing one at all.
+
+      So this is not any single operand's declared set, and it must not be read as one. It is the
+      right value for choosing the fold's element type, for selecting the component-omitting arm, and
+      for a reader's own agreement check. It is the **wrong** value for deciding which components an
+      operand's cell may contribute: masking against it would take a year from the cell of a
+      declaration that names none, where the Kernel supplies the declared Base Year. A reader that
+      masks asks the operand's own declaration instead ([`LF163`](../../docs/LEAN-FINDINGS.md)). -/
   components : TemporalComponents
   /-- The filter of each operand of `shape`, in the same order, present only at a filtered star this
       capsule could certify against that star's exact candidate and captured environments.
