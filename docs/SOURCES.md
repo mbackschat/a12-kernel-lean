@@ -745,6 +745,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`FirstFilledValue` selects a Boolean `false` because its filled predicate is presence, and an all-empty selection mints no outcome](sources/evaluation-and-application-routes.md#src-boolean-first-filled-false-is-filled)
 <a id="src-first-filled-malformed-terminates-and-inventory-reports"></a>
 - [A malformed `FirstFilledValue` source terminates the scan where an empty one falls through, and the eager operand inventory still reports the suffix the scan never read](sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports)
+<a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
+- [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>
 - [The extrema order a yearless list under a declared Base Year on both strategies, and no document on such a model can say what they order on](sources/evaluation-and-application-routes.md#src-yearless-extrema-base-year-ordering)
 <a id="src-extrema-component-omitting-fold"></a>

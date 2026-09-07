@@ -1,0 +1,693 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "DrList_expanded.json",
+    "locale" : "en_US",
+    "clock" : "2026-09-07T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "iso-all-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "iso-4th-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ITgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2027-01-01/2027-03-31"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ITgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2027-01-01/2027-03-31"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "iso-2nd-then-malformed-suffix",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/I3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Dr/I3"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/I4",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Dr/I4"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ITgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2025-06-01/2025-06-30"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/I3",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/I3"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/I4",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/I4"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/I3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Dr/I3"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/I4",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Dr/I4"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ITgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2025-06-01/2025-06-30"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/I3",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/I3"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/I4",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/I4"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "iso-2nd-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/I2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Dr/I2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/I2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/I2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/I2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Dr/I2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/I2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/I2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "iso-3rd-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ITgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2027-01-01/2027-03-31"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ITgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2027-01-01/2027-03-31"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "frag-3rd-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/FTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03-05/04-06"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/FTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03-05/04-06"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "frag-2nd-then-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/F3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "referenced" : [
+                "Dr/F3"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/FTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03-05/04-06"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/F3",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/F3"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/F3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "referenced" : [
+                "Dr/F3"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/FTgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03-05/04-06"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/F3",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/F3"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "frag-2nd-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/F2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "referenced" : [
+                "Dr/F2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/F2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/F2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Dr/F2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "referenced" : [
+                "Dr/F2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Dr/F2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "referenced" : [
+                  "Dr/F2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "mmempty-2nd",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ETgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0203"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ETgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0203"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "mmempty-2nd-then-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumBereichFormatFalsch",
+              "field" : "Dr/E3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MMMM are allowed.",
+              "referenced" : [
+                "Dr/E3"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ETgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0203"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichFormatFalsch",
+                "field" : "Dr/E3",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MMMM are allowed.",
+                "referenced" : [
+                  "Dr/E3"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumBereichFormatFalsch",
+              "field" : "Dr/E3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MMMM are allowed.",
+              "referenced" : [
+                "Dr/E3"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Dr/ETgt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0203"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichFormatFalsch",
+                "field" : "Dr/E3",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MMMM are allowed.",
+                "referenced" : [
+                  "Dr/E3"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "mmempty-2nd-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumBereichFormatFalsch",
+              "field" : "Dr/E2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MMMM are allowed.",
+              "referenced" : [
+                "Dr/E2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichFormatFalsch",
+                "field" : "Dr/E2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MMMM are allowed.",
+                "referenced" : [
+                  "Dr/E2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumBereichFormatFalsch",
+              "field" : "Dr/E2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format MMMM are allowed.",
+              "referenced" : [
+                "Dr/E2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichFormatFalsch",
+                "field" : "Dr/E2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format MMMM are allowed.",
+                "referenced" : [
+                  "Dr/E2"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

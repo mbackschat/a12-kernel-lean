@@ -1,0 +1,231 @@
+{
+  "model": "DrList_expanded.json",
+  "locale": "en_US",
+  "clock": "2026-09-07T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "iso-all-empty",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "iso-4th-only",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": "2027-01-01/2027-03-31",
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "iso-2nd-then-malformed-suffix",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": "2025-06-01/2025-06-30",
+          "I3": "nonsense",
+          "I4": "also-nonsense",
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "iso-2nd-malformed",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": "nonsense",
+          "I3": "2027-01-01/2027-03-31",
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "iso-3rd-only",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": "2027-01-01/2027-03-31",
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "frag-3rd-only",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": "03-05/04-06",
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "frag-2nd-then-malformed",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": "03-05/04-06",
+          "F3": "nonsense",
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "frag-2nd-malformed",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": "nonsense",
+          "F3": "03-05/04-06",
+          "FTgt": null,
+          "E1": null,
+          "E2": null,
+          "E3": null,
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "mmempty-2nd",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": "0203",
+          "E3": "0405",
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "mmempty-2nd-then-malformed",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": "0203",
+          "E3": "nonsense",
+          "ETgt": null
+        }
+      }
+    },
+    {
+      "name": "mmempty-2nd-malformed",
+      "documentInline": {
+        "Dr": {
+          "I1": null,
+          "I2": null,
+          "I3": null,
+          "I4": null,
+          "ITgt": null,
+          "F1": null,
+          "F2": null,
+          "F3": null,
+          "FTgt": null,
+          "E1": null,
+          "E2": "nonsense",
+          "E3": "0405",
+          "ETgt": null
+        }
+      }
+    }
+  ]
+}

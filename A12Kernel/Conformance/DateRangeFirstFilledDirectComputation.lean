@@ -51,6 +51,17 @@ private def directMonthEmptyFirst :=
 private def directMonthEmptySecond :=
   rangeField 35 "DirectMonthEmptySecond" "MM" ""
 
+/-- Three further ISO/slash sources, so the list reaches **arity four**. Nothing had been executed
+past three sources on any profile until the [list arity checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
+measured the Kernel admitting and recursing through a fourth. `directIsoSource` is the first of the
+four; it also serves the crossed-profile refusals above, which are a different operation. -/
+private def directIsoSecond :=
+  rangeField 44 "DirectIsoSecond" "yyyy-MM-dd" "/"
+private def directIsoThird :=
+  rangeField 45 "DirectIsoThird" "yyyy-MM-dd" "/"
+private def directIsoFourth :=
+  rangeField 46 "DirectIsoFourth" "yyyy-MM-dd" "/"
+
 private def directFromFirst :=
   rangeField 36 "DirectFromFirst" "dd.MM" "-" (some .anchorStart)
 private def directFromSecond :=
@@ -82,7 +93,8 @@ private def model : FlatModel := {
     directMonthFirst, directMonthSecond, directMonthThird, directMonthDayFirst,
     directMonthDaySecond, directMonthDayThird, directMonthEmptyFirst,
     directMonthEmptySecond, directFromFirst, directFromSecond, directToTarget,
-    directToFirst, directFromTarget, otherGroupTarget, otherGroupSource]
+    directToFirst, directFromTarget, otherGroupTarget, otherGroupSource,
+    directIsoSecond, directIsoThird, directIsoFourth]
   repeatableGroups := []
   timeZoneId := "UTC"
 }
@@ -437,6 +449,40 @@ example :
         raw := .parsed (.dateRange (exactRange
           1719792000000 1722384000000 2024 7 1 2024 7 31))
       }] = some "POISON" := by
+  native_decide
+
+/- Four ISO/slash sources keep the same authored-order recursion one position deeper, Kernel-calibrated on both codegen strategies at the [list arity checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix). Three empty prefixes reach the fourth value, and a second-position value hides **both** remaining formal cells rather than only the next one — the discriminator against a scan that looks one position ahead. The suffix is hidden from the VALUE only: the same checkpoint measures the eager inventory reporting both malformed sources. -/
+example :
+    directListSignature? target.id "DirectIsoSource"
+      ["DirectIsoSecond", "DirectIsoThird", "DirectIsoFourth"] [{
+        declaration := directIsoSource, stored := "", raw := .presentEmpty
+      }, {
+        declaration := directIsoSecond, stored := "", raw := .presentEmpty
+      }, {
+        declaration := directIsoThird, stored := "", raw := .presentEmpty
+      }, {
+        declaration := directIsoFourth
+        stored := "2027-01-01/2027-03-31"
+        raw := .parsed (.dateRange (exactRange
+          1798761600000 1806451200000 2027 1 1 2027 3 31))
+      }] = some "VALUE|2027-01-01/2027-03-31" ∧
+      directListSignature? target.id "DirectIsoSource"
+        ["DirectIsoSecond", "DirectIsoThird", "DirectIsoFourth"] [{
+          declaration := directIsoSource, stored := "", raw := .presentEmpty
+        }, {
+          declaration := directIsoSecond
+          stored := "2025-06-01/2025-06-30"
+          raw := .parsed (.dateRange (exactRange
+            1748736000000 1751241600000 2025 6 1 2025 6 30))
+        }, {
+          declaration := directIsoThird
+          stored := "nonsense"
+          raw := .rejected .dateRangeSeparator
+        }, {
+          declaration := directIsoFourth
+          stored := "also-nonsense"
+          raw := .rejected .dateRangeSeparator
+        }] = some "VALUE|2025-06-01/2025-06-30" := by
   native_decide
 
 /- The exact direct-field-list shape admits only one shared declaration profile and retains the shared entity-list cardinality/duplicate gates. -/
