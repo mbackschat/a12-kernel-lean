@@ -764,106 +764,13 @@ example : (refusal? ["Month", "Month2"]).bind
     TemporalExtremumStreamError.diagnostic? = none := by
   native_decide
 
-/-! ## The reduced-precision folds
+/-! ## The reduced-precision folds, which live in their own module
 
-The Kernel admits and **orders** a component-omitting list at the shared set's own precision, the
-yearless case with no Base Year declared, and the reversed document fires nothing
-([checkpoint](../../docs/SOURCES.md#src-extrema-component-omitting-fold)). These rows lock both arms
-and, more importantly, that the omitted components are **discarded** rather than ordered on.
+A component-omitting list folds at the shared set's own precision on two further arms, and the
+mixed-precision list that says whether the year is compared belongs beside them rather than here.
+[`TemporalExtremumReducedPrecision.lean`](TemporalExtremumReducedPrecision.lean) owns those rows
+and its own four-field model; this module keeps the complete-precision families.
 -/
-
-private def maskedFoldOf (names : List String) (op : TemporalExtremumOp)
-    (baseYear : Option Int) (cells : List (FieldId × RawCell)) :
-    Option (SimpleComparisonOperand FullDate) := do
-  let checked ← admitted? names
-  (TemporalExtremumStream.evalMaskedDate checked op baseYear
-    (probeModel.checkContext (raw cells)) .validation).toOption
-
-private def yearlessFoldOf (names : List String) (op : TemporalExtremumOp)
-    (cells : List (FieldId × RawCell)) :
-    Option (SimpleComparisonOperand MonthDayValue) := do
-  let checked ← admitted? names
-  (TemporalExtremumStream.evalYearlessDate checked op
-    (probeModel.checkContext (raw cells)) .validation).toOption
-
-/- **A year-bearing component-omitting list orders at its own precision.** Both operands are
-   `yyyy-MM`; the earlier month wins under `minimum` and the later under `maximum`, each landing on
-   the set's canonical day. -/
-example :
-    (maskedFoldOf ["Month", "Month2"] .minimum none
-        [(4, dateCell 2024 3 9), (5, dateCell 2024 4 2)],
-      maskedFoldOf ["Month", "Month2"] .maximum none
-        [(4, dateCell 2024 3 9), (5, dateCell 2024 4 2)]) =
-      ((ymd 2024 3 1).map (fun date => .value date true),
-        (ymd 2024 4 1).map (fun date => .value date true)) := by
-  native_decide
-
-/- **A robustness lock on this project's own carrier, claiming nothing about the Kernel.** Lean's
-   `RawCell` retains a parsed `DateValue` beside the stored text and does not re-derive one from the
-   other, so a `yyyy-MM` declaration can hold a cell whose day component is set. These two cells
-   name one month and *different* days, and both extrema answer the identical masked value, which
-   locks the fold's answer as independent of a component the declaration does not name; ordering on
-   the cell's day would make `maximum` answer the 17th. Whether a Kernel document can carry that day
-   under such a declaration is a reachability question, not measured — the ordering rows above are
-   measured on distinct months ([checkpoint](../../docs/SOURCES.md#src-extrema-component-omitting-fold)). -/
-example :
-    (maskedFoldOf ["Month", "Month2"] .maximum none
-        [(4, dateCell 2024 3 1), (5, dateCell 2024 3 17)],
-      maskedFoldOf ["Month", "Month2"] .minimum none
-        [(4, dateCell 2024 3 1), (5, dateCell 2024 3 17)]) =
-      ((ymd 2024 3 1).map (fun date => .value date true),
-        (ymd 2024 3 1).map (fun date => .value date true)) := by
-  native_decide
-
-/- **A yearless list orders on the position it spells, with no Base Year.** The two cells carry
-   *different* years, and the fold answers on the month alone — completing them against either
-   year would order them by that completion. -/
-example :
-    (yearlessFoldOf ["MOnly", "MOnly2"] .minimum
-        [(21, dateCell 2024 3 9), (22, dateCell 1999 4 2)],
-      yearlessFoldOf ["MOnly", "MOnly2"] .maximum
-        [(21, dateCell 2024 3 9), (22, dateCell 1999 4 2)]) =
-      (some (.value { month := 3, day := 1 } true),
-        some (.value { month := 4, day := 1 } true)) := by
-  native_decide
-
-/-! ### Which arm a list orders at
-
-The selector reads the **certificate's** set, which the admission gate has already supplemented, so
-these rows also lock that the supplementation is not applied twice.
--/
-
-private def baseYearModel : FlatModel :=
-  { probeModel with baseYear := some 2024 }
-
-example : baseYearModel.validate.isOk = true := by native_decide
-
-private def armOf (model : FlatModel) (names : List String) :
-    Option TemporalExtremumStream.OmittingDateExtremumArm :=
-  ((TemporalExtremumOperands.elaborate model ["Probe"]
-    (sourceOf (names.map fieldOperand))).toOption).map
-      TemporalExtremumStream.omittingDateExtremumArm
-
-/- A year-bearing set orders as a date and a yearless one as a calendar position, both measured
-   ([checkpoint](../../docs/SOURCES.md#src-extrema-component-omitting-fold)). -/
-example :
-    (armOf probeModel ["Month", "Month2"], armOf probeModel ["MOnly", "MOnly2"]) =
-      (some .dated, some .yearless) := by
-  native_decide
-
-/- **A declared Base Year moves the yearless list to the dated arm**, which stays an internal
-   consistency lock: the admission gate applies `withBaseYear` to every declaration before fixing
-   the expected set — measured on *that* gate ([cases](TemporalExtremumOperands.lean)) — and the
-   selector must agree with the certificate it reads rather than re-deriving the supplementation.
-
-   The extrema's *ordering* under a declared Base Year is now measured and it works, on both codegen
-   strategies with the reversed document firing nothing
-   ([checkpoint](../../docs/SOURCES.md#src-yearless-extrema-base-year-ordering)). What that cannot
-   settle is which value the fold compares, and no document can: one Base Year shifts both operands
-   together, so ordering the supplemented date and ordering the yearless position agree everywhere a
-   shared set is authorable. **So selecting `.dated` here is an unforced choice, not a measured
-   one** — recorded because a later reader would otherwise take the agreement for evidence. -/
-example : armOf baseYearModel ["MOnly", "MOnly2"] = some .dated := by native_decide
 
 private def starGroups : List SurfaceStarGroupSegment :=
   [{ name := "Probe" }, { name := "Rows", starred := true }]
