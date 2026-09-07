@@ -1,0 +1,122 @@
+[
+ {
+  "id": "U10-group-agg-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "U10",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And Sum(/Probe/Cases2) > 0",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "U11-group-agg-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "U11",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And Sum(/Probe/Cases2) > 0",
+   "--message",
+   "en_US=row $#/Probe/Cases2$"
+  ]
+ },
+ {
+  "id": "U12-group-agg-own-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "U12",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And Sum(/Probe/Cases2) > 0",
+   "--message",
+   "en_US=row $#/Probe/Cases$"
+  ]
+ },
+ {
+  "id": "V10-legal-key-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V10",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"X\")",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "V11-legal-key-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V11",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"X\")",
+   "--message",
+   "en_US=row $#/Probe/Cases2 For \"X\"$"
+  ]
+ },
+ {
+  "id": "V12-legal-key-unkeyed-param",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V12",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"X\")",
+   "--message",
+   "en_US=row $#/Probe/Cases2$"
+  ]
+ },
+ {
+  "id": "V13-legal-key-other-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V13",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"X\")",
+   "--message",
+   "en_US=row $#/Probe/Cases2 For \"Y\"$"
+  ]
+ },
+ {
+  "id": "V14-legal-key-index-terminal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V14",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"X\")",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ }
+]

@@ -346,8 +346,6 @@ example :
         some .lineSeparator ∧
       templateError? "\t$" =
         some (.controlCharacter '\t') ∧
-      templateError? "Prüfe $" =
-        some (.unsupportedCharacter 'ü') ∧
       templateError? "$Other$" =
         some (.fieldNotReferenced "Other" other.id) ∧
       templateError? "$Missing$" =
@@ -356,6 +354,61 @@ example :
         some (.invalidParameter "Amount.nope") ∧
       templateError? "$For$" =
         some (.unquotedTerminalName "For") := by
+  native_decide
+
+/-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/
+private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
+
+/- **The template's character repertoire is the BMP, and it is the value charset's rule reaching a second
+   carrier** — not the printable-ASCII bound this gate used to apply, which refused message text the Kernel
+   admits. Measured over fourteen admitted BMP code points spanning Latin-1, Latin Extended-A, currency,
+   Greek, Cyrillic, CJK, punctuation and `U+FFFD`, and two refused supplementary-plane ones
+   ([checkpoint](../../docs/SOURCES.md#src-message-template-character-repertoire)). The refusal is the same
+   BMP predicate `LegalCharset` already carries for a stored value. -/
+example :
+    templateError? "Prüfe $Amount$" = none ∧
+    templateError? "Größe – €5 … 一 α Ж ÿ" = none ∧
+    templateError? ("smile " ++ cp 0x1F600) = some (.unsupportedCharacter (Char.ofNat 0x1F600)) ∧
+    templateError? ("bold " ++ cp 0x1D400) = some (.unsupportedCharacter (Char.ofNat 0x1D400)) := by
+  native_decide
+
+/- **The invisible-format characters are the control class, not the repertoire one.** `DELETE`, the C1
+   `NEL`, a soft hyphen and a zero-width space each draw the Kernel's `INVALID_CHARACTERS` where a line
+   separator draws its own class, so this gate cannot be stated as "C0 plus DEL". `U+2028` stays the line
+   class, which is what keeps the two apart. -/
+example :
+    templateError? ("del " ++ cp 0x007F) = some (.controlCharacter (Char.ofNat 0x007F)) ∧
+    templateError? ("nel " ++ cp 0x0085) = some (.controlCharacter (Char.ofNat 0x0085)) ∧
+    templateError? ("soft " ++ cp 0x00AD) = some (.controlCharacter (Char.ofNat 0x00AD)) ∧
+    templateError? ("zwsp " ++ cp 0x200B) = some (.controlCharacter (Char.ofNat 0x200B)) ∧
+    templateError? ("sep " ++ cp 0x2028) = some .lineSeparator := by
+  native_decide
+
+/- **A parameter's own body keeps the ASCII bound, and that is a different refusal from the repertoire
+   one.** The Kernel reports a non-ASCII letter inside a parameter through its lexer, naming the character
+   and its position, where the same letter in surrounding text is admitted — so the bound belongs to the
+   name grammar rather than to the template. The position payload is not tracked here. -/
+example :
+    templateError? "row $Anchéor$" = some (.parameterCharacter "Anchéor" 'é') ∧
+    templateError? ("row $No" ++ cp 0x20AC ++ "pe$") =
+      some (.parameterCharacter ("No" ++ cp 0x20AC ++ "pe") (Char.ofNat 0x20AC)) ∧
+    templateError? ("row $No" ++ cp 0x4E00 ++ "pe$") =
+      some (.parameterCharacter ("No" ++ cp 0x4E00 ++ "pe") (Char.ofNat 0x4E00)) ∧
+    templateError? "row $Amount$ é" = none := by
+  native_decide
+
+/- **The seven German letters the token grammar names sit on the near side of that bound**, which is
+   what stops the ASCII test being read as the whole rule: an unknown name spelled with `ö` or `ß`
+   reaches entity lookup and reports its own reference failure, where `é` never leaves the lexer. The
+   pair is therefore a *reference* failure and not a lexical one — the discriminator the two classes
+   have to keep apart, since only the lexical code says the text was never a name. -/
+example :
+    templateError? "row $Nöpe$" =
+        some (.reference "Nöpe" (.invalidEntity (bare "Nöpe"))) ∧
+      templateError? "row $Nopß$" =
+        some (.reference "Nopß" (.invalidEntity (bare "Nopß"))) ∧
+      templateError? "row $ÄÜÖäüöß$" =
+        some (.reference "ÄÜÖäüöß" (.invalidEntity (bare "ÄÜÖäüöß"))) := by
   native_decide
 
 /- The **semantic-index suffix** on a parameter. A keyed parameter names a semantic index over a

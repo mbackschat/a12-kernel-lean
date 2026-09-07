@@ -99,7 +99,12 @@ inductive ValidationMessageTemplateError where
   | emptyTemplate
   | lineSeparator
   | controlCharacter (character : Char)
+  /-- A character outside the template's BMP repertoire. The Kernel refuses it **codelessly**, through
+  the runtime formal class its message text belongs to rather than through a bracketed parameter key. -/
   | unsupportedCharacter (character : Char)
+  /-- A non-ASCII character inside a **parameter body**, which the surrounding text admits. Carries the
+  parameter as authored; the Kernel additionally reports the character's 1-based offset. -/
+  | parameterCharacter (parameter : String) (character : Char)
   | oddDollarCount
   | invalidParameter (parameter : String)
   /-- A name colliding with a terminal was written without the grammar's quote escape. -/
@@ -196,17 +201,43 @@ private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
     character.toNat == 0x2028 || character.toNat == 0x2029
 
+/-- The Kernel's `INVALID_CHARACTERS` class over a message template. It is **not** "C0 plus DELETE": the
+C1 block and the two invisible format characters measured draw the same class, while a line separator
+draws its own ([checkpoint](../../docs/SOURCES.md#src-message-template-character-repertoire)). -/
 private def isControlCharacter (character : Char) : Bool :=
-  character.toNat < 0x20 || character.toNat == 0x7f
+  character.toNat < 0x20 || (0x7f ≤ character.toNat && character.toNat ≤ 0x9f) ||
+    character.toNat == 0xad || character.toNat == 0x200b
 
+/-- The template's repertoire is the **BMP**, the same bound a stored value's default charset applies.
+An earlier printable-ASCII bound here was an over-refusal: fourteen BMP code points spanning Latin-1,
+Latin Extended-A, currency, Greek, Cyrillic, CJK, punctuation and `U+FFFD` are admitted in message text,
+while both supplementary-plane scalars measured are refused — and the Kernel reports that refusal without
+a bracketed key, through the runtime formal class its message text belongs to. -/
+private def isSupportedTemplateCharacter (character : Char) : Bool :=
+  character.toNat < 0x10000
+
+/-- The seven non-ASCII letters `nameOhnePunkt` names (`spec/11` Part B). They are the whole non-ASCII
+part of both the parameter body's lexical bound and the name token itself, so the two predicates below
+share the set rather than each spelling it: a name is refused for being *unknown*, never for its
+umlaut, and the lexer that rejects `é` must let the same seven through. -/
+private def germanNameLetters : List Char := "ÄÜÖäüöß".toList
+
+/-- A **parameter body** keeps a bound the template does not: printable ASCII together with the seven
+German letters the `nameOhnePunkt` token grammar names. The Kernel reports anything else inside a
+parameter through its lexer, naming the character and its 1-based offset, where the same character in
+surrounding text is admitted — and the seven are measured on the near side of that line, since an
+unknown name spelled with `ö` or `ß` reaches entity lookup while `é`, `€` and a CJK letter do not
+([checkpoint](../../docs/SOURCES.md#src-message-template-character-repertoire)). The offset is a payload
+this fragment does not track. -/
 private def isBoundedAscii (character : Char) : Bool :=
-  character.toNat ≤ 0x7e
+  character.toNat ≤ 0x7e || germanNameLetters.contains character
 
 private def isBareNameCharacter (character : Char) : Bool :=
   ('a' ≤ character && character ≤ 'z') ||
     ('A' ≤ character && character ≤ 'Z') ||
     ('0' ≤ character && character ≤ '9') ||
-    character == '_' || character == ':'
+    character == '_' || character == ':' ||
+    germanNameLetters.contains character
 
 private def isBareName (name : String) : Bool :=
   !name.isEmpty && name.toList.all isBareNameCharacter
@@ -475,9 +506,10 @@ private def parseSegments (profile : ValidationMessageKeywordProfile) :
           parseParameter profile parameter
       pure (textPart text ++ [parameterPart] ++ (← parseSegments profile rest))
 
-/-- The lexical gate **both** message producers share: a nonempty printable-ASCII source with no line
-separator or control character and balanced dollar delimiters, split into alternating text and
-parameter segments. Only the parameter grammar differs between producers, so this stays one gate. -/
+/-- The lexical gate **both** message producers share: a nonempty source inside the template repertoire
+with no line separator or control character, balanced dollar delimiters, and no non-ASCII character
+inside a parameter body, split into alternating text and parameter segments. Only the parameter grammar
+differs between producers, so this stays one gate. -/
 def validateMessageTemplateSource (source : String) :
     Except ValidationMessageTemplateError (List String) := do
   if source.isEmpty then throw .emptyTemplate
@@ -487,11 +519,23 @@ def validateMessageTemplateSource (source : String) :
   match source.toList.find? isControlCharacter with
   | some character => throw (.controlCharacter character)
   | none => pure ()
-  match source.toList.find? (fun character => !isBoundedAscii character) with
+  match source.toList.find?
+      (fun character => !isSupportedTemplateCharacter character) with
   | some character => throw (.unsupportedCharacter character)
   | none => pure ()
   if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
-  pure (source.splitOn "$")
+  let segments := source.splitOn "$"
+  -- Parameter segments are the odd-indexed pieces of a balanced split, and only they carry the ASCII
+  -- bound. Checking it here rather than inside each producer's grammar keeps the two producers on one
+  -- lexical gate, which is the whole reason this function is shared.
+  match segments.zipIdx.find? fun (segment, index) =>
+      index % 2 == 1 && segment.toList.any (fun c => !isBoundedAscii c) with
+  | some (segment, _) =>
+      match segment.toList.find? (fun c => !isBoundedAscii c) with
+      | some character => throw (.parameterCharacter segment character)
+      | none => pure ()
+  | none => pure ()
+  pure segments
 
 private def parseValidationMessageTemplate
     (profile : ValidationMessageKeywordProfile) (source : String) :

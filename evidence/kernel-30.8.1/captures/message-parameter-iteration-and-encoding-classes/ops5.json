@@ -1,0 +1,137 @@
+[
+ {
+  "id": "U00-agg-parallel-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "U00",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And Sum(/Probe/Cases2/Score2) > 0",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "U01-agg-parallel-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "U01",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And Sum(/Probe/Cases2/Score2) > 0",
+   "--message",
+   "en_US=row $#/Probe/Cases2$"
+  ]
+ },
+ {
+  "id": "U02-agg-parallel-own-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "U02",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And Sum(/Probe/Cases2/Score2) > 0",
+   "--message",
+   "en_US=row $#/Probe/Cases$"
+  ]
+ },
+ {
+  "id": "U03-agg-or-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "U03",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And Sum(/Probe/Cases2/Score2) > 0 Or FieldFilled(Score)",
+   "--message",
+   "en_US=row $#/Probe/Cases2$"
+  ]
+ },
+ {
+  "id": "V00-keyed-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V00",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"k\")",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "V01-keyed-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V01",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"k\")",
+   "--message",
+   "en_US=row $#/Probe/Cases2 For \"k\"$"
+  ]
+ },
+ {
+  "id": "V02-keyed-wrong-key",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V02",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"k\")",
+   "--message",
+   "en_US=row $#/Probe/Cases2 For \"z\"$"
+  ]
+ },
+ {
+  "id": "V03-keyed-unkeyed-param",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V03",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"k\")",
+   "--message",
+   "en_US=row $#/Probe/Cases2$"
+  ]
+ },
+ {
+  "id": "V04-keyed-own-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "V04",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2 For \"k\")",
+   "--message",
+   "en_US=row $#/Probe/Cases For \"k\"$"
+  ]
+ }
+]

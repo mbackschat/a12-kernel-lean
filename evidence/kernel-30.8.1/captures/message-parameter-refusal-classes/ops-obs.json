@@ -1,0 +1,462 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "7d2ffff96980dd9712f302ae329921395c07f2b26ba42fe49b993abc39f8b30a",
+  "observations" : [ {
+    "id" : "H00-plain-control",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "H01-odd-dollars",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "WRONG_NUMBER_OF_DOLLARS" ]
+  }, {
+    "id" : "H02-linebreak",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_LINEBREAK" ]
+  }, {
+    "id" : "H03-control-char",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CHARACTERS" ]
+  }, {
+    "id" : "H04-nonascii",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "H05-empty-parameter",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "H06-unknown-entity",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "H07-bare-index",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "H08-unknown-group",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "H09-unknown-group-below-root",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "H10-relative-group",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "H11-baseyear-no-declaration",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_BASE_YEAR" ]
+  }, {
+    "id" : "H12-category-empty",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "H13-star-in-parameter",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_LEXER_STANDARD_ERROR" ]
+  }, {
+    "id" : "H14-too-many-parents",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "H15-ambiguous-bare-name",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "ERROR_TEXT_FIELDNAME_NOT_UNIQUE" ]
+  }, {
+    "id" : "H16-ambiguous-bare-name-value",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "ERROR_TEXT_FIELDNAME_NOT_UNIQUE" ]
+  }, {
+    "id" : "H17-path-spec-double-slash",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "H18-trailing-slash",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCOMPLETE_INPUT" ]
+  }, {
+    "id" : "H19-retired-zeile",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "PARAM_INVALID_IN_NEW_WORLD" ]
+  }, {
+    "id" : "H20-retired-usb",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "PARAM_INVALID_IN_NEW_WORLD" ]
+  }, {
+    "id" : "H21-retired-lfdnr",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "H22-terminal-L",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "H23-terminal-Z",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "H24-terminal-U",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "H25-terminal-H",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "H26-rootgroup-shorthand",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "H27-rulegroup-shorthand-root",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "RULEGROUP_IMMEDIATELY_BELOW_ROOT" ]
+  }, {
+    "id" : "H28-keyed-parameter",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  }, {
+    "id" : "H29-name-then-value-control",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "H30-absolute-path-control",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "H31-enum-category-plain-field",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "H32-enum-category-unknown",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "H33-noncategory-field-arrow",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "H34-empty-message",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_MESSAGE_MISSING", "RULE_HAS_NO_ERRORTEXT" ]
+  }, {
+    "id" : "J00-referenced-bare",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "J01-referenced-value",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "J02-referenced-absolute",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "J03-unreferenced-bare",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "J04-two-conjunct-referenced",
+    "inputHash" : "ce5e73d0ed3e6bc86cfafb9bb6f09e9fc561427a8fb5c5e6b46076a8346f96f7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "J05-cat-referenced-enum",
+    "inputHash" : "f2d840b4512b9824ed649296cec81f376ab830f4961c5c1d3eaef19375cab8f7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "J06-cat-referenced-unknown",
+    "inputHash" : "f2d840b4512b9824ed649296cec81f376ab830f4961c5c1d3eaef19375cab8f7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CATEGORY" ]
+  }, {
+    "id" : "J07-cat-empty-name",
+    "inputHash" : "f2d840b4512b9824ed649296cec81f376ab830f4961c5c1d3eaef19375cab8f7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "J08-cat-on-nonenum",
+    "inputHash" : "ce5e73d0ed3e6bc86cfafb9bb6f09e9fc561427a8fb5c5e6b46076a8346f96f7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "FIELD_NO_ENUM" ]
+  }, {
+    "id" : "J09-value-on-enum",
+    "inputHash" : "f2d840b4512b9824ed649296cec81f376ab830f4961c5c1d3eaef19375cab8f7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "J10-nonascii-text",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "J11-nonascii-in-name",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_LEXER_STANDARD_ERROR" ]
+  }, {
+    "id" : "J12-tab-in-text",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CHARACTERS" ]
+  }, {
+    "id" : "J13-emoji-text",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ ]
+  }, {
+    "id" : "J14-nbsp-text",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "J15-quoted-name-control",
+    "inputHash" : "ce5e73d0ed3e6bc86cfafb9bb6f09e9fc561427a8fb5c5e6b46076a8346f96f7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "J16-four-dollars",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "J17-three-dollars",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "WRONG_NUMBER_OF_DOLLARS" ]
+  }, {
+    "id" : "J18-baseyear-offset",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_BASE_YEAR" ]
+  }, {
+    "id" : "K00-ascii-control",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-00A0-nbsp",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-00DF-eszett",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-00E9-eacute",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-00FF-ydiaeresis",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-0100-amacron",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-0152-oe-ligature",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-20AC-euro",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-03B1-alpha",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-0416-cyrillic-zhe",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-4E00-cjk-one",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-2013-endash",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-2026-ellipsis",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-FFFD-replacement",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "K-1F600-emoji",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ ]
+  }, {
+    "id" : "K-1D400-math-bold-A",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ ]
+  }, {
+    "id" : "K-00AD-soft-hyphen",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CHARACTERS" ]
+  }, {
+    "id" : "K-200B-zero-width-space",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CHARACTERS" ]
+  }, {
+    "id" : "K-2028-line-sep",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_LINEBREAK" ]
+  }, {
+    "id" : "K-0085-next-line",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CHARACTERS" ]
+  }, {
+    "id" : "K-007F-delete",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CHARACTERS" ]
+  } ]
+}

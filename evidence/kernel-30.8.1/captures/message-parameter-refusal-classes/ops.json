@@ -1,0 +1,1127 @@
+[
+ {
+  "id": "H00-plain-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "H01-odd-dollars",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H01",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Alpha"
+  ]
+ },
+ {
+  "id": "H02-linebreak",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H02",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=line one\nline two"
+  ]
+ },
+ {
+  "id": "H03-control-char",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H03",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=bell \u0007 here"
+  ]
+ },
+ {
+  "id": "H04-nonascii",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H04",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=cafe strasse \u00e9\u00df"
+  ]
+ },
+ {
+  "id": "H05-empty-parameter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H05",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $$ here"
+  ]
+ },
+ {
+  "id": "H06-unknown-entity",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H06",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Nope$"
+  ]
+ },
+ {
+  "id": "H07-bare-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H07",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $index$"
+  ]
+ },
+ {
+  "id": "H08-unknown-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H08",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#/Nope$"
+  ]
+ },
+ {
+  "id": "H09-unknown-group-below-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H09",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#/Probe/Nope$"
+  ]
+ },
+ {
+  "id": "H10-relative-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H10",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#Claims$"
+  ]
+ },
+ {
+  "id": "H11-baseyear-no-declaration",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H11",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=year $BaseYear$"
+  ]
+ },
+ {
+  "id": "H12-category-empty",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H12",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Alpha->$"
+  ]
+ },
+ {
+  "id": "H13-star-in-parameter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H13",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $/Probe/Claims*/Note$"
+  ]
+ },
+ {
+  "id": "H14-too-many-parents",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H14",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $../../../Alpha$"
+  ]
+ },
+ {
+  "id": "H15-ambiguous-bare-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H15",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Grade$"
+  ]
+ },
+ {
+  "id": "H16-ambiguous-bare-name-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H16",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Grade.value$"
+  ]
+ },
+ {
+  "id": "H17-path-spec-double-slash",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H17",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $//Probe//Alpha$"
+  ]
+ },
+ {
+  "id": "H18-trailing-slash",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H18",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $/Probe/$"
+  ]
+ },
+ {
+  "id": "H19-retired-zeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H19",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#Zeile$"
+  ]
+ },
+ {
+  "id": "H20-retired-usb",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H20",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#Usb$"
+  ]
+ },
+ {
+  "id": "H21-retired-lfdnr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H21",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#LfdNr$"
+  ]
+ },
+ {
+  "id": "H22-terminal-L",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H22",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $L$"
+  ]
+ },
+ {
+  "id": "H23-terminal-Z",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H23",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Z$"
+  ]
+ },
+ {
+  "id": "H24-terminal-U",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H24",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $U$"
+  ]
+ },
+ {
+  "id": "H25-terminal-H",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H25",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $H$"
+  ]
+ },
+ {
+  "id": "H26-rootgroup-shorthand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H26",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#RootGroup$"
+  ]
+ },
+ {
+  "id": "H27-rulegroup-shorthand-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H27",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#RuleGroup$"
+  ]
+ },
+ {
+  "id": "H28-keyed-parameter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H28",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $/Probe/Cases/Score For \"A\"$"
+  ]
+ },
+ {
+  "id": "H29-name-then-value-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H29",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Alpha.value$"
+  ]
+ },
+ {
+  "id": "H30-absolute-path-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H30",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $/Probe/Alpha$"
+  ]
+ },
+ {
+  "id": "H31-enum-category-plain-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H31",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $Grade->Band$"
+  ]
+ },
+ {
+  "id": "H32-enum-category-unknown",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H32",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $Grade->Nope$"
+  ]
+ },
+ {
+  "id": "H33-noncategory-field-arrow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H33",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Alpha->Band$"
+  ]
+ },
+ {
+  "id": "H34-empty-message",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H34",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US="
+  ]
+ },
+ {
+  "id": "J00-referenced-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Anchor$"
+  ]
+ },
+ {
+  "id": "J01-referenced-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J01",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Anchor.value$"
+  ]
+ },
+ {
+  "id": "J02-referenced-absolute",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J02",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $/Probe/Anchor$"
+  ]
+ },
+ {
+  "id": "J03-unreferenced-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J03",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Alpha$"
+  ]
+ },
+ {
+  "id": "J04-two-conjunct-referenced",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J04",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldFilled(Alpha)",
+   "--message",
+   "en_US=row $Alpha$"
+  ]
+ },
+ {
+  "id": "J05-cat-referenced-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J05",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(Grade)",
+   "--message",
+   "en_US=row $Grade->Band$"
+  ]
+ },
+ {
+  "id": "J06-cat-referenced-unknown",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J06",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(Grade)",
+   "--message",
+   "en_US=row $Grade->Nope$"
+  ]
+ },
+ {
+  "id": "J07-cat-empty-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J07",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(Grade)",
+   "--message",
+   "en_US=row $Grade->$"
+  ]
+ },
+ {
+  "id": "J08-cat-on-nonenum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J08",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldFilled(Alpha)",
+   "--message",
+   "en_US=row $Alpha->Band$"
+  ]
+ },
+ {
+  "id": "J09-value-on-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J09",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(Grade)",
+   "--message",
+   "en_US=row $Grade.value$"
+  ]
+ },
+ {
+  "id": "J10-nonascii-text",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J10",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=cafe \u00e9"
+  ]
+ },
+ {
+  "id": "J11-nonascii-in-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J11",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Anch\u00e9or$"
+  ]
+ },
+ {
+  "id": "J12-tab-in-text",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J12",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row\there"
+  ]
+ },
+ {
+  "id": "J13-emoji-text",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J13",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row \ud83d\ude00"
+  ]
+ },
+ {
+  "id": "J14-nbsp-text",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J14",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row\u00a0here"
+  ]
+ },
+ {
+  "id": "J15-quoted-name-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J15",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldFilled(Alpha)",
+   "--message",
+   "en_US=row $'Alpha'$"
+  ]
+ },
+ {
+  "id": "J16-four-dollars",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J16",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=a $$ b $$ c"
+  ]
+ },
+ {
+  "id": "J17-three-dollars",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J17",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=a $Anchor$ b $"
+  ]
+ },
+ {
+  "id": "J18-baseyear-offset",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J18",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=year $BaseYear+1$"
+  ]
+ },
+ {
+  "id": "K00-ascii-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "K-00A0-nbsp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K00A0",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u00a0x"
+  ]
+ },
+ {
+  "id": "K-00DF-eszett",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K00DF",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u00dfx"
+  ]
+ },
+ {
+  "id": "K-00E9-eacute",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K00E9",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u00e9x"
+  ]
+ },
+ {
+  "id": "K-00FF-ydiaeresis",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K00FF",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u00ffx"
+  ]
+ },
+ {
+  "id": "K-0100-amacron",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K0100",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u0100x"
+  ]
+ },
+ {
+  "id": "K-0152-oe-ligature",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K0152",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u0152x"
+  ]
+ },
+ {
+  "id": "K-20AC-euro",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K20AC",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u20acx"
+  ]
+ },
+ {
+  "id": "K-03B1-alpha",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K03B1",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u03b1x"
+  ]
+ },
+ {
+  "id": "K-0416-cyrillic-zhe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K0416",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u0416x"
+  ]
+ },
+ {
+  "id": "K-4E00-cjk-one",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K4E00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u4e00x"
+  ]
+ },
+ {
+  "id": "K-2013-endash",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K2013",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u2013x"
+  ]
+ },
+ {
+  "id": "K-2026-ellipsis",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K2026",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u2026x"
+  ]
+ },
+ {
+  "id": "K-FFFD-replacement",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "KFFFD",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\ufffdx"
+  ]
+ },
+ {
+  "id": "K-1F600-emoji",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K1F600",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\ud83d\ude00x"
+  ]
+ },
+ {
+  "id": "K-1D400-math-bold-A",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K1D400",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\ud835\udc00x"
+  ]
+ },
+ {
+  "id": "K-00AD-soft-hyphen",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K00AD",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u00adx"
+  ]
+ },
+ {
+  "id": "K-200B-zero-width-space",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K200B",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u200bx"
+  ]
+ },
+ {
+  "id": "K-2028-line-sep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K2028",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u2028x"
+  ]
+ },
+ {
+  "id": "K-0085-next-line",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K0085",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u0085x"
+  ]
+ },
+ {
+  "id": "K-007F-delete",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K007F",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=t\u007fx"
+  ]
+ }
+]

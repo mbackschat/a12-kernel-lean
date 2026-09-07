@@ -1,0 +1,180 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "6a6a952603224bd13712d307bd4523d35ecb2545f21681dd85bfbbeef5c0a5f1",
+  "observations" : [ {
+    "id" : "Q00-cond-probe",
+    "inputHash" : "0c435bb19493e625d5672979582b4dc94b7370f949c5364ba313aace379d7588",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "Q01-cond-probe",
+    "inputHash" : "8c2c3ff81cd11b2781783fad8e2f792172105c308cca215a3c0f3bedd0066b50",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "Q02-cond-probe",
+    "inputHash" : "df614a25680c36307f06689745ac8cdef6e64164df366ff5b4be666780abbc6b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "Q03-cond-probe",
+    "inputHash" : "aba8d79645dcd7a48727cb5d53009e4be4bde9f044571e64d7b13018ae420305",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "Q04-cond-probe",
+    "inputHash" : "d7db42581ce92bd68f64cbeb0388bb197d45b79b7daae18fd0bbecffe695bda2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "Q05-cond-probe",
+    "inputHash" : "189d1ebe572747e8fb6c032e50e7f88f607caf2dfd6d58ea29729217f1f799e7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "Q06-cond-probe",
+    "inputHash" : "d836ae1289c27339677238945210c15a1a1f1211ac3892bcfbf5e8d02888f71a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_INVALID_INDEX" ]
+  }, {
+    "id" : "Q07-cond-probe",
+    "inputHash" : "c15a22bc55f6bf5f1533eec580a22baafe96aa106a41275f890a73eeaf137df3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "Q08-cond-probe",
+    "inputHash" : "77c538198f52d6a40f4622152e016e22c798dcac455b405f519432b14c0fa34a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "Q09-cond-probe",
+    "inputHash" : "590752110fbb1557edccf6bd29ee75382aadb7d7e7b1e44bfd28fb0956fd2f62",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "Q10-cond-probe",
+    "inputHash" : "d71454244df32c41c18a8bee1af0ccba45dea35f9790ff2a48c1ec10b5ccc966",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "Q11-cond-probe",
+    "inputHash" : "1810c46b2df9dd51e21e63f876aebe3c029af49867c3fd67de46062886719bd7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "N00-abs-own-group",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "N01-abs-other-group",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "N02-abs-root-group",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "N03-abs-own-group-keyed",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "N04-abs-unknown-group",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "N05-abs-field-not-group",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "N06-abs-ancestor-group",
+    "inputHash" : "2590f53f56b45260ebf53171b2ee6db2c73dea5b504923c13e58b768bb9ec4b2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "N07-abs-own-inner-group",
+    "inputHash" : "2590f53f56b45260ebf53171b2ee6db2c73dea5b504923c13e58b768bb9ec4b2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "O00-unknown-vordruckzeile",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "O01-group-vordruckzeile",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "O02-absolute-vordruckzeile",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "O03-unreferenced-vordruckname",
+    "inputHash" : "e4acd6922bb49100c22affb4d9f6e4d5fd10e1349a9faa4c605f596fa76e3999",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "O04-vordruckzeile-category",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "O05-repeatable-vordruckzeile-unref",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "P00-rulegroup-vordruckname",
+    "inputHash" : "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INTERNAL_ERROR" ]
+  }, {
+    "id" : "P01-deep-rulegroup-vordruckzeile",
+    "inputHash" : "2590f53f56b45260ebf53171b2ee6db2c73dea5b504923c13e58b768bb9ec4b2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INTERNAL_ERROR" ]
+  } ]
+}

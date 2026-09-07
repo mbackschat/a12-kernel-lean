@@ -1,0 +1,108 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "6a6a952603224bd13712d307bd4523d35ecb2545f21681dd85bfbbeef5c0a5f1",
+  "observations" : [ {
+    "id" : "R00-parallel-plain",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "R01-parallel-hash-rootgroup",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_HASH_LFDNR_FOR_PARALLEL_ITERATION" ]
+  }, {
+    "id" : "R02-parallel-abs-other-group",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "R03-parallel-abs-other-keyed",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "R04-parallel-abs-own-group",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "R05-parallel-other-name",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "R06-parallel-other-value",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "R07-nonparallel-hash-rootgroup",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "R08-nonparallel-abs-own-group",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "R09-parallel-index-terminal",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_ENUM_XML_VALUES" ]
+  }, {
+    "id" : "S00-index-name-mismatch",
+    "inputHash" : "d836ae1289c27339677238945210c15a1a1f1211ac3892bcfbf5e8d02888f71a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_INVALID_INDEX" ]
+  }, {
+    "id" : "S01-wildcard-instead",
+    "inputHash" : "189d1ebe572747e8fb6c032e50e7f88f607caf2dfd6d58ea29729217f1f799e7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "S02-index-name-agrees",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "T00-supp-plane-plus-rootgroup",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ ]
+  }, {
+    "id" : "T01-supp-plane-plus-bad-name",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "T02-bmp-fffd-control",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  } ]
+}

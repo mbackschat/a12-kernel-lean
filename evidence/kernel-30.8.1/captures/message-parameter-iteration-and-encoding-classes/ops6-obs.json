@@ -1,0 +1,42 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea",
+    "state" : "CLEAN"
+  },
+  "model" : "592ffeefd4d2f93ea37cf116accabb74b38a2624eed1d14bf750e1377edd4920",
+  "observations" : [ {
+    "id" : "W00-aligned-plain",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "W01-aligned-index-value",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "W02-aligned-index-category",
+    "inputHash" : "abe0334100e4b142ca373bac8eaed0a918938c84f0f9a1cc7e3110ad48654913",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_ENUM_XML_TO_CAT" ]
+  }, {
+    "id" : "W03-aligned-nonparallel-value",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "W04-aligned-nonparallel-category",
+    "inputHash" : "a678765631a01d2bad94395cfe60a512d55841844b81acc7f9df009f0ad1c158",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  } ]
+}

@@ -583,6 +583,12 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
+<a id="src-message-template-character-repertoire"></a>
+- [The rule-message template's repertoire is the BMP rather than printable ASCII, its control class covers the C1 block and the invisible format characters, the ASCII bound belongs to a parameter body alone, and the name position's condition-reference gate is `INVALID_FIELD`](sources/message-and-pointer-probes.md#src-message-template-character-repertoire)
+
+<a id="src-message-parameter-surface-and-iteration-gates"></a>
+- [The rule-message parameter surface read off its own grammar: the value suffix's second gate is a field declaration (`INVALID_NO_VALUE_VALIDATION`), `$Entity.Vordruckzeile$` skips the condition-membership gate, `$#RootGroup$` is gated on parallel iteration, the group position takes a matching semantic-index key, and the index terminal's cross-declaration consistency family is reachable](sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)
+
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
 

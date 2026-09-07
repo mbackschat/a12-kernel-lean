@@ -1,0 +1,77 @@
+[
+ {
+  "id": "W00-aligned-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "W00",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "W01-aligned-index-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "W01",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "W02-aligned-index-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "W02",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $index(Grade)->Band$"
+  ]
+ },
+ {
+  "id": "W03-aligned-nonparallel-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "W03",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "W04-aligned-nonparallel-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "W04",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $index(Grade)->Band$"
+  ]
+ }
+]

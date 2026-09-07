@@ -1,0 +1,482 @@
+[
+ {
+  "id": "E10-nvv-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E10",
+   "--field",
+   "/Probe/Beta",
+   "--condition",
+   "FieldFilled(Beta)",
+   "--message",
+   "en_US=row $Beta$"
+  ]
+ },
+ {
+  "id": "E11-nvv-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E11",
+   "--field",
+   "/Probe/Beta",
+   "--condition",
+   "FieldFilled(Beta)",
+   "--message",
+   "en_US=row $Beta.value$"
+  ]
+ },
+ {
+  "id": "E12-plain-string-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "E12",
+   "--field",
+   "/Probe/Alpha",
+   "--condition",
+   "FieldFilled(Alpha)",
+   "--message",
+   "en_US=row $Alpha.value$"
+  ]
+ },
+ {
+  "id": "H00-deep-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H00",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $Other$"
+  ]
+ },
+ {
+  "id": "H01-deep-hash-rulegroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H01",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $#RuleGroup$"
+  ]
+ },
+ {
+  "id": "H02-deep-hash-rulegroup-keyed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H02",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $#RuleGroup For \"k\"$"
+  ]
+ },
+ {
+  "id": "H03-one-level-hash-rulegroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "H03",
+   "--field",
+   "/Probe/Outer/OuterVal",
+   "--condition",
+   "FieldFilled(OuterVal)",
+   "--message",
+   "en_US=row $#RuleGroup$"
+  ]
+ },
+ {
+  "id": "I00-rulegroup-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "I00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $RuleGroup.value$"
+  ]
+ },
+ {
+  "id": "I01-rulegroup-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "I01",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $RuleGroup.Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "I02-rulegroup-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "I02",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $RuleGroup->Band$"
+  ]
+ },
+ {
+  "id": "I03-index-of-rulegroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "I03",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $index(RuleGroup).value$"
+  ]
+ },
+ {
+  "id": "J00-bare-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "J01-vordruckzeile-then-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J01",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Anchor.Vordruckzeile.value$"
+  ]
+ },
+ {
+  "id": "J02-number-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J02",
+   "--field",
+   "/Probe/Amount",
+   "--condition",
+   "FieldFilled(Amount)",
+   "--message",
+   "en_US=row $Amount.Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "J03-repeatable-vordruckname",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J03",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $Note.Vordruckname$"
+  ]
+ },
+ {
+  "id": "J04-unreferenced-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "J04",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $Anchor.Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "K00-iter-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K00",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "K01-iter-hash-rootgroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K01",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=row $#RootGroup$"
+  ]
+ },
+ {
+  "id": "K02-iter-hash-cases",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K02",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=row $#Cases$"
+  ]
+ },
+ {
+  "id": "K03-iter-hash-claims",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K03",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=row $#Claims$"
+  ]
+ },
+ {
+  "id": "K04-iter-starred-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K04",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=row $Score$"
+  ]
+ },
+ {
+  "id": "K05-iter-starred-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K05",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=row $Score.value$"
+  ]
+ },
+ {
+  "id": "K06-deep-iter-hash-rootgroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K06",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Other)",
+   "--message",
+   "en_US=row $#RootGroup$"
+  ]
+ },
+ {
+  "id": "K07-deep-iter-hash-rulegroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "K07",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "/Probe/Cases*/Score > 5 And FieldFilled(Other)",
+   "--message",
+   "en_US=row $#RuleGroup$"
+  ]
+ },
+ {
+  "id": "L00-own-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "L00",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#Claims$"
+  ]
+ },
+ {
+  "id": "L01-own-group-index-keyed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "L01",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#Claims For \"k\"$"
+  ]
+ },
+ {
+  "id": "L02-inner-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "L02",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $#Inner$"
+  ]
+ },
+ {
+  "id": "L03-outer-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "L03",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $#Outer$"
+  ]
+ },
+ {
+  "id": "L04-absolute-group-index",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "L04",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#/Probe/Claims$"
+  ]
+ },
+ {
+  "id": "M00-double-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "M00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Anchor.value.value$"
+  ]
+ },
+ {
+  "id": "M01-rootgroup-calc",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "M01",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $#RootGroup+1$"
+  ]
+ },
+ {
+  "id": "M02-baseyear-bare-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "M02",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $BaseYear$"
+  ]
+ }
+]

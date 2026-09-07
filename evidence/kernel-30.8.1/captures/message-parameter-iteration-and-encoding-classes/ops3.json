@@ -1,0 +1,422 @@
+[
+ {
+  "id": "Q00-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q00",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q01-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q01",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "../Cases*/Score > 5 And FieldFilled(Note)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q02-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q02",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And /Probe/Cases*/Score > 5",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q03-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q03",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And Sum(/Probe/Cases*/Score) > 5",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q04-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q04",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And /Probe/Cases*/Score == 5",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q05-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q05",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And FieldFilled(/Probe/Cases*/Score)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q06-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q06",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And FieldFilled(/Probe/Cases/Score)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q07-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q07",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And MoreThanOneFieldFilled(/Probe/Cases*/Score)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q08-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q08",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And /Probe/Cases*/Grade == \"A\"",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q09-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q09",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And GroupFilled(/Probe/Cases*)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q10-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q10",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And Length(/Probe/Cases*/Grade) > 0",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "Q11-cond-probe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "Q11",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And RepetitionNotUnique(/Probe/Cases*/Score)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "N00-abs-own-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N00",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#/Probe/Claims$"
+  ]
+ },
+ {
+  "id": "N01-abs-other-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N01",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#/Probe/Cases$"
+  ]
+ },
+ {
+  "id": "N02-abs-root-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N02",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#/Probe$"
+  ]
+ },
+ {
+  "id": "N03-abs-own-group-keyed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N03",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#/Probe/Claims For \"k\"$"
+  ]
+ },
+ {
+  "id": "N04-abs-unknown-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N04",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#/Probe/Nope$"
+  ]
+ },
+ {
+  "id": "N05-abs-field-not-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N05",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $#/Probe/Claims/ClaimNo$"
+  ]
+ },
+ {
+  "id": "N06-abs-ancestor-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N06",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $#/Probe/Outer$"
+  ]
+ },
+ {
+  "id": "N07-abs-own-inner-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "N07",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $#/Probe/Outer/Inner$"
+  ]
+ },
+ {
+  "id": "O00-unknown-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "O00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Nope.Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "O01-group-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "O01",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $Claims.Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "O02-absolute-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "O02",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $/Probe/Alpha.Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "O03-unreferenced-vordruckname",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "O03",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note)",
+   "--message",
+   "en_US=row $Anchor.Vordruckname$"
+  ]
+ },
+ {
+  "id": "O04-vordruckzeile-category",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "O04",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Anchor.Vordruckzeile->Band$"
+  ]
+ },
+ {
+  "id": "O05-repeatable-vordruckzeile-unref",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "O05",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $Claims/Note.Vordruckzeile$"
+  ]
+ },
+ {
+  "id": "P00-rulegroup-vordruckname",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "P00",
+   "--field",
+   "/Probe/Anchor",
+   "--condition",
+   "FieldFilled(Anchor)",
+   "--message",
+   "en_US=row $RuleGroup.Vordruckname$"
+  ]
+ },
+ {
+  "id": "P01-deep-rulegroup-vordruckzeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "P01",
+   "--field",
+   "/Probe/Outer/Inner/Other",
+   "--condition",
+   "FieldFilled(Other)",
+   "--message",
+   "en_US=row $RuleGroup.Vordruckzeile$"
+  ]
+ }
+]

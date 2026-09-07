@@ -1,0 +1,242 @@
+[
+ {
+  "id": "R00-parallel-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R00",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "R01-parallel-hash-rootgroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R01",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $#RootGroup$"
+  ]
+ },
+ {
+  "id": "R02-parallel-abs-other-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R02",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $#/Probe/Cases2$"
+  ]
+ },
+ {
+  "id": "R03-parallel-abs-other-keyed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R03",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $#/Probe/Cases2 For \"k\"$"
+  ]
+ },
+ {
+  "id": "R04-parallel-abs-own-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R04",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $#/Probe/Cases$"
+  ]
+ },
+ {
+  "id": "R05-parallel-other-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R05",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $Score2$"
+  ]
+ },
+ {
+  "id": "R06-parallel-other-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R06",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $Score2.value$"
+  ]
+ },
+ {
+  "id": "R07-nonparallel-hash-rootgroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R07",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $#RootGroup$"
+  ]
+ },
+ {
+  "id": "R08-nonparallel-abs-own-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R08",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=row $#/Probe/Cases$"
+  ]
+ },
+ {
+  "id": "R09-parallel-index-terminal",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "R09",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=row $index(Grade).value$"
+  ]
+ },
+ {
+  "id": "S00-index-name-mismatch",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S00",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And FieldFilled(/Probe/Cases/Score)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "S01-wildcard-instead",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S01",
+   "--field",
+   "/Probe/Claims/Note",
+   "--condition",
+   "FieldFilled(Note) And FieldFilled(/Probe/Cases*/Score)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "S02-index-name-agrees",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S02",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score) And FieldFilled(/Probe/Cases2/Score2)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "T00-supp-plane-plus-rootgroup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "T00",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=t😀x $#RootGroup$"
+  ]
+ },
+ {
+  "id": "T01-supp-plane-plus-bad-name",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "T01",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=t😀x $Nope$"
+  ]
+ },
+ {
+  "id": "T02-bmp-fffd-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "T02",
+   "--field",
+   "/Probe/Cases/Score",
+   "--condition",
+   "FieldFilled(Score)",
+   "--message",
+   "en_US=t�x"
+  ]
+ }
+]
