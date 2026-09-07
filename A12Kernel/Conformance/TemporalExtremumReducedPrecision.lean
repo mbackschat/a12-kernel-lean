@@ -212,21 +212,26 @@ example :
         (ymd 2025 3 1).map (fun date => .value date true)) := by
   native_decide
 
-/- **Where that year comes from, stated because the rows above do not pin it.** The masking
-   projection is applied with the list's *shared* set, and the gate has already supplemented that
-   set, so it reports the year as named and the projection then reads each cell's own year — the
-   yearless-declared operand's included. On a coherently decoded document the two coincide, because
-   a yearless declaration's stored text is itself decoded under the declared Base Year, which is why
-   every row above agrees with the Kernel. A cell disagreeing with the Base Year under such a
-   declaration orders on the cell's year instead, as this row shows; that is the same unmeasured
-   reachability question the day-masking lock records, and it is left as an
-   [SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema-operand-gate-element-type-and-fold)
-   row rather than answered by narrowing a total function. Locked so the asymmetry with the masked
-   day cannot be mistaken for the day rule. -/
+/- **Where that year comes from: the declared Base Year, whatever the cell holds.** Each operand is
+   masked at *its own* declared precision rather than at the list's shared set, so a
+   yearless-declared operand takes the Base Year even when its cell carries some other year. That is
+   the rule the Kernel states — supplementation by the declared Base Year, never by a sibling
+   operand's year — and keying it on the shared set instead would have made the answer depend on the
+   cell, since the admission gate supplements that set and so reports the year as named for every
+   operand in the list.
+
+   These cells are the discriminating pair: both name March, one carries 1999 and the other the Base
+   Year, and both extrema answer 2024 because neither cell's year is read at all. Under shared-set
+   masking the minimum would have been 1999. This also completes the invariant the day lock states —
+   the fold is independent of *every* component the operand's declaration does not name — so the
+   year no longer needs the coherently-decoded-document assumption the day never needed. -/
 example :
-    maskedFoldIn? baseYearModel ["MOnly", "MOnly2"] .minimum (some 2024)
-        [(21, dateCell 1999 3 9), (22, dateCell 2024 3 1)] =
-      (ymd 1999 3 1).map (fun date => .value date true) := by
+    (maskedFoldIn? baseYearModel ["MOnly", "MOnly2"] .minimum (some 2024)
+        [(21, dateCell 1999 3 9), (22, dateCell 2024 3 1)],
+      maskedFoldIn? baseYearModel ["MOnly", "MOnly2"] .maximum (some 2024)
+        [(21, dateCell 1999 3 9), (22, dateCell 2024 3 1)]) =
+      ((ymd 2024 3 1).map (fun date => .value date true),
+        (ymd 2024 3 1).map (fun date => .value date true)) := by
   native_decide
 
 end A12Kernel.Conformance.TemporalExtremumReducedPrecision

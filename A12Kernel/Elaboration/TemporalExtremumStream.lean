@@ -33,7 +33,15 @@ and orders it at the shared set's own precision, the yearless one even with no B
 Within one shared component set a canonical representative is order-preserving, so the two arms are
 `FullDate` for a year-bearing set — its unnamed components masked to the canonical value the
 distinct count already fixes, `Semantics/FullDate.lean`'s `maskedDateComponents` — and
-`MonthDayValue` for a yearless one, both of which already carry an ordering. `omittingDateExtremumArm`
+`MonthDayValue` for a yearless one, both of which already carry an ordering.
+
+**The shared set fixes the element type; each operand's own declaration fixes what is masked.** Those
+are different questions and conflating them is a live defect rather than a subtlety: the admission
+gate supplements every declaration by the model Base Year before agreeing the shared set, so a list
+whose set names the year can hold an operand that does not name it — the admitted mixed-precision
+list. Masking such an operand against the shared set takes its year from the cell, where the Kernel
+takes it from the declared Base Year. `TemporalDistinctCount.lean` already projected each slot
+through its own set for exactly this reason; this reader now does too. `omittingDateExtremumArm`
 selects between them on the set, never the declared kind, and a set the Base Year supplements is
 year-bearing. Since the reader is parametric in the element type, the widening added a projection
 and no domain ([SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema)).
@@ -72,6 +80,23 @@ private def directDeclaration :
   | .starredGroup source => throw (.operandNeedsAddressing source.group.path)
   | .starredGroupPresence source => throw (.operandNeedsAddressing source.groupPath)
 
+/-- The component set an operand's **own** declaration names, before the Base-Year supplementation
+    the admission gate applied when it fixed the list's shared set.
+
+    This is what a masking projection must read. The shared set can name the year while one
+    operand's declaration omits it — exactly the admitted mixed-precision list — and masking such an
+    operand against the shared set would take the year from its cell instead of from the declared
+    Base Year, which is the supplementation the Kernel does not perform.
+
+    Falling back to the shared set keeps this total. Admission has already established that every
+    direct operand is temporal, so the fallback is unreachable; gating on that would put the
+    precondition into the projection for no gain. -/
+private def declaredComponents (shared : TemporalComponents)
+    (declaration : FlatFieldDecl) : TemporalComponents :=
+  match declaration.toTemporalField? with
+  | some field => field.components
+  | none => shared
+
 /-- Read one admitted operand list into a fold side of the caller's element type.
 
     Operands stay in authored order, which the fold's own scan depends on for its left-biased tie
@@ -80,9 +105,16 @@ private def directDeclaration :
     given-ness for no reason this slice can observe.
 
     The required component set is the caller's, because it is what fixes the element type: a reader
-    that accepted any set would have to hold a value its own domain cannot represent. -/
+    that accepted any set would have to hold a value its own domain cannot represent.
+
+    `project` receives each operand's **own** declaration, not just its observation, because the
+    list's set and an operand's set can differ: the admission gate supplements every declaration by
+    the model Base Year before fixing the shared set, so a list's set can name a component that one
+    operand's declaration does not. A projection that masks unnamed components must therefore ask
+    the operand rather than the list, or it reads a cell component no declaration named. Readers
+    whose element type needs no masking ignore the argument. -/
 def readSideWith (expected : TemporalComponents)
-    (project : CellObservation → SimpleComparisonOperand α)
+    (project : FlatFieldDecl → CellObservation → SimpleComparisonOperand α)
     (admitted : CheckedTemporalExtremumOperands model)
     (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError (ResolvedTemporalAggregateSide α) := do
@@ -93,7 +125,7 @@ def readSideWith (expected : TemporalComponents)
       (admitted.shape.first :: admitted.shape.rest).mapM directDeclaration
     pure {
       operands := declarations.map fun declaration =>
-        project (context.observeAt phase declaration.id)
+        project declaration (context.observeAt phase declaration.id)
       hasUninstantiatedTail := false
       hasHaving := false }
 
@@ -102,7 +134,7 @@ def readDateSide (admitted : CheckedTemporalExtremumOperands model)
     (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError ResolvedDateAggregateSide :=
   readSideWith TemporalComponents.fullDate
-    CellObservation.asDateExtremumOperand admitted context phase
+    (fun _ => CellObservation.asDateExtremumOperand) admitted context phase
 
 /-- Evaluate one admitted complete-Date extremum against a flat context, as the shared classified
     comparison operand every Date consumer already takes. -/
@@ -144,7 +176,8 @@ def readMaskedDateSide (admitted : CheckedTemporalExtremumOperands model)
     (baseYear : Option Int) (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError ResolvedDateAggregateSide :=
   readSideWith admitted.components
-    (CellObservation.asMaskedDateExtremumOperand admitted.components baseYear)
+    (fun declaration => CellObservation.asMaskedDateExtremumOperand
+      (declaredComponents admitted.components declaration) baseYear)
     admitted context phase
 
 /-- Evaluate one admitted year-bearing component-omitting Date extremum. -/
@@ -159,7 +192,8 @@ def readYearlessDateSide (admitted : CheckedTemporalExtremumOperands model)
     (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError ResolvedYearlessDateAggregateSide :=
   readSideWith admitted.components
-    (CellObservation.asYearlessDateExtremumOperand admitted.components)
+    (fun declaration => CellObservation.asYearlessDateExtremumOperand
+      (declaredComponents admitted.components declaration))
     admitted context phase
 
 /-- Evaluate one admitted yearless Date extremum. -/
@@ -173,7 +207,7 @@ def readTimeSide (admitted : CheckedTemporalExtremumOperands model)
     (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError ResolvedTimeAggregateSide :=
   readSideWith TemporalComponents.time
-    CellObservation.asTimeExtremumOperand admitted context phase
+    (fun _ => CellObservation.asTimeExtremumOperand) admitted context phase
 
 /-- Evaluate one admitted complete-clock extremum against a flat context. The Kernel admits a TIME
     beside a DATE_TIME declared with the degenerate time-only format, and both reach this reader
@@ -361,7 +395,7 @@ def readDateTimeSide (admitted : CheckedTemporalExtremumOperands model)
     (context : FlatContext) (phase : Phase) :
     Except TemporalExtremumStreamError ResolvedDateTimeAggregateSide :=
   readSideWith TemporalComponents.now
-    CellObservation.asDateTimeExtremumOperand admitted context phase
+    (fun _ => CellObservation.asDateTimeExtremumOperand) admitted context phase
 
 /-- Evaluate one admitted complete-DateTime extremum against a flat context. Selection is by exact
     instant, which is the fold's own selector; what this route adds is that the instant reaching it
