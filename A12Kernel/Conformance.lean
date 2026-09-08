@@ -78,6 +78,7 @@ import A12Kernel.Conformance.GeneratedRuleIdentity
 import A12Kernel.Conformance.EntityContainerIntegrity
 import A12Kernel.Conformance.ErrorTargetDeclaration
 import A12Kernel.Conformance.IndexGroupResolution
+import A12Kernel.Conformance.RuleChangePropagation
 import A12Kernel.Conformance.ConstructedDateComponents
 import A12Kernel.Conformance.ConstructedDateDay
 import A12Kernel.Conformance.ConstructedDateDifference

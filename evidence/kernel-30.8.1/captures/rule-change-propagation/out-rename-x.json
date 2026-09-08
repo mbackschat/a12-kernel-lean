@@ -1,0 +1,16 @@
+{
+  "target" : "field",
+  "op" : "rename",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "[redacted: kernel prose]",
+  "changed" : {
+    "renamed" : "/Et/A/X",
+    "to" : "/Et/A/W",
+    "rewroteReferences" : [ "/Et/A/RA", "/Et/A/RB" ]
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "m2.json"
+}

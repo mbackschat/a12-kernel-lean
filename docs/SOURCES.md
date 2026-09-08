@@ -820,7 +820,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Dynamic-enumeration derivation refuses in four ordered stages, eleven of twelve classes attributed to one witness rule each](sources/rule-set-meta-information.md#src-dynamic-enumeration-legality)
 
 <a id="src-index-and-sort-field-declaration"></a>
-- [A group's index and sort nominations share one cascade](sources/static-admission-and-class-probes.md#src-index-and-sort-field-declaration)
+- [A group's index and sort nominations share one cascade](sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration)
 
 <a id="src-temporal-constructor-operand-positions"></a>
 - [A temporal constructor checks each operand position separately, and two classes distinguish a misplaced extractor from an inadmissible one](sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)
@@ -829,14 +829,16 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The form-level constructs are German-only, so an A12 model's diagnostic for them depends on its condition language](sources/static-admission-and-class-probes.md#src-form-condition-constructs)
 
 <a id="src-generated-rule-identity"></a>
-- [The four auto-generated rules carry three projections that partition them differently](sources/static-admission-and-class-probes.md#src-generated-rule-identity)
+- [The four auto-generated rules carry three projections that partition them differently](sources/model-structure-and-declaration-probes.md#src-generated-rule-identity)
 
 <a id="src-entity-container-integrity"></a>
-- [The per-entity integrity walk reads the entity's name rather than its identifier, and its first four stages hide the whole subtree](sources/static-admission-and-class-probes.md#src-entity-container-integrity)
+- [The per-entity integrity walk reads the entity's name rather than its identifier, and its first four stages hide the whole subtree](sources/model-structure-and-declaration-probes.md#src-entity-container-integrity)
 <a id="src-error-target-declaration"></a>
-- [A rule's error field draws two different iteration classes depending on how its condition reaches it, and the class turns on the reference partition rather than on any star in the text](sources/static-admission-and-class-probes.md#src-error-target-declaration)
+- [A rule's error field draws two different iteration classes depending on how its condition reaches it, and the class turns on the reference partition rather than on any star in the text](sources/model-structure-and-declaration-probes.md#src-error-target-declaration)
 <a id="src-index-group-resolution"></a>
-- [Exactly one index group may govern a reference, and the walk that finds it examines only the innermost one's declared count](sources/static-admission-and-class-probes.md#src-index-group-resolution)
+- [Exactly one index group may govern a reference, and the walk that finds it examines only the innermost one's declared count](sources/model-structure-and-declaration-probes.md#src-index-group-resolution)
+<a id="src-rule-change-propagation"></a>
+- [The Kernel's own rule-change service declines to propagate a move in an A12 model, and an independent implementation performs that propagation soundly](sources/model-structure-and-declaration-probes.md#src-rule-change-propagation)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

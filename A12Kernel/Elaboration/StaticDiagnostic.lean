@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -84,6 +84,10 @@ inductive KernelStaticDiagnostic where
   | negativeConditionInIteration
   /-- The rule's error field is named nowhere in its condition. A whole-rule gate rather than an operand gate, so it is projected at rule assembly. -/
   | errorFieldNotReferenced
+  /-- The rule-change service was asked to propagate an entity **move** into a condition, in an A12 model. It declines and returns nothing; a rename in the same model is propagated normally. -/
+  | entityMoveInA12ModelCondition
+  /-- The same refusal from the service's error-text entry point, which reports a different class for the identical situation so a caller can tell which surface declined. -/
+  | entityMoveInA12ModelErrortext
   /-- A second index-declaring group lies above the first on the walked path. Reported without examining that second group's own multiplicity, so it outranks the class below. -/
   | multipleIndexFields
   /-- The innermost index-declaring group on the path declares more than one index field name. -/
@@ -258,6 +262,10 @@ def kernelCode : KernelStaticDiagnostic → String
   | .repeatableGroupMissing => "MVK_REPEATABLE_GROUP_MISSING"
   | .negativeConditionInIteration => "MVK_NEG_CONDITION_IN_ITERATION"
   | .errorFieldNotReferenced => "MVK_ERROR_FIELD_NOT_REFERENCED"
+  | .entityMoveInA12ModelCondition =>
+      "MVK_ENTITY_MOVE_IN_A12_MODEL_CONDITION"
+  | .entityMoveInA12ModelErrortext =>
+      "MVK_ENTITY_MOVE_IN_A12_MODEL_ERRORTEXT"
   | .multipleIndexFields => "MVK_MULTIPLE_INDEX_FIELDS"
   | .multipleIndexFields2 => "MVK_MULTIPLE_INDEX_FIELDS2"
   | .indexFieldInvalid => "MVK_INDEX_FIELD_INVALID"
@@ -347,7 +355,8 @@ def all : List KernelStaticDiagnostic :=
     .dateAndNonDate,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .repeatableGroupMissing, .negativeConditionInIteration,
-    .errorFieldNotReferenced, .multipleIndexFields, .multipleIndexFields2,
+    .errorFieldNotReferenced, .entityMoveInA12ModelCondition,
+    .entityMoveInA12ModelErrortext, .multipleIndexFields, .multipleIndexFields2,
     .indexFieldInvalid, .missingErrorField, .errorFieldNotValid,
     .errorFieldAndZIterationInvalid, .errorFieldGroupIteration4Invalid,
     .errorFieldGroupIteration5Invalid, .refErrorEntityIfFilledNotReferenced,

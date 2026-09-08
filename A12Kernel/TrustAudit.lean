@@ -2737,3 +2737,13 @@ run_cmd do
 #print axioms A12Kernel.indexResolution_walk_precedes_name
 #print axioms A12Kernel.indexFieldInvalid_needs_resolved_group
 #print axioms A12Kernel.indexResolution_single_ok
+#print axioms A12Kernel.propagation_move_refused_by_both
+#print axioms A12Kernel.propagation_unknown_name_disagrees
+#print axioms A12Kernel.propagation_rename_always_rewritten
+#print axioms A12Kernel.propagation_combined_change_loses_the_rename
+#print axioms A12Kernel.conditionPropagation_parse_first
+#print axioms A12Kernel.errorTextPropagation_parses_only_for_parameters
+#print axioms A12Kernel.errorTextPropagation_validity_hides_refusal
+#print axioms A12Kernel.conditionPropagation_hModel_field_shortcut
+#print axioms A12Kernel.leavesStaleReferences_iff_not_rewritten
+#print axioms A12Kernel.conditionPropagation_identity

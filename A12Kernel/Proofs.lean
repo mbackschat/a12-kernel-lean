@@ -67,6 +67,7 @@ import A12Kernel.Proofs.GeneratedRuleIdentity
 import A12Kernel.Proofs.EntityContainerIntegrity
 import A12Kernel.Proofs.ErrorTargetDeclaration
 import A12Kernel.Proofs.IndexGroupResolution
+import A12Kernel.Proofs.RuleChangePropagation
 import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay
 import A12Kernel.Proofs.ConstructedDateDifference

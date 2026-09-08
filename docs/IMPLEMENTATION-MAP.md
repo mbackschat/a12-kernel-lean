@@ -489,6 +489,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The rule's error-target declarations](implementation/cross-clause.md#cap-error-target-declaration)
 <a id="cap-index-group-resolution"></a>
 - [The index-group resolution walk](implementation/cross-clause.md#cap-index-group-resolution)
+<a id="cap-rule-change-propagation"></a>
+- [The rule-change service's move refusals](implementation/cross-clause.md#cap-rule-change-propagation)
 <a id="cap-resolved-firstfilledvalue"></a>
 - [Resolved `FirstFilledValue`](implementation/cross-clause.md#cap-resolved-firstfilledvalue)
 <a id="cap-resolved-number-aggregates"></a>

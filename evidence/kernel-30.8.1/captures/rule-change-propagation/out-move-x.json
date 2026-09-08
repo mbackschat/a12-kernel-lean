@@ -1,0 +1,16 @@
+{
+  "target" : "field",
+  "op" : "move",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "[redacted: kernel prose]",
+  "changed" : {
+    "moved" : "/Et/A/X",
+    "to" : "/Et/B/X",
+    "rewroteReferences" : [ "/Et/A/RA", "/Et/A/RB" ]
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "m1.json"
+}
