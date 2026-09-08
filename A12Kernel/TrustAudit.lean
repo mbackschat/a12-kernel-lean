@@ -2696,3 +2696,9 @@ run_cmd do
 #print axioms A12Kernel.a12FormConditionRefusal_german_iff
 #print axioms A12Kernel.a12RowConditionRefusal_language_free
 #print axioms A12Kernel.a12RowConditionRefusal_never_invalidParams
+#print axioms A12Kernel.formalCode_injective
+#print axioms A12Kernel.formalMessageKey_not_injective
+#print axioms A12Kernel.projections_cross
+#print axioms A12Kernel.generatedRuleIsPreliminary_iff
+#print axioms A12Kernel.generatedRuleIsPreliminary_authored
+#print axioms A12Kernel.unraised_disjoint_from_live
