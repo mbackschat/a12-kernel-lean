@@ -97,6 +97,23 @@ The finite acceptance matrix is: (A) recover all seven fixed and starred outcome
 
 Wrong accounts discard the missing tail, classify formal unknowns as missing, include over-limit content, multiply bound-parent capacity, merge parent addresses, collapse metadata refusal into false, and promote an internal theorem or the retained reference arrays into Kernel correspondence. Exclusions are a consumer implementation, new public API, indexed or filtered operands, mixed lists, partial validation, computation, other-kind correspondence, protocol, shipment, and general compatibility. Commit the handover before the qualifying run; earlier inspection is review only.
 
+<a id="run-group-field-fill-observations-01"></a>
+### Group field-fill observation readback — `group-field-fill-observations-01`
+
+- `task`: [Group field-fill observation probe](#group-field-fill-observation-probe)
+- `status`: red
+- `started-at`: 2026-09-08T23:09:02+02:00
+- `finished-at`: 2026-09-08T23:11:01+02:00
+- `duration-seconds`: 119
+- `semantic-basis`: `618ede98e9d9987350204a943676fa62f30872e6`
+- `oracle`: root matched the returned fixed/starred vectors and all three exact nested loci against both retained strategies and the committed [conformance matrix](../../A12Kernel/Conformance/FilledFieldGroupCount.lean). Its constructor-preserving refusal assertions separately settle the API distinction. Runtime reconciliation passed; the frozen language-neutral handover omitted those result constructors, reproducing the consumer's D failure.
+- `consumer-access`: fresh context, only the frozen task, checkpoint, four JSON files, and capability block. Four read-only shell/Python invocations extracted blocks, checked hashes, and reconstructed observations. No Lean or sibling source, Git history/diff, external access, builds, writes, other consumer results, or followed links.
+- `cost`: 119 seconds; zero consumer implementation or test-source lines, dependencies, or retained machinery. Root used one disposable projection comparison and existing compiled conformance assertions; no rebuild was required.
+- `result`: A–C and E passed, including the difference between absent and instantiated-empty inputs with equal quantifier outcomes. D failed because the allowed handover did not expose the exact addressing-failure and evaluated-result representations. The capability owner now states the complete result alternatives for a subsequent frozen run.
+- `wrong-accounts`: missing-tail removal, unknown-as-missing, over-limit inclusion, parent-capacity multiplication, and parent merging were refuted; metadata-as-false and promotion of internal laws or reference arrays to correspondence were rejected. Exact API classification remained insufficient.
+- `questions-and-guesses`: the consumer explicitly refused to guess the addressing-failure and evaluated-result constructors. No runtime-output guess was made.
+- `exclusions`: consumer implementation, indexed/filtered/mixed-list operands, partial validation, computation, other-kind correspondence, message-reference correspondence, protocol, shipment, and general compatibility. This failed handover is retained as the comparator for the corrected run.
+
 ## Custom-condition name admission probe
 
 Analyze and explain 23 bounded name-admission fixtures from the checked custom-condition authoring boundary. The consumer must preserve the normalized callback key and whether the lexer selected the quoted alternative, accept exact unquoted and quoted character-class controls, apply the caller-supplied reserved-terminal predicate only to unquoted spellings, refuse empty and illegal spellings, and report insufficient information when that predicate is absent.
