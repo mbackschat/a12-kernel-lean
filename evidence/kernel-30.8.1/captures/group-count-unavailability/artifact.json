@@ -582,7 +582,7 @@
               "field" : "Probe/G1/Num",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/G1/Num"
               ],
@@ -678,7 +678,7 @@
               "field" : "Probe/G1/Num",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/G1/Num"
               ],
@@ -780,7 +780,7 @@
               "field" : "Probe/Rows/RNum",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Rows/RNum"
               ],
@@ -876,7 +876,7 @@
               "field" : "Probe/Rows/RNum",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Rows/RNum"
               ],

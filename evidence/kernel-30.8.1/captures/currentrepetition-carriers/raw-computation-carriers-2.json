@@ -83,7 +83,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_OUTER_ITERATION",
-          "summary" : "Rule with path '/Rep/Rows/AltComp': The symbol '$' to specify rule iteration is only allowed inside filter conditions. [MVK_INVALID_OUTER_ITERATION]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/Rows/AltComp"
           }
@@ -108,7 +108,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Rep/Rows/AltComp': Missing specification of an asterisk for '/Rep/Other' in '/Rep/Other'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/Rows/AltComp"
           },

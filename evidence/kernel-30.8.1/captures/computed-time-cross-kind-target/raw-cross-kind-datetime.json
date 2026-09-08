@@ -83,7 +83,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Gate_DM/DDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Gate_DM/DDateComp"
           },
@@ -109,7 +109,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Gate_DM/TTimeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Gate_DM/TTimeComp"
           },

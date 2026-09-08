@@ -220,7 +220,7 @@
               "field" : "TimeProbe/Projects/Tasks/RowSecond",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "TimeProbe/Projects/Tasks/RowSecond"
               ],
@@ -246,7 +246,7 @@
                 "field" : "TimeProbe/Projects/Tasks/RowSecond",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "TimeProbe/Projects/Tasks/RowSecond"
                 ],
@@ -263,7 +263,7 @@
               "field" : "TimeProbe/Projects/Tasks/RowSecond",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "TimeProbe/Projects/Tasks/RowSecond"
               ],
@@ -289,7 +289,7 @@
                 "field" : "TimeProbe/Projects/Tasks/RowSecond",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "TimeProbe/Projects/Tasks/RowSecond"
                 ],

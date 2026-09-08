@@ -102,7 +102,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARDS_ALLOWED",
-          "summary" : "Rule with path '/Probe4/Rows/RowFlagComp': At 'FieldFilled': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/Rows/RowFlagComp"
           }

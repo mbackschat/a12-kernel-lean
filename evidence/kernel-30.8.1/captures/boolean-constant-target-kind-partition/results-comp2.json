@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/FiledOnComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/FiledOnComp"
           },
@@ -52,7 +52,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/ClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/ClockComp"
           },
@@ -78,7 +78,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/StampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/StampComp"
           },
@@ -104,7 +104,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
-          "summary" : "Rule with path '/Probe3/SpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/SpanComp"
           }
@@ -129,7 +129,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/ChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/ChoiceComp"
           }

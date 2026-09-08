@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_VALUE_INVALID",
-          "summary" : "Rule with path '/Rep/I1': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/I1"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_VALUE_INVALID",
-          "summary" : "Rule with path '/Rep/I2': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/I2"
           }
@@ -76,7 +76,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_VALUE_INVALID",
-          "summary" : "Rule with path '/Rep/I3': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/I3"
           }
@@ -101,7 +101,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_VALUE_INVALID",
-          "summary" : "Rule with path '/Rep/I4': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/I4"
           }
@@ -126,7 +126,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_VALUE_INVALID",
-          "summary" : "Rule with path '/Rep/I5': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/I5"
           }

@@ -121,7 +121,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_UNEXPECTED_TOKEN",
-          "summary" : "Rule with path '/Rep/AggComp': Corrupt input or condition not complete (yet): Unexpected found 'Abs'. [MVK_UNEXPECTED_TOKEN]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/AggComp"
           },

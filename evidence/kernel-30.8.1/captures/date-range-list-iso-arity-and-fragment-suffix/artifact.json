@@ -87,7 +87,7 @@
               "field" : "Dr/I3",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/I3"
               ],
@@ -98,7 +98,7 @@
               "field" : "Dr/I4",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/I4"
               ],
@@ -120,7 +120,7 @@
                 "field" : "Dr/I3",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/I3"
                 ],
@@ -131,7 +131,7 @@
                 "field" : "Dr/I4",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/I4"
                 ],
@@ -148,7 +148,7 @@
               "field" : "Dr/I3",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/I3"
               ],
@@ -159,7 +159,7 @@
               "field" : "Dr/I4",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/I4"
               ],
@@ -181,7 +181,7 @@
                 "field" : "Dr/I3",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/I3"
                 ],
@@ -192,7 +192,7 @@
                 "field" : "Dr/I4",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/I4"
                 ],
@@ -215,7 +215,7 @@
               "field" : "Dr/I2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/I2"
               ],
@@ -230,7 +230,7 @@
                 "field" : "Dr/I2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/I2"
                 ],
@@ -247,7 +247,7 @@
               "field" : "Dr/I2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/I2"
               ],
@@ -262,7 +262,7 @@
                 "field" : "Dr/I2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/I2"
                 ],
@@ -357,7 +357,7 @@
               "field" : "Dr/F3",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/F3"
               ],
@@ -379,7 +379,7 @@
                 "field" : "Dr/F3",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/F3"
                 ],
@@ -396,7 +396,7 @@
               "field" : "Dr/F3",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/F3"
               ],
@@ -418,7 +418,7 @@
                 "field" : "Dr/F3",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/F3"
                 ],
@@ -441,7 +441,7 @@
               "field" : "Dr/F2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/F2"
               ],
@@ -456,7 +456,7 @@
                 "field" : "Dr/F2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/F2"
                 ],
@@ -473,7 +473,7 @@
               "field" : "Dr/F2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/F2"
               ],
@@ -488,7 +488,7 @@
                 "field" : "Dr/F2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MM-DD/MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/F2"
                 ],
@@ -547,7 +547,7 @@
               "field" : "Dr/E3",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MMMM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/E3"
               ],
@@ -569,7 +569,7 @@
                 "field" : "Dr/E3",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MMMM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/E3"
                 ],
@@ -586,7 +586,7 @@
               "field" : "Dr/E3",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MMMM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/E3"
               ],
@@ -608,7 +608,7 @@
                 "field" : "Dr/E3",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MMMM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/E3"
                 ],
@@ -631,7 +631,7 @@
               "field" : "Dr/E2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MMMM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/E2"
               ],
@@ -646,7 +646,7 @@
                 "field" : "Dr/E2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MMMM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/E2"
                 ],
@@ -663,7 +663,7 @@
               "field" : "Dr/E2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format MMMM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Dr/E2"
               ],
@@ -678,7 +678,7 @@
                 "field" : "Dr/E2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format MMMM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Dr/E2"
                 ],

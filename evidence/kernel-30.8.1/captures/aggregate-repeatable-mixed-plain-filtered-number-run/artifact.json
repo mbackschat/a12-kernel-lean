@@ -473,7 +473,7 @@
               "field" : "Order/Lines[2]/Candidate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Candidate"
               ],
@@ -515,7 +515,7 @@
                 "field" : "Order/Lines[2]/Candidate",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Candidate"
                 ],
@@ -569,7 +569,7 @@
               "field" : "Order/Lines[2]/Candidate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Candidate"
               ],
@@ -611,7 +611,7 @@
                 "field" : "Order/Lines[2]/Candidate",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Candidate"
                 ],

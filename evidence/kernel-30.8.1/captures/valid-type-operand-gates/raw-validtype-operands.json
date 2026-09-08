@@ -60,7 +60,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }
@@ -85,7 +85,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Rows' in '/Rep/Rows/Flag'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },
@@ -112,7 +112,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Rows' in '/Rep/Rows/Cust'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },
@@ -139,7 +139,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_GROUPS_ALLOWED",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'Valid': It is not allowed to use a group. [MVK_NO_GROUPS_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },
@@ -166,7 +166,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARDS_ALLOWED",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'Valid': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }

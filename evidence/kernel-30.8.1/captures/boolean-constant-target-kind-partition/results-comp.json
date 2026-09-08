@@ -45,7 +45,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/SkuTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/SkuTextComp"
           }
@@ -114,7 +114,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/AgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/AgreedComp"
           },

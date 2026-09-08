@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Other' in '/Rep/Other/Fee'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },
@@ -70,7 +70,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Other' in '/Rep/Other/Fee'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },
@@ -97,7 +97,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARDS_ALLOWED",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'FieldFilled': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }

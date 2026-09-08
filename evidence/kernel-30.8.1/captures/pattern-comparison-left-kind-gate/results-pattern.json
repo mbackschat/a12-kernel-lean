@@ -43,7 +43,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON",
-          "summary" : "Rule with path '/Probe4/CheckRule': Comparative operation 'PatternMatched' is only allowed for string values. [MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule",
             "operator" : "PatternMatched"
@@ -71,7 +71,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON",
-          "summary" : "Rule with path '/Probe4/CheckRule': Comparative operation 'PatternMatched' is only allowed for string values. [MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -98,7 +98,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON",
-          "summary" : "Rule with path '/Probe4/CheckRule': Comparative operation 'PatternViolated' is only allowed for string values. [MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },

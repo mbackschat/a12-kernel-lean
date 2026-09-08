@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -53,7 +53,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -97,7 +97,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM' and 'yyyy-MM-dd' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },

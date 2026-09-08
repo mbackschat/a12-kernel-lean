@@ -143,7 +143,7 @@
               "field" : "Probe/Shell/Inner/Deep",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Inner/Deep"
               ],
@@ -171,7 +171,7 @@
                 "field" : "Probe/Shell/Inner/Deep",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Shell/Inner/Deep"
                 ],
@@ -201,7 +201,7 @@
               "field" : "Probe/Shell/Inner/Deep",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Inner/Deep"
               ],
@@ -229,7 +229,7 @@
                 "field" : "Probe/Shell/Inner/Deep",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Shell/Inner/Deep"
                 ],
@@ -375,7 +375,7 @@
               "field" : "Probe/Direct/DirectValue",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Direct/DirectValue"
               ],
@@ -403,7 +403,7 @@
                 "field" : "Probe/Direct/DirectValue",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Direct/DirectValue"
                 ],
@@ -433,7 +433,7 @@
               "field" : "Probe/Direct/DirectValue",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Direct/DirectValue"
               ],
@@ -461,7 +461,7 @@
                 "field" : "Probe/Direct/DirectValue",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Direct/DirectValue"
                 ],

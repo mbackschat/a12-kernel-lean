@@ -109,7 +109,7 @@
               "field" : "Rev_DM/TDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Rev_DM/TDate"
               ],
@@ -138,7 +138,7 @@
               "field" : "Rev_DM/TDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Rev_DM/TDate"
               ],

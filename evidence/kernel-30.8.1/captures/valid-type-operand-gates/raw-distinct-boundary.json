@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NUMBER_AND_NON_NUMBER",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a number (including amounts) then all parameters have to be of type number (including amounts). Corrupt: '/Rep/Txt'. [MVK_NUMBER_AND_NON_NUMBER]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': It is only allowed to use either string fields, enumerations, numbers (including amounts) or date/time fields with the same components. Incompatible: '/Rep/Rows/Flag'. [MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }
@@ -76,7 +76,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': It is only allowed to use either string fields, enumerations, numbers (including amounts) or date/time fields with the same components. Incompatible: '/Rep/Rows/Conf'. [MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }
@@ -101,7 +101,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_STRING_ENUM_AND_NON_STRING_ENUM",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a string or enumeration then all parameters have to be of type string or enumeration. Corrupt: '/Rep/RootNum'. [MVK_STRING_ENUM_AND_NON_STRING_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },
@@ -128,7 +128,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Rows' in '/Rep/Rows/Cust'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },
@@ -155,7 +155,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_PARAMSIZE_INVALIDN",
-          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': There must be more than one field or at least one group defined. [MVK_PARAMSIZE_INVALIDN]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           },

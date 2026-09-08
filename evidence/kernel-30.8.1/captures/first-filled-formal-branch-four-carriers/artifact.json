@@ -165,7 +165,7 @@
               "field" : "Fc/G1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G1"
               ],
@@ -176,7 +176,7 @@
               "field" : "Fc/M1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M1"
               ],
@@ -187,7 +187,7 @@
               "field" : "Fc/T1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T1"
               ],
@@ -198,7 +198,7 @@
               "field" : "Fc/B1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B1"
               ],
@@ -213,7 +213,7 @@
                 "field" : "Fc/G1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G1"
                 ],
@@ -224,7 +224,7 @@
                 "field" : "Fc/M1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M1"
                 ],
@@ -235,7 +235,7 @@
                 "field" : "Fc/T1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T1"
                 ],
@@ -246,7 +246,7 @@
                 "field" : "Fc/B1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B1"
                 ],
@@ -263,7 +263,7 @@
               "field" : "Fc/G1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G1"
               ],
@@ -274,7 +274,7 @@
               "field" : "Fc/M1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M1"
               ],
@@ -285,7 +285,7 @@
               "field" : "Fc/T1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T1"
               ],
@@ -296,7 +296,7 @@
               "field" : "Fc/B1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B1"
               ],
@@ -311,7 +311,7 @@
                 "field" : "Fc/G1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G1"
                 ],
@@ -322,7 +322,7 @@
                 "field" : "Fc/M1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M1"
                 ],
@@ -333,7 +333,7 @@
                 "field" : "Fc/T1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T1"
                 ],
@@ -344,7 +344,7 @@
                 "field" : "Fc/B1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B1"
                 ],
@@ -367,7 +367,7 @@
               "field" : "Fc/G1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G1"
               ],
@@ -378,7 +378,7 @@
               "field" : "Fc/M1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M1"
               ],
@@ -389,7 +389,7 @@
               "field" : "Fc/T1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T1"
               ],
@@ -400,7 +400,7 @@
               "field" : "Fc/B1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B1"
               ],
@@ -436,7 +436,7 @@
                 "field" : "Fc/G1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G1"
                 ],
@@ -447,7 +447,7 @@
                 "field" : "Fc/M1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M1"
                 ],
@@ -458,7 +458,7 @@
                 "field" : "Fc/T1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T1"
                 ],
@@ -469,7 +469,7 @@
                 "field" : "Fc/B1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B1"
                 ],
@@ -486,7 +486,7 @@
               "field" : "Fc/G1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G1"
               ],
@@ -497,7 +497,7 @@
               "field" : "Fc/M1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M1"
               ],
@@ -508,7 +508,7 @@
               "field" : "Fc/T1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T1"
               ],
@@ -519,7 +519,7 @@
               "field" : "Fc/B1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B1"
               ],
@@ -555,7 +555,7 @@
                 "field" : "Fc/G1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G1"
                 ],
@@ -566,7 +566,7 @@
                 "field" : "Fc/M1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M1"
                 ],
@@ -577,7 +577,7 @@
                 "field" : "Fc/T1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T1"
                 ],
@@ -588,7 +588,7 @@
                 "field" : "Fc/B1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B1"
                 ],
@@ -611,7 +611,7 @@
               "field" : "Fc/G2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G2"
               ],
@@ -622,7 +622,7 @@
               "field" : "Fc/M2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M2"
               ],
@@ -633,7 +633,7 @@
               "field" : "Fc/T2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T2"
               ],
@@ -644,7 +644,7 @@
               "field" : "Fc/B2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B2"
               ],
@@ -684,7 +684,7 @@
                 "field" : "Fc/G2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G2"
                 ],
@@ -695,7 +695,7 @@
                 "field" : "Fc/M2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M2"
                 ],
@@ -706,7 +706,7 @@
                 "field" : "Fc/T2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T2"
                 ],
@@ -717,7 +717,7 @@
                 "field" : "Fc/B2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B2"
                 ],
@@ -734,7 +734,7 @@
               "field" : "Fc/G2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G2"
               ],
@@ -745,7 +745,7 @@
               "field" : "Fc/M2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M2"
               ],
@@ -756,7 +756,7 @@
               "field" : "Fc/T2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T2"
               ],
@@ -767,7 +767,7 @@
               "field" : "Fc/B2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B2"
               ],
@@ -807,7 +807,7 @@
                 "field" : "Fc/G2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G2"
                 ],
@@ -818,7 +818,7 @@
                 "field" : "Fc/M2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M2"
                 ],
@@ -829,7 +829,7 @@
                 "field" : "Fc/T2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T2"
                 ],
@@ -840,7 +840,7 @@
                 "field" : "Fc/B2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B2"
                 ],
@@ -863,7 +863,7 @@
               "field" : "Fc/G2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G2"
               ],
@@ -874,7 +874,7 @@
               "field" : "Fc/M2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M2"
               ],
@@ -885,7 +885,7 @@
               "field" : "Fc/T2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T2"
               ],
@@ -896,7 +896,7 @@
               "field" : "Fc/B2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B2"
               ],
@@ -911,7 +911,7 @@
                 "field" : "Fc/G2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G2"
                 ],
@@ -922,7 +922,7 @@
                 "field" : "Fc/M2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M2"
                 ],
@@ -933,7 +933,7 @@
                 "field" : "Fc/T2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T2"
                 ],
@@ -944,7 +944,7 @@
                 "field" : "Fc/B2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B2"
                 ],
@@ -961,7 +961,7 @@
               "field" : "Fc/G2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/G2"
               ],
@@ -972,7 +972,7 @@
               "field" : "Fc/M2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/M2"
               ],
@@ -983,7 +983,7 @@
               "field" : "Fc/T2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/T2"
               ],
@@ -994,7 +994,7 @@
               "field" : "Fc/B2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fc/B2"
               ],
@@ -1009,7 +1009,7 @@
                 "field" : "Fc/G2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/G2"
                 ],
@@ -1020,7 +1020,7 @@
                 "field" : "Fc/M2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/M2"
                 ],
@@ -1031,7 +1031,7 @@
                 "field" : "Fc/T2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/T2"
                 ],
@@ -1042,7 +1042,7 @@
                 "field" : "Fc/B2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Invalid value: The value must either be 'true' (for Yes) or 'false' (for No).",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fc/B2"
                 ],

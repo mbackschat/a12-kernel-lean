@@ -44,7 +44,7 @@
                 "field" : "Probe/Rows/Gap",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The calculated value is not valid for the field.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Rows/Gap"
                 ],
@@ -55,7 +55,7 @@
                 "field" : "Probe/Rows[2]/Gap",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The calculated value is not valid for the field.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Rows[2]/Gap"
                 ],
@@ -88,7 +88,7 @@
                 "field" : "Probe/Rows/Gap",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The calculated value is not valid for the field.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Rows/Gap"
                 ],
@@ -99,7 +99,7 @@
                 "field" : "Probe/Rows[2]/Gap",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The calculated value is not valid for the field.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Probe/Rows[2]/Gap"
                 ],

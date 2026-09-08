@@ -106,7 +106,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_GROUP",
-          "summary" : "Rule with path '/Msg/Rows/G5': The rule '/Msg/Rows/G5' specifies an incorrect error text for the language English. Error text: '#LfdNr' specifies a group name 'LfdNr', which is not valid. [INVALID_GROUP]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/G5"
           }

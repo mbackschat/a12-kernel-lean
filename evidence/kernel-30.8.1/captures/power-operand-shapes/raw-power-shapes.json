@@ -45,7 +45,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
-          "summary" : "Rule with path '/Rep/AggComp': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (?) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/AggComp"
           },
@@ -91,7 +91,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
-          "summary" : "Rule with path '/Rep/AggComp': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (?) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/AggComp"
           },
@@ -137,7 +137,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
-          "summary" : "Rule with path '/Rep/AggComp': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (?) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/AggComp"
           },

@@ -54,7 +54,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -65,7 +65,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -76,7 +76,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -87,7 +87,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -182,7 +182,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -193,7 +193,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -204,7 +204,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -215,7 +215,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -316,7 +316,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -327,7 +327,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -338,7 +338,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -349,7 +349,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -360,7 +360,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks"
               ],
@@ -371,7 +371,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate"
               ],
@@ -382,7 +382,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks[2]"
               ],
@@ -393,7 +393,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate"
               ],
@@ -404,7 +404,7 @@
               "field" : "Project/Milestones/Tasks[3]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/TaskId"
               ],
@@ -415,7 +415,7 @@
               "field" : "Project/Milestones/Tasks[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]"
               ],
@@ -479,7 +479,7 @@
                 "field" : "Project/Milestones/Tasks[3]/Subtasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks[3]/Subtasks"
                 ],
@@ -490,7 +490,7 @@
                 "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks[3]/Subtasks[2]"
                 ],
@@ -501,7 +501,7 @@
                 "field" : "Project/Milestones/Tasks[3]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The row number is bigger than the maximum allowed value.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks[3]"
                 ],
@@ -544,7 +544,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -555,7 +555,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -566,7 +566,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -577,7 +577,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -588,7 +588,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks"
               ],
@@ -599,7 +599,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate"
               ],
@@ -610,7 +610,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks[2]"
               ],
@@ -621,7 +621,7 @@
               "field" : "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate"
               ],
@@ -632,7 +632,7 @@
               "field" : "Project/Milestones/Tasks[3]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]/TaskId"
               ],
@@ -643,7 +643,7 @@
               "field" : "Project/Milestones/Tasks[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[3]"
               ],
@@ -707,7 +707,7 @@
                 "field" : "Project/Milestones/Tasks[3]/Subtasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks[3]/Subtasks"
                 ],
@@ -718,7 +718,7 @@
                 "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks[3]/Subtasks[2]"
                 ],
@@ -729,7 +729,7 @@
                 "field" : "Project/Milestones/Tasks[3]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The row number is bigger than the maximum allowed value.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks[3]"
                 ],
@@ -778,7 +778,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -789,7 +789,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -800,7 +800,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -811,7 +811,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -822,7 +822,7 @@
               "field" : "Project/Milestones[3]/MilestoneStamp",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/MilestoneStamp"
               ],
@@ -833,7 +833,7 @@
               "field" : "Project/Milestones[3]/Tasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks"
               ],
@@ -844,7 +844,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks"
               ],
@@ -855,7 +855,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks/SubtaskDate"
               ],
@@ -866,7 +866,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks[2]"
               ],
@@ -877,7 +877,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks[2]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks[2]/SubtaskDate"
               ],
@@ -888,7 +888,7 @@
               "field" : "Project/Milestones[3]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/TaskId"
               ],
@@ -899,7 +899,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]"
               ],
@@ -910,7 +910,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks"
               ],
@@ -921,7 +921,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks/SubtaskDate"
               ],
@@ -932,7 +932,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks[2]"
               ],
@@ -943,7 +943,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks[2]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks[2]/SubtaskDate"
               ],
@@ -954,7 +954,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/TaskId"
               ],
@@ -965,7 +965,7 @@
               "field" : "Project/Milestones[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]"
               ],
@@ -1029,7 +1029,7 @@
                 "field" : "Project/Milestones[3]/MilestoneStamp",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/MilestoneStamp"
                 ],
@@ -1040,7 +1040,7 @@
                 "field" : "Project/Milestones[3]/Tasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks"
                 ],
@@ -1051,7 +1051,7 @@
                 "field" : "Project/Milestones[3]/Tasks/Subtasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks/Subtasks"
                 ],
@@ -1062,7 +1062,7 @@
                 "field" : "Project/Milestones[3]/Tasks/Subtasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks/Subtasks[2]"
                 ],
@@ -1073,7 +1073,7 @@
                 "field" : "Project/Milestones[3]/Tasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks[2]"
                 ],
@@ -1084,7 +1084,7 @@
                 "field" : "Project/Milestones[3]/Tasks[2]/Subtasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks[2]/Subtasks"
                 ],
@@ -1095,7 +1095,7 @@
                 "field" : "Project/Milestones[3]/Tasks[2]/Subtasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks[2]/Subtasks[2]"
                 ],
@@ -1106,7 +1106,7 @@
                 "field" : "Project/Milestones[3]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The row number is bigger than the maximum allowed value.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]"
                 ],
@@ -1149,7 +1149,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -1160,7 +1160,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -1171,7 +1171,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -1182,7 +1182,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -1193,7 +1193,7 @@
               "field" : "Project/Milestones[3]/MilestoneStamp",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/MilestoneStamp"
               ],
@@ -1204,7 +1204,7 @@
               "field" : "Project/Milestones[3]/Tasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks"
               ],
@@ -1215,7 +1215,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks"
               ],
@@ -1226,7 +1226,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks/SubtaskDate"
               ],
@@ -1237,7 +1237,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks[2]"
               ],
@@ -1248,7 +1248,7 @@
               "field" : "Project/Milestones[3]/Tasks/Subtasks[2]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/Subtasks[2]/SubtaskDate"
               ],
@@ -1259,7 +1259,7 @@
               "field" : "Project/Milestones[3]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks/TaskId"
               ],
@@ -1270,7 +1270,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]"
               ],
@@ -1281,7 +1281,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks"
               ],
@@ -1292,7 +1292,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks/SubtaskDate"
               ],
@@ -1303,7 +1303,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks[2]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks[2]"
               ],
@@ -1314,7 +1314,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/Subtasks[2]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/Subtasks[2]/SubtaskDate"
               ],
@@ -1325,7 +1325,7 @@
               "field" : "Project/Milestones[3]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]/Tasks[2]/TaskId"
               ],
@@ -1336,7 +1336,7 @@
               "field" : "Project/Milestones[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[3]"
               ],
@@ -1400,7 +1400,7 @@
                 "field" : "Project/Milestones[3]/MilestoneStamp",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/MilestoneStamp"
                 ],
@@ -1411,7 +1411,7 @@
                 "field" : "Project/Milestones[3]/Tasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks"
                 ],
@@ -1422,7 +1422,7 @@
                 "field" : "Project/Milestones[3]/Tasks/Subtasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks/Subtasks"
                 ],
@@ -1433,7 +1433,7 @@
                 "field" : "Project/Milestones[3]/Tasks/Subtasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks/Subtasks[2]"
                 ],
@@ -1444,7 +1444,7 @@
                 "field" : "Project/Milestones[3]/Tasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks[2]"
                 ],
@@ -1455,7 +1455,7 @@
                 "field" : "Project/Milestones[3]/Tasks[2]/Subtasks",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks[2]/Subtasks"
                 ],
@@ -1466,7 +1466,7 @@
                 "field" : "Project/Milestones[3]/Tasks[2]/Subtasks[2]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The index for group '/Project/Milestones' was specified with 3, but at most 2 is allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]/Tasks[2]/Subtasks[2]"
                 ],
@@ -1477,7 +1477,7 @@
                 "field" : "Project/Milestones[3]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The row number is bigger than the maximum allowed value.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones[3]"
                 ],
@@ -1526,7 +1526,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -1537,7 +1537,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -1548,7 +1548,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -1559,7 +1559,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -1570,7 +1570,7 @@
               "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks/Subtasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate"
               ],
@@ -1581,7 +1581,7 @@
               "field" : "Project/Milestones/Tasks/Subtasks[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/Subtasks[3]"
               ],
@@ -1645,7 +1645,7 @@
                 "field" : "Project/Milestones/Tasks/Subtasks[3]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The row number is bigger than the maximum allowed value.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks/Subtasks[3]"
                 ],
@@ -1688,7 +1688,7 @@
               "field" : "Project/Milestones/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/TaskId"
               ],
@@ -1699,7 +1699,7 @@
               "field" : "Project/Milestones/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks[2]/TaskId"
               ],
@@ -1710,7 +1710,7 @@
               "field" : "Project/Milestones[2]/Tasks/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks/TaskId"
               ],
@@ -1721,7 +1721,7 @@
               "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The values of the field must be unique.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Tasks[2]/TaskId"
               ],
@@ -1732,7 +1732,7 @@
               "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Project/Milestones/Tasks/Subtasks' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate"
               ],
@@ -1743,7 +1743,7 @@
               "field" : "Project/Milestones/Tasks/Subtasks[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Tasks/Subtasks[3]"
               ],
@@ -1807,7 +1807,7 @@
                 "field" : "Project/Milestones/Tasks/Subtasks[3]",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The row number is bigger than the maximum allowed value.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/Tasks/Subtasks[3]"
                 ],

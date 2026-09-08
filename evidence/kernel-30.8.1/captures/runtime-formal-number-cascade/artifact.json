@@ -28,7 +28,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -39,7 +39,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -55,7 +55,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -66,7 +66,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -88,7 +88,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -99,7 +99,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -110,7 +110,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -121,7 +121,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -132,7 +132,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -143,7 +143,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -154,7 +154,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -165,7 +165,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -176,7 +176,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -187,7 +187,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],
@@ -203,7 +203,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -214,7 +214,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -225,7 +225,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -236,7 +236,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -247,7 +247,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -258,7 +258,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -269,7 +269,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -280,7 +280,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -291,7 +291,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -302,7 +302,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],
@@ -324,7 +324,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -335,7 +335,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -346,7 +346,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -357,7 +357,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -368,7 +368,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -379,7 +379,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -390,7 +390,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -401,7 +401,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -412,7 +412,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -423,7 +423,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],
@@ -439,7 +439,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -450,7 +450,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -461,7 +461,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -472,7 +472,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -483,7 +483,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -494,7 +494,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -505,7 +505,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -516,7 +516,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -527,7 +527,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -538,7 +538,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Es sind maximal 15 Stellen erlaubt.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],
@@ -560,7 +560,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -571,7 +571,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -582,7 +582,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -598,7 +598,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -609,7 +609,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -620,7 +620,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -642,7 +642,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too small: The value must be greater or equal to 1.00.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -653,7 +653,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too small: The value must be greater or equal to 1.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -669,7 +669,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too small: The value must be greater or equal to 1.00.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -680,7 +680,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too small: The value must be greater or equal to 1.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -702,7 +702,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -713,7 +713,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -724,7 +724,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -735,7 +735,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -746,7 +746,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -762,7 +762,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -773,7 +773,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -784,7 +784,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -795,7 +795,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -806,7 +806,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -828,7 +828,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -839,7 +839,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -855,7 +855,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -866,7 +866,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -888,7 +888,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -899,7 +899,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -910,7 +910,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -921,7 +921,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -932,7 +932,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],
@@ -943,7 +943,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -954,7 +954,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -965,7 +965,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -976,7 +976,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -987,7 +987,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1003,7 +1003,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1014,7 +1014,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1025,7 +1025,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -1036,7 +1036,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -1047,7 +1047,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],
@@ -1058,7 +1058,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1069,7 +1069,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1080,7 +1080,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1091,7 +1091,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -1102,7 +1102,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1124,7 +1124,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1135,7 +1135,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1146,7 +1146,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1157,7 +1157,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1168,7 +1168,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1179,7 +1179,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1195,7 +1195,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1206,7 +1206,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1217,7 +1217,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1228,7 +1228,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1239,7 +1239,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1250,7 +1250,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1272,7 +1272,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1283,7 +1283,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1294,7 +1294,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1310,7 +1310,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1321,7 +1321,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1332,7 +1332,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1368,7 +1368,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1379,7 +1379,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1395,7 +1395,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1406,7 +1406,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with at least 2 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1428,7 +1428,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1439,7 +1439,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1450,7 +1450,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1461,7 +1461,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1472,7 +1472,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1483,7 +1483,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1499,7 +1499,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1510,7 +1510,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1521,7 +1521,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1532,7 +1532,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1543,7 +1543,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1554,7 +1554,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1576,7 +1576,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1587,7 +1587,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1598,7 +1598,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1609,7 +1609,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1620,7 +1620,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1631,7 +1631,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1647,7 +1647,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1658,7 +1658,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1669,7 +1669,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1680,7 +1680,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1691,7 +1691,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1702,7 +1702,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1724,7 +1724,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1735,7 +1735,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1746,7 +1746,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1757,7 +1757,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1768,7 +1768,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1779,7 +1779,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1795,7 +1795,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1806,7 +1806,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -1817,7 +1817,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Value too long: The value must not exceed 4 digits and a negative sign before the decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -1828,7 +1828,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1839,7 +1839,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must not exceed 4 digits and a negative sign.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1850,7 +1850,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with up to 4 digits and an optional negative sign are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1872,7 +1872,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1883,7 +1883,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1894,7 +1894,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1905,7 +1905,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -1916,7 +1916,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1932,7 +1932,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -1943,7 +1943,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -1954,7 +1954,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -1965,7 +1965,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -1976,7 +1976,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -1998,7 +1998,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2009,7 +2009,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2020,7 +2020,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2036,7 +2036,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2047,7 +2047,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2058,7 +2058,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2080,7 +2080,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2091,7 +2091,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2102,7 +2102,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2118,7 +2118,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2129,7 +2129,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2140,7 +2140,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values not equal to 0 are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2162,7 +2162,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2173,7 +2173,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -2184,7 +2184,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -2195,7 +2195,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -2206,7 +2206,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2217,7 +2217,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -2228,7 +2228,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2239,7 +2239,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -2250,7 +2250,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -2266,7 +2266,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2277,7 +2277,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -2288,7 +2288,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -2299,7 +2299,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -2310,7 +2310,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2321,7 +2321,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -2332,7 +2332,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2343,7 +2343,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -2354,7 +2354,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -2376,7 +2376,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2387,7 +2387,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -2398,7 +2398,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2409,7 +2409,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -2420,7 +2420,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -2431,7 +2431,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2442,7 +2442,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -2453,7 +2453,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -2464,7 +2464,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -2475,7 +2475,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],
@@ -2491,7 +2491,7 @@
               "field" : "FormalNum/MC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MC"
               ],
@@ -2502,7 +2502,7 @@
               "field" : "FormalNum/MCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: The value must be in the format '0.00' or '-0.00' with exactly two decimal places.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/MCSigned"
               ],
@@ -2513,7 +2513,7 @@
               "field" : "FormalNum/OC",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OC"
               ],
@@ -2524,7 +2524,7 @@
               "field" : "FormalNum/OCSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Invalid value: Full money amounts must be provided as a digit sequence without decimal point.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/OCSigned"
               ],
@@ -2535,7 +2535,7 @@
               "field" : "FormalNum/ZFix2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZFix2"
               ],
@@ -2546,7 +2546,7 @@
               "field" : "FormalNum/ZNoZero",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZNoZero"
               ],
@@ -2557,7 +2557,7 @@
               "field" : "FormalNum/ZOpt02",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 0 to 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZOpt02"
               ],
@@ -2568,7 +2568,7 @@
               "field" : "FormalNum/ZPlain",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZPlain"
               ],
@@ -2579,7 +2579,7 @@
               "field" : "FormalNum/ZSigned",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZSigned"
               ],
@@ -2590,7 +2590,7 @@
               "field" : "FormalNum/ZVar13",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values with 1 to 3 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "FormalNum/ZVar13"
               ],

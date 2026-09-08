@@ -43,7 +43,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATE_AND_NONDATE",
-          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },
@@ -70,7 +70,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATE_AND_NONDATE",
-          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },
@@ -97,7 +97,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATE_AND_NONDATE",
-          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },
@@ -124,7 +124,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATE_AND_NONDATE",
-          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },
@@ -151,7 +151,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NOT_SORTABLE",
-          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': Only numbers, amounts or dates are allowed to be used. [MVK_NOT_SORTABLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },
@@ -195,7 +195,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NOT_SORTABLE",
-          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': Only numbers, amounts or dates are allowed to be used. [MVK_NOT_SORTABLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },

@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/P1': The rule '/Msg/Rows/P1' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Marker)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/P1"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/P2': The rule '/Msg/Rows/P2' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Err)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/P2"
           }
@@ -76,7 +76,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_UNEXPECTED_TOKEN",
-          "summary" : "Rule with path '/Msg/Rows/P3': The rule '/Msg/Rows/P3' specifies an incorrect error text for the language English. The error text parameter 'Index(/Msg/Rows/Marker)' is not valid. Corrupt input or parameter not complete (yet): Unexpected found '('. [MVK_UNEXPECTED_TOKEN]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/P3"
           },
@@ -103,7 +103,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_UNEXPECTED_TOKEN",
-          "summary" : "Rule with path '/Msg/Rows/P4': The rule '/Msg/Rows/P4' specifies an incorrect error text for the language English. The error text parameter 'index()' is not valid. Corrupt input or parameter not complete (yet): Unexpected found ')'. [MVK_UNEXPECTED_TOKEN]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/P4"
           },
@@ -130,7 +130,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/P5': The rule '/Msg/Rows/P5' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Other)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/P5"
           }

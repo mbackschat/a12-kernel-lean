@@ -43,7 +43,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe/CheckRule': Date formats not compatible for 'NumberOfDifferentValues': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -70,7 +70,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
-          "summary" : "Rule with path '/Probe/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: 'ClosedOn'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -97,7 +97,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATE_AND_NONDATE",
-          "summary" : "Rule with path '/Probe/CheckRule': At 'NumberOfDifferentValues': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -123,7 +123,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Probe/Rows/CheckRule': Missing specification of an asterisk for '/Probe/Other' in '/Probe/Other/OtherVal'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/Rows/CheckRule"
           },
@@ -150,7 +150,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Probe/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe/Rows/RowVal'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -177,7 +177,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -203,7 +203,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe/CheckRule': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },
@@ -229,7 +229,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Probe/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe/Rows/Sub'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe/CheckRule"
           },

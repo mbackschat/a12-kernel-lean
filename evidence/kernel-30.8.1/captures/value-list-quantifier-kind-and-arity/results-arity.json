@@ -77,7 +77,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_PARAMSIZE_INVALIDN",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': There must be more than one field or at least one group defined. [MVK_PARAMSIZE_INVALIDN]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -104,7 +104,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_PARAMSIZE_INVALIDN",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': There must be more than one field or at least one group defined. [MVK_PARAMSIZE_INVALIDN]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -130,7 +130,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_ENTITY",
-          "summary" : "Rule with path '/Probe4/CheckRule': The group or field '/Probe4/Contact' is not valid. [MVK_INVALID_ENTITY]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },

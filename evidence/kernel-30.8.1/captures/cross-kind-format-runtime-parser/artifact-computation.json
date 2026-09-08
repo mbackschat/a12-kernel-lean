@@ -100,7 +100,7 @@
               "field" : "Comp_DM/DClock",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Comp_DM/DClock"
               ],
@@ -115,7 +115,7 @@
                 "field" : "Comp_DM/DClock",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Comp_DM/DClock"
                 ],
@@ -132,7 +132,7 @@
               "field" : "Comp_DM/DClock",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Comp_DM/DClock"
               ],
@@ -147,7 +147,7 @@
                 "field" : "Comp_DM/DClock",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Comp_DM/DClock"
                 ],

@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_ROOT_GROUP",
-          "summary" : "Rule with path '/Msg/Rows/S1': The rule '/Msg/Rows/S1' specifies an incorrect error text for the language English. Rootgroup '/Nope' is not valid. [INVALID_ROOT_GROUP]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/S1"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_ENTITY",
-          "summary" : "Rule with path '/Msg/Rows/S2': The rule '/Msg/Rows/S2' specifies an incorrect error text for the language English. The group or field '/Msg/Nope' is not valid. [INVALID_ENTITY]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/S2"
           }
@@ -76,7 +76,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_ENTITY",
-          "summary" : "Rule with path '/Msg/Rows/S3': The rule '/Msg/Rows/S3' specifies an incorrect error text for the language English. The group or field '/Msg/Rows/Nope' is not valid. [INVALID_ENTITY]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/S3"
           }
@@ -101,7 +101,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_ROOT_GROUP",
-          "summary" : "Rule with path '/Msg/Rows/S4': The rule '/Msg/Rows/S4' specifies an incorrect error text for the language English. Rootgroup '/Nope' is not valid. [INVALID_ROOT_GROUP]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/S4"
           }
@@ -126,7 +126,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_GROUP",
-          "summary" : "Rule with path '/Msg/Rows/S5': The rule '/Msg/Rows/S5' specifies an incorrect error text for the language English. Error text: '#/Msg/Nope' specifies a group name '/Msg/Nope', which is not valid. [INVALID_GROUP]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/S5"
           }

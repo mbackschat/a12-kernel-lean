@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_LEXER_STANDARD_ERROR",
-          "summary" : "Rule with path '/Msg/Rows/N1': The rule '/Msg/Rows/N1' specifies an incorrect error text for the language English. The error text parameter '#/Msg/Rows[1]' is not valid. Character '[' at position 11 is incorrect. [MVK_LEXER_STANDARD_ERROR]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/N1"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_LEXER_STANDARD_ERROR",
-          "summary" : "Rule with path '/Msg/Rows/N2': The rule '/Msg/Rows/N2' specifies an incorrect error text for the language English. The error text parameter '#/Msg/Rows[2]' is not valid. Character '[' at position 11 is incorrect. [MVK_LEXER_STANDARD_ERROR]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/N2"
           }
@@ -76,7 +76,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_ENTITY",
-          "summary" : "Rule with path '/Msg/Rows/N3': The rule '/Msg/Rows/N3' specifies an incorrect error text for the language English. The group or field 'index' is not valid. [INVALID_ENTITY]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/N3"
           }
@@ -101,7 +101,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/N4': The rule '/Msg/Rows/N4' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/N4"
           }
@@ -126,7 +126,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
-          "summary" : "Rule with path '/Msg/Rows/N5': The rule '/Msg/Rows/N5' specifies an incorrect error text for the language English. A semantic index '/Msg/Rows/Marker For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/N5"
           }

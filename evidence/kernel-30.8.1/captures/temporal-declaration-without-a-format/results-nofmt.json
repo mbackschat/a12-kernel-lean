@@ -60,7 +60,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe4/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -121,7 +121,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe4/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM-dd'T'HH:mm:ss' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -165,7 +165,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: 'ClosedOn'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },

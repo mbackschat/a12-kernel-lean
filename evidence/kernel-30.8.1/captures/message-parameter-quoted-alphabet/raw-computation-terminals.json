@@ -83,7 +83,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "PARAM_INVALID_IN_NEW_WORLD",
-          "summary" : "Rule with path '/Msg/Rows/NumComp': The rule '/Msg/Rows/NumComp' specifies an incorrect error text for the language English. The parameter '#Zeile' is not allowed to be used in A12 models. [PARAM_INVALID_IN_NEW_WORLD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/NumComp"
           }

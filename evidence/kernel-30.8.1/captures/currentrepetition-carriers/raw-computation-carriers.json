@@ -98,7 +98,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_UNEXPECTED_TOKEN",
-          "summary" : "Rule with path '/Rep/AggComp': Corrupt input or condition not complete (yet): Unexpected found 'CurrentRepetition'. [MVK_UNEXPECTED_TOKEN]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/AggComp"
           },
@@ -125,7 +125,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Rep/AggComp': Missing specification of an asterisk for 'Rows' in '/Rep/Rows'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/AggComp"
           },

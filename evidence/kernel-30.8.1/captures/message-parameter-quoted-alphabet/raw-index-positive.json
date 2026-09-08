@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/Q1': The rule '/Msg/Rows/Q1' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Marker)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/Q1"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/Q2': The rule '/Msg/Rows/Q2' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows/Err)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/Q2"
           }
@@ -76,7 +76,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
-          "summary" : "Rule with path '/Msg/Rows/Q3': The rule '/Msg/Rows/Q3' specifies an incorrect error text for the language English. A semantic index '/Msg/Rows/Err For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/Q3"
           }

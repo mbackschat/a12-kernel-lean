@@ -28,7 +28,7 @@
               "field" : "Form/MdA",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdA"
               ],
@@ -39,7 +39,7 @@
               "field" : "Form/MdT",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdT"
               ],
@@ -55,7 +55,7 @@
               "field" : "Form/MdA",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdA"
               ],
@@ -66,7 +66,7 @@
               "field" : "Form/MdT",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdT"
               ],
@@ -88,7 +88,7 @@
               "field" : "Form/MdB",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdB"
               ],
@@ -99,7 +99,7 @@
               "field" : "Form/MdT",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdT"
               ],
@@ -115,7 +115,7 @@
               "field" : "Form/MdB",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdB"
               ],
@@ -126,7 +126,7 @@
               "field" : "Form/MdT",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Form/MdT"
               ],

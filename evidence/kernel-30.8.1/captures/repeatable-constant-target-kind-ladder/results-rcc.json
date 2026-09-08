@@ -45,7 +45,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
-          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': 'x' is not valid in the used enumeration. [MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowChoiceComp"
           },
@@ -71,7 +71,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowValComp"
           }
@@ -96,7 +96,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateComp"
           },
@@ -123,7 +123,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateDeComp"
           },
@@ -150,7 +150,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowClockComp"
           },
@@ -177,7 +177,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowStampComp"
           },
@@ -204,7 +204,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           }
@@ -229,7 +229,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YESNO",
-          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowFlagComp"
           },
@@ -255,7 +255,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowAgreedComp"
           },
@@ -338,7 +338,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowValComp"
           }
@@ -363,7 +363,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateComp"
           },
@@ -390,7 +390,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateDeComp"
           },
@@ -417,7 +417,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowClockComp"
           },
@@ -444,7 +444,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowStampComp"
           },
@@ -471,7 +471,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           }
@@ -496,7 +496,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YESNO",
-          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowFlagComp"
           },
@@ -522,7 +522,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowAgreedComp"
           },
@@ -567,7 +567,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowTextComp"
           }
@@ -592,7 +592,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowChoiceComp"
           }
@@ -636,7 +636,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateComp"
           },
@@ -663,7 +663,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateDeComp"
           },
@@ -690,7 +690,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowClockComp"
           },
@@ -717,7 +717,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowStampComp"
           },
@@ -744,7 +744,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           }
@@ -769,7 +769,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YESNO",
-          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowFlagComp"
           },
@@ -795,7 +795,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowAgreedComp"
           },
@@ -821,7 +821,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowCustomComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowCustomComp"
           }
@@ -846,7 +846,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowTextComp"
           },
@@ -873,7 +873,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowChoiceComp"
           },
@@ -900,7 +900,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowValComp"
           },
@@ -965,7 +965,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowClockComp"
           },
@@ -992,7 +992,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowStampComp"
           },
@@ -1019,7 +1019,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           },
@@ -1046,7 +1046,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YESNO",
-          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowFlagComp"
           },
@@ -1072,7 +1072,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowAgreedComp"
           },
@@ -1098,7 +1098,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowCustomComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowCustomComp"
           },
@@ -1125,7 +1125,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowTextComp"
           },
@@ -1152,7 +1152,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowChoiceComp"
           },
@@ -1179,7 +1179,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowValComp"
           },
@@ -1206,7 +1206,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateComp"
           },
@@ -1233,7 +1233,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateDeComp"
           },
@@ -1279,7 +1279,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowStampComp"
           },
@@ -1306,7 +1306,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           },
@@ -1333,7 +1333,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YESNO",
-          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowFlagComp"
           },
@@ -1359,7 +1359,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowAgreedComp"
           },
@@ -1385,7 +1385,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowCustomComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowCustomComp"
           },
@@ -1412,7 +1412,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowTextComp"
           },
@@ -1439,7 +1439,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowChoiceComp"
           },
@@ -1466,7 +1466,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowValComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowValComp"
           },
@@ -1493,7 +1493,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateComp"
           },
@@ -1520,7 +1520,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateDeComp"
           },
@@ -1547,7 +1547,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowClockComp"
           },
@@ -1593,7 +1593,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           },
@@ -1620,7 +1620,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YESNO",
-          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowFlagComp"
           },
@@ -1646,7 +1646,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowAgreedComp"
           },
@@ -1672,7 +1672,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowCustomComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowCustomComp"
           },
@@ -1699,7 +1699,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowTextComp"
           }
@@ -1724,7 +1724,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowChoiceComp"
           }
@@ -1774,7 +1774,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateComp"
           },
@@ -1801,7 +1801,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateDeComp"
           },
@@ -1828,7 +1828,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowClockComp"
           },
@@ -1855,7 +1855,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowStampComp"
           },
@@ -1882,7 +1882,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           }
@@ -1945,7 +1945,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowCustomComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowCustomComp"
           }
@@ -1970,7 +1970,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowTextComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowTextComp"
           }
@@ -1995,7 +1995,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowChoiceComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowChoiceComp"
           }
@@ -2020,7 +2020,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
-          "summary" : "Rule with path '/Probe3/Rows/RowValComp': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (2) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowValComp"
           },
@@ -2047,7 +2047,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateComp"
           },
@@ -2074,7 +2074,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowDateDeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowDateDeComp"
           },
@@ -2101,7 +2101,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowClockComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowClockComp"
           },
@@ -2128,7 +2128,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE",
-          "summary" : "Rule with path '/Probe3/Rows/RowStampComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowStampComp"
           },
@@ -2155,7 +2155,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_DATE_RANGE",
-          "summary" : "Rule with path '/Probe3/Rows/RowSpanComp': It is only allowed to compare date ranges with other fitting date ranges. [MVK_INVALID_COMPARE_TO_DATE_RANGE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowSpanComp"
           }
@@ -2180,7 +2180,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YESNO",
-          "summary" : "Rule with path '/Probe3/Rows/RowFlagComp': It is only allowed to compare equality or unequality of a field of type boolean with another field of type boolean or with the constants True or False. [MVK_INVALID_COMPARE_TO_YESNO]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowFlagComp"
           },
@@ -2206,7 +2206,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_YES",
-          "summary" : "Rule with path '/Probe3/Rows/RowAgreedComp': It is only allowed to compare equality of a field of type confirm with another field of type confirm or to compare equality or unequality with the constant True. [MVK_INVALID_COMPARE_TO_YES]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowAgreedComp"
           },
@@ -2232,7 +2232,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
-          "summary" : "Rule with path '/Probe3/Rows/RowCustomComp': It is only allowed to compare a character string with another character string. [MVK_INVALID_COMPARE_TO_ENUM_OR_STRING]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/Rows/RowCustomComp"
           }

@@ -43,7 +43,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -68,7 +68,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -93,7 +93,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -118,7 +118,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -143,7 +143,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -168,7 +168,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -193,7 +193,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
-          "summary" : "Rule with path '/Probe4/CheckRule': The error field '/Probe4/SkuText' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },

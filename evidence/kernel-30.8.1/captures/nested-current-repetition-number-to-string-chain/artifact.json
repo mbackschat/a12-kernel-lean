@@ -578,7 +578,7 @@
               "field" : "Order/Lines[2]/Entries/Base",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Entries/Base"
               ],
@@ -628,7 +628,7 @@
                 "field" : "Order/Lines[2]/Entries/Base",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Entries/Base"
                 ],
@@ -705,7 +705,7 @@
               "field" : "Order/Lines[2]/Entries/Base",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Entries/Base"
               ],
@@ -755,7 +755,7 @@
                 "field" : "Order/Lines[2]/Entries/Base",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Entries/Base"
                 ],

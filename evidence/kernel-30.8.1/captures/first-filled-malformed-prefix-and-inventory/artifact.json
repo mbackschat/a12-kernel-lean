@@ -207,7 +207,7 @@
               "field" : "Fm/D1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D1"
               ],
@@ -229,7 +229,7 @@
                 "field" : "Fm/D1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D1"
                 ],
@@ -246,7 +246,7 @@
               "field" : "Fm/D1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D1"
               ],
@@ -268,7 +268,7 @@
                 "field" : "Fm/D1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D1"
                 ],
@@ -291,7 +291,7 @@
               "field" : "Fm/D2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D2"
               ],
@@ -319,7 +319,7 @@
                 "field" : "Fm/D2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D2"
                 ],
@@ -336,7 +336,7 @@
               "field" : "Fm/D2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D2"
               ],
@@ -364,7 +364,7 @@
                 "field" : "Fm/D2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D2"
                 ],
@@ -387,7 +387,7 @@
               "field" : "Fm/D1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D1"
               ],
@@ -409,7 +409,7 @@
                 "field" : "Fm/D1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D1"
                 ],
@@ -426,7 +426,7 @@
               "field" : "Fm/D1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D1"
               ],
@@ -448,7 +448,7 @@
                 "field" : "Fm/D1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D1"
                 ],
@@ -471,7 +471,7 @@
               "field" : "Fm/D2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D2"
               ],
@@ -493,7 +493,7 @@
                 "field" : "Fm/D2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D2"
                 ],
@@ -510,7 +510,7 @@
               "field" : "Fm/D2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D2"
               ],
@@ -532,7 +532,7 @@
                 "field" : "Fm/D2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D2"
                 ],
@@ -555,7 +555,7 @@
               "field" : "Fm/D1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D1"
               ],
@@ -582,7 +582,7 @@
                 "field" : "Fm/D1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D1"
                 ],
@@ -599,7 +599,7 @@
               "field" : "Fm/D1",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D1"
               ],
@@ -626,7 +626,7 @@
                 "field" : "Fm/D1",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D1"
                 ],
@@ -662,7 +662,7 @@
               "field" : "Fm/D2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D2"
               ],
@@ -690,7 +690,7 @@
                 "field" : "Fm/D2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D2"
                 ],
@@ -720,7 +720,7 @@
               "field" : "Fm/D2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/D2"
               ],
@@ -748,7 +748,7 @@
                 "field" : "Fm/D2",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/D2"
                 ],
@@ -819,7 +819,7 @@
               "field" : "Fm/Rows/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows/SD"
               ],
@@ -841,7 +841,7 @@
                 "field" : "Fm/Rows/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows/SD"
                 ],
@@ -858,7 +858,7 @@
               "field" : "Fm/Rows/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows/SD"
               ],
@@ -880,7 +880,7 @@
                 "field" : "Fm/Rows/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows/SD"
                 ],
@@ -903,7 +903,7 @@
               "field" : "Fm/Rows[2]/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows[2]/SD"
               ],
@@ -931,7 +931,7 @@
                 "field" : "Fm/Rows[2]/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows[2]/SD"
                 ],
@@ -948,7 +948,7 @@
               "field" : "Fm/Rows[2]/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows[2]/SD"
               ],
@@ -976,7 +976,7 @@
                 "field" : "Fm/Rows[2]/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows[2]/SD"
                 ],
@@ -1011,7 +1011,7 @@
               "field" : "Fm/Rows[2]/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows[2]/SD"
               ],
@@ -1039,7 +1039,7 @@
                 "field" : "Fm/Rows[2]/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows[2]/SD"
                 ],
@@ -1068,7 +1068,7 @@
               "field" : "Fm/Rows[2]/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows[2]/SD"
               ],
@@ -1096,7 +1096,7 @@
                 "field" : "Fm/Rows[2]/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows[2]/SD"
                 ],
@@ -1119,7 +1119,7 @@
               "field" : "Fm/Rows[2]/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows[2]/SD"
               ],
@@ -1141,7 +1141,7 @@
                 "field" : "Fm/Rows[2]/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows[2]/SD"
                 ],
@@ -1158,7 +1158,7 @@
               "field" : "Fm/Rows[2]/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows[2]/SD"
               ],
@@ -1180,7 +1180,7 @@
                 "field" : "Fm/Rows[2]/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows[2]/SD"
                 ],
@@ -1203,7 +1203,7 @@
               "field" : "Fm/Rows/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows/SD"
               ],
@@ -1230,7 +1230,7 @@
                 "field" : "Fm/Rows/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows/SD"
                 ],
@@ -1247,7 +1247,7 @@
               "field" : "Fm/Rows/SD",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Fm/Rows/SD"
               ],
@@ -1274,7 +1274,7 @@
                 "field" : "Fm/Rows/SD",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Fm/Rows/SD"
                 ],

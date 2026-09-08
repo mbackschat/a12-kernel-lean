@@ -45,7 +45,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_GROUP",
-          "summary" : "Rule with path '/Ger/Zeilen/D2': Regel '/Ger/Zeilen/D2' spezifiziert für die Sprache Deutsch einen fehlerhaften Fehlertext. Fehlertext: '#RuleGroup' spezifiziert ungültigen Kontextnamen 'RuleGroup'. [INVALID_GROUP]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Ger/Zeilen/D2"
           }
@@ -70,7 +70,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_GROUP",
-          "summary" : "Rule with path '/Ger/Zeilen/D3': Regel '/Ger/Zeilen/D3' spezifiziert für die Sprache Deutsch einen fehlerhaften Fehlertext. Fehlertext: '#RootGroup' spezifiziert ungültigen Kontextnamen 'RootGroup'. [INVALID_GROUP]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Ger/Zeilen/D3"
           }
@@ -114,7 +114,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "PARAM_INVALID_IN_NEW_WORLD",
-          "summary" : "Rule with path '/Ger/Zeilen/D5': Regel '/Ger/Zeilen/D5' spezifiziert für die Sprache Deutsch einen fehlerhaften Fehlertext. Der Parameter '#Zeile' darf in A12-DVs nicht verwendet werden. [PARAM_INVALID_IN_NEW_WORLD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Ger/Zeilen/D5"
           }

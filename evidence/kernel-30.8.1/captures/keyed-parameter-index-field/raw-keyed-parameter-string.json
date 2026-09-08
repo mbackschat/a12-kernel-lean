@@ -64,7 +64,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
-          "summary" : "Rule with path '/Rep/J3': The rule '/Rep/J3' specifies an incorrect error text for the language English. A semantic index '/Rep/Rows/Gate For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/J3"
           }
@@ -89,7 +89,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
-          "summary" : "Rule with path '/Rep/J4': The rule '/Rep/J4' specifies an incorrect error text for the language English. A semantic index '/Rep/Rows/Err For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/J4"
           }

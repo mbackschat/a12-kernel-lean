@@ -43,7 +43,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Probe4/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe4/Rows/DateSub'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -87,7 +87,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Probe4/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe4/Rows/DateSub'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -131,7 +131,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NUMBER_AND_NON_NUMBER",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a number (including amounts) then all parameters have to be of type number (including amounts). Corrupt: '/Probe4/Rows/Sub'. [MVK_NUMBER_AND_NON_NUMBER]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -207,7 +207,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: '/Probe4/MixBox'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -234,7 +234,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe4/CheckRule': Date formats not compatible for 'NumberOfDifferentValues': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -261,7 +261,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: '/Probe4/SetBox'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },

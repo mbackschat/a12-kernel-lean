@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
-          "summary" : "Rule with path '/Rep/CheckRule': Error for 'Rows/Other2' in '/Rep/Rows/Other2/Val2': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
-          "summary" : "Rule with path '/Rep/CheckRule': Error for 'Rows/Other2' in '/Rep/Rows/Other2/Val2': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }
@@ -127,7 +127,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
-          "summary" : "Rule with path '/Rep/CheckRule': Error for 'Other' in '/Rep/Other/Fee': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/CheckRule"
           }

@@ -338,7 +338,7 @@
               "field" : "Probe/G2/Num2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/G2/Num2"
               ],
@@ -452,7 +452,7 @@
               "field" : "Probe/G2/Num2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/G2/Num2"
               ],
@@ -558,7 +558,7 @@
               "field" : "Probe/G2/Num2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/G2/Num2"
               ],
@@ -658,7 +658,7 @@
               "field" : "Probe/G2/Num2",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/G2/Num2"
               ],
@@ -757,7 +757,7 @@
               "field" : "Probe/Rows/RNum",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Rows/RNum"
               ],
@@ -850,7 +850,7 @@
               "field" : "Probe/Rows/RNum",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Rows/RNum"
               ],

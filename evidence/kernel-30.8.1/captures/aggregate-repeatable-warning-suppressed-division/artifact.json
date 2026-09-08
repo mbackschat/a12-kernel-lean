@@ -632,7 +632,7 @@
               "field" : "Order/Lines[2]/Candidate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Candidate"
               ],
@@ -684,7 +684,7 @@
                 "field" : "Order/Lines[2]/Candidate",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Candidate"
                 ],
@@ -767,7 +767,7 @@
               "field" : "Order/Lines[2]/Candidate",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Candidate"
               ],
@@ -819,7 +819,7 @@
                 "field" : "Order/Lines[2]/Candidate",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Candidate"
                 ],
@@ -894,7 +894,7 @@
               "field" : "Order/Lines[2]/Divisor",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Divisor"
               ],
@@ -950,7 +950,7 @@
                 "field" : "Order/Lines[2]/Divisor",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Divisor"
                 ],
@@ -1019,7 +1019,7 @@
               "field" : "Order/Lines[2]/Divisor",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Order/Lines[2]/Divisor"
               ],
@@ -1075,7 +1075,7 @@
                 "field" : "Order/Lines[2]/Divisor",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines[2]/Divisor"
                 ],
@@ -1222,7 +1222,7 @@
                 "field" : "Order/Lines/TotalOverDivisor",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The calculated value is not valid for the field.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines/TotalOverDivisor"
                 ],
@@ -1363,7 +1363,7 @@
                 "field" : "Order/Lines/TotalOverDivisor",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The calculated value is not valid for the field.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Order/Lines/TotalOverDivisor"
                 ],

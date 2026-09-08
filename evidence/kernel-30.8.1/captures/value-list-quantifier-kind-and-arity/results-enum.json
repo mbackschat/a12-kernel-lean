@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
-          "summary" : "Rule with path '/Probe4/CheckRule': The error field '/Probe4/SkuText' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -53,7 +53,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'AtLeastOneFieldValueIncludedInValueList': 'x' is not valid in the used enumerations or categories. [MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }
@@ -78,7 +78,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'AtLeastOneFieldValueIncludedInValueList': 'x' is not valid in the used enumerations or categories. [MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           }

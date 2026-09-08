@@ -210,7 +210,7 @@
               "field" : "Project/Milestones/MilestoneStamp",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/MilestoneStamp"
               ],
@@ -247,7 +247,7 @@
                 "field" : "Project/Milestones/MilestoneStamp",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/MilestoneStamp"
                 ],
@@ -276,7 +276,7 @@
               "field" : "Project/Milestones/MilestoneStamp",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/MilestoneStamp"
               ],
@@ -313,7 +313,7 @@
                 "field" : "Project/Milestones/MilestoneStamp",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Project/Milestones/MilestoneStamp"
                 ],

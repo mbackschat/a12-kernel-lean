@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_TYPES_FOR_COMPARISON",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NoFieldValueIncludedInValueList': It is not allowed to compare strings and numbers. [MVK_INVALID_TYPES_FOR_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -52,7 +52,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NoFieldValueIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'FiledOn'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -78,7 +78,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NoFieldValueIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'Flag'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -121,7 +121,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_TYPES_FOR_COMPARISON",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NotAllFieldValuesIncludedInValueList': It is not allowed to compare strings and numbers. [MVK_INVALID_TYPES_FOR_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -147,7 +147,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NotAllFieldValuesIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'FiledOn'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },
@@ -173,7 +173,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED",
-          "summary" : "Rule with path '/Probe4/CheckRule': At 'NotAllFieldValuesIncludedInValueList': It is only allowed to use string fields, enumerations or numbers (including amounts). Corrupt: 'Flag'. [MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe4/CheckRule"
           },

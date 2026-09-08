@@ -10,25 +10,25 @@
     "severity" : "ERROR",
     "source" : "KERNEL",
     "code" : "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
-    "summary" : "Field with path '/Cg/Choice': For the field '/Cg/Choice' the value 'beta' has been specified. This contains the character 'b' which is not allowed for the current data model version. [MVK_ENUM_VALUE_WITH_INVALID_CHARACTER]",
+    "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
     "where" : { }
   }, {
     "severity" : "ERROR",
     "source" : "KERNEL",
     "code" : "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
-    "summary" : "Field with path '/Cg/Choice': For the field '/Cg/Choice' the value 'beta' has been specified. This contains the character 'e' which is not allowed for the current data model version. [MVK_ENUM_VALUE_WITH_INVALID_CHARACTER]",
+    "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
     "where" : { }
   }, {
     "severity" : "ERROR",
     "source" : "KERNEL",
     "code" : "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
-    "summary" : "Field with path '/Cg/Choice': For the field '/Cg/Choice' the value 'beta' has been specified. This contains the character 't' which is not allowed for the current data model version. [MVK_ENUM_VALUE_WITH_INVALID_CHARACTER]",
+    "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
     "where" : { }
   }, {
     "severity" : "ERROR",
     "source" : "KERNEL",
     "code" : "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
-    "summary" : "Field with path '/Cg/Choice': For the field '/Cg/Choice' the value 'beta' has been specified. This contains the character 'a' which is not allowed for the current data model version. [MVK_ENUM_VALUE_WITH_INVALID_CHARACTER]",
+    "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
     "where" : { }
   } ],
   "written" : false

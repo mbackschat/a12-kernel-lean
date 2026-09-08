@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD_PARAMETER",
-          "summary" : "Rule with path '/Msg/Rows/R1': The rule '/Msg/Rows/R1' specifies an incorrect error text for the language English. The index-field parameter '$index(Marker)$' does neither access the value nor the category-value. [INVALID_INDEX_FIELD_PARAMETER]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/R1"
           }
@@ -51,7 +51,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/R2': The rule '/Msg/Rows/R2' specifies an incorrect error text for the language English. The field referenced in parameter '$index(Rows/Marker)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/R2"
           }
@@ -76,7 +76,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/R3': The rule '/Msg/Rows/R3' specifies an incorrect error text for the language English. The field referenced in parameter '$index(/Msg/Rows)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/R3"
           }
@@ -101,7 +101,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "INVALID_INDEX_FIELD",
-          "summary" : "Rule with path '/Msg/Rows/R4': The rule '/Msg/Rows/R4' specifies an incorrect error text for the language English. The field referenced in parameter '$index(Rows)$' is either no index-field, is referenced wrongly or is not used in the rule condition. [INVALID_INDEX_FIELD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Msg/Rows/R4"
           }

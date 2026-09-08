@@ -142,7 +142,7 @@
               "field" : "Portfolio/Projects/Choices/Window",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Portfolio/Projects/Choices/Window"
               ],
@@ -163,7 +163,7 @@
                 "field" : "Portfolio/Projects/Choices/Window",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Portfolio/Projects/Choices/Window"
                 ],
@@ -180,7 +180,7 @@
               "field" : "Portfolio/Projects/Choices/Window",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Portfolio/Projects/Choices/Window"
               ],
@@ -201,7 +201,7 @@
                 "field" : "Portfolio/Projects/Choices/Window",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Portfolio/Projects/Choices/Window"
                 ],

@@ -45,7 +45,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "RULEGROUP_IMMEDIATELY_BELOW_ROOT",
-          "summary" : "Rule with path '/Rep/RootNumComp': The rule '/Rep/RootNumComp' specifies an incorrect error text for the language English. The parameter '#RuleGroup' is not allowed in rules which are ordered right below the rootgroup. [RULEGROUP_IMMEDIATELY_BELOW_ROOT]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Rep/RootNumComp"
           }

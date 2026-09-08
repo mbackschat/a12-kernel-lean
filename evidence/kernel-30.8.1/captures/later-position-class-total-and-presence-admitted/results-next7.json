@@ -26,7 +26,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
-          "summary" : "Rule with path '/Probe2/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },
@@ -70,7 +70,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_DATE_AND_NONDATE",
-          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },

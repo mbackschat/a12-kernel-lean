@@ -15,6 +15,16 @@
 # all of them in prose describing a probe's outcome — which is exactly how it happens, so prose alone
 # was never going to hold the line.
 #
+# RETAINED EVIDENCE IS IN SCOPE, and it is where the bulk of the exposure was. The rule covers an
+# archived receipt as much as a Lean file, but this gate originally searched only `.lean`, `.md` and
+# `.sh`, so a probe artifact that verbatim records what the Kernel printed went unseen. On 2026-09-08
+# that gap held 1,586 sentences across 124 tracked JSON files in 77 capture directories. They were
+# redacted in place at the `message` and `summary` keys, textually rather than through a JSON
+# round-trip, so the diff is one line per sentence and every other byte is unchanged; the affected
+# SHA-256 values were re-recorded in their checkpoints in the same change. The retained `code`,
+# `field`, `severity` and `type` are untouched, so nothing a checkpoint cites was lost, and the
+# sentence stays one re-run away from the retained model and request.
+#
 #   ./scripts/check-no-kernel-prose.sh
 #
 # Exits nonzero and names every offending sentence and file.
@@ -122,12 +132,12 @@ PYTHON
 # fallback is kept so the gate still runs where ripgrep is absent, just slowly.
 if command -v rg >/dev/null 2>&1; then
   rg --no-filename --only-matching --file "$work/texts" \
-    --glob '*.lean' --glob '*.md' --glob '*.sh' \
-    A12Kernel spec docs scripts 2>/dev/null \
+    --glob '*.lean' --glob '*.md' --glob '*.sh' --glob '*.json' \
+    A12Kernel spec docs scripts evidence 2>/dev/null \
     | sort -u > "$work/found" || : > "$work/found"
 else
-  grep -rhoE -f "$work/texts" A12Kernel spec docs scripts \
-    --include='*.lean' --include='*.md' --include='*.sh' 2>/dev/null \
+  grep -rhoE -f "$work/texts" A12Kernel spec docs scripts evidence \
+    --include='*.lean' --include='*.md' --include='*.sh' --include='*.json' 2>/dev/null \
     | sort -u > "$work/found" || : > "$work/found"
 fi
 
@@ -136,8 +146,8 @@ if [[ "$violations" -gt 0 ]]; then
   while IFS= read -r sentence; do
     echo "EUPL message prose copied into MIT source:" >&2
     echo "  text: ${sentence}" >&2
-    grep -rlF "$sentence" A12Kernel spec docs scripts \
-      --include='*.lean' --include='*.md' --include='*.sh' 2>/dev/null \
+    grep -rlF "$sentence" A12Kernel spec docs scripts evidence \
+      --include='*.lean' --include='*.md' --include='*.sh' --include='*.json' 2>/dev/null \
       | while IFS= read -r file; do echo "  file: ${file}" >&2; done
   done < "$work/found"
 fi

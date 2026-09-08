@@ -42,7 +42,7 @@
               "field" : "Probe/Shell/Notes[3]/Tag",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Probe/Shell/Notes' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Notes[3]/Tag"
               ],
@@ -53,7 +53,7 @@
               "field" : "Probe/Shell/Notes[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Notes[3]"
               ],
@@ -83,7 +83,7 @@
               "field" : "Probe/Shell/Notes[3]/Tag",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Probe/Shell/Notes' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Notes[3]/Tag"
               ],
@@ -94,7 +94,7 @@
               "field" : "Probe/Shell/Notes[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Notes[3]"
               ],
@@ -232,7 +232,7 @@
               "field" : "Probe/Shell/Charges[3]/Fee",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]/Fee"
               ],
@@ -243,7 +243,7 @@
               "field" : "Probe/Shell/Charges[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]"
               ],
@@ -287,7 +287,7 @@
               "field" : "Probe/Shell/Charges[3]/Fee",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]/Fee"
               ],
@@ -298,7 +298,7 @@
               "field" : "Probe/Shell/Charges[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]"
               ],
@@ -402,7 +402,7 @@
               "field" : "Probe/Shell/Charges[2]/Fee",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[2]/Fee"
               ],
@@ -432,7 +432,7 @@
               "field" : "Probe/Shell/Charges[2]/Fee",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[2]/Fee"
               ],
@@ -482,7 +482,7 @@
               "field" : "Probe/Shell/Charges[3]/Fee",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]/Fee"
               ],
@@ -493,7 +493,7 @@
               "field" : "Probe/Shell/Charges[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]"
               ],
@@ -537,7 +537,7 @@
               "field" : "Probe/Shell/Charges[3]/Fee",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]/Fee"
               ],
@@ -548,7 +548,7 @@
               "field" : "Probe/Shell/Charges[3]",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The row number is bigger than the maximum allowed value.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Probe/Shell/Charges[3]"
               ],

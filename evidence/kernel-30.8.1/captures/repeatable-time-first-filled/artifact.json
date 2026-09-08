@@ -43,7 +43,7 @@
               "field" : "TimeProbe/Projects/Choices[3]/SourceTime",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "TimeProbe/Projects/Choices[3]/SourceTime"
               ],
@@ -71,7 +71,7 @@
                 "field" : "TimeProbe/Projects/Choices[3]/SourceTime",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "TimeProbe/Projects/Choices[3]/SourceTime"
                 ],
@@ -103,7 +103,7 @@
               "field" : "TimeProbe/Projects/Choices[3]/SourceTime",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "TimeProbe/Projects/Choices[3]/SourceTime"
               ],
@@ -131,7 +131,7 @@
                 "field" : "TimeProbe/Projects/Choices[3]/SourceTime",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "TimeProbe/Projects/Choices[3]/SourceTime"
                 ],
@@ -188,7 +188,7 @@
               "field" : "TimeProbe/Projects/Choices/SourceTime",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "TimeProbe/Projects/Choices/SourceTime"
               ],
@@ -209,7 +209,7 @@
                 "field" : "TimeProbe/Projects/Choices/SourceTime",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "TimeProbe/Projects/Choices/SourceTime"
                 ],
@@ -226,7 +226,7 @@
               "field" : "TimeProbe/Projects/Choices/SourceTime",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "Only dates in the format HH:mm:ss are allowed.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "TimeProbe/Projects/Choices/SourceTime"
               ],
@@ -247,7 +247,7 @@
                 "field" : "TimeProbe/Projects/Choices/SourceTime",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "Only dates in the format HH:mm:ss are allowed.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "TimeProbe/Projects/Choices/SourceTime"
                 ],

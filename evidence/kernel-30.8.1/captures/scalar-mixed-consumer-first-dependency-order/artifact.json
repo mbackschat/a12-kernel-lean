@@ -149,7 +149,7 @@
               "field" : "Schedule/Base",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Schedule/Base"
               ],
@@ -176,7 +176,7 @@
                 "field" : "Schedule/Base",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Schedule/Base"
                 ],
@@ -206,7 +206,7 @@
               "field" : "Schedule/Base",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Schedule/Base"
               ],
@@ -233,7 +233,7 @@
                 "field" : "Schedule/Base",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Schedule/Base"
                 ],
@@ -273,7 +273,7 @@
               "field" : "Schedule/Base",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Schedule/Base"
               ],
@@ -299,7 +299,7 @@
                 "field" : "Schedule/Base",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Schedule/Base"
                 ],
@@ -333,7 +333,7 @@
               "field" : "Schedule/Base",
               "severity" : "ERROR",
               "type" : "VALUE_ERROR",
-              "message" : "The value must be integer.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Schedule/Base"
               ],
@@ -359,7 +359,7 @@
                 "field" : "Schedule/Base",
                 "severity" : "ERROR",
                 "type" : "VALUE_ERROR",
-                "message" : "The value must be integer.",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
                 "referenced" : [
                   "Schedule/Base"
                 ],

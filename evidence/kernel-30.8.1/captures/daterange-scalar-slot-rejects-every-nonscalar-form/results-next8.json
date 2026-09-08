@@ -43,7 +43,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
-          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/CheckRule"
           }
@@ -68,7 +68,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
-          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/CheckRule"
           }
@@ -93,7 +93,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
-          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/CheckRule"
           }
@@ -118,7 +118,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
-          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': All fields must be the same type. [MVK_VARYING_TYPES_NOT_ALLOWED]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/CheckRule"
           },
@@ -161,7 +161,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
-          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/CheckRule"
           }
@@ -203,7 +203,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
-          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe3/CheckRule"
           }

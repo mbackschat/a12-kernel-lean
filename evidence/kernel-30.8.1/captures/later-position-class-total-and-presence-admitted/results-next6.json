@@ -60,7 +60,7 @@
           "severity" : "ERROR",
           "source" : "KERNEL",
           "code" : "MVK_NO_WILDCARD",
-          "summary" : "Rule with path '/Probe2/CheckRule': Missing specification of an asterisk for 'Rows' in '/Probe2/Rows/DateSub'. [MVK_NO_WILDCARD]",
+          "summary" : "[redacted: Kernel message text, EUPL localisation resource]",
           "where" : {
             "rule" : "/Probe2/CheckRule"
           },
