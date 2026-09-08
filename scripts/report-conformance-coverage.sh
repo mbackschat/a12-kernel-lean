@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Regenerate docs/CONFORMANCE-COVERAGE.md from ground truth: the Kernel's own error catalogs, this
-# repository's owned documents, and its tracked Lean source.
+# repository's owned documents, and its Lean source. Identifier occurrences are vocabulary reach,
+# not evidence that the corresponding behaviour is modelled or Kernel-conformant.
 #
 # The report is DERIVED — it owns no fact it prints, and every number is recomputed from scratch.
 #
@@ -319,13 +320,14 @@ if [[ "$mode" == "verify" ]]; then
 fi
 
 if [[ "$mode" == "print" ]]; then
-  echo "MODELLED        : ${in_lean}/${total_classes} ($(percent "$in_lean" "$total_classes")%) — the figure that counts; ${modelled_untouched} not yet modelled"
-  echo "  also touched in prose only: ${touched} ($(percent "$touched" "$total_classes")%) — an upper bound on knowledge, trivially inflatable, never the target"
-  echo "  in prose ${in_account} | observed ${observed} | archived-only ${archived_only} | observed-unaccounted ${unaccounted} (want 0)"
-  echo "capabilities    : ${capability_records} records, ${calibrated} calibrated, ${evidence_pending} evidence-pending"
+  echo "diagnostic names: ${in_lean}/${total_classes} ($(percent "$in_lean" "$total_classes")%) occur in Lean source; ${modelled_untouched} absent"
+  echo "  named anywhere: ${touched} ($(percent "$touched" "$total_classes")%) across the scanned prose, Lean, and evidence JSON"
+  echo "  in prose ${in_account} | in evidence JSON ${observed} | archived-only ${archived_only} | evidence names absent from prose ${unaccounted}"
+  echo "conformance     : no whole-Kernel percentage; identifier occurrence does not establish behaviour"
+  echo "capabilities    : ${capability_records} records, ${calibrated} mention checkpoints/calibration, ${evidence_pending} explicitly evidence-pending"
   echo "obligations     : ${gap_records} gaps, ${remaining_rows} remaining rows, ${route_blocked} route-blocked, ${ledger_pending} pending / ${ledger_handed} handed-off"
   echo "estate          : theory ${theory_lines}, support ${support_lines} ($(percent "$support_lines" "$theory_lines")%), evidence ${evidence_lines} ($(percent "$evidence_lines" "$theory_lines")%) nonblank Lean lines, ${unclassified} unclassified"
-  echo "evidence        : ${capture_dirs} captures, ${observation_rows} observation rows"
+  echo "evidence        : ${capture_dirs} capture directories, ${observation_rows} inputHash markers in compact observation files"
   echo
   echo "untouched by catalog:"
   awk '{ printf "  %5d  %s\n", $1, $2 }' "$work/by-catalog"
@@ -338,52 +340,37 @@ cat <<HEADER
 
 <!-- GENERATED FILE — do not edit by hand. Regenerate with \`./scripts/report-conformance-coverage.sh\`. -->
 
-**This report is derived, never authoritative.** Every number is recomputed from the Kernel's own error
-catalogs under \`../a12-kernel/\`, this repository's owned documents, and its tracked Lean source. It owns
-no fact: capability status stays in [\`IMPLEMENTATION-MAP.md\`](IMPLEMENTATION-MAP.md), open obligations in
-[\`SEMANTICS-GAPS.md\`](SEMANTICS-GAPS.md), sequencing in [\`PLAN.md\`](PLAN.md), provenance in
-[\`SOURCES.md\`](SOURCES.md). When this file and an owner disagree, the owner is right and this file is stale.
+**This report is derived, never authoritative.** It reads the Kernel's error catalogs and runtime formal-code constants under \`../a12-kernel/\`, this repository's owned documents, Lean source, and evidence JSON. Capability status stays in [\`IMPLEMENTATION-MAP.md\`](IMPLEMENTATION-MAP.md), open obligations in [\`SEMANTICS-GAPS.md\`](SEMANTICS-GAPS.md), sequencing in [\`PLAN.md\`](PLAN.md), and provenance in [\`SOURCES.md\`](SOURCES.md). When this file and an owner disagree, the owner is right and this file is stale.
 
-The class counts come from one mechanism — maximal-identifier extraction intersected with the Kernel's
-class set — and \`./scripts/report-conformance-coverage.sh --verify\` re-derives them by a structurally
-different one, multi-pattern fixed-string whole-word matching, aborting on any disagreement. The audit is
-not on the default path because it costs about forty seconds against this one's four. Run it after any
-change to how coverage is counted; it also checks capability record boundaries and gap-shard ownership.
+The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. \`./scripts/report-conformance-coverage.sh --verify\` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Measured at \`${revision}\` on ${today}.
+Working-tree counts generated on ${today}; HEAD was \`${revision}\`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**${in_lean} of ${total_classes} Kernel refusal classes modelled in Lean ($(percent "$in_lean" "$total_classes")%). ${modelled_untouched} are not.**
+**Whole-Kernel conformance is not quantified here. ${in_lean} of ${total_classes} diagnostic identifiers occur in Lean source ($(percent "$in_lean" "$total_classes")%); ${modelled_untouched} do not.**
 
-That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
-at ${touched} ($(percent "$touched" "$total_classes")%): it counts a class named anywhere in the written
-account, **including a checkpoint's own list of what it deliberately did not reach**. Touched is an upper
-bound on what this repository knows about, and it can be raised to 100% in an afternoon by writing prose,
-so it is reported to expose that gap rather than to stand in for progress. When the two are quoted
-together the modelled figure leads.
+An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
-## Axis 1 — static legality, the one axis with a real denominator
+## Axis 1 — diagnostic vocabulary, with a finite denominator
 
 | | classes | share |
 |---|---|---|
-| Distinct refusal classes in the Kernel's \`error_messages_en.properties\` catalogs | ${total_classes} | 100% |
+| Distinct identifiers in the selected diagnostic catalogs and runtime formal-code constants | ${total_classes} | 100% |
 | Named in \`spec/\` or \`docs/\` prose | ${in_account} | $(percent "$in_account" "$total_classes")% |
-| Named in tracked Lean source | ${in_lean} | $(percent "$in_lean" "$total_classes")% |
-| Observed in a retained probe artifact | ${observed} | $(percent "$observed" "$total_classes")% |
+| Named in Lean source under \`A12Kernel/\` | ${in_lean} | $(percent "$in_lean" "$total_classes")% |
+| Named in JSON under \`evidence/\` | ${observed} | $(percent "$observed" "$total_classes")% |
 | Touched by any of the three | ${touched} | $(percent "$touched" "$total_classes")% |
 | **Untouched everywhere** | **${untouched}** | **$(percent "$untouched" "$total_classes")%** |
 
-Two hygiene readings, both of which should stay at zero or be acted on:
+Two occurrence checks that may warrant an ownership lookup:
 
-- **Observed but absent from the written account: ${unaccounted}.** A class seen in a probe and never
-  written down is a measurement whose result was lost.
-- **Known only from archived material: ${archived_only}.** These are facts this repository holds but no
-  longer reads; they belong in a live owner or should be re-measured.
+- **Named in evidence JSON but absent from prose: ${unaccounted}.** Inspect the occurrence before treating it as an unaccounted observation.
+- **Named in archived prose but absent from live prose: ${archived_only}.** Check existing ownership before proposing any new work; the name alone establishes no missing semantic fact.
 
 ### Where the untouched classes are
 
-Ordered by size, because that is the order in which they are worth attacking.
+Ordered by count for lookup. Semantic priority remains with the plan and live gaps.
 
 | untouched | catalog | route |
 |---|---|---|
@@ -397,9 +384,7 @@ cat <<AXES
 
 ## Axis 2 — admitted behaviour, which no class name reaches
 
-Rendering, arithmetic ordering, computation scheduling, poison timing, and calendar behaviour produce no
-refusal class, so Axis 1 is blind to them. The capability records are the available proxy, and a coarser
-one: it counts whether a record cites external calibration, not how much of its family is covered.
+Rendering, arithmetic ordering, computation scheduling, poison timing, and calendar behaviour are not measured by diagnostic vocabulary. This text query counts capability records mentioning a checkpoint or calibration, not how much of each family is calibrated. The checkpoint and evidence-pending sets can overlap.
 
 | | records | share |
 |---|---|---|
@@ -417,13 +402,11 @@ one: it counts whether a record cites external calibration, not how much of its 
 | Ledger entries \`pending\` with a12-dmkits | ${ledger_pending} |
 | Ledger entries \`handed-off\` | ${ledger_handed} |
 
-A blocked route is the only figure here that should stop work; a \`remaining\` row is ordinary scope. If
-blocked is nonzero, that is what to escalate.
+A blocked route stops the work that depends on it. Other ready obligations can continue. Remaining-work entries differ in size and may overlap; their count is not a completion percentage.
 
 ## Axis 4 — estate ratio, a standing guard rather than a statistic
 
-[\`CLAUDE.md\`](../CLAUDE.md#semantic-first-simplification-rule) requires support not to exceed theory, and
-evidence alone to stay below one third of theory.
+[\`CLAUDE.md\`](../CLAUDE.md#semantic-first-simplification-rule) requires support not to exceed theory, and evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
@@ -431,24 +414,25 @@ evidence alone to stay below one third of theory.
 | Support (\`Evidence/\`, \`Reference/\`, \`Process/\`, \`Trust/\`, drivers) | ${support_lines} | $(percent "$support_lines" "$theory_lines")% — ceiling 100% |
 | Evidence alone | ${evidence_lines} | $(percent "$evidence_lines" "$theory_lines")% — ceiling 33% |
 
-Tracked Lean files in neither estate: ${unclassified}. A nonzero value means the ratio above is measuring
-a subset, so it is a defect in this generator rather than in the estate.
+Tracked Lean files in neither estate: ${unclassified}. A nonzero value means the ratio above measures a subset and the inventory needs review.
 
 ## Axis 5 — retained empirical backbone
 
 | | count |
 |---|---|
 | Retained capture directories under \`../evidence/\` | ${capture_dirs} |
-| Retained observation rows across all artifacts | ${observation_rows} |
+| \`inputHash\` markers in \`*-obs.json\` and \`semantic-observations.json\` | ${observation_rows} |
+
+The marker count excludes other observation formats, including runtime \`artifact.json\` files with \`rows\` arrays. It is neither a total observation count nor a count of independent behavioural discriminators.
 
 ## Velocity
 
-One row is appended per run, and only when a headline number moved — so a flat \`touched\` column across several rows is the signal that progression has stalled. The actionable reading when it does is Axis 1's route column: a stall usually means the remaining blocks need a route this session has not set up, rather than more rows on the route it already has.
+One row is appended when one of the recorded counts changes. Flat vocabulary counts do not indicate stalled semantic work: runtime calibration, proofs, and admitted behaviour can advance without introducing a diagnostic name. Historical rows preserve the counts produced by their then-current queries.
 
-Datetime is the referenced revision's commit time in ISO 8601 format, including its UTC offset; it is not the report's execution time.
+Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it is not the report's execution time. The revision is context for working-tree counts, not a claim that every counted byte was committed there.
 
 <!-- velocity-history:start -->
-| datetime | revision | touched | modelled | untouched | calibrated caps | open gaps |
+| datetime | revision | touched | Lean names | untouched | checkpoint caps | open gaps |
 |---|---|---|---|---|---|---|
 AXES
 } > "$work/report"
@@ -472,4 +456,4 @@ printf '<!-- velocity-history:end -->\n' >> "$work/report"
 
 mv "$work/report" "$report"
 echo "conformance coverage report written: ${report}"
-echo "  ${touched}/${total_classes} classes touched, ${in_lean} modelled, ${untouched} untouched"
+echo "  ${touched}/${total_classes} diagnostic names touched, ${in_lean} in Lean, ${untouched} untouched"
