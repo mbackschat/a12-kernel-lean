@@ -225,6 +225,7 @@ observation_rows="$(find evidence -type f \
 # Render.
 # ---------------------------------------------------------------------------
 revision="$(git rev-parse --short HEAD)"
+revision_datetime="$(git show -s --format=%cI HEAD)"
 today="$(date +%Y-%m-%d)"
 
 route_for() {
@@ -373,18 +374,17 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 ## Velocity
 
-One row is appended per run, and only when a headline number moved — so a flat \`touched\` column across
-several dated rows is the signal that progression has stalled. The actionable reading when it does is
-Axis 1's route column: a stall usually means the remaining blocks need a route this session has not set
-up, rather than more rows on the route it already has.
+One row is appended per run, and only when a headline number moved — so a flat \`touched\` column across several rows is the signal that progression has stalled. The actionable reading when it does is Axis 1's route column: a stall usually means the remaining blocks need a route this session has not set up, rather than more rows on the route it already has.
+
+Datetime is the referenced revision's commit time in ISO 8601 format, including its UTC offset; it is not the report's execution time.
 
 <!-- velocity-history:start -->
-| date | revision | touched | modelled | untouched | calibrated caps | open gaps |
+| datetime | revision | touched | modelled | untouched | calibrated caps | open gaps |
 |---|---|---|---|---|---|---|
 AXES
 } > "$work/report"
 
-new_row="| ${today} | \`${revision}\` | ${touched} | ${in_lean} | ${untouched} | ${calibrated} | ${gap_records} |"
+new_row="| ${revision_datetime} | \`${revision}\` | ${touched} | ${in_lean} | ${untouched} | ${calibrated} | ${gap_records} |"
 
 : > "$work/history"
 if [[ -f "$report" ]]; then
