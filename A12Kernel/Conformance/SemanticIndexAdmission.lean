@@ -14,8 +14,9 @@ explained by a different account that happens to agree on a single verdict.
 The first ladder walks the seven gates a reference key reaches, ending in admission. The second holds
 a clean key and walks the five gates that belong to the value spec and its index-group resolution,
 including the three the settled walk in [`IndexGroupResolution`](../Elaboration/IndexGroupResolution.lean)
-contributes. Beyond the ladders: the constant arm's reachable set, the empty-key disjunct, and
-lenience swapping one class for another rather than admitting.
+contributes. Paired defects bridge the ladders: key shape precedes nesting, and resolution precedes
+agreement on both key arms. Beyond them: the constant arm's reachable set, the empty-key disjunct,
+lenience swapping one class for another rather than admitting, and the public admission query.
 -/
 
 namespace A12Kernel.Conformance.SemanticIndexAdmission
@@ -142,6 +143,38 @@ example :
     [ some "MVK_INVALID_RAW_TYPE"
     , some "MVK_SEMANTIC_INDEX_WITH_CATEGORY"
     , none ] := by
+  native_decide
+
+example :
+    [ code? (site true [indexGroup]) (key false false true false false false)
+    , code? (site true [indexGroup]) (key true true true false false false)
+    , code? (site true [indexGroup]) cleanKey
+    , code? (site false [indexGroup]) cleanKey ] =
+    [ some "MVK_SEMANTIC_INDEX_NO_FIELD"
+    , some "MVK_SEMANTIC_INDEX_WITH_WILDCARD"
+    , some "MVK_SEMANTIC_INDEX_WITH_SEMANTIC_INDEX"
+    , none ] := by
+  native_decide
+
+example :
+    let mismatched := key true false false false false false
+    [ code? (site false [brokenName]) mismatched
+    , code? (site false []) mismatched
+    , code? (site false [indexGroup]) mismatched
+    , code? (site false [brokenName]) (.constant "k" false)
+    , code? (site false []) (.constant "k" false)
+    , code? (site false [indexGroup]) (.constant "k" false) ] =
+    [ some "MVK_INDEX_FIELD_INVALID"
+    , some "MVK_NO_INDEX_FIELD"
+    , some "MVK_INDEX_TYPE_INCONSISTENT"
+    , some "MVK_INDEX_FIELD_INVALID"
+    , some "MVK_NO_INDEX_FIELD"
+    , some "MVK_INDEX_VALUE_INVALID" ] := by
+  native_decide
+
+example :
+    semanticIndexSiteAdmitted (site false [indexGroup]) cleanKey = true ∧
+      semanticIndexSiteAdmitted resolving cleanKey = false := by
   native_decide
 
 end A12Kernel.Conformance.SemanticIndexAdmission
