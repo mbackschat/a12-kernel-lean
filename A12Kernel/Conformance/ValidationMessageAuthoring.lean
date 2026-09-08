@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValidationMessageAuthoring
+import A12Kernel.Elaboration.ValidationMessageDiagnostic
 
 /-! # Checked validation-message authoring conformance locks -/
 
@@ -381,6 +381,38 @@ example :
 
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/
 private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
+
+private def templateNamedDiagnostic? (template : String) : Option (Option String) :=
+  (templateError? template).map fun error =>
+    error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode
+
+example :
+    ["", "$Amount", "line\ntwo", "row\there", "$BaseYear$", "$Other$"].map
+        templateNamedDiagnostic? =
+      [some (some "RULE_HAS_NO_ERRORTEXT"), some (some "WRONG_NUMBER_OF_DOLLARS"),
+       some (some "INVALID_LINEBREAK"), some (some "INVALID_CHARACTERS"),
+       some (some "NO_BASE_YEAR"), some (some "INVALID_FIELD")] ∧
+    templateNamedDiagnostic? "$BaseYear+1$" = some (some "NO_BASE_YEAR") ∧
+    templateNamedDiagnostic? "$Other.value$" = some (some "INVALID_FIELD") ∧
+    templateNamedDiagnostic? "$Né$" = some (some "MVK_LEXER_STANDARD_ERROR") ∧
+    templateNamedDiagnostic? "row $#/Order/$" = some (some "MVK_INCOMPLETE_INPUT") ∧
+    templateNamedDiagnostic? "row $#/Order//Head$" = some (some "MVK_UNEXPECTED_TOKEN") ∧
+    templateNamedDiagnostic? "row $#/'Order$" = some (some "MVK_LEXER_STANDARD_ERROR") := by
+  native_decide
+
+example :
+    templateNamedDiagnostic? (cp 0x1F600 ++ " $Amount") =
+      some (some "WRONG_NUMBER_OF_DOLLARS") ∧
+    templateNamedDiagnostic? (cp 0x1F600 ++ "\ttwo") =
+      some (some "INVALID_CHARACTERS") ∧
+    templateNamedDiagnostic? ("row $An" ++ cp 0x1F600 ++ "chor$") =
+      some (some "MVK_LEXER_STANDARD_ERROR") ∧
+    templateNamedDiagnostic? (cp 0x1F600 ++ " $Amount$") = some none ∧
+    templateNamedDiagnostic? "$BaseYear+$" = some none ∧
+    templateNamedDiagnostic? (cp 0x1F600 ++ " $Amount For \"k1\"$") = some none ∧
+    templateNamedDiagnostic? "Cost $$ $Amount$" = none ∧
+    templateNamedDiagnostic? "$$$$" = none := by
+  native_decide
 
 example :
     templateError? ("t" ++ cp 0x1F600 ++ "x $Amount") =

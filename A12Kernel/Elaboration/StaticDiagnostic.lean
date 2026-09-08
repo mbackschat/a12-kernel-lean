@@ -349,6 +349,15 @@ inductive KernelStaticDiagnostic where
   | errorIndexAsCalculatedField
   /-- An Enumeration value carrying a character outside the model's declared supported set. This class belongs to the Kernel's **code-generation** check family, and it is reachable from ordinary authoring because the consistency check runs the validation code generator: one registered consistency rule generates the validator and turns every notification it collects into a consistency problem. The Kernel reports one diagnostic per offending **character**, not one per value. -/
   | enumValueWithInvalidCharacter
+  | ruleHasNoErrorText
+  | invalidMessageLinebreak
+  | invalidMessageCharacters
+  | wrongNumberOfDollars
+  | noMessageBaseYear
+  | messageFieldNotReferenced
+  | lexerStandardError
+  | incompleteInput
+  | unexpectedToken
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -537,6 +546,15 @@ def kernelCode : KernelStaticDiagnostic → String
   | .errorEmptyPrecondition => "MVK_ERROR_EMPTY_PRECONDITION"
   | .errorIndexAsCalculatedField => "MVK_ERROR_INDEX_AS_CALCULATED_FIELD"
   | .enumValueWithInvalidCharacter => "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER"
+  | .ruleHasNoErrorText => "RULE_HAS_NO_ERRORTEXT"
+  | .invalidMessageLinebreak => "INVALID_LINEBREAK"
+  | .invalidMessageCharacters => "INVALID_CHARACTERS"
+  | .wrongNumberOfDollars => "WRONG_NUMBER_OF_DOLLARS"
+  | .noMessageBaseYear => "NO_BASE_YEAR"
+  | .messageFieldNotReferenced => "INVALID_FIELD"
+  | .lexerStandardError => "MVK_LEXER_STANDARD_ERROR"
+  | .incompleteInput => "MVK_INCOMPLETE_INPUT"
+  | .unexpectedToken => "MVK_UNEXPECTED_TOKEN"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -607,7 +625,10 @@ def all : List KernelStaticDiagnostic :=
     .paramSizeInvalidTwo, .pointInA12Model,
     .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,
-    .invalidConst, .noStringOrEnum]
+    .invalidConst, .noStringOrEnum,
+    .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,
+    .wrongNumberOfDollars, .noMessageBaseYear, .messageFieldNotReferenced,
+    .lexerStandardError, .incompleteInput, .unexpectedToken]
 
 end KernelStaticDiagnostic
 
