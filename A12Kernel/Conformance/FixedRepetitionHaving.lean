@@ -69,13 +69,17 @@ example : error? ["Rep"] (condition .outer fixedPath) =
 example : (error? ["Rep"] (condition .outer fixedPath)).bind
     CorrelationElabError.diagnostic? = some .noWildcard := by native_decide
 
-example : error? base.groupPath
-    (.compareRepetitions .equal (reference .outer fixedPath) (reference .outer fixedPath)) =
-    some .missingInner := by native_decide
+example :
+    let error := error? base.groupPath
+      (.compareRepetitions .equal (reference .outer fixedPath) (reference .outer fixedPath))
+    error = some .missingInner ∧
+      error.bind CorrelationElabError.diagnostic? = some .noIterationForWildcard := by native_decide
 
-example : error? ["Rep"]
-    (.compareRepetitions .equal (reference .inner metaPath) (reference .inner metaPath)) =
-    some .missingInner := by native_decide
+example :
+    let error := error? ["Rep"]
+      (.compareRepetitions .equal (reference .inner metaPath) (reference .inner metaPath))
+    error = some .missingInner ∧
+      error.bind CorrelationElabError.diagnostic? = some .noIterationForWildcard := by native_decide
 
 example : (elaborateStarNumberHavingSource model ["Rep"] source
     (.compareRepetitions .equal (reference .inner fixedPath) (reference .inner fixedPath))).isOk

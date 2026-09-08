@@ -442,13 +442,18 @@ example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
     some (.repetitionGroupMismatch items.path other.path) := by
   native_decide
 
-example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
-    (absoluteRule (equalCount .outer .outer))) = some .missingInner := by
+example :
+    let error := errorOf (elaborateSingleCorrelatedRule model ["Order"]
+      (absoluteRule (equalCount .outer .outer)))
+    error = some .missingInner ∧
+      error.bind CorrelationElabError.diagnostic? = some .noIterationForWildcard := by
   native_decide
 
 -- All-inner Having is kernel-valid uncorrelated syntax, but outside this correlated route.
-example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
-    (absoluteRule (equalCount .inner .inner))) = some .missingOuter := by
+example :
+    let error := errorOf (elaborateSingleCorrelatedRule model ["Order"]
+      (absoluteRule (equalCount .inner .inner)))
+    error = some .missingOuter ∧ error.bind CorrelationElabError.diagnostic? = none := by
   native_decide
 
 example : errorOf (elaborateSingleCorrelatedRule model ["Order"]

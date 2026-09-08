@@ -122,7 +122,7 @@ reaches too, whatever route an assignment takes to it.
 Reading either column off the other is wrong for six kinds of eight; the two temporal families are
 the only agreement.
 
-The scope classes separate cleanly: a **root-level** field the filter's star cannot bind
+The scope classes separate cleanly: a filter with no unmarked reference into a reopened level
 reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference
 reports `invalidIterationInFilterCondition`, and a star written *inside* the filter reports
 `noWildcardsAllowed`. An unavailable marked reference instead reports `noWildcard`, because it
@@ -134,7 +134,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
   | .fieldNotStringValue _ actual =>
       literalComparisonDiagnostic? .stringLike actual
-  | .fieldOutsideGroup _ _ _ => some .noIterationForWildcard
+  | .fieldOutsideGroup _ _ _ | .missingInner => some .noIterationForWildcard
   | .fieldOutsideEnvironment .outer _ _ _ | .repetitionOutsideEnvironment .outer _ _ _ =>
       some .noWildcard
   | .fieldOutsideEnvironment .inner _ _ _ | .repetitionOutsideEnvironment .inner _ _ _ =>
@@ -149,7 +149,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .invalidGroupReference _ | .fieldScopeMismatch _ _ _
   | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .unsupportedOperator _
-  | .missingInner | .missingOuter | .errorGuardMismatch _ _
+  | .missingOuter | .errorGuardMismatch _ _
   | .incoherentCore => none
 
 end CorrelationElabError
