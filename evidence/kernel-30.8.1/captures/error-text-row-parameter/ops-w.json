@@ -1,0 +1,77 @@
+[
+ {
+  "id": "P1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "P1",
+   "--message",
+   "en_US=row $#/Et/Rows$"
+  ]
+ },
+ {
+  "id": "P2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) > 2",
+   "--code",
+   "P2",
+   "--message",
+   "en_US=row $#/Et/Rows$"
+  ]
+ },
+ {
+  "id": "P3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note) And NumberOfFilledGroups(/Et/Rows*) > 2",
+   "--code",
+   "P3",
+   "--message",
+   "en_US=row $#/Et/Rows$"
+  ]
+ },
+ {
+  "id": "P4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) > 2",
+   "--code",
+   "P4",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "P5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "P5",
+   "--message",
+   "en_US=row $#/Et/Nope$"
+  ]
+ }
+]

@@ -1,0 +1,92 @@
+[
+ {
+  "id": "M1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "M1",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "M2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "M2",
+   "--message",
+   "en_US=a $$ literal dollar"
+  ]
+ },
+ {
+  "id": "M3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note",
+   "--code",
+   "M3",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "M4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note",
+   "--code",
+   "M4",
+   "--message",
+   "en_US=a $$ literal dollar"
+  ]
+ },
+ {
+  "id": "M5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note",
+   "--code",
+   "M5",
+   "--message",
+   "en_US=value $/Et/Rows/Note.value$"
+  ]
+ },
+ {
+  "id": "M6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "M6",
+   "--message",
+   "en_US=value $/Et/Rows/Note.value$"
+  ]
+ }
+]

@@ -1,0 +1,174 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "M1",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note)", "--code", "M1", "--message", "en_US=plain text" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "M2",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note)", "--code", "M2", "--message", "en_US=a $$ literal dollar" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "M3",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note", "--code", "M3", "--message", "en_US=plain text" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_EXPECTED_TOKEN_NOT_FOUND",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "M4",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note", "--code", "M4", "--message", "en_US=a $$ literal dollar" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_EXPECTED_TOKEN_NOT_FOUND",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "M5",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note", "--code", "M5", "--message", "en_US=value $/Et/Rows/Note.value$" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_EXPECTED_TOKEN_NOT_FOUND",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "M6",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note)", "--code", "M6", "--message", "en_US=value $/Et/Rows/Note.value$" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

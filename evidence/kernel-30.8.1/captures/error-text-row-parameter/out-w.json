@@ -1,0 +1,127 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "P1",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note)", "--code", "P1", "--message", "en_US=row $#/Et/Rows$" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "P2",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) > 2", "--code", "P2", "--message", "en_US=row $#/Et/Rows$" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "ITER_PARAM_WITH_STARREFERENCE",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "P3",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note) And NumberOfFilledGroups(/Et/Rows*) > 2", "--code", "P3", "--message", "en_US=row $#/Et/Rows$" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "P4",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) > 2", "--code", "P4", "--message", "en_US=plain" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "P5",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "FieldFilled(/Et/Rows/Note)", "--code", "P5", "--message", "en_US=row $#/Et/Nope$" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

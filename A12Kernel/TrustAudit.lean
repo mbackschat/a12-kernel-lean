@@ -2756,3 +2756,12 @@ run_cmd do
 #print axioms A12Kernel.effectiveMaximum_min
 #print axioms A12Kernel.effectiveMaximum_none
 #print axioms A12Kernel.groupRestrictionOutcome_shape_gate
+#print axioms A12Kernel.rowParameterRefusal_invalidGroup_two_causes
+#print axioms A12Kernel.rowParameterRefusal_star_rule
+#print axioms A12Kernel.rowParameterRefusal_last_stage_by_spelling
+#print axioms A12Kernel.rowParameterRefusal_first_match
+#print axioms A12Kernel.rowParameterOutcome_unavailable_admits
+#print axioms A12Kernel.errorTextFindings_accumulates
+#print axioms A12Kernel.errorTextFindings_unparsed_admits_parameter
+#print axioms A12Kernel.errorTextFindings_no_dollar_silent
+#print axioms A12Kernel.errorTextFindings_parsed_is_cascade
