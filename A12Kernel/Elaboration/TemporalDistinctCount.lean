@@ -393,9 +393,8 @@ rather than read off the cell, which is what keeps the count the declaration's r
 producer's.
 -/
 
-/-- Which identity a certified list folds at. Two arms and not one: a list with no year available
-    anywhere compares the calendar position it spells, and completing it against an invented year
-    would make two such values equal or unequal by that invention. -/
+/-- The declared components select the identity. A yearless list retains the calendar position it
+    spells; completing it against an invented year would change the comparison domain. -/
 inductive TemporalDistinctCountFoldArm where
   | dated
   | yearless
@@ -480,15 +479,11 @@ private def temporalDistinctCountCell
       | .unknown cause | .poison cause => .unknown cause
   | .instant, addressed =>
       match observeCell .validation addressed.cell with
-      -- The exact moment, and holding it is a **stated choice** rather than an indifference. The two
-      -- accounts — this instant, or the decoded local label — genuinely differ inside a model-zone
-      -- overlap, where one label names two moments; the extrema's conformance separates them on that
-      -- pair. What no route reaches is a *document* carrying both: A12's canonical document shape
-      -- stores a DATE_TIME as a model-format string with no offset, so text authoring resolves one
-      -- label to one instant. This arm keeps the finer distinction, so a later measurement can
-      -- correct it without re-deriving anything, and it agrees with the extrema's measured ordering
-      -- on exact instants. The unsearched arm is a *computed* DATE_TIME beside a text-authored one
-      -- ([SG24](../../docs/SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold)).
+      -- Exact instants preserve the distinction needed by in-flight temporal consumers. For this
+      -- field-list consumer, computed cells also store text, and injective fresh-label resolution
+      -- on the concrete profiles makes label and instant identity agree
+      -- ([store checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-value-is-not-retained-past-its-store),
+      -- `concreteProfile_resolveLocal_injective`).
       | .value (.temporal (.dateTime instant _ _ _)) => .present instant
       | .value _ => .unknown .malformed
       | .empty => .empty
@@ -551,15 +546,11 @@ structure CheckedTemporalDistinctCountRun (model : FlatModel) where
   source : CheckedTemporalDistinctCountSource model
   timeSetComplete : timeBearingSetIsComplete source.components = true
 
-/-- Why a statically certified source has no evaluator here. **Not a Kernel refusal** — the Kernel
-    admits the shape — so this is its own type rather than an arm of the elaboration error, which
-    exists to carry measured Kernel codes and would have to project `none` for it.
-
-    One arm, and it stays a type rather than collapsing into an `Option`: the component set it
-    carries is what a consumer needs to report the restriction, and a second arm is expected here
-    before a Kernel code ever is. -/
+/-- Why a Lean-certified source has no evaluator here. This internal representation limit has no
+    measured Kernel refusal or admitted-format witness; `timeBearingSetIsComplete` owns that scope.
+    Retaining the component set lets a consumer explain the precise missing projection. -/
 inductive TemporalDistinctCountRunLimit where
-  /-- A time-bearing set naming only some of the components its atom carries. Statically admitted and
+  /-- A time-bearing set naming only some of the components its atom carries. Lean-certified and
       unevaluated, because the time atoms cannot be masked to a partial set the way the date ones
       are; `timeBearingSetIsComplete` owns the reason and the format-domain note. -/
   | incompleteTimeBearingSet (components : TemporalComponents)

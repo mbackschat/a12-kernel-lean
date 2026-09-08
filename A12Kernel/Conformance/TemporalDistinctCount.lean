@@ -135,15 +135,15 @@ private def model : FlatModel := {
     { id := 30, groupPath := ["Probe"], name := "Stamp2"
       policy := { kind := .temporal .dateTime instantSet }
       temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
-    -- A time-bearing set naming only *some* date components. No admitted format spells one, so this
-    -- pair exists to keep the runtime certificate reachable rather than hypothetical.
+    -- No admitted-format witness is retained for this partial set; the internal pair exercises the
+    -- explicit runtime limit without claiming a Kernel refusal.
     { id := 31, groupPath := ["Probe"], name := "PartialStamp1"
       policy := { kind := .temporal .dateTime dayAndClock }
       temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
     { id := 32, groupPath := ["Probe"], name := "PartialStamp2"
       policy := { kind := .temporal .dateTime dayAndClock }
       temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
-    -- A repeatable group carrying dates, so the starred-group restriction has a reachable case.
+    -- Repeated dates separate whole-group row resolution from reading only the first row.
     { id := 33, groupPath := ["Probe", "RepBox"], name := "RepDate"
       policy := { kind := .temporal .date TemporalComponents.fullDate }
       repeatableScope := [1]
@@ -275,7 +275,7 @@ private def groupOperand (group : String) : SurfaceFieldEntitySource :=
   { first := .group (.path { base := .absolute, groups := ["Probe", group] })
     rest := [] }
 
-/-- The **starred** form of a repeatable group operand, which the fold refuses. -/
+/-- The starred group needs row topology, unlike the fixed group beside it. -/
 private def starredGroupOperand (group : String) : SurfaceFieldEntitySource :=
   { first := .starredGroup
       { base := .absolute
@@ -519,16 +519,14 @@ example :
    and it is the mirror of the clock arm's row above. Two cells carry one label and two instants, and
    the count is 2 — a decoded-label identity answers 1.
 
-   That pair is a real authored shape rather than a contrived payload: Europe/Berlin passes through
+   The internal pair uses an actual overlap: Europe/Berlin passes through
    `2024-10-27T02:15:00` twice, at UTC `00:15` and `01:15`, which are these two `epochMillis` an hour
    apart, and the extrema's conformance separates its own DateTime family on the same pair.
 
-   **This claims nothing about the Kernel**, and the boundary is a property of the document format
-   rather than of the zone: A12's canonical document form stores a DATE_TIME as a model-format string
-   with no offset, so no serialized document carries one label with two instants and no route
-   observes which field the engine reads. Holding the instant keeps the finer distinction, so a later
-   measurement can correct this without re-deriving anything
-   ([SG24](../../docs/SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold)). -/
+   This is an internal payload separator, not a Kernel-authored document witness. Computed cells
+   also store model-format text, and `concreteProfile_resolveLocal_injective` makes label and instant
+   equality coincide on the concrete profiles for values obtained from that text
+   ([store checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-value-is-not-retained-past-its-store)). -/
 example :
     count? "Stamp1" "Stamp2"
         [temporalCell 29 "2024-03-05T12:30:00"

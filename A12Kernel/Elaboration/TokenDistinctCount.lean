@@ -28,8 +28,8 @@ inductive TokenDistinctCountElabError where
       homogeneity from the first operand's family, so this is the string-family half of the pair
       whose Number-first half draws `MVK_NUMBER_AND_NON_NUMBER` at the Number consumer. -/
   | laterNonToken (path : List String) (actual : SurfaceScalarKind)
-  /-- An operand outside the operator's kind domain — string, enumeration, number, and date/time —
-      from **any** position, because the domain is checked before homogeneity is. -/
+  /-- A leading operand outside the operator's kind domain; later nonmembers use the leading
+      family's homogeneity code ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
   | kindOutsideDomain (path : List String) (actual : SurfaceScalarKind)
   deriving Repr, DecidableEq
 
@@ -49,16 +49,6 @@ private def isOutsideDistinctDomain : SurfaceScalarKind → Bool
   | .boolean | .confirm => true
   | _ => false
 
-/-- The declaration one resolved slot reads directly, or `none` for a slot whose kind this
-    positional pre-check does not resolve. A group or starred-group slot expands to many
-    declarations with no single kind, and no row measures the positional class through one, so those
-    stay unclassified here and reach the shared certification unchanged. -/
-private def directSlotDeclaration? :
-    ResolvedFieldEntityOperand model → Option FlatFieldDecl
-  | .field declaration _ => some declaration
-  | .star source | .starHaving source _ => some source.declaration
-  | .group _ | .starredGroup _ | .starredGroupPresence _ => none
-
 /-- Project this operator's positional classes from the authored order, before token certification
     collapses every kind failure into one unpositioned mismatch.
 
@@ -69,12 +59,16 @@ private def directSlotDeclaration? :
     ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). So a later slot is
     only ever tested for membership in the leading family, never re-tested against the domain.
 
+    Group slots contribute their recursive declaration stream at their authored position; the
+    swapped-order group pair at that checkpoint isolates this from direct-field order. This is only
+    the diagnostic view: shape checking still sees the authored group for arity and wildcard rules.
+
     A first operand that is neither token-family nor outside the domain — a Number — means the list
     was never this overload's, so nothing is classed and the Number consumer owns it. -/
 private def distinctPositionalError? (operands : List (ResolvedFieldEntityOperand model)) :
     Option TokenDistinctCountElabError :=
-  let kinds := operands.filterMap fun operand =>
-    (directSlotDeclaration? operand).map fun declaration =>
+  let kinds := operands.flatMap fun operand =>
+    operand.expansionDeclarations.map fun declaration =>
       (declaration.path, declaration.policy.kind.surfaceKind)
   match kinds with
   | (firstPath, firstKind) :: later =>

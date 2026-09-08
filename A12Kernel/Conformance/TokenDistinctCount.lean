@@ -402,4 +402,55 @@ example :
       { scale := .exact 0, canExpandScale := false } := by
   native_decide
 
+private def groupKindDiagnostic (candidate : FlatModel)
+    (authored : SurfaceTokenDistinctCountSource) :
+    Bool × Option KernelStaticDiagnostic :=
+  match elaborateTokenDistinctCountSource candidate ["Form"] authored with
+  | .ok _ => (true, none)
+  | .error error => (false, error.diagnostic?)
+
+private def kindGroupOperand : SurfaceTokenDistinctCountOperand :=
+  .group (.path { base := .absolute, groups := ["Form", "Kinds"] })
+
+private def groupedKindField (declaration : FlatFieldDecl) : FlatFieldDecl :=
+  { declaration with groupPath := ["Form", "Kinds"] }
+
+/- The first declaration inside a group fixes the family, as the retained swapped-order group
+   pair measures. The other overload's leading family remains unclassified at this consumer
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
+example :
+    groupKindDiagnostic { fields := [groupedKindField directString,
+        groupedKindField directNumber] } (source kindGroupOperand []) =
+      (false, some .stringEnumAndNonStringEnum) ∧
+    groupKindDiagnostic { fields := [groupedKindField directNumber,
+        groupedKindField directString] } (source kindGroupOperand []) =
+      (false, none) ∧
+    groupKindDiagnostic { fields := [groupedKindField directString,
+        groupedKindField directEnumeration] } (source kindGroupOperand []) =
+      (true, none) := by
+  native_decide
+
+/- Dropping the group also promotes a later scalar into the leading position: a Boolean then
+   wrongly draws the domain code instead of the String family's mismatch. -/
+example :
+    groupKindDiagnostic { fields := [groupedKindField directString, directBoolean] }
+      (source kindGroupOperand [.field (directPath "Agreed")]) =
+        (false, some .stringEnumAndNonStringEnum) ∧
+    groupKindDiagnostic { fields := [groupedKindField directString, directNumber] }
+      (source kindGroupOperand [.field (directPath "Amount")]) =
+        (false, some .stringEnumAndNonStringEnum) ∧
+    groupKindDiagnostic { fields := [groupedKindField directString, directBoolean] }
+      (source (.field (directPath "Agreed")) [kindGroupOperand]) =
+        (false, some .onlyStringEnumNumberCmpDateAllowed) := by
+  native_decide
+
+/- The shared static expansion also supplies starred-group declarations. This is an internal
+   specialization; exact starred-group order calibration remains pending. -/
+example : groupKindDiagnostic model
+    (source (.starredGroup {
+      base := .absolute
+      groups := [{ name := "Form" }, { name := "Rows", starred := true }] }) []) =
+      (false, some .stringEnumAndNonStringEnum) := by
+  native_decide
+
 end A12Kernel

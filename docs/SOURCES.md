@@ -314,7 +314,7 @@ The same message carries their `KF226` envelope for the first-operand grid, orac
 
 **Two limits the peer stated and this project must carry.** The grid is two-operand throughout, so "the first operand fixes the class" is measured at arity 2 and not where a third family enters; and every row places the offender second, so the flip separates naming-the-offender from naming-the-leading-class but does not measure a list violating the leading class twice.
 
-Peer-reported when received and **now locally re-derived on both codegen strategies** ([checkpoint](sources/evaluation-and-application-routes.md#src-distinct-count-temporal-identity-both-strategies)). [SG24](SEMANTICS-GAPS.md#sg24--the-temporal-distinct-counts-fold) owns the re-derivation obligation and this project's own rows already agree with the grid independently, on different fixtures against the same terminal oracle.
+Peer-reported when received and **now locally re-derived on both codegen strategies** ([checkpoint](sources/evaluation-and-application-routes.md#src-distinct-count-temporal-identity-both-strategies)). [temporal distinct-count capability](implementation/strings-and-enumerations.md#cap-temporal-distinct-count) owns the implemented fold and evidence scope and this project's own rows already agree with the grid independently, on different fixtures against the same terminal oracle.
 
 <a id="inbound-2026-09-06b"></a>
 ### Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message

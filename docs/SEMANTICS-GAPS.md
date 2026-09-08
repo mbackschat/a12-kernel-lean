@@ -85,12 +85,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 <a id="gap-sg22"></a>
 - [open obligation](gaps/numeric-and-temporal.md#gap-sg22)
 
-<a id="sg24--the-temporal-distinct-counts-fold"></a>
-### SG24 — the temporal distinct count's fold: compared identity, precision, and expansion
-
-<a id="gap-sg24"></a>
-- [open obligation](gaps/numeric-and-temporal.md#gap-sg24)
-
 ### SG25 — the message parameter grammar and its terminal set
 
 <a id="gap-sg25"></a>
