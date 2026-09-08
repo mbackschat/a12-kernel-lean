@@ -839,6 +839,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Exactly one index group may govern a reference, and the walk that finds it examines only the innermost one's declared count](sources/model-structure-and-declaration-probes.md#src-index-group-resolution)
 <a id="src-rule-change-propagation"></a>
 - [The Kernel's own rule-change service declines to propagate a move in an A12 model, and an independent implementation performs that propagation soundly](sources/model-structure-and-declaration-probes.md#src-rule-change-propagation)
+<a id="src-repeatability-restriction"></a>
+- [A rule counting repetitions is read backwards as a repeatability restriction, and the pass that does so is reached by neither available gate](sources/model-structure-and-declaration-probes.md#src-repeatability-restriction)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

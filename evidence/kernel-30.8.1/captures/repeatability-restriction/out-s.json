@@ -1,0 +1,178 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 9,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "S1",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) > 1", "--code", "S1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "S2",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) > 2", "--code", "S2" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "S3",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) >= 2", "--code", "S3" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "S4",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) >= 1", "--code", "S4" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "S5",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) > 0", "--code", "S5" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "S6",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "1 < NumberOfFilledGroups(/Et/Rows*)", "--code", "S6" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "S7",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "2 <= NumberOfFilledGroups(/Et/Rows*)", "--code", "S7" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "S8",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) > 3", "--code", "S8" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "S9",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(/Et/Rows*) < 2", "--code", "S9" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NEG_CONDITION_IN_ITERATION",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

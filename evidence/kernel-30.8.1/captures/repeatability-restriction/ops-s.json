@@ -1,0 +1,119 @@
+[
+ {
+  "id": "S1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) > 1",
+   "--code",
+   "S1"
+  ]
+ },
+ {
+  "id": "S2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) > 2",
+   "--code",
+   "S2"
+  ]
+ },
+ {
+  "id": "S3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) >= 2",
+   "--code",
+   "S3"
+  ]
+ },
+ {
+  "id": "S4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) >= 1",
+   "--code",
+   "S4"
+  ]
+ },
+ {
+  "id": "S5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) > 0",
+   "--code",
+   "S5"
+  ]
+ },
+ {
+  "id": "S6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "1 < NumberOfFilledGroups(/Et/Rows*)",
+   "--code",
+   "S6"
+  ]
+ },
+ {
+  "id": "S7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "2 <= NumberOfFilledGroups(/Et/Rows*)",
+   "--code",
+   "S7"
+  ]
+ },
+ {
+  "id": "S8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) > 3",
+   "--code",
+   "S8"
+  ]
+ },
+ {
+  "id": "S9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(/Et/Rows*) < 2",
+   "--code",
+   "S9"
+  ]
+ }
+]

@@ -2747,3 +2747,12 @@ run_cmd do
 #print axioms A12Kernel.conditionPropagation_hModel_field_shortcut
 #print axioms A12Kernel.leavesStaleReferences_iff_not_rewritten
 #print axioms A12Kernel.conditionPropagation_identity
+#print axioms A12Kernel.declaredMaximum_mirror
+#print axioms A12Kernel.declaredMaximum_strict_succ
+#print axioms A12Kernel.restrictionOutcome_three_way
+#print axioms A12Kernel.restrictionOutcome_nonStrict_shifted
+#print axioms A12Kernel.restrictionOutcome_carriers_agree_except_class
+#print axioms A12Kernel.effectiveMaximum_ignores_nonRestricting
+#print axioms A12Kernel.effectiveMaximum_min
+#print axioms A12Kernel.effectiveMaximum_none
+#print axioms A12Kernel.groupRestrictionOutcome_shape_gate
