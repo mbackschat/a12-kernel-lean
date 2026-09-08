@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the `index(...)` parameter's resolution and repeatability stages ([`IndexParameterResolution`](IndexParameterResolution.lean)), its two suffix readings ([`IndexParameterSuffix`](IndexParameterSuffix.lean)), the model-kind gate over the `#` message parameters ([`ErrorTextParameterModelKind`](ErrorTextParameterModelKind.lean)), the parameter's coordinate, path and value-access gates ([`ErrorTextParameterAddressing`](ErrorTextParameterAddressing.lean)), the arithmetic shape gates ([`ArithmeticShape`](ArithmeticShape.lean)), the operand addressing and scope gates ([`OperandAddressingScope`](OperandAddressingScope.lean)), the declared-charset parse and validate gates ([`CharsetSpec`](CharsetSpec.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the `index(...)` parameter's resolution and repeatability stages ([`IndexParameterResolution`](IndexParameterResolution.lean)), its two suffix readings ([`IndexParameterSuffix`](IndexParameterSuffix.lean)), the model-kind gate over the `#` message parameters ([`ErrorTextParameterModelKind`](ErrorTextParameterModelKind.lean)), the parameter's coordinate, path and value-access gates ([`ErrorTextParameterAddressing`](ErrorTextParameterAddressing.lean)), the arithmetic shape gates ([`ArithmeticShape`](ArithmeticShape.lean)), the operand addressing and scope gates ([`OperandAddressingScope`](OperandAddressingScope.lean)), the declared-charset parse and validate gates ([`CharsetSpec`](CharsetSpec.lean)), the semantic-index operand admission cascade ([`SemanticIndexAdmission`](SemanticIndexAdmission.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -136,6 +136,18 @@ inductive KernelStaticDiagnostic where
   | charsetGraphemeTooLong
   /-- A combined charset grapheme whose own suffix begins another grapheme in the charset, so a string could be segmented two ways. Reported once **per overlapping partner** rather than once per offending entry. -/
   | charsetGraphemeOverlap
+  /-- A semantic index whose key names a group rather than a field. Reference arm only: a constant key cannot fail this way. -/
+  | semanticIndexKeyNotField
+  /-- A semantic index whose key reference carries a wildcard. Distinct from `semanticIndexAndWildcard`, which is about a star on the **value spec**, and the two sit at opposite ends of the cascade. -/
+  | semanticIndexKeyStarred
+  /-- A semantic index whose value spec is itself a semantic index. -/
+  | semanticIndexOnSemanticIndex
+  /-- A semantic index whose constant key the index field's type does not accept, **or** which is empty. Two causes, one class, and the empty disjunct is written separately from the type test. -/
+  | semanticIndexConstantInvalid
+  /-- A semantic index whose key reference carries a category suffix. -/
+  | semanticIndexKeyWithCategory
+  /-- An operand the operator reads for its value while the field is declared to carry no value validation. The message names the offending operation, and for a semantic index that name comes from a separate catalog key which is a **label rather than a refusal** — see [`SemanticIndexAdmission`](SemanticIndexAdmission.lean). Silenced by a lenient parse. -/
+  | rawTypeOperandInvalid
   /-- A serial-coordinate specifier naming a form position the field cannot occupy, either because the field does not lie on a repeatable form or because the numeral exceeds its declared maximum. Two causes, one class. -/
   | serialCoordinateInvalid
   /-- The line-coordinate twin of the class above, on the second coordinate. The two are one mechanism reported under two names. -/
@@ -392,6 +404,12 @@ def kernelCode : KernelStaticDiagnostic → String
   | .charsetContainsSurrogates => "CHARSET_CONTAINS_SURROGATES"
   | .charsetGraphemeTooLong => "CHARSET_GRAPHEME_TOO_LONG"
   | .charsetGraphemeOverlap => "CHARSET_GRAPHEME_OVERLAP"
+  | .semanticIndexKeyNotField => "MVK_SEMANTIC_INDEX_NO_FIELD"
+  | .semanticIndexKeyStarred => "MVK_SEMANTIC_INDEX_WITH_WILDCARD"
+  | .semanticIndexOnSemanticIndex => "MVK_SEMANTIC_INDEX_WITH_SEMANTIC_INDEX"
+  | .semanticIndexConstantInvalid => "MVK_INDEX_VALUE_INVALID"
+  | .semanticIndexKeyWithCategory => "MVK_SEMANTIC_INDEX_WITH_CATEGORY"
+  | .rawTypeOperandInvalid => "MVK_INVALID_RAW_TYPE"
   | .serialCoordinateInvalid => "INVALID_FIELD_L"
   | .lineCoordinateInvalid => "INVALID_FIELD_Z"
   | .valueParameterOnStarredReference => "PARAM_VALUE_WITH_STARREFERENCE"
@@ -520,6 +538,8 @@ def all : List KernelStaticDiagnostic :=
     .tooManyConstantsInOperandList,
     .charsetRangeStartAfterEnd, .charsetGraphemeClusterEqualsLength, .charsetParseError,
     .charsetContainsSurrogates, .charsetGraphemeTooLong, .charsetGraphemeOverlap,
+    .semanticIndexKeyNotField, .semanticIndexKeyStarred, .semanticIndexOnSemanticIndex,
+    .semanticIndexConstantInvalid, .semanticIndexKeyWithCategory, .rawTypeOperandInvalid,
     .serialCoordinateInvalid, .lineCoordinateInvalid, .valueParameterOnStarredReference,
     .valueParameterNoValueValidation, .parameterTooManyParentGroups,
     .parameterInvalidInNewWorld, .noLineIteration, .noSubScopeIteration,

@@ -241,6 +241,7 @@ import A12Kernel.Elaboration.ErrorTextParameterAddressing
 import A12Kernel.Elaboration.ArithmeticShape
 import A12Kernel.Elaboration.OperandAddressingScope
 import A12Kernel.Elaboration.CharsetSpec
+import A12Kernel.Elaboration.SemanticIndexAdmission
 import A12Kernel.Elaboration.EnumerationCategoryConstant
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount

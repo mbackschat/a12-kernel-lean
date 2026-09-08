@@ -2812,6 +2812,14 @@ run_cmd do
 #print axioms A12Kernel.tooLong_only_for_combined
 #print axioms A12Kernel.stagesShadow
 #print axioms A12Kernel.parsingCharsetReportsNoParseClass
+#print axioms A12Kernel.semanticIndexAdmissionRefusal_source
+#print axioms A12Kernel.keyStar_outranks_valueSpecStar
+#print axioms A12Kernel.semanticIndexAndWildcard_needs_every_earlier_gate
+#print axioms A12Kernel.constantKey_never_reports_reference_classes
+#print axioms A12Kernel.referenceKey_never_reports_constantInvalid
+#print axioms A12Kernel.emptyConstant_refused_however_applicable
+#print axioms A12Kernel.lenience_swaps_the_class
+#print axioms A12Kernel.rawTypeOperandInvalid_needs_strict
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses
