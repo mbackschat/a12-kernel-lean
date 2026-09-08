@@ -114,6 +114,23 @@ Wrong accounts discard the missing tail, classify formal unknowns as missing, in
 - `questions-and-guesses`: the consumer explicitly refused to guess the addressing-failure and evaluated-result constructors. No runtime-output guess was made.
 - `exclusions`: consumer implementation, indexed/filtered/mixed-list operands, partial validation, computation, other-kind correspondence, message-reference correspondence, protocol, shipment, and general compatibility. This failed handover is retained as the comparator for the corrected run.
 
+<a id="run-group-field-fill-observations-02"></a>
+### Group field-fill observation readback — `group-field-fill-observations-02`
+
+- `task`: [Group field-fill observation probe](#group-field-fill-observation-probe)
+- `status`: red
+- `started-at`: 2026-09-08T23:13:43+02:00
+- `finished-at`: 2026-09-08T23:15:50+02:00
+- `duration-seconds`: 127
+- `semantic-basis`: `5feab3ac33d2c377ebe7d370e8a85d4da0e3bc9b`
+- `oracle`: root reconciled the returned runtime vectors with the same [conformance matrix](../../A12Kernel/Conformance/FilledFieldGroupCount.lean) and retained engine messages, and the API alternatives with the constructor-preserving refusal assertions. A separate check of `S5` on the open-tail, instantiated-empty, and malformed-last-row documents found no firing on either strategy in any of them, refuting one additional claim in the consumer's C explanation.
+- `consumer-access`: a fresh context received only the corrected frozen task, checkpoint, four JSON files, and capability block. Read-only shell/Python inspected those blocks, hashes, and observations. No previous run results, Lean or sibling source, Git history/diff, followed links, external access, builds, or writes.
+- `cost`: 127 seconds; zero consumer implementation or test-source lines, dependencies, or retained machinery. Root reused the existing matrix and checked the three named artifact rows without rebuilding.
+- `result`: the handover's missing API alternatives are resolved: A, B, D, and E passed. C correctly separated the main cases but additionally claimed that replacing an empty or absent final slot with a malformed cell suppressed starred NotExactlyOne; that operator was already silent. The exact bounded explanation therefore failed despite correct vectors. No further semantic or handover defect was identified.
+- `wrong-accounts`: the seven prescribed wrong accounts were rejected, but the reader introduced an unsupported threshold-change claim. Root rejected that claim rather than treating the consumer's self-assessment as the oracle.
+- `questions-and-guesses`: no declared unresolved question; the unsupported additional C claim is recorded above. The completed artifact supplies the distinction needed to reject it.
+- `exclusions`: no successful consumer-adequacy qualification follows from this run. Consumer implementation, indexed/filtered/mixed-list operands, partial validation, computation, other-kind and message-reference correspondence, protocol, shipment, and general compatibility remain excluded.
+
 ## Custom-condition name admission probe
 
 Analyze and explain 23 bounded name-admission fixtures from the checked custom-condition authoring boundary. The consumer must preserve the normalized callback key and whether the lexer selected the quoted alternative, accept exact unquoted and quoted character-class controls, apply the caller-supplied reserved-terminal predicate only to unquoted spellings, refuse empty and illegal spellings, and report insufficient information when that predicate is absent.
