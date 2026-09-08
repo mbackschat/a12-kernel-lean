@@ -2801,6 +2801,12 @@ run_cmd do
 #print axioms A12Kernel.powerRefusal_right_nesting_admits
 #print axioms A12Kernel.exponentRefusal_admits_only_zero
 #print axioms A12Kernel.constantListRefusal_counts_constants
+#print axioms A12Kernel.wildcardPlacement_lenience_splits_the_two
+#print axioms A12Kernel.unresolvedName_partitions_by_depth
+#print axioms A12Kernel.withinGroup_admits_any_descendant
+#print axioms A12Kernel.withinGroup_excludes_the_scope_itself
+#print axioms A12Kernel.groupScopeRefusal_iff
+#print axioms A12Kernel.sharedRootGroup_silent_outside_hModel
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses

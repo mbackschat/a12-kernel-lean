@@ -505,6 +505,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The message parameter's coordinate, path and value-access gates](implementation/cross-clause.md#cap-errortext-parameter-addressing)
 <a id="cap-arithmetic-shape-gates"></a>
 - [The arithmetic shape gates](implementation/cross-clause.md#cap-arithmetic-shape-gates)
+<a id="cap-operand-addressing-scope"></a>
+- [The operand addressing and scope gates](implementation/cross-clause.md#cap-operand-addressing-scope)
 <a id="cap-enumeration-category-constant"></a>
 - [The enumeration-category constant gate](implementation/cross-clause.md#cap-enumeration-category-constant)
 <a id="cap-resolved-firstfilledvalue"></a>
