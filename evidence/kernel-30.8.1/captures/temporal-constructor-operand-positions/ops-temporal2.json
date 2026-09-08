@@ -1,0 +1,236 @@
+[
+ {
+  "id": "allthree",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "[/Tp/F] != Date(DayFromDate(/Tp/D),MonthFromDate(/Tp/D),YearFromDate(/Tp/D))",
+   "--code",
+   "allthree"
+  ]
+ },
+ {
+  "id": "allthreeT",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FT",
+   "--condition",
+   "[/Tp/FT] != Time(HoursFromTime(/Tp/T),MinutesFromTime(/Tp/T),SecondsFromTime(/Tp/T))",
+   "--code",
+   "allthreeT"
+  ]
+ },
+ {
+  "id": "nested",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FDT",
+   "--condition",
+   "[/Tp/FDT] != DateTime(Date(\"01\",\"11\",\"2022\"),Time(\"10\",\"30\",\"50\"))",
+   "--code",
+   "nested"
+  ]
+ },
+ {
+  "id": "srcDT",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "[/Tp/F] != Date(DayFromDate(/Tp/DT),\"11\",\"2022\")",
+   "--code",
+   "srcDT"
+  ]
+ },
+ {
+  "id": "srcDTtime",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FT",
+   "--condition",
+   "[/Tp/FT] != Time(HoursFromTime(/Tp/DT),\"30\",\"50\")",
+   "--code",
+   "srcDTtime"
+  ]
+ },
+ {
+  "id": "srcTime",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "[/Tp/F] != Date(DayFromDate(/Tp/T),\"11\",\"2022\")",
+   "--code",
+   "srcTime"
+  ]
+ },
+ {
+  "id": "srcNum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "[/Tp/F] != Date(DayFromDate(/Tp/N),\"11\",\"2022\")",
+   "--code",
+   "srcNum"
+  ]
+ },
+ {
+  "id": "arity2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "[/Tp/F] != Date(DayFromDate(/Tp/D),\"11\")",
+   "--code",
+   "arity2"
+  ]
+ },
+ {
+  "id": "arity1T",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FT",
+   "--condition",
+   "[/Tp/FT] != Time(HoursFromTime(/Tp/T))",
+   "--code",
+   "arity1T"
+  ]
+ },
+ {
+  "id": "arity2T",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FT",
+   "--condition",
+   "[/Tp/FT] != Time(HoursFromTime(/Tp/T),\"30\")",
+   "--code",
+   "arity2T"
+  ]
+ },
+ {
+  "id": "arity2Tm",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FT",
+   "--condition",
+   "[/Tp/FT] != Time(\"10\",MinutesFromTime(/Tp/T))",
+   "--code",
+   "arity2Tm"
+  ]
+ },
+ {
+  "id": "dtDateFld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FDT",
+   "--condition",
+   "[/Tp/FDT] != DateTime(/Tp/D,Time(\"10\",\"30\",\"50\"))",
+   "--code",
+   "dtDateFld"
+  ]
+ },
+ {
+  "id": "dtNested0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FDT",
+   "--condition",
+   "[/Tp/FDT] != DateTime(Date(DayFromDate(/Tp/D),\"11\",\"2022\"),/Tp/T)",
+   "--code",
+   "dtNested0"
+  ]
+ },
+ {
+  "id": "dtNested1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FDT",
+   "--condition",
+   "[/Tp/FDT] != DateTime(/Tp/D,Time(HoursFromTime(/Tp/T),\"30\",\"50\"))",
+   "--code",
+   "dtNested1"
+  ]
+ },
+ {
+  "id": "dtSwap",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/FDT",
+   "--condition",
+   "[/Tp/FDT] != DateTime(/Tp/T,/Tp/D)",
+   "--code",
+   "dtSwap"
+  ]
+ },
+ {
+  "id": "dateFromDT",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "[/Tp/F] != DateFromDateTime(/Tp/DT)",
+   "--code",
+   "dateFromDT"
+  ]
+ },
+ {
+  "id": "dtExtrDay",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "[/Tp/F] != Date(DayFromDate(DateFromDateTime(/Tp/DT)),\"11\",\"2022\")",
+   "--code",
+   "dtExtrDay"
+  ]
+ },
+ {
+  "id": "qtrAlone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "QuarterFromDate(/Tp/D) > 2",
+   "--code",
+   "qtrAlone"
+  ]
+ }
+]

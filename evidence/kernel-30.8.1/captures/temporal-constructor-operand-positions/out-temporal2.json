@@ -1,0 +1,538 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 18 ops; 5 of 18 exited nonzero (0 failed, 5 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 18,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "allthree",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(DayFromDate(/Tp/D),MonthFromDate(/Tp/D),YearFromDate(/Tp/D))",
+          "--code",
+          "allthree"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "allthreeT",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(HoursFromTime(/Tp/T),MinutesFromTime(/Tp/T),SecondsFromTime(/Tp/T))",
+          "--code",
+          "allthreeT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "nested",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(Date(\"01\",\"11\",\"2022\"),Time(\"10\",\"30\",\"50\"))",
+          "--code",
+          "nested"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "srcDT",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(DayFromDate(/Tp/DT),\"11\",\"2022\")",
+          "--code",
+          "srcDT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "srcDTtime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(HoursFromTime(/Tp/DT),\"30\",\"50\")",
+          "--code",
+          "srcDTtime"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "srcTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(DayFromDate(/Tp/T),\"11\",\"2022\")",
+          "--code",
+          "srcTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_WRONG_DATE_FORMAT_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "this code is raised by more than one construct; the corrective depends on which you used \u2014 AddDays needs a date value whose format carries a day component; AddHours needs a date-time; combine a resolved date with a time using DateTime(...) or use AddDays; HoursFromTime needs a time or date-time source; Today is date-only; MinutesFromTime needs a time or date-time source; Today is date-only; SecondsFromTime needs a time or date-time source; Today is date-only"
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "srcNum",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(DayFromDate(/Tp/N),\"11\",\"2022\")",
+          "--code",
+          "srcNum"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_DATE",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "arity2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(DayFromDate(/Tp/D),\"11\")",
+          "--code",
+          "arity2"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_MISSING_YEAR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "arity1T",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(HoursFromTime(/Tp/T))",
+          "--code",
+          "arity1T"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "arity2T",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(HoursFromTime(/Tp/T),\"30\")",
+          "--code",
+          "arity2T"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "arity2Tm",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",MinutesFromTime(/Tp/T))",
+          "--code",
+          "arity2Tm"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "dtDateFld",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,Time(\"10\",\"30\",\"50\"))",
+          "--code",
+          "dtDateFld"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "dtNested0",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(Date(DayFromDate(/Tp/D),\"11\",\"2022\"),/Tp/T)",
+          "--code",
+          "dtNested0"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "dtNested1",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,Time(HoursFromTime(/Tp/T),\"30\",\"50\"))",
+          "--code",
+          "dtNested1"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "dtSwap",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/T,/Tp/D)",
+          "--code",
+          "dtSwap"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_WRONG_DATE_FORMAT_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "this code is raised by more than one construct; the corrective depends on which you used \u2014 AddDays needs a date value whose format carries a day component; AddHours needs a date-time; combine a resolved date with a time using DateTime(...) or use AddDays; HoursFromTime needs a time or date-time source; Today is date-only; MinutesFromTime needs a time or date-time source; Today is date-only; SecondsFromTime needs a time or date-time source; Today is date-only"
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "dateFromDT",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != DateFromDateTime(/Tp/DT)",
+          "--code",
+          "dateFromDT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "dtExtrDay",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(DayFromDate(DateFromDateTime(/Tp/DT)),\"11\",\"2022\")",
+          "--code",
+          "dtExtrDay"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "qtrAlone",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "QuarterFromDate(/Tp/D) > 2",
+          "--code",
+          "qtrAlone"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELD_NOT_REFERENCED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path \u2014 reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And \u2026`.",
+              "explain": "Every rule's error field must appear among the fields its condition references \u2014 the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+            }
+          ],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

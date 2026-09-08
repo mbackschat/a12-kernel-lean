@@ -821,6 +821,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-and-sort-field-declaration"></a>
 - [A group's index and sort nominations share one cascade](sources/static-admission-and-class-probes.md#src-index-and-sort-field-declaration)
+
+<a id="src-temporal-constructor-operand-positions"></a>
+- [A temporal constructor checks each operand position separately, and two classes distinguish a misplaced extractor from an inadmissible one](sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

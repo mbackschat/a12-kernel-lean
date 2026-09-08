@@ -225,6 +225,7 @@ import A12Kernel.Elaboration.TableEnumeration
 import A12Kernel.Elaboration.ComputationNormalForm
 import A12Kernel.Elaboration.IndexAndSortDeclaration
 import A12Kernel.Elaboration.AddressFormalLegality
+import A12Kernel.Elaboration.TemporalConstructorOperand
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.FirstFilledValue

@@ -1,0 +1,2050 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 59 ops; 50 of 59 exited nonzero (0 failed, 50 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 59,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "D0DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(DayFromDate(/Tp/D),\"11\",\"2022\")",
+          "--code",
+          "D0DayFromDate"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "D0MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(MonthFromDate(/Tp/D),\"11\",\"2022\")",
+          "--code",
+          "D0MonthFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "D0YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(YearFromDate(/Tp/D),\"11\",\"2022\")",
+          "--code",
+          "D0YearFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "D0QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(QuarterFromDate(/Tp/D),\"11\",\"2022\")",
+          "--code",
+          "D0QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "D0HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(HoursFromTime(/Tp/T),\"11\",\"2022\")",
+          "--code",
+          "D0HoursFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "D0MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(MinutesFromTime(/Tp/T),\"11\",\"2022\")",
+          "--code",
+          "D0MinutesFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "D0SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(SecondsFromTime(/Tp/T),\"11\",\"2022\")",
+          "--code",
+          "D0SecondsFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "D1DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",DayFromDate(/Tp/D),\"2022\")",
+          "--code",
+          "D1DayFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "D1MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",MonthFromDate(/Tp/D),\"2022\")",
+          "--code",
+          "D1MonthFromDate"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "D1YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",YearFromDate(/Tp/D),\"2022\")",
+          "--code",
+          "D1YearFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "D1QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",QuarterFromDate(/Tp/D),\"2022\")",
+          "--code",
+          "D1QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "D1HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",HoursFromTime(/Tp/T),\"2022\")",
+          "--code",
+          "D1HoursFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "D1MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",MinutesFromTime(/Tp/T),\"2022\")",
+          "--code",
+          "D1MinutesFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "D1SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",SecondsFromTime(/Tp/T),\"2022\")",
+          "--code",
+          "D1SecondsFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "D2DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",DayFromDate(/Tp/D))",
+          "--code",
+          "D2DayFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "D2MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",MonthFromDate(/Tp/D))",
+          "--code",
+          "D2MonthFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "D2YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",YearFromDate(/Tp/D))",
+          "--code",
+          "D2YearFromDate"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "D2QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",QuarterFromDate(/Tp/D))",
+          "--code",
+          "D2QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 18,
+        "id": "D2HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",HoursFromTime(/Tp/T))",
+          "--code",
+          "D2HoursFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 19,
+        "id": "D2MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",MinutesFromTime(/Tp/T))",
+          "--code",
+          "D2MinutesFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 20,
+        "id": "D2SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",SecondsFromTime(/Tp/T))",
+          "--code",
+          "D2SecondsFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 21,
+        "id": "M0DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(DayFromDate(/Tp/D),/Tp/T)",
+          "--code",
+          "M0DayFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 22,
+        "id": "M0MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(MonthFromDate(/Tp/D),/Tp/T)",
+          "--code",
+          "M0MonthFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 23,
+        "id": "M0YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(YearFromDate(/Tp/D),/Tp/T)",
+          "--code",
+          "M0YearFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 24,
+        "id": "M0QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(QuarterFromDate(/Tp/D),/Tp/T)",
+          "--code",
+          "M0QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 25,
+        "id": "M0HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(HoursFromTime(/Tp/T),/Tp/T)",
+          "--code",
+          "M0HoursFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 26,
+        "id": "M0MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(MinutesFromTime(/Tp/T),/Tp/T)",
+          "--code",
+          "M0MinutesFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 27,
+        "id": "M0SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(SecondsFromTime(/Tp/T),/Tp/T)",
+          "--code",
+          "M0SecondsFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 28,
+        "id": "M1DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,DayFromDate(/Tp/D))",
+          "--code",
+          "M1DayFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 29,
+        "id": "M1MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,MonthFromDate(/Tp/D))",
+          "--code",
+          "M1MonthFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 30,
+        "id": "M1YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,YearFromDate(/Tp/D))",
+          "--code",
+          "M1YearFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 31,
+        "id": "M1QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,QuarterFromDate(/Tp/D))",
+          "--code",
+          "M1QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 32,
+        "id": "M1HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,HoursFromTime(/Tp/T))",
+          "--code",
+          "M1HoursFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 33,
+        "id": "M1MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,MinutesFromTime(/Tp/T))",
+          "--code",
+          "M1MinutesFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 34,
+        "id": "M1SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,SecondsFromTime(/Tp/T))",
+          "--code",
+          "M1SecondsFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_FOR_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 35,
+        "id": "T0DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(DayFromDate(/Tp/D),\"30\",\"50\")",
+          "--code",
+          "T0DayFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 36,
+        "id": "T0MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(MonthFromDate(/Tp/D),\"30\",\"50\")",
+          "--code",
+          "T0MonthFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 37,
+        "id": "T0YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(YearFromDate(/Tp/D),\"30\",\"50\")",
+          "--code",
+          "T0YearFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 38,
+        "id": "T0QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(QuarterFromDate(/Tp/D),\"30\",\"50\")",
+          "--code",
+          "T0QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 39,
+        "id": "T0HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(HoursFromTime(/Tp/T),\"30\",\"50\")",
+          "--code",
+          "T0HoursFromTime"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 40,
+        "id": "T0MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(MinutesFromTime(/Tp/T),\"30\",\"50\")",
+          "--code",
+          "T0MinutesFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 41,
+        "id": "T0SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(SecondsFromTime(/Tp/T),\"30\",\"50\")",
+          "--code",
+          "T0SecondsFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 42,
+        "id": "T1DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",DayFromDate(/Tp/D),\"50\")",
+          "--code",
+          "T1DayFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 43,
+        "id": "T1MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",MonthFromDate(/Tp/D),\"50\")",
+          "--code",
+          "T1MonthFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 44,
+        "id": "T1YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",YearFromDate(/Tp/D),\"50\")",
+          "--code",
+          "T1YearFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 45,
+        "id": "T1QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",QuarterFromDate(/Tp/D),\"50\")",
+          "--code",
+          "T1QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 46,
+        "id": "T1HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",HoursFromTime(/Tp/T),\"50\")",
+          "--code",
+          "T1HoursFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 47,
+        "id": "T1MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",MinutesFromTime(/Tp/T),\"50\")",
+          "--code",
+          "T1MinutesFromTime"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 48,
+        "id": "T1SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",SecondsFromTime(/Tp/T),\"50\")",
+          "--code",
+          "T1SecondsFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 49,
+        "id": "T2DayFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",DayFromDate(/Tp/D))",
+          "--code",
+          "T2DayFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 50,
+        "id": "T2MonthFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",MonthFromDate(/Tp/D))",
+          "--code",
+          "T2MonthFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 51,
+        "id": "T2YearFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",YearFromDate(/Tp/D))",
+          "--code",
+          "T2YearFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 52,
+        "id": "T2QuarterFromDate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",QuarterFromDate(/Tp/D))",
+          "--code",
+          "T2QuarterFromDate"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_DATE_OR_TIME_EXTRACT_OP_NOT_ALLOWED",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 53,
+        "id": "T2HoursFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",HoursFromTime(/Tp/T))",
+          "--code",
+          "T2HoursFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 54,
+        "id": "T2MinutesFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",MinutesFromTime(/Tp/T))",
+          "--code",
+          "T2MinutesFromTime"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_DATE_OR_TIME_EXTRACT_OP",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 55,
+        "id": "T2SecondsFromTime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",SecondsFromTime(/Tp/T))",
+          "--code",
+          "T2SecondsFromTime"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 56,
+        "id": "CTLdate",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "[/Tp/F] != Date(\"01\",\"11\",\"2022\")",
+          "--code",
+          "CTLdate"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 57,
+        "id": "CTLdatetime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FDT",
+          "--condition",
+          "[/Tp/FDT] != DateTime(/Tp/D,/Tp/T)",
+          "--code",
+          "CTLdatetime"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 58,
+        "id": "CTLtime",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/FT",
+          "--condition",
+          "[/Tp/FT] != Time(\"10\",\"30\",\"50\")",
+          "--code",
+          "CTLtime"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

@@ -2678,3 +2678,11 @@ run_cmd do
 #print axioms A12Kernel.addressRefusal_usb_implies_indices_clear
 #print axioms A12Kernel.usbRefusal_a12_only_unexpected
 #print axioms A12Kernel.unknownFieldReportedAddress_zeroes
+#print axioms A12Kernel.constructorOperandRefusal_none_iff
+#print axioms A12Kernel.constructorOperandRefusal_valueSlots
+#print axioms A12Kernel.constructorOperandRefusal_invalidDateForOp_iff
+#print axioms A12Kernel.constructorOperandRefusal_slotless
+#print axioms A12Kernel.constructorOperandRefusal_family
+#print axioms A12Kernel.operandCountAdmitted_prefix
+#print axioms A12Kernel.operandCountAdmitted_full
+#print axioms A12Kernel.componentSlots_length
