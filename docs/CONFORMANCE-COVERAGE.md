@@ -12,9 +12,9 @@ The class counts come from one mechanism — maximal-identifier extraction inter
 class set — and `./scripts/report-conformance-coverage.sh --verify` re-derives them by a structurally
 different one, multi-pattern fixed-string whole-word matching, aborting on any disagreement. The audit is
 not on the default path because it costs about forty seconds against this one's four. Run it after any
-change to how coverage is counted; it has already caught two real defects, recorded in the script.
+change to how coverage is counted; it also checks capability record boundaries and gap-shard ownership.
 
-Measured at `1a163c9e` on 2026-09-08.
+Measured at `29a705e7` on 2026-09-08.
 
 ## Headline
 
@@ -65,15 +65,15 @@ one: it counts whether a record cites external calibration, not how much of its 
 | | records | share |
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 207 | 100% |
-| Citing a Kernel checkpoint or calibration | 108 | 52% |
-| Carrying an explicit evidence-pending note | 53 | 25% |
+| Citing a Kernel checkpoint or calibration | 107 | 51% |
+| Carrying an explicit evidence-pending note | 52 | 25% |
 
 ## Axis 3 — open obligation load
 
 | | count |
 |---|---|
-| Open gap records in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 25 |
-| `remaining` rows across those gaps | 0 |
+| Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 25 |
+| `remaining` rows across those gaps | 235 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 5 |
 | Ledger entries `handed-off` | 0 |
@@ -88,7 +88,7 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207924 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207922 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8691 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -158,4 +158,5 @@ Datetime is the referenced revision's commit time in ISO 8601 format, including 
 | 2026-09-08T18:50:16+02:00 | `176c36ba` | 489 | 450 | 6 | 108 | 25 |
 | 2026-09-08T19:44:27+02:00 | `3a457eea` | 489 | 454 | 6 | 108 | 25 |
 | 2026-09-08T20:40:25+02:00 | `1a163c9e` | 489 | 455 | 6 | 108 | 25 |
+| 2026-09-08T21:01:33+02:00 | `29a705e7` | 489 | 455 | 6 | 107 | 25 |
 <!-- velocity-history:end -->
