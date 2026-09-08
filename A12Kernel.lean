@@ -234,6 +234,7 @@ import A12Kernel.Elaboration.IndexGroupResolution
 import A12Kernel.Elaboration.RuleChangePropagation
 import A12Kernel.Elaboration.RepeatabilityRestriction
 import A12Kernel.Elaboration.ErrorTextRowParameter
+import A12Kernel.Elaboration.IndexParameterResolution
 import A12Kernel.Elaboration.EnumerationCategoryConstant
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount

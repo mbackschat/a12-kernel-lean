@@ -2765,6 +2765,14 @@ run_cmd do
 #print axioms A12Kernel.errorTextFindings_unparsed_admits_parameter
 #print axioms A12Kernel.errorTextFindings_no_dollar_silent
 #print axioms A12Kernel.errorTextFindings_parsed_is_cascade
+#print axioms A12Kernel.repeatabilityRefusal_mismatch_iff
+#print axioms A12Kernel.repeatabilityRefusal_notIterating_repeatable
+#print axioms A12Kernel.repeatabilityRefusal_nonRepEnum_not_repeatable
+#print axioms A12Kernel.repeatabilityScan_notIterating_repeatable
+#print axioms A12Kernel.repeatabilityScan_nonRepEnum_not_repeatable
+#print axioms A12Kernel.indexFieldBranchClassesExclusive
+#print axioms A12Kernel.resolution_dominates
+#print axioms A12Kernel.indexParameterRefusal_unavailable
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses

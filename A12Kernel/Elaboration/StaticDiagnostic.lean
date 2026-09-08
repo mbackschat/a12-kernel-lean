@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the `index(...)` parameter's resolution and repeatability stages ([`IndexParameterResolution`](IndexParameterResolution.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -90,6 +90,18 @@ inductive KernelStaticDiagnostic where
   | invalidStringConstantForEnumerationCategory
   /-- The named category is not declared on the field's enumeration. The Kernel's own constant carries the misspelling. -/
   | categoryUnknown
+  /-- An `index(...)` parameter whose short name matches no index field on the error field's own path. **Not** the same class as `nameUnresolved .indexField`: that one is the model's own `MVK_INVALID_INDEX_FIELD` declaration refusal, while this is the error-text checker's prefix-free `INVALID_INDEX_FIELD`. Two codes, one identifier apart. -/
+  | indexFieldUnresolved
+  /-- Several index fields on the error field's path share the parameter's short name, so the name selects none of them. The identical parameter is admitted from an error field on a level carrying only one. -/
+  | indexFieldAmbiguous
+  /-- The resolved index field's own group declares more than one index-field name. -/
+  | indexFieldComposedIndex
+  /-- The error path's index field and one the condition references **disagree** about repeatability. The class is raised from both branches in opposite directions, so it names the disagreement and not either side's state. -/
+  | indexFieldRepeatabilityMismatch
+  /-- Both sides repeat, but a referenced index field's own read is neither an iteration nor a parallel iteration. Reachable only from the repeatable branch. -/
+  | indexFieldNotIterating
+  /-- Both sides are non-repeatable, and a referenced index field is not an Enumeration declaring exactly one value with its s-value set. Reachable only from the non-repeatable branch, so no model reports this beside `indexFieldNotIterating`. -/
+  | indexFieldNonRepeatableEnum
   /-- An error-text `$#group$` parameter whose path names no group, **or** names one the condition does not reference in a way the parameter may read. The Kernel spells two distinct causes with this one code. -/
   | invalidGroupInParameter
   /-- The named group is referenced in the condition only **with** a star, so no single row is determined. An unstarred reference anywhere alongside the starred one admits the parameter. -/
@@ -289,6 +301,12 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidStringConstantForEnumerationCategory =>
       "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_CATEGORY"
   | .categoryUnknown => "MVK_CATEGORY_UNKOWN"
+  | .indexFieldUnresolved => "INVALID_INDEX_FIELD"
+  | .indexFieldAmbiguous => "INVALID_INDEX_FIELD_AMBIGUOUS"
+  | .indexFieldComposedIndex => "INVALID_INDEX_FIELD_COMPOSED_INDEX"
+  | .indexFieldRepeatabilityMismatch => "INVALID_INDEX_FIELD_REP"
+  | .indexFieldNotIterating => "INVALID_INDEX_FIELD_REP_ITER"
+  | .indexFieldNonRepeatableEnum => "INVALID_INDEX_FIELD_NONREP_ENUM"
   | .invalidGroupInParameter => "INVALID_GROUP"
   | .iterParamWithStarReference => "ITER_PARAM_WITH_STARREFERENCE"
   | .invalidUseOfSemanticIndex => "INVALID_USE_OF_SEMANTIC_INDEX"
@@ -392,6 +410,8 @@ def all : List KernelStaticDiagnostic :=
     .repeatableGroupMissing, .negativeConditionInIteration,
     .errorFieldNotReferenced, .invalidStringConstantForEnumeration,
     .invalidStringConstantForEnumerationCategory, .categoryUnknown,
+    .indexFieldUnresolved, .indexFieldAmbiguous, .indexFieldComposedIndex,
+    .indexFieldRepeatabilityMismatch, .indexFieldNotIterating, .indexFieldNonRepeatableEnum,
     .invalidGroupInParameter, .iterParamWithStarReference,
     .invalidUseOfSemanticIndex, .invalidUseOfIterationParam, .errorTextInvalidCondition,
     .invalidPathSpecInParameter,

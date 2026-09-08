@@ -495,6 +495,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The repeatability-restriction reading](implementation/cross-clause.md#cap-repeatability-restriction)
 <a id="cap-error-text-row-parameter"></a>
 - [The error-text row-index parameter](implementation/cross-clause.md#cap-error-text-row-parameter)
+<a id="cap-index-parameter-resolution"></a>
+- [The `index(...)` parameter's resolution and repeatability stages](implementation/cross-clause.md#cap-index-parameter-resolution)
 <a id="cap-enumeration-category-constant"></a>
 - [The enumeration-category constant gate](implementation/cross-clause.md#cap-enumeration-category-constant)
 <a id="cap-resolved-firstfilledvalue"></a>
