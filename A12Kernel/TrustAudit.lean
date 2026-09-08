@@ -283,6 +283,7 @@ run_cmd do
 #print axioms A12Kernel.timeComputationRun_applyToChecked_delegates
 #print axioms A12Kernel.timeComputationRun_residualMessages_doNotAffectApplication
 #print axioms A12Kernel.partiallyKnownDateValue_resolve_full
+#print axioms A12Kernel.valueAsDate_partialSourceDiagnostic_iff
 #print axioms A12Kernel.valueAsDate_evaluate_value
 #print axioms A12Kernel.valueAsDate_evaluate_empty
 #print axioms A12Kernel.valueAsDate_evaluate_nonRelevant

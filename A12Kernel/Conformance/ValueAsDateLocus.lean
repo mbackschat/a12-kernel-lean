@@ -47,6 +47,29 @@ private def rowModel : FlatModel := {
   repeatableGroups := [{ level := 10, path := ["Order", "Rows"] }]
   timeZoneId := "Europe/Berlin" }
 
+private def sourceDiagnostic? (source : FlatFieldDecl) : Option (Option String) :=
+  match elaborateValueAsDateSource (modelWith source) 0 .firstDay with
+  | .ok _ => none
+  | .error error => some (error.partialSourceDiagnostic?.map (·.kernelCode))
+
+example :
+    sourceDiagnostic? (dayOptionalSource .full) =
+        some (some "MVK_INVALID_DATE_TYPE_FOR_OP") ∧
+      sourceDiagnostic? (dayOptionalSource .dayOptional) = none ∧
+      sourceDiagnostic? (dayOptionalSource .monthOptional) = none ∧
+      sourceDiagnostic? (dayOptionalSource .yearOptional) = none ∧
+      sourceDiagnostic? (dayOptionalSource .dayOptional "yyyy/MM/dd") =
+        some none := by
+  native_decide
+
+example :
+    (ValueAsDateElabError.sourcePolicy .incoherentCore).partialSourceDiagnostic? =
+        none ∧
+      (ValueAsDateElabError.sourceKind 0 .time).partialSourceDiagnostic? = none ∧
+      (ValueAsDateElabError.unsupportedPartialMode 0 .dayOptional).partialSourceDiagnostic? =
+        none := by
+  native_decide
+
 /- The operand is admitted exactly when the reading scope binds its repeatable level, and the
 nonrepeatable entry point stays the `scope = []` case of the same gate rather than a second rule. -/
 example :

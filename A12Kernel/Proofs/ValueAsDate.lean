@@ -4,6 +4,16 @@ import A12Kernel.Elaboration.ValueAsDateTimeField
 
 namespace A12Kernel
 
+theorem valueAsDate_partialSourceDiagnostic_iff
+    (error : ValueAsDateElabError) (diagnostic : KernelStaticDiagnostic) :
+    error.partialSourceDiagnostic? = some diagnostic ↔
+      ∃ source, error = .unsupportedPartialMode source .full ∧
+        diagnostic = .invalidDateTypeForOp := by
+  cases error with
+  | unsupportedPartialMode source mode =>
+      cases mode <;> simp [ValueAsDateElabError.partialSourceDiagnostic?, eq_comm]
+  | _ => simp [ValueAsDateElabError.partialSourceDiagnostic?]
+
 /-- Endpoint choice is observationally irrelevant for a fully known stored Date. -/
 @[simp] theorem partiallyKnownDateValue_resolve_full
     (date : FullDate) (endpoint : ValueAsDateEndpoint) :

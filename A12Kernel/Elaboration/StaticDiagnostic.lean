@@ -262,6 +262,8 @@ inductive KernelStaticDiagnostic where
   | errorSemanticIndexOrCategoryForErrorField
   /-- A Date computation targets a declaration with partial rather than FULL precision. -/
   | invalidDateType
+  /-- `ValueAsDate` received a fully known Date source instead of a partial one. -/
+  | invalidDateTypeForOp
   /-- The measured direct Number/Number source pair under plural DateRange overlap contains no DateRange. -/
   | noDateRange
   /-- A partially known Date supplied where the operator admits only fully known ones. -/
@@ -489,6 +491,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .errorSemanticIndexOrCategoryForErrorField =>
       "MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD"
   | .invalidDateType => "MVK_INVALID_DATE_TYPE"
+  | .invalidDateTypeForOp => "MVK_INVALID_DATE_TYPE_FOR_OP"
   | .noDateRange => "MVK_NO_DATE_RANGE"
   | .partialDateNotAllowed => "MVK_PARTIAL_DATE_NOT_ALLOWED"
   | .invalidParameterForDateRangeComparison =>
@@ -584,7 +587,8 @@ def all : List KernelStaticDiagnostic :=
     .invalidLengthOfRawType, .noNumber, .notSortable,
     .stringEnumAndNonStringEnum, .invalidCompareDecimalPlaces,
     .errorReferenceToCalculatedField,
-    .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
+    .errorSemanticIndexOrCategoryForErrorField, .invalidDateType,
+    .invalidDateTypeForOp, .noDateRange,
     .partialDateNotAllowed,
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
     .invalidCompareToEnumOrString, .inconsistentTypesCompared,

@@ -103,6 +103,12 @@ inductive ValueAsDateElabError where
   | unsupportedFormat (source : FieldId) (format : String)
   deriving Repr, DecidableEq
 
+/-- Project only the full-precision source refusal established by the [partial-Date operand checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate). Other local boundary errors carry no inferred Kernel class. -/
+def ValueAsDateElabError.partialSourceDiagnostic? :
+    ValueAsDateElabError → Option KernelStaticDiagnostic
+  | .unsupportedPartialMode _ .full => some .invalidDateTypeForOp
+  | _ => none
+
 /-- One checked partial-Date source whose declaration policy, interval endpoint, and raw format cannot be replaced independently after elaboration. Comparison and calendar shifting share this exact admission boundary. -/
 structure CheckedValueAsDateSource (model : FlatModel) where
   source : CheckedTemporalTargetPolicy model
