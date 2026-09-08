@@ -88,12 +88,15 @@ theorem analyze_admitsTargetScale_self
         NumericScaleSummary.field]
       exact congrArg (fun scale : Nat => ScaleInfo.exact (scale : Int)) shared
   | rangeAsNumber operation =>
-      refine admitsTargetScale_of_exact _ _ ?_
-      have shared := operation.sameScale
-      simp only [CheckedAddressedNumericPlacement.targetPolicy] at shared
-      simp only [analyze, AddressedNumericOperationParameters.derivedScaleSummary,
-        NumericScaleSummary.field]
-      exact congrArg (fun scale : Nat => ScaleInfo.exact (scale : Int)) shared.symm
+      change exactNumericScaleComparisonAllowedWithSuppression
+        operation.suppressExactScaleWarning
+        (NumericScaleSummary.field operation.placement.targetPolicy.info.scale)
+        (NumericScaleSummary.field 0) = true
+      rcases operation.scaleCertified with suppressed | sameScale
+      · simp [exactNumericScaleComparisonAllowedWithSuppression, suppressed]
+      · rw [sameScale]
+        simp [exactNumericScaleComparisonAllowedWithSuppression,
+          exactNumericScaleComparisonAllowed, NumericScaleSummary.field]
   | numberField operation =>
       refine admitsTargetScale_of_exact _ _ ?_
       have shared := operation.sameScale

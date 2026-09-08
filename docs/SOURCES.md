@@ -509,6 +509,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A rule locus that iterates two repeatable levels, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-nested-rule-locus)
 <a id="src-computation-operand-scope"></a>
 - [Which repeatable scopes a computation operand may sit in, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-computation-operand-scope)
+<a id="src-string-integer-source-scale-suppression"></a>
+- [String integer-source computation scale suppression, measured locally 2026-09-09](sources/computation-placement-and-constant-probes.md#src-string-integer-source-scale-suppression)
 <a id="src-date-range-bound-component-scale-suppression"></a>
 - [DateRange component assignment scale and computation suppression, measured locally 2026-09-09](sources/temporal-and-message-probes.md#src-date-range-bound-component-scale-suppression)
 <a id="src-date-range-bound-component-runtime"></a>

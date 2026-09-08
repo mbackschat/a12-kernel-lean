@@ -1,0 +1,24 @@
+{
+  "target" : "computation",
+  "op" : "read",
+  "outcome" : "read",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "read /Probe/Rows/IntegerScale",
+  "data" : {
+    "computation" : "/Probe/Rows/IntegerScale",
+    "group" : "/Probe/Rows",
+    "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+    "converted" : true,
+    "calculatedField" : "/Probe/Rows/N2",
+    "alternatives" : [ {
+      "operation" : "Length(Code)"
+    } ],
+    "messages" : [ {
+      "locale" : "en_US",
+      "text" : "Integer source scale check."
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

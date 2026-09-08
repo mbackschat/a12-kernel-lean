@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.AddressedRangeAsNumber
 
 namespace A12Kernel
 
-/-- Every checked addressed range retains an evaluated String source, exact valid interval, and scale-0 Number target on one sound shared placement. -/
+/-- Every checked addressed range retains its evaluated String source, exact valid interval, and assignment-scale certificate on one sound shared placement. -/
 theorem checkedAddressedRangeAsNumber_sound
     (operation : CheckedAddressedRangeAsNumber model) :
     (model.validate.isOk = true ∧
@@ -29,8 +29,9 @@ theorem checkedAddressedRangeAsNumber_sound
       operation.placement.sourceDeclaration.toStringValueField? =
         some operation.source ∧
       validStringRange operation.start operation.finish = true ∧
-      operation.placement.targetPolicy.info.scale = 0 := by
+      (operation.suppressExactScaleWarning = true ∨
+        operation.placement.targetPolicy.info.scale = 0) := by
   exact ⟨checkedAddressedNumericPlacement_sound operation.placement,
-    operation.sourceCertified, operation.rangeValid, operation.sameScale⟩
+    operation.sourceCertified, operation.rangeValid, operation.scaleCertified⟩
 
 end A12Kernel

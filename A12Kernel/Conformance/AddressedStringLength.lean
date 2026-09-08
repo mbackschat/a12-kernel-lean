@@ -45,8 +45,15 @@ private def scaledLength : FlatFieldDecl := {
     policy := { kind := .number { scale := 2, signed := false } }
 }
 
+private def widerLength : FlatFieldDecl := {
+  scaledLength with
+    id := 6
+    name := "WiderLength"
+    policy := { kind := .number { scale := 4, signed := false } }
+}
+
 private def model : FlatModel := {
-  fields := [text, length, outerText, wrong, scaledLength]
+  fields := [text, length, outerText, wrong, scaledLength, widerLength]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Rows"]
@@ -84,9 +91,11 @@ private def checkedDocument (cells : List ClassifiedCellInput) :
   }).toOption
 
 private def outcomes?
-    (cells : List ClassifiedCellInput) :
+    (cells : List ClassifiedCellInput)
+    (targetField : FieldId := length.id) (suppress : Bool := false) :
     Option (List (SourcedNumericTargetOutcome CellAddr)) := do
-  let operation ← operation?
+  let operation ← (checkAddressedStringLength
+    model ["Order", "Rows"] targetField (bare "Text") suppress).toOption
   let input ← checkedDocument cells
   (operation.execute input).toOption
 
@@ -103,7 +112,8 @@ private def addressAt (field : FieldId) (row : Nat) : CellAddr :=
 
 private def stored (unscaled : Int) : StoredNumber := { unscaled, scale := 0 }
 
-/- The checked route admits exactly an evaluated String source and scale-0 Number target in one nonempty repeatable scope. -/
+/- Without suppression the scale mismatch stays a refusal, independently of whether the target
+   scope binds a row-local or outer String source. -/
 example :
     operation?.isSome = true ∧
     (match checkAddressedStringLength
@@ -118,23 +128,47 @@ example :
       | _ => false) = true := by
   native_decide
 
+example :
+    (checkAddressedStringLength
+      model ["Order", "Rows"] scaledLength.id (bare "Text") true).isOk = true ∧
+    (checkAddressedStringLength
+      model ["Order", "Rows"] widerLength.id (bare "Text") true).isOk = true ∧
+    (match checkAddressedStringLength
+        model ["Order", "Rows"] widerLength.id (bare "Text") with
+      | .error (.scaleMismatch 4 0) => true
+      | _ => false) = true ∧
+    (match checkAddressedStringLength
+        model ["Order", "Rows"] scaledLength.id (bare "Wrong") true with
+      | .error (.sourceNotEvaluatedString path) => path == wrong.path
+      | _ => false) = true := by
+  native_decide
+
+example :
+    (match checkAddressedStringLength
+        model ["Order", "Rows"] length.id (bare "Text") true with
+      | .ok operation => operation.suppressExactScaleWarning
+      | .error _ => false) = true ∧
+    (match operation? with
+      | some operation => !operation.suppressExactScaleWarning
+      | none => false) = true := by
+  native_decide
+
 /- Empty placement is real zero. The supplementary character distinguishes UTF-16 length 4 from scalar length 3, while normalized CRLF distinguishes 5 from raw length 6 and reaches the target gate. -/
 example :
-    (outcomes? [
-      cell text.id 2 "" .presentEmpty,
-      cell text.id 3 "A😀B" (.parsed (.str "A😀B")),
-      cell text.id 4 "AB\r\nCD" (.parsed (.str "AB\r\nCD")),
-      cell text.id 5 "TOO-LONG" (.parsed (.str "TOO-LONG"))
-    ]).map (·.map fun entry => (entry.targetField, entry.outcome)) =
-      some [
-        (addressAt length.id 1, .accepted (stored 0)),
-        (addressAt length.id 2, .accepted (stored 0)),
-        (addressAt length.id 3, .accepted (stored 4)),
-        (addressAt length.id 4,
-          .rejected (stored 5) .aboveMaximum),
-        (addressAt length.id 5,
-          .inheritedPoison .declaredConstraint)
-      ] := by
+    [(length.id, false), (scaledLength.id, true)].all (fun (targetField, suppress) =>
+      decide ((outcomes? [
+        cell text.id 2 "" .presentEmpty,
+        cell text.id 3 "A😀B" (.parsed (.str "A😀B")),
+        cell text.id 4 "AB\r\nCD" (.parsed (.str "AB\r\nCD")),
+        cell text.id 5 "TOO-LONG" (.parsed (.str "TOO-LONG"))
+      ] targetField suppress).map (·.map fun entry => (entry.targetField, entry.outcome)) =
+        some [
+          (addressAt targetField 1, .accepted (stored 0)),
+          (addressAt targetField 2, .accepted (stored 0)),
+          (addressAt targetField 3, .accepted (stored 4)),
+          (addressAt targetField 4, .rejected (stored 5) .aboveMaximum),
+          (addressAt targetField 5, .inheritedPoison .declaredConstraint)
+        ])) = true := by
   native_decide
 
 /- Result classification preserves exact addresses across a changed UTF-16 value, normalized target rejection, and poison-cleared stale target. -/

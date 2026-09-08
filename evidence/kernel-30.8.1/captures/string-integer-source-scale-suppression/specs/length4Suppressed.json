@@ -1,0 +1,18 @@
+{
+  "name": "IntegerScale",
+  "computedField": "/Probe/Rows/N4",
+  "alternatives": [
+    {
+      "operation": "Length(Code)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Integer source scale check."
+    }
+  ],
+  "errorCodesToSuppress": [
+    "MVK_INVALID_COMPARE_DEC_PLACES"
+  ]
+}

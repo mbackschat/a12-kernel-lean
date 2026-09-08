@@ -18,12 +18,14 @@ structure CheckedAddressedStringLength (model : FlatModel) where
   source : FlatStringField
   sourceCertified :
     placement.sourceDeclaration.toStringValueField? = some source
-  sameScale : placement.targetPolicy.info.scale = 0
+  suppressExactScaleWarning : Bool
+  scaleCertified : suppressExactScaleWarning = true ∨ placement.targetPolicy.info.scale = 0
 
-/-- Validate the evaluated-String source and scale-0 assignment on the shared repeatable placement. -/
+/-- Validate the evaluated-String source and independently suppressible assignment-scale gate.
+    The flag retains computation metadata for re-emission under the [numeric scale rule](../../spec/04-numbers-and-decimals.md#1-scale-gates----checked-at-parse-time). -/
 def checkAddressedStringLength
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (sourceReference : SurfaceFieldPath) :
+    (sourceReference : SurfaceFieldPath) (suppressExactScaleWarning : Bool := false) :
     Except AddressedStringLengthElabError
       (CheckedAddressedStringLength model) :=
   match checkAddressedNumericPlacement model declaringGroup
@@ -36,12 +38,13 @@ def checkAddressedStringLength
         .error
           (.sourceNotEvaluatedString placement.sourceDeclaration.path)
     | some source =>
-      if hScale : placement.targetPolicy.info.scale = 0 then
+      if hScale : suppressExactScaleWarning = true ∨ placement.targetPolicy.info.scale = 0 then
         .ok {
           placement
           source
           sourceCertified := hSource
-          sameScale := hScale
+          suppressExactScaleWarning
+          scaleCertified := hScale
         }
       else
         .error

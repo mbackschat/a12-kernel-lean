@@ -1,0 +1,59 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "Code",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 5
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "N0",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "N2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "N4",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 4
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "Input0",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  }
+]

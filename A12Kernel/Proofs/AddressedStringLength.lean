@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.AddressedStringLength
 
 namespace A12Kernel
 
-/-- Every checked addressed Length retains an evaluated String source and scale-0 Number target on one sound shared placement. -/
+/-- Every checked addressed Length retains its evaluated String source and assignment-scale certificate on one sound shared placement. -/
 theorem checkedAddressedStringLength_sound
     (operation : CheckedAddressedStringLength model) :
     (model.validate.isOk = true ∧
@@ -28,8 +28,9 @@ theorem checkedAddressedStringLength_sound
         operation.placement.targetDeclaration.repeatableScope = true) ∧
       operation.placement.sourceDeclaration.toStringValueField? =
         some operation.source ∧
-      operation.placement.targetPolicy.info.scale = 0 := by
+      (operation.suppressExactScaleWarning = true ∨
+        operation.placement.targetPolicy.info.scale = 0) := by
   exact ⟨checkedAddressedNumericPlacement_sound operation.placement,
-    operation.sourceCertified, operation.sameScale⟩
+    operation.sourceCertified, operation.scaleCertified⟩
 
 end A12Kernel

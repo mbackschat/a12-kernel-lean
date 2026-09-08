@@ -41,8 +41,22 @@ private def wrong : FlatFieldDecl := {
     name := "Wrong"
 }
 
+private def scaledAmount : FlatFieldDecl := {
+  amount with
+    id := 5
+    name := "ScaledAmount"
+    policy := { kind := .number { scale := 2, signed := false } }
+}
+
+private def widerAmount : FlatFieldDecl := {
+  amount with
+    id := 6
+    name := "WiderAmount"
+    policy := { kind := .number { scale := 4, signed := false } }
+}
+
 private def model : FlatModel := {
-  fields := [code, amount, outerCode, wrong]
+  fields := [code, amount, outerCode, wrong, scaledAmount, widerAmount]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Rows"]
@@ -83,9 +97,11 @@ private def checkedDocument (cells : List ClassifiedCellInput) :
   }).toOption
 
 private def outcomes?
-    (cells : List ClassifiedCellInput) :
+    (cells : List ClassifiedCellInput)
+    (targetField : FieldId := amount.id) (suppress : Bool := false) :
     Option (List (SourcedNumericTargetOutcome CellAddr)) := do
-  let operation ← operation?
+  let operation ← (checkAddressedRangeAsNumber
+    model ["Order", "Rows"] targetField (bare "Code") 2 4 suppress).toOption
   let input ← checkedDocument cells
   (operation.execute input).toOption
 
@@ -103,7 +119,7 @@ private def addressAt (field : FieldId) (row : Nat) : CellAddr :=
 private def stored (unscaled : Int) : StoredNumber :=
   { unscaled, scale := 0 }
 
-/- The checked authoring route retains the exact interval and rejects invalid bounds, wrong source kind, and a noniterating source. -/
+/- Exact interval and source-kind admission remain independent of source placement. -/
 example :
     (operation?.map fun operation => (operation.start, operation.finish)) =
       some (2, 4) ∧
@@ -120,32 +136,69 @@ example :
         true := by
   native_decide
 
+example :
+    (checkAddressedRangeAsNumber
+      model ["Order", "Rows"] scaledAmount.id (bare "Code") 2 4 true).isOk = true ∧
+    (checkAddressedRangeAsNumber
+      model ["Order", "Rows"] widerAmount.id (bare "Code") 2 4 true).isOk = true ∧
+    (checkAddressedRangeAsNumber
+      model ["Order", "Rows"] scaledAmount.id (bare "Code") 2 2 true).isOk = true ∧
+    (match checkAddressedRangeAsNumber
+        model ["Order", "Rows"] scaledAmount.id (bare "Code") 2 4 with
+      | .error (.scaleMismatch 2 0) => true
+      | _ => false) = true ∧
+    (match checkAddressedRangeAsNumber
+        model ["Order", "Rows"] widerAmount.id (bare "Code") 2 4 with
+      | .error (.scaleMismatch 4 0) => true
+      | _ => false) = true ∧
+    (match checkAddressedRangeAsNumber
+        model ["Order", "Rows"] scaledAmount.id (bare "Wrong") 2 4 true with
+      | .error (.sourceNotEvaluatedString path) => path == wrong.path
+      | _ => false) = true ∧
+    (match checkAddressedRangeAsNumber
+        model ["Order", "Rows"] scaledAmount.id (bare "Code") 0 4 true with
+      | .error (.invalidRange 0 4) => true
+      | _ => false) = true := by
+  native_decide
+
+example :
+    (match checkAddressedRangeAsNumber
+        model ["Order", "Rows"] amount.id (bare "Code") 2 4 true with
+      | .ok operation =>
+        operation.suppressExactScaleWarning && operation.start == 2 && operation.finish == 4
+      | .error _ => false) = true ∧
+    (match operation? with
+      | some operation => !operation.suppressExactScaleWarning
+      | none => false) = true := by
+  native_decide
+
 /- Selection is 1-based and inclusive: `A012B[2..4]` is `012` and therefore 12; a filled nondigit selection and a missing source both produce real zero. -/
 example :
-    (outcomes? [
-      cell code.id [1] "A012B" (.parsed (.str "A012B")),
-      cell code.id [2] "A1XB" (.parsed (.str "A1XB"))
-    ]).map (·.map fun entry => (entry.targetField, entry.outcome)) =
-      some [
-        (addressAt amount.id 1, .accepted (stored 12)),
-        (addressAt amount.id 2, .accepted (stored 0)),
-        (addressAt amount.id 3, .accepted (stored 0))
-      ] := by
+    [(amount.id, false), (scaledAmount.id, true)].all (fun (targetField, suppress) =>
+      decide ((outcomes? [
+        cell code.id [1] "A012B" (.parsed (.str "A012B")),
+        cell code.id [2] "A1XB" (.parsed (.str "A1XB"))
+      ] targetField suppress).map (·.map fun entry => (entry.targetField, entry.outcome)) =
+        some [
+          (addressAt targetField 1, .accepted (stored 12)),
+          (addressAt targetField 2, .accepted (stored 0)),
+          (addressAt targetField 3, .accepted (stored 0))
+        ])) = true := by
   native_decide
 
 /- Formal invalidity remains row-local poison, while a neighboring three-digit selection survives as a payloadful target rejection. -/
 example :
-    (outcomes? [
-      cell code.id [1] "TOO-LONG" (.parsed (.str "TOO-LONG")),
-      cell code.id [2] "A123B" (.parsed (.str "A123B")),
-      cell code.id [3] "A012B" (.parsed (.str "A012B"))
-    ]).map (·.map fun entry => (entry.targetField, entry.outcome)) =
-      some [
-        (addressAt amount.id 1, .inheritedPoison .declaredConstraint),
-        (addressAt amount.id 2,
-          .rejected (stored 123) .aboveMaximum),
-        (addressAt amount.id 3, .accepted (stored 12))
-      ] := by
+    [(amount.id, false), (scaledAmount.id, true)].all (fun (targetField, suppress) =>
+      decide ((outcomes? [
+        cell code.id [1] "TOO-LONG" (.parsed (.str "TOO-LONG")),
+        cell code.id [2] "A123B" (.parsed (.str "A123B")),
+        cell code.id [3] "A012B" (.parsed (.str "A012B"))
+      ] targetField suppress).map (·.map fun entry => (entry.targetField, entry.outcome)) =
+        some [
+          (addressAt targetField 1, .inheritedPoison .declaredConstraint),
+          (addressAt targetField 2, .rejected (stored 123) .aboveMaximum),
+          (addressAt targetField 3, .accepted (stored 12))
+        ])) = true := by
   native_decide
 
 /- Result classification keeps exact row keys: poison clears a stale first-row target, target rejection errors at row two, and accepted row three remains source-classified changed. -/

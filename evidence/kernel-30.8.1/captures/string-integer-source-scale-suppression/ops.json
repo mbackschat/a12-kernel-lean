@@ -1,0 +1,222 @@
+[
+  {
+    "id": "length0Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/length0Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "length0Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/length0Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "length2Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/length2Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "length2Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/length2Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "length4Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/length4Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "length4Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/length4Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "range0Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/range0Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "range0Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/range0Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "range2Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/range2Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "range2Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/range2Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "range4Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/range4Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "range4Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/range4Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "lengthWrongPlain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/lengthWrongPlain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "lengthWrongSuppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/lengthWrongSuppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "rangeWrongPlain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/rangeWrongPlain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "rangeWrongSuppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/rangeWrongSuppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "rangeInvalidPlain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/rangeInvalidPlain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "rangeInvalidSuppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/rangeInvalidSuppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "rangeSingleSuppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/rangeSingleSuppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "capableLiteral",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "StringIntegerScale_DM.json",
+      "specs/capableLiteral.json",
+      "--dry-run"
+    ]
+  }
+]

@@ -1,5 +1,23 @@
 # Computation placement and constant source checkpoints
 
+<a id="src-string-integer-source-scale-suppression"></a>
+#### String integer-source computation scale suppression, measured locally 2026-09-09
+
+- `revision`: clean measurement checkout at a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool `0.13.0`, Kernel built/runtime `30.8.1`. The checkout remained clean after the capture.
+- `route`: structured model authoring and `model check`, then one twenty-child `computation add --dry-run` batch. The [capture directory](../../evidence/kernel-30.8.1/captures/string-integer-source-scale-suppression/) retains the authored model and operations, exact computation specifications, compact observations, two accepted model copies, and both structured readbacks.
+- `model`: `/Probe/Rows` repeats at most three times and declares an ordinary String `Code` with maximum length five, Number targets at maximum scales 0, 2, and 4, and a scale-0 Number `Input0`. Number declarations retain default `SIGNED` and no minimum fractional padding.
+- `scale-matrix`: both `Length(Code)` and `RangeAsNumber(Code, 2, 4)` admit at target scale 0 with or without suppression. At scales 2 and 4, each plain computation refuses with exactly `MVK_INVALID_COMPARE_DEC_PLACES` and each suppressed computation admits. Every one of the six pairs differs only by `errorCodesToSuppress: ["MVK_INVALID_COMPARE_DEC_PLACES"]`, with the computation name and message fixed.
+- `kind-controls`: `Length(Input0)` refuses with `MVK_NO_STRING`, while `RangeAsNumber(Input0, 2, 4)` refuses with `MVK_INVALID_TYPE`. Each refusal is retained both at scale 0 without suppression and at scale 2 with suppression. These different classes belong to the observed Number-source controls; they are not a universal projection of the Lean `sourceNotEvaluatedString` error.
+- `interval-controls`: `RangeAsNumber(Code, 0, 4)` refuses with `MVK_INVALID_INTERVAL` at scale 0 without suppression and scale 2 with it. The singleton interval `(2, 2)` admits at scale 2 with suppression, separating a valid one-character interval from the invalid-zero-bound case.
+- `padding-control`: literal `1` admits at target scale 2 without suppression. The comparison with both plain scale-2 source rows separates literal padding capability from the non-expandable integer operations.
+- `readback`: each accepted scale-2 operation was persisted into its own model copy and checked valid. Reading `/Probe/Rows/IntegerScale` preserves the exact authored operation, `/Probe/Rows/N2` target, and suppression list for both carriers.
+- `integrity`: base model SHA-256 `f788f1e1f49af16613a598a891145ea57b8d22bec77f69635b6e74077bac072f`; accepted Length model `4ec2990a3c41f828e424a235a1f1d6cfcb814b7196bac10dda8b3377d92eaeb6`; accepted range model `505b7bab3a063033bdf51f8b7021c7140834e4745158957aa55df5c67cc832a1`.
+- `integrity`: authoring operations SHA-256 `a2ebdd058bb964c56fda5f14a04fd20f48afdb86f81acc3dee928025d74a4e98`; batch operations `f65e865a5b4aae8d07bafba55e3189b5b2843e84439ce9c0ed18dbcab763f662`; compact observations `2cfff64216036bca38c7681070ee67c208f49068b038f681016290658f167325`.
+- `integrity`: Length readback SHA-256 `ea0c950a85dcabcae6cb470c8ce89ef4ce0b1cf4ca87e24776599ecec1e408ba`; range readback `39cbbd5e3876de7ef8dc5a6bd93a39eab4f770dd567524e5850695b734ea8ca1`. Every raw child was Kernel-confirmed, with only Kernel-sourced diagnostic codes, and independently matched its compact observation.
+- `limit`: static computation admission and persisted metadata only. Runtime on newly admitted suppressed targets, other source kinds or declarations, other computations, condition preambles, and unknown suppression codes remain outside this capture. Internal runtime matrices retain the existing integer values, row poison, empty zero, and target-limit checks at both ordinary scale-0 and suppressed scale-2 targets.
+- `local-divergence`: both addressed checkers previously required target scale 0 unconditionally. Each now retains the authored suppression flag and certifies either suppression or scale 0. The evaluated-String and interval certificates remain required, and the shared numeric execution path is unchanged.
+- `sync`: the canonical numeric assignment rule already makes this warning suppressible. This batch settles two selected computation carriers without changing that rule, requesting a repeated peer measurement, or claiming a new dmtool defect.
+
 <a id="src-temporal-difference-gates-read-the-format"></a>
 #### All three temporal difference operand gates read the declared format and never the declared kind, measured locally 2026-09-07
 

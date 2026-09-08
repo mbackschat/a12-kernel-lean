@@ -1,0 +1,15 @@
+{
+  "name": "IntegerScale",
+  "computedField": "/Probe/Rows/N2",
+  "alternatives": [
+    {
+      "operation": "Length(Code)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Integer source scale check."
+    }
+  ]
+}

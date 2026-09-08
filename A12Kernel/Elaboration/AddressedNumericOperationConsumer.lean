@@ -177,6 +177,7 @@ def analyze :
       sourceFields := [operation.placement.sourceDeclaration.id]
       scope := operation.placement.targetDeclaration.repeatableScope
       targetPolicy := operation.placement.targetPolicy
+      suppressExactScaleWarning := operation.suppressExactScaleWarning
       parameters := .rangeAsNumber operation.start operation.finish
     }
   | .numberField operation => {

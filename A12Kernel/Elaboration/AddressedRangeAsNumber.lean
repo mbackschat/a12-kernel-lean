@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedNumericLeaf
 
 /-! # Repeatable `RangeAsNumber`
 
-This capsule admits one ordinary repeatable Number target whose sole expression is `RangeAsNumber` over a checked evaluated String declaration in the same repeatable scope. It specializes the shared addressed numeric placement with one exact 1-based inclusive interval and the existing scalar evaluator.
+One ordinary repeatable Number target receives `RangeAsNumber` over a checked evaluated String declaration at a scope the target binds. The operation specializes the shared addressed numeric placement with one exact 1-based inclusive interval and the existing scalar evaluator.
 -/
 
 namespace A12Kernel
@@ -25,12 +25,15 @@ structure CheckedAddressedRangeAsNumber (model : FlatModel) where
   sourceCertified :
     placement.sourceDeclaration.toStringValueField? = some source
   rangeValid : validStringRange start finish = true
-  sameScale : placement.targetPolicy.info.scale = 0
+  suppressExactScaleWarning : Bool
+  scaleCertified : suppressExactScaleWarning = true ∨ placement.targetPolicy.info.scale = 0
 
-/-- Validate the exact evaluated-String source, interval, and scale-0 assignment on the shared repeatable placement. -/
+/-- Validate the exact evaluated-String source and interval before the suppressible assignment-scale gate.
+    Computation suppression cannot widen the [field or interval rules](../../spec/04-numbers-and-decimals.md#4-other-numeric-constraints). -/
 def checkAddressedRangeAsNumber
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (sourceReference : SurfaceFieldPath) (start finish : Nat) :
+    (sourceReference : SurfaceFieldPath) (start finish : Nat)
+    (suppressExactScaleWarning : Bool := false) :
     Except AddressedRangeAsNumberElabError
       (CheckedAddressedRangeAsNumber model) :=
   match checkAddressedNumericPlacement model declaringGroup
@@ -44,7 +47,7 @@ def checkAddressedRangeAsNumber
           .error
             (.sourceNotEvaluatedString placement.sourceDeclaration.path)
       | some source =>
-        if hScale : placement.targetPolicy.info.scale = 0 then
+        if hScale : suppressExactScaleWarning = true ∨ placement.targetPolicy.info.scale = 0 then
           .ok {
             placement
             source
@@ -52,7 +55,8 @@ def checkAddressedRangeAsNumber
             finish
             sourceCertified := hSource
             rangeValid := hRange
-            sameScale := hScale
+            suppressExactScaleWarning
+            scaleCertified := hScale
           }
         else
           .error

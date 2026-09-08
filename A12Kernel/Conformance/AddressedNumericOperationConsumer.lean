@@ -112,11 +112,12 @@ private def categoryLeaf? : Option (CheckedAddressedNumericOperation model) := d
       converted.id (.category (bare "Band") "Numeric")).toOption
   pure (.fieldValueAsNumber operation)
 
-private def rangeLeaf? (finish : Nat) :
+private def rangeLeaf? (finish : Nat) (targetField : FieldId := selected.id)
+    (suppress : Bool := false) :
     Option (CheckedAddressedNumericOperation model) := do
   let operation ←
     (checkAddressedRangeAsNumber model ["Order", "Rows"]
-      selected.id (bare "Code") 2 finish).toOption
+      targetField (bare "Code") 2 finish suppress).toOption
   pure (.rangeAsNumber operation)
 
 private def numberFieldLeaf? : Option (CheckedAddressedNumericOperation model) := do
@@ -312,7 +313,10 @@ example :
         sourceFields := [code.id]
         scope := [10]
         parameters := .rangeAsNumber 2 4
-      } := by
+      } ∧
+    admittedScales? (rangeLeaf? 4 converted.id true) = some (List.range 15) ∧
+    (fingerprintMatch? (rangeLeaf? 4) (rangeLeaf? 4 selected.id true)).isNone = true ∧
+    (rangeLeaf? 4 selected.id true).isSome = true := by
   native_decide
 
 /- Analyze preserves direct, absolute-value, and rounding identity together with each operation's result scale. -/
