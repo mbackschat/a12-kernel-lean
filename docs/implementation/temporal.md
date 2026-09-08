@@ -136,6 +136,15 @@ Date-range capabilities are owned by [`date-range.md`](date-range.md).
 - `assurance`: P closes the two extent laws in [`Proofs/FilledFieldGroupCount.lean`](../../A12Kernel/Proofs/FilledFieldGroupCount.lean): slot capacity collapses to the declared field count exactly on a subtree with no repeatable descendant, and one repeatable descendant already separates them. That pair makes the coincidence a stated special case rather than a rule a reader infers from flat fixtures. A third law states that the group operand's own tally reports **zero** uninstantiated slots, which is what makes the three excluded quantifiers necessarily excluded rather than cautiously so. C/X/Q none.
 - `remains`: direct and mixed field/group lists, filtered and nested count stars, the computation carrier, raw-`Document` filled-field execution, message details beyond the measured polarity classes, token value-count partial runtime calibration, the three uninstantiated-reading quantifiers, and the rest of the count family are not covered here. Movement over two nesting levels, and an operand group under a repeatable ancestor stay with [SG13](../SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion).
 
+<a id="cap-temporal-extractor-entry"></a>
+#### Temporal extractor literal entry
+
+- `boundary`: A syntax-sensitive entry check after authored-temporal literal recognition. Numeric component extractors refuse a recognized direct literal; Date/Time-valued DateTime projections admit only recognized complete DateTime literals. Failed recognition precedes either family gate. Nonliteral operands explicitly continue to the existing source-admission checks.
+- `owner`: [`TemporalExtractorEntry.lean`](../../A12Kernel/Elaboration/TemporalExtractorEntry.lean), with its [laws](../../A12Kernel/Proofs/TemporalExtractorEntry.lean) and [conformance cases](../../A12Kernel/Conformance/TemporalExtractorEntry.lean).
+- `assurance`: E/P closed for all three family tags crossed with failed recognition or each recognized temporal kind, plus the nonliteral continuation. The [entry checkpoint](../sources/static-admission-and-class-probes.md#src-temporal-extractor-entry) retains literal-versus-expression and numeric-versus-projection separators. These raw static observations add no typed replay calibration or public exposure; C/X/Q none.
+- `consumer`: Analyze and Transform can distinguish direct literals from nested extraction before folding an expression. The checker consumes a completed recognition result; an unavailable decoder cannot be represented as failed recognition.
+- `remains`: General authored-literal recognition, expression-tree lowering, nonliteral source checks, runtime literal evaluation and wider integration remain under [SG6](../SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+
 <a id="cap-date-from-datetime"></a>
 #### `DateFromDateTime` extractor
 

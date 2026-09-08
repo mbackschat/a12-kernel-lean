@@ -1,0 +1,182 @@
+[
+  {
+    "id": "date_literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "date_literal",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And DateFromDateTime(\"05.03.2024T10:30:45\") == Today",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "time_literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "time_literal",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And TimeFromDateTime(\"05.03.2024T10:30:45\") == \"10:30:45\"",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "year_literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "year_literal",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And YearFromDate(\"05.03.2024T10:30:45\") > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "hour_literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "hour_literal",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And HoursFromTime(\"05.03.2024T10:30:45\") > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "date_incomplete",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "date_incomplete",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And DateFromDateTime(\"05.03.2024\") == Today",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "time_incomplete",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "time_incomplete",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And TimeFromDateTime(\"10:30:45\") == \"10:30:45\"",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "date_invalid",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "date_invalid",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And DateFromDateTime(\"2019-01-01\") == Today",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "time_invalid",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "time_invalid",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And TimeFromDateTime(\"2019-01-01\") == \"10:30:45\"",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "year_invalid",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "year_invalid",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And YearFromDate(\"2019-01-01\") > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "hour_invalid",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "hour_invalid",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And HoursFromTime(\"2019-01-01\") > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "date_now",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "date_now",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And DateFromDateTime(Now) == Today",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "time_now",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "time_now",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And TimeFromDateTime(Now) == \"10:30:45\"",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  }
+]

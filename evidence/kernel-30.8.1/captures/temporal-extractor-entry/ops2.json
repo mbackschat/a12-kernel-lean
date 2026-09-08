@@ -1,0 +1,62 @@
+[
+  {
+    "id": "nested_day_now",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nested_day_now",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And DayFromDate(DateFromDateTime(Now)) > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "nested_hour_now",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nested_hour_now",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And HoursFromTime(TimeFromDateTime(Now)) > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "nested_day_literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nested_day_literal",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And DayFromDate(DateFromDateTime(\"05.03.2024T10:30:45\")) > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  },
+  {
+    "id": "nested_hour_literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nested_hour_literal",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And HoursFromTime(TimeFromDateTime(\"05.03.2024T10:30:45\")) > 0",
+      "--message",
+      "en_US=extractor entry"
+    ]
+  }
+]

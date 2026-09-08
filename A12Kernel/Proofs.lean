@@ -290,6 +290,7 @@ import A12Kernel.Proofs.TimeNumeric
 import A12Kernel.Proofs.TokenDistinctCount
 import A12Kernel.Proofs.LiteralComparisonDiagnostic
 import A12Kernel.Proofs.ComparisonEntry
+import A12Kernel.Proofs.TemporalExtractorEntry
 import A12Kernel.Proofs.TokenEntityValueList
 import A12Kernel.Proofs.TokenFirstFilledValue
 import A12Kernel.Proofs.TokenValueCount

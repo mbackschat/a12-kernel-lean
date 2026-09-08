@@ -2836,3 +2836,7 @@ run_cmd do
 #print axioms A12Kernel.enumConstant_unknown_category_first
 #print axioms A12Kernel.enumConstantList_unknown_category_first
 #print axioms A12Kernel.enumConstantList_none_iff
+#print axioms A12Kernel.temporalExtractorEntry_invalid_literal
+#print axioms A12Kernel.temporalExtractorEntry_numeric_literal
+#print axioms A12Kernel.temporalExtractorEntry_complete_iff
+#print axioms A12Kernel.temporalExtractorEntry_continuation_iff

@@ -324,6 +324,10 @@ inductive KernelStaticDiagnostic where
   | invalidCompareEnumToString
   /-- Two display-bearing Enumerations disagree on a shared-locale stored/display association in either direction. -/
   | invalidCompareEnumToEnum
+  /-- Authored temporal text fails recognition before an extractor's own operand gate. -/
+  | invalidDateString
+  /-- A direct constant occupies an operand position that forbids it. The enclosing operator identifies the gate. -/
+  | noConst
   /-- An operator requiring exactly two field-list parameters received a different count. -/
   | paramSizeInvalidTwo
   /-- A dotted line specifier on a path element. The grammar accepts the shape so the Kernel can name it, and A12 models then refuse it semantically — so this class exists precisely because parsing succeeded. -/
@@ -515,6 +519,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noStringOrEnum => "MVK_NO_STRING_OR_ENUM"
   | .invalidCompareEnumToString => "MVK_INVALID_COMPARE_ENUM_TO_STRING"
   | .invalidCompareEnumToEnum => "MVK_INVALID_COMPARE_ENUM_TO_ENUM"
+  | .invalidDateString => "MVK_INVALID_DATE_STRING"
+  | .noConst => "MVK_NO_CONST"
   | .paramSizeInvalidTwo => "MVK_PARAMSIZE_INVALID_2"
   | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
   | .notInRuleGroup => "MVK_NOT_IN_RULEGROUP"
@@ -588,7 +594,7 @@ def all : List KernelStaticDiagnostic :=
     .indexForErrorTextInvalid,
     .missingYear, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
-    .invalidCompareEnumToString, .invalidCompareEnumToEnum,
+    .invalidCompareEnumToString, .invalidCompareEnumToEnum, .invalidDateString, .noConst,
     .paramSizeInvalidTwo, .pointInA12Model,
     .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,

@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-08-05"></a>
+### `SPEC-2026-09-08-05` — DateTime projections admit literals that numeric extractors refuse
+
+- `status`: pending
+- `clause`: [temporal extractor operands](../spec/05-dates-and-time.md#temporal-extractor-operands).
+- `delta`: `DateFromDateTime` and `TimeFromDateTime` admit a recognized complete DateTime literal. Numeric component extractors refuse that same direct literal with `MVK_NO_CONST`. Failed literal recognition reports `MVK_INVALID_DATE_STRING` before either family-specific gate; a recognized but incomplete source under either DateTime projection instead reports `MVK_WRONG_DATE_FORMAT_FOR_OP`.
+- `basis`: the [temporal-extractor entry checkpoint](sources/static-admission-and-class-probes.md#src-temporal-extractor-entry) retains 16 static checks at clean a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool 0.13.0, Kernel 30.8.1. The pair holds the complete DateTime literal fixed across both numeric and both projection carriers.
+- `acceptance`: adopt this explicit literal-versus-projection boundary in the canonical account and any affected admission or transformation surface, or supply a contrary kernel observation. The existing peer numeric-literal gates need no repeat measurement.
+- `already-peer-owned`: admitted nesting through `DateFromDateTime` was already committed in the peer's `cfdb2c80f79b0da32d9ff2df27fcbb4b1be160d5`; removing this project's contrary nesting sentence is an inbound correction, not part of this outbound request.
+- `limit`: static admission only, after authored-literal recognition. No runtime literal evaluation, constant-folding equivalence, arbitrary expression admission, or interpreter failure is claimed.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-08-04"></a>
 ### `SPEC-2026-09-08-04` — comparison entry preserves clock grouping and precedes pattern-slot checks
 
