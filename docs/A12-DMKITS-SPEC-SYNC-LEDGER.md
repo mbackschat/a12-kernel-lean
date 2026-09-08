@@ -35,7 +35,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-<a id="spec-2026-09-08-01"></a>
+<a id="spec-2026-09-08-03"></a>
+### `SPEC-2026-09-08-03` — a non-repeatable indexed group arms its own message-parameter gate, which admits exactly one declaration shape
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md`, the `index(...)` terminal's refusal classes](../spec/11-messages-and-custom.md)
+- `delta`: our clause named `INVALID_INDEX_FIELD_NONREP_ENUM` as one of two classes "no route reaches", carrying only the source-derived shape of its trigger. It is now measured, and the measurement makes it a **predicate rather than a prohibition**: when the index field a parameter names sits on a non-repeatable group, the parameter is refused unless that index field is an Enumeration whose declared value set holds a single value and whose s-value names that value. All three conjuncts are separated, and the passing shape is admitted rather than merely less-refused.
+- `mechanism`: the class is raised inside the same repeatability cross-check that raises `INVALID_INDEX_FIELD_REP` and `INVALID_INDEX_FIELD_REP_ITER`, which runs after the short-name filter and the composed-index test and **before** the suffix branch. Measured, not only read: `.value` and `->Category` on one non-repeatable declaration draw the same class, so the checker has decided before it looks at which suffix was written.
+- `evidence`: [checkpoint](sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate), one `dmtool batch --observations` of 11 `rule check` children at a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4` (clean), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Four refusing rows and five parameter-free controls, plus the repeatable-carrier control that attributes the refusal to non-repeatability rather than to the index field's kind.
+- `authoring-fact`: this class was unreachable through `dmtool` until a12-dmkits `1fa971753` removed a repeatability requirement its own `kf116` had imposed deliberately in June. The Kernel had admitted the declaration throughout; only the instrument refused it. Any consumer that mirrored that client-side restriction has the same blind spot.
+- `trap`: **the declaration is admitted and the parameter is not.** All three refusing declarations pass `model check` on their own — the group, the index field, and the enumeration are each legal — and the refusal appears only once a message names the index field. A checker that validates declarations and messages separately will report a clean model.
+- `surfaces`: any peer clause or authoring assistant that lists this class as unreachable, that treats a non-repeatable index field as an authoring error rather than as a shape with one legal use, or that checks index-field declarations without cross-checking the messages that name them.
+- `not-claimed`: whether the s-value conjunct compares spelling or identity is not separable on this shape, because a single declared value admits only one s-value. What an admitted parameter renders on the passing declaration is unmeasured, as is the German-condition carrier.
+- `acceptance`: a12-dmkits confirms on its own fixture that an Enumeration index field with one value that is its s-value **admits** the parameter on a non-repeatable group, while a two-value enumeration and a value-without-s-value each refuse — or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+<a id="spec-2026-09-08-02"></a>
 ### `SPEC-2026-09-08-02` — how a condition reaches its error field decides which iteration classes apply, and a root-group reference is authorable only in its absolute spelling
 
 - `status`: pending
@@ -50,6 +65,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: a12-dmkits confirms on its own fixture that a condition reaching its error field only through the root group is refused when it binds a deeper level, and admitted once a direct reference is added — or supplies the contrary measurement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
+<a id="spec-2026-09-08-01"></a>
 ### `SPEC-2026-09-08-01` — the over-limit code is chosen by the coordinate's position, so a repeatable root group draws `zuGrosseLfdNummer` throughout and the familiar pair is the deeper-than-root case
 
 - `status`: pending

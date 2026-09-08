@@ -1,0 +1,194 @@
+{
+  "header" : {
+    "id" : "Nrx_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Nrx_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Nrx",
+        "name" : "Nrx",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Nrx/Single",
+            "name" : "Single",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Nrx/Single/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Nrx/Single/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Nrx/G1",
+            "name" : "G1",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Nrx/G1/EOne",
+                "name" : "EOne",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      } ],
+                      "sValue" : "A"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Nrx/G1/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "EOne"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Nrx/G2",
+            "name" : "G2",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Nrx/G2/ETwo",
+                "name" : "ETwo",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ],
+                      "sValue" : "A"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Nrx/G2/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "ETwo"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Nrx/G3",
+            "name" : "G3",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Nrx/G3/ENoS",
+                "name" : "ENoS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Nrx/G3/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "ENoS"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Nrx/G4",
+            "name" : "G4",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Nrx/G4/K4",
+                "name" : "K4",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Nrx/G4/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "K4"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

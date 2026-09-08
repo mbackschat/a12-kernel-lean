@@ -1,0 +1,167 @@
+[
+  {
+    "id": "N1-string-nonrep-value",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C0",
+      "--field",
+      "/Nrx/Single/Note",
+      "--condition",
+      "FieldFilled(/Nrx/Single/Note) And FieldFilled(/Nrx/Single/Key)",
+      "--message",
+      "en_US=row $index(Key).value$"
+    ]
+  },
+  {
+    "id": "N2-string-nonrep-control",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C1",
+      "--field",
+      "/Nrx/Single/Note",
+      "--condition",
+      "FieldFilled(/Nrx/Single/Note) And FieldFilled(/Nrx/Single/Key)",
+      "--message",
+      "en_US=plain text"
+    ]
+  },
+  {
+    "id": "N3-string-nonrep-category",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C2",
+      "--field",
+      "/Nrx/Single/Note",
+      "--condition",
+      "FieldFilled(/Nrx/Single/Note) And FieldFilled(/Nrx/Single/Key)",
+      "--message",
+      "en_US=row $index(Key)->Cat$"
+    ]
+  },
+  {
+    "id": "E1-enum-one-svalue-value",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C3",
+      "--field",
+      "/Nrx/G1/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G1/Note) And FieldFilled(/Nrx/G1/EOne)",
+      "--message",
+      "en_US=row $index(EOne).value$"
+    ]
+  },
+  {
+    "id": "E2-enum-one-svalue-control",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C4",
+      "--field",
+      "/Nrx/G1/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G1/Note) And FieldFilled(/Nrx/G1/EOne)",
+      "--message",
+      "en_US=plain text"
+    ]
+  },
+  {
+    "id": "E3-enum-two-values",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C5",
+      "--field",
+      "/Nrx/G2/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G2/Note) And FieldFilled(/Nrx/G2/ETwo)",
+      "--message",
+      "en_US=row $index(ETwo).value$"
+    ]
+  },
+  {
+    "id": "E4-enum-two-values-control",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C6",
+      "--field",
+      "/Nrx/G2/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G2/Note) And FieldFilled(/Nrx/G2/ETwo)",
+      "--message",
+      "en_US=plain text"
+    ]
+  },
+  {
+    "id": "E5-enum-one-no-svalue",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C7",
+      "--field",
+      "/Nrx/G3/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G3/Note) And FieldFilled(/Nrx/G3/ENoS)",
+      "--message",
+      "en_US=row $index(ENoS).value$"
+    ]
+  },
+  {
+    "id": "E6-enum-one-no-svalue-control",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C8",
+      "--field",
+      "/Nrx/G3/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G3/Note) And FieldFilled(/Nrx/G3/ENoS)",
+      "--message",
+      "en_US=plain text"
+    ]
+  },
+  {
+    "id": "R1-string-REPEATABLE-value",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C9",
+      "--field",
+      "/Nrx/G4/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G4/Note) And FieldFilled(/Nrx/G4/K4)",
+      "--message",
+      "en_US=row $index(K4).value$"
+    ]
+  },
+  {
+    "id": "R2-string-REPEATABLE-control",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "C10",
+      "--field",
+      "/Nrx/G4/Note",
+      "--condition",
+      "FieldFilled(/Nrx/G4/Note) And FieldFilled(/Nrx/G4/K4)",
+      "--message",
+      "en_US=plain text"
+    ]
+  }
+]

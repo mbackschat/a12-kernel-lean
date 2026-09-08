@@ -14,7 +14,7 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `95b73fdb` on 2026-09-08.
+Measured at `9d8f51a6` on 2026-09-08.
 
 ## Headline
 

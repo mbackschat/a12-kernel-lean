@@ -1,0 +1,78 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+    "state" : "CLEAN"
+  },
+  "model" : "cb073d5fa72dc6832ab6b73975b6de3df6c9eb3784f7c4507c5fc5ac6d0dcaa4",
+  "observations" : [ {
+    "id" : "N1-string-nonrep-value",
+    "inputHash" : "58675c1e380364c28fcaba9154e18fd7bdb034472ab8074df3dfbcd29565e23c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_NONREP_ENUM" ]
+  }, {
+    "id" : "N2-string-nonrep-control",
+    "inputHash" : "58675c1e380364c28fcaba9154e18fd7bdb034472ab8074df3dfbcd29565e23c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "N3-string-nonrep-category",
+    "inputHash" : "58675c1e380364c28fcaba9154e18fd7bdb034472ab8074df3dfbcd29565e23c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_NONREP_ENUM" ]
+  }, {
+    "id" : "E1-enum-one-svalue-value",
+    "inputHash" : "acc3995cc6ae2bad0e3dea301a123db24398fee5d14f67e10f75e65e71cd0524",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "E2-enum-one-svalue-control",
+    "inputHash" : "acc3995cc6ae2bad0e3dea301a123db24398fee5d14f67e10f75e65e71cd0524",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "E3-enum-two-values",
+    "inputHash" : "e95eaa9bf959a2395a5540a866adf28b97d72b7c7f0774b2f36e198bcba9b427",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_NONREP_ENUM" ]
+  }, {
+    "id" : "E4-enum-two-values-control",
+    "inputHash" : "e95eaa9bf959a2395a5540a866adf28b97d72b7c7f0774b2f36e198bcba9b427",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "E5-enum-one-no-svalue",
+    "inputHash" : "4f5e76618d7a8522e1bc4cbfc7db04fe37f8ec7d0cbad7b3a430ab39b60c384d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_NONREP_ENUM" ]
+  }, {
+    "id" : "E6-enum-one-no-svalue-control",
+    "inputHash" : "4f5e76618d7a8522e1bc4cbfc7db04fe37f8ec7d0cbad7b3a430ab39b60c384d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "R1-string-REPEATABLE-value",
+    "inputHash" : "aeccc72749b76ade61d5f0ce046e54c9619a3afc9a2e950b7e854c1b314ce89b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "R2-string-REPEATABLE-control",
+    "inputHash" : "aeccc72749b76ade61d5f0ce046e54c9619a3afc9a2e950b7e854c1b314ce89b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}
