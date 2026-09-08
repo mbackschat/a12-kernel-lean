@@ -3,9 +3,8 @@ import A12Kernel.Elaboration.AddressedDateRangeBoundPart
 /-! # Addressed DateRange-endpoint component locks
 
 One numeric Date component of a selected endpoint computed per instantiated row. The static cases
-separate the three gates this placement adds to the component's own admission — a repeatable Number
-target, the source at that same scope, and the measured scale-0 derived-scale gate — and the runtime
-cases pin per-row values with exact addresses across both endpoint carriers.
+separate target placement, source binding, component exposure, and the suppressible scale gate;
+the runtime cases retain per-row values and exact addresses across both endpoint carriers.
 -/
 
 namespace A12Kernel.Conformance.AddressedDateRangeBoundPart
@@ -37,9 +36,10 @@ private def numberField (id : FieldId) (name : String)
 private def target := numberField 4 "Component" [10] 0
 private def scaledTarget := numberField 5 "ScaledComponent" [10] 2
 private def rootTarget := numberField 6 "RootComponent" [] 0
+private def widerTarget := numberField 7 "WiderComponent" [10] 4
 
 private def model : FlatModel := {
-  fields := [rowDates, rowMonths, outerDates, target, scaledTarget, rootTarget]
+  fields := [rowDates, rowMonths, outerDates, target, scaledTarget, rootTarget, widerTarget]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Rows"]
@@ -59,11 +59,11 @@ private def parent (field : String) : SurfaceFieldPath :=
   { base := .relative 1, groups := [], field }
 
 private def checked (targetField : FieldId) (source : SurfaceFieldPath)
-    (bound : DateRangeBound) (part : DateNumericPart) :
+    (bound : DateRangeBound) (part : DateNumericPart) (suppress : Bool := false) :
     Except AddressedDateRangeBoundPartElabError
       (CheckedAddressedDateRangeBoundPart model) :=
   checkAddressedDateRangeBoundPart model ["Order", "Rows"] targetField source
-    bound part
+    bound part suppress
 
 /- The exact profile admits all four components and the unconfigured yearless one admits month and
 quarter, which is the component owner's rule reaching this placement unchanged. -/
@@ -76,12 +76,8 @@ example :
         | .ok _ => false) = true := by
   native_decide
 
-/- Every date component derives scale 0, so a fractional target is refused, and it reports the
-   Kernel's own `MVK_INVALID_COMPARE_DEC_PLACES` — the same class two sibling carriers already report
-   for the same gate. The suppression branch that code also covers is an **admission** question this
-   carrier does not model, so it over-refuses a suppressing model; withholding the class would not
-   have helped that and only hid the code, which is why the projection is asserted here beside the
-   exact arm. -/
+/- The component has no literal-padding capability, so a fractional target requires suppression
+   even though the produced integer fits its storage scale. -/
 example :
     ((match checked scaledTarget.id (bare "RowDates") .start .month with
       | .error (.scaleMismatch 2 0) => true
@@ -90,9 +86,32 @@ example :
     (true, some .invalidCompareDecimalPlaces) := by
   native_decide
 
-/- Two placement gates remain the shared ones. A nonrepeatable target is not an addressed operation
-at all, and this placement requires the source at the target's own scope — **a local narrowing**, not
-a Kernel refusal: the Kernel admits a scalar endpoint computing a row Number, and SG5 owns that gap. -/
+/- Computation suppression waives scale mismatch while leaving component exposure intact.
+   The scale-4 pair separates the same rule from a scale-2 special case. -/
+example :
+    (checked scaledTarget.id (bare "RowDates") .start .month true).isOk = true ∧
+    (checked widerTarget.id (bare "RowDates") .start .month true).isOk = true ∧
+    (checked target.id (bare "RowDates") .start .month true).isOk = true ∧
+    (checked scaledTarget.id (bare "RowMonths") .start .month true).isOk = true ∧
+    (match checked scaledTarget.id (bare "RowMonths") .start .year true with
+      | .error (.componentNotExposed _ .year) => true
+      | _ => false) = true ∧
+    (match checked widerTarget.id (bare "RowDates") .start .month with
+      | .error (.scaleMismatch 4 0) => true
+      | _ => false) = true := by
+  native_decide
+
+example :
+    (match checked target.id (bare "RowDates") .start .month true with
+      | .ok operation => operation.suppressExactScaleWarning
+      | .error _ => false) = true ∧
+    (match checked target.id (bare "RowDates") .start .month with
+      | .ok operation => !operation.suppressExactScaleWarning
+      | .error _ => false) = true := by
+  native_decide
+
+/- A nonrepeatable target is outside this addressed route, while an outer source is bound by the
+   row target's scope and remains admitted. -/
 example :
     (match checkAddressedDateRangeBoundPart model ["Order"] rootTarget.id
         (bare "OuterDates") .start .month with
@@ -124,9 +143,10 @@ private def checkedDocument (cells : List ClassifiedCellInput) :
   (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
 
 private def outcomes? (source : SurfaceFieldPath) (bound : DateRangeBound)
-    (part : DateNumericPart) (cells : List ClassifiedCellInput) :
+    (part : DateNumericPart) (cells : List ClassifiedCellInput)
+    (targetField : FieldId := target.id) (suppress : Bool := false) :
     Option (List (CellAddr × NumericTargetOutcome)) := do
-  let operation ← (checked target.id source bound part).toOption
+  let operation ← (checked targetField source bound part suppress).toOption
   let input ← checkedDocument cells
   let executed ← (operation.execute input).toOption
   pure (executed.map fun entry => (entry.targetField, entry.outcome))
@@ -143,6 +163,17 @@ private def addressAt (field : FieldId) (row : Nat) : CellAddr :=
   { field, path := [row] }
 
 private def stored (unscaled : Int) : StoredNumber := { unscaled, scale := 0 }
+
+/- Internal execution of the newly admitted target preserves integer storage, row poison, and
+   absent-source zero. The external batch measures static admission only. -/
+example : outcomes? (bare "RowDates") .start .month [
+      storedCell rowDates.id [1] "2024-07-31/2024-06-01",
+      storedCell rowDates.id [2] "2024-01-15/2024-03-15"] scaledTarget.id true =
+    some [
+      (addressAt scaledTarget.id 1, .inheritedPoison .dateRangeInvalid),
+      (addressAt scaledTarget.id 2, .accepted (stored 1)),
+      (addressAt scaledTarget.id 3, .accepted (stored 0))] := by
+  native_decide
 
 /- Per-row values over an exact carrier: each row reads its own range, the selected end decides, and
 an unplaced row substitutes the same real zero every direct component read does. -/

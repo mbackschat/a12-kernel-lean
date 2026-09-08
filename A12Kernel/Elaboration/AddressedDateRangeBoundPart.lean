@@ -5,9 +5,8 @@ import A12Kernel.Elaboration.AddressedNumericLeaf
 One numeric Date component of a selected DateRange endpoint, computed per row into a repeatable
 Number target through the shared addressed numeric placement and the scalar computation evaluator.
 The component's own admission rule and its cross-carrier read already belong to the endpoint-component
-owner; what this module adds is the target half — a repeatable Number target at the source's own
-scope and the measured derived-scale gate, which is scale 0 because every date component is an
-integer.
+owner; this module adds the repeatable Number target and the assignment-scale gate. Date components
+derive scale 0 without literal padding capability, while computation metadata can waive that gate.
 -/
 
 namespace A12Kernel
@@ -21,18 +20,8 @@ inductive AddressedDateRangeBoundPartElabError where
 
 namespace AddressedDateRangeBoundPartElabError
 
-/-- Both refusals this carrier can reach carry a Kernel class.
-
-The derived-scale one had been withheld on the grounds that this library error does not distinguish
-the suppression branch the same Kernel code also covers. That is a real limitation and it is the
-wrong reason: withholding the class does not model suppression, it only hides the code a consumer
-needs, and two sibling carriers — the correlated filter's equality gate and the repeatable Number
-constant's assignment gate — already report it for the same gate without hedging. What suppression
-actually threatens is *admission*: this carrier does not model `@SuppressWarning`, so it refuses a
-model the Kernel would accept, which is a separate over-refusal tracked in
-[`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) rather than something a projection can fix.
-
-Placement is this project's own routing and claims nothing. -/
+/-- Component exposure and an unsuppressed scale mismatch retain their independent classes.
+    Placement is this project's routing and claims no Kernel diagnostic. -/
 def diagnostic? :
     AddressedDateRangeBoundPartElabError → Option KernelStaticDiagnostic
   | .componentNotExposed _ _ => some .wrongDateFormatForOp
@@ -52,7 +41,8 @@ structure CheckedAddressedDateRangeBoundPart (model : FlatModel) where
   componentExposed :
     model.exposesDateRangeBoundPart
       ({ id := placement.sourceDeclaration.id } : FlatDateRangeField) part = true
-  sameScale : placement.targetPolicy.info.scale = 0
+  suppressExactScaleWarning : Bool
+  scaleCertified : suppressExactScaleWarning = true ∨ placement.targetPolicy.info.scale = 0
 
 namespace CheckedAddressedDateRangeBoundPart
 
@@ -62,11 +52,12 @@ def source (operation : CheckedAddressedDateRangeBoundPart model) :
 
 end CheckedAddressedDateRangeBoundPart
 
-/-- Validate the component exposure and the scale-0 assignment on the shared repeatable placement. -/
+/-- Validate component exposure before the independently suppressible assignment-scale gate.
+    The flag represents computation `errorCodesToSuppress`, not a validation-condition preamble. -/
 def checkAddressedDateRangeBoundPart
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) (bound : DateRangeBound)
-    (part : DateNumericPart) :
+    (part : DateNumericPart) (suppressExactScaleWarning : Bool := false) :
     Except AddressedDateRangeBoundPartElabError
       (CheckedAddressedDateRangeBoundPart model) :=
   match checkAddressedNumericPlacement model declaringGroup
@@ -76,13 +67,14 @@ def checkAddressedDateRangeBoundPart
     if hExposed : model.exposesDateRangeBoundPart
         ({ id := placement.sourceDeclaration.id } : FlatDateRangeField)
         part = true then
-      if hScale : placement.targetPolicy.info.scale = 0 then
+      if hScale : suppressExactScaleWarning = true ∨ placement.targetPolicy.info.scale = 0 then
         .ok {
           placement
           bound
           part
           componentExposed := hExposed
-          sameScale := hScale
+          suppressExactScaleWarning
+          scaleCertified := hScale
         }
       else
         .error (.scaleMismatch placement.targetPolicy.info.scale 0)

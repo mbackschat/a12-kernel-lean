@@ -247,6 +247,23 @@
 - `local-divergence`: one, and it spanned eleven source families. Both runtime batches then corrected nothing: every shape, including the two-level correlation and its poison direction, matches what the widened cases already asserted. Every addressed one-source placement required the operand's scope to **equal** the target's, so every Kernel-legal form-level constant feeding a row was refused. The shared placement now carries the binding relation, and the two read sites that derived the operand's address from the target's path now derive it from the operand's own scope.
 - `sync`: locally originated and behavioral. Recorded as `SPEC-2026-08-23-06`.
 
+<a id="src-date-range-bound-component-scale-suppression"></a>
+#### DateRange component assignment scale and computation suppression, measured locally 2026-09-09
+
+- `revision`: clean measurement checkout at a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool `0.13.0`, Kernel built/runtime `30.8.1`. The checkout remained clean after the capture.
+- `route`: structured model authoring and `model check`, then one twelve-child `computation add --dry-run` batch. The [capture directory](../../evidence/kernel-30.8.1/captures/date-range-bound-component-scale-suppression/) retains the model, authoring operations, exact computation specifications, batch requests, compact observations, and a persisted computation readback.
+- `model`: `/Probe/Rows` repeats at most three times and declares full-date and month-only slash ranges, Number targets at maximum scales 0, 2, and 4, and a scale-0 Number source. Number declarations retain default `SIGNED`, no minimum fractional padding, and the model has no Base Year.
+- `separator`: `MonthFromDate(StartOfDateRange(Full))` admits at target scale 0 with or without `errorCodesToSuppress: ["MVK_INVALID_COMPARE_DEC_PLACES"]`. At scales 2 and 4, the plain computation refuses with exactly that code and the suppressed computation admits. Each suppression pair differs only in that one metadata key, including identical computation names and messages.
+- `control`: `YearFromDate(StartOfDateRange(Months))` refuses with `MVK_WRONG_DATE_FORMAT_FOR_OP` both at scale 0 without suppression and at scale 2 with suppression. The month extractor on that same month-only declaration admits at scale 2 with suppression. Suppression therefore does not authorize a component absent from the declared profile.
+- `control`: a literal `1` admits at target scale 2 without suppression, while direct `[Input0]` refuses there without suppression and admits with it. These rows distinguish literal padding capability from the endpoint component's exact-scale requirement.
+- `readback`: the accepted scale-2 full-date month computation was persisted into `Accepted_DM.json`, checked valid, and read back at `/Probe/Rows/ComponentScale`. Its operation, Number target, and suppression list survive in [the structured readback](../../evidence/kernel-30.8.1/captures/date-range-bound-component-scale-suppression/readback.result.json).
+- `integrity`: base model SHA-256 `b0f275b529162460520ce3c6030afcff7046e0749ffeab1ac5206e2454c911bb`; accepted model `0f0704e25979bebf5d1a18cb6cba4491a09d930d28ea8c3a093b68d4558cbdcd`.
+- `integrity`: authoring operations SHA-256 `4307dca26486345b4041fbb1483dfeaba470474dcc865096137c8e6d23fc6f9c`; batch operations `40f159a5aac42a014728dacaec74f0f39788a8759fc2300ecb648a661c10e233`.
+- `integrity`: compact observations SHA-256 `810479a12c53b3c2c177f6e1dc2144faf27474d3237522ad0affc57d56cae912`; readback `fae154454c48575444537cbde70a9c8f4e0447bed858694f05d6a545fdf07397`. The observations retain each child specification's input hash and the common model hash. Every raw child was Kernel-confirmed, with only Kernel-sourced diagnostic codes, and was checked against its compact observation before retaining it.
+- `limit`: static computation admission and persisted metadata only. No new runtime, target-policy, other-carrier, condition-preamble, or unknown-suppression-code correspondence is claimed. The newly admitted addressed Lean runtime cases are internal E/P; the earlier scale-0 runtime evidence retains its own scope.
+- `local-divergence`: the addressed endpoint-component certificate previously required target scale 0 unconditionally. It now retains the authored suppression flag and certifies either that flag or scale 0, while component exposure remains required.
+- `sync`: the canonical numeric warning-suppression rule already covers this assignment gate. This capture settles its selected computation carrier without changing that rule or issuing a new outbound request.
+
 <a id="src-date-range-bound-component-runtime"></a>
 #### What a computed DateRange-endpoint component evaluates to, measured locally 2026-08-23
 

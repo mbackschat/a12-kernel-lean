@@ -1,0 +1,134 @@
+[
+  {
+    "id": "month0Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/month0Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "month0Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/month0Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "month2Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/month2Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "month2Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/month2Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "month4Plain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/month4Plain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "month4Suppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/month4Suppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "missingYearPlain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/missingYearPlain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "missingYearSuppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/missingYearSuppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "yearlessMonthSuppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/yearlessMonthSuppressed.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "capableLiteral",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/capableLiteral.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "fieldPlain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/fieldPlain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "fieldSuppressed",
+    "verb": "computation",
+    "args": [
+      "add",
+      "-m",
+      "BoundScale_DM.json",
+      "specs/fieldSuppressed.json",
+      "--dry-run"
+    ]
+  }
+]

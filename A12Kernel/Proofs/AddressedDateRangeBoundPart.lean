@@ -21,4 +21,22 @@ theorem checkedAddressedDateRangeBoundPart_executeResultWithRead_base
       operation.executeResult input payloadAt supplied := by
   rfl
 
+/-- Suppression is an admission fact: checked copies of the same endpoint operation execute alike.
+    Both copies must already be certified, so this does not permit deleting a required warning
+    waiver when a Translate consumer emits the computation again. -/
+theorem checkedAddressedDateRangeBoundPart_executeWithRead_eq_of_same_operation
+    (left right : CheckedAddressedDateRangeBoundPart model)
+    (samePlacement : left.placement = right.placement)
+    (sameBound : left.bound = right.bound)
+    (samePart : left.part = right.part)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    left.executeWithRead input read = right.executeWithRead input read := by
+  cases left
+  cases right
+  cases samePlacement
+  cases sameBound
+  cases samePart
+  rfl
+
 end A12Kernel

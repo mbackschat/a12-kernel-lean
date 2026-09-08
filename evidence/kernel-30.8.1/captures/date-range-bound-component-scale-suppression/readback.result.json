@@ -1,0 +1,24 @@
+{
+  "target" : "computation",
+  "op" : "read",
+  "outcome" : "read",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "read /Probe/Rows/ComponentScale",
+  "data" : {
+    "computation" : "/Probe/Rows/ComponentScale",
+    "group" : "/Probe/Rows",
+    "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+    "converted" : true,
+    "calculatedField" : "/Probe/Rows/N2",
+    "alternatives" : [ {
+      "operation" : "MonthFromDate(StartOfDateRange(Full))"
+    } ],
+    "messages" : [ {
+      "locale" : "en_US",
+      "text" : "Component scale check."
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

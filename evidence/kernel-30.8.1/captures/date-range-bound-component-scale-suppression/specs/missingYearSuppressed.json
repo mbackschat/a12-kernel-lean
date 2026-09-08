@@ -1,0 +1,18 @@
+{
+  "computedField": "/Probe/Rows/N2",
+  "alternatives": [
+    {
+      "operation": "YearFromDate(StartOfDateRange(Months))"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Component scale check."
+    }
+  ],
+  "name": "ComponentScale",
+  "errorCodesToSuppress": [
+    "MVK_INVALID_COMPARE_DEC_PLACES"
+  ]
+}

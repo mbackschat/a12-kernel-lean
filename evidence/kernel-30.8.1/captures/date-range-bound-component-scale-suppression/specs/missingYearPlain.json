@@ -1,0 +1,15 @@
+{
+  "computedField": "/Probe/Rows/N0",
+  "alternatives": [
+    {
+      "operation": "YearFromDate(StartOfDateRange(Months))"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Component scale check."
+    }
+  ],
+  "name": "ComponentScale"
+}
