@@ -71,6 +71,23 @@ The finite acceptance matrix has four questions: recover every changed, errored,
 
 Wrong accounts are Boolean truthiness, global sibling selection, collapsed parent coordinates, synthetic targets for source-only parents, absence of a change meaning absence of a successful result, application inferred from changes, a selected value suppressing trailing operand findings, and artifact sorting establishing execution order. Exclusions are implementing an evaluator, complete successful-result or application calibration, indexed preparation, Custom behavior, scheduling, wider topology, later validation, protocol, shipment, and general consumer compatibility. Commit this boundary before the qualifying run; an exploratory read of an uncommitted slice is only review input.
 
+<a id="run-analyze-firstfilled-observations-01"></a>
+### FirstFilledValue observation readback — `analyze-firstfilled-observations-01`
+
+- `task`: [FirstFilledValue runtime observation probe](#firstfilled-runtime-observation-probe)
+- `status`: green
+- `started-at`: 2026-09-08T19:52:52+00:00
+- `finished-at`: 2026-09-08T19:55:28+00:00
+- `duration-seconds`: 156
+- `semantic-basis`: `5fc92025102ab713eae62d6ff1e4e89b30134365`
+- `oracle`: root reconciled all four nested projections with the exact `runtimeProjection?` witnesses in [String](../../A12Kernel/Conformance/AddressedStringFirstFilledComputation.lean) and [Boolean](../../A12Kernel/Conformance/AddressedBooleanFirstFilledComputation.lean), which passed their focused and integrated builds at the frozen basis. An independent Python comparison matched every returned value/error/clear tuple and operand-code/address pair against both retained strategies. Comparison used declaration identity and the complete parent/task coordinates; artifact sorting was not treated as Lean encounter order. Reconciliation passed.
+- `consumer-access`: fresh context; only the frozen task, checkpoint, four JSON files, and three linked capability blocks. Seven read-only Python commands extracted permitted blocks, parsed JSON, checked hashes, and compared engine observations. No Lean or sibling source, Git history/diff, external knowledge, network, other consumer results, writes, or produced code.
+- `cost`: 156 seconds; zero implementation or test-source lines and no new dependency or retained machinery. Root used one disposable Python comparison plus the already-green Lean witnesses; no rebuild was needed for this readback.
+- `result`: exact declared target identities and parent/task coordinates, changed values, rejected attempts, clears, and eager operand findings recovered for both nested carriers and seed states. The reader explained why the source-only parent has no target outcome and distinguished internal result/application contracts from the narrower external observation.
+- `wrong-accounts`: all eight addressed. Truthiness, global selection, coordinate collapse, synthetic target outcomes, and suppressed trailing findings are refuted by the supplied observations. Inferring full successful-result membership, destination application, or private order from the projection is rejected as unsupported, not reported as a measured contrary result.
+- `questions-and-guesses`: no unresolved semantic-output question. The reader chose expanded one-based display paths, including an index on the fixed root group; root reconciled declared identities and repeatable coordinates, not that additional path spelling. No producer-dialect alias claim is qualified.
+- `exclusions`: evaluator implementation, rendered-path dialect qualification, complete successful-result/application calibration, indexed preparation, Custom behavior, scheduling, wider topology, later validation, protocol, shipment, and general compatibility. The earlier uncommitted exploratory readback served only cold review and is not a qualified run.
+
 ## Custom-condition name admission probe
 
 Analyze and explain 23 bounded name-admission fixtures from the checked custom-condition authoring boundary. The consumer must preserve the normalized callback key and whether the lexer selected the quoted alternative, accept exact unquoted and quoted character-class controls, apply the caller-supplied reserved-terminal predicate only to unquoted spellings, refuse empty and illegal spellings, and report insufficient information when that predicate is absent.
