@@ -497,6 +497,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The error-text row-index parameter](implementation/cross-clause.md#cap-error-text-row-parameter)
 <a id="cap-index-parameter-resolution"></a>
 - [The `index(...)` parameter's resolution and repeatability stages](implementation/cross-clause.md#cap-index-parameter-resolution)
+<a id="cap-index-parameter-suffix"></a>
+- [The `index(...)` parameter's two suffix readings](implementation/cross-clause.md#cap-index-parameter-suffix)
 <a id="cap-enumeration-category-constant"></a>
 - [The enumeration-category constant gate](implementation/cross-clause.md#cap-enumeration-category-constant)
 <a id="cap-resolved-firstfilledvalue"></a>

@@ -71,6 +71,7 @@ import A12Kernel.Proofs.RuleChangePropagation
 import A12Kernel.Proofs.RepeatabilityRestriction
 import A12Kernel.Proofs.ErrorTextRowParameter
 import A12Kernel.Proofs.IndexParameterResolution
+import A12Kernel.Proofs.IndexParameterSuffix
 import A12Kernel.Proofs.EnumerationCategoryConstant
 import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay

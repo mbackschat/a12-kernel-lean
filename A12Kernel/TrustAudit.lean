@@ -2773,6 +2773,11 @@ run_cmd do
 #print axioms A12Kernel.indexFieldBranchClassesExclusive
 #print axioms A12Kernel.resolution_dominates
 #print axioms A12Kernel.indexParameterRefusal_unavailable
+#print axioms A12Kernel.valueSuffix_admits_uniform_non_enumeration
+#print axioms A12Kernel.categorySuffix_refuses_non_enumeration
+#print axioms A12Kernel.suffixes_disagree_on_non_enumeration
+#print axioms A12Kernel.suffixRefusal_absent
+#print axioms A12Kernel.suffixRefusal_empty_admits
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses
