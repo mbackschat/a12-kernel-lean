@@ -1,0 +1,2616 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "GroupFillMatrix_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "empty-shell",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "direct-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "one-row-open-tail",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "direct-and-row-open-tail",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "all-slots-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F0",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S0",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F0",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S0",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "one-instantiated-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "unknown-beside-two-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Box/Rows[2]/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows[2]/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F3",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "S2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Box/Rows[2]/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows[2]/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "unknown-beside-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Box/Rows/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Box/Rows/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "over-limit-only-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Box/Rows[3]/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows[3]/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Box/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Box/Rows[3]/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows[3]/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Box/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "unknown-with-open-tail",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Box/Rows/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F6",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Box/Rows/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Box/Rows/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "nested-star-keeps-parent-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "N0",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N1",
+              "field" : "Probe/Outer[3]/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C",
+                "Probe/Outer[3]/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N2",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C",
+                "Probe/Outer/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N2",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N3",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N4",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C",
+                "Probe/Outer/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N4",
+              "field" : "Probe/Outer[3]/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C",
+                "Probe/Outer[3]/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N5",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N5",
+              "field" : "Probe/Outer[3]/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C",
+                "Probe/Outer[3]/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N6",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C",
+                "Probe/Outer/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "Control",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "F5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/Box/A"
+              ]
+            },
+            {
+              "code" : "N0",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N1",
+              "field" : "Probe/Outer[3]/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C",
+                "Probe/Outer[3]/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N2",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C",
+                "Probe/Outer/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N2",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N3",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N4",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C",
+                "Probe/Outer/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N4",
+              "field" : "Probe/Outer[3]/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C",
+                "Probe/Outer[3]/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N5",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Inner[0]/C",
+                "Probe/Outer[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "N5",
+              "field" : "Probe/Outer[3]/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C",
+                "Probe/Outer[3]/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[3]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "N6",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C",
+                "Probe/Outer/Marker"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[1]/Inner[0]/C"
+              ]
+            },
+            {
+              "code" : "S1",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S4",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            },
+            {
+              "code" : "S5",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Box[1]/Rows[0]/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Box[1]/Rows[0]/B"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

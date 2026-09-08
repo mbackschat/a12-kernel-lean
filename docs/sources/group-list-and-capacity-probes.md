@@ -1,5 +1,32 @@
 # Group-list and capacity source checkpoints
 
+<a id="src-group-field-fill-declared-slots"></a>
+#### Field-group quantifiers retain declared slots and bound-parent capacity, measured 2026-09-08
+
+- `revision`: clean a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool `0.13.0`, Kernel built/runtime `30.8.1`; the existing `:adapter:kernelProbe` route reports `CLEAN` and both `kernel-groovy-dynamic` and `kernel-java-static` strategies agree on all eleven full-validation rows. Model consistency was confirmed before capture.
+- `model`: a fixed `Probe/Box` contains direct Number `A` and `Rows(max 2)/B`. Seven `F0`–`F6` rules read the fixed group, and `S0`–`S6` read its terminal star. Separate `Outer(max 3)/Inner(max 2)/C` supplies `N0`–`N6` at each outer row's `Marker`; each row has a filled Marker. The operator order is All, No, AtLeastOne, MoreThanOne, NotAll, NotExactlyOne, NotCollectively. Every rule is conjoined with a filled control at its error locus; the form-level `Control` fires in every document.
+- `matrix`: below, `v` is a VALUE firing, `o` an OMISSION firing, and `u` no firing, which does not distinguish false from unknown. The vectors follow the declared operator order. `bad` is a malformed Number. Missing rows are absent, not instantiated empty rows.
+
+| Document at Box | Fixed F | Starred S |
+|---|---|---|
+| Empty | `uouuoou` | `uouuoou` |
+| A=1, no rows | `uuvuouo` | `uouuoou` |
+| A empty, B=[2] | `uuvuouo` | `uuvuouo` |
+| A=1, B=[2] | `uuvvovo` | `uuvuouo` |
+| A=1, B=[2,3] | `vuvvuvu` | `vuvvuvu` |
+| A=1, B=[2,empty] | `uuvvovo` | `uuvuouo` |
+| A=1, B=[2,bad] | `uuvvuvu` | `uuvuuuu` |
+| A empty, B=[bad,empty] | `uuuuouu` | `uuuuouu` |
+| A empty, B=[empty,empty,3] | `uouuoou` | `uouuoou` |
+| A=1, B=[bad] | `uuvuouo` | `uuuuouu` |
+
+- `bound-parent`: the eleventh document leaves Box absent and gives the three outer parents inner values `[1]`, `[2,3]`, and no inner rows. Its N vectors are respectively `uuvuouo`, `vuvvuvu`, and `uouuoou`, at the exact Marker addresses of parents 1, 2, and 3. In particular, the full second parent's All firing refutes multiplying the bound outer maximum into the star's missing capacity.
+- `mechanism`: the open-tail/all-slots pair separates declared capacity from instantiated extent. The bad-last-row/open-tail pair isolates formal unknowns from missing slots: replacing an absent final row with a malformed cell suppresses NotAll and NotCollectively without supplying a filled value. The over-limit-only document leaves the fixed and starred answers identical to empty while retaining excess-coordinate/row findings. These observations support the existing tally plus a declared tail; they do not identify the Kernel's internal implementation.
+- `consumer`: Execute and Analyze can distinguish a VALUE firing, OMISSION firing, evaluated false-or-unknown, missing retained capacity, and addressing failure through the [checked source](../../A12Kernel/Elaboration/FilledFieldGroupCount.lean). Missing metadata and an unbound parent are internal refusal controls, not measured Kernel outcomes. The [conformance owner](../../A12Kernel/Conformance/FilledFieldGroupCount.lean) mirrors all eleven matrices; its all-operator bridge is an internal theorem.
+- `limit`: Number declarations, full validation, these fixed and terminal-star topologies, and error code/type/locus only. The retained message reference and fill-to-fix arrays have no claimed Lean correspondence here. No indexed, filtered, partial, mixed-list, computation, other-kind, or deeper-tail calibration is inherited. Raw captures are not replayed by `lake test`; no typed evidence consumer, protocol, shipment, or compatibility qualification is added.
+- `bytes`: [capture directory](../../evidence/kernel-30.8.1/captures/group-field-fill-declared-slots/); SHA-256 model `b722959c36d9f3913c9fa879be89cd712d20b50e598e66f5a5b80acfcee8fc4f`, authoring request `5c92e94abea8012c802741e299d5d2e1b6907829d7092977aa15fcc023e5a6ad`, runtime request `ebfef997d103e6a7313215764e19ac3dadfb72d159ee76c8915110772198b36d`, artifact `2e6e5556439beb12ebf8fa1ff98293b4b846e5cd68a3a916d8edabefb06ae547`. Message/summary values are redacted textually; every other byte is retained.
+- `sync`: closes a local executable exclusion under the existing [declared-range field-fill account](../../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges), without a canonical correction. Heading-first peer findings and retained-operator inspection found no existing copy of this separating matrix. No outbound measurement request follows.
+
 <a id="src-group-list-rnu-admission-correction"></a>
 #### Group-list and RNU admission correction
 

@@ -1,0 +1,402 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe",
+    "name": "Box"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe/Box",
+    "name": "Rows",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "W",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Box",
+    "name": "A",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Box/Rows",
+    "name": "B",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And AllFieldsFilled(Box)",
+    "name": "F0",
+    "code": "F0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "F0"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And NoFieldFilled(Box)",
+    "name": "F1",
+    "code": "F1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "F1"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And AtLeastOneFieldFilled(Box)",
+    "name": "F2",
+    "code": "F2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "F2"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And MoreThanOneFieldFilled(Box)",
+    "name": "F3",
+    "code": "F3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "F3"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And NotAllFieldsFilled(Box)",
+    "name": "F4",
+    "code": "F4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "F4"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And NotExactlyOneFieldFilled(Box)",
+    "name": "F5",
+    "code": "F5",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "F5"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And FieldsNotCollectivelyFilled(Box)",
+    "name": "F6",
+    "code": "F6",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "F6"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And AllFieldsFilled(Box/Rows*)",
+    "name": "S0",
+    "code": "S0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "S0"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And NoFieldFilled(Box/Rows*)",
+    "name": "S1",
+    "code": "S1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "S1"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And AtLeastOneFieldFilled(Box/Rows*)",
+    "name": "S2",
+    "code": "S2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "S2"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And MoreThanOneFieldFilled(Box/Rows*)",
+    "name": "S3",
+    "code": "S3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "S3"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And NotAllFieldsFilled(Box/Rows*)",
+    "name": "S4",
+    "code": "S4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "S4"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And NotExactlyOneFieldFilled(Box/Rows*)",
+    "name": "S5",
+    "code": "S5",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "S5"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "group": "/Probe",
+    "condition": "FieldFilled(W) And FieldsNotCollectivelyFilled(Box/Rows*)",
+    "name": "S6",
+    "code": "S6",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "S6"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/W",
+    "condition": "FieldFilled(W)",
+    "name": "Control",
+    "code": "Control",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Control"
+      }
+    ]
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe",
+    "name": "Outer",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe/Outer",
+    "name": "Inner",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Outer",
+    "name": "Marker",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Outer/Inner",
+    "name": "C",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/Outer/Marker",
+    "group": "/Probe/Outer",
+    "condition": "FieldFilled(Marker) And AllFieldsFilled(Inner*)",
+    "name": "N0",
+    "code": "N0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "N0"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/Outer/Marker",
+    "group": "/Probe/Outer",
+    "condition": "FieldFilled(Marker) And NoFieldFilled(Inner*)",
+    "name": "N1",
+    "code": "N1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "N1"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/Outer/Marker",
+    "group": "/Probe/Outer",
+    "condition": "FieldFilled(Marker) And AtLeastOneFieldFilled(Inner*)",
+    "name": "N2",
+    "code": "N2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "N2"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/Outer/Marker",
+    "group": "/Probe/Outer",
+    "condition": "FieldFilled(Marker) And MoreThanOneFieldFilled(Inner*)",
+    "name": "N3",
+    "code": "N3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "N3"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/Outer/Marker",
+    "group": "/Probe/Outer",
+    "condition": "FieldFilled(Marker) And NotAllFieldsFilled(Inner*)",
+    "name": "N4",
+    "code": "N4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "N4"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/Outer/Marker",
+    "group": "/Probe/Outer",
+    "condition": "FieldFilled(Marker) And NotExactlyOneFieldFilled(Inner*)",
+    "name": "N5",
+    "code": "N5",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "N5"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Probe/Outer/Marker",
+    "group": "/Probe/Outer",
+    "condition": "FieldFilled(Marker) And FieldsNotCollectivelyFilled(Inner*)",
+    "name": "N6",
+    "code": "N6",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "N6"
+      }
+    ]
+  }
+]

@@ -45,7 +45,7 @@ theorem flatModel_groupSubtreeSlotCapacity_eq_fieldCount_ofNoRepeatableDescendan
         (model.repeatableScopeForGroupPath path).length = []) :
     model.groupSubtreeSlotCapacity? path =
       some (model.groupSubtreeFields path).length := by
-  simp only [FlatModel.groupSubtreeSlotCapacity?]
+  simp only [FlatModel.groupSubtreeSlotCapacity?, FlatModel.declarationsSlotCapacity?]
   simpa using slotCapacityFold_flat model
     (model.repeatableScopeForGroupPath path).length
     (model.groupSubtreeFields path) 0 flat
@@ -73,11 +73,8 @@ theorem flatModel_declarationSlots_repeatableDescendant
           simp [hCapacity, Option.some.inj retained]
 
 
-/-- A group operand's validation tally reports **no** uninstantiated slot, because its resolved core
-enumerates instantiated rows only. This is the quantity that puts `AllFieldsFilled`,
-`NotAllFieldsFilled`, and `FieldsNotCollectivelyFilled` outside `GroupFieldFillQuantifier`: each
-reads that field, and each would therefore answer from a zero that means *not enumerated* rather
-than *no declared tail*. -/
+/-- The instantiated tally contributes no declared-tail slots, so adding model capacity later
+cannot double-count them. Formal unknowns remain instantiated classifications. -/
 theorem checkedFilledFieldCountGroupSource_tally_uninstantiated_zero
     (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env)
@@ -110,5 +107,23 @@ theorem checkedFilledFieldCountGroupSource_tally_uninstantiated_zero
           refine hypothesis _ ?_
           cases observation : observeCell .validation head.cell <;>
             simp [ValidationFillTally.combine, observation, zero]
+
+/-- With retained capacity, every group operator is the shared validation evaluator on the same
+instantiated classifications plus the missing declared slots. This also preserves the four
+operators whose result ignores the tail. -/
+theorem checkedFilledFieldCountGroupSource_fill_with_declared_capacity
+    (checked : CheckedFilledFieldCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env)
+    (operator : FieldFillQuantifier) (tally : ValidationFillTally) (capacity : Nat)
+    (resolved : checked.validationFillTally document outer = .ok tally)
+    (available : model.declarationsSlotCapacity? checked.source.boundLevelCount
+      checked.declarations = some capacity) :
+    checked.evaluateCheckedDocumentValidationFill? operator document outer =
+      .ok (some (operator.evalValidation { tally with
+        uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })) := by
+  cases operator <;>
+    simp [CheckedFilledFieldCountGroupSource.evaluateCheckedDocumentValidationFill?,
+      resolved, available, FieldFillQuantifier.evalValidation,
+      bind, Except.bind, pure, Except.pure]
 
 end A12Kernel

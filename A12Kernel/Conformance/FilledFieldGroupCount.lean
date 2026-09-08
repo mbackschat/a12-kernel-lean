@@ -352,23 +352,23 @@ private def malformedCell (field : FieldId) (path : List Nat) : ClassifiedCellIn
     raw := .rejected .malformed }
 
 private def fixedFill
-    (operator : CheckedFilledFieldCountGroupSource.GroupFieldFillQuantifier)
+    (operator : FieldFillQuantifier)
     (cells : List ClassifiedCellInput) : Option ValidationFillOutcome := do
   let checked ← fixedChecked?
   let document ← (checkDocument fixedPrepared "en_US" {
     instantiatedRows := []
     cells }).toOption
-  (checked.evaluateCheckedDocumentValidationFill operator document []).toOption
+  (checked.evaluateCheckedDocumentValidationFill? operator document []).toOption |>.bind id
 
 private def threeLevelFill
-    (operator : CheckedFilledFieldCountGroupSource.GroupFieldFillQuantifier)
+    (operator : FieldFillQuantifier)
     (rows : List RowAddr) (cells : List ClassifiedCellInput) :
     Option ValidationFillOutcome := do
   let checked ← threeLevelChecked?
   let document ← (checkDocument threeLevelPrepared "en_US" {
     instantiatedRows := rows
     cells }).toOption
-  (checked.evaluateCheckedDocumentValidationFill operator document []).toOption
+  (checked.evaluateCheckedDocumentValidationFill? operator document []).toOption |>.bind id
 
 /- The two Kernel-measured operators read the same depth-3 extent the count does, and each carries a
    different polarity: `AtLeastOneFieldFilled` fires VALUE, `NoFieldFilled` fires OMISSION. The empty
@@ -428,7 +428,7 @@ example :
     (some .unknown, some (.fired .value), some .falseOrUnknown) := by
   native_decide
 
-/- The two evidence-pending operators are the same mechanism at a different threshold: one filled
+/- The two threshold operators share the extent mechanism: one filled
    cell leaves `MoreThanOneFieldFilled` silent, and `NotExactlyOneFieldFilled` silent as well, while
    a second filled cell fires both with VALUE. The pair is retained because the threshold is where a
    naive `≠ 1` reading would fire on the empty document too, and the empty control shows it fires
@@ -466,6 +466,182 @@ example :
      threeLevelContent [] [],
      threeLevelCount [] []) =
     (some true, some (.value 0), some false, some (.value 0)) := by
+  native_decide
+
+private def runtimeFillOperators : List FieldFillQuantifier := [
+  .allFieldsFilled, .noFieldFilled, .atLeastOneFieldFilled,
+  .moreThanOneFieldFilled, .notAllFieldsFilled,
+  .notExactlyOneFieldFilled, .fieldsNotCollectivelyFilled]
+
+private abbrev fillValue : ValidationFillOutcome := .fired .value
+private abbrev fillOmission : ValidationFillOutcome := .fired .omission
+private abbrev fillUnknown : ValidationFillOutcome := .falseOrUnknown
+
+private def observableFillResult : Except CheckedAddressingError (Option ValidationFillOutcome) →
+    CheckedAddressingError ⊕ Option ValidationFillOutcome
+  | .error error => .inl error
+  | .ok outcome => .inr outcome
+
+private def fillRuntimeModel (maximum : Option Nat) : FlatModel := {
+  fields := [
+    { id := 100, name := "A", groupPath := ["Probe", "Box"],
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 101, name := "B", groupPath := ["Probe", "Box", "Rows"],
+      policy := { kind := .number { scale := 0, signed := true } },
+      repeatableScope := [100] }]
+  repeatableGroups := [
+    { level := 100, path := ["Probe", "Box", "Rows"], repeatability := maximum }]
+}
+
+private def fillRuntimeCell (field : FieldId) (path : List Nat)
+    (stored : String) : ClassifiedCellInput :=
+  match stored.toInt? with
+  | some value => {
+      address := { field, path }, stored, raw := .parsed (.num value)
+      numericDecimal := some { unscaled := value, scale := 0 } }
+  | none => { address := { field, path }, stored, raw := .rejected .malformed }
+
+private def runtimeGroupFillResult? (starred : Bool) (direct : Option String)
+    (texts : List (Option String)) (operator : FieldFillQuantifier)
+    (maximum : Option Nat := some 2) :
+    Option (CheckedAddressingError ⊕ Option ValidationFillOutcome) := do
+  let model := fillRuntimeModel maximum
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let checked ← (if starred then
+    elaborateFilledFieldCountStarredGroupValidationSource model ["Probe"] {
+      group := { base := .absolute, groups := [{ name := "Probe" },
+        { name := "Box" }, { name := "Rows", starred := true }] } }
+    else elaborateFilledFieldCountFixedGroupValidationSource model ["Probe"] {
+      group := { base := .absolute, groups := ["Probe", "Box"] } }).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := texts.zipIdx.map fun (_, index) =>
+      { group := 100, path := [index + 1] }
+    cells := (direct.map (fillRuntimeCell 100 [])).toList ++
+      (texts.zipIdx.flatMap fun (text, index) =>
+        (text.map (fillRuntimeCell 101 [index + 1])).toList)
+  }).toOption
+  pure (observableFillResult (checked.evaluateCheckedDocumentValidationFill? operator document []))
+
+private def runtimeGroupFill? (starred : Bool) (direct : Option String)
+    (texts : List (Option String)) (operator : FieldFillQuantifier) :
+    Option ValidationFillOutcome := do
+  let .inr result ← runtimeGroupFillResult? starred direct texts operator | none
+  result
+
+private def runtimeGroupFillMatrix? (starred : Bool) (direct : Option String)
+    (rows : List (Option String)) : Option (List ValidationFillOutcome) :=
+  runtimeFillOperators.mapM (runtimeGroupFill? starred direct rows ·)
+
+private def emptyRuntimeFills :=
+  [fillUnknown, fillOmission, fillUnknown, fillUnknown,
+    fillOmission, fillOmission, fillUnknown]
+private def oneRuntimeFill :=
+  [fillUnknown, fillUnknown, fillValue, fillUnknown,
+    fillOmission, fillUnknown, fillOmission]
+private def twoRuntimeFillsWithEmpty :=
+  [fillUnknown, fillUnknown, fillValue, fillValue,
+    fillOmission, fillValue, fillOmission]
+private def allRuntimeFills :=
+  [fillValue, fillUnknown, fillValue, fillValue,
+    fillUnknown, fillValue, fillUnknown]
+
+example :
+    runtimeGroupFillMatrix? false none [] = some emptyRuntimeFills ∧
+    runtimeGroupFillMatrix? true none [] = some emptyRuntimeFills ∧
+    runtimeGroupFillMatrix? false (some "1") [] = some oneRuntimeFill ∧
+    runtimeGroupFillMatrix? true (some "1") [] = some emptyRuntimeFills ∧
+    runtimeGroupFillMatrix? false none [some "2"] = some oneRuntimeFill ∧
+    runtimeGroupFillMatrix? true none [some "2"] = some oneRuntimeFill ∧
+    runtimeGroupFillMatrix? false (some "1") [some "2"] =
+      some twoRuntimeFillsWithEmpty ∧
+    runtimeGroupFillMatrix? true (some "1") [some "2"] = some oneRuntimeFill := by
+  native_decide
+
+example :
+    runtimeGroupFillMatrix? false (some "1") [some "2", some "3"] =
+      some allRuntimeFills ∧
+    runtimeGroupFillMatrix? true (some "1") [some "2", some "3"] =
+      some allRuntimeFills ∧
+    runtimeGroupFillMatrix? false (some "1") [some "2", none] =
+      some twoRuntimeFillsWithEmpty ∧
+    runtimeGroupFillMatrix? true (some "1") [some "2", none] =
+      some oneRuntimeFill := by
+  native_decide
+
+example :
+    runtimeGroupFillMatrix? false (some "1") [some "2", some "bad"] = some [
+      fillUnknown, fillUnknown, fillValue, fillValue,
+      fillUnknown, fillValue, fillUnknown] ∧
+    runtimeGroupFillMatrix? true (some "1") [some "2", some "bad"] = some [
+      fillUnknown, fillUnknown, fillValue, fillUnknown,
+      fillUnknown, fillUnknown, fillUnknown] ∧
+    runtimeGroupFillMatrix? false none [some "bad", none] = some [
+      fillUnknown, fillUnknown, fillUnknown, fillUnknown,
+      fillOmission, fillUnknown, fillUnknown] ∧
+    runtimeGroupFillMatrix? true none [some "bad", none] = some [
+      fillUnknown, fillUnknown, fillUnknown, fillUnknown,
+      fillOmission, fillUnknown, fillUnknown] ∧
+    runtimeGroupFillMatrix? false (some "1") [some "bad"] = some oneRuntimeFill ∧
+    runtimeGroupFillMatrix? true (some "1") [some "bad"] = some [
+      fillUnknown, fillUnknown, fillUnknown, fillUnknown,
+      fillOmission, fillUnknown, fillUnknown] := by
+  native_decide
+
+example :
+    runtimeGroupFillMatrix? false none [none, none, some "3"] =
+      some emptyRuntimeFills ∧
+    runtimeGroupFillMatrix? true none [none, none, some "3"] =
+      some emptyRuntimeFills ∧
+    runtimeGroupFillResult? false (some "1") [] .atLeastOneFieldFilled none =
+      some (.inr (some fillValue)) ∧
+    runtimeGroupFillResult? false (some "1") [] .allFieldsFilled none = some (.inr none) ∧
+    runtimeGroupFillResult? false (some "1") [] .notAllFieldsFilled none = some (.inr none) ∧
+    runtimeGroupFillResult? false (some "1") [] .fieldsNotCollectivelyFilled none =
+      some (.inr none) := by
+  native_decide
+
+private def nestedFillRuntimeModel : FlatModel := {
+  fields := [
+    { id := 102, name := "C", groupPath := ["Probe", "Outer", "Inner"],
+      policy := { kind := .number { scale := 0, signed := true } },
+      repeatableScope := [20, 21] }]
+  repeatableGroups := [
+    { level := 20, path := ["Probe", "Outer"], repeatability := some 3 },
+    { level := 21, path := ["Probe", "Outer", "Inner"], repeatability := some 2 }]
+}
+
+private def nestedRuntimeFillResults? (outer : Env) :
+    Option (List (CheckedAddressingError ⊕ Option ValidationFillOutcome)) := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedFillRuntimeModel).toOption
+  let checked ← (elaborateFilledFieldCountStarredGroupValidationSource
+    nestedFillRuntimeModel ["Probe", "Outer"] {
+      group := { base := .absolute, groups := [{ name := "Probe" },
+        { name := "Outer" }, { name := "Inner", starred := true }] } }).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 20, path := [1] }, { group := 20, path := [2] },
+      { group := 20, path := [3] }, { group := 21, path := [1, 1] },
+      { group := 21, path := [2, 1] }, { group := 21, path := [2, 2] }]
+    cells := [fillRuntimeCell 102 [1, 1] "1", fillRuntimeCell 102 [2, 1] "2",
+      fillRuntimeCell 102 [2, 2] "3"]
+  }).toOption
+  pure (runtimeFillOperators.map fun operator =>
+    observableFillResult (checked.evaluateCheckedDocumentValidationFill? operator document outer))
+
+private def nestedRuntimeFillMatrix? (outer : Env) :
+    Option (List ValidationFillOutcome) := do
+  let results ← nestedRuntimeFillResults? outer
+  results.mapM fun result => match result with
+    | .inl _ => none
+    | .inr outcome => outcome
+
+example : nestedRuntimeFillMatrix? [(20, 1)] = some oneRuntimeFill ∧
+    nestedRuntimeFillMatrix? [(20, 2)] = some allRuntimeFills ∧
+    nestedRuntimeFillMatrix? [(20, 3)] = some emptyRuntimeFills ∧
+    nestedRuntimeFillResults? [] = some (runtimeFillOperators.map fun _ =>
+      .inl (.environment (.missingBinding 20))) := by
   native_decide
 
 end A12Kernel

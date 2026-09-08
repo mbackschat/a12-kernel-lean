@@ -373,6 +373,16 @@ def FlatModel.declarationSlots? (model : FlatModel) (enclosing : Nat)
         (model.repeatableGroupAtLevel? level).bind fun group =>
           group.repeatability.map (· * product)
 
+/-- Sum declaration capacities below the already bound ancestry. Fixed-group count movement and
+starred field-fill predicates differ in where that ancestry stops, but count the same remaining
+row combinations per declaration ([group-fill checkpoint](../../../docs/SOURCES.md#src-group-field-fill-declared-slots)). -/
+def FlatModel.declarationsSlotCapacity? (model : FlatModel) (enclosing : Nat)
+    (declarations : List FlatFieldDecl) : Option Nat :=
+  declarations.foldl (init := some 0)
+    fun total declaration =>
+      total.bind fun accumulated =>
+        (model.declarationSlots? enclosing declaration).map (accumulated + ·)
+
 /-- The declared **slot capacity** of a group's subtree: how many cells a document can hold beneath
 this group once every repeatable descendant is filled to its declared maximum. `none` means some
 descendant's maximum is not retained, so the subtree has no finite capacity to reach.
@@ -384,12 +394,8 @@ capacity is reached, not until the declaration count is
 ([checkpoint](../../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). -/
 def FlatModel.groupSubtreeSlotCapacity? (model : FlatModel) (path : GroupPath) :
     Option Nat :=
-  (model.groupSubtreeFields path).foldl (init := some 0)
-    fun total declaration =>
-      total.bind fun accumulated =>
-        (model.declarationSlots?
-          (model.repeatableScopeForGroupPath path).length declaration).map
-            (accumulated + ·)
+  model.declarationsSlotCapacity? (model.repeatableScopeForGroupPath path).length
+    (model.groupSubtreeFields path)
 
 private def FlatModel.lookupPath? (model : FlatModel) (path : List String) :
     Except ResolveError (Option FlatFieldDecl) :=
