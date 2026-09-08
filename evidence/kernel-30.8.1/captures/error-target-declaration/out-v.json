@@ -1,0 +1,219 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 8,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "W0",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "AtLeastOneGroupFilled(Et)", "--code", "W0" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "W1",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NoGroupFilled(Et)", "--code", "W1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "W2",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledGroups(Et) > 0", "--code", "W2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "W3",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupFilled(../..)", "--code", "W3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_TOO_MANY_PARENT_GROUPS",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "W4",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "AllGroupsFilled(Et)", "--code", "W4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "W5",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupsNotCollectivelyFilled(Et, /Et/Rows)", "--code", "W5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "W6",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "NumberOfFilledFields(Et) > 0", "--code", "W6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "W7",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupFilled(/Et)", "--code", "W7" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

@@ -14,14 +14,14 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `76c62b38` on 2026-09-08.
+Measured at `d12f1ed3` on 2026-09-08.
 
 ## Headline
 
-**371 of 495 Kernel refusal classes modelled in Lean (74%). 124 are not.**
+**377 of 495 Kernel refusal classes modelled in Lean (76%). 118 are not.**
 
 That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
-at 467 (94%): it counts a class named anywhere in the written
+at 473 (95%): it counts a class named anywhere in the written
 account, **including a checkpoint's own list of what it deliberately did not reach**. Touched is an upper
 bound on what this repository knows about, and it can be raised to 100% in an afternoon by writing prose,
 so it is reported to expose that gap rather than to stand in for progress. When the two are quoted
@@ -32,11 +32,11 @@ together the modelled figure leads.
 | | classes | share |
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 289 | 58% |
-| Named in tracked Lean source | 371 | 74% |
-| Observed in a retained probe artifact | 186 | 37% |
-| Touched by any of the three | 467 | 94% |
-| **Untouched everywhere** | **28** | **5%** |
+| Named in `spec/` or `docs/` prose | 293 | 59% |
+| Named in tracked Lean source | 377 | 76% |
+| Observed in a retained probe artifact | 190 | 38% |
+| Touched by any of the three | 473 | 95% |
+| **Untouched everywhere** | **22** | **4%** |
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
@@ -51,7 +51,7 @@ Ordered by size, because that is the order in which they are worth attacking.
 
 | untouched | catalog | route |
 |---|---|---|
-| 15 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
+| 9 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
 | 6 | `kernel_core_errortext_error_messages` | shared error-text base utilities — carrier not yet identified |
 | 3 | `vk_service_errortext_error_messages` | message templates and parameters — the fast `rule check --message` batch route |
 | 2 | `_30_8` | runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text |
@@ -66,8 +66,8 @@ one: it counts whether a record cites external calibration, not how much of its 
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 191 | 100% |
-| Citing a Kernel checkpoint or calibration | 96 | 50% |
+| Capability records in [`implementation/`](implementation/) | 192 | 100% |
+| Citing a Kernel checkpoint or calibration | 97 | 50% |
 | Carrying an explicit evidence-pending note | 48 | 25% |
 
 ## Axis 3 — open obligation load
@@ -77,7 +77,7 @@ one: it counts whether a record cites external calibration, not how much of its 
 | Open gap records in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 25 |
 | `remaining` rows across those gaps | 0 |
 | Gaps whose route is **blocked** | 0 |
-| Ledger entries `pending` with a12-dmkits | 1 |
+| Ledger entries `pending` with a12-dmkits | 2 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route is the only figure here that should stop work; a `remaining` row is ordinary scope. If
@@ -90,8 +90,8 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 202410 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8555 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 203196 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8572 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above is measuring
@@ -101,7 +101,7 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 178 |
+| Retained capture directories under `../evidence/` | 179 |
 | Retained observation rows across all artifacts | 439 |
 
 ## Velocity
@@ -138,4 +138,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-08 | `ee3e6900` | 452 | 354 | 43 | 94 | 25 |
 | 2026-09-08 | `84fc1dde` | 459 | 361 | 36 | 95 | 25 |
 | 2026-09-08 | `76c62b38` | 467 | 371 | 28 | 96 | 25 |
+| 2026-09-08 | `7f962e56` | 473 | 377 | 22 | 97 | 25 |
 <!-- velocity-history:end -->

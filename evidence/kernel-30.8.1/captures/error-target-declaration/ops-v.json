@@ -1,0 +1,106 @@
+[
+ {
+  "id": "W0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "AtLeastOneGroupFilled(Et)",
+   "--code",
+   "W0"
+  ]
+ },
+ {
+  "id": "W1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NoGroupFilled(Et)",
+   "--code",
+   "W1"
+  ]
+ },
+ {
+  "id": "W2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledGroups(Et) > 0",
+   "--code",
+   "W2"
+  ]
+ },
+ {
+  "id": "W3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(../..)",
+   "--code",
+   "W3"
+  ]
+ },
+ {
+  "id": "W4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "AllGroupsFilled(Et)",
+   "--code",
+   "W4"
+  ]
+ },
+ {
+  "id": "W5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupsNotCollectivelyFilled(Et, /Et/Rows)",
+   "--code",
+   "W5"
+  ]
+ },
+ {
+  "id": "W6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "NumberOfFilledFields(Et) > 0",
+   "--code",
+   "W6"
+  ]
+ },
+ {
+  "id": "W7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(/Et)",
+   "--code",
+   "W7"
+  ]
+ }
+]

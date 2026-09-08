@@ -1,0 +1,80 @@
+[
+ {
+  "id": "Q0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "Q0"
+  ]
+ },
+ {
+  "id": "Q1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(/Et)",
+   "--code",
+   "Q1"
+  ]
+ },
+ {
+  "id": "Q2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(/Et) And FieldFilled(/Et/Side/Val)",
+   "--code",
+   "Q2"
+  ]
+ },
+ {
+  "id": "Q3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+   "--code",
+   "Q3"
+  ]
+ },
+ {
+  "id": "Q4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(/Et) And FieldFilled(/Et/Rows/Key)",
+   "--code",
+   "Q4"
+  ]
+ },
+ {
+  "id": "Q5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Anchor2",
+   "--condition",
+   "GroupFilled(/Et) And FieldFilled(/Et/Side/Val)",
+   "--code",
+   "Q5"
+  ]
+ }
+]

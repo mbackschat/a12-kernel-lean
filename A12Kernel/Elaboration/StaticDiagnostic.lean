@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -84,6 +84,20 @@ inductive KernelStaticDiagnostic where
   | negativeConditionInIteration
   /-- The rule's error field is named nowhere in its condition. A whole-rule gate rather than an operand gate, so it is projected at rule assembly. -/
   | errorFieldNotReferenced
+  /-- The rule declares no error field at all. Reported **before the condition is parsed**, so it hides every syntax class the condition would otherwise draw. -/
+  | missingErrorField
+  /-- The rule declares an error field the model does not know. Same pre-grammar stage as the class above, but unlike it this one is suppressed by a lenient parse. -/
+  | errorFieldNotValid
+  /-- Row iteration paired with an error field the condition reaches only through its root group. An old-world branch: it is guarded on a non-A12 model, and its only catalog entry is an unauthored placeholder rather than a message, so it is named here for the total function's sake and not because a consumer can render it. -/
+  | errorFieldAndZIterationInvalid
+  /-- Plain iteration below the root-group level, paired with an error field the condition reaches only through its root group. -/
+  | errorFieldGroupIteration4Invalid
+  /-- Parallel iteration paired with such an error field, when the rule's index field does not sit at the root-group level. -/
+  | errorFieldGroupIteration5Invalid
+  /-- A path in the rule's *error-causing entities if filled* slot that its condition does not reference. -/
+  | refErrorEntityIfFilledNotReferenced
+  /-- The same for the *if not filled* slot. Both slots report in one run, which is why they are two classes rather than one. -/
+  | refErrorEntityIfNotFilledNotReferenced
   /-- A pattern source fails Java compilation or the Kernel's additional source gate. -/
   | invalidPattern
   /-- A pattern-comparison operand has the wrong scalar kind for its slot. -/
@@ -238,6 +252,18 @@ def kernelCode : KernelStaticDiagnostic → String
   | .repeatableGroupMissing => "MVK_REPEATABLE_GROUP_MISSING"
   | .negativeConditionInIteration => "MVK_NEG_CONDITION_IN_ITERATION"
   | .errorFieldNotReferenced => "MVK_ERROR_FIELD_NOT_REFERENCED"
+  | .missingErrorField => "MVK_MISSING_ERROR_FIELD"
+  | .errorFieldNotValid => "MVK_ERROR_FIELD_NOT_VALID"
+  | .errorFieldAndZIterationInvalid =>
+      "MVK_ERROR_FIELD_AND_ZITERATION_INVALID"
+  | .errorFieldGroupIteration4Invalid =>
+      "MVK_ERROR_FIELDGROUP_ITERATION4_INVALID"
+  | .errorFieldGroupIteration5Invalid =>
+      "MVK_ERROR_FIELDGROUP_ITERATION5_INVALID"
+  | .refErrorEntityIfFilledNotReferenced =>
+      "MVK_REF_ERROR_ENTITY_IF_FILLED_NOT_REFERENCED"
+  | .refErrorEntityIfNotFilledNotReferenced =>
+      "MVK_REF_ERROR_ENTITY_IF_NOT_FILLED_NOT_REFERENCED"
   | .invalidPattern => "MVK_INVALID_PATTERN"
   | .invalidTypeForPatternComparison =>
       "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON"
@@ -312,7 +338,10 @@ def all : List KernelStaticDiagnostic :=
     .dateAndNonDate,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .repeatableGroupMissing, .negativeConditionInIteration,
-    .errorFieldNotReferenced,
+    .errorFieldNotReferenced, .missingErrorField, .errorFieldNotValid,
+    .errorFieldAndZIterationInvalid, .errorFieldGroupIteration4Invalid,
+    .errorFieldGroupIteration5Invalid, .refErrorEntityIfFilledNotReferenced,
+    .refErrorEntityIfNotFilledNotReferenced,
     .invalidPattern, .invalidTypeForPatternComparison, .internalError,
     .invalidLengthOfRawType, .noNumber, .notSortable,
     .stringEnumAndNonStringEnum, .invalidCompareDecimalPlaces,

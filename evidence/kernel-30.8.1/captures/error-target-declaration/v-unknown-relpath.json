@@ -1,0 +1,105 @@
+{
+ "header": {
+  "id": "ErrTgt_unknown_relpath_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "ErrTgt_unknown_relpath_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Et",
+     "name": "Et",
+     "Group": {
+      "repeatability": 5,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Et/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Et/Rows/Qty",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Et/Rows/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Et/Rows/R1",
+           "name": "R1",
+           "Rule": {
+            "errorEntityRelPath": "../Nope",
+            "errorCode": "R1",
+            "errorCondition": "FieldFilled(/Et/Rows/Note)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "note present"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Et/Anchor",
+        "name": "Anchor",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

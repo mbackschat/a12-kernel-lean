@@ -833,6 +833,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-entity-container-integrity"></a>
 - [The per-entity integrity walk reads the entity's name rather than its identifier, and its first four stages hide the whole subtree](sources/static-admission-and-class-probes.md#src-entity-container-integrity)
+<a id="src-error-target-declaration"></a>
+- [A rule's error field draws two different iteration classes depending on how its condition reaches it, and the class turns on the reference partition rather than on any star in the text](sources/static-admission-and-class-probes.md#src-error-target-declaration)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

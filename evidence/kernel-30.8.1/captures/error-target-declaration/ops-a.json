@@ -1,0 +1,132 @@
+[
+ {
+  "id": "C0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "C0"
+  ]
+ },
+ {
+  "id": "V0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(Et)",
+   "--code",
+   "V0"
+  ]
+ },
+ {
+  "id": "V1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(Et) And FieldFilled(/Et/Rows*/Qty)",
+   "--code",
+   "V1"
+  ]
+ },
+ {
+  "id": "V2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(Et*) And FieldFilled(/Et/Rows/Qty)",
+   "--code",
+   "V2"
+  ]
+ },
+ {
+  "id": "V3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(Et*)",
+   "--code",
+   "V3"
+  ]
+ },
+ {
+  "id": "G1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "GroupFilled(/Et/Rows) And FieldFilled(/Et/Rows*/Qty)",
+   "--code",
+   "G1"
+  ]
+ },
+ {
+  "id": "D1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Rows*/Qty)",
+   "--code",
+   "D1"
+  ]
+ },
+ {
+  "id": "N0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Anchor)",
+   "--code",
+   "N0"
+  ]
+ },
+ {
+  "id": "A0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Anchor",
+   "--condition",
+   "GroupFilled(Et) And FieldFilled(/Et/Rows*/Qty)",
+   "--code",
+   "A0"
+  ]
+ },
+ {
+  "id": "U1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Nope",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "U1"
+  ]
+ }
+]
