@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-08-01"></a>
+### `SPEC-2026-09-08-01` — the over-limit code is chosen by the coordinate's position, so a repeatable root group draws `zuGrosseLfdNummer` throughout and the familiar pair is the deeper-than-root case
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md`, the over-repetition-row bullet of the formal channel](../spec/02-logic-and-formal-errors.md), with the summaries in [`01-data-model.md`](../spec/01-data-model.md) and [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md) corrected to match
+- `delta`: our clause said an over-limit row draws exactly one `zuGrosseZeile` on its own address plus one `zuGrosseKontextnummer` per node written beneath it. That is the **deeper-than-root case only**. The Kernel chooses by the offending coordinate's *position* in the reporting address's own index vector — position 0 draws `zuGrosseLfdNummer`, the last position `zuGrosseZeile`, anything between `zuGrosseKontextnummer` — and a repeatable **root group** sits at position 0 of every address that names it, including its own, whose vector has length one. So over-instantiating a repeatable root group draws `zuGrosseLfdNummer` on the row *and* on every node beneath it, with no row or context code anywhere.
+- `mechanism`: the vector holds one entry per container level on the entity's path, and a field's carries one further entry for its own row cap. A violated group is therefore always the last position of its own address and always an interior position of a deeper one — which is where the pair comes from — *except* at container depth one, where the last position is also position 0 and the serial test, which runs before the loop, wins. The same mechanism explains absorption, which we had only as an observation: every address reports its earliest violating position, so an outer violation suppresses an inner one without a rule of its own.
+- `evidence`: [position-classes checkpoint](sources/over-repetition-probes.md#src-address-index-position-classes), one `:adapter:kernelProbe` request over four documents at a12-dmkits `6a669c56dbaf017a82c74dea13bdf1d75d644f2b` (clean), `dmtool` 0.13.0, Kernel `30.8.1`, both codegen strategies with `enginesAgree: true` on every row. The discriminator is a repeatable root group at `repeatability` 2 instantiated three times; the pair account predicts one row code plus three context codes and the measurement is four serial codes. The same model's deeper group is the control and still draws the pair, and an in-capacity document draws nothing.
+- `surfaces`: any peer clause, checker, fixture, or renderer that emits `zuGrosseZeile` for the violated row and `zuGrosseKontextnummer` for its descendants without consulting the violated group's depth. A model with a nonrepeatable root group cannot distinguish the accounts, so an estate whose fixtures all have one will agree with both.
+- `second-defect`: the same rows show a cell declared **directly** in the violated group being reported — its coordinate vector is exactly as long as the row's. Our prose already said "every present cell the document writes under it" and was right; only our Lean clause was narrower, so this half is a local correction and not part of this entry's acceptance condition.
+- `acceptance`: a12-dmkits confirms on its own fixture that a repeatable root group over its cap reports the serial code on the row and its descendants, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-07-13"></a>
 ### `SPEC-2026-09-07-13` — the Number formal cascade has one code vocabulary behind three text renderings, `KF37` names a code the Kernel does not define, and the document-load route removes four refusals' preconditions
 

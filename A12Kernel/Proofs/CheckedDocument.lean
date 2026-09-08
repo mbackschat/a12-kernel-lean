@@ -444,7 +444,14 @@ theorem checkedDocument_overRepetitionFindings_empty_iff
   unfold CheckedDocument.overRepetitionFindings
   cases h : checked.outermostOverLimitRows with
   | nil => simp
-  | cons row rest => simp
+  | cons row rest =>
+    have hmem : row ∈ checked.outermostOverLimitRows := by
+      rw [h]; exact List.mem_cons_self ..
+    have hsome := CheckedDocument.violatedContainerDepth?_isSome checked row
+      (CheckedDocument.rowOverLimit_of_mem_outermost checked row hmem)
+    cases hdepth : checked.violatedContainerDepth? row with
+    | none => rw [hdepth] at hsome; simp at hsome
+    | some depth => simp [hdepth]
 
 /-- **The computation channel only ever removes.** Whatever operand paths a computation carries, the
 findings it reports are a sublist of the ones the document draws under full validation — so the

@@ -1,0 +1,64 @@
+{
+  "header" : {
+    "id" : "AddrProbe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ { "code" : "en_US" } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "AddrProbe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : { "code" : "en_US" },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Vd",
+        "name" : "Vd",
+        "Group" : {
+          "repeatability" : 2,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Vd/Direct",
+            "name" : "Direct",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : { "maxFractionalDigits" : 0 }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Vd/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Vd/Rows/V",
+                "name" : "V",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : { "maxFractionalDigits" : 0 }
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

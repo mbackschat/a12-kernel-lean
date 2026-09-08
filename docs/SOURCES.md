@@ -906,6 +906,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [An inner over-limit row is invisible beneath an outer one](sources/over-repetition-probes.md#src-nested-over-limit-attribution)
 <a id="src-over-limit-absorption-depth"></a>
 - [The absorption is transitive and suppresses the whole written subtree](sources/over-repetition-probes.md#src-over-limit-absorption-depth)
+
+<a id="src-address-index-position-classes"></a>
+- [The over-limit class follows the coordinate's position, and a repeatable root group draws the serial class throughout](sources/over-repetition-probes.md#src-address-index-position-classes)
 <a id="src-nested-descendant-group-count-invalid"></a>
 - [A formally invalid nested descendant still fills its group](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)
 <a id="src-nested-descendant-group-count-runtime"></a>

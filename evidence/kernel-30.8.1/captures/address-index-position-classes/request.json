@@ -1,0 +1,11 @@
+{
+  "model": "AddrProbe_DM.json",
+  "locale": "en_US",
+  "observe": [ "validateFull" ],
+  "rows": [
+    { "name": "ctl", "document": "ctl.json" },
+    { "name": "root-over", "document": "root-over.json" },
+    { "name": "rows-over", "document": "rows-over.json" },
+    { "name": "both-over", "document": "both-over.json" }
+  ]
+}

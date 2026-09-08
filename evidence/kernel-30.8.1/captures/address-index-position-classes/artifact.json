@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6a669c56dbaf017a82c74dea13bdf1d75d644f2b",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "AddrProbe_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "ctl",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "root-over",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Direct"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows/V"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Direct"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows/V"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rows-over",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Vd/Rows[3]/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd/Rows[3]/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Vd/Rows[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd/Rows[3]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Vd/Rows[3]/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd/Rows[3]/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Vd/Rows[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd/Rows[3]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "both-over",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Direct"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[2]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[2]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[2]/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[2]/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[3]/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[3]/V"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Direct"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[2]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[2]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[2]/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[2]/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Vd[3]/Rows[3]/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "Vd[3]/Rows[3]/V"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

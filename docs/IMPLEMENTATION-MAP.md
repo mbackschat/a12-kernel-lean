@@ -475,6 +475,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Computation normal-form generation](implementation/cross-clause.md#cap-computation-normal-form-generation)
 <a id="cap-index-and-sort-field-declaration"></a>
 - [Index- and sort-field declaration](implementation/cross-clause.md#cap-index-and-sort-field-declaration)
+<a id="cap-address-formal-legality"></a>
+- [Address formal legality and its positional class rule](implementation/cross-clause.md#cap-address-formal-legality)
 <a id="cap-resolved-firstfilledvalue"></a>
 - [Resolved `FirstFilledValue`](implementation/cross-clause.md#cap-resolved-firstfilledvalue)
 <a id="cap-resolved-number-aggregates"></a>

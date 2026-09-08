@@ -31,14 +31,28 @@ private def triValue : FlatFieldDecl := {
   policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [30, 40, 50]
 }
 
+/-- The repeatable **root** group's own field, at container depth one. This is the shape the deeper
+chains above cannot express, and the whole reason the fixture carries a second root. -/
+private def rootDirect : FlatFieldDecl := {
+  id := 4, groupPath := ["Vd"], name := "Direct"
+  policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [60]
+}
+
+private def rootRowValue : FlatFieldDecl := {
+  id := 5, groupPath := ["Vd", "Rows"], name := "V"
+  policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [60, 70]
+}
+
 private def model : FlatModel := {
-  fields := [deepValue, deepValue2, triValue]
+  fields := [deepValue, deepValue2, triValue, rootDirect, rootRowValue]
   repeatableGroups := [
     { level := 10, path := ["Probe", "ShellDeep", "Mid"], repeatability := some 3 },
     { level := 20, path := ["Probe", "ShellDeep", "Mid", "Rows"], repeatability := some 5 },
     { level := 30, path := ["Probe", "Tri", "A"], repeatability := some 2 },
     { level := 40, path := ["Probe", "Tri", "A", "B"], repeatability := some 2 },
-    { level := 50, path := ["Probe", "Tri", "A", "B", "C"], repeatability := some 2 }]
+    { level := 50, path := ["Probe", "Tri", "A", "B", "C"], repeatability := some 2 },
+    { level := 60, path := ["Vd"], repeatability := some 2 },
+    { level := 70, path := ["Vd", "Rows"], repeatability := some 2 }]
 }
 
 private def prepared : PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -234,6 +248,58 @@ example :
         [emptyCell deepValue.id [4, 1]] =
       some [(.rowNumberTooLarge, [4]), (.contextNumberTooLarge, [4, 1]),
             (.contextNumberTooLarge, [4, 1])] := by
+  native_decide
+
+/-- The three root-group rows the measured documents instantiate, `Vd[1]`, `Vd[2]`, `Vd[3]`, each
+carrying one `Rows` row. A checked document requires a dense row sequence, so the excess row cannot be
+written without its predecessors. -/
+private def rootRows : List RowAddr :=
+  [{ group := 60, path := [1] }, { group := 70, path := [1, 1] },
+   { group := 60, path := [2] }, { group := 70, path := [2, 1] },
+   { group := 60, path := [3] }, { group := 70, path := [3, 1] }]
+
+private def rootCells : List ClassifiedCellInput :=
+  [emptyCell rootDirect.id [1], emptyCell rootRowValue.id [1, 1],
+   emptyCell rootDirect.id [2], emptyCell rootRowValue.id [2, 1],
+   emptyCell rootDirect.id [3], emptyCell rootRowValue.id [3, 1]]
+
+/- **A repeatable root group draws the serial code everywhere, and no row or context code at all.**
+   `Vd[3]` exceeds `max 2`; the violated level sits at container depth one, so it is position 0 of its
+   own address *and* of every address beneath it. Four findings, matching the measured row exactly, on
+   both codegen strategies with an accepted control
+   ([checkpoint](../../docs/SOURCES.md#src-address-index-position-classes)). The pre-correction account
+   predicted one `zuGrosseZeile` plus three `zuGrosseKontextnummer` here. -/
+example : sorted (findings? rootRows rootCells) =
+    some [(.serialNumberTooLarge, [3]), (.serialNumberTooLarge, [3]),
+          (.serialNumberTooLarge, [3, 1]), (.serialNumberTooLarge, [3, 1])] := by
+  native_decide
+
+/- The accepted control on the same shape: two root rows draw nothing, so the codes above follow from
+   the excess row and not from the root group being repeatable. -/
+example : findings? (rootRows.take 4) (rootCells.take 4) = some [] := by
+  native_decide
+
+/- **The same model's deeper group still draws the familiar pair**, which is what makes the case above
+   a statement about depth rather than about this model. One violated level, two codes, differing only
+   by which address reports it. -/
+example : sorted (findings?
+    [{ group := 60, path := [1] }, { group := 70, path := [1, 1] },
+     { group := 70, path := [1, 2] }, { group := 70, path := [1, 3] }]
+    [emptyCell rootRowValue.id [1, 1], emptyCell rootRowValue.id [1, 2],
+     emptyCell rootRowValue.id [1, 3]]) =
+    some [(.rowNumberTooLarge, [1, 3]), (.contextNumberTooLarge, [1, 3])] := by
+  native_decide
+
+/- **Absorption is the positional scan's first-match-wins.** With the root and the inner level both
+   over their caps, every address reports the outermost violation, so the inner row draws no code of
+   its own and the serial code covers the whole subtree — eight findings, as measured. -/
+example : sorted (findings?
+    (rootRows ++ [{ group := 70, path := [3, 2] }, { group := 70, path := [3, 3] }])
+    (rootCells ++ [emptyCell rootRowValue.id [3, 2], emptyCell rootRowValue.id [3, 3]])) =
+    some [(.serialNumberTooLarge, [3]), (.serialNumberTooLarge, [3]),
+          (.serialNumberTooLarge, [3, 1]), (.serialNumberTooLarge, [3, 2]),
+          (.serialNumberTooLarge, [3, 3]), (.serialNumberTooLarge, [3, 1]),
+          (.serialNumberTooLarge, [3, 2]), (.serialNumberTooLarge, [3, 3])] := by
   native_decide
 
 end A12Kernel.Conformance.OverRepetitionFindings

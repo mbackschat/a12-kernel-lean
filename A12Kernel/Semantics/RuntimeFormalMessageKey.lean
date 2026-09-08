@@ -16,9 +16,11 @@ the key and its parameters therefore gives a reimplementer everything they canno
 the sentence would give them only something they must not take from us.
 
 What this establishes is the **contract**: the closed key vocabulary, each key's parameter set, and the
-number family's selection rule. What it does not establish is the selection rule for the date, string,
-addressing and boolean families, whose keys are declared here with their parameters but whose choice
-function is unmeasured; `docs/SEMANTICS-GAPS.md` carries that as an open obligation.
+number family's selection rule. What it does not establish is the selection rule for the date, string
+and boolean families, whose keys are declared here with their parameters but whose choice function is
+unmeasured; `docs/SEMANTICS-GAPS.md` carries that as an open obligation. The **addressing** family is no
+longer among them on its over-maximum arm: [`AddressFormalLegality`](../Elaboration/AddressFormalLegality.lean)
+owns the positional rule that picks the code, and the accompanying key is its parallel.
 -/
 
 namespace A12Kernel
