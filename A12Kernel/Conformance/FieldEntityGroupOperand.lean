@@ -503,20 +503,23 @@ example :
 This is the half that does **not** generalize. The star, arity, and duplicate gates above are the
 shared checker's and report the same class through every carrier; the kind gate asks what *this*
 operator does with the expansion's values, so a single group whose subtree contains a String is
-`MVK_NO_NUMBER` to `Sum` and `MVK_NOT_SORTABLE` to the extrema. `NumberOfDifferentValues` is the
-member that claims **no** class from a group expansion, for the reason its own row below gives, and
-naming one here was the very reading that row records as removed. Reading one carrier's class off a
-sibling is exactly the inference these rows exist to block. -/
+`MVK_NO_NUMBER` to `Sum` and `MVK_NOT_SORTABLE` to the extrema. The distinct count additionally needs
+the whole list's leading family; the swapped-order controls below prevent inheriting a sibling's
+class or classifying only the offending group's kinds. -/
+
+private def aggregateOutcome (op : NumericAggregateOp)
+    (operands : List SurfaceFieldEntityOperand) (candidate : FlatModel := probeModel) :
+    Bool × Option KernelStaticDiagnostic :=
+  match operands with
+  | [] => (false, none)
+  | first :: rest =>
+      match elaborateNumberEntitySource candidate ["Probe"] { first, rest } with
+      | .ok _ => (true, none)
+      | .error error => (false, error.aggregateDiagnostic? op)
 
 private def aggregateDiagnostic? (op : NumericAggregateOp)
-    (operands : List SurfaceFieldEntityOperand) :
-    Option KernelStaticDiagnostic :=
-  match operands with
-  | [] => none
-  | first :: rest =>
-      match elaborateNumberEntitySource probeModel ["Probe"] { first, rest } with
-      | .ok _ => none
-      | .error error => error.aggregateDiagnostic? op
+    (operands : List SurfaceFieldEntityOperand) : Option KernelStaticDiagnostic :=
+  (aggregateOutcome op operands).2
 
 example :
     aggregateDiagnostic? .sum [group ["Probe", "A"]] = some .noNumber := by
@@ -530,26 +533,56 @@ example :
     aggregateDiagnostic? .minimum [group ["Probe", "A"]] = some .notSortable := by
   native_decide
 
-/- **The distinct count claims no class here, and the reason is the one gate in this family whose code
-   is selected by the operand list's *first* member.** `NumberOfDifferentValues` classifies by its
-   first operand and then requires every later one to match: a Number-first mixed list draws
-   `MVK_NUMBER_AND_NON_NUMBER`, a String-first one `MVK_STRING_ENUM_AND_NON_STRING_ENUM`, and a
-   Date-first one `MVK_DATE_AND_NONDATE`, with two groups differing only in declaration order flipping
-   the code ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Probe/A`
-   expands Number-first, so the Kernel's class here is the Number one and not the String one an
-   earlier row claimed. This error value carries no first-operand kind, so it cannot decide between
-   them; projecting none is the narrowing this family already applies elsewhere. -/
+/- The retained swapped-order group pair selects its first expanded declaration's family
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Probe/A` additionally
+   exercises recursive expansion; that topology is an internal specialization of the fixed pair. -/
 example :
-    aggregateDiagnostic? .distinctCount [group ["Probe", "A"]] = none := by
+    aggregateDiagnostic? .distinctCount [group ["Probe", "A"]] =
+      some .numberAndNonNumber := by
+  native_decide
+
+private def orderedKindGroupModel (numberFirst : Bool) (repeated : Bool := false) : FlatModel :=
+  let number : FlatFieldDecl := {
+    id := 1, groupPath := ["Probe", "Kinds"], name := "Amount"
+    policy := { kind := .number unsigned } }
+  let token : FlatFieldDecl := {
+    id := 2, groupPath := ["Probe", "Kinds"], name := "Text"
+    policy := { kind := .string } }
+  { fields := (if numberFirst then [number, token] else [token, number]).map fun declaration =>
+      { declaration with repeatableScope := if repeated then [10] else [] }
+    repeatableGroups := if repeated then [{ level := 10, path := ["Probe", "Kinds"] }] else [] }
+
+example :
+    aggregateOutcome .distinctCount [group ["Probe", "Kinds"]]
+        (orderedKindGroupModel true) = (false, some .numberAndNonNumber) ∧
+    aggregateOutcome .distinctCount [group ["Probe", "Kinds"]]
+        (orderedKindGroupModel false) = (false, none) ∧
+    aggregateOutcome .distinctCount [group ["Probe", "B"]] = (true, none) := by
+  native_decide
+
+/- Starred declaration order is an internal specialization, with external calibration pending. -/
+example : aggregateOutcome .distinctCount
+    [starredGroup [{ name := "Probe" }, { name := "Kinds", starred := true }]]
+    (orderedKindGroupModel true true) = (false, some .numberAndNonNumber) := by
+  native_decide
+
+/- A preceding Number fixes the whole list's family even when the offending group starts String.
+   This authored-slot combination remains external evidence pending; the fixed sole-group pair
+   above supplies the measured root, not calibration of this carrier crossing. -/
+example :
+    aggregateOutcome .distinctCount
+        [field ["Probe", "B"] "BVal", group ["Probe", "Mixed"]] =
+      (false, some .numberAndNonNumber) ∧
+    aggregateOutcome .distinctCount
+        [group ["Probe", "Mixed"], field ["Probe", "B"] "BVal"] =
+      (false, none) := by
   native_decide
 
 /-! ## The distinct count's two homogeneity codes, and the domain that precedes them
 
-The class a group expansion cannot supply, an explicit list can. `NumberOfDifferentValues` reports
-homogeneity from the family of its **first** operand, so the same illegal pair draws two codes
-selected by operand order alone ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)).
-Reaching the later-operand arm at all implies the first operand certified Number-valued, which is
-exactly what makes the Number-first code available there and unavailable at the expansion arm. -/
+`NumberOfDifferentValues` reports homogeneity from its first expanded declaration's family, so the
+same illegal pair draws two codes selected by operand order alone
+([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). -/
 
 /- **Number-first with a later non-Number member draws the Number code.** The position is the whole
    content of the claim: the offending operand is a String in both rows, and only its index differs.
@@ -595,10 +628,8 @@ example :
    without the offender's own family entering it — measured for all three pairs in both orders
    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)).
 
-   The two date-**first** rows are `none` on purpose and are the honest boundary rather than a
-   passing row: `MVK_DATE_AND_NONDATE` is measured, but no temporal overload of this operator exists
-   to own it, so neither the Number nor the token consumer may class a list the Kernel would route
-   elsewhere. Projecting it from here would be the borrowing these rows exist to block. -/
+   Date-first stays unclassified at this Number overload; the temporal overload owns its gate
+   ([capability](../../docs/implementation/strings-and-enumerations.md#cap-temporal-distinct-count)). -/
 example :
     aggregateDiagnostic? .distinctCount
         [field ["Probe", "A"] "AVal", field ["Probe", "Milestones"] "ReportedOn"] =

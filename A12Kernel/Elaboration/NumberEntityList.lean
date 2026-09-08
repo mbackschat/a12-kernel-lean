@@ -207,8 +207,12 @@ inductive NumberEntityElabError where
   /-- A **later** field operand is not Number-valued. Distinct from the arm above because the extrema's class is positional: here the first operand is already known Number-valued, so the Kernel reports `MVK_NOT_SORTABLE` for a temporal member too, where the same declaration in first position means the list was the temporal family's all along. -/
   | laterFieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | star (error : StarNumberElabError)
-  /-- A group slot whose expansion contains a declaration that is not Number-valued, carrying the non-Number kinds it found in expansion order. The Kernel's class here is each operator's own — `MVK_NO_NUMBER` under `Sum`, `MVK_NOT_SORTABLE` under the extrema — so this shared boundary names none. The kinds are retained because the extrema's class depends on *which* non-Number kind arrived and the path alone cannot say. -/
+  /-- A group with non-Number declarations. The offending kinds decide the extrema's class, while
+      `numberLeads` retains whether the whole list's first expanded declaration is Number-valued;
+      the distinct count needs that independent fact to project its positional class
+      ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
   | groupExpansionNotNumber (path : List String) (kinds : List SurfaceScalarKind)
+      (numberLeads : Bool)
   /-- A group slot whose subtree declares no field at all. Unmeasured, so refused without a class. -/
   | groupExpansionEmpty (path : List String)
   /-- A group slot whose expanded declarations disagree on signedness. A representation limit rather than a Kernel gate; see `CheckedNumberEntityGroup.uniformSigned`. -/
@@ -251,7 +255,10 @@ private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
 
     The extrema's class is additionally keyed by the **kind** that arrived, not merely by the operand failing to be a Number; see `extremaRefuseKind`. `Sum` needs no such split, because its admitted set and this family's representable set coincide, so nothing reaching its arm is a model the Kernel would accept. What stays open for `Sum` is only whether some unmeasured kind draws a *different* code, never whether it is refused.
 
-    The **explicit** field list carries the class only under the extrema. Its measured witness is a starred String field path beside the group's own refusal in both repetition shapes, which is what places the gate on the operand's kind rather than on its groupness; the written-out multi-field spelling is that reading extended, not separately measured. No row places `Sum`'s or the distinct count's class on the explicit form, so it stays unprojected there rather than inheriting the group's. The starred arm reaches `star` and stays unprojected at this projection even so. -/
+    Direct and starred field-kind refusals retain leading versus later position. The distinct count
+    therefore projects its Number-leading field class as well as the group class below
+    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Sum` keeps its
+    measured group projection separate from its unclassified field-kind refusals. -/
 def aggregateDiagnostic? (op : NumericAggregateOp) :
     NumberEntityElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
@@ -259,29 +266,16 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
   -- ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)), so it
   -- reaches every aggregate alike and needs no `op` split.
   | .star (.having error) => error.diagnostic?
-  | .groupExpansionNotNumber _ kinds =>
+  | .groupExpansionNotNumber _ kinds numberLeads =>
       match op with
       | .sum => some .noNumber
       -- One measured-refused kind decides the whole expansion: an admitted kind beside it does not
       -- rescue the list, which is why this is `any` and not "every kind is unadmitted".
       | .minimum | .maximum =>
           if kinds.any extremaRefuseKind then some .notSortable else none
-      -- The distinct count is the one member whose code is selected by the operand list's *first*
-      -- element rather than by the offending one: Number-first draws `MVK_NUMBER_AND_NON_NUMBER`,
-      -- String-first `MVK_STRING_ENUM_AND_NON_STRING_ENUM`, Date-first `MVK_DATE_AND_NONDATE`, and
-      -- two groups differing only in declaration order flip it
-      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). This error
-      -- carries no first-operand kind, so any single class here is wrong for some list that reaches
-      -- it — an earlier version projected the String class, measured on a String-first expansion and
-      -- carried onto Number-first ones.
-      --
-      -- The `kinds` payload added for the extrema does **not** reopen this. It carries the
-      -- expansion's kinds, and the distinct count's class is fixed by the first operand of the
-      -- *whole list*, which may be a field before this group; nothing routes lists to this family
-      -- by their leading kind, so a String-first list can reach here too. Both facts would have to
-      -- change together, and projecting from the expansion alone would restore the exact defect
-      -- 2026-08-31 removed.
-      | .distinctCount => none
+      -- Other leading families belong to their own overloads. The offending group's kinds cannot
+      -- settle this: a Number may precede the group, which the retained whole-list fact records.
+      | .distinctCount => if numberLeads then some .numberAndNonNumber else none
   | .fieldKindMismatch _ actual =>
       match op with
       | .minimum | .maximum =>
@@ -306,8 +300,7 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- Reaching a *later* arm implies the first operand already certified Number-valued, so the list
       -- is Number-first, and Number-first with a non-Number member draws `MVK_NUMBER_AND_NON_NUMBER`
       -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). That is why the
-      -- class is available here and not at `groupExpansionNotNumber`, which carries the expansion's
-      -- kinds but not the whole list's first operand.
+      -- field arm gets that fact from certification order; the group arm retains it explicitly.
       --
       -- The kind that arrived does **not** matter here, and that is measured rather than assumed:
       -- `(Number, Boolean)` draws this same code, because once an admissible operand leads, a
@@ -363,7 +356,9 @@ private def certifyNumberEntityGroup (model : FlatModel)
     throw (.groupExpansionNotNumber source.groupPath
       ((model.groupSubtreeFields source.groupPath).filterMap fun declaration =>
         if declaration.toNumberField?.isSome then none
-        else some declaration.policy.kind.surfaceKind))
+        else some declaration.policy.kind.surfaceKind)
+      (((model.groupSubtreeFields source.groupPath).head?).bind
+        FlatFieldDecl.toNumberField?).isSome)
 
 private def certifyNumberEntityOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
@@ -392,12 +387,13 @@ private def certifyNumberEntityOperand (model : FlatModel)
   | .starredGroupPresence source =>
       certifyNumberEntityGroup model (.starredPresence source)
 
-/-- Re-key a field-kind refusal to its **later**-operand arm. Only the direct field arm moves: a
-    group operand's position carries no measured class change, so relabelling one would assert a
-    rule no row establishes. -/
+/-- A later operand is reached only after the leading operand certified Number-valued. Retain that
+    whole-list fact even when a later group's own expansion starts with another kind; the group's
+    offending-kind payload remains available to the other aggregates unchanged. -/
 private def atLaterOperand :
     NumberEntityElabError → NumberEntityElabError
   | .fieldKindMismatch path actual => .laterFieldKindMismatch path actual
+  | .groupExpansionNotNumber path kinds _ => .groupExpansionNotNumber path kinds true
   | error => error
 
 private def certifyNumberEntityOperands (model : FlatModel)

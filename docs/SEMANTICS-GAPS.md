@@ -80,11 +80,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 <a id="gap-sg7"></a>
 - [open obligation](gaps/strings-and-messages.md#gap-sg7)
 
-### SG22 — `NumberOfDifferentValues` operand domain and its two homogeneity codes
-
-<a id="gap-sg22"></a>
-- [open obligation](gaps/numeric-and-temporal.md#gap-sg22)
-
 ### SG25 — the message parameter grammar and its terminal set
 
 <a id="gap-sg25"></a>

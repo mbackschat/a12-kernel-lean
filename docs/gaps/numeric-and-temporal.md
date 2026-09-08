@@ -140,17 +140,6 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 - `completion-gate`: no `A12Kernel/Elaboration/` or `A12Kernel/Semantics/` site tests a declared temporal kind except where a retained row measures that the kind is what the Kernel reads, or a stated `unmeasured` note names the missing witness.
 - `route-state`: ready — the route is `dmtool rule check` for static gates and `:adapter:kernelProbe` for runtime ones, both already exercised on this class. The comparison rows measured a *static admission gate* ([checkpoint](../sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)) and the operand rows a second one; which **text parser** runs over a cross-kind stored value is a runtime question neither reaches. The discriminator for that batch: one DATE-declared `HH:mm:ss` field, stored `12:30:00`, read at runtime against its ordinary same-kind control.
 
-<a id="gap-sg22"></a>
-### SG22 — `NumberOfDifferentValues` operand domain and its two homogeneity codes
-
-- `state`: open
-- `missing`: project the Number-leading homogeneity diagnostic when a group expansion contains a non-Number. `NumberEntityElabError.groupExpansionNotNumber` retains only the offending group's non-Number kinds, so `aggregateDiagnostic? .distinctCount` cannot recover the whole list's leading family and returns `none`.
-- `baseline`: [shared entity-list group admission](../implementation/cross-clause.md#cap-shared-entity-list-group-admission) owns the existing Number and token projections; [temporal distinct count](../implementation/strings-and-enumerations.md#cap-temporal-distinct-count) owns temporal admission and execution.
-- `discriminator`: the measured sole group `[Number, String]` must report `MVK_NUMBER_AND_NON_NUMBER`; swapping its declarations must leave that code to the String overload. Also retain the whole-list lead when a direct Number precedes a mixed group, so selecting the group's own first declaration cannot pass.
-- `evidence-needed`: the sole nonrepeatable swapped-order group pair is already measured at the [first-operand checkpoint](../sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class). Wider authored-slot combinations and starred-group diagnostic order remain external evidence pending.
-- `consumer`: Explain and Qualify need the exact code, and must distinguish an unmapped refusal from successful admission. Preserve the authored group for arity and wildcard checks while retaining declaration order for the diagnostic decision.
-- `route-state`: ready — reuse resolved declaration expansion before Number certification; the retained fixed-group pair settles the root without another capture.
-
 <a id="gap-sg27"></a>
 ### SG27 — the Number formal cascade's conversion route and its two unmodelled readings
 
