@@ -72,11 +72,7 @@ private def resolveFieldValueAsNumberAtom
     Except NumericValidationElabError NumericValidationAtom :=
   match declaration.resolveFieldValueAsNumberSource projectionRef with
   | .ok source => pure (.fieldValueAsNumber source)
-  | .error .notConvertible =>
-      throw (.fieldValueAsNumberNotConvertible declaration.path)
-  | .error (.enumeration error) =>
-      throw (.fieldValueAsNumberEnumeration declaration.path error)
-  | .error .incoherentEnumeration => throw .incoherentCore
+  | .error error => throw (.fieldValueAsNumberSource declaration.path error)
 
 private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom

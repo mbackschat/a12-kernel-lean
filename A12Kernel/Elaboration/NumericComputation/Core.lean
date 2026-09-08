@@ -79,9 +79,8 @@ inductive NumericComputationElabError where
   | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
   | invalidStringRange (start finish : Nat)
-  | fieldValueAsNumberNotConvertible (path : List String)
-  | fieldValueAsNumberEnumeration (path : List String)
-      (error : EnumerationOperandError)
+  | fieldValueAsNumberSource (path : List String)
+      (error : FieldValueAsNumberSourceError)
   | incompatibleTemporalSource (path : List String)
   /-- The declared DateRange profile does not expose the requested date component at its
   endpoint; the same measured class the validation surface reports. -/
@@ -472,11 +471,8 @@ private def FlatModel.resolveNumericComputationExpression
           throw (.targetSelfReference target)
         match declaration.resolveFieldValueAsNumberSource surface.projectionRef with
         | .ok source => pure (.numeric (.fieldValueAsNumber source))
-        | .error .notConvertible =>
-            throw (.fieldValueAsNumberNotConvertible declaration.path)
-        | .error (.enumeration error) =>
-            throw (.fieldValueAsNumberEnumeration declaration.path error)
-        | .error .incoherentEnumeration => throw .incoherentCore
+        | .error error =>
+            throw (.fieldValueAsNumberSource declaration.path error)
     | .numeric (.dateDifference unit left right) => do
         let resolveOperand : SurfaceDateDifferenceOperand →
             Except NumericComputationElabError ResolvedDateDifferenceOperand

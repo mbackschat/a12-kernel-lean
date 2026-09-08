@@ -95,32 +95,37 @@ example :
         some (.resolve (.invalidEntity (path ["Order"] "Missing"))) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "Code"))) 0) =
-        some (.fieldValueAsNumberNotConvertible ["Order", "Code"]) ∧
+        some (.fieldValueAsNumberSource ["Order", "Code"] .notConvertible) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "MixedChoice"))) 0) =
-        some (.fieldValueAsNumberNotConvertible ["Order", "MixedChoice"]) ∧
+        some (.fieldValueAsNumberSource ["Order", "MixedChoice"] .notConvertible) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "WideChoice"))) 0) =
-        some (.fieldValueAsNumberNotConvertible ["Order", "WideChoice"]) ∧
+        some (.fieldValueAsNumberSource ["Order", "WideChoice"] .notConvertible) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "WrongPatternCode"))) 0) =
-        some (.fieldValueAsNumberNotConvertible ["Order", "WrongPatternCode"]) ∧
+        some (.fieldValueAsNumberSource ["Order", "WrongPatternCode"] .notConvertible) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "UnboundedCode"))) 0) =
-        some (.fieldValueAsNumberNotConvertible ["Order", "UnboundedCode"]) ∧
+        some (.fieldValueAsNumberSource ["Order", "UnboundedCode"] .notConvertible) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "WideCode"))) 0) =
-        some (.fieldValueAsNumberNotConvertible ["Order", "WideCode"]) ∧
+        some (.fieldValueAsNumberSource ["Order", "WideCode"] .notConvertible) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct
         (path ["Order"] "SupplementaryDigitChoice"))) 0) =
-        some (.fieldValueAsNumberNotConvertible
-          ["Order", "SupplementaryDigitChoice"]) ∧
+        some (.fieldValueAsNumberSource
+          ["Order", "SupplementaryDigitChoice"] .notConvertible) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.category
+        (path ["Order"] "NumericCode") "Numeric")) 0) =
+        some (.fieldValueAsNumberSource ["Order", "NumericCode"]
+          .unsupportedSource) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.category
         (path ["Order"] "NumericChoice") "Missing")) 0) =
-        some (.fieldValueAsNumberEnumeration ["Order", "NumericChoice"]
-          (.unknownCategory "Missing")) := by
+        some (.fieldValueAsNumberSource ["Order", "NumericChoice"]
+          (.enumeration (.unknownCategory "Missing"))) := by
   native_decide
 
 /- The operation-form rounding wrapper is legal over the converted numeric atom, uses the selected category token, replaces its static scale with the authored places, and preserves symmetric missing fillability. -/

@@ -13,7 +13,7 @@ namespace A12Kernel
 inductive AddressedFieldValueAsNumberElabError where
   | placement (cause : AddressedNumericPlacementElabError)
   | sourceKindMismatch (path : List String) (actual : SurfaceScalarKind)
-  | sourceNotConvertible (path : List String)
+  | source (path : List String) (cause : FieldValueAsNumberSourceError)
   | scaleMismatch (target source : Nat)
   deriving Repr, DecidableEq
 
@@ -43,9 +43,9 @@ def checkAddressedFieldValueAsNumber
       match hSourceCertified :
           placement.sourceDeclaration.resolveFieldValueAsNumberSource
             sourceReference.projectionRef with
-      | .error _ =>
+      | .error cause =>
           .error
-            (.sourceNotConvertible placement.sourceDeclaration.path)
+            (.source placement.sourceDeclaration.path cause)
       | .ok source =>
         if hScale :
             source.scale = placement.targetPolicy.info.scale then

@@ -124,6 +124,7 @@ inductive KernelStaticDiagnostic where
   | exponentScaleNotWhole
   /-- A parsed rounding-places argument exceeds the admitted scale without overflowing its signed-64-bit read. -/
   | invalidDigitForRounding
+  | noConvertInNumber
   /-- A field-list calculation operator whose operand list holds more than one constant. -/
   | tooManyConstantsInOperandList
   /-- A declared charset range whose start code point exceeds its end. -/
@@ -416,6 +417,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .nestedPowerOnLeft => "MVK_TOO_MANY_POW_FOR_CALC"
   | .exponentScaleNotWhole => "MVK_INVALID_NUMBER_FOR_EXP"
   | .invalidDigitForRounding => "MVK_INVALID_DIGIT_FOR_ROUNDING"
+  | .noConvertInNumber => "MVK_NO_CONVERT_IN_NUMBER"
   | .tooManyConstantsInOperandList => "MVK_TOO_MANY_CONST_FOR_CALC_OP"
   | .charsetRangeStartAfterEnd => "CHARSET_RANGE_START_AFTER_END"
   | .charsetGraphemeClusterEqualsLength => "CHARSET_GRAPHEME_CLUSTER_EQUALS_LENGTH"
@@ -562,7 +564,7 @@ def all : List KernelStaticDiagnostic :=
     .wildcardOnRelativeStep, .wildcardsRequired, .wildcardOnRuleContext,
     .groupNotRepeatable, .entityNotInGroup, .entitiesInDifferentRootGroups, .invalidRootGroup,
     .tooManyDivisionsInRegion, .nestedPowerOnLeft, .exponentScaleNotWhole,
-    .tooManyConstantsInOperandList, .invalidDigitForRounding,
+    .tooManyConstantsInOperandList, .invalidDigitForRounding, .noConvertInNumber,
     .charsetRangeStartAfterEnd, .charsetGraphemeClusterEqualsLength, .charsetParseError,
     .charsetContainsSurrogates, .charsetGraphemeTooLong, .charsetGraphemeOverlap,
     .semanticIndexKeyNotField, .semanticIndexKeyStarred, .semanticIndexOnSemanticIndex,

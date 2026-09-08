@@ -347,6 +347,7 @@ import A12Kernel.Conformance.ValueAsDateLocus
 import A12Kernel.Conformance.ValueAsDateTimeComponents
 import A12Kernel.Conformance.ValueAsDateTimeExtraction
 import A12Kernel.Conformance.ValueList
+import A12Kernel.Conformance.FieldValueAsNumberSource
 import A12Kernel.Conformance.YearlessDateRangeBound
 import A12Kernel.Conformance.YearlessDateRangeOverlap
 

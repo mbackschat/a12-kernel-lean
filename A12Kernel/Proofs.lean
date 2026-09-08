@@ -308,6 +308,7 @@ import A12Kernel.Proofs.ValueAsDate
 import A12Kernel.Proofs.ValueAsDateTimeComponents
 import A12Kernel.Proofs.ValueAsDateTimeExtraction
 import A12Kernel.Proofs.ValueList
+import A12Kernel.Proofs.FieldValueAsNumberSource
 import A12Kernel.Proofs.ValuesNotUnique
 import A12Kernel.Proofs.Verdict
 

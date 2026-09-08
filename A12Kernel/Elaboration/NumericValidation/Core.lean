@@ -107,9 +107,8 @@ inductive NumericValidationElabError where
   | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
   | invalidStringRange (start finish : Nat)
-  | fieldValueAsNumberNotConvertible (path : List String)
-  | fieldValueAsNumberEnumeration (path : List String)
-      (error : EnumerationOperandError)
+  | fieldValueAsNumberSource (path : List String)
+      (error : FieldValueAsNumberSourceError)
   | incompatibleTemporalSource (path : List String)
   /-- A direct temporal-component extractor received a non-temporal declaration. The requested part remains explicit because only measured extractor carriers may project a Kernel class. -/
   | temporalFieldPartSourceNotTemporal (path : List String)

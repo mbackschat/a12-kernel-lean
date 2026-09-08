@@ -123,15 +123,20 @@ example :
     checkedErrorOf
         (surfaceFieldValueAsNumber (.direct
           (surfacePath ["Root"] "Wrong"))) =
-      some (.fieldValueAsNumberNotConvertible ["Root", "Wrong"]) ∧
+      some (.fieldValueAsNumberSource ["Root", "Wrong"] .notConvertible) ∧
     checkedErrorOf
         (surfaceFieldValueAsNumber (.direct
           (surfacePath ["Root"] "NumericCode"))) = none ∧
     checkedErrorOf
         (surfaceFieldValueAsNumber (.category
+          (surfacePath ["Root"] "NumericCode") "Numeric")) =
+      some (.fieldValueAsNumberSource ["Root", "NumericCode"]
+        .unsupportedSource) ∧
+    checkedErrorOf
+        (surfaceFieldValueAsNumber (.category
           (surfacePath ["Root"] "NumericChoice") "Missing")) =
-      some (.fieldValueAsNumberEnumeration ["Root", "NumericChoice"]
-        (.unknownCategory "Missing")) := by
+      some (.fieldValueAsNumberSource ["Root", "NumericChoice"]
+        (.enumeration (.unknownCategory "Missing"))) := by
   native_decide
 
 /- Numeric computation consumes the same digits-only normalized range and maps every clean fallback to zero. -/

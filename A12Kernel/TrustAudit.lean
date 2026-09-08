@@ -2844,3 +2844,4 @@ run_cmd do
 #print axioms A12Kernel.roundingArgument_ok_iff
 #print axioms A12Kernel.roundingArgument_overflow_iff
 #print axioms A12Kernel.roundingArgument_scale_refusal_iff
+#print axioms A12Kernel.fieldValueAsNumberSource_diagnostic_iff

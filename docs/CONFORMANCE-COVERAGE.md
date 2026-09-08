@@ -14,11 +14,11 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `ff74d2b8` on 2026-09-08.
+Measured at `176c36ba` on 2026-09-08.
 
 ## Headline
 
-**449 of 495 Kernel refusal classes modelled in Lean (90%). 46 are not.**
+**450 of 495 Kernel refusal classes modelled in Lean (90%). 45 are not.**
 
 That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
 at 489 (98%): it counts a class named anywhere in the written
@@ -33,7 +33,7 @@ together the modelled figure leads.
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 300 | 60% |
-| Named in tracked Lean source | 449 | 90% |
+| Named in tracked Lean source | 450 | 90% |
 | Observed in a retained probe artifact | 203 | 41% |
 | Touched by any of the three | 489 | 98% |
 | **Untouched everywhere** | **6** | **1%** |
@@ -88,8 +88,8 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207712 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8689 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207778 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8690 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above is measuring
@@ -156,4 +156,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-08 | `9aad52da` | 489 | 447 | 6 | 108 | 25 |
 | 2026-09-08 | `452fd9fb` | 489 | 448 | 6 | 108 | 25 |
 | 2026-09-08 | `ff74d2b8` | 489 | 449 | 6 | 108 | 25 |
+| 2026-09-08 | `176c36ba` | 489 | 450 | 6 | 108 | 25 |
 <!-- velocity-history:end -->

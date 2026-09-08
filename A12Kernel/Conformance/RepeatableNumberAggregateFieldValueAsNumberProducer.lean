@@ -172,7 +172,8 @@ example :
     (match checkRepeatableFieldValueAsNumberStarListAggregateCascade model
         ["Order", "Lines"] produced.id (categorySource "Missing")
         ["Order"] total.id (soleStar "Produced") .sum with
-      | .error (.fieldValueAsNumber (.sourceNotConvertible path)) =>
+      | .error (.fieldValueAsNumber
+          (.source path (.enumeration (.unknownCategory "Missing")))) =>
           path == band.path
       | _ => false) = true := by
   native_decide

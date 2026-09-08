@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.DateDifference
 import A12Kernel.Semantics.DateTimeDifference
 import A12Kernel.Semantics.String
@@ -100,9 +101,16 @@ end ResolvedFieldValueAsNumberSource
 
 inductive FieldValueAsNumberSourceError where
   | notConvertible
+  | unsupportedSource
   | enumeration (error : EnumerationOperandError)
   | incoherentEnumeration
   deriving Repr, DecidableEq
+
+/-- Project the covered conversion gate only; category resolution and local projection limits do not establish this class ([kernel lock index](../../docs/sources/kernel-locks.md#src-kernel-lock-index)). -/
+def FieldValueAsNumberSourceError.diagnostic? :
+    FieldValueAsNumberSourceError → Option KernelStaticDiagnostic
+  | .notConvertible => some .noConvertInNumber
+  | _ => none
 
 namespace SurfaceTextFieldOperand
 
@@ -119,19 +127,20 @@ end SurfaceTextFieldOperand
 def FlatFieldDecl.resolveFieldValueAsNumberSource
     (declaration : FlatFieldDecl) (projectionRef : EnumerationProjectionRef) :
     Except FieldValueAsNumberSourceError ResolvedFieldValueAsNumberSource :=
-  match declaration.policy.kind, declaration.enumeration, projectionRef with
-  | .string, none, .stored =>
+  match declaration.customType, declaration.policy.kind,
+      declaration.enumeration, projectionRef with
+  | none, .string, none, .stored =>
       match declaration.toStringValueField?, declaration.stringPatternSource,
           declaration.stringPolicy.maxLength with
       | some field, some pattern, some maximum =>
-          if declaration.customType.isNone &&
-              pattern == asciiDigitsPatternSource &&
+          if pattern == asciiDigitsPatternSource &&
               maximum ≤ maxFieldValueAsNumberDigits then
             .ok { operand := .string field, scale := 0 }
           else
             .error .notConvertible
-      | _, _, _ => .error .notConvertible
-  | .enumeration, some source, _ =>
+      | none, _, _ => .error .unsupportedSource
+      | some _, _, _ => .error .notConvertible
+  | none, .enumeration, some source, _ =>
       match elaborateEnumeration source with
       | .error _ => .error .incoherentEnumeration
       | .ok checked =>
@@ -146,7 +155,7 @@ def FlatFieldDecl.resolveFieldValueAsNumberSource
                     projectionRef := projection.projectionRef
                     projection := projection.projection }
                   scale }
-  | _, _, _ => .error .notConvertible
+  | _, _, _, _ => .error .unsupportedSource
 
 /-- Recover the exact model declaration only when it re-derives the complete resolved conversion source. This keeps forged projections, nonnumeric domains, and scale summaries outside every checked consumer. -/
 def FlatModel.certifiedFieldValueAsNumberDeclaration?
