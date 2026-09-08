@@ -636,6 +636,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-message-repertoire-co-reporting"></a>
 - [Rule-message repertoire findings coexist with named failures; full diagnostic lists correct the priority inferred from code-only observations](sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)
 
+<a id="src-message-category-gate-order"></a>
+- [Rule-message entity and membership/index failures precede an empty category name](sources/message-and-pointer-probes.md#src-message-category-gate-order)
+
 <a id="src-message-parameter-surface-and-iteration-gates"></a>
 - [The rule-message parameter surface read off its own grammar: the value suffix's second gate is a field declaration (`INVALID_NO_VALUE_VALIDATION`), `$Entity.Vordruckzeile$` skips the condition-membership gate, `$#RootGroup$` is gated on parallel iteration, the group position takes a matching semantic-index key, and the index terminal's cross-declaration consistency family is reachable](sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)
 

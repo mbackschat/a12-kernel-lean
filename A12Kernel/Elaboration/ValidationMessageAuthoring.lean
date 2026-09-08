@@ -502,10 +502,8 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
         -- The suffix sits before the key, so the spec is re-split by the ordinary rules.
         match spec.splitOn "->" with
         | [inner, category] =>
-            if category.isEmpty then throw (.missingCategoryName parameter)
-            else
-              pure (.keyed parameter (← parseMessagePath parameter inner)
-                (.category category) key)
+            pure (.keyed parameter (← parseMessagePath parameter inner)
+              (.category category) key)
         | [_] =>
             match spec.splitOn ("." ++ profile.valueSuffixTerminal) with
             | [inner, ""] =>
@@ -529,11 +527,9 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
 
   match parameter.splitOn "->" with
   | [spec, category] =>
-      if category.isEmpty then .error (.missingCategoryName parameter)
-      else (.fieldCategory parameter · category) <$> parseMessagePath parameter spec
+      (.fieldCategory parameter · category) <$> parseMessagePath parameter spec
   | spec :: category :: _ =>
-      if category.isEmpty then .error (.missingCategoryName parameter)
-      else (.fieldCategoryWithTrailingSyntax parameter · category) <$>
+      (.fieldCategoryWithTrailingSyntax parameter · category) <$>
         parseMessagePath parameter spec
   | [_] =>
       -- The two form-pointer terminals are tried before the value suffix, which cannot occur inside
@@ -772,14 +768,17 @@ private def resolveMessageReference (model : FlatModel)
   else
     throw (.fieldNotReferenced parameter entity.declaration.id)
 
-/-- Apply the category suffix's three gates in the Kernel's own order to an already-resolved field
-reference. The missing-name gate belongs to parsing, so only the kind and the declared-category gates
-remain here, and both reuse the one existing Enumeration projection boundary. -/
+/-- Check the category after entity resolution and condition membership, including an empty name.
+
+The [category-order checkpoint](../../docs/SOURCES.md#src-message-category-gate-order) separates
+these prerequisite failures from the missing-name refusal. Kind and declared-category checks then
+reuse the existing Enumeration projection boundary. -/
 private def resolveMessageCategory
     (reference : CheckedValidationMessageReference model condition)
     (parameter category : String) :
     Except ValidationMessageTemplateError
-      (CheckedValidationMessageCategory model condition) :=
+      (CheckedValidationMessageCategory model condition) := do
+  if category.isEmpty then throw (.missingCategoryName parameter)
   match hSource : reference.declaration.enumeration with
   | none =>
       throw (.categoryFieldNotEnumeration parameter reference.declaration.id)

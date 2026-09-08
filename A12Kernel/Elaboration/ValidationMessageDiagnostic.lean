@@ -19,6 +19,7 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .oddDollarCount => some .wrongNumberOfDollars
   | .noBaseYear => some .noMessageBaseYear
   | .fieldNotReferenced _ _ => some .messageFieldNotReferenced
+  | .missingCategoryName _ => some .missingMessageCategory
   | .parameterCharacter _ _ => some .lexerStandardError
   | .groupParameterLexical _ .quote => some .lexerStandardError
   | .groupParameterLexical _ .truncated => some .incompleteInput

@@ -14,11 +14,11 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `3a457eea` on 2026-09-08.
+Measured at `1a163c9e` on 2026-09-08.
 
 ## Headline
 
-**454 of 495 Kernel refusal classes modelled in Lean (91%). 41 are not.**
+**455 of 495 Kernel refusal classes modelled in Lean (91%). 40 are not.**
 
 That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
 at 489 (98%): it counts a class named anywhere in the written
@@ -33,7 +33,7 @@ together the modelled figure leads.
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 300 | 60% |
-| Named in tracked Lean source | 454 | 91% |
+| Named in tracked Lean source | 455 | 91% |
 | Observed in a retained probe artifact | 203 | 41% |
 | Touched by any of the three | 489 | 98% |
 | **Untouched everywhere** | **6** | **1%** |
@@ -75,7 +75,7 @@ one: it counts whether a record cites external calibration, not how much of its 
 | Open gap records in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 25 |
 | `remaining` rows across those gaps | 0 |
 | Gaps whose route is **blocked** | 0 |
-| Ledger entries `pending` with a12-dmkits | 4 |
+| Ledger entries `pending` with a12-dmkits | 5 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route is the only figure here that should stop work; a `remaining` row is ordinary scope. If
@@ -88,7 +88,7 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207905 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207924 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8691 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -99,7 +99,7 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 190 |
+| Retained capture directories under `../evidence/` | 191 |
 | Retained observation rows across all artifacts | 476 |
 
 ## Velocity
@@ -157,4 +157,5 @@ Datetime is the referenced revision's commit time in ISO 8601 format, including 
 | 2026-09-08T18:21:40+02:00 | `ff74d2b8` | 489 | 449 | 6 | 108 | 25 |
 | 2026-09-08T18:50:16+02:00 | `176c36ba` | 489 | 450 | 6 | 108 | 25 |
 | 2026-09-08T19:44:27+02:00 | `3a457eea` | 489 | 454 | 6 | 108 | 25 |
+| 2026-09-08T20:40:25+02:00 | `1a163c9e` | 489 | 455 | 6 | 108 | 25 |
 <!-- velocity-history:end -->

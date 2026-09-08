@@ -355,6 +355,7 @@ inductive KernelStaticDiagnostic where
   | wrongNumberOfDollars
   | noMessageBaseYear
   | messageFieldNotReferenced
+  | missingMessageCategory
   | lexerStandardError
   | incompleteInput
   | unexpectedToken
@@ -552,6 +553,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .wrongNumberOfDollars => "WRONG_NUMBER_OF_DOLLARS"
   | .noMessageBaseYear => "NO_BASE_YEAR"
   | .messageFieldNotReferenced => "INVALID_FIELD"
+  | .missingMessageCategory => "NO_CATEGORY"
   | .lexerStandardError => "MVK_LEXER_STANDARD_ERROR"
   | .incompleteInput => "MVK_INCOMPLETE_INPUT"
   | .unexpectedToken => "MVK_UNEXPECTED_TOKEN"
@@ -628,6 +630,7 @@ def all : List KernelStaticDiagnostic :=
     .invalidConst, .noStringOrEnum,
     .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,
     .wrongNumberOfDollars, .noMessageBaseYear, .messageFieldNotReferenced,
+    .missingMessageCategory,
     .lexerStandardError, .incompleteInput, .unexpectedToken]
 
 end KernelStaticDiagnostic

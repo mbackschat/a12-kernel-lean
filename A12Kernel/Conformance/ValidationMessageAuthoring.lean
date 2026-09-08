@@ -234,9 +234,7 @@ example :
         "Year $BaseYear+$" = some (.invalidParameter "BaseYear+") := by
   native_decide
 
-/- The category suffix's three gates, in the Kernel's own order: a missing name is a parse failure, a
-non-Enumeration field is refused before any category is looked up, and an undeclared name arrives
-through the one existing Enumeration projection gate carrying its own class. -/
+/- Each field is already referenced by the condition, so these rows reach the category checks: missing name, Enumeration kind, then declared-category lookup. -/
 example :
     pathTemplateOk? ["Order"] (pathAt (.relative 0) [] "Status")
         "See $Status->Group$" = some true ∧
@@ -385,6 +383,26 @@ private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
 private def templateNamedDiagnostic? (template : String) : Option (Option String) :=
   (templateError? template).map fun error =>
     error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode
+
+example :
+    templateError? "$Other->$" = some (.fieldNotReferenced "Other->" other.id) ∧
+    templateError? "$Other->->Group$" =
+      some (.fieldNotReferenced "Other->->Group" other.id) ∧
+    templateError? "$Missing->$" =
+      some (.reference "Missing->" (.invalidEntity (bare "Missing"))) ∧
+    templateError? "$Missing->->Group$" =
+      some (.reference "Missing->->Group" (.invalidEntity (bare "Missing"))) ∧
+    templateError? "$Amount->$" = some (.missingCategoryName "Amount->") ∧
+    templateNamedDiagnostic? "$Amount->$" = some (some "NO_CATEGORY") ∧
+    templateError? "$Amount->->Group$" = some (.missingCategoryName "Amount->->Group") := by
+  native_decide
+
+example :
+    templateError? "$Other-> For \"k1\"$" =
+      some (.semanticIndexUnsupported "Other-> For \"k1\"") ∧
+    templateError? "$Missing-> For \"k1\"$" =
+      some (.reference "Missing-> For \"k1\"" (.invalidEntity (bare "Missing"))) := by
+  native_decide
 
 example :
     ["", "$Amount", "line\ntwo", "row\there", "$BaseYear$", "$Other$"].map
@@ -562,13 +580,12 @@ example :
           (.invalidEntity (pathAt (.relative 0) [] "k1"))) := by
   native_decide
 
-/- The key composes with the **category** suffix rather than consuming it, and the spec's own syntax
-is settled first: an empty category name is refused at parsing even when a key follows it. -/
+/- The keyed category form reaches the fragment's unsupported index gate before the category can be checked; the measured ordering is recorded in the category-gate checkpoint. -/
 example :
     templateError? "$Status->Group For \"k1\"$" =
         some (.semanticIndexUnsupported "Status->Group For \"k1\"") ∧
       templateError? "$Status-> For \"k1\"$" =
-        some (.missingCategoryName "Status-> For \"k1\"") := by
+        some (.semanticIndexUnsupported "Status-> For \"k1\"") := by
   native_decide
 
 /-- A rule in `/Order/Head`, whose group has one ancestor above it, one **declared** group below it,

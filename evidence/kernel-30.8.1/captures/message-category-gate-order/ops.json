@@ -1,0 +1,212 @@
+[
+  {
+    "id": "plain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D0",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=plain"
+    ]
+  },
+  {
+    "id": "empty-unreferenced",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D1",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Alpha->$"
+    ]
+  },
+  {
+    "id": "empty-referenced-string",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D2",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And FieldFilled(Alpha)",
+      "--message",
+      "en_US=$Alpha->$"
+    ]
+  },
+  {
+    "id": "empty-referenced-anchor",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D3",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Anchor->$"
+    ]
+  },
+  {
+    "id": "empty-unknown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D4",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Missing->$"
+    ]
+  },
+  {
+    "id": "doubled-empty-unreferenced",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D5",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Alpha->->Band$"
+    ]
+  },
+  {
+    "id": "doubled-empty-referenced",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D6",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And FieldFilled(Alpha)",
+      "--message",
+      "en_US=$Alpha->->Band$"
+    ]
+  },
+  {
+    "id": "doubled-empty-unknown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D7",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Missing->->Band$"
+    ]
+  },
+  {
+    "id": "keyed-empty-unreferenced",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D8",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Alpha-> For \"k1\"$"
+    ]
+  },
+  {
+    "id": "keyed-empty-unknown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D9",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Missing-> For \"k1\"$"
+    ]
+  },
+  {
+    "id": "keyed-empty-referenced",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D10",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$Anchor-> For \"k1\"$"
+    ]
+  },
+  {
+    "id": "empty-absolute-unreferenced",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D11",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=$/Probe/Alpha->$"
+    ]
+  },
+  {
+    "id": "valid-enum-category",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D12",
+      "--field",
+      "/Probe/Cases/Score",
+      "--condition",
+      "FieldFilled(Score) And FieldFilled(Grade)",
+      "--message",
+      "en_US=$Grade->Band$"
+    ]
+  },
+  {
+    "id": "empty-enum-category",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "D13",
+      "--field",
+      "/Probe/Cases/Score",
+      "--condition",
+      "FieldFilled(Score) And FieldFilled(Grade)",
+      "--message",
+      "en_US=$Grade->$"
+    ]
+  }
+]

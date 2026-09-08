@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-08-08"></a>
+### `SPEC-2026-09-08-08` — reference and index gates precede an empty message-category name
+
+- `status`: pending
+- `clause`: [rule-message category and keyed parameters](../spec/11-messages-and-custom.md).
+- `delta`: an empty category name does not preempt entity resolution or condition membership. The unknown, unreferenced, and referenced field rows report `INVALID_ENTITY`, `INVALID_FIELD`, and `NO_CATEGORY`, including a doubled arrow after the empty first category. On the measured keyed forms, entity/index prerequisites likewise report before the category name.
+- `basis`: the [category-gate checkpoint](sources/message-and-pointer-probes.md#src-message-category-gate-order) retains fourteen checks with admitted controls at clean a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool 0.13.0, Kernel 30.8.1 built/runtime.
+- `surfaces`: the canonical message-category account and any portable checker that validates the category name during parsing. The existing ordinary category-gate tests need no repeat measurement.
+- `acceptance`: preserve the prerequisite diagnostics when a category name is empty, or supply a contrary Kernel discriminator; distinguish the unkeyed membership gate from the keyed index gate.
+- `limit`: the measured validation-rule shapes and condition language only. No admitted-keyed suffix ordering, arbitrary malformed suffix grammar, computation carrier, runtime, or interpreter-defect claim.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-08-07"></a>
 ### `SPEC-2026-09-08-07` — the codeless message-repertoire finding co-reports with named failures
 
