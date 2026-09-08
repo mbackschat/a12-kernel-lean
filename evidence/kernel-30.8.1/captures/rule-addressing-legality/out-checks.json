@@ -1,0 +1,844 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 23 ops; 18 of 23 exited nonzero (1 failed, 17 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 23,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "Ctrl",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And [A] != \"x\"",
+          "--code",
+          "Ctrl",
+          "--group",
+          "/R1"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "BadField",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/Nope",
+          "--condition",
+          "FieldFilled(A) And [A] != \"x\"",
+          "--code",
+          "BadField",
+          "--group",
+          "/R1"
+        ],
+        "exit": 2,
+        "stderr": "'/R1/Nope' is not a field in this model \u2014 it must be a model entity path like /Group/Field (a path INSIDE the model), not a file path. The model file is the `-m <model.json>` argument; run `dmtool -m <model.json> model describe` to list the model's entities. Did you mean --field /R1/A? (it is the field your --condition references).\n"
+      },
+      {
+        "op": 2,
+        "id": "XRoot1",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldsNotCollectivelyFilled(/R1/A, /R2/C)",
+          "--code",
+          "XRoot1",
+          "--group",
+          "/R1"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "XRoot2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "AllFieldsFilled(/R1/A, /R2/C)",
+          "--code",
+          "XRoot2",
+          "--group",
+          "/R1"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "XRoot3",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/R2/C]",
+          "--code",
+          "XRoot3",
+          "--group",
+          "/R1"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "XRoot4",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And NumberOfFilledFields(/R1/A, /R2/C) > 0",
+          "--code",
+          "XRoot4",
+          "--group",
+          "/R1"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "XRootUniq",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/G/V",
+          "--condition",
+          "RepetitionNotUnique(/R1/G/V, /R2/C)",
+          "--code",
+          "XRootUniq",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NOT_IN_RULEGROUP",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "NotInGrp1",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/G/V",
+          "--condition",
+          "RepetitionNotUnique(/R1/H/W @From /R1/G)",
+          "--code",
+          "NotInGrp1",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it \u2014 the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it \u2014 via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "NotInGrp2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/G/V",
+          "--condition",
+          "RepetitionNotUnique(/R1/G/V, /R1/H/W @From /R1/G)",
+          "--code",
+          "NotInGrp2",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it \u2014 the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it \u2014 via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "NotInGrp3",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/G/V",
+          "--condition",
+          "RepetitionNotUnique(/R1/A @From /R1/G)",
+          "--code",
+          "NotInGrp3",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NOT_IN_GROUP",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "RepRoot1",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And RepetitionNotUnique(/R1/A)",
+          "--code",
+          "RepRoot1",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_REPEATABLE_GROUP_MISSING",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "Check BOTH causes \u2014 this one code covers them and does not say which applies. (1) The rule sits INSIDE the repeated group: place it at the PARENT while keeping its error field inside that group \u2014 via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>`, for example `--group /Order --field /Order/Items/Sku` with `RepetitionNotUnique(Items/Sku)`. (2) A key names a field whose group is not repeatable at all \u2014 whether it is the sole key or sits beside a good one; moving the rule cannot fix that, so drop the key or make its group repeatable.",
+              "explain": "Every RepetitionNotUnique key must cross a repeatable-group boundary relative to the rule group. Declaring the rule inside the repeated row removes that boundary, and a key in a non-repeatable group never had one; the kernel reports both as this single class, so the code identifies the missing boundary and not which edit restores it."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "RepRoot2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And NumberOfFilledGroups(/R1*) > 1",
+          "--code",
+          "RepRoot2",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "MaxGrp1",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "NumberOfFilledGroups(/R1/G*) > 1",
+          "--code",
+          "MaxGrp1",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELD_NOT_REFERENCED",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path \u2014 reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And \u2026`.",
+              "explain": "Every rule's error field must appear among the fields its condition references \u2014 the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "MaxGrp2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "NumberOfFilledGroups(/R1/G*) >= 2",
+          "--code",
+          "MaxGrp2",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELD_NOT_REFERENCED",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path \u2014 reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And \u2026`.",
+              "explain": "Every rule's error field must appear among the fields its condition references \u2014 the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "MaxGrp3",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "NumberOfFilledGroups(/R1/G*) > 2",
+          "--code",
+          "MaxGrp3",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELD_NOT_REFERENCED",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path \u2014 reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And \u2026`.",
+              "explain": "Every rule's error field must appear among the fields its condition references \u2014 the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "EnumCat",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/R1/B -> Band]",
+          "--code",
+          "EnumCat",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_ENUMERATION",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "DateOp",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And YearFromDate([A]) != 2020",
+          "--code",
+          "DateOp",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "DateOp2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And [A] != AddDays([B], 1)",
+          "--code",
+          "DateOp2",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 18,
+        "id": "Params",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And [A] != Date([B])",
+          "--code",
+          "Params",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 19,
+        "id": "Params2",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And Length([A], [B]) != 3",
+          "--code",
+          "Params2",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 20,
+        "id": "EnumsOnly",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldFilled(A) And [A] != [/R1/B -> X]",
+          "--code",
+          "EnumsOnly",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_ENUMERATION",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 21,
+        "id": "TblEnum",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldValueIncludedInValueList(/R1/A IN /R1/B)",
+          "--code",
+          "TblEnum",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 22,
+        "id": "StrCol",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/R1/A",
+          "--condition",
+          "FieldValueIncludedInValueList(/R1/A IN (\"x\",\"y\"))",
+          "--code",
+          "StrCol",
+          "--group",
+          "/R1"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/R1/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

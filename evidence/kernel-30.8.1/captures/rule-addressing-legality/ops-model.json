@@ -1,0 +1,140 @@
+[
+ {
+  "id": "r2",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/",
+   "--name",
+   "R2"
+  ]
+ },
+ {
+  "id": "fA",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/R1",
+   "--name",
+   "A",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fB",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/R1",
+   "--name",
+   "B",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "gG",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/R1",
+   "--name",
+   "G",
+   "--repeatable",
+   "4"
+  ]
+ },
+ {
+  "id": "fGK",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/R1/G",
+   "--name",
+   "K",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fGV",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/R1/G",
+   "--name",
+   "V",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "mG",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/R1/G",
+   "--index-field",
+   "K"
+  ]
+ },
+ {
+  "id": "gH",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/R1",
+   "--name",
+   "H",
+   "--repeatable",
+   "3"
+  ]
+ },
+ {
+  "id": "fHW",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/R1/H",
+   "--name",
+   "W",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fC",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/R2",
+   "--name",
+   "C",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fD",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/R2",
+   "--name",
+   "D",
+   "--kind",
+   "STRING"
+  ]
+ }
+]

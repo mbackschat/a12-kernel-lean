@@ -1,0 +1,377 @@
+[
+ {
+  "id": "VNC1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "ValueNotConsistent(/R1/E To /R1/A)",
+   "--code",
+   "VNC1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "VNC2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "WertNichtKonsistent(/R1/E To /R1/A)",
+   "--code",
+   "VNC2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "VNC3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "ValueNotConsistent(/R1/E, /R1/A)",
+   "--code",
+   "VNC3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "VNC4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "ValueNotConsistent(/R1/E For /R1/A)",
+   "--code",
+   "VNC4",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "VNC5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "ValueNotConsistent(/R1/E IN /R1/A)",
+   "--code",
+   "VNC5",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "VNC6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "ValueNotConsistent(/R1/E With /R1/A)",
+   "--code",
+   "VNC6",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "Unspec",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R1/G]",
+   "--code",
+   "Unspec",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "IdxInv1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R1/H/W For \"k1\"]",
+   "--code",
+   "IdxInv1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "IdxInv2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R1/G/V For 5]",
+   "--code",
+   "IdxInv2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "IdxInv3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R1/G/V For /R1/N]",
+   "--code",
+   "IdxInv3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "RuleGrp1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And RepetitionNotUnique(/R1/G/V @From /R1/H)",
+   "--code",
+   "RuleGrp1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "RuleGrp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And RepetitionNotUnique(/R1/G/V @From /R1/Nope)",
+   "--code",
+   "RuleGrp2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateExt1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And YearFromDate(/R1/A) != 2020",
+   "--code",
+   "DateExt1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateExt2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/D",
+   "--condition",
+   "FieldFilled(D) And YearFromDate(/R1/D) != 2020",
+   "--code",
+   "DateExt2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateExt3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/D",
+   "--condition",
+   "FieldFilled(D) And [D] != Date(YearFromDate(/R1/D), 1, 1)",
+   "--code",
+   "DateExt3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateBad1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/D",
+   "--condition",
+   "FieldFilled(D) And [D] != \"31.02.2020\"",
+   "--code",
+   "DateBad1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateBad2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/D",
+   "--condition",
+   "FieldFilled(D) And [D] != Date(2020, 13, 1)",
+   "--code",
+   "DateBad2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateBad3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/D",
+   "--condition",
+   "FieldFilled(D) And [D] < \"2020-02-31\"",
+   "--code",
+   "DateBad3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "Params1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/N",
+   "--condition",
+   "FieldFilled(N) And Sum(/R1/N, /R1/A) != 3",
+   "--code",
+   "Params1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "Params2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/N",
+   "--condition",
+   "FieldFilled(N) And MinValue(/R1/N) != 3",
+   "--code",
+   "Params2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "Params3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And SumOfProducts(/R1/N) != 3",
+   "--code",
+   "Params3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "EnumCat2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "FieldFilled(E) And [E -> Band] != \"MID\"",
+   "--code",
+   "EnumCat2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "EnumCat3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "FieldFilled(E) And [E -> Nope] != \"LOW\"",
+   "--code",
+   "EnumCat3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "EnumStr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/E",
+   "--condition",
+   "FieldFilled(E) And [E] != \"GAMMA\"",
+   "--code",
+   "EnumStr",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "MultiIdx2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R1/G/V For \"k1\" ]",
+   "--code",
+   "MultiIdx2",
+   "--group",
+   "/R1"
+  ]
+ }
+]

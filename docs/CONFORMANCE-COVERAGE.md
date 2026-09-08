@@ -14,14 +14,14 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `eaaca020` on 2026-09-08.
+Measured at `74167065` on 2026-09-08.
 
 ## Headline
 
-**297 of 495 Kernel refusal classes modelled in Lean (60%). 198 are not.**
+**303 of 495 Kernel refusal classes modelled in Lean (61%). 192 are not.**
 
 That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
-at 396 (80%): it counts a class named anywhere in the written
+at 403 (81%): it counts a class named anywhere in the written
 account, **including a checkpoint's own list of what it deliberately did not reach**. Touched is an upper
 bound on what this repository knows about, and it can be raised to 100% in an afternoon by writing prose,
 so it is reported to expose that gap rather than to stand in for progress. When the two are quoted
@@ -32,17 +32,17 @@ together the modelled figure leads.
 | | classes | share |
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 264 | 53% |
-| Named in tracked Lean source | 297 | 60% |
-| Observed in a retained probe artifact | 175 | 35% |
-| Touched by any of the three | 396 | 80% |
-| **Untouched everywhere** | **99** | **20%** |
+| Named in `spec/` or `docs/` prose | 268 | 54% |
+| Named in tracked Lean source | 303 | 61% |
+| Observed in a retained probe artifact | 179 | 36% |
+| Touched by any of the three | 403 | 81% |
+| **Untouched everywhere** | **92** | **18%** |
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
 - **Observed but absent from the written account: 0.** A class seen in a probe and never
   written down is a measurement whose result was lost.
-- **Known only from archived material: 5.** These are facts this repository holds but no
+- **Known only from archived material: 4.** These are facts this repository holds but no
   longer reads; they belong in a live owner or should be re-measured.
 
 ### Where the untouched classes are
@@ -51,7 +51,7 @@ Ordered by size, because that is the order in which they are worth attacking.
 
 | untouched | catalog | route |
 |---|---|---|
-| 28 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
+| 21 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
 | 19 | `vk_codegen_no_meta_model_ckecks_error_messages` | codegen-time model checks — reachable through `model check` |
 | 17 | `kernel_core_errortext_error_messages` | shared error-text base utilities — carrier not yet identified |
 | 16 | `runtime_formal_codes` | runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe |
@@ -69,8 +69,8 @@ one: it counts whether a record cites external calibration, not how much of its 
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 183 | 100% |
-| Citing a Kernel checkpoint or calibration | 88 | 48% |
+| Capability records in [`implementation/`](implementation/) | 184 | 100% |
+| Citing a Kernel checkpoint or calibration | 89 | 48% |
 | Carrying an explicit evidence-pending note | 47 | 25% |
 
 ## Axis 3 — open obligation load
@@ -93,8 +93,8 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 199647 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8490 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 200052 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8497 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above is measuring
@@ -104,7 +104,7 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 171 |
+| Retained capture directories under `../evidence/` | 172 |
 | Retained observation rows across all artifacts | 439 |
 
 ## Velocity
@@ -132,4 +132,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-08 | `fcf31f1c` | 375 | 279 | 120 | 86 | 25 |
 | 2026-09-08 | `534c3160` | 387 | 291 | 108 | 87 | 25 |
 | 2026-09-08 | `eaaca020` | 396 | 297 | 99 | 88 | 25 |
+| 2026-09-08 | `74167065` | 403 | 303 | 92 | 89 | 25 |
 <!-- velocity-history:end -->

@@ -1,0 +1,26 @@
+[
+ {
+  "id": "fE",
+  "verb": "field",
+  "args": [
+   "add",
+   "f-enum.json"
+  ]
+ },
+ {
+  "id": "fN",
+  "verb": "field",
+  "args": [
+   "add",
+   "f-num.json"
+  ]
+ },
+ {
+  "id": "fD",
+  "verb": "field",
+  "args": [
+   "add",
+   "f-date.json"
+  ]
+ }
+]

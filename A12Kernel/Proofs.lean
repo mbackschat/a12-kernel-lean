@@ -57,6 +57,7 @@ import A12Kernel.Proofs.ComputationSelfValidation
 import A12Kernel.Proofs.ConditionTree
 import A12Kernel.Proofs.DynamicEnumerationLegality
 import A12Kernel.Proofs.IterationLegality
+import A12Kernel.Proofs.TableEnumeration
 import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay
 import A12Kernel.Proofs.ConstructedDateDifference

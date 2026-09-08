@@ -1,0 +1,347 @@
+[
+ {
+  "id": "Ctrl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != \"x\"",
+   "--code",
+   "Ctrl",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "BadField",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/Nope",
+   "--condition",
+   "FieldFilled(A) And [A] != \"x\"",
+   "--code",
+   "BadField",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "XRoot1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldsNotCollectivelyFilled(/R1/A, /R2/C)",
+   "--code",
+   "XRoot1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "XRoot2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "AllFieldsFilled(/R1/A, /R2/C)",
+   "--code",
+   "XRoot2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "XRoot3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R2/C]",
+   "--code",
+   "XRoot3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "XRoot4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And NumberOfFilledFields(/R1/A, /R2/C) > 0",
+   "--code",
+   "XRoot4",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "XRootUniq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/G/V",
+   "--condition",
+   "RepetitionNotUnique(/R1/G/V, /R2/C)",
+   "--code",
+   "XRootUniq",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "NotInGrp1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/G/V",
+   "--condition",
+   "RepetitionNotUnique(/R1/H/W @From /R1/G)",
+   "--code",
+   "NotInGrp1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "NotInGrp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/G/V",
+   "--condition",
+   "RepetitionNotUnique(/R1/G/V, /R1/H/W @From /R1/G)",
+   "--code",
+   "NotInGrp2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "NotInGrp3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/G/V",
+   "--condition",
+   "RepetitionNotUnique(/R1/A @From /R1/G)",
+   "--code",
+   "NotInGrp3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "RepRoot1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And RepetitionNotUnique(/R1/A)",
+   "--code",
+   "RepRoot1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "RepRoot2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And NumberOfFilledGroups(/R1*) > 1",
+   "--code",
+   "RepRoot2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "MaxGrp1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "NumberOfFilledGroups(/R1/G*) > 1",
+   "--code",
+   "MaxGrp1",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "MaxGrp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "NumberOfFilledGroups(/R1/G*) >= 2",
+   "--code",
+   "MaxGrp2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "MaxGrp3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "NumberOfFilledGroups(/R1/G*) > 2",
+   "--code",
+   "MaxGrp3",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "EnumCat",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R1/B -> Band]",
+   "--code",
+   "EnumCat",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateOp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And YearFromDate([A]) != 2020",
+   "--code",
+   "DateOp",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "DateOp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != AddDays([B], 1)",
+   "--code",
+   "DateOp2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "Params",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != Date([B])",
+   "--code",
+   "Params",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "Params2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And Length([A], [B]) != 3",
+   "--code",
+   "Params2",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "EnumsOnly",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldFilled(A) And [A] != [/R1/B -> X]",
+   "--code",
+   "EnumsOnly",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "TblEnum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldValueIncludedInValueList(/R1/A IN /R1/B)",
+   "--code",
+   "TblEnum",
+   "--group",
+   "/R1"
+  ]
+ },
+ {
+  "id": "StrCol",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/R1/A",
+   "--condition",
+   "FieldValueIncludedInValueList(/R1/A IN (\"x\",\"y\"))",
+   "--code",
+   "StrCol",
+   "--group",
+   "/R1"
+  ]
+ }
+]
