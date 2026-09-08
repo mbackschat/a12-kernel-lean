@@ -2765,3 +2765,10 @@ run_cmd do
 #print axioms A12Kernel.errorTextFindings_unparsed_admits_parameter
 #print axioms A12Kernel.errorTextFindings_no_dollar_silent
 #print axioms A12Kernel.errorTextFindings_parsed_is_cascade
+#print axioms A12Kernel.enumConstant_enumeration_value_fails_category
+#print axioms A12Kernel.enumConstant_valueList_splits
+#print axioms A12Kernel.enumConstant_equality_collapses
+#print axioms A12Kernel.enumConstant_carriers_disagree
+#print axioms A12Kernel.enumConstant_unknown_category_first
+#print axioms A12Kernel.enumConstantList_unknown_category_first
+#print axioms A12Kernel.enumConstantList_none_iff

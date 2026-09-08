@@ -1,0 +1,278 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 12,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "E1",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "[/Cg/Colour -> Warm] == \"yes\"", "--code", "E1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "E2",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "[/Cg/Colour -> Warm] == \"RED\"", "--code", "E2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Cg/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "E3",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "[/Cg/Colour -> Warm] == \"nope\"", "--code", "E3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Cg/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "E4",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "[/Cg/Colour] == \"RED\"", "--code", "E4" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "E5",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "[/Cg/Colour] == \"nope\"", "--code", "E5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Cg/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "E6",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "[/Cg/Colour -> Nope] == \"yes\"", "--code", "E6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_CATEGORY_UNKOWN",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Cg/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "E7",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"yes\")", "--code", "E7" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "E8",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"RED\")", "--code", "E8" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_CATEGORY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Cg/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "E9",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "FieldValueIncludedInValueList(/Cg/Colour, \"RED\")", "--code", "E9" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "EA",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "FieldValueIncludedInValueList(/Cg/Colour, \"nope\")", "--code", "EA" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Cg/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "EB",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"yes\", \"no\")", "--code", "EB" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "EC",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Cg/Colour", "--condition", "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"yes\", \"nope\")", "--code", "EC" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_CATEGORY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Cg/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

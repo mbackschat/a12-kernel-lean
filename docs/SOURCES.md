@@ -843,6 +843,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A rule counting repetitions is read backwards as a repeatability restriction, and the pass that does so is reached by neither available gate](sources/model-structure-and-declaration-probes.md#src-repeatability-restriction)
 <a id="src-error-text-row-parameter"></a>
 - [An error text's row-index parameter is refused when the condition reaches its group only through a star, and the rule is existential over the condition's references](sources/model-structure-and-declaration-probes.md#src-error-text-row-parameter)
+<a id="src-enumeration-category-constant"></a>
+- [A literal compared against an enumeration's category is refused by a class the carrier chooses, and an enumeration value is not a category value](sources/static-admission-and-class-probes.md#src-enumeration-category-constant)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

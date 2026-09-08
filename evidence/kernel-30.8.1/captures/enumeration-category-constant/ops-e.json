@@ -1,0 +1,158 @@
+[
+ {
+  "id": "E1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "[/Cg/Colour -> Warm] == \"yes\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "E2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "[/Cg/Colour -> Warm] == \"RED\"",
+   "--code",
+   "E2"
+  ]
+ },
+ {
+  "id": "E3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "[/Cg/Colour -> Warm] == \"nope\"",
+   "--code",
+   "E3"
+  ]
+ },
+ {
+  "id": "E4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "[/Cg/Colour] == \"RED\"",
+   "--code",
+   "E4"
+  ]
+ },
+ {
+  "id": "E5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "[/Cg/Colour] == \"nope\"",
+   "--code",
+   "E5"
+  ]
+ },
+ {
+  "id": "E6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "[/Cg/Colour -> Nope] == \"yes\"",
+   "--code",
+   "E6"
+  ]
+ },
+ {
+  "id": "E7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"yes\")",
+   "--code",
+   "E7"
+  ]
+ },
+ {
+  "id": "E8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"RED\")",
+   "--code",
+   "E8"
+  ]
+ },
+ {
+  "id": "E9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "FieldValueIncludedInValueList(/Cg/Colour, \"RED\")",
+   "--code",
+   "E9"
+  ]
+ },
+ {
+  "id": "EA",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "FieldValueIncludedInValueList(/Cg/Colour, \"nope\")",
+   "--code",
+   "EA"
+  ]
+ },
+ {
+  "id": "EB",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"yes\", \"no\")",
+   "--code",
+   "EB"
+  ]
+ },
+ {
+  "id": "EC",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Cg/Colour",
+   "--condition",
+   "FieldValueIncludedInValueList(/Cg/Colour -> Warm, \"yes\", \"nope\")",
+   "--code",
+   "EC"
+  ]
+ }
+]
