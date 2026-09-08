@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-08-07"></a>
+### `SPEC-2026-09-08-07` — the codeless message-repertoire finding co-reports with named failures
+
+- `status`: pending
+- `supersedes`: only the charset-priority account in [SPEC-2026-09-07-12](#spec-2026-09-07-12); its repertoire and other admission results remain intact.
+- `clause`: [message character tiers](../spec/11-messages-and-custom.md).
+- `delta`: supplementary-plane text produces a codeless finding alongside a linebreak, control-character, odd-dollar, unknown-entity, or parameter-lexer diagnostic. The full envelopes list the codeless finding first; the old compact `codes` projection omitted it and did not establish exclusive priority or check execution order.
+- `basis`: the [co-reporting checkpoint](sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting) retains eleven checks with ordered, prose-free diagnostic envelopes at clean a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool 0.13.0, Kernel 30.8.1 built/runtime.
+- `surfaces`: any canonical or portable message-admission account derived from the superseded priority claim. The peer's existing repertoire test already confirms the standalone codeless finding and needs no repeat measurement.
+- `acceptance`: retain codeless findings independently of named failures and withdraw the last-check/short-circuit inference, or supply a contrary full diagnostic envelope.
+- `limit`: static validation-rule messages on the retained model. No computation-message or String-pattern carrier, internal execution-order, partial-parse-map, runtime rendering, or interpreter-failure claim.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-08-06"></a>
 ### `SPEC-2026-09-08-06` — rounding places distinguish scale refusal from integer-read overflow
 

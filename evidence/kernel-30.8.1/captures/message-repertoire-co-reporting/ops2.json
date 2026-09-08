@@ -1,0 +1,47 @@
+[
+  {
+    "id": "repertoire-linebreak",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "N0",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=t😀x\ntwo"
+    ]
+  },
+  {
+    "id": "repertoire-control",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "N1",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=t😀x\ttwo"
+    ]
+  },
+  {
+    "id": "two-repertoire-characters",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "N2",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=x😀𝐀y"
+    ]
+  }
+]

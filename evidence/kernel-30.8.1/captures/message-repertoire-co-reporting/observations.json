@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "dmtool": "0.13.0",
+  "kernelBuilt": "30.8.1",
+  "kernelRuntime": "30.8.1",
+  "source": {
+    "revision": "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+    "state": "CLEAN"
+  },
+  "model": "6a6a952603224bd13712d307bd4523d35ecb2545f21681dd85bfbbeef5c0a5f1",
+  "observations": [
+    {
+      "id": "plain",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": true,
+      "codes": [
+        "RK_INVERTED_REQUIREDNESS"
+      ]
+    },
+    {
+      "id": "valid-param",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": true,
+      "codes": [
+        "RK_INVERTED_REQUIREDNESS"
+      ]
+    },
+    {
+      "id": "repertoire-only",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": false,
+      "codes": []
+    },
+    {
+      "id": "repertoire-valid-param",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": false,
+      "codes": []
+    },
+    {
+      "id": "repertoire-unknown",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "INVALID_ENTITY"
+      ]
+    },
+    {
+      "id": "repertoire-parity",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "WRONG_NUMBER_OF_DOLLARS"
+      ]
+    },
+    {
+      "id": "repertoire-param-lexer",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_LEXER_STANDARD_ERROR"
+      ]
+    },
+    {
+      "id": "unknown-only",
+      "inputHash": "b634cf6313c55ccaca0321046b2f9a0fc27d188a1d8df47f8a53585461e08c5a",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "INVALID_ENTITY"
+      ]
+    }
+  ]
+}

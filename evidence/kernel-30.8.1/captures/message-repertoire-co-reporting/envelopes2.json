@@ -1,0 +1,136 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": true,
+  "data": {
+    "ops": 3,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "repertoire-linebreak",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "N0",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=t😀x\ntwo"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            },
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "INVALID_LINEBREAK",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "repertoire-control",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "N1",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=t😀x\ttwo"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            },
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "INVALID_CHARACTERS",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "two-repertoire-characters",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "N2",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=x😀𝐀y"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true
+}

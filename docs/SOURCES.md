@@ -633,6 +633,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-message-template-character-repertoire"></a>
 - [The rule-message template's repertoire is the BMP rather than printable ASCII, its control class covers the C1 block and the invisible format characters, the ASCII bound belongs to a parameter body alone, and the name position's condition-reference gate is `INVALID_FIELD`](sources/message-and-pointer-probes.md#src-message-template-character-repertoire)
 
+<a id="src-message-repertoire-co-reporting"></a>
+- [Rule-message repertoire findings coexist with named failures; full diagnostic lists correct the priority inferred from code-only observations](sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)
+
 <a id="src-message-parameter-surface-and-iteration-gates"></a>
 - [The rule-message parameter surface read off its own grammar: the value suffix's second gate is a field declaration (`INVALID_NO_VALUE_VALIDATION`), `$Entity.Vordruckzeile$` skips the condition-membership gate, `$#RootGroup$` is gated on parallel iteration, the group position takes a matching semantic-index key, and the index terminal's cross-declaration consistency family is reachable](sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)
 

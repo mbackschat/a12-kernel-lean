@@ -5,6 +5,18 @@ import A12Kernel.Proofs.ValidationRule
 
 namespace A12Kernel
 
+/-- Co-reporting never admits a template whose repertoire check fails, even when every parameter checks. -/
+theorem validationMessageTemplate_repertoireFailure_refused
+    (model : FlatModel) (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (source : String) (character : Char)
+    (failure : firstUnsupportedMessageTemplateCharacter? source = some character) :
+    (elaborateValidationMessageTemplate model profile condition source).isOk = false := by
+  simp only [elaborateValidationMessageTemplate, failure]
+  split
+  · contradiction
+  · rfl
+  · rfl
+
 theorem checkedValidationMessageReference_usedByCondition
     (reference : CheckedValidationMessageReference model condition) :
     condition.core.referencesField reference.declaration.id = true :=

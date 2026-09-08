@@ -1,0 +1,122 @@
+[
+  {
+    "id": "plain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M0",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=text"
+    ]
+  },
+  {
+    "id": "valid-param",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M1",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=text $Anchor$"
+    ]
+  },
+  {
+    "id": "repertoire-only",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M2",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=t😀x"
+    ]
+  },
+  {
+    "id": "repertoire-valid-param",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M3",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=t😀x $Anchor$"
+    ]
+  },
+  {
+    "id": "repertoire-unknown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M4",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=t😀x $Missing$"
+    ]
+  },
+  {
+    "id": "repertoire-parity",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M5",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=t😀x $Anchor"
+    ]
+  },
+  {
+    "id": "repertoire-param-lexer",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M6",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=row $An😀chor$"
+    ]
+  },
+  {
+    "id": "unknown-only",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "M7",
+      "--field",
+      "/Probe/Anchor",
+      "--condition",
+      "FieldFilled(Anchor)",
+      "--message",
+      "en_US=text $Missing$"
+    ]
+  }
+]

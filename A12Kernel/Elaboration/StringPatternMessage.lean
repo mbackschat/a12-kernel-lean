@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValidationMessageAuthoring
 /-! # The measured en_US String-pattern field-message producer
 
 A String field's own pattern message is a **different producer** from a rule's error text, sharing
-only the lexical gate and the refusal type. Its parameter vocabulary is two fixed lowercase tokens
+the lexical checks and the refusal type. The rule producer's repertoire co-reporting is a separate boundary. Its parameter vocabulary is two fixed lowercase tokens
 naming the owning field, never a rule-relative path, so it performs no lookup and needs no model,
 condition, or keyword profile. Its empty dollar pair is an invalid parameter rather than the rule
 path's literal-dollar escape.

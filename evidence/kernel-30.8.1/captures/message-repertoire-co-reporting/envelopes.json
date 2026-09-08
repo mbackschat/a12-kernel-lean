@@ -1,0 +1,324 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": true,
+  "data": {
+    "ops": 8,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "plain",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M0",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=text"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "WARNING",
+              "source": "LINT",
+              "code": "RK_INVERTED_REQUIREDNESS",
+              "where": {
+                "rule": "",
+                "operator": "FieldFilled"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "valid-param",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M1",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=text $Anchor$"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "WARNING",
+              "source": "LINT",
+              "code": "RK_INVERTED_REQUIREDNESS",
+              "where": {
+                "rule": "",
+                "operator": "FieldFilled"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "repertoire-only",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M2",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=t😀x"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "repertoire-valid-param",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M3",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=t😀x $Anchor$"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "repertoire-unknown",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M4",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=t😀x $Missing$"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            },
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "INVALID_ENTITY",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "repertoire-parity",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M5",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=t😀x $Anchor"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            },
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "WRONG_NUMBER_OF_DOLLARS",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "repertoire-param-lexer",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M6",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=row $An😀chor$"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            },
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_LEXER_STANDARD_ERROR",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "unknown-only",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--code",
+          "M7",
+          "--field",
+          "/Probe/Anchor",
+          "--condition",
+          "FieldFilled(Anchor)",
+          "--message",
+          "en_US=text $Missing$"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "INVALID_ENTITY",
+              "where": {
+                "rule": "/Probe/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true
+}

@@ -108,6 +108,9 @@ inductive ValidationMessageTemplateError where
   /-- A character outside the template's BMP repertoire. The Kernel refuses it **codelessly**, through
   the runtime formal class its message text belongs to rather than through a bracketed parameter key. -/
   | unsupportedCharacter (character : Char)
+  /-- Preserve the other check's cause beside the repertoire refusal ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)); an unsupported-fragment cause remains local rather than acquiring a Kernel class. -/
+  | unsupportedCharacterWithError (character : Char)
+      (cause : ValidationMessageTemplateError)
   /-- A non-ASCII character inside a **parameter body**, which the surrounding text admits. Carries the
   parameter as authored; the Kernel additionally reports the character's 1-based offset. -/
   | parameterCharacter (parameter : String) (character : Char)
@@ -234,6 +237,10 @@ while both supplementary-plane scalars measured are refused — and the Kernel r
 a bracketed key, through the runtime formal class its message text belongs to. -/
 private def isSupportedTemplateCharacter (character : Char) : Bool :=
   character.toNat < 0x10000
+
+/-- Retain one local locator for the repertoire refusal; the Kernel reports the template once even with two offending characters ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)). -/
+def firstUnsupportedMessageTemplateCharacter? (source : String) : Option Char :=
+  source.toList.find? (fun character => !isSupportedTemplateCharacter character)
 
 /-- The seven non-ASCII letters `nameOhnePunkt` names (`spec/11` Part B). They are the whole non-ASCII
 part of both the parameter body's lexical bound and the name token itself, so the two predicates below
@@ -558,12 +565,8 @@ private def parseSegments (profile : ValidationMessageKeywordProfile) :
           parseParameter profile parameter
       pure (textPart text ++ [parameterPart] ++ (← parseSegments profile rest))
 
-/-- The lexical gate **both** message producers share: a nonempty source inside the template repertoire
-with no line separator or control character, balanced dollar delimiters, and no non-ASCII character
-inside a parameter body, split into alternating text and parameter segments. Only the parameter grammar
-differs between producers, so this stays one gate. -/
-def validateMessageTemplateSource (source : String) :
-    Except ValidationMessageTemplateError (List String) := do
+private def validateMessageTemplatePrefix (source : String) :
+    Except ValidationMessageTemplateError Unit := do
   if source.isEmpty then throw .emptyTemplate
   match source.toList.find? isLineSeparator with
   | some _ => throw .lineSeparator
@@ -571,10 +574,9 @@ def validateMessageTemplateSource (source : String) :
   match source.toList.find? isControlCharacter with
   | some character => throw (.controlCharacter character)
   | none => pure ()
-  match source.toList.find?
-      (fun character => !isSupportedTemplateCharacter character) with
-  | some character => throw (.unsupportedCharacter character)
-  | none => pure ()
+
+private def validateMessageTemplateSegments (source : String) :
+    Except ValidationMessageTemplateError (List String) := do
   if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
   let segments := source.splitOn "$"
   -- Parameter segments are the odd-indexed pieces of a balanced split, and only they carry the ASCII
@@ -589,10 +591,20 @@ def validateMessageTemplateSource (source : String) :
   | none => pure ()
   pure segments
 
+/-- The bounded String-pattern producer's existing source gate. Rule messages combine repertoire findings separately because they coexist with the other failures ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)). -/
+def validateMessageTemplateSource (source : String) :
+    Except ValidationMessageTemplateError (List String) := do
+  validateMessageTemplatePrefix source
+  match firstUnsupportedMessageTemplateCharacter? source with
+  | some character => throw (.unsupportedCharacter character)
+  | none => pure ()
+  validateMessageTemplateSegments source
+
 private def parseValidationMessageTemplate
     (profile : ValidationMessageKeywordProfile) (source : String) :
     Except ValidationMessageTemplateError (List ParsedValidationMessagePart) := do
-  parseSegments profile (← validateMessageTemplateSource source)
+  validateMessageTemplatePrefix source
+  parseSegments profile (← validateMessageTemplateSegments source)
 
 /-- One checked field reference of a message parameter. `parameter` retains the authored spelling for
 Explain, including any value suffix; `reference` is its decoded path, which is what resolved. -/
@@ -860,9 +872,16 @@ def elaborateValidationMessageTemplate (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model) (source : String) :
     Except ValidationMessageTemplateError
+      (CheckedValidationMessageTemplate model condition) :=
+  let checked : Except ValidationMessageTemplateError
       (CheckedValidationMessageTemplate model condition) := do
-  let parsed ← parseValidationMessageTemplate profile source
-  pure { source, parts := ← checkMessageParts model profile condition parsed }
+    let parsed ← parseValidationMessageTemplate profile source
+    pure { source, parts := ← checkMessageParts model profile condition parsed }
+  match firstUnsupportedMessageTemplateCharacter? source, checked with
+  | none, result => result
+  | some character, .ok _ => .error (.unsupportedCharacter character)
+  | some character, .error cause =>
+      .error (.unsupportedCharacterWithError character cause)
 
 structure ValidationMessageInputs where
   fieldName : FieldId → MessageNameInput

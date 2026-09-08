@@ -382,6 +382,29 @@ example :
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/
 private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
 
+example :
+    templateError? ("t" ++ cp 0x1F600 ++ "x $Amount") =
+      some (.unsupportedCharacterWithError (Char.ofNat 0x1F600) .oddDollarCount) ∧
+    templateError? ("t" ++ cp 0x1F600 ++ "x $Missing$") =
+      some (.unsupportedCharacterWithError (Char.ofNat 0x1F600)
+        (.reference "Missing" (.invalidEntity (bare "Missing")))) ∧
+    templateError? ("t" ++ cp 0x1F600 ++ "x\ntwo") =
+      some (.unsupportedCharacterWithError (Char.ofNat 0x1F600) .lineSeparator) ∧
+    templateError? ("t" ++ cp 0x1F600 ++ "x\ttwo") =
+      some (.unsupportedCharacterWithError (Char.ofNat 0x1F600)
+        (.controlCharacter '\t')) ∧
+    templateError? ("row $An" ++ cp 0x1F600 ++ "chor$") =
+      some (.unsupportedCharacterWithError (Char.ofNat 0x1F600)
+        (.parameterCharacter ("An" ++ cp 0x1F600 ++ "chor") (Char.ofNat 0x1F600))) ∧
+    templateError? ("t" ++ cp 0x1F600 ++ "x $Amount$") =
+      some (.unsupportedCharacter (Char.ofNat 0x1F600)) ∧
+    templateError? ("x" ++ cp 0x1F600 ++ cp 0x1D400 ++ "y") =
+      some (.unsupportedCharacter (Char.ofNat 0x1F600)) ∧
+    templateError? ("x" ++ cp 0x1F600 ++ " $Amount For \"k1\"$") =
+      some (.unsupportedCharacterWithError (Char.ofNat 0x1F600)
+        (.semanticIndexUnsupported "Amount For \"k1\"")) := by
+  native_decide
+
 /- **The template's character repertoire is the BMP, and it is the value charset's rule reaching a second
    carrier** — not the printable-ASCII bound this gate used to apply, which refused message text the Kernel
    admits. Measured over fourteen admitted BMP code points spanning Latin-1, Latin Extended-A, currency,
