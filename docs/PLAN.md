@@ -5,8 +5,9 @@ Detailed coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), o
 
 ## Verified baseline
 
-- `basis`: current committed Lean state; Git owns the exact revision.
-- `gate`: Tier 1 passed for that Lean state.
+- `basis`: local revision `3abfb4fa`, paused at the owner's session shutdown on 2026-09-08; no capsule is in flight and nothing was pushed.
+- `gate`: the latest semantic revision `1e1edad7` passed the full build, all 51 compact evidence projections, trust audit, cold review, and hygiene gates. The later velocity datetime change passed its focused generator and documentation checks.
+- `resume-first`: continue the existing diagnostic sweep from the current [coverage report](CONFORMANCE-COVERAGE.md) and [open obligations](SEMANTICS-GAPS.md), checking existing owners and peer findings before selecting a carrier. The latest [message repertoire checkpoint](sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting) closes the interrupted message correction; do not repeat it. The six-item cross-project handoff is saved as `a12-dmkits-dmtool-findings-2026-09-08.md` in the owner's Downloads directory.
 
 <a id="active-unit"></a>
 ## Selected work
