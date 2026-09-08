@@ -14,11 +14,11 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `c401b5b3` on 2026-09-08.
+Measured at `7da15820` on 2026-09-08.
 
 ## Headline
 
-**436 of 495 Kernel refusal classes modelled in Lean (88%). 59 are not.**
+**440 of 495 Kernel refusal classes modelled in Lean (88%). 55 are not.**
 
 That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
 at 489 (98%): it counts a class named anywhere in the written
@@ -33,8 +33,8 @@ together the modelled figure leads.
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 300 | 60% |
-| Named in tracked Lean source | 436 | 88% |
-| Observed in a retained probe artifact | 198 | 40% |
+| Named in tracked Lean source | 440 | 88% |
+| Observed in a retained probe artifact | 201 | 40% |
 | Touched by any of the three | 489 | 98% |
 | **Untouched everywhere** | **6** | **1%** |
 
@@ -64,8 +64,8 @@ one: it counts whether a record cites external calibration, not how much of its 
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 205 | 100% |
-| Citing a Kernel checkpoint or calibration | 105 | 51% |
+| Capability records in [`implementation/`](implementation/) | 206 | 100% |
+| Citing a Kernel checkpoint or calibration | 105 | 50% |
 | Carrying an explicit evidence-pending note | 52 | 25% |
 
 ## Axis 3 — open obligation load
@@ -75,7 +75,7 @@ one: it counts whether a record cites external calibration, not how much of its 
 | Open gap records in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 25 |
 | `remaining` rows across those gaps | 0 |
 | Gaps whose route is **blocked** | 0 |
-| Ledger entries `pending` with a12-dmkits | 0 |
+| Ledger entries `pending` with a12-dmkits | 1 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route is the only figure here that should stop work; a `remaining` row is ordinary scope. If
@@ -88,8 +88,8 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 206687 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8672 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207428 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8678 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above is measuring
@@ -99,7 +99,7 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 186 |
+| Retained capture directories under `../evidence/` | 187 |
 | Retained observation rows across all artifacts | 476 |
 
 ## Velocity
@@ -150,4 +150,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-08 | `8b1fd94f` | 483 | 426 | 12 | 105 | 25 |
 | 2026-09-08 | `0e22c25a` | 489 | 432 | 6 | 105 | 25 |
 | 2026-09-08 | `c401b5b3` | 489 | 436 | 6 | 105 | 25 |
+| 2026-09-08 | `7da15820` | 489 | 440 | 6 | 105 | 25 |
 <!-- velocity-history:end -->

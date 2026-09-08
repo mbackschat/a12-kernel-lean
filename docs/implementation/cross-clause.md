@@ -119,6 +119,16 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `mutation-sensitivity`: 21 mutations run, 21 caught by executable assertions: six adjacent stage swaps, fourteen guard/branch changes and an inverted admission Boolean. Unchanged source and unchanged stage-order controls pass. This tests the chosen Lean account, adding no Kernel correspondence.
 - `external-evidence`: **none.** `external evidence pending` for the whole cascade: `dmtool` has no measured route to declare a semantic index, so neither the order nor the admitting side is probeable at this revision, and the mechanism is read from the Kernel's semantic-index checker and its two entity helpers.
 
+<a id="cap-comparison-entry"></a>
+#### Comparison entry and checker continuation
+
+- `owner`: [`ComparisonEntry.lean`](../../A12Kernel/Elaboration/ComparisonEntry.lean) decides constant-pair, ordering-kind, tolerance-kind and pattern-slot entry over resolved result kinds and retained grouping. It reuses the scalar-kind and static-diagnostic vocabularies.
+- `boundary`: the result separates completed tolerance admission from ordinary kind/scale continuation and pattern-source continuation. It carries neither expressions' values nor pattern text; callers retain the original expressions and pass those to the existing later checkers. Passing entry alone does not admit an ordinary or pattern comparison.
+- `assurance-P`: [laws](../../A12Kernel/Proofs/ComparisonEntry.lean) establish constant-refusal dominance, refusal after grouping both constants, exact successful pattern-slot prerequisites, the tolerance admission equivalence and tolerance's exclusive completed continuation.
+- `assurance-E`: [cases](../../A12Kernel/Conformance/ComparisonEntry.lean) retain clock/grouping and operand-order counterexamples, competing pattern faults, and completed versus deferred checks. Sixteen targeted mutations were caught, with the unchanged control passing.
+- `external-evidence`: [44 raw static observations](../sources/static-admission-and-class-probes.md#src-comparison-entry-gates) support the named clock, pattern and tolerance separators; no new typed replay bundle or public process is introduced. `L`, `C`, `X` and `Q` remain none.
+- `remains`: earlier expression checking, wider parser construction, later pair-specific checks and regex compilation retain their own boundaries; [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) owns wider static completion.
+
 <a id="cap-repeatability-restriction"></a>
 #### The repeatability-restriction reading
 

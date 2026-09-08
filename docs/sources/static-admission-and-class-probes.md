@@ -2,6 +2,34 @@
 
 Static admission, operand kind gates, and diagnostic-class probes. Evaluation and application routes are owned by [`evaluation-and-application-routes.md`](evaluation-and-application-routes.md).
 
+<a id="src-comparison-entry-gates"></a>
+#### Comparison entry preserves clock grouping and selects the next checker
+
+- `revision`: a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool 0.13.0, source `CLEAN`, Kernel 30.8.1 built/runtime. Measured 2026-09-08 through the pinned measurement checkout; its visible status stayed empty.
+- `denominator`: 44 `KERNEL_CONFIRMED` rule checks in three batches (31, 12, 1), `en_US`, one fixed model. Every child returned a Boolean validity and the matching exit status; observation-mode batches dispatched fully and wrote artifacts despite deliberate refusals.
+- `claim`: grouping preserves constantness but changes the clock exception. `Today == Today` and `{Today} == {Today}` refuse `MVK_INVALID_COMPARE_TO_CONST`; either singly grouped form admits. `Now` repeats the distinction, and `{{Today}} == Today` admits too.
+- `claim`: a bare `Today` versus `"05.03.2024"` admits in either order. Grouping the clock refuses the constant pair, while grouping the literal admits. `Today < Now` refuses at entry, while `Today < {Now}` admits.
+- `claim`: constant entry is directional. `Today < 1` reaches `MVK_INVALID_COMPARE_TO_DATE`; `1 < Today` reports `MVK_INVALID_COMPARE_TO_CONST`. Grouping `Today` makes both directions report the constant code.
+- `claim`: pattern entry orders constant-pair, left-shape, String-kind and right-constant gates. Grouped fields and computed String/Number expressions reach the shape code. A Number field paired with a String field reaches the kind code. A String field paired with itself reaches the right-constant code. Both pattern operators have controls.
+- `claim`: the right pattern literal may be grouped or empty. A malformed regex reaches the existing `MVK_INVALID_PATTERN` gate only after its slots pass.
+- `claim`: tolerance rejects a constant pair before testing kinds. A String/Number field pair reaches `MVK_INVALID_TYPE_FOR_TOLERANCE_OP`; two Number fields with different scales admit, while equality on that pair reaches `MVK_INVALID_COMPARE_DEC_PLACES`.
+- `mechanism`: the parser's `CheckVergleichsBedingungImpl.check` and `isValidConstantComparison` supply the entry sequence; `CheckOpUtils.isConstant` traverses braces while `isHeuteOrJetzt` does not. Same-kind grouped-clock pairs isolate that difference from temporal comparability. The Lean profile consumes resolved result kinds, not declared field kinds.
+- `read-back`: `rule add` persisted `FieldFilled(Anchor) And {Today} == Today`, and the resulting model passes `model check`. `rule read` reports `converted:true` but renders `FieldFilled(/Calc/Anchor) And Today == Today`; the third observation batch rechecks that output and records `MVK_INVALID_COMPARE_TO_CONST`. This is a formatter/conversion defect, not a persistence failure.
+- `peer-search`: the peer's `kf46` already records isolated pattern-slot classes. After heading-first findings review, exact `{Today}`/`{Now}` searches across `spec/`, local source checkpoints, evidence documentation, Lean findings and peer kernel findings returned zero matches before this change. Reconcile the new entry/grouping clause through `SPEC-2026-09-08-04`.
+- `limit`: static admission only; no runtime equivalence or evaluation claim. Later ordinary kind/scale checks and pattern-source admission retain their separate owners. These are retained raw calibration observations, not a typed replay bundle, so they add neither `L` nor `C` assurance.
+- `identity`: observation schemaVersion 1 remains intentional at this pin; cross-version `inputHash` comparison is excluded by the [upstream correction](../SOURCES.md#inbound-2026-09-08-corrections).
+- `model`: reuse [`Calc_DM.json`](../../evidence/kernel-30.8.1/captures/arithmetic-shape-gates/Calc_DM.json), SHA-256 `1d067a764514c3d322269ea26211ef43d2a01d8b7224fed47bd071fe00d615ef`; all three artifacts cite those exact bytes.
+- `bytes`: [`ops.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/ops.json), SHA-256 `3d5160395b3dc86b382b37c5c288b71ee0b141b4eeff87553909e13af2ee5892`.
+- `bytes`: [`observations.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/observations.json), SHA-256 `ad48d743c197f10c059361b8716f024703d9f364f7c67b80c5c59bb192fb7f04`.
+- `bytes`: [`ops2.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/ops2.json), SHA-256 `a09590d8ddef82192875fd052511706df893b4e3c275cb803ead2c815f9df7a2`.
+- `bytes`: [`observations2.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/observations2.json), SHA-256 `76593d4cb52cd16d06e5a614f7efcc7d505c502ffc56dca7bfcce9e8dc470390`.
+- `bytes`: [`ops3.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/ops3.json), SHA-256 `2a62f5aec57d6b676e6c6d35e385cde487c92a0c96fd5a13803d70c7bb23610a`.
+- `bytes`: [`observations3.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/observations3.json), SHA-256 `4bcbfdc3cdcf50f28b3f25d831a780595cb5d3a1126d80698a951c513ce89d03`.
+- `bytes`: [`control-rule.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/control-rule.json), SHA-256 `87ba6393629b233bf289786cd698fed3916484fa828cba00918caeb733a3a019`.
+- `bytes`: [`Persisted_DM.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/Persisted_DM.json), SHA-256 `b9901b191839404b906713aba8a4701c370a95621ef585338ed38b5515cbb62f`.
+- `bytes`: [`readback.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/readback.json), SHA-256 `ac53a57c156c3a948580f2a8240ebb7ecc4e732176eb52a7807755ed047d14a3`.
+- `bytes`: [`check.json`](../../evidence/kernel-30.8.1/captures/comparison-entry-gates/check.json), SHA-256 `90a2ddbf2e3dadde53a3f91fa8279ecc6caee82920e155c3b4650f851feee759`.
+
 <a id="src-arithmetic-shape-gates"></a>
 #### The four arithmetic shape gates, and the compatibility quirk one of them keeps, measured locally 2026-09-08
 

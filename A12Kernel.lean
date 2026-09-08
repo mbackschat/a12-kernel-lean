@@ -88,6 +88,7 @@ import A12Kernel.Semantics.CustomFieldFormalMessage
 import A12Kernel.Semantics.CustomFieldValidity
 import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.StringPattern
+import A12Kernel.Elaboration.ComparisonEntry
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.FullDateInput

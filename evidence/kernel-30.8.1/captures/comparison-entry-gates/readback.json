@@ -1,0 +1,22 @@
+{
+  "target" : "rule",
+  "op" : "read",
+  "outcome" : "read",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "read /Calc/GroupedClockControl",
+  "data" : {
+    "rule" : "/Calc/GroupedClockControl",
+    "severity" : "ERROR",
+    "errorCode" : "GroupedClockControl",
+    "errorField" : "/Calc/Anchor",
+    "converted" : true,
+    "condition" : "FieldFilled(/Calc/Anchor) And Today == Today",
+    "messages" : [ {
+      "locale" : "en_US",
+      "text" : "entry gate"
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

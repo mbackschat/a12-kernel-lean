@@ -1,0 +1,182 @@
+[
+  {
+    "id": "datenumber",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "datenumber",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Today < 1",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "numberdate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "numberdate",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And 1 < Today",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "groupdatenumber",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "groupdatenumber",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {Today} < 1",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "numbergroupdate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "numbergroupdate",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And 1 < {Today}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "nestedclock",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nestedclock",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {{Today}} == Today",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "groupedliteral",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "groupedliteral",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Today == {\"05.03.2024\"}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "temporalpattern",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "temporalpattern",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {Today} PatternMatched Today",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "violatedshape",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "violatedshape",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] + \"x\" PatternViolated \"a.*\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "violatedfield",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "violatedfield",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] PatternViolated [Anchor]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "violatedtype",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "violatedtype",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [A] PatternViolated [Anchor]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "violatedcontrol",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "violatedcontrol",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] PatternViolated \"a.*\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "reversegroupclock",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "reversegroupclock",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Today == {Today}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  }
+]

@@ -511,6 +511,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The declared-charset gates](implementation/cross-clause.md#cap-charset-spec)
 <a id="cap-semantic-index-admission"></a>
 - [The semantic-index admission cascade](implementation/cross-clause.md#cap-semantic-index-admission)
+<a id="cap-comparison-entry"></a>
+- [Comparison entry, grouped clocks and checker continuation](implementation/cross-clause.md#cap-comparison-entry)
 <a id="cap-enumeration-category-constant"></a>
 - [The enumeration-category constant gate](implementation/cross-clause.md#cap-enumeration-category-constant)
 <a id="cap-resolved-firstfilledvalue"></a>

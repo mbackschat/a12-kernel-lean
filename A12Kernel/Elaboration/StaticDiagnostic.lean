@@ -226,6 +226,14 @@ inductive KernelStaticDiagnostic where
   | invalidPattern
   /-- A pattern-comparison operand has the wrong scalar kind for its slot. -/
   | invalidTypeForPatternComparison
+  /-- Two constant operands fail the comparison-entry exception for a bare clock source. -/
+  | invalidCompareToConst
+  /-- A tolerance comparison has an operand outside the number-like family. -/
+  | invalidTypeForToleranceOp
+  /-- The first pattern operand is not an ungrouped field-value operation. -/
+  | invalidParameterForPatternComparison
+  /-- The String-valued right pattern operand is not a constant. -/
+  | missingConstantInPatternComparison
   /-- A recognized strict raw-String length declaration has a decimal spelling or lies outside the signed-32-bit bound domain. -/
   | internalError
   /-- A raw-String length use is not one of the two strict whole-rule shapes. -/
@@ -457,6 +465,10 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidPattern => "MVK_INVALID_PATTERN"
   | .invalidTypeForPatternComparison =>
       "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON"
+  | .invalidCompareToConst => "MVK_INVALID_COMPARE_TO_CONST"
+  | .invalidTypeForToleranceOp => "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+  | .invalidParameterForPatternComparison => "MVK_INVALID_PARAMETER_FOR_PATTERN_COMPARISON"
+  | .missingConstantInPatternComparison => "MVK_MISSING_CONST_IN_PATTERN_COMP"
   | .internalError => "MVK_INTERNAL_ERROR"
   | .invalidLengthOfRawType => "MVK_INVALID_LENGTH_OF_RAW_TYPE"
   | .noNumber => "MVK_NO_NUMBER"
@@ -557,7 +569,9 @@ def all : List KernelStaticDiagnostic :=
     .errorFieldAndZIterationInvalid, .errorFieldGroupIteration4Invalid,
     .errorFieldGroupIteration5Invalid, .refErrorEntityIfFilledNotReferenced,
     .refErrorEntityIfNotFilledNotReferenced,
-    .invalidPattern, .invalidTypeForPatternComparison, .internalError,
+    .invalidPattern, .invalidTypeForPatternComparison,
+    .invalidCompareToConst, .invalidTypeForToleranceOp,
+    .invalidParameterForPatternComparison, .missingConstantInPatternComparison, .internalError,
     .invalidLengthOfRawType, .noNumber, .notSortable,
     .stringEnumAndNonStringEnum, .invalidCompareDecimalPlaces,
     .errorReferenceToCalculatedField,

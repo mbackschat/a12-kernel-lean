@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-08-04"></a>
+### `SPEC-2026-09-08-04` — comparison entry preserves clock grouping and precedes pattern-slot checks
+
+- `status`: pending
+- `clause`: [comparison entry and grouping](../spec/05-dates-and-time.md#comparison-entry-and-grouping) and [pattern admission](../spec/06-strings-and-enumerations.md#pattern-admission-and-execution).
+- `delta`: the constant-pair exception depends on a temporal left result and exactly one **ungrouped** clock. Braces preserve constantness but remove bare-clock recognition, so removing them can change admission; swapping a clock and a Number constant can change the refusal class. The pattern-slot clause now states the measured precedence behind its existing isolated refusals.
+- `basis`: the [comparison-entry checkpoint](sources/static-admission-and-class-probes.md#src-comparison-entry-gates) owns 44 static observations at a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, source clean, dmtool 0.13.0, Kernel 30.8.1, with persisted raw condition and model-check control. The peer's `kf46` already owns isolated pattern-slot codes; those are not a new measurement request.
+- `surfaces`: temporal/constant comparison clauses, pattern-slot precedence, and syntax-preserving transformations. The checkpoint separately records a `rule read` grouping-loss defect; this entry requests semantic reconciliation, not an instrument feature.
+- `acceptance`: confirm the singly grouped `Today`/`Now` admissions against bare and doubly grouped refusals, and `Today < 1` versus `1 < Today` yielding date-kind versus constant-pair codes, or supply a contrary kernel observation. Reconcile the pattern-entry precedence without repeating the already-held isolated-slot measurements.
+- `limit`: static admission only; no runtime equality, evaluation order or cross-version hash claim. Retained observations remain schemaVersion 1 at the existing measurement pin.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-08-03"></a>
 ### `SPEC-2026-09-08-03` — a non-repeatable indexed group arms its own message-parameter gate, which admits exactly one declaration shape
 

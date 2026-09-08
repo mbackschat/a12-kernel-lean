@@ -1,0 +1,467 @@
+[
+  {
+    "id": "numconst",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "numconst",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And 1 > 2",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "patternconst",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "patternconst",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And \"abc\" PatternMatched \"a.*\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "groupconst",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "groupconst",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {\"abc\"} PatternMatched \"a.*\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "groupfield",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "groupfield",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {[Anchor]} PatternMatched \"a.*\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "concat",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "concat",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] + \"x\" PatternMatched \"a.*\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "rhfield",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "rhfield",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] PatternMatched [Anchor]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "typebeforeconst",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "typebeforeconst",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [A] PatternMatched [Anchor]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "rhtype",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "rhtype",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] PatternMatched 1",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "regex",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "regex",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] PatternMatched \"(\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "emptyregex",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "emptyregex",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] PatternMatched \"\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "groupregex",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "groupregex",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] PatternMatched {\"a.*\"}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "twotoday",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "twotoday",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Today == Today",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "grouptoday",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "grouptoday",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {Today} == Today",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "bothgrouptoday",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "bothgrouptoday",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {Today} == {Today}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "todayliteral",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "todayliteral",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Today == \"05.03.2024\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "grouptodayliteral",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "grouptodayliteral",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {Today} == \"05.03.2024\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "literaltoday",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "literaltoday",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And \"05.03.2024\" == Today",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "literalgroupday",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "literalgroupday",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And \"05.03.2024\" == {Today}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "groupnow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "groupnow",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Now == {Now}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "twonow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "twonow",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Now == Now",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "bothgroupnow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "bothgroupnow",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And {Now} == {Now}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "todaynow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "todaynow",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Today < Now",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "todaygroupnow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "todaygroupnow",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And Today < {Now}",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "tolconst",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "tolconst",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And 1 DiffersWithToleranceRange1 2",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "tolstrconst",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "tolstrconst",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And \"a\" DiffersWithToleranceRange1 \"b\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "tolkind",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "tolkind",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] DiffersWithToleranceRange1 [A]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "tolscale",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "tolscale",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [A] DiffersWithToleranceRange1 [Dec]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "eqscale",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "eqscale",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [A] == [Dec]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "orderkind",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "orderkind",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] < [A]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "eqkind",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "eqkind",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [Anchor] == [A]",
+      "--message",
+      "en_US=entry gate"
+    ]
+  },
+  {
+    "id": "shapebeforetype",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "shapebeforetype",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And [A] + 1 PatternMatched \"a.*\"",
+      "--message",
+      "en_US=entry gate"
+    ]
+  }
+]

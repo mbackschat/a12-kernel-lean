@@ -1858,6 +1858,12 @@ run_cmd do
 #print axioms A12Kernel.stringPattern_evalResolved_unknown
 #print axioms A12Kernel.stringPattern_evalResolved_value_complement
 #print axioms A12Kernel.classifyStringPattern_java_rejected
+#print axioms A12Kernel.comparisonConstantPairAllowed_nonconstant_left
+#print axioms A12Kernel.comparisonEntry_constant_refusal
+#print axioms A12Kernel.comparisonEntry_grouped_constants
+#print axioms A12Kernel.comparisonEntry_tolerance_iff
+#print axioms A12Kernel.comparisonEntry_pattern_iff
+#print axioms A12Kernel.comparisonEntry_complete_only_tolerance
 #print axioms A12Kernel.classifyStringPattern_admitted_iff
 #print axioms A12Kernel.evalAdmittedStringPattern_success
 #print axioms A12Kernel.admittedStringPattern_fired_is_value

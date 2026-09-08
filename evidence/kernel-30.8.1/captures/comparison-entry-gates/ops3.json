@@ -1,0 +1,17 @@
+[
+  {
+    "id": "formattedclock",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "formattedclock",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(/Calc/Anchor) And Today == Today",
+      "--message",
+      "en_US=entry gate"
+    ]
+  }
+]

@@ -40,6 +40,14 @@ A Time constant is likewise typed by its own syntax and is locale-independent: e
 
 > **Non-normative implementation note.** Resolve the ambiguity in the **lexer/typer**, not the evaluator: a literal token is classified as `dateConst` iff it matches `DD.MM.YYYY` (or the omitted-year shape), as `timeConst` iff it matches the exact real `HH:mm:ss` shape, and otherwise as `strConst`, with ISO date shapes always remaining `strConst`. Downstream evaluation then never has to "guess" a literal's kind. This mirrors the engine: the literal is typed by syntax.
 
+### Comparison entry and grouping
+
+A comparison first checks whether both operands are constants; braces preserve constantness. Such a pair is refused with `MVK_INVALID_COMPARE_TO_CONST` unless the left operand has a temporal result type and exactly one operand is an **ungrouped** `Today` or `Now`. Passing this entry gate still requires the comparison operator's remaining checks. It precedes the pattern-slot and tolerance-kind gates as well as ordinary comparison checks ([checkpoint](../docs/SOURCES.md#src-comparison-entry-gates)).
+
+Grouping is therefore observable at authoring: `Today == Today` is refused, `{Today} == Today` and `Today == {Today}` are admitted, and `{Today} == {Today}` is refused again. `Now` has the same grouping distinction. A bare `Today` against `"05.03.2024"` is admitted in either order, but grouping that `Today` makes the pair fail the constant gate; grouping the literal leaves its admission unchanged. Nested braces preserve this distinction.
+
+The left temporal-type requirement makes the refusal directional: `Today < 1` clears the constant gate and is refused later with `MVK_INVALID_COMPARE_TO_DATE`, while `1 < Today` is refused with `MVK_INVALID_COMPARE_TO_CONST`. Removing braces or swapping operands before static checking is not generally a legality- or diagnostic-preserving transformation.
+
 ---
 
 ## 2. Addition and difference are asymmetric and calendar-corrected

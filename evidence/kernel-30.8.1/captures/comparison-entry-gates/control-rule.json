@@ -1,0 +1,11 @@
+{
+  "field": "/Calc/Anchor",
+  "condition": "FieldFilled(Anchor) And {Today} == Today",
+  "code": "GroupedClockControl",
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "entry gate"
+    }
+  ]
+}

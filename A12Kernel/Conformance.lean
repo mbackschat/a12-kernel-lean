@@ -44,6 +44,7 @@ import A12Kernel.Conformance.BerlinLegacyCalendarArithmetic
 import A12Kernel.Conformance.BerlinLegacyTimeZone
 import A12Kernel.Conformance.BooleanConstantComputation
 import A12Kernel.Conformance.LiteralComparisonDiagnostic
+import A12Kernel.Conformance.ComparisonEntry
 import A12Kernel.Conformance.FixedGroupRepeatableAncestorCarriers
 import A12Kernel.Conformance.MixedFilledGroupCount
 import A12Kernel.Conformance.RepeatableDateConstantComputation
