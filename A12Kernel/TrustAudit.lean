@@ -2807,6 +2807,11 @@ run_cmd do
 #print axioms A12Kernel.withinGroup_excludes_the_scope_itself
 #print axioms A12Kernel.groupScopeRefusal_iff
 #print axioms A12Kernel.sharedRootGroup_silent_outside_hModel
+#print axioms A12Kernel.rangeShapeForcesBasicPlane
+#print axioms A12Kernel.charsetParseError_is_exactly_the_empty_entry
+#print axioms A12Kernel.tooLong_only_for_combined
+#print axioms A12Kernel.stagesShadow
+#print axioms A12Kernel.parsingCharsetReportsNoParseClass
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses

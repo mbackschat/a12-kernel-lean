@@ -14,14 +14,14 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `4e58cf10` on 2026-09-08.
+Measured at `0e22c25a` on 2026-09-08.
 
 ## Headline
 
-**426 of 495 Kernel refusal classes modelled in Lean (86%). 69 are not.**
+**432 of 495 Kernel refusal classes modelled in Lean (87%). 63 are not.**
 
 That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
-at 483 (97%): it counts a class named anywhere in the written
+at 489 (98%): it counts a class named anywhere in the written
 account, **including a checkpoint's own list of what it deliberately did not reach**. Touched is an upper
 bound on what this repository knows about, and it can be raised to 100% in an afternoon by writing prose,
 so it is reported to expose that gap rather than to stand in for progress. When the two are quoted
@@ -32,11 +32,11 @@ together the modelled figure leads.
 | | classes | share |
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 299 | 60% |
-| Named in tracked Lean source | 426 | 86% |
+| Named in `spec/` or `docs/` prose | 300 | 60% |
+| Named in tracked Lean source | 432 | 87% |
 | Observed in a retained probe artifact | 198 | 40% |
-| Touched by any of the three | 483 | 97% |
-| **Untouched everywhere** | **12** | **2%** |
+| Touched by any of the three | 489 | 98% |
+| **Untouched everywhere** | **6** | **1%** |
 
 Two hygiene readings, both of which should stay at zero or be acted on:
 
@@ -51,7 +51,6 @@ Ordered by size, because that is the order in which they are worth attacking.
 
 | untouched | catalog | route |
 |---|---|---|
-| 6 | `kernel_core_errortext_error_messages` | shared error-text base utilities — carrier not yet identified |
 | 2 | `vk_parser_error_messages` | condition/DSL static legality — the fast `dmtool rule check` batch route |
 | 2 | `_30_8` | runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text |
 | 1 | `vk_parser_common_error_messages` | shared parser diagnostics — the fast `rule check` batch route |
@@ -65,9 +64,9 @@ one: it counts whether a record cites external calibration, not how much of its 
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 203 | 100% |
+| Capability records in [`implementation/`](implementation/) | 204 | 100% |
 | Citing a Kernel checkpoint or calibration | 105 | 51% |
-| Carrying an explicit evidence-pending note | 50 | 24% |
+| Carrying an explicit evidence-pending note | 51 | 25% |
 
 ## Axis 3 — open obligation load
 
@@ -89,8 +88,8 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 206217 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8659 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 206240 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8664 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above is measuring
@@ -149,4 +148,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-08 | `1401d381` | 483 | 415 | 12 | 103 | 25 |
 | 2026-09-08 | `c1bb20aa` | 483 | 419 | 12 | 104 | 25 |
 | 2026-09-08 | `8b1fd94f` | 483 | 426 | 12 | 105 | 25 |
+| 2026-09-08 | `0e22c25a` | 489 | 432 | 6 | 105 | 25 |
 <!-- velocity-history:end -->

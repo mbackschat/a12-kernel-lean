@@ -87,6 +87,7 @@ import A12Kernel.Conformance.ErrorTextParameterModelKind
 import A12Kernel.Conformance.ErrorTextParameterAddressing
 import A12Kernel.Conformance.ArithmeticShape
 import A12Kernel.Conformance.OperandAddressingScope
+import A12Kernel.Conformance.CharsetSpec
 import A12Kernel.Conformance.EnumerationCategoryConstant
 import A12Kernel.Conformance.ConstructedDateComponents
 import A12Kernel.Conformance.ConstructedDateDay

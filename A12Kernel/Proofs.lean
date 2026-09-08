@@ -76,6 +76,7 @@ import A12Kernel.Proofs.ErrorTextParameterModelKind
 import A12Kernel.Proofs.ErrorTextParameterAddressing
 import A12Kernel.Proofs.ArithmeticShape
 import A12Kernel.Proofs.OperandAddressingScope
+import A12Kernel.Proofs.CharsetSpec
 import A12Kernel.Proofs.EnumerationCategoryConstant
 import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay

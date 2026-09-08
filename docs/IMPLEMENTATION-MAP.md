@@ -507,6 +507,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The arithmetic shape gates](implementation/cross-clause.md#cap-arithmetic-shape-gates)
 <a id="cap-operand-addressing-scope"></a>
 - [The operand addressing and scope gates](implementation/cross-clause.md#cap-operand-addressing-scope)
+<a id="cap-charset-spec"></a>
+- [The declared-charset gates](implementation/cross-clause.md#cap-charset-spec)
 <a id="cap-enumeration-category-constant"></a>
 - [The enumeration-category constant gate](implementation/cross-clause.md#cap-enumeration-category-constant)
 <a id="cap-resolved-firstfilledvalue"></a>
