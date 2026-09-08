@@ -2686,3 +2686,7 @@ run_cmd do
 #print axioms A12Kernel.operandCountAdmitted_prefix
 #print axioms A12Kernel.operandCountAdmitted_full
 #print axioms A12Kernel.componentSlots_length
+#print axioms A12Kernel.tableEnumCheckRuns_a12
+#print axioms A12Kernel.downstreamRefusals_a12_empty
+#print axioms A12Kernel.downstreamRefusals_open
+#print axioms A12Kernel.downstream_stage_partition

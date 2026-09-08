@@ -68,4 +68,35 @@ theorem parameterValueRefusal_absent_column (parameter : TableConsistencyParamet
     parameterValueRefusal parameter { name := name, allowedValues := [] } = none := by
   simp [parameterValueRefusal]
 
+/-- **The downstream guard never opens for an A12 document model.** One constant decides seventeen
+further classes across two stages, and this is the law that says so. -/
+theorem tableEnumCheckRuns_a12 (values : List (List String)) :
+    tableEnumCheckRuns (values.map a12TableView) = false := by
+  induction values with
+  | nil => rfl
+  | cons _ rest ih => simp [tableEnumCheckRuns, List.any_cons] at ih ⊢
+
+/-- **No A12 model draws a downstream class**, whatever its enumerations declare. Stated over the
+whole set rather than per class, because the guard is what they share: a model version that made any
+one of them live would have to open the guard, and would then make all seventeen live at once. -/
+theorem downstreamRefusals_a12_empty (values : List (List String)) :
+    downstreamRefusals (values.map a12TableView) = [] := by
+  simp [downstreamRefusals, tableEnumCheckRuns_a12]
+
+/-- The guard is not vacuous in the other direction: one declaration carrying a table name opens it
+and every downstream class becomes reachable together. Without this the law above would also hold of a
+guard that never opens for anything. -/
+theorem downstreamRefusals_open (name : String) (values : List String) :
+    downstreamRefusals [{ values := values, tableName := some name }] =
+      TableEnumDownstreamRefusal.all := by
+  simp [downstreamRefusals, tableEnumCheckRuns, isTableEnumeration]
+
+/-- The two stages partition the downstream vocabulary, so a consumer can tell a code-generation
+diagnostic from a file-parser one by class alone. -/
+theorem downstream_stage_partition :
+    (TableEnumDownstreamRefusal.all.filter (·.stage == .codegenTableCheck)).length = 6 ∧
+      (TableEnumDownstreamRefusal.all.filter (·.stage == .csvLoad)).length = 11 ∧
+      (TableEnumDownstreamRefusal.all.filter (·.stage == .declaration)).length = 0 := by
+  decide
+
 end A12Kernel

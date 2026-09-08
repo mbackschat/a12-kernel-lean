@@ -154,4 +154,116 @@ def valueNotConsistentRefusal (operand : TableConsistencyOperand)
 def fieldValueOperandRefusal (declaration : TableEnumerationDeclaration) : Option TableEnumRefusal :=
   if isTableEnumeration declaration then some .invalidTableEnum else none
 
+/-! ## The whole downstream vocabulary, behind the same constant
+
+Seventeen further catalog classes sit below the declaration gate above, in two stages: the
+code-generation table check and the CSV file parser it calls. All of them are reached through one
+guard — a model has at least one field whose enumeration declares a table name — and that guard is
+the constant this module already owns, re-established here on the **tool-side** interface rather than
+inherited from the runtime one.
+
+**The denominator, closed on this carrier.** Two interfaces share the name `IEnumerationType`. The one
+the code-generation check reads declares `getTableName()` abstract, and exactly one class in the
+checkout implements *that* interface; it returns absence unconditionally. The second interface, from
+the model-API package, has no such member at all, so its implementor is not a second answer. Crossing
+from the runtime constant to this one is a claim rather than an inheritance, which is why it is
+enumerated again here ([`LF116`](../../docs/LEAN-FINDINGS.md)).
+
+**The chain has no branch.** The guard collects the fields whose enumeration declares a table name and
+returns success immediately when that list is empty; every downstream method has exactly one caller,
+inside that guard. So the seventeen classes are not merely unlikely — no A12 code path reaches the
+check that reports them.
+
+Mechanism-derived by exhaustive caller and implementation enumeration over the checkout, not measured:
+a table enumeration cannot be authored through any route this project has, so no probe can exercise
+the positive branch. This is a statement about that source tree at its reviewed revision.
+-/
+
+/-- Where a table-enumeration diagnostic arises. The stages run in this order and each is gated by the
+one before, which is why a consumer that reaches none of them reaches none of the classes. -/
+inductive TableEnumStage where
+  /-- The operand-level checks this module's first half owns. -/
+  | declaration
+  /-- The code-generation table check: the table must exist and its columns must match the type. -/
+  | codegenTableCheck
+  /-- The CSV file parser the check above calls on the table's bytes. -/
+  | csvLoad
+  deriving Repr, DecidableEq
+
+/-- A class reported below the declaration gate. Kept apart from `TableEnumRefusal` because these are
+not operand diagnostics: they describe a *file* and a code-generation run, and no operand position
+produces them. -/
+inductive TableEnumDownstreamRefusal where
+  | enumTableMissing
+  | tableEnumColumnMissing
+  | tableEnumDepColumnMissing
+  | tableEnumDiffCategories
+  | tableEnumMultilingualDisplayValue
+  | tableEnumsNotAllowedForProgrammingLanguage
+  | charactersNotAllowed
+  | columnNameWrong
+  | emptyLine
+  | emptyValue
+  | enumColumnMissing
+  | enumValuesNotUnique
+  | numColumnsDontMatch
+  | utf8EncodingWrong
+  | valueTooLong
+  | xmlUiValueNotUnique
+  | emptyTable
+  deriving Repr, DecidableEq
+
+namespace TableEnumDownstreamRefusal
+
+/-- The exact catalog key. The two stages draw from different catalogs, which is why the prefixes
+differ; a consumer assembling a key by prefixing `MVK_` gets every CSV class wrong. -/
+def catalogKey : TableEnumDownstreamRefusal → String
+  | .enumTableMissing => "MVK_ENUM_TABLE_MISSING"
+  | .tableEnumColumnMissing => "MVK_TABLE_ENUM_COLUMN_MISSING"
+  | .tableEnumDepColumnMissing => "MVK_TABLE_ENUM_DEP_COLUMN_MISSING"
+  | .tableEnumDiffCategories => "MVK_TABLE_ENUM_DIFF_CATEGORIES"
+  | .tableEnumMultilingualDisplayValue => "MVK_TABLE_ENUM_WITH_MULTILINGUAL_DISPLAY_VALUE"
+  | .tableEnumsNotAllowedForProgrammingLanguage =>
+      "MVK_TABLE_ENUMS_NOT_ALLOWED_FOR_PROGRAMMING_LANGUAGE"
+  | .charactersNotAllowed => "CHARACTERS_NOT_ALLOWED"
+  | .columnNameWrong => "COLUMN_NAME_WRONG"
+  | .emptyLine => "EMPTY_LINE"
+  | .emptyValue => "EMPTY_VALUE"
+  | .enumColumnMissing => "ENUM_COLUMN_MISSING"
+  | .enumValuesNotUnique => "ENUM_VALUES_NOT_UNIQUE"
+  | .numColumnsDontMatch => "NUM_COLUMNS_DONT_MATCH"
+  | .utf8EncodingWrong => "UTF8_ENCODING_WRONG"
+  | .valueTooLong => "VALUE_TOO_LONG"
+  | .xmlUiValueNotUnique => "XML_UI_VALUE_NOT_UNIQUE"
+  | .emptyTable => "EMPTY_TABLE"
+
+/-- Which stage reports the class. -/
+def stage : TableEnumDownstreamRefusal → TableEnumStage
+  | .enumTableMissing | .tableEnumColumnMissing | .tableEnumDepColumnMissing
+  | .tableEnumDiffCategories | .tableEnumMultilingualDisplayValue
+  | .tableEnumsNotAllowedForProgrammingLanguage => .codegenTableCheck
+  | _ => .csvLoad
+
+/-- Every class of the downstream family. -/
+def all : List TableEnumDownstreamRefusal :=
+  [.enumTableMissing, .tableEnumColumnMissing, .tableEnumDepColumnMissing,
+   .tableEnumDiffCategories, .tableEnumMultilingualDisplayValue,
+   .tableEnumsNotAllowedForProgrammingLanguage, .charactersNotAllowed, .columnNameWrong,
+   .emptyLine, .emptyValue, .enumColumnMissing, .enumValuesNotUnique, .numColumnsDontMatch,
+   .utf8EncodingWrong, .valueTooLong, .xmlUiValueNotUnique, .emptyTable]
+
+end TableEnumDownstreamRefusal
+
+/-- The code-generation guard: the downstream check runs at all only when some field's enumeration
+declares a table name. An empty list of such fields returns success before any table is read. -/
+def tableEnumCheckRuns (declarations : List TableEnumerationDeclaration) : Bool :=
+  declarations.any isTableEnumeration
+
+/-- The classes a model can draw from the downstream stages: all of them when the guard opens, none at
+all when it does not. The set is stated rather than a per-class predicate because the guard is
+common — nothing distinguishes the classes until it opens. -/
+def downstreamRefusals (declarations : List TableEnumerationDeclaration) :
+    List TableEnumDownstreamRefusal :=
+  if tableEnumCheckRuns declarations then TableEnumDownstreamRefusal.all else []
+
 end A12Kernel

@@ -104,4 +104,38 @@ example :
       TableEnumRefusal.invalidTableEnum.catalogKey = "MVK_INVALID_TABLE_ENUM" := by
   native_decide
 
+/- **Seventeen downstream classes, one guard.** An A12 model's enumerations open none of it, and a
+   declaration carrying a table name opens all of it at once — which is what makes the guard the whole
+   content of the family rather than seventeen separate conditions. -/
+example :
+    downstreamRefusals [a12TableView ["a"], a12TableView []] = [] ∧
+      (downstreamRefusals [{ values := ["a"], tableName := some "T" }]).length = 17 := by
+  native_decide
+
+/- One table-declaring enumeration among many ordinary ones is enough to open it, so the guard is a
+   disjunction over the model rather than a property of the enumeration being checked. -/
+example :
+    downstreamRefusals
+        [a12TableView ["a"], { values := ["b"], tableName := some "T" }, a12TableView ["c"]] =
+      TableEnumDownstreamRefusal.all := by
+  native_decide
+
+/- The two stages split 6/11 and no downstream class claims the declaration stage, so a consumer can
+   route a diagnostic by class alone. The eleven file-parser keys carry no `MVK_` prefix, which is the
+   thing a consumer assembling keys mechanically gets wrong. -/
+example :
+    (TableEnumDownstreamRefusal.all.map (·.catalogKey)).eraseDups.length = 17 ∧
+      (TableEnumDownstreamRefusal.all.filter fun r =>
+        r.catalogKey.startsWith "MVK_").length = 6 ∧
+      TableEnumDownstreamRefusal.emptyTable.stage = .csvLoad ∧
+      TableEnumDownstreamRefusal.enumTableMissing.stage = .codegenTableCheck := by
+  native_decide
+
+/- The downstream vocabulary is disjoint from the operand vocabulary this module's first half owns:
+   no key appears in both, so the two enumerations are not two names for one set. -/
+example :
+    (TableEnumRefusal.all.map (·.catalogKey)).filter
+      (TableEnumDownstreamRefusal.all.map (·.catalogKey)).contains = [] := by
+  native_decide
+
 end A12Kernel.Conformance.TableEnumeration
