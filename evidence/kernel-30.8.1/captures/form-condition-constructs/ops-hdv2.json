@@ -1,0 +1,80 @@
+[
+ {
+  "id": "ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "FieldFilled(/Tp/F)",
+   "--code",
+   "ctl"
+  ]
+ },
+ {
+  "id": "bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckAngegeben(Tp)",
+   "--code",
+   "bare"
+  ]
+ },
+ {
+  "id": "slash",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckAngegeben(/Tp)",
+   "--code",
+   "slash"
+  ]
+ },
+ {
+  "id": "lfd",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckAngegeben(Tp/1)",
+   "--code",
+   "lfd"
+  ]
+ },
+ {
+  "id": "germanCtl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "FeldGefuellt(/Tp/F)",
+   "--code",
+   "germanCtl"
+  ]
+ },
+ {
+  "id": "zeile",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "ZeileNichtEindeutig(/Tp/F)",
+   "--code",
+   "zeile"
+  ]
+ }
+]

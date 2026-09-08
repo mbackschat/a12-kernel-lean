@@ -1,0 +1,28 @@
+[
+ {
+  "id": "ctlDe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "FeldAngegeben(/Tp/F) Und FeldAngegeben(/Tp/D)",
+   "--code",
+   "ctlDe"
+  ]
+ },
+ {
+  "id": "ctlEn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "FieldFilled(/Tp/F) And FieldFilled(/Tp/D)",
+   "--code",
+   "ctlEn"
+  ]
+ }
+]

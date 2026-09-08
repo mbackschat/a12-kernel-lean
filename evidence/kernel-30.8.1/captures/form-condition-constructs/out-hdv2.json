@@ -1,0 +1,245 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 6 ops; 5 of 6 exited nonzero (0 failed, 5 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 6,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "ctl",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "FieldFilled(/Tp/F)",
+          "--code",
+          "ctl"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate is kernel-valid",
+          "diagnostics": [
+            {
+              "severity": "WARNING",
+              "source": "LINT",
+              "code": "RK_INVERTED_REQUIREDNESS",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "",
+                "operator": "FieldFilled"
+              },
+              "fix": "FieldNotFilled(/Tp/F)",
+              "explain": "an errorCondition is the error scenario (true \u21d2 invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones \u2014 did you mean FieldNotFilled?"
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "bare",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckAngegeben(Tp)",
+          "--code",
+          "bare"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "slash",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckAngegeben(/Tp)",
+          "--code",
+          "slash"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "lfd",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckAngegeben(Tp/1)",
+          "--code",
+          "lfd"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "germanCtl",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "FeldGefuellt(/Tp/F)",
+          "--code",
+          "germanCtl"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "zeile",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "ZeileNichtEindeutig(/Tp/F)",
+          "--code",
+          "zeile"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

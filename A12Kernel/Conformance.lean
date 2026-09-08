@@ -73,6 +73,7 @@ import A12Kernel.Conformance.ComputationNormalForm
 import A12Kernel.Conformance.IndexAndSortDeclaration
 import A12Kernel.Conformance.AddressFormalLegality
 import A12Kernel.Conformance.TemporalConstructorOperand
+import A12Kernel.Conformance.RootGroupConditionLegality
 import A12Kernel.Conformance.ConstructedDateComponents
 import A12Kernel.Conformance.ConstructedDateDay
 import A12Kernel.Conformance.ConstructedDateDifference

@@ -62,6 +62,7 @@ import A12Kernel.Proofs.ComputationNormalForm
 import A12Kernel.Proofs.IndexAndSortDeclaration
 import A12Kernel.Proofs.AddressFormalLegality
 import A12Kernel.Proofs.TemporalConstructorOperand
+import A12Kernel.Proofs.RootGroupConditionLegality
 import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay
 import A12Kernel.Proofs.ConstructedDateDifference

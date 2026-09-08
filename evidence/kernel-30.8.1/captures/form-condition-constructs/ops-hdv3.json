@@ -1,0 +1,210 @@
+[
+ {
+  "id": "ctlDe",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "FeldGefuellt(/Tp/F)",
+   "--code",
+   "ctlDe"
+  ]
+ },
+ {
+  "id": "FB_VordruckAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckAngegeben(Tp)",
+   "--code",
+   "FB_VordruckAngegeben"
+  ]
+ },
+ {
+  "id": "FBs_VordruckAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckAngegeben(Tp*)",
+   "--code",
+   "FBs_VordruckAngegeben"
+  ]
+ },
+ {
+  "id": "FB_VordruckNichtAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtAngegeben(Tp)",
+   "--code",
+   "FB_VordruckNichtAngegeben"
+  ]
+ },
+ {
+  "id": "FBs_VordruckNichtAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtAngegeben(Tp*)",
+   "--code",
+   "FBs_VordruckNichtAngegeben"
+  ]
+ },
+ {
+  "id": "FB_MindestensEinVordruckAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "MindestensEinVordruckAngegeben(Tp)",
+   "--code",
+   "FB_MindestensEinVordruckAngegeben"
+  ]
+ },
+ {
+  "id": "FBs_MindestensEinVordruckAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "MindestensEinVordruckAngegeben(Tp*)",
+   "--code",
+   "FBs_MindestensEinVordruckAngegeben"
+  ]
+ },
+ {
+  "id": "FB_KeinVordruckAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "KeinVordruckAngegeben(Tp)",
+   "--code",
+   "FB_KeinVordruckAngegeben"
+  ]
+ },
+ {
+  "id": "FBs_KeinVordruckAngegeben",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "KeinVordruckAngegeben(Tp*)",
+   "--code",
+   "FBs_KeinVordruckAngegeben"
+  ]
+ },
+ {
+  "id": "FB_VordruckNichtFortlaufend",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtFortlaufend(Tp)",
+   "--code",
+   "FB_VordruckNichtFortlaufend"
+  ]
+ },
+ {
+  "id": "FBs_VordruckNichtFortlaufend",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtFortlaufend(Tp*)",
+   "--code",
+   "FBs_VordruckNichtFortlaufend"
+  ]
+ },
+ {
+  "id": "FB_UsbNichtFortlaufend",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "UsbNichtFortlaufend(Tp)",
+   "--code",
+   "FB_UsbNichtFortlaufend"
+  ]
+ },
+ {
+  "id": "FBs_UsbNichtFortlaufend",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "UsbNichtFortlaufend(Tp*)",
+   "--code",
+   "FBs_UsbNichtFortlaufend"
+  ]
+ },
+ {
+  "id": "ZB_ZeilenLueckenlos",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "ZeilenLueckenlos(/Tp/F)",
+   "--code",
+   "ZB_ZeilenLueckenlos"
+  ]
+ },
+ {
+  "id": "ZB_ZeilenNichtAufsteigend",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "ZeilenNichtAufsteigend(/Tp/F)",
+   "--code",
+   "ZB_ZeilenNichtAufsteigend"
+  ]
+ },
+ {
+  "id": "ZB_ZeileNichtEindeutig",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "ZeileNichtEindeutig(/Tp/F)",
+   "--code",
+   "ZB_ZeileNichtEindeutig"
+  ]
+ }
+]

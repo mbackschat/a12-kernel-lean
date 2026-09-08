@@ -479,6 +479,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Address formal legality and its positional class rule](implementation/cross-clause.md#cap-address-formal-legality)
 <a id="cap-temporal-constructor-operand-positions"></a>
 - [Temporal constructor operand positions](implementation/cross-clause.md#cap-temporal-constructor-operand-positions)
+<a id="cap-form-condition-constructs"></a>
+- [Form- and row-level condition constructs](implementation/cross-clause.md#cap-form-condition-constructs)
 <a id="cap-resolved-firstfilledvalue"></a>
 - [Resolved `FirstFilledValue`](implementation/cross-clause.md#cap-resolved-firstfilledvalue)
 <a id="cap-resolved-number-aggregates"></a>

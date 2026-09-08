@@ -824,6 +824,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-temporal-constructor-operand-positions"></a>
 - [A temporal constructor checks each operand position separately, and two classes distinguish a misplaced extractor from an inadmissible one](sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)
+
+<a id="src-form-condition-constructs"></a>
+- [The form-level constructs are German-only, so an A12 model's diagnostic for them depends on its condition language](sources/static-admission-and-class-probes.md#src-form-condition-constructs)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

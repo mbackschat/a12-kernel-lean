@@ -1,0 +1,210 @@
+[
+ {
+  "id": "FB0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckAngegeben(Tp)",
+   "--code",
+   "FB0"
+  ]
+ },
+ {
+  "id": "FBs0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckAngegeben(Tp*)",
+   "--code",
+   "FBs0"
+  ]
+ },
+ {
+  "id": "FB1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtAngegeben(Tp)",
+   "--code",
+   "FB1"
+  ]
+ },
+ {
+  "id": "FBs1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtAngegeben(Tp*)",
+   "--code",
+   "FBs1"
+  ]
+ },
+ {
+  "id": "FB2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "MindestensEinVordruckAngegeben(Tp)",
+   "--code",
+   "FB2"
+  ]
+ },
+ {
+  "id": "FBs2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "MindestensEinVordruckAngegeben(Tp*)",
+   "--code",
+   "FBs2"
+  ]
+ },
+ {
+  "id": "FB3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "KeinVordruckAngegeben(Tp)",
+   "--code",
+   "FB3"
+  ]
+ },
+ {
+  "id": "FBs3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "KeinVordruckAngegeben(Tp*)",
+   "--code",
+   "FBs3"
+  ]
+ },
+ {
+  "id": "FB4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtFortlaufend(Tp)",
+   "--code",
+   "FB4"
+  ]
+ },
+ {
+  "id": "FBs4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "VordruckNichtFortlaufend(Tp*)",
+   "--code",
+   "FBs4"
+  ]
+ },
+ {
+  "id": "FB5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "UsbNichtFortlaufend(Tp)",
+   "--code",
+   "FB5"
+  ]
+ },
+ {
+  "id": "FBs5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "UsbNichtFortlaufend(Tp*)",
+   "--code",
+   "FBs5"
+  ]
+ },
+ {
+  "id": "ZB0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "ZeilenLueckenlos(/Tp/D)",
+   "--code",
+   "ZB0"
+  ]
+ },
+ {
+  "id": "ZB1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "ZeilenNichtAufsteigend(/Tp/D)",
+   "--code",
+   "ZB1"
+  ]
+ },
+ {
+  "id": "ZB2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "ZeileNichtEindeutig(/Tp/D)",
+   "--code",
+   "ZB2"
+  ]
+ },
+ {
+  "id": "CTL",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Tp/F",
+   "--condition",
+   "FieldFilled(/Tp/D)",
+   "--code",
+   "CTL"
+  ]
+ }
+]

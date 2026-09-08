@@ -1,0 +1,600 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 16 ops; 16 of 16 exited nonzero (0 failed, 16 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 16,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "ctlDe",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "FeldGefuellt(/Tp/F)",
+          "--code",
+          "ctlDe"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "FB_VordruckAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckAngegeben(Tp)",
+          "--code",
+          "FB_VordruckAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "FBs_VordruckAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckAngegeben(Tp*)",
+          "--code",
+          "FBs_VordruckAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "FB_VordruckNichtAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckNichtAngegeben(Tp)",
+          "--code",
+          "FB_VordruckNichtAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "FBs_VordruckNichtAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckNichtAngegeben(Tp*)",
+          "--code",
+          "FBs_VordruckNichtAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "FB_MindestensEinVordruckAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "MindestensEinVordruckAngegeben(Tp)",
+          "--code",
+          "FB_MindestensEinVordruckAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "FBs_MindestensEinVordruckAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "MindestensEinVordruckAngegeben(Tp*)",
+          "--code",
+          "FBs_MindestensEinVordruckAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "FB_KeinVordruckAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "KeinVordruckAngegeben(Tp)",
+          "--code",
+          "FB_KeinVordruckAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "FBs_KeinVordruckAngegeben",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "KeinVordruckAngegeben(Tp*)",
+          "--code",
+          "FBs_KeinVordruckAngegeben"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "FB_VordruckNichtFortlaufend",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckNichtFortlaufend(Tp)",
+          "--code",
+          "FB_VordruckNichtFortlaufend"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "FBs_VordruckNichtFortlaufend",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "VordruckNichtFortlaufend(Tp*)",
+          "--code",
+          "FBs_VordruckNichtFortlaufend"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "FB_UsbNichtFortlaufend",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "UsbNichtFortlaufend(Tp)",
+          "--code",
+          "FB_UsbNichtFortlaufend"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "FBs_UsbNichtFortlaufend",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "UsbNichtFortlaufend(Tp*)",
+          "--code",
+          "FBs_UsbNichtFortlaufend"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ROOT_GROUP_CONSTR",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "ZB_ZeilenLueckenlos",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "ZeilenLueckenlos(/Tp/F)",
+          "--code",
+          "ZB_ZeilenLueckenlos"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "ZB_ZeilenNichtAufsteigend",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "ZeilenNichtAufsteigend(/Tp/F)",
+          "--code",
+          "ZB_ZeilenNichtAufsteigend"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "ZB_ZeileNichtEindeutig",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Tp/F",
+          "--condition",
+          "ZeileNichtEindeutig(/Tp/F)",
+          "--code",
+          "ZB_ZeileNichtEindeutig"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "candidate has 1 finding(s)",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+              "where": {
+                "rule": "/Tp/CheckRule"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            }
+          ],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

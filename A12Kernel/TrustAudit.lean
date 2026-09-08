@@ -2690,3 +2690,9 @@ run_cmd do
 #print axioms A12Kernel.downstreamRefusals_a12_empty
 #print axioms A12Kernel.downstreamRefusals_open
 #print axioms A12Kernel.downstream_stage_partition
+#print axioms A12Kernel.a12FormConditionRefusal_ignores_wildcard
+#print axioms A12Kernel.a12FormConditionRefusal_ignores_keyword
+#print axioms A12Kernel.a12FormConditionRefusal_reachable
+#print axioms A12Kernel.a12FormConditionRefusal_german_iff
+#print axioms A12Kernel.a12RowConditionRefusal_language_free
+#print axioms A12Kernel.a12RowConditionRefusal_never_invalidParams
