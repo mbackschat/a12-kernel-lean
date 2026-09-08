@@ -1,0 +1,64 @@
+[
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Order/Lines/Entries",
+    "name": "Second",
+    "string": {
+      "maxLength": 1,
+      "pattern": "[0-9]+",
+      "patternMessage": "Enter decimal digits."
+    },
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Order/Lines/Entries",
+    "name": "Base",
+    "number": {
+      "maxFractionalDigits": 0,
+      "positivesOnly": true
+    },
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Order/Lines/Entries",
+    "name": "First",
+    "number": {
+      "maxFractionalDigits": 0,
+      "positivesOnly": true
+    },
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Order/Lines/Entries",
+    "name": "Third",
+    "number": {
+      "maxFractionalDigits": 0,
+      "positivesOnly": true
+    },
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Order/Lines",
+    "name": "Limit",
+    "number": {
+      "maxFractionalDigits": 0,
+      "positivesOnly": true
+    },
+    "kind": "NUMBER"
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Order/Lines/Entries",
+    "index-field": "Choice"
+  }
+]

@@ -472,4 +472,105 @@ example : poisonResultApplicationSummary? = some {
 } := by
   native_decide
 
+private structure RuntimeProjection where
+  numberChanges : List (CellAddr × Int)
+  numberCleared : List CellAddr := []
+  stringChanges : List (CellAddr × String)
+  stringErrors : List (CellAddr × String × StringTargetError) := []
+  consumerChanges : List (CellAddr × String)
+  consumerCleared : List CellAddr := []
+  deriving Repr, DecidableEq
+
+private def runtimeModel : FlatModel := { model with
+  repeatableGroups := [{ rows with repeatability := some 3 },
+    { lines with repeatability := some 3 }]
+}
+
+private def runtimePrepared :
+    PreparedFlatStringContext runtimeModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler runtimeModel).toOption.get (by native_decide)
+
+private def runtimeProjection? (rejected : Bool) (direct : Option String)
+    (seeded : Bool) : Option RuntimeProjection := do
+  let chain ← (checkCurrentRepetitionAlternatingChain runtimeModel lines.path group
+    first.id (bare "Base") second.id (bare "FirstNumber")
+    third.id (.direct (bare "SecondString"))).toOption
+  let consumer ← (checkAddressedEnumerationFirstFilledComputation runtimeModel
+    ["Shipment", "Rows"] target.id (source serialHaving)).toOption
+  let plan ← (checkCurrentRepetitionAlternatingEnumerationHaving chain consumer).toOption
+  let leaves : List (List Nat × Int × String × Int × String) := [
+    ([1, 1], if rejected then 12 else 1, "2", 2, "A"),
+    ([1, 2], 1, "2", 2, "B"), ([2, 1], 2, "1", 1, "B")]
+  let sourceCells := leaves.flatMap fun (path, value, text, prior, token) => [
+    numericCell base path value, numericCell first path 9,
+    cell second path text (.parsed (.str text)), numericCell third path prior,
+    cell choice path token (.parsed (.enum token))]
+  let input ← (checkDocument runtimePrepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] }] ++
+      leaves.map fun (path, _, _, _, _) => { group := 20, path }
+    cells := sourceCells ++ [numericCell limit [1] 1, numericCell limit [2] 2,
+      cell target [2] "A" (.parsed (.enum "A"))] ++
+      (if seeded then [cell target [1] "B" (.parsed (.enum "B"))] else []) ++
+      direct.toList.map fun token => cell directChoice [1] token (.parsed (.enum token))
+  }).toOption
+  let view ← plan.executeResult runtimePrepared.patterns input
+    (fun _ => ()) [] ([] : List Unit) [] |>.toOption
+  pure {
+    numberChanges := view.chain.number.withChanges.map fun item =>
+      (item.targetField, item.value.unscaled)
+    numberCleared := view.chain.number.cleared
+    stringChanges := view.chain.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    stringErrors := view.chain.string.withErrors.map fun item =>
+      (item.targetField, item.attempted.text, item.cause)
+    consumerChanges := view.consumer.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    consumerCleared := view.consumer.cleared
+  }
+
+private def rejectedRuntimeProjection : RuntimeProjection := {
+  numberChanges := [
+    ({ field := first.id, path := [1, 1] }, 12),
+    ({ field := first.id, path := [1, 2] }, 1),
+    ({ field := third.id, path := [1, 2] }, 1),
+    ({ field := first.id, path := [2, 1] }, 2),
+    ({ field := third.id, path := [2, 1] }, 2)]
+  numberCleared := [{ field := third.id, path := [1, 1] }]
+  stringChanges := [
+    ({ field := second.id, path := [1, 2] }, "1"),
+    ({ field := second.id, path := [2, 1] }, "2")]
+  stringErrors := [({ field := second.id, path := [1, 1] }, "12", .tooLong)]
+  consumerChanges := [({ field := target.id, path := [2] }, "B")]
+  consumerCleared := [{ field := target.id, path := [1] }]
+}
+
+example :
+    runtimeProjection? true none true = some rejectedRuntimeProjection ∧
+    runtimeProjection? true (some "A") true = some {
+      rejectedRuntimeProjection with
+      consumerChanges := [({ field := target.id, path := [1] }, "A"),
+        ({ field := target.id, path := [2] }, "B")]
+      consumerCleared := [] } ∧
+    runtimeProjection? true none false = some {
+      rejectedRuntimeProjection with consumerCleared := [] } := by
+  native_decide
+
+example : runtimeProjection? false none true = some {
+    numberChanges := [
+      ({ field := first.id, path := [1, 1] }, 1),
+      ({ field := third.id, path := [1, 1] }, 1),
+      ({ field := first.id, path := [1, 2] }, 1),
+      ({ field := third.id, path := [1, 2] }, 1),
+      ({ field := first.id, path := [2, 1] }, 2),
+      ({ field := third.id, path := [2, 1] }, 2)]
+    stringChanges := [
+      ({ field := second.id, path := [1, 1] }, "1"),
+      ({ field := second.id, path := [1, 2] }, "1"),
+      ({ field := second.id, path := [2, 1] }, "2")]
+    consumerChanges := [({ field := target.id, path := [1] }, "A"),
+      ({ field := target.id, path := [2] }, "B")]
+  } := by
+  native_decide
+
 end A12Kernel.Conformance.CurrentRepetitionAlternatingEnumerationHaving

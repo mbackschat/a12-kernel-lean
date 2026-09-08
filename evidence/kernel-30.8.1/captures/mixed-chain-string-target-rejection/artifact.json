@@ -1,0 +1,1240 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FourStage_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "reached-target-error-before-later-match",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "direct-prefix-hides-target-error",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TargetComp",
+              "field" : "Order/Lines/Target",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Order[1]/Lines[1]/Entries[0]/Choice",
+                "/Order[1]/Lines[1]/Entries[0]/First",
+                "/Order[1]/Lines[1]/Entries[0]/Third",
+                "Order/Lines/DirectChoice",
+                "Order/Lines/Limit",
+                "Order/Lines/Target"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TargetComp",
+              "field" : "Order/Lines/Target",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Order[1]/Lines[1]/Entries[0]/Choice",
+                "/Order[1]/Lines[1]/Entries[0]/First",
+                "/Order[1]/Lines[1]/Entries[0]/Third",
+                "Order/Lines/DirectChoice",
+                "Order/Lines/Limit",
+                "Order/Lines/Target"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "unseeded-target-error-before-later-match",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "12"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "accepted-first-match-control",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

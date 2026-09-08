@@ -906,6 +906,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`FirstFilledValue` selects a Boolean `false` because its filled predicate is presence, and an all-empty selection mints no outcome](sources/evaluation-and-application-routes.md#src-boolean-first-filled-false-is-filled)
 <a id="src-first-filled-malformed-terminates-and-inventory-reports"></a>
 - [A malformed `FirstFilledValue` source terminates the scan where an empty one falls through, and the eager operand inventory still reports the suffix the scan never read](sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports)
+<a id="src-mixed-chain-string-target-rejection"></a>
+- [A rejected middle String remains visible through the Number and filtered Enumeration dependents](sources/evaluation-and-application-routes.md#src-mixed-chain-string-target-rejection)
+
 <a id="src-firstfilled-string-boolean-runtime"></a>
 - [Fixed and parent-local starred String and Boolean computation outcomes](sources/evaluation-and-application-routes.md#src-firstfilled-string-boolean-runtime)
 

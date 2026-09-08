@@ -1,0 +1,178 @@
+{
+  "model": "FourStage_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "reached-target-error-before-later-match",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Target": "B",
+              "Limit": 1,
+              "Entries": [
+                {
+                  "Base": 12,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "A"
+                },
+                {
+                  "Base": 1,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "B"
+                }
+              ]
+            },
+            {
+              "Target": "A",
+              "Limit": 2,
+              "Entries": [
+                {
+                  "Base": 2,
+                  "First": 9,
+                  "Second": "1",
+                  "Third": 1,
+                  "Choice": "B"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "direct-prefix-hides-target-error",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Target": "B",
+              "Limit": 1,
+              "Entries": [
+                {
+                  "Base": 12,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "A"
+                },
+                {
+                  "Base": 1,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "B"
+                }
+              ],
+              "DirectChoice": "A"
+            },
+            {
+              "Target": "A",
+              "Limit": 2,
+              "Entries": [
+                {
+                  "Base": 2,
+                  "First": 9,
+                  "Second": "1",
+                  "Third": 1,
+                  "Choice": "B"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unseeded-target-error-before-later-match",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Limit": 1,
+              "Entries": [
+                {
+                  "Base": 12,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "A"
+                },
+                {
+                  "Base": 1,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "B"
+                }
+              ]
+            },
+            {
+              "Target": "A",
+              "Limit": 2,
+              "Entries": [
+                {
+                  "Base": 2,
+                  "First": 9,
+                  "Second": "1",
+                  "Third": 1,
+                  "Choice": "B"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "accepted-first-match-control",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Target": "B",
+              "Limit": 1,
+              "Entries": [
+                {
+                  "Base": 1,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "A"
+                },
+                {
+                  "Base": 1,
+                  "First": 9,
+                  "Second": "2",
+                  "Third": 2,
+                  "Choice": "B"
+                }
+              ]
+            },
+            {
+              "Target": "A",
+              "Limit": 2,
+              "Entries": [
+                {
+                  "Base": 2,
+                  "First": 9,
+                  "Second": "1",
+                  "Third": 1,
+                  "Choice": "B"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
