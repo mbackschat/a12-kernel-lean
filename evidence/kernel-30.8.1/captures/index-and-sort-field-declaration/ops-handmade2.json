@@ -1,0 +1,38 @@
+[
+ {
+  "id": "sort-missing",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_sort-missing.json"
+  ]
+ },
+ {
+  "id": "sort-group",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_sort-group.json"
+  ]
+ },
+ {
+  "id": "sort-nvv",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_sort-nvv.json"
+  ]
+ },
+ {
+  "id": "sort-ok",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_sort-ok.json"
+  ]
+ }
+]

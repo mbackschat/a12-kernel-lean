@@ -819,6 +819,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-dynamic-enumeration-legality"></a>
 - [Dynamic-enumeration derivation refuses in four ordered stages, eleven of twelve classes attributed to one witness rule each](sources/rule-set-meta-information.md#src-dynamic-enumeration-legality)
 
+<a id="src-index-and-sort-field-declaration"></a>
+- [A group's index and sort nominations share one cascade](sources/static-admission-and-class-probes.md#src-index-and-sort-field-declaration)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

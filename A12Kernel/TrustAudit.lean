@@ -2658,3 +2658,7 @@ run_cmd do
 #print axioms A12Kernel.emittedSpelling_notEqual_iff_exact
 #print axioms A12Kernel.roundingRefusal_emitted
 #print axioms A12Kernel.normalizedFormRefusal_ungated
+#print axioms A12Kernel.rowFieldRefusal_roles_agree_off_tableEnum
+#print axioms A12Kernel.rowFieldRefusal_names_its_role
+#print axioms A12Kernel.rowFieldRefusal_valueValidationOff
+#print axioms A12Kernel.rowFieldDeclarationRefusals_sort_only

@@ -1,0 +1,56 @@
+[
+ {
+  "id": "idx-missing",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_idx-missing.json"
+  ]
+ },
+ {
+  "id": "idx-group",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_idx-group.json"
+  ]
+ },
+ {
+  "id": "idx-nvv",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_idx-nvv.json"
+  ]
+ },
+ {
+  "id": "sort-missing",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_sort-missing.json"
+  ]
+ },
+ {
+  "id": "sort-group",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_sort-group.json"
+  ]
+ },
+ {
+  "id": "sort-nvv",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "M_sort-nvv.json"
+  ]
+ }
+]

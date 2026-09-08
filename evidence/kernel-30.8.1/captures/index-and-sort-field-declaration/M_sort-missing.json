@@ -1,0 +1,104 @@
+{
+ "header": {
+  "id": "IdxProbe_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "IdxProbe_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/I",
+     "name": "I",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/I/G",
+        "name": "G",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/I/G/K",
+           "name": "K",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/I/G/V",
+           "name": "V",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/I/G/Sub",
+           "name": "Sub",
+           "Group": {
+            "repeatability": 1,
+            "elements": []
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/I/G/NVV",
+           "name": "NVV",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "lineBreaksPermitted": true,
+              "noValueValidation": true
+             }
+            }
+           }
+          }
+         ],
+         "sortFields": [
+          {
+           "name": "Nope",
+           "order": "ASC"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

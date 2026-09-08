@@ -1,0 +1,159 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 8 ops; 6 of 8 exited nonzero (6 failed, 0 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 8,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "idxNVV",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--index-field",
+          "NVV",
+          "--dry-run"
+        ],
+        "exit": 2,
+        "stderr": "index field 'NVV' is not a direct child field of /I/G\n"
+      },
+      {
+        "op": 1,
+        "id": "idxMissing",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--index-field",
+          "Nope",
+          "--dry-run"
+        ],
+        "exit": 2,
+        "stderr": "index field 'Nope' is not a direct child field of /I/G\n"
+      },
+      {
+        "op": 2,
+        "id": "idxGroup",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--index-field",
+          "Sub",
+          "--dry-run"
+        ],
+        "exit": 2,
+        "stderr": "index field 'Sub' is not a direct child field of /I/G\n"
+      },
+      {
+        "op": 3,
+        "id": "idxOk",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--index-field",
+          "K",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "group",
+          "op": "modify",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would have set /I/G: index field K",
+          "changed": {
+            "group": "/I/G",
+            "indexField": "K"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "srtNVV",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--sort-field",
+          "NVV",
+          "--dry-run"
+        ],
+        "exit": 2,
+        "stderr": "sort field 'NVV' is not a direct child field of /I/G\n"
+      },
+      {
+        "op": 5,
+        "id": "srtMissing",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--sort-field",
+          "Nope",
+          "--dry-run"
+        ],
+        "exit": 2,
+        "stderr": "sort field 'Nope' is not a direct child field of /I/G\n"
+      },
+      {
+        "op": 6,
+        "id": "srtGroup",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--sort-field",
+          "Sub",
+          "--dry-run"
+        ],
+        "exit": 2,
+        "stderr": "sort field 'Sub' is not a direct child field of /I/G\n"
+      },
+      {
+        "op": 7,
+        "id": "srtOk",
+        "verb": "group",
+        "args": [
+          "modify",
+          "/I/G",
+          "--sort-field",
+          "V",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "group",
+          "op": "modify",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would have set /I/G: sort by V asc",
+          "changed": {
+            "group": "/I/G",
+            "sortFields": [
+              {
+                "name": "V",
+                "order": "ASC"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

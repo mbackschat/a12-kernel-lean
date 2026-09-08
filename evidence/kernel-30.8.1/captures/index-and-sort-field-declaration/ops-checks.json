@@ -1,0 +1,90 @@
+[
+ {
+  "id": "idxNVV",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--index-field",
+   "NVV",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "idxMissing",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--index-field",
+   "Nope",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "idxGroup",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--index-field",
+   "Sub",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "idxOk",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--index-field",
+   "K",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "srtNVV",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--sort-field",
+   "NVV",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "srtMissing",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--sort-field",
+   "Nope",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "srtGroup",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--sort-field",
+   "Sub",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "srtOk",
+  "verb": "group",
+  "args": [
+   "modify",
+   "/I/G",
+   "--sort-field",
+   "V",
+   "--dry-run"
+  ]
+ }
+]

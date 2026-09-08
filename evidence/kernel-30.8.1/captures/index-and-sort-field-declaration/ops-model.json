@@ -1,0 +1,60 @@
+[
+ {
+  "id": "gG",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/I",
+   "--name",
+   "G",
+   "--repeatable",
+   "4"
+  ]
+ },
+ {
+  "id": "fK",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/I/G",
+   "--name",
+   "K",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fV",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/I/G",
+   "--name",
+   "V",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fNVV",
+  "verb": "field",
+  "args": [
+   "add",
+   "f-nvv.json"
+  ]
+ },
+ {
+  "id": "gSub",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/I/G",
+   "--name",
+   "Sub"
+  ]
+ }
+]

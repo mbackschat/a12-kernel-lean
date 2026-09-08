@@ -59,6 +59,7 @@ import A12Kernel.Proofs.DynamicEnumerationLegality
 import A12Kernel.Proofs.IterationLegality
 import A12Kernel.Proofs.TableEnumeration
 import A12Kernel.Proofs.ComputationNormalForm
+import A12Kernel.Proofs.IndexAndSortDeclaration
 import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay
 import A12Kernel.Proofs.ConstructedDateDifference
