@@ -830,6 +830,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-generated-rule-identity"></a>
 - [The four auto-generated rules carry three projections that partition them differently](sources/static-admission-and-class-probes.md#src-generated-rule-identity)
+
+<a id="src-entity-container-integrity"></a>
+- [The per-entity integrity walk reads the entity's name rather than its identifier, and its first four stages hide the whole subtree](sources/static-admission-and-class-probes.md#src-entity-container-integrity)
 <a id="src-computation-normal-form-generation"></a>
 - [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>

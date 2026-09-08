@@ -2702,3 +2702,11 @@ run_cmd do
 #print axioms A12Kernel.generatedRuleIsPreliminary_iff
 #print axioms A12Kernel.generatedRuleIsPreliminary_authored
 #print axioms A12Kernel.unraised_disjoint_from_live
+#print axioms A12Kernel.entityIntegrityRefusals_blocking
+#print axioms A12Kernel.blockingRefusal_isBlocking
+#print axioms A12Kernel.treeIntegrityRefusals_blocking_hides_subtree
+#print axioms A12Kernel.treeIntegrityRefusals_subtree_irrelevant
+#print axioms A12Kernel.entityIntegrityRefusals_accumulate
+#print axioms A12Kernel.absentMaximum_draws_both
+#print axioms A12Kernel.nonPositiveMaximum_draws_one
+#print axioms A12Kernel.entityIntegrityRefusals_wellFormed

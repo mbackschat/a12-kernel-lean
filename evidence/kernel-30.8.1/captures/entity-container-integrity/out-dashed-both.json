@@ -1,0 +1,67 @@
+{
+  "target": "model",
+  "op": "check",
+  "outcome": "read",
+  "ok": true,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "model has 9 error(s)",
+  "diagnostics": [
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "code": "MVK_PATH_INVALID",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    },
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    }
+  ],
+  "written": false
+}

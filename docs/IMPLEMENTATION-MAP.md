@@ -483,6 +483,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Form- and row-level condition constructs](implementation/cross-clause.md#cap-form-condition-constructs)
 <a id="cap-generated-rule-identity"></a>
 - [Auto-generated rule identity](implementation/cross-clause.md#cap-generated-rule-identity)
+<a id="cap-entity-container-integrity"></a>
+- [Entity-container integrity](implementation/cross-clause.md#cap-entity-container-integrity)
 <a id="cap-resolved-firstfilledvalue"></a>
 - [Resolved `FirstFilledValue`](implementation/cross-clause.md#cap-resolved-firstfilledvalue)
 <a id="cap-resolved-number-aggregates"></a>

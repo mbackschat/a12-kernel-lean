@@ -1,0 +1,19 @@
+{
+  "target": "model",
+  "op": "check",
+  "outcome": "read",
+  "ok": true,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "model has 1 error(s)",
+  "diagnostics": [
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "code": "MVK_NAME_STARTS_WITH_DIGIT",
+      "summary": "[redacted: Kernel message text, EUPL localisation resource]",
+      "where": {}
+    }
+  ],
+  "written": false
+}

@@ -75,6 +75,7 @@ import A12Kernel.Conformance.AddressFormalLegality
 import A12Kernel.Conformance.TemporalConstructorOperand
 import A12Kernel.Conformance.RootGroupConditionLegality
 import A12Kernel.Conformance.GeneratedRuleIdentity
+import A12Kernel.Conformance.EntityContainerIntegrity
 import A12Kernel.Conformance.ConstructedDateComponents
 import A12Kernel.Conformance.ConstructedDateDay
 import A12Kernel.Conformance.ConstructedDateDifference
