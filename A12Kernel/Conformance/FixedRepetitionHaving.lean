@@ -66,6 +66,9 @@ private def error? (declaringGroup : GroupPath) (having : SurfaceCorrelatedHavin
 example : error? ["Rep"] (condition .outer fixedPath) =
     some (.repetitionOutsideEnvironment .outer fixedPath [] 10) := by native_decide
 
+example : (error? ["Rep"] (condition .outer fixedPath)).bind
+    CorrelationElabError.diagnostic? = some .noWildcard := by native_decide
+
 example : error? base.groupPath
     (.compareRepetitions .equal (reference .outer fixedPath) (reference .outer fixedPath)) =
     some .missingInner := by native_decide

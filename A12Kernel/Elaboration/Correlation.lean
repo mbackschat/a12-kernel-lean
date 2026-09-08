@@ -122,18 +122,22 @@ reaches too, whatever route an assignment takes to it.
 Reading either column off the other is wrong for six kinds of eight; the two temporal families are
 the only agreement.
 
-The three scope classes separate cleanly: a **root-level** field the filter's star cannot bind
-reports `noIterationForWildcard`, a **different repeatable group's** field read without a star
+The scope classes separate cleanly: a **root-level** field the filter's star cannot bind
+reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference
 reports `invalidIterationInFilterCondition`, and a star written *inside* the filter reports
-`noWildcardsAllowed`. The remaining arms are this project's own narrow-route boundaries, its
+`noWildcardsAllowed`. An unavailable marked reference instead reports `noWildcard`, because it
+requires a captured host binding ([fixed-reference checkpoint](../../docs/sources/having-filter-probes.md#src-fixed-repetition-having)
+and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-filter-reference-two-levels-above)).
+The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
   | .fieldNotStringValue _ actual =>
       literalComparisonDiagnostic? .stringLike actual
   | .fieldOutsideGroup _ _ _ => some .noIterationForWildcard
-  | .fieldOutsideEnvironment _ _ _ _ => some .invalidIterationInFilterCondition
-  | .repetitionOutsideEnvironment _ _ _ _ =>
+  | .fieldOutsideEnvironment .outer _ _ _ | .repetitionOutsideEnvironment .outer _ _ _ =>
+      some .noWildcard
+  | .fieldOutsideEnvironment .inner _ _ _ | .repetitionOutsideEnvironment .inner _ _ _ =>
       some .invalidIterationInFilterCondition
   | .wildcardOnRuleGroup | .wildcardWithParentNavigation _ =>
       some .noWildcardsAllowed

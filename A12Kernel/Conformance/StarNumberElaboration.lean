@@ -455,6 +455,17 @@ example :
           [10, 20] 30)) := by
   native_decide
 
+private def offPathDiagnostic? (origin : HavingOrigin) : Option KernelStaticDiagnostic :=
+  match havingErrorOf amount.groupPath (source)
+      (.compareNumbers .equal
+        (surfaceNumber .inner amount.groupPath "Amount")
+        (surfaceNumber origin otherAmount.groupPath "Amount")) with
+  | some (.having error) => error.diagnostic?
+  | _ => none
+
+example : offPathDiagnostic? .outer = some .noWildcard ∧
+    offPathDiagnostic? .inner = some .invalidIterationInFilterCondition := by native_decide
+
 /- Either an inner or outer over-capacity coordinate makes the selected Number cell formally unavailable. -/
 example :
     let innerRows := standardRows ++ [{ group := 20, path := [1, 3] }]

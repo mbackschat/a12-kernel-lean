@@ -71,6 +71,10 @@ example : [CorrelationElabError.fieldOutsideGroup .inner ["Probe", "Amount"] ["P
     , some .noWildcardsAllowed ] := by
   native_decide
 
+example : (CorrelationElabError.repetitionOutsideEnvironment .inner
+    ["Probe", "Other"] [10] 20).diagnostic? =
+    some .invalidIterationInFilterCondition := by native_decide
+
 /- The scale gate is the filter's too, and it is a live pair rather than a one-sided refusal: the
    same literal is admitted against a declaration whose scale fits. -/
 example : (CorrelationElabError.equalityScaleMismatch ["Probe", "Rows", "RowVal"] 0
