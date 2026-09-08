@@ -1,0 +1,6 @@
+[
+ {"id":"F0","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","FieldFilled(Note)","--code","F0"]},
+ {"id":"F1","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","FieldFilled(/Et/Rows/Note) And FieldFilled(Qty)","--code","F1"]},
+ {"id":"F2","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","FieldFilled(/Et/Rows/Note) And FieldFilled(../Rows/Qty)","--code","F2"]},
+ {"id":"F3","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","FieldFilled(/Et/Rows/Note) And FieldFilled(../Anchor)","--code","F3"]}
+]

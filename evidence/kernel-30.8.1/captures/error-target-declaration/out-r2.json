@@ -1,0 +1,161 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "A1u",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupFilled(/Et) And FieldFilled(/Et/Rows/Qty)", "--code", "A1u" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELDGROUP_ITERATION4_INVALID",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "P3u",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupFilled(..) And FieldFilled(/Et/Rows/Qty)", "--code", "P3u" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELDGROUP_ITERATION4_INVALID",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "N0",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupFilled(Rows)", "--code", "N0" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ENTITY",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name — a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+          "explain" : "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name — almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "N1",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupFilled(/Et/Rows)", "--code", "N1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "N2",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Rows/Note", "--condition", "GroupFilled(.)", "--code", "N2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_UNEXPECTED_TOKEN",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/Rows/CheckRule"
+          },
+          "fix" : "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED — write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED — `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase — `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED — `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+          "explain" : "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error — a token appeared where the grammar did not allow it — and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "P5",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Et/Anchor", "--condition", "GroupFilled(..)", "--code", "P5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_TOO_MANY_PARENT_GROUPS",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Et/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

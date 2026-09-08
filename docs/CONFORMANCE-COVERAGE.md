@@ -14,7 +14,7 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `8b1fd94f` on 2026-09-08.
+Measured at `4e58cf10` on 2026-09-08.
 
 ## Headline
 
@@ -77,7 +77,7 @@ one: it counts whether a record cites external calibration, not how much of its 
 | `remaining` rows across those gaps | 0 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 0 |
-| Ledger entries `handed-off` | 3 |
+| Ledger entries `handed-off` | 0 |
 
 A blocked route is the only figure here that should stop work; a `remaining` row is ordinary scope. If
 blocked is nonzero, that is what to escalate.
@@ -89,7 +89,7 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 206020 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 206217 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8659 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 

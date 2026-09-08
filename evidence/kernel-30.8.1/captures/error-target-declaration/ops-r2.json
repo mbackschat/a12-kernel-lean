@@ -1,0 +1,8 @@
+[
+ {"id":"A1u","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","GroupFilled(/Et) And FieldFilled(/Et/Rows/Qty)","--code","A1u"]},
+ {"id":"P3u","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","GroupFilled(..) And FieldFilled(/Et/Rows/Qty)","--code","P3u"]},
+ {"id":"N0","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","GroupFilled(Rows)","--code","N0"]},
+ {"id":"N1","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","GroupFilled(/Et/Rows)","--code","N1"]},
+ {"id":"N2","verb":"rule","args":["check","--field","/Et/Rows/Note","--condition","GroupFilled(.)","--code","N2"]},
+ {"id":"P5","verb":"rule","args":["check","--field","/Et/Anchor","--condition","GroupFilled(..)","--code","P5"]}
+]
