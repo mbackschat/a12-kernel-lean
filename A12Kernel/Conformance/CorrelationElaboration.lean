@@ -303,8 +303,8 @@ example : havingOf (elaborateSingleCorrelatedRule model ["Order"]
       (repetitionRef .inner (absoluteGroup items.path))
       (repetitionRef .outer (absoluteGroup items.path))))) =
     some (.compareRepetitions .equal
-      { origin := .inner, level := items.level }
-      { origin := .outer, level := items.level }) := by
+      { origin := .inner, source := .repeatable items.level }
+      { origin := .outer, source := .repeatable items.level }) := by
   native_decide
 
 /- `RuleGroup` retains its keyword origin while both current-repetition operands resolve to the rule's own repeatable level. -/
@@ -312,8 +312,8 @@ example : havingOf (elaborateSingleCorrelatedRule model items.path
     (absoluteRule (.compareRepetitions .notEqual
       (ruleGroupRef .inner) (ruleGroupRef .outer)))) =
     some (.compareRepetitions .notEqual
-      { origin := .inner, level := items.level }
-      { origin := .outer, level := items.level }) := by
+      { origin := .inner, source := .repeatable items.level }
+      { origin := .outer, source := .repeatable items.level }) := by
   native_decide
 
 /- A star written on `RuleGroup` reaches the keyword-specific diagnostic before repetition matching. -/
@@ -543,10 +543,11 @@ level fixed at a star-reopened one and vary only the origins and whether the hos
 
 private def repetitionAdmitted (candidateLevels outerLevels : List RepeatableLevel)
     (left right : HavingOrigin) : Bool :=
-  CorrelatedHavingLeaf.wellFormedForEnvironments { fields := [] }
+  CorrelatedHavingLeaf.wellFormedForEnvironments
+    { fields := [], repeatableGroups := [{ level := 7, path := ["Form", "Rows"] }] }
     candidateLevels outerLevels
     (.compareRepetitions .notEqual
-      { origin := left, level := 7 } { origin := right, level := 7 })
+      { origin := left, source := .repeatable 7 } { origin := right, source := .repeatable 7 })
 
 /- **An operand's star binds an unmarked reference on its own**, so a filter carries one even when
 the host binds nothing; the marked spelling in the identical shape is refused, and is admitted once
@@ -570,10 +571,13 @@ example :
 
 private def repetitionAdmittedAt (candidateLevels outerLevels : List RepeatableLevel)
     (level : RepeatableLevel) (origin : HavingOrigin) : Bool :=
-  CorrelatedHavingLeaf.wellFormedForEnvironments { fields := [] }
+  CorrelatedHavingLeaf.wellFormedForEnvironments
+    { fields := [], repeatableGroups := [
+      { level := 1, path := ["Form", "Rows"] },
+      { level := 2, path := ["Form", "Rows", "Items"] }] }
     candidateLevels outerLevels
     (.compareRepetitions .notEqual
-      { origin, level } { origin, level })
+      { origin, source := .repeatable level } { origin, source := .repeatable level })
 
 /- **The two sources compose at two levels, and the marker only matters on a reopened one.** A host
 that iterates the outer level over an operand starring only the inner one gives a candidate

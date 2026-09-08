@@ -1,0 +1,292 @@
+{
+  "header" : {
+    "id" : "Fixed_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Fixed_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Rep",
+        "name" : "Rep",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Rep/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Rep/Rows/Fixed",
+                "name" : "Fixed",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Rep/Rows/Fixed/Value",
+                    "name" : "Value",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Base",
+                "name" : "Base",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Err",
+                "name" : "Err",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/MARKYES",
+                "name" : "MARKYES",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "MARKYES",
+                  "errorCondition" : "FieldFilled(/Rep/Rows/Err) And Sum(/Rep/Rows*/Base Having CurrentRepetition($/Rep/Rows/Fixed) == CurrentRepetition(/Rep/Rows)) == 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "MARKYES"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/MARKNO",
+                "name" : "MARKNO",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "MARKNO",
+                  "errorCondition" : "FieldFilled(/Rep/Rows/Err) And Sum(/Rep/Rows*/Base Having CurrentRepetition($/Rep/Rows/Fixed) == CurrentRepetition(/Rep/Rows)) == 7",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "MARKNO"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Rep/Meta",
+            "name" : "Meta",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Rep/Meta/Tag",
+                "name" : "Tag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rep/RootNum",
+            "name" : "RootNum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/EQYES",
+            "name" : "EQYES",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "EQYES",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows/Fixed) == CurrentRepetition(/Rep/Rows)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "EQYES"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/EQNO",
+            "name" : "EQNO",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "EQNO",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows/Fixed) == CurrentRepetition(/Rep/Rows)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "EQNO"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/NEYES",
+            "name" : "NEYES",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "NEYES",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows/Fixed) != CurrentRepetition(/Rep/Rows)) == 6",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NEYES"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/NENO",
+            "name" : "NENO",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "NENO",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows/Fixed) != CurrentRepetition(/Rep/Rows)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NENO"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/METAYES",
+            "name" : "METAYES",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "METAYES",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Meta) == CurrentRepetition(/Rep/Rows)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "METAYES"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/METANO",
+            "name" : "METANO",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "METANO",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Meta) == CurrentRepetition(/Rep/Rows)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "METANO"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/MARKMETAYES",
+            "name" : "MARKMETAYES",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "MARKMETAYES",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition($/Rep/Meta) == CurrentRepetition(/Rep/Rows)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MARKMETAYES"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/MARKMETANO",
+            "name" : "MARKMETANO",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "MARKMETANO",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition($/Rep/Meta) == CurrentRepetition(/Rep/Rows)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MARKMETANO"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/LIVEYES",
+            "name" : "LIVEYES",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "LIVEYES",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows) == CurrentRepetition(/Rep/Rows)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LIVEYES"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rep/LIVENO",
+            "name" : "LIVENO",
+            "Rule" : {
+              "errorEntityRelPath" : "../RootNum",
+              "errorCode" : "LIVENO",
+              "errorCondition" : "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows) == CurrentRepetition(/Rep/Rows)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LIVENO"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

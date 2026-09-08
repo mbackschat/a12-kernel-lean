@@ -127,7 +127,7 @@ private def outerCount : HavingNumberRef :=
   { origin := .outer, field := count }
 
 private def repetition (origin : HavingOrigin) : HavingRepetitionRef :=
-  { origin, level := items }
+  { origin, source := .repeatable items }
 
 private def checkedHaving (condition : CorrelatedHaving)
     (inner : condition.usesInner = true) (outer : condition.usesOuter = true) :
@@ -496,8 +496,8 @@ example :
 example :
     truthSnapshot (
       (CorrelatedHaving.compareRepetitions .equal
-        { origin := .inner, level := nestedItems }
-        { origin := .outer, level := items }).evalTruthInResolving
+        { origin := .inner, source := .repeatable nestedItems }
+        { origin := .outer, source := .repeatable items }).evalTruthInResolving
           resolvingContext resolvingFrame) =
         .error (.binding (.missingBinding nestedItems)) := by
   native_decide
@@ -935,7 +935,7 @@ private def candidateEnvs : List Env := [[(items, 1)], [(items, 2)], [(items, 3)
 
 private def capturedOnly (op : CorrelationComparisonOp) : CorrelatedHaving :=
   CorrelatedHaving.compareRepetitions op
-    { origin := .outer, level := items } { origin := .outer, level := items }
+    { origin := .outer, source := .repeatable items } { origin := .outer, source := .repeatable items }
 
 /-- The satisfied filter keeps **every** candidate, which is the host row whose gate holds. -/
 example :

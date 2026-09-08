@@ -507,6 +507,7 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_selectResolving_headError
 #print axioms A12Kernel.env_uniqueRowAt_zero
 #print axioms A12Kernel.correlationFrame_rowAtResolving_error
+#print axioms A12Kernel.fixed_repetition_reference_value
 #print axioms A12Kernel.checkedStarFieldPath_havingValueListSide_hasHaving
 #print axioms A12Kernel.checkedStarFieldPath_havingBeforeClassification
 #print axioms A12Kernel.selectCorrelatedRows_iff
@@ -522,6 +523,7 @@ run_cmd do
 #print axioms A12Kernel.env_offDiagonal_bindings_not_collapsible
 
 #print axioms A12Kernel.checkedSingleCorrelatedRule_wellFormed
+#print axioms A12Kernel.repeatableScope_available_iff_terminal
 #print axioms A12Kernel.checkedSingleCorrelatedRule_modelWellFormed
 #print axioms A12Kernel.havingDirectField_inner_outer_pair_unique
 #print axioms A12Kernel.havingDirectField_outer_inner_pair_unique

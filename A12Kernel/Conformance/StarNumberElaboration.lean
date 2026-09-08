@@ -125,7 +125,7 @@ private def cellsOf (authored : SurfaceStarFieldPath) (rows : List RowAddr)
 
 private def repetition (origin : HavingOrigin)
     (level : RepeatableLevel) : HavingRepetitionRef :=
-  { origin, level }
+  { origin, source := .repeatable level }
 
 private def absoluteField (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }

@@ -44,6 +44,8 @@ Checked elaboration resolves those facts once and returns a model-relative value
 
 The common [`ConditionTree`](../A12Kernel/Semantics/Condition.lean) is shared only where tree shape and control flow agree. Family leaf types, observation domains, and result algebras remain distinct. New universal expression, poison, result, or checked-plan carriers require two completed consumers with the same meaning and result domain.
 
+The shared [`HavingRepetitionRef`](../A12Kernel/Semantics/Correlation.lean) retains origin plus either a repeatable level or a fixed group path. A fixed group's runtime index is one, but replacing its reference with a numeric literal would erase the ancestry needed for binding, filter-scope admission, and static rule iteration. Elaboration derives that ancestry from the model and rejects a fixed constructor naming a repeatable group; the semantic layer stores the path as name segments without importing model declarations. Consumers comparing or rewriting references must retain path and origin even when their values agree. The [correlation implementation owner](implementation/repetition-and-paths.md#cap-star-selection-and-correlation) records the supported routes and assurance.
+
 ### Values keep semantic identity separate from storage identity
 
 <a id="valuenum-remains-rat-number-targets-use-a-separate-exact-decimal"></a>

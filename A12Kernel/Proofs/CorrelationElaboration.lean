@@ -4,6 +4,62 @@ import A12Kernel.Elaboration.FieldEntityList
 
 namespace A12Kernel
 
+private theorem repeatableScope_prefix (model : FlatModel) (left right : GroupPath)
+    (isPrefix : left.IsPrefix right) :
+    (model.repeatableScopeForGroupPath left).IsPrefix
+      (model.repeatableScopeForGroupPath right) := by
+  rcases isPrefix with ⟨tail, rfl⟩
+  unfold FlatModel.repeatableScopeForGroupPath
+  rw [List.length_append, List.range_add, List.filterMap_append]
+  have same :
+      (List.range left.length).filterMap (fun offset =>
+        (model.repeatableGroups.find? fun group =>
+          group.path == (left ++ tail).take (offset + 1)).map (·.level)) =
+      (List.range left.length).filterMap (fun offset =>
+        (model.repeatableGroups.find? fun group =>
+          group.path == left.take (offset + 1)).map (·.level)) := by
+    generalize offsetsEq : List.range left.length = offsets
+    have below : ∀ offset ∈ offsets, offset < left.length := by
+      intro offset inside
+      rw [← offsetsEq] at inside
+      exact List.mem_range.mp inside
+    clear offsetsEq
+    induction offsets with
+    | nil => rfl
+    | cons offset rest ih =>
+        simp only [List.filterMap_cons]
+        rw [List.take_append_of_le_length
+          (Nat.succ_le_of_lt (below offset (by simp)))]
+        rw [ih (fun index inside => below index (by simp [inside]))]
+  rw [same]
+  exact List.prefix_append _ _
+
+/-- For a model-derived environment, a uniquely named repeatable level carries all its ancestors.
+    The terminal-membership hypothesis states that the named declaration is the path lookup's result;
+    the uniqueness hypothesis rules out reusing its level on another branch. -/
+theorem repeatableScope_available_iff_terminal (model : FlatModel)
+    (group : RepeatableGroupDecl) (environmentPath : GroupPath)
+    (unique : ∀ candidate ∈ model.repeatableGroups,
+      candidate.level = group.level → candidate.path = group.path)
+    (terminal : group.level ∈ model.repeatableScopeForGroupPath group.path) :
+    repeatableScopeAvailable (model.repeatableScopeForGroupPath group.path)
+      (model.repeatableScopeForGroupPath environmentPath) =
+      (model.repeatableScopeForGroupPath environmentPath).contains group.level := by
+  apply Bool.eq_iff_iff.mpr
+  simp only [repeatableScopeAvailable, List.isPrefixOf_iff_prefix, List.contains_iff_mem]
+  constructor
+  · intro isPrefix
+    exact isPrefix.sublist.subset terminal
+  · intro present
+    obtain ⟨offset, _, found⟩ := List.mem_filterMap.mp present
+    obtain ⟨candidate, lookup, level⟩ := Option.map_eq_some_iff.mp found
+    have path : candidate.path = environmentPath.take (offset + 1) :=
+      by simpa using List.find?_some lookup
+    have samePath := unique candidate (List.mem_of_find?_eq_some lookup) level
+    apply repeatableScope_prefix
+    rw [← samePath, path]
+    exact List.take_prefix _ _
+
 /-- Eliminate the core static-legality certificate carried by a checked correlated rule. -/
 theorem checkedSingleCorrelatedRule_wellFormed
     (checked : CheckedSingleCorrelatedRule model) :

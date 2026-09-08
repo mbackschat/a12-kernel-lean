@@ -91,6 +91,7 @@ inductive CorrelationElabError where
   | fieldOutsideEnvironment (origin : HavingOrigin) (fieldPath : List String)
       (available actual : List RepeatableLevel)
   | repetitionGroupMismatch (expected actual : GroupPath)
+  | unknownRepetitionGroup (path : GroupPath)
   | repetitionOutsideEnvironment (origin : HavingOrigin) (groupPath : GroupPath)
       (available : List RepeatableLevel) (actual : RepeatableLevel)
   | equalityScaleMismatch (leftPath : List String) (leftScale : Nat)
@@ -142,7 +143,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   -- are the legacy one-group route's own narrowness — the Kernel accepts both — and the rest are
   -- routing, an unmeasured operator gate, or unreachable by construction.
   | .invalidGroupReference _ | .fieldScopeMismatch _ _ _
-  | .repetitionGroupMismatch _ _ | .stringLeafOutsideStarRoute
+  | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .unsupportedOperator _
   | .missingInner | .missingOuter | .errorGuardMismatch _ _
   | .incoherentCore => none
@@ -177,13 +178,8 @@ def CorrelatedHaving.isConjunctive (condition : CorrelatedHaving) : Bool :=
         CorrelatedHaving.isConjunctive right
   | .or _ _ => false
 
-private def repeatableScopeAvailable :
-    List RepeatableLevel → List RepeatableLevel → Bool
-  | [], _ => true
-  | _ :: _, [] => false
-  | required :: requiredRest, available :: availableRest =>
-      required == available &&
-        repeatableScopeAvailable requiredRest availableRest
+def repeatableScopeAvailable (required available : List RepeatableLevel) : Bool :=
+  required.isPrefixOf available
 
 def HavingOrigin.availableLevels (origin : HavingOrigin)
     (candidateLevels outerLevels : List RepeatableLevel) : List RepeatableLevel :=
@@ -218,7 +214,7 @@ private def resolveHavingRepetitionInGroup
   let resolved ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
   if resolved.path != group.path then
     throw (.repetitionGroupMismatch group.path resolved.path)
-  pure { origin, level := group.level }
+  pure { origin, source := .repeatable group.level }
 
 /-- The per-leaf reference resolvers one filter route supplies. They travel as a bundle because
     each route chooses all of them together, and a route that admits no String or presence leaf
@@ -340,11 +336,34 @@ private def FlatModel.resolveHavingRepetitionInEnvironment (model : FlatModel)
     (origin : HavingOrigin) (reference : SurfaceGroupReference) :
     Except CorrelationElabError HavingRepetitionRef := do
   let resolved ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
-  let group ← (model.lookupUniqueRepeatablePath resolved.path).mapError .resolve
+  if !model.hasGroupPath resolved.path then
+    throw (.unknownRepetitionGroup resolved.path)
   let available := origin.availableLevels candidateLevels outerLevels
-  if !available.contains group.level then
-    throw (.repetitionOutsideEnvironment origin group.path available group.level)
-  pure { origin, level := group.level }
+  let scope := model.repeatableScopeForGroupPath resolved.path
+  if let some missing := scope.find? fun level => !available.contains level then
+    throw (.repetitionOutsideEnvironment origin resolved.path available missing)
+  let source := match model.repeatableGroups.find? (fun group => group.path == resolved.path) with
+    | some group => HavingRepetitionSource.repeatable group.level
+    | none => .fixed resolved.path
+  pure { origin, source }
+
+/-- Resolve the complete binding scope from the model, including fixed-group ancestry.
+    A forged fixed reference to a repeatable group cannot certify a constant index. -/
+def HavingRepetitionRef.scope? (reference : HavingRepetitionRef) (model : FlatModel) :
+    Option (List RepeatableLevel) :=
+  match reference.source with
+  | .repeatable level =>
+      (model.repeatableGroupAtLevel? level).map fun group =>
+        model.repeatableScopeForGroupPath group.path
+  | .fixed path =>
+      if model.hasGroupPath path && !model.repeatableGroups.any (fun group => group.path == path)
+      then some (model.repeatableScopeForGroupPath path)
+      else none
+
+def HavingRepetitionRef.availableIn (reference : HavingRepetitionRef) (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+  (reference.scope? model).any fun scope =>
+    repeatableScopeAvailable scope (reference.origin.availableLevels candidateLevels outerLevels)
 
 /-- Operator-specific static scale law for one filter leaf. Ordering is deliberately exempt. -/
 def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
@@ -366,7 +385,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
       model.admitsSingleGroupNumber group right.field &&
       op.acceptsScales left.field right.field
   | .compareRepetitions _ left right =>
-      left.level == group.level && right.level == group.level
+      left.source == .repeatable group.level && right.source == .repeatable group.level
   -- The legacy one-group adapter admits only the leaves it was built for. The String and presence
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
@@ -406,8 +425,8 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
         model.admitsHavingNumberInEnvironment candidateLevels outerLevels right &&
         op.acceptsScales left.field right.field
   | .compareRepetitions _ left right =>
-      (left.origin.availableLevels candidateLevels outerLevels).contains left.level &&
-        (right.origin.availableLevels candidateLevels outerLevels).contains right.level
+      left.availableIn model candidateLevels outerLevels &&
+        right.availableIn model candidateLevels outerLevels
   | .compareStringLiteral _ reference _ =>
       model.admitsHavingStringInEnvironment candidateLevels outerLevels reference
   | .presence _ reference =>
@@ -445,8 +464,8 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
       left.reachesReopenedLevel model reopenedLevels ||
         right.reachesReopenedLevel model reopenedLevels
   | .compareRepetitions _ left right =>
-      (left.origin == .inner && reopenedLevels.contains left.level) ||
-        (right.origin == .inner && reopenedLevels.contains right.level)
+      (left.origin == .inner && (left.scope? model).any (·.any reopenedLevels.contains)) ||
+        (right.origin == .inner && (right.scope? model).any (·.any reopenedLevels.contains))
   | .compareStringLiteral _ reference _ =>
       reference.reachesReopenedLevel model reopenedLevels
   | .presence _ reference =>

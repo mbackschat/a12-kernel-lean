@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+    "state" : "CLEAN"
+  },
+  "model" : "51f91303afd4550b819d32f253a1ef59ecef71a570abf656f303441d196c7060",
+  "observations" : [ {
+    "id" : "SOLE",
+    "inputHash" : "8fb820f75065bec4661af3f3ff40d10aea92a78129ab50502a21068c7003cb47",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "OUT",
+    "inputHash" : "2296adf06051a40cddef9fd94257db4121a3a1577a831bf0bd857fca384025af",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "UNBOUND",
+    "inputHash" : "181ab059067868675518d42f80ba95c0e824d2fceee9d1c57081b9997482ced3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "MARKSOLE",
+    "inputHash" : "af151aa03705b094a146a4880206919205796ddd2bf0aaf95a4afb9c0334bf2d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  } ]
+}

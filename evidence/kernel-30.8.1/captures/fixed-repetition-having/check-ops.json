@@ -1,0 +1,70 @@
+[
+  {
+    "id": "SOLE",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--model",
+      "Fixed_DM.json",
+      "--group",
+      "/Rep",
+      "--field",
+      "/Rep/RootNum",
+      "--code",
+      "SOLE",
+      "--condition",
+      "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows/Fixed) > 0) > 0"
+    ]
+  },
+  {
+    "id": "OUT",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--model",
+      "Fixed_DM.json",
+      "--group",
+      "/Rep",
+      "--field",
+      "/Rep/RootNum",
+      "--code",
+      "OUT",
+      "--condition",
+      "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Meta) > 0) > 0"
+    ]
+  },
+  {
+    "id": "UNBOUND",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--model",
+      "Fixed_DM.json",
+      "--group",
+      "/Rep",
+      "--field",
+      "/Rep/RootNum",
+      "--code",
+      "UNBOUND",
+      "--condition",
+      "FieldFilled(/Rep/RootNum) And Sum(/Rep/Rows*/Base Having CurrentRepetition($/Rep/Rows/Fixed) == CurrentRepetition(/Rep/Rows)) > 0"
+    ]
+  },
+  {
+    "id": "MARKSOLE",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--model",
+      "Fixed_DM.json",
+      "--group",
+      "/Rep/Rows",
+      "--field",
+      "/Rep/Rows/Err",
+      "--code",
+      "MARKSOLE",
+      "--condition",
+      "FieldFilled(/Rep/Rows/Err) And Sum(/Rep/Rows*/Base Having CurrentRepetition($/Rep/Rows/Fixed) > 0) > 0"
+    ]
+  }
+]

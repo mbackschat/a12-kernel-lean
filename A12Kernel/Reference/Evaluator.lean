@@ -313,7 +313,7 @@ private def correlationElaborationResult : CorrelationElabError →
   | .repetitionGroupMismatch expected actual =>
       pure (.make .repetitionGroupMismatch "$.rule.having"
         (Json.mkObj [("expected", toJson expected), ("actual", toJson actual)]))
-  | .repetitionOutsideEnvironment _ _ _ _ => throw .incoherentCore
+  | .repetitionOutsideEnvironment _ _ _ _ | .unknownRepetitionGroup _ => throw .incoherentCore
   | .equalityScaleMismatch leftPath leftScale rightPath rightScale =>
       pure (.make .equalityScaleMismatch "$.rule.having"
         (Json.mkObj [("leftPath", toJson leftPath), ("leftScale", toJson leftScale),

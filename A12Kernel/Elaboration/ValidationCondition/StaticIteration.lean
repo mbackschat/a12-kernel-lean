@@ -11,13 +11,6 @@ namespace A12Kernel
 
 namespace ValidationCondition
 
-private def repeatableScopePrefix : List RepeatableLevel →
-    List RepeatableLevel → Bool
-  | [], _ => true
-  | _, [] => false
-  | left :: leftRest, right :: rightRest =>
-      left == right && repeatableScopePrefix leftRest rightRest
-
 inductive RuleIterationScopeError where
   | incompatibleScopes (left right : List RepeatableLevel)
   deriving Repr, DecidableEq
@@ -28,9 +21,9 @@ private def mergeIterationScopes
   match left, right with
   | none, scope | scope, none => pure scope
   | some leftScope, some rightScope =>
-      if repeatableScopePrefix leftScope rightScope then
+      if repeatableScopeAvailable leftScope rightScope then
         pure (some rightScope)
-      else if repeatableScopePrefix rightScope leftScope then
+      else if repeatableScopeAvailable rightScope leftScope then
         pure (some leftScope)
       else
         throw (.incompatibleScopes leftScope rightScope)
@@ -54,16 +47,6 @@ def ResolvedGroupListOperands.iterationScope
   mergeIterationScopeList
     (operands.map ResolvedGroupListOperand.iterationScope)
 
-private def repeatableScopeThrough :
-    List RepeatableLevel → RepeatableLevel →
-      Option (List RepeatableLevel)
-  | [], _ => none
-  | level :: remaining, target =>
-      if level == target then
-        some [level]
-      else
-        (repeatableScopeThrough remaining target).map (level :: ·)
-
 /-- An outer filter reference contributes its declaration's scope whatever the reference's kind, so
     this reads the origin and the field id rather than a kind-specific reference type. -/
 private def outerHavingFieldIterationScope
@@ -86,37 +69,36 @@ private def outerHavingNumberIterationScope
   outerHavingFieldIterationScope model reference.origin reference.field.id
 
 private def outerHavingRepetitionIterationScope
-    (outerLevels : List RepeatableLevel)
+    (model : FlatModel)
     (reference : HavingRepetitionRef) :
     Option (List RepeatableLevel) :=
   match reference.origin with
   | .inner => none
-  | .outer => repeatableScopeThrough outerLevels reference.level
+  | .outer => (reference.scope? model).bind fun scope =>
+      if scope.isEmpty then none else some scope
 
 private def correlatedHavingOuterIterationScopes
-    (model : FlatModel) (outerLevels : List RepeatableLevel) :
+    (model : FlatModel) :
     CorrelatedHaving → List (Option (List RepeatableLevel))
   | .leaf (.compareNumbers _ left right) =>
       [outerHavingNumberIterationScope model left,
         outerHavingNumberIterationScope model right]
   | .leaf (.compareRepetitions _ left right) =>
-      [outerHavingRepetitionIterationScope outerLevels left,
-        outerHavingRepetitionIterationScope outerLevels right]
+      [outerHavingRepetitionIterationScope model left,
+        outerHavingRepetitionIterationScope model right]
   | .leaf (.compareStringLiteral _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
   | .leaf (.presence _ reference) =>
       [outerHavingFieldIterationScope model reference.origin reference.field]
   | .and left right | .or left right =>
-      correlatedHavingOuterIterationScopes model outerLevels left ++
-        correlatedHavingOuterIterationScopes model outerLevels right
+      correlatedHavingOuterIterationScopes model left ++
+        correlatedHavingOuterIterationScopes model right
 
 private def checkedHavingOuterIterationScope
     (checked : CheckedStarHaving model source declaringGroup) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
   mergeIterationScopeList
-    (correlatedHavingOuterIterationScopes model
-      (model.repeatableScopeForGroupPath declaringGroup)
-      checked.condition)
+    (correlatedHavingOuterIterationScopes model checked.condition)
 
 private def checkedNumberOperandIterationScope :
     CheckedNumberEntityOperand model →

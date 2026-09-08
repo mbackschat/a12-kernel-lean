@@ -47,13 +47,20 @@ theorem env_offDiagonal_bindings_not_collapsible
 /-- A resolving correlation frame preserves an invalid named binding in its caller-owned structural channel. -/
 theorem correlationFrame_rowAtResolving_error
     (frame : CorrelationFrame) (context : ResolvingCorrelationContext Error)
-    (reference : HavingRepetitionRef) (cause : EnvBindingError)
+    (origin : HavingOrigin) (level : RepeatableLevel) (cause : EnvBindingError)
     (failed :
-      (frame.envAt reference.origin).bindingAt reference.level =
+      (frame.envAt origin).bindingAt level =
         .error cause) :
-    frame.rowAtResolving context reference =
+    frame.rowAtResolving context { origin, source := .repeatable level } =
       .error (context.bindingError cause) := by
   simp [CorrelationFrame.rowAtResolving, failed, Except.mapError]
+
+/-- A fixed group's own index does not read either environment; its ancestors constrain admission. -/
+theorem fixed_repetition_reference_value (frame : CorrelationFrame)
+    (context : ResolvingCorrelationContext Error) (origin : HavingOrigin) (path : List String) :
+    frame.rowAt? { origin, source := .fixed path } = some 1 ∧
+      frame.rowAtResolving context { origin, source := .fixed path } = .ok 1 := by
+  exact ⟨rfl, rfl⟩
 
 private theorem K.and_eq_tru_iff (left right : K) :
     K.and left right = .tru ↔ left = .tru ∧ right = .tru := by
@@ -333,9 +340,9 @@ theorem outer_number_reference_stableIn (context : CorrelationContext)
 theorem outer_repetition_reference_stableIn (outerEnv inner₁ inner₂ : Env)
     (level : RepeatableLevel) :
     ({ innerEnv := inner₁, outerEnv } : CorrelationFrame).rowAt?
-        ({ origin := .outer, level } : HavingRepetitionRef) =
+        ({ origin := .outer, source := .repeatable level } : HavingRepetitionRef) =
       ({ innerEnv := inner₂, outerEnv } : CorrelationFrame).rowAt?
-        ({ origin := .outer, level } : HavingRepetitionRef) := by
+        ({ origin := .outer, source := .repeatable level } : HavingRepetitionRef) := by
   rfl
 
 /-- An outer numeric reference is stable when only the candidate/inner row changes. -/
@@ -587,8 +594,8 @@ theorem currentRepetition_selfExclusion_false
     (rows : SingleGroupValidationContext) (outerRow : RowIndex)
     (positive : outerRow ≠ 0) :
     (CorrelatedHaving.compareRepetitions .notEqual
-      { origin := .inner, level := rows.group }
-      { origin := .outer, level := rows.group }).evalTruth rows
+      { origin := .inner, source := .repeatable rows.group }
+      { origin := .outer, source := .repeatable rows.group }).evalTruth rows
       { innerRow := outerRow, outerRow } = .fls := by
   simp [CorrelatedHaving.evalTruth, CorrelatedHaving.evalTruthIn,
     CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
@@ -676,8 +683,8 @@ theorem explicitSelfExclusion_drops_outer (star : SingleCorrelatedStar)
     (rest : CorrelatedHaving)
     (condition : star.having.condition =
       .and (CorrelatedHaving.compareRepetitions .notEqual
-        { origin := .inner, level := rows.group }
-        { origin := .outer, level := rows.group }) rest) :
+        { origin := .inner, source := .repeatable rows.group }
+        { origin := .outer, source := .repeatable rows.group }) rest) :
     outerRow ∉ star.select { rows, outerRow } := by
   by_cases positive : outerRow ≠ 0
   · simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,

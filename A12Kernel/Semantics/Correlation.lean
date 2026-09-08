@@ -56,11 +56,16 @@ inductive HavingPresencePolarity where
   | notFilled
   deriving Repr, DecidableEq
 
-/-- A structural repetition reference retains the resolved level. The one-group capsule
-    previously erased it because only one coordinate existed. -/
+/-- Fixed groups retain their path because admission still depends on its repeatable ancestors,
+    even though the group's own index is one. -/
+inductive HavingRepetitionSource where
+  | repeatable (level : RepeatableLevel)
+  | fixed (path : List String)
+  deriving Repr, DecidableEq
+
 structure HavingRepetitionRef where
   origin : HavingOrigin
-  level : RepeatableLevel
+  source : HavingRepetitionSource
   deriving Repr, DecidableEq
 
 /-- One correlated filter frame. Both candidate and captured rule environments are
@@ -76,7 +81,9 @@ def CorrelationFrame.envAt (frame : CorrelationFrame) : HavingOrigin → Env
 
 def CorrelationFrame.rowAt? (frame : CorrelationFrame)
     (reference : HavingRepetitionRef) : Option RowIndex :=
-  (frame.envAt reference.origin).uniqueRowAt? reference.level
+  match reference.source with
+  | .repeatable level => (frame.envAt reference.origin).uniqueRowAt? level
+  | .fixed _ => some 1
 
 /-- One correlated filter frame: both row identities are explicit and neither is an
     ambient implicit "current" row. This remains the one-group adapter. -/
@@ -297,8 +304,10 @@ def CorrelatedHavingLeaf.verdictTruth : Verdict → K
 def CorrelationFrame.rowAtResolving (frame : CorrelationFrame)
     (context : ResolvingCorrelationContext Error)
     (reference : HavingRepetitionRef) : Except Error RowIndex :=
-  (frame.envAt reference.origin).bindingAt reference.level
-    |>.mapError context.bindingError
+  match reference.source with
+  | .repeatable level =>
+      (frame.envAt reference.origin).bindingAt level |>.mapError context.bindingError
+  | .fixed _ => .ok 1
 
 /-- Validation specialization retained for established filter consumers. -/
 def HavingNumberRef.resolveIn (reference : HavingNumberRef)
