@@ -2778,6 +2778,12 @@ run_cmd do
 #print axioms A12Kernel.suffixes_disagree_on_non_enumeration
 #print axioms A12Kernel.suffixRefusal_absent
 #print axioms A12Kernel.suffixRefusal_empty_admits
+#print axioms A12Kernel.hashParameter_a12_is_new_world
+#print axioms A12Kernel.noIterationClasses_unreachable_on_a12
+#print axioms A12Kernel.serialParameter_ignores_model_kind
+#print axioms A12Kernel.unparsedCondition_splits_the_hash_parameters
+#print axioms A12Kernel.unparsedCondition_admits_iteration_parameters
+#print axioms A12Kernel.pathSpec_and_newWorld_are_opposite
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses

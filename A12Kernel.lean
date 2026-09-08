@@ -236,6 +236,7 @@ import A12Kernel.Elaboration.RepeatabilityRestriction
 import A12Kernel.Elaboration.ErrorTextRowParameter
 import A12Kernel.Elaboration.IndexParameterResolution
 import A12Kernel.Elaboration.IndexParameterSuffix
+import A12Kernel.Elaboration.ErrorTextParameterModelKind
 import A12Kernel.Elaboration.EnumerationCategoryConstant
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount

@@ -14,11 +14,11 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it has already caught two real defects, recorded in the script.
 
-Measured at `fad2419a` on 2026-09-08.
+Measured at `8305375a` on 2026-09-08.
 
 ## Headline
 
-**405 of 495 Kernel refusal classes modelled in Lean (81%). 90 are not.**
+**410 of 495 Kernel refusal classes modelled in Lean (82%). 85 are not.**
 
 That is the project's progress figure and the only one worth quoting. A secondary count, *touched*, stands
 at 483 (97%): it counts a class named anywhere in the written
@@ -33,7 +33,7 @@ together the modelled figure leads.
 |---|---|---|
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 299 | 60% |
-| Named in tracked Lean source | 405 | 81% |
+| Named in tracked Lean source | 410 | 82% |
 | Observed in a retained probe artifact | 194 | 39% |
 | Touched by any of the three | 483 | 97% |
 | **Untouched everywhere** | **12** | **2%** |
@@ -65,8 +65,8 @@ one: it counts whether a record cites external calibration, not how much of its 
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 199 | 100% |
-| Citing a Kernel checkpoint or calibration | 102 | 51% |
+| Capability records in [`implementation/`](implementation/) | 200 | 100% |
+| Citing a Kernel checkpoint or calibration | 103 | 51% |
 | Carrying an explicit evidence-pending note | 50 | 25% |
 
 ## Axis 3 — open obligation load
@@ -89,8 +89,8 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 204975 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8630 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 205238 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8636 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above is measuring
@@ -145,4 +145,5 @@ up, rather than more rows on the route it already has.
 | 2026-09-08 | `95b73fdb` | 483 | 392 | 12 | 102 | 25 |
 | 2026-09-08 | `ce0c830f` | 483 | 398 | 12 | 102 | 25 |
 | 2026-09-08 | `fad2419a` | 483 | 405 | 12 | 102 | 25 |
+| 2026-09-08 | `8305375a` | 483 | 410 | 12 | 103 | 25 |
 <!-- velocity-history:end -->

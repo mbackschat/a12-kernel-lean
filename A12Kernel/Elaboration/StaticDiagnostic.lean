@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the `index(...)` parameter's resolution and repeatability stages ([`IndexParameterResolution`](IndexParameterResolution.lean)), its two suffix readings ([`IndexParameterSuffix`](IndexParameterSuffix.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the `index(...)` parameter's resolution and repeatability stages ([`IndexParameterResolution`](IndexParameterResolution.lean)), its two suffix readings ([`IndexParameterSuffix`](IndexParameterSuffix.lean)), the model-kind gate over the `#` message parameters ([`ErrorTextParameterModelKind`](ErrorTextParameterModelKind.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -102,6 +102,16 @@ inductive KernelStaticDiagnostic where
   | indexFieldNotIterating
   /-- Both sides are non-repeatable, and a referenced index field is not an Enumeration declaring exactly one value with its s-value set. Reachable only from the non-repeatable branch, so no model reports this beside `indexFieldNotIterating`. -/
   | indexFieldNonRepeatableEnum
+  /-- An old-world `#` message parameter written on an A12 model. It **shadows** the parameter's own iteration class: the model-kind test runs first and unconditionally, so on an A12 model this is the only class either the line or the sub-scope parameter can report. -/
+  | parameterInvalidInNewWorld
+  /-- The `#Zeile` line parameter on an H-model whose condition does not iterate the line. Reachable on an H-model only. -/
+  | noLineIteration
+  /-- The `#Usb` sub-scope parameter on an H-model whose condition does not iterate the sub-scope. Reachable on an H-model only. -/
+  | noSubScopeIteration
+  /-- The `#LfdNr` serial parameter beside a parallel-iterating condition. Alone among the `#` parameters it has **no** model-kind gate, deliberately: restricting it to serial iteration would break rules inherited by a derived model that caps the form's repetition at one. -/
+  | serialParameterInParallelIteration
+  /-- A parameter naming a slash-bearing path on an H-model, where paths are not the addressing form. The gate runs in the direction opposite to the one above: this class is H-model-only, so the two kinds each forbid what the other requires. -/
+  | pathSpecNotAllowed
   /-- An `index(...)` parameter written with neither suffix. The Kernel treats a bare index reference as meaningless rather than defaulting it. -/
   | indexFieldSuffixMissing
   /-- Under the category suffix, a referenced index field is not an Enumeration. Reachable from that suffix only: the value suffix admits a wholly non-Enumeration set instead. -/
@@ -321,6 +331,11 @@ def kernelCode : KernelStaticDiagnostic → String
   | .indexFieldRepeatabilityMismatch => "INVALID_INDEX_FIELD_REP"
   | .indexFieldNotIterating => "INVALID_INDEX_FIELD_REP_ITER"
   | .indexFieldNonRepeatableEnum => "INVALID_INDEX_FIELD_NONREP_ENUM"
+  | .parameterInvalidInNewWorld => "PARAM_INVALID_IN_NEW_WORLD"
+  | .noLineIteration => "NO_Z_ITERATION"
+  | .noSubScopeIteration => "NO_U_ITERATION"
+  | .serialParameterInParallelIteration => "INVALID_HASH_LFDNR_FOR_PARALLEL_ITERATION"
+  | .pathSpecNotAllowed => "INVALID_PATH_SPEC"
   | .indexFieldSuffixMissing => "INVALID_INDEX_FIELD_PARAMETER"
   | .indexFieldNoEnumeration => "FIELD_NO_ENUM"
   | .indexFieldCategoryUnknown => "INVALID_CATEGORY"
@@ -433,6 +448,8 @@ def all : List KernelStaticDiagnostic :=
     .invalidStringConstantForEnumerationCategory, .categoryUnknown,
     .indexFieldUnresolved, .indexFieldAmbiguous, .indexFieldComposedIndex,
     .indexFieldRepeatabilityMismatch, .indexFieldNotIterating, .indexFieldNonRepeatableEnum,
+    .parameterInvalidInNewWorld, .noLineIteration, .noSubScopeIteration,
+    .serialParameterInParallelIteration, .pathSpecNotAllowed,
     .indexFieldSuffixMissing, .indexFieldNoEnumeration, .indexFieldCategoryUnknown,
     .indexFieldEnumValuesDiffer, .indexFieldCategoryMappingDiffers,
     .indexFieldDisplayMappingDiffers, .indexFieldInconsistentTypes,
