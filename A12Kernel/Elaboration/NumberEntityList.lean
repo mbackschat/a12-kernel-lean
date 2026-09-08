@@ -228,7 +228,7 @@ namespace NumberEntityElabError
 
     A temporal operand in a **later** position is the opposite case and answers `true` through `extremaRefuseLaterKind`: the first operand certified as Number, so the Kernel's own positional rule puts the whole list in the numeric family and refuses the temporal member. Both directions are measured ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)); the earlier reading that a Date is simply "admitted at this gate" was measured on the temporal list and does not survive the crossing.
 
-    In first position only String is measured refused; Enumeration, Boolean, Confirm, and DateRange are unmeasured and produce no class, which is this vocabulary's honest state for an unestablished mapping. -/
+    String, Enumeration, Boolean, Confirm, and DateRange are measured refused in first position; the checkpoint's kind grid records those controls. Number and every temporal kind are left to their own overloads, with the wider temporal leader set covered by the [reviewed handback](../../docs/SOURCES.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale). -/
 private def extremaRefuseKind : SurfaceScalarKind → Bool
   | .string => true
   | .number => false
