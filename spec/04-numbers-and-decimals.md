@@ -56,6 +56,8 @@ Multiplication grows scale (two 3-decimal factors ⇒ a 6-decimal product), whic
 
 Three rounding families, each with a value-construct variant taking a Number field. Both forms accept an optional `DecimalPlaces` argument: `RoundAccounting([F], n)` and `RoundAccountingValue(F, n)` have the same arithmetic, `n` is an integer **0..14 inclusive**, and omission is exactly `0` decimal places.
 
+**Places admission has two refusal stages after the operand checks.** Once the decimal digit token reaches this stage, its exact nonnegative value is read as a signed 64-bit integer. Values from 15 through `2^63 − 1` report `MVK_INVALID_DIGIT_FOR_ROUNDING`; `2^63` and larger instead report `MVK_INTERNAL_ERROR` from the failed integer read. Leading zeros do not turn an otherwise admitted value into overflow. Both forms and all three modes share this distinction. An immediate literal operation operand or wrong-type String operand still reports its earlier `MVK_NO_CONST` or `MVK_NO_NUMBER`, even beside an overflowing places argument ([checkpoint](../docs/SOURCES.md#src-rounding-argument)). These are static validation-rule observations, not runtime rounding or computation-arm calibration.
+
 - **`RoundDown` / `RoundDownValue`** — target-scale `FLOOR`, toward **−∞**.
 - **`RoundUp` / `RoundUpValue`** — target-scale `CEILING`, toward **+∞**.
 - **`RoundAccounting` / `RoundAccountingValue`** — to the **nearest**; on an equidistant tie, **away from zero**. ⚠ This is **not** banker's rounding: `RoundAccounting(2.5) = 3`, `RoundAccounting(-2.5) = -3` (banker's would give `2` and `-2`).

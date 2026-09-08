@@ -2,6 +2,18 @@
 
 Static admission, operand kind gates, and diagnostic-class probes. Evaluation and application routes are owned by [`evaluation-and-application-routes.md`](evaluation-and-application-routes.md).
 
+<a id="src-rounding-argument"></a>
+#### Rounding argument overflow
+
+- `revision`: a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, `CLEAN`; dmtool 0.13.0; Kernel 30.8.1 built/runtime; 32 `KERNEL_CONFIRMED` rules, 2026-09-08.
+- `controls`: all six operators; 32/64-bit boundaries, padded 14, earlier operand refusals. The [clause](../../spec/04-numbers-and-decimals.md#2-rounding) owns the verdicts.
+- `source`: Kernel `cb66e51fa7ab90b650698f861bf670754e2e1e66`, `CheckOpUtils.isSpecificationForRounding` and `ParserService.reportMVKCoreErrorOrExceptionFromParsing`.
+- `sync`: [kf110](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf110) owns ordinary range admission; `SPEC-2026-09-08-06` requests only the new overflow boundary.
+- `model`: [`Calc_DM.json`](../../evidence/kernel-30.8.1/captures/arithmetic-shape-gates/Calc_DM.json); digest in observations.
+- `bytes`: [`ops.json`](../../evidence/kernel-30.8.1/captures/rounding-argument/ops.json), SHA-256 `e47e6c2fec230d374ca9b8f476bd2c3b01d5f4748f15278b5db56235fa8e4702`; [`observations.json`](../../evidence/kernel-30.8.1/captures/rounding-argument/observations.json), SHA-256 `e747c538a7e89b3c4d94a58a15958b193d584f288ec72a226cf2d5b40bc3a84d`.
+- `bytes`: [`ops2.json`](../../evidence/kernel-30.8.1/captures/rounding-argument/ops2.json), SHA-256 `2d285b73ac9d1d4dd873b8420a3b6f2150ceba20960c10687bdc5b79fef7495d`; [`observations2.json`](../../evidence/kernel-30.8.1/captures/rounding-argument/observations2.json), SHA-256 `366b0611484a1bec029483fdb2526baf3c5d55bda7a86a25dc8530e01946c786`.
+- `limit`: validation rules, `en_US`; schemaVersion 1 raw observations, no typed replay or runtime calibration.
+
 <a id="src-temporal-extractor-entry"></a>
 #### Numeric extractors and DateTime projections have different literal-entry gates
 

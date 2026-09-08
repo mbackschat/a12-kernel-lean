@@ -122,6 +122,8 @@ inductive KernelStaticDiagnostic where
   | nestedPowerOnLeft
   /-- A power whose exponent's derived scale is not a whole number — a positive scale or an unknown one. Deriving that scale is the numeric family's work, not this gate's. -/
   | exponentScaleNotWhole
+  /-- A parsed rounding-places argument exceeds the admitted scale without overflowing its signed-64-bit read. -/
+  | invalidDigitForRounding
   /-- A field-list calculation operator whose operand list holds more than one constant. -/
   | tooManyConstantsInOperandList
   /-- A declared charset range whose start code point exceeds its end. -/
@@ -413,6 +415,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .tooManyDivisionsInRegion => "MVK_TOO_MANY_DIV_FOR_CALC"
   | .nestedPowerOnLeft => "MVK_TOO_MANY_POW_FOR_CALC"
   | .exponentScaleNotWhole => "MVK_INVALID_NUMBER_FOR_EXP"
+  | .invalidDigitForRounding => "MVK_INVALID_DIGIT_FOR_ROUNDING"
   | .tooManyConstantsInOperandList => "MVK_TOO_MANY_CONST_FOR_CALC_OP"
   | .charsetRangeStartAfterEnd => "CHARSET_RANGE_START_AFTER_END"
   | .charsetGraphemeClusterEqualsLength => "CHARSET_GRAPHEME_CLUSTER_EQUALS_LENGTH"
@@ -559,7 +562,7 @@ def all : List KernelStaticDiagnostic :=
     .wildcardOnRelativeStep, .wildcardsRequired, .wildcardOnRuleContext,
     .groupNotRepeatable, .entityNotInGroup, .entitiesInDifferentRootGroups, .invalidRootGroup,
     .tooManyDivisionsInRegion, .nestedPowerOnLeft, .exponentScaleNotWhole,
-    .tooManyConstantsInOperandList,
+    .tooManyConstantsInOperandList, .invalidDigitForRounding,
     .charsetRangeStartAfterEnd, .charsetGraphemeClusterEqualsLength, .charsetParseError,
     .charsetContainsSurrogates, .charsetGraphemeTooLong, .charsetGraphemeOverlap,
     .semanticIndexKeyNotField, .semanticIndexKeyStarred, .semanticIndexOnSemanticIndex,

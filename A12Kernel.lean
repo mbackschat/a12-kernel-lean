@@ -90,6 +90,7 @@ import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.ComparisonEntry
 import A12Kernel.Elaboration.TemporalExtractorEntry
+import A12Kernel.Elaboration.RoundingArgument
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.FullDateInput

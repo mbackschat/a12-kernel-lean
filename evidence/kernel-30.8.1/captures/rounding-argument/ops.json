@@ -1,0 +1,210 @@
+[
+  {
+    "id": "RoundDown-omitted",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A]) > 0",
+      "--code",
+      "R0"
+    ]
+  },
+  {
+    "id": "RoundDown-zero",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A], 0) > 0",
+      "--code",
+      "R1"
+    ]
+  },
+  {
+    "id": "RoundDown-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A], 14) > 0",
+      "--code",
+      "R2"
+    ]
+  },
+  {
+    "id": "RoundDown-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A], 15) > 0",
+      "--code",
+      "R3"
+    ]
+  },
+  {
+    "id": "RoundDown-int-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A], 2147483648) > 0",
+      "--code",
+      "R4"
+    ]
+  },
+  {
+    "id": "RoundDown-long-max",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A], 9223372036854775807) > 0",
+      "--code",
+      "R5"
+    ]
+  },
+  {
+    "id": "RoundDown-long-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A], 9223372036854775808) > 0",
+      "--code",
+      "R6"
+    ]
+  },
+  {
+    "id": "RoundDown-padded-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([A], 00000000000000000000000000000000014) > 0",
+      "--code",
+      "R7"
+    ]
+  },
+  {
+    "id": "RoundUpValue-omitted",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A) > 0",
+      "--code",
+      "R8"
+    ]
+  },
+  {
+    "id": "RoundUpValue-zero",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A, 0) > 0",
+      "--code",
+      "R9"
+    ]
+  },
+  {
+    "id": "RoundUpValue-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A, 14) > 0",
+      "--code",
+      "R10"
+    ]
+  },
+  {
+    "id": "RoundUpValue-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A, 15) > 0",
+      "--code",
+      "R11"
+    ]
+  },
+  {
+    "id": "RoundUpValue-int-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A, 2147483648) > 0",
+      "--code",
+      "R12"
+    ]
+  },
+  {
+    "id": "RoundUpValue-long-max",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A, 9223372036854775807) > 0",
+      "--code",
+      "R13"
+    ]
+  },
+  {
+    "id": "RoundUpValue-long-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A, 9223372036854775808) > 0",
+      "--code",
+      "R14"
+    ]
+  },
+  {
+    "id": "RoundUpValue-padded-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(A, 00000000000000000000000000000000014) > 0",
+      "--code",
+      "R15"
+    ]
+  }
+]

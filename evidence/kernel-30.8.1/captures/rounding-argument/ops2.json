@@ -1,0 +1,210 @@
+[
+  {
+    "id": "RoundUp-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUp([A], 14) > 0",
+      "--code",
+      "S0"
+    ]
+  },
+  {
+    "id": "RoundUp-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUp([A], 15) > 0",
+      "--code",
+      "S1"
+    ]
+  },
+  {
+    "id": "RoundUp-long-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUp([A], 9223372036854775808) > 0",
+      "--code",
+      "S2"
+    ]
+  },
+  {
+    "id": "RoundAccounting-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundAccounting([A], 14) > 0",
+      "--code",
+      "S3"
+    ]
+  },
+  {
+    "id": "RoundAccounting-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundAccounting([A], 15) > 0",
+      "--code",
+      "S4"
+    ]
+  },
+  {
+    "id": "RoundAccounting-long-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundAccounting([A], 9223372036854775808) > 0",
+      "--code",
+      "S5"
+    ]
+  },
+  {
+    "id": "RoundDownValue-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDownValue(A, 14) > 0",
+      "--code",
+      "S6"
+    ]
+  },
+  {
+    "id": "RoundDownValue-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDownValue(A, 15) > 0",
+      "--code",
+      "S7"
+    ]
+  },
+  {
+    "id": "RoundDownValue-long-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDownValue(A, 9223372036854775808) > 0",
+      "--code",
+      "S8"
+    ]
+  },
+  {
+    "id": "RoundAccountingValue-upper",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundAccountingValue(A, 14) > 0",
+      "--code",
+      "S9"
+    ]
+  },
+  {
+    "id": "RoundAccountingValue-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundAccountingValue(A, 15) > 0",
+      "--code",
+      "S10"
+    ]
+  },
+  {
+    "id": "RoundAccountingValue-long-over",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundAccountingValue(A, 9223372036854775808) > 0",
+      "--code",
+      "S11"
+    ]
+  },
+  {
+    "id": "literal-first",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown(1, 9223372036854775808) > 0",
+      "--code",
+      "S12"
+    ]
+  },
+  {
+    "id": "string-first",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundDown([Anchor], 9223372036854775808) > 0",
+      "--code",
+      "S13"
+    ]
+  },
+  {
+    "id": "field-string-first",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundUpValue(Anchor, 9223372036854775808) > 0",
+      "--code",
+      "S14"
+    ]
+  },
+  {
+    "id": "second-overflow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And RoundAccounting([A], 18446744073709551616) > 0",
+      "--code",
+      "S15"
+    ]
+  }
+]

@@ -46,6 +46,7 @@ import A12Kernel.Conformance.BooleanConstantComputation
 import A12Kernel.Conformance.LiteralComparisonDiagnostic
 import A12Kernel.Conformance.ComparisonEntry
 import A12Kernel.Conformance.TemporalExtractorEntry
+import A12Kernel.Conformance.RoundingArgument
 import A12Kernel.Conformance.FixedGroupRepeatableAncestorCarriers
 import A12Kernel.Conformance.MixedFilledGroupCount
 import A12Kernel.Conformance.RepeatableDateConstantComputation

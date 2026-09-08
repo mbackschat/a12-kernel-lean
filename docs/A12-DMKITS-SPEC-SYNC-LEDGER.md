@@ -35,6 +35,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-08-06"></a>
+### `SPEC-2026-09-08-06` — rounding places distinguish scale refusal from integer-read overflow
+
+- `status`: pending
+- `clause`: [rounding](../spec/04-numbers-and-decimals.md#2-rounding).
+- `delta`: a recognized places digit token reaches a signed-64-bit read before the 0..14 scale gate. Values 15 through `2^63 − 1` report `MVK_INVALID_DIGIT_FOR_ROUNDING`; `2^63` and larger report `MVK_INTERNAL_ERROR`. Leading zeros alone do not cause overflow. Earlier operand refusals retain their own classes.
+- `basis`: the [rounding-argument checkpoint](sources/static-admission-and-class-probes.md#src-rounding-argument) retains 32 static checks at clean a12-dmkits `ad4d5ff643eef95ebaee9b423180c03c3c4464b4`, dmtool 0.13.0, Kernel 30.8.1 built/runtime, covering all six operators with admitted controls and the exact 64-bit boundary on both forms.
+- `acceptance`: retain the overflow/scale distinction in the canonical static admission account and affected portable checking surfaces, or supply a contrary Kernel observation. The peer's existing ordinary-range checks need no repeat measurement.
+- `limit`: after lexical and operand admission, on validation rules. No computation-arm calibration, runtime behavior, arbitrary lexical-error mapping, or interpreter defect is asserted.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-08-05"></a>
 ### `SPEC-2026-09-08-05` — DateTime projections admit literals that numeric extractors refuse
 
