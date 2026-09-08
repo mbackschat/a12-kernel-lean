@@ -2727,3 +2727,13 @@ run_cmd do
 #print axioms A12Kernel.customErrorEntityRefusals_length_le_two
 #print axioms A12Kernel.customErrorEntityRefusals_unparsed
 #print axioms A12Kernel.customErrorEntityRefusals_hModel_refuses_declared
+#print axioms A12Kernel.indexGroupWalk_skips_nonIndex
+#print axioms A12Kernel.indexResolution_none_of_no_index
+#print axioms A12Kernel.indexGroupWalk_outer_outranks_inner_count
+#print axioms A12Kernel.indexResolutionRefusal_order_matters
+#print axioms A12Kernel.mem_indexDeclaringGroups_cons
+#print axioms A12Kernel.multipleIndexFields2_is_innermost
+#print axioms A12Kernel.indexGroupWalk_error_classes
+#print axioms A12Kernel.indexResolution_walk_precedes_name
+#print axioms A12Kernel.indexFieldInvalid_needs_resolved_group
+#print axioms A12Kernel.indexResolution_single_ok

@@ -1,0 +1,41 @@
+[
+ {
+  "id": "T0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Sub/SubVal",
+   "--condition",
+   "FieldFilled(/Et/Rows/Sub/SubVal) And FieldFilled(/Et/Side/Val)",
+   "--code",
+   "T0"
+  ]
+ },
+ {
+  "id": "T1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+   "--code",
+   "T1"
+  ]
+ },
+ {
+  "id": "T2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Et/Rows/Sub/SubVal",
+   "--condition",
+   "FieldFilled(/Et/Rows/Sub/SubVal)",
+   "--code",
+   "T2"
+  ]
+ }
+]

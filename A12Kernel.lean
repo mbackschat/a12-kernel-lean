@@ -230,6 +230,7 @@ import A12Kernel.Elaboration.RootGroupConditionLegality
 import A12Kernel.Elaboration.GeneratedRuleIdentity
 import A12Kernel.Elaboration.EntityContainerIntegrity
 import A12Kernel.Elaboration.ErrorTargetDeclaration
+import A12Kernel.Elaboration.IndexGroupResolution
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.FirstFilledValue

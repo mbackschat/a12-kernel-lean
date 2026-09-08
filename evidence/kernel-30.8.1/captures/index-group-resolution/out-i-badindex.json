@@ -1,0 +1,16 @@
+{
+  "target" : "model",
+  "op" : "check",
+  "outcome" : "read",
+  "ok" : true,
+  "valid" : false,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "[redacted: kernel prose]",
+  "diagnostics" : [ {
+    "severity" : "ERROR",
+    "source" : "KERNEL",
+    "summary" : "[redacted: kernel prose]",
+    "where" : { }
+  } ],
+  "written" : false
+}
