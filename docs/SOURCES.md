@@ -638,6 +638,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+<a id="src-enumeration-comparability-diagnostics"></a>
+- [Direct Enumeration comparability retains display-class and mapping-conflict diagnostics](sources/static-admission-and-class-probes.md#src-enumeration-comparability-diagnostics)
 <a id="src-comparison-entry-gates"></a>
 - [Comparison entry, grouped clocks, pattern slots and tolerance dispatch](sources/static-admission-and-class-probes.md#src-comparison-entry-gates)
 

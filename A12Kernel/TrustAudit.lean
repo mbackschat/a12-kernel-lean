@@ -1637,6 +1637,8 @@ run_cmd do
 #print axioms A12Kernel.enumeration_empty_notFired
 #print axioms A12Kernel.enumeration_unavailable_unknown
 #print axioms A12Kernel.enumeration_resolved_never_omission
+#print axioms A12Kernel.enumerationComparabilityError_diagnostic_injective
+#print axioms A12Kernel.enumerationComparisonAdmission_diagnostic_none_iff
 #print axioms A12Kernel.enumerationDisplay_identityFacts_notEffective
 #print axioms A12Kernel.enumerationDisplayFact_conflictsWith_comm
 #print axioms A12Kernel.enumerationDisplay_conflictsWith_comm

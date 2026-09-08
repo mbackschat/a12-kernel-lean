@@ -4,6 +4,19 @@ import A12Kernel.Elaboration.EnumerationComparability
 
 namespace A12Kernel
 
+/-- Diagnostic projection preserves the two distinct direct-comparability refusal classes. -/
+theorem enumerationComparabilityError_diagnostic_injective
+    (left right : EnumerationComparabilityError) :
+    left.diagnostic = right.diagnostic ↔ left = right := by
+  cases left <;> cases right <;> decide
+
+/-- The diagnostic view suppresses exactly admitted comparisons. -/
+theorem enumerationComparisonAdmission_diagnostic_none_iff
+    (admission : EnumerationComparisonAdmission) :
+    admission.diagnostic? = none ↔ admission.isAccepted = true := by
+  cases admission <;> simp [EnumerationComparisonAdmission.diagnostic?,
+    EnumerationComparisonAdmission.isAccepted]
+
 /-- Authored labels that all equal their stored tokens are operationally textless for this gate. -/
 theorem enumerationDisplay_identityFacts_notEffective
     (profile : ResolvedEnumerationDisplay)

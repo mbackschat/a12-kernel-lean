@@ -157,9 +157,9 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-direct-comparability"></a>
 #### Direct comparability
 
-- `boundary`: Separate checked relation for String/Enumeration and Enumeration/category equality/inequality
+- `boundary`: Separate checked relation for String/Enumeration and Enumeration/category equality/inequality. Its diagnostic view preserves display-class mismatch versus shared-locale mapping conflict, while admitted comparisons produce no diagnostic.
 - `owner`: [`EnumerationComparability.lean`](../../A12Kernel/Elaboration/EnumerationComparability.lean), [`EnumerationValueList.lean`](../../A12Kernel/Semantics/EnumerationValueList.lean)
-- `assurance`: E/P closed for admitted families; source-grounded; C none
+- `assurance`: E/P closed for admitted families and the diagnostic projection. The [direct-comparability source checkpoint](../sources/static-admission-and-class-probes.md#src-enumeration-comparability-diagnostics) identifies the two source raise paths and existing peer kernel locks. Those tests were inspected, not rerun here; no local typed calibration is claimed. C none.
 - `remains`: Wider paths/categories: [SG8](../SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion)
 
 <a id="cap-typed-value-lists"></a>

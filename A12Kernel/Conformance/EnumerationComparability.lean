@@ -18,6 +18,22 @@ private def plainString : DirectComparableField := .plainString
 
 private def category : DirectComparableField := .category
 
+private def comparisonCode (left right : DirectComparableField) : Option String :=
+  (classifyDirectFieldComparison left right).diagnostic?.map KernelStaticDiagnostic.kernelCode
+
+example :
+    let display := enum [fact "en" "A" "Alpha"]
+    comparisonCode display (enum [fact "en" "A" "Another"]) =
+        some "MVK_INVALID_COMPARE_ENUM_TO_ENUM" ∧
+      comparisonCode display (enum [fact "en" "B" "Alpha"]) =
+        some "MVK_INVALID_COMPARE_ENUM_TO_ENUM" ∧
+      comparisonCode display plainString = some "MVK_INVALID_COMPARE_ENUM_TO_STRING" ∧
+      comparisonCode display (enum [fact "en" "A" "A"]) =
+        some "MVK_INVALID_COMPARE_ENUM_TO_STRING" ∧
+      comparisonCode display (enum [fact "en" "B" "Beta"]) = none ∧
+      comparisonCode display category = none := by
+  native_decide
+
 /- No labels and authored identity labels are both effectively textless. -/
 example :
     classifyDirectFieldComparison plainString (enum []) = .accepted ∧

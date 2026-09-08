@@ -320,8 +320,10 @@ inductive KernelStaticDiagnostic where
   | invalidConst
   /-- A count-of-value field list mixes kinds where the operator requires string-like operands. Reached after the constant clears the class above, which is what orders the two: a temporal constant against the same list never gets here. -/
   | noStringOrEnum
-  /-- Two Enumerations compared where exactly one declares display labels, or an Enumeration with labels compared against a plain string. The label/no-label matrix, not the value domains, is what decides this. -/
+  /-- A display-bearing Enumeration compared with a plain String or an effectively textless Enumeration. Identity-only labels remain textless under the direct-comparability gate. -/
   | invalidCompareEnumToString
+  /-- Two display-bearing Enumerations disagree on a shared-locale stored/display association in either direction. -/
+  | invalidCompareEnumToEnum
   /-- An operator requiring exactly two field-list parameters received a different count. -/
   | paramSizeInvalidTwo
   /-- A dotted line specifier on a path element. The grammar accepts the shape so the Kernel can name it, and A12 models then refuse it semantically — so this class exists precisely because parsing succeeded. -/
@@ -512,6 +514,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidConst => "MVK_INVALID_CONST"
   | .noStringOrEnum => "MVK_NO_STRING_OR_ENUM"
   | .invalidCompareEnumToString => "MVK_INVALID_COMPARE_ENUM_TO_STRING"
+  | .invalidCompareEnumToEnum => "MVK_INVALID_COMPARE_ENUM_TO_ENUM"
   | .paramSizeInvalidTwo => "MVK_PARAMSIZE_INVALID_2"
   | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
   | .notInRuleGroup => "MVK_NOT_IN_RULEGROUP"
@@ -585,7 +588,8 @@ def all : List KernelStaticDiagnostic :=
     .indexForErrorTextInvalid,
     .missingYear, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
-    .invalidCompareEnumToString, .paramSizeInvalidTwo, .pointInA12Model,
+    .invalidCompareEnumToString, .invalidCompareEnumToEnum,
+    .paramSizeInvalidTwo, .pointInA12Model,
     .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,
     .invalidConst, .noStringOrEnum]

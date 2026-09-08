@@ -1,3 +1,5 @@
+import A12Kernel.Elaboration.StaticDiagnostic
+
 /-! # Ordinary Enumeration direct-field comparability
 
 This static capsule begins after equality/inequality and direct-field operand shape have been checked. Every Enumeration operand is a resolved legal ordinary closed declaration, and every String operand is an already-admitted ordinary plain value-readable String field. Its facts use canonical locale keys and complete display maps with unique stored tokens and injective display text per locale. Those declaration and field-kind checks are preceding obligations, not reconstructed here.
@@ -59,6 +61,11 @@ inductive EnumerationComparabilityError where
   | displayMapConflict
   deriving Repr, DecidableEq
 
+def EnumerationComparabilityError.diagnostic :
+    EnumerationComparabilityError → KernelStaticDiagnostic
+  | .displayClassMismatch => .invalidCompareEnumToString
+  | .displayMapConflict => .invalidCompareEnumToEnum
+
 /-- Static admission result, separate from runtime equality/inequality evaluation. -/
 inductive EnumerationComparisonAdmission where
   | accepted
@@ -66,6 +73,10 @@ inductive EnumerationComparisonAdmission where
   deriving Repr, DecidableEq
 
 namespace EnumerationComparisonAdmission
+
+def diagnostic? : EnumerationComparisonAdmission → Option KernelStaticDiagnostic
+  | .accepted => none
+  | .rejected error => some error.diagnostic
 
 def isAccepted : EnumerationComparisonAdmission → Bool
   | .accepted => true
