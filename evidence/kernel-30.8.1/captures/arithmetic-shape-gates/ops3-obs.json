@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+    "state" : "CLEAN"
+  },
+  "model" : "1d067a764514c3d322269ea26211ef43d2a01d8b7224fed47bd071fe00d615ef",
+  "observations" : [ {
+    "id" : "S1-exp-sum-of-integers",
+    "inputHash" : "4bafbebc43628255fe8f1e14fb19f2be49bf976680649e4e8f6d0d988d8faacc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "S2-exp-product-integers",
+    "inputHash" : "b952ce4c1c790f3242fdd599412e2c91d2943c536dc31934ea69eaca3ee5c426",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "S3-exp-sum-with-decimal",
+    "inputHash" : "b6ec988907bc08ca8f1d6710421ec0a3d754b18e65e89514d9624348e89b9ece",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_NUMBER_FOR_EXP" ]
+  }, {
+    "id" : "S4-exp-literal-sum",
+    "inputHash" : "799c015e4a6d5427b75fa7074c071d9bba27926adf0e720f6d35856b0a730855",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

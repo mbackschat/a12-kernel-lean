@@ -1,0 +1,302 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 14,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "D1-two-div-chain",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K0", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] / [/Calc/B] / [/Calc/C] > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_TOO_MANY_DIV_FOR_CALC",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "D2-div-add-div",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K1", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] / [/Calc/B] + [/Calc/C] / [/Calc/D] > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "D3-div-bracketed-div",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K2", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] / {[/Calc/B] / [/Calc/C]} > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "D4-div-mult-div",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K3", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] / [/Calc/B] * [/Calc/C] / [/Calc/D] > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_TOO_MANY_DIV_FOR_CALC",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "D5-one-div-control",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K4", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] / [/Calc/B] > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "D6-two-div-both-braced",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K5", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And {[/Calc/A] / [/Calc/B]} * {[/Calc/C] / [/Calc/D]} > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "D7-div-minus-div",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K6", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] / [/Calc/B] - [/Calc/C] / [/Calc/D] > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "P1-chain-pow",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K7", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ [/Calc/B] ^ [/Calc/C] > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_TOO_MANY_POW_FOR_CALC",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "P2-brace-left-pow",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K8", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And {[/Calc/A] ^ [/Calc/B]} ^ [/Calc/C] > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "P3-brace-right-pow",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K9", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] ^ [/Calc/C]} > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_NUMBER_FOR_EXP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "P4-one-pow-control",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K10", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ [/Calc/B] > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "E1-literal-int-exp",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K11", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ 2 > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "E2-literal-frac-exp",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K12", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ 2.5 > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_NUMBER_FOR_EXP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "E3-div-as-exponent",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "K13", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] / [/Calc/C]} > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_NUMBER_FOR_EXP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "ops-obs.json"
+}

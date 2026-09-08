@@ -1,0 +1,92 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "S1-exp-sum-of-integers",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "S0", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] + [/Calc/C]} > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "S2-exp-product-integers",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "S1", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] * [/Calc/C]} > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "S3-exp-sum-with-decimal",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "S2", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] + [/Calc/Dec]} > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_NUMBER_FOR_EXP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "S4-exp-literal-sum",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "S3", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {2 + 3} > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "ops3-obs.json"
+}

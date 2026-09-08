@@ -1,0 +1,54 @@
+[
+  {
+    "id": "S1-exp-sum-of-integers",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "S0",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] + [/Calc/C]} > 1"
+    ]
+  },
+  {
+    "id": "S2-exp-product-integers",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "S1",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] * [/Calc/C]} > 1"
+    ]
+  },
+  {
+    "id": "S3-exp-sum-with-decimal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "S2",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {[/Calc/B] + [/Calc/Dec]} > 1"
+    ]
+  },
+  {
+    "id": "S4-exp-literal-sum",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "S3",
+      "--field",
+      "/Calc/Anchor",
+      "--condition",
+      "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ {2 + 3} > 1"
+    ]
+  }
+]

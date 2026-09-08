@@ -1,0 +1,96 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+    "state" : "CLEAN"
+  },
+  "model" : "1d067a764514c3d322269ea26211ef43d2a01d8b7224fed47bd071fe00d615ef",
+  "observations" : [ {
+    "id" : "D1-two-div-chain",
+    "inputHash" : "ce1a9b5e48fe84adc0e06935ef20a946b73b7e9d624064f7b6baeb2d6b319acb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_DIV_FOR_CALC" ]
+  }, {
+    "id" : "D2-div-add-div",
+    "inputHash" : "c9c8180e1faf2c26cd06089fc31a7afa124acfb8ed4d8d45a267b4bc812bdcae",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "D3-div-bracketed-div",
+    "inputHash" : "84780d6f6376aebcaf2b91aee5c52434fd2c757d9ab920520dfc4f3fbea92a1e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "D4-div-mult-div",
+    "inputHash" : "c2e50205f8ddf60d51b002f075fc72d5e7598469b737c22063177f5029f0a018",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_DIV_FOR_CALC" ]
+  }, {
+    "id" : "D5-one-div-control",
+    "inputHash" : "4df6782b06674812287c59142c3270437b6d04635a69a607a3b4329fe719fd2f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "D6-two-div-both-braced",
+    "inputHash" : "eabd74c71ad10cdbc88e58b582ce45c8d16d9d9a32ad7981cf57579e52a5a787",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "D7-div-minus-div",
+    "inputHash" : "9f371ed90db8ff9a290d8c01a620d9e9d72e9846c079d51570afc9359fc3d06a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "P1-chain-pow",
+    "inputHash" : "bab73ac2d0049ce99c7bb6426175d7826314937f54ae57eaa1c3a58f7c33466d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_POW_FOR_CALC" ]
+  }, {
+    "id" : "P2-brace-left-pow",
+    "inputHash" : "05dc894ebd3413ffa5825921fa7fd53010e4a236761c9f88657901b22f3f41f6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "P3-brace-right-pow",
+    "inputHash" : "a9a3f58ffb6ab084292dedbebbd1f0544a260738680cf26d2fe58958c0b7707e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_NUMBER_FOR_EXP" ]
+  }, {
+    "id" : "P4-one-pow-control",
+    "inputHash" : "010a1dbd3e254c6baf62dd3bd20daaecfb4f5984afce531d3db245bfe16d9285",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "E1-literal-int-exp",
+    "inputHash" : "448cd2c727d494bbd80b6684fec3d488d2583ce263b28de435a1894d06b03909",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "E2-literal-frac-exp",
+    "inputHash" : "445a98f87c1e09013500c769482eb957addc25d986731cd0ded386c2e1fdd88f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_NUMBER_FOR_EXP" ]
+  }, {
+    "id" : "E3-div-as-exponent",
+    "inputHash" : "41292519dfc89b96e511ff9a7c1fdd9e04cab9acb2a864545ea13ff23c40fe3c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_NUMBER_FOR_EXP" ]
+  } ]
+}

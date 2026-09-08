@@ -2793,6 +2793,14 @@ run_cmd do
 #print axioms A12Kernel.nonString_never_skips_validation
 #print axioms A12Kernel.relativeUpRefusal_iff
 #print axioms A12Kernel.relativeUp_to_root_admitted
+#print axioms A12Kernel.divisionScan_boundary_contributes_nothing
+#print axioms A12Kernel.grouped_division_admitted
+#print axioms A12Kernel.divisions_across_addition_admitted
+#print axioms A12Kernel.multiplication_combines_regions
+#print axioms A12Kernel.powerRefusal_grouped_left_admits
+#print axioms A12Kernel.powerRefusal_right_nesting_admits
+#print axioms A12Kernel.exponentRefusal_admits_only_zero
+#print axioms A12Kernel.constantListRefusal_counts_constants
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses

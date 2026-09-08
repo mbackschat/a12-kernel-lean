@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the `index(...)` parameter's resolution and repeatability stages ([`IndexParameterResolution`](IndexParameterResolution.lean)), its two suffix readings ([`IndexParameterSuffix`](IndexParameterSuffix.lean)), the model-kind gate over the `#` message parameters ([`ErrorTextParameterModelKind`](ErrorTextParameterModelKind.lean)), the parameter's coordinate, path and value-access gates ([`ErrorTextParameterAddressing`](ErrorTextParameterAddressing.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, the index-group resolution walk ([`IndexGroupResolution`](IndexGroupResolution.lean)), the rule-change service's two move refusals ([`RuleChangePropagation`](RuleChangePropagation.lean)), the two repeatability-restriction refusals ([`RepeatabilityRestriction`](RepeatabilityRestriction.lean)), the error-text row-index parameter's cascade ([`ErrorTextRowParameter`](ErrorTextRowParameter.lean)), the `index(...)` parameter's resolution and repeatability stages ([`IndexParameterResolution`](IndexParameterResolution.lean)), its two suffix readings ([`IndexParameterSuffix`](IndexParameterSuffix.lean)), the model-kind gate over the `#` message parameters ([`ErrorTextParameterModelKind`](ErrorTextParameterModelKind.lean)), the parameter's coordinate, path and value-access gates ([`ErrorTextParameterAddressing`](ErrorTextParameterAddressing.lean)), the arithmetic shape gates ([`ArithmeticShape`](ArithmeticShape.lean)), the enumeration-category constant gate ([`EnumerationCategoryConstant`](EnumerationCategoryConstant.lean)), and the whole rule's error-target declarations — the error field's own declaration gate, the reference gate, the iteration cascade that gate opens, and the two custom error-entity slots ([`ErrorTargetDeclaration`](ErrorTargetDeclaration.lean)). Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -102,6 +102,14 @@ inductive KernelStaticDiagnostic where
   | indexFieldNotIterating
   /-- Both sides are non-repeatable, and a referenced index field is not an Enumeration declaring exactly one value with its s-value set. Reachable only from the non-repeatable branch, so no model reports this beside `indexFieldNotIterating`. -/
   | indexFieldNonRepeatableEnum
+  /-- A multiplication/division region carrying more than one open division. The region is **scoped**: grouping, addition, subtraction and power each start a fresh one, so the count is per region and never over the whole expression. -/
+  | tooManyDivisionsInRegion
+  /-- A power whose left operand is directly another power. Grouping the left operand defeats the check, so the refusal is about the ungrouped chain and not about nesting as such. -/
+  | nestedPowerOnLeft
+  /-- A power whose exponent's derived scale is not a whole number — a positive scale or an unknown one. Deriving that scale is the numeric family's work, not this gate's. -/
+  | exponentScaleNotWhole
+  /-- A field-list calculation operator whose operand list holds more than one constant. -/
+  | tooManyConstantsInOperandList
   /-- A serial-coordinate specifier naming a form position the field cannot occupy, either because the field does not lie on a repeatable form or because the numeral exceeds its declared maximum. Two causes, one class. -/
   | serialCoordinateInvalid
   /-- The line-coordinate twin of the class above, on the second coordinate. The two are one mechanism reported under two names. -/
@@ -341,6 +349,10 @@ def kernelCode : KernelStaticDiagnostic → String
   | .indexFieldRepeatabilityMismatch => "INVALID_INDEX_FIELD_REP"
   | .indexFieldNotIterating => "INVALID_INDEX_FIELD_REP_ITER"
   | .indexFieldNonRepeatableEnum => "INVALID_INDEX_FIELD_NONREP_ENUM"
+  | .tooManyDivisionsInRegion => "MVK_TOO_MANY_DIV_FOR_CALC"
+  | .nestedPowerOnLeft => "MVK_TOO_MANY_POW_FOR_CALC"
+  | .exponentScaleNotWhole => "MVK_INVALID_NUMBER_FOR_EXP"
+  | .tooManyConstantsInOperandList => "MVK_TOO_MANY_CONST_FOR_CALC_OP"
   | .serialCoordinateInvalid => "INVALID_FIELD_L"
   | .lineCoordinateInvalid => "INVALID_FIELD_Z"
   | .valueParameterOnStarredReference => "PARAM_VALUE_WITH_STARREFERENCE"
@@ -463,6 +475,8 @@ def all : List KernelStaticDiagnostic :=
     .invalidStringConstantForEnumerationCategory, .categoryUnknown,
     .indexFieldUnresolved, .indexFieldAmbiguous, .indexFieldComposedIndex,
     .indexFieldRepeatabilityMismatch, .indexFieldNotIterating, .indexFieldNonRepeatableEnum,
+    .tooManyDivisionsInRegion, .nestedPowerOnLeft, .exponentScaleNotWhole,
+    .tooManyConstantsInOperandList,
     .serialCoordinateInvalid, .lineCoordinateInvalid, .valueParameterOnStarredReference,
     .valueParameterNoValueValidation, .parameterTooManyParentGroups,
     .parameterInvalidInNewWorld, .noLineIteration, .noSubScopeIteration,

@@ -625,6 +625,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+<a id="src-arithmetic-shape-gates"></a>
+- [The four arithmetic shape gates: a division limit scoped per multiplicative region whose grouped form the Kernel deliberately admits, a left-only power test, an exponent gate over derived scale, and a constant limit counting constants rather than operands](sources/static-admission-and-class-probes.md#src-arithmetic-shape-gates)
 <a id="src-nonrepeatable-index-field-gate"></a>
 - [The non-repeatable indexed group's parameter gate, whose single admitting shape is an Enumeration index field declaring one value that is also its S-value, with the repeatable-carrier control that attributes the refusal to repeatability rather than to the field's kind](sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)
 

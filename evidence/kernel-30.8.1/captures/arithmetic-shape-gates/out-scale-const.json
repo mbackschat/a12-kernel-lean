@@ -1,0 +1,191 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "[redacted: kernel prose]",
+  "data" : {
+    "ops" : 8,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "X1-decimal-field-exponent",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X0", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ [/Calc/Dec] > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_NUMBER_FOR_EXP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "X2-integer-field-exponent",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X1", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ [/Calc/B] > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "X3-negative-int-exponent",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X2", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And [/Calc/A] ^ -2 > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "C1-max-two-constants",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X3", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And Max(1, 2) > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_TOO_MANY_CONST_FOR_CALC_OP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "C2-max-one-constant",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X4", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And Max([/Calc/A], 2) > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_UNGUARDED_NUMBER_COMPARISON",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "",
+            "operator" : "GreaterThan"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "C3-max-no-constant",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X5", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And Max([/Calc/A], [/Calc/B]) > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "C4-max-three-one-const",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X6", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And Max([/Calc/A], [/Calc/B], 2) > 1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "C5-max-three-two-const",
+      "verb" : "rule",
+      "args" : [ "check", "--code", "X7", "--field", "/Calc/Anchor", "--condition", "FieldFilled(/Calc/Anchor) And Max([/Calc/A], 1, 2) > 1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted: kernel prose]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_TOO_MANY_CONST_FOR_CALC_OP",
+          "summary" : "[redacted: kernel prose]",
+          "where" : {
+            "rule" : "/Calc/CheckRule"
+          },
+          "fix" : "[redacted: kernel prose]",
+          "explain" : "[redacted: kernel prose]"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "ops2-obs.json"
+}

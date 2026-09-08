@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 1,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+    "state" : "CLEAN"
+  },
+  "model" : "1d067a764514c3d322269ea26211ef43d2a01d8b7224fed47bd071fe00d615ef",
+  "observations" : [ {
+    "id" : "X1-decimal-field-exponent",
+    "inputHash" : "893e861e8c8200939cc916955ae10e4dfc29966b47ae71f784420c5e441f8568",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_NUMBER_FOR_EXP" ]
+  }, {
+    "id" : "X2-integer-field-exponent",
+    "inputHash" : "010a1dbd3e254c6baf62dd3bd20daaecfb4f5984afce531d3db245bfe16d9285",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "X3-negative-int-exponent",
+    "inputHash" : "555985df2b5d9df96ecaa352fe4116310d315305269869dfff7c6a3e4fed0020",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "C1-max-two-constants",
+    "inputHash" : "c9950e4c03f65b303c65bc09e9e1162f811d03b9eac6c44205492201f0cc360d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_CONST_FOR_CALC_OP" ]
+  }, {
+    "id" : "C2-max-one-constant",
+    "inputHash" : "936e81e012991def8f1778336857777c90736e9e0fe50afc00c105da496348cb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "C3-max-no-constant",
+    "inputHash" : "045c48c572c63387cdf964973b1defb1cd0eb9158a76c79f76fd65664a112a06",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "C4-max-three-one-const",
+    "inputHash" : "657e24af6538e0af3a78a9721440e67685bc9f26ed6121e2775dc1272dd2c3e1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "C5-max-three-two-const",
+    "inputHash" : "f5beb1fd257ddc8d4b8af5e7729e6d18e02a8c1e456c68a80481bd7693dcc63d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_CONST_FOR_CALC_OP" ]
+  } ]
+}
