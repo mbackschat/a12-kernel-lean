@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-09-08; HEAD was `8ea95894`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-09-08; HEAD was `e652d91e`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -48,15 +48,15 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | records | share |
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 207 | 100% |
-| Citing a Kernel checkpoint or calibration | 111 | 53% |
+| Citing a Kernel checkpoint or calibration | 112 | 54% |
 | Carrying an explicit evidence-pending note | 51 | 24% |
 
 ## Axis 3 — open obligation load
 
 | | count |
 |---|---|
-| Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 25 |
-| `remaining` rows across those gaps | 235 |
+| Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
+| `remaining` rows across those gaps | 221 |
 | Gaps whose route is **blocked** | 1 |
 | Ledger entries `pending` with a12-dmkits | 5 |
 | Ledger entries `handed-off` | 0 |
@@ -69,7 +69,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 208369 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 208395 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8692 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -142,4 +142,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-09-08T20:40:25+02:00 | `1a163c9e` | 489 | 455 | 6 | 108 | 25 |
 | 2026-09-08T21:01:33+02:00 | `29a705e7` | 489 | 455 | 6 | 107 | 25 |
 | 2026-09-08T21:18:34+02:00 | `367e2e71` | 489 | 455 | 6 | 111 | 25 |
+| 2026-09-08T23:50:33+02:00 | `e652d91e` | 489 | 455 | 6 | 112 | 24 |
 <!-- velocity-history:end -->
