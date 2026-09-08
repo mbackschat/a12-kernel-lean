@@ -1,0 +1,15 @@
+{
+ "computedField": "/C/N",
+ "commonPrecondition": "FieldFilled(/C/P) Or FieldFilled(/C/A)",
+ "alternatives": [
+  {
+   "operation": "[/C/P] + 1"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "c CommonOr"
+  }
+ ]
+}

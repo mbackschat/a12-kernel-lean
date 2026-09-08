@@ -2652,3 +2652,9 @@ run_cmd do
 #print axioms A12Kernel.fieldValueOperand_invalidTableEnum_iff
 #print axioms A12Kernel.valueNotConsistent_tableEnumExpected_of_nonTable
 #print axioms A12Kernel.parameterValueRefusal_absent_column
+#print axioms A12Kernel.branchRefusal_emitBranch
+#print axioms A12Kernel.joinAlternatives_passes_shape_checks
+#print axioms A12Kernel.joinAlternatives_empty
+#print axioms A12Kernel.emittedSpelling_notEqual_iff_exact
+#print axioms A12Kernel.roundingRefusal_emitted
+#print axioms A12Kernel.normalizedFormRefusal_ungated

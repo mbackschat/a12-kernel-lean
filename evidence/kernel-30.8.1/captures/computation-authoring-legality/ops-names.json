@@ -1,0 +1,44 @@
+[
+ {
+  "id": "dot",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C",
+   "--name",
+   "a.b",
+   "--kind",
+   "NUMBER",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "colon",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C",
+   "--name",
+   "a:b",
+   "--kind",
+   "NUMBER",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "idx",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C/L",
+   "--name",
+   "K",
+   "--kind",
+   "STRING",
+   "--dry-run"
+  ]
+ }
+]

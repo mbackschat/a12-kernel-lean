@@ -819,6 +819,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-dynamic-enumeration-legality"></a>
 - [Dynamic-enumeration derivation refuses in four ordered stages, eleven of twelve classes attributed to one witness rule each](sources/rule-set-meta-information.md#src-dynamic-enumeration-legality)
 
+<a id="src-computation-normal-form-generation"></a>
+- [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>
 - [`ValueNotConsistent` is inert in an A12 document model](sources/static-admission-and-class-probes.md#src-table-enumeration-inertness)
 <a id="src-iteration-and-semantic-index-legality"></a>

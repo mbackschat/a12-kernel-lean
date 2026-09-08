@@ -1,0 +1,15 @@
+{
+ "computedField": "/C/N",
+ "alternatives": [
+  {
+   "precondition": "[/C/P] > 1 Or [/C/P] < 0",
+   "operation": "[/C/P] + 1"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "c PreCmp"
+  }
+ ]
+}

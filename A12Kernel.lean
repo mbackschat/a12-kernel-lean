@@ -222,6 +222,7 @@ import A12Kernel.Elaboration.UnraisedDiagnostic
 import A12Kernel.Elaboration.DynamicEnumerationLegality
 import A12Kernel.Elaboration.IterationLegality
 import A12Kernel.Elaboration.TableEnumeration
+import A12Kernel.Elaboration.ComputationNormalForm
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.FirstFilledValue

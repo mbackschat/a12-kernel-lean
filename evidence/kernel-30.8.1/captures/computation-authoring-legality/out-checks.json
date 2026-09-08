@@ -1,0 +1,547 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 18 ops; 9 of 18 exited nonzero (1 failed, 8 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 18,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "Ctrl",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/Ctrl.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/NComp",
+          "changed": {
+            "computation": "/C/NComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "EnumOk",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/EnumOk.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/EComp",
+          "changed": {
+            "computation": "/C/EComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "EnumBad",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/EnumBad.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/EComp"
+              },
+              "fix": "this code is documented for the construct(s) below; the corrective applies if that is what you used \u2014 EXPRESS is an enum value; compare to a SpeedClass category value (NORMAL/FAST)"
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "EnumNum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/EnumNum.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/EComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "PreOr",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/PreOr.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/NComp",
+          "changed": {
+            "computation": "/C/NComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "PreCmp",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/PreCmp.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/NComp",
+          "changed": {
+            "computation": "/C/NComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "CommonOr",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/CommonOr.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/NComp",
+          "changed": {
+            "computation": "/C/NComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "RepUnq",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/RepUnq.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/NComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it \u2014 the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it \u2014 via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            },
+            {
+              "severity": "WARNING",
+              "source": "LINT",
+              "code": "RK_COMPUTATION_FORBIDDEN_CONSTRUCT",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/NComp"
+              },
+              "fix": "remove RepetitionNotUnique from the precondition (it is not allowed in a computation)"
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "CustomC",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/CustomC.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_UNEXPECTED_TOKEN",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/NComp"
+              },
+              "fix": "The condition has a token the DSL parser did not expect (a syntax slip the kernel reports with no message of its own). The most common causes, in order: (1) a BOOLEAN literal must be CAPITALIZED \u2014 write `True` / `False`, not the JSON `true` / `false` (e.g. `[Flag] == True`); (2) a string value must be DOUBLE-QUOTED \u2014 `[Status] == \"OPEN\"`; (3) operator/keyword names are case-sensitive PascalCase \u2014 `FieldFilled`, `And`, `Or`, `Not`; (4) a FIELD used as a comparison VALUE must be BRACKETED \u2014 `[Approved] != True`, not `Approved != True` (bare names belong only inside a function/predicate's parentheses, like `FieldFilled(Approved)`). Re-check the token at the reported position against these.",
+              "explain": "MVK_UNEXPECTED_TOKEN is the kernel's generic parse error \u2014 a token appeared where the grammar did not allow it \u2014 and it is raised WITHOUT a message, so the likely cause has to be inferred from the DSL's literal/keyword conventions (capitalized booleans True/False, double-quoted strings, case-sensitive PascalCase operators)."
+            },
+            {
+              "severity": "WARNING",
+              "source": "LINT",
+              "code": "RK_COMPUTATION_FORBIDDEN_CONSTRUCT",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/NComp"
+              },
+              "fix": "remove CustomCondition from the precondition (it is not allowed in a computation)"
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "SelfCalc",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/SelfCalc.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/NComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "BadField",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/BadField.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "PRECHECK",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "path": "/C/NopeComp"
+              },
+              "fix": "review the computation against the model's structure (the kernel rejected it during conversion)"
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "BadOper",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/BadOper.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_ENTITY",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/NComp"
+              },
+              "fix": "The group or field name in the condition could not be resolved in the rule's scope. Use its ABSOLUTE path (a leading `/`, e.g. `/Order/Items/Sku`) rather than a bare or relative name \u2014 a bare name binds against the rule's OWN group first, and reaches ANY other group (an ancestor's field included: there is no upward search) only through the model-wide fallback, which needs `fieldRefByShortNameAllowed` AND a unique match. If the name is already correct, check the rule's iteration scope contains it: a per-row field needs the rule to iterate over its repeatable group (set the rule group to that group's PARENT, error field inside).",
+              "explain": "MVK_INVALID_ENTITY (\"the group or field 'X' is not valid\") means the kernel could not resolve that name \u2014 almost always a bare/relative reference that does not bind across sibling groups, or a field outside the rule's iteration scope."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "Tol",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/Tol.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/NComp",
+          "changed": {
+            "computation": "/C/NComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "DateCalc",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/DateCalc.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_COMPARE_TO_DATE",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/DComp"
+              },
+              "fix": "Check the LITERAL before the field. A double-quoted literal whose CONTENT parses as a date is a TEMPORAL constant \u2014 `\"05.03.2024\"` is one \u2014 and it reports this date class against whatever it meets, including a String, Enumeration or Number field with nothing temporal about it. So the code does NOT imply either side is a date. If the field really is textual, stop the literal looking like a date rather than changing the field.",
+              "explain": "This is the kernel's COMPARISON vocabulary, not an assignment-specific class: it fires the same way on a plain rule condition, inside a Having filter, and on a computation's constant assignment. Which class a wrong-kind constant draws is an ordered ladder over the (constant, field) PAIR rather than a function of the field: a BOOLEAN field reports MVK_INVALID_COMPARE_TO_YESNO and a CONFIRM one MVK_INVALID_COMPARE_TO_YES for any constant at all; failing those, a temporal constant reports THIS code against every remaining kind; only then does the field's own kind decide. Measured in KERNEL-FINDINGS entry KF257, which carries the ladder and its controls."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "StrCalc",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/StrCalc.json"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "computation rejected by the kernel (1 finding(s))",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {
+                "rule": "/C/AComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "RowCalc",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/RowCalc.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/L/XComp",
+          "changed": {
+            "computation": "/C/L/XComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "RowSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/RowSum.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/NComp",
+          "changed": {
+            "computation": "/C/NComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "GateStar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "--dry-run",
+          "specs/GateStar.json"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add computation /C/NComp",
+          "changed": {
+            "computation": "/C/NComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

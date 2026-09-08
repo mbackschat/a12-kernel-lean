@@ -1,0 +1,101 @@
+[
+ {
+  "id": "fA",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C",
+   "--name",
+   "A",
+   "--kind",
+   "STRING"
+  ]
+ },
+ {
+  "id": "fN",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C",
+   "--name",
+   "N",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "fP",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C",
+   "--name",
+   "P",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "fD",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C",
+   "--name",
+   "D",
+   "--kind",
+   "DATE"
+  ]
+ },
+ {
+  "id": "fE",
+  "verb": "field",
+  "args": [
+   "add",
+   "f-enum.json"
+  ]
+ },
+ {
+  "id": "gL",
+  "verb": "group",
+  "args": [
+   "add",
+   "--parent",
+   "/C",
+   "--name",
+   "L",
+   "--repeatable",
+   "4"
+  ]
+ },
+ {
+  "id": "fX",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C/L",
+   "--name",
+   "X",
+   "--kind",
+   "NUMBER"
+  ]
+ },
+ {
+  "id": "fY",
+  "verb": "field",
+  "args": [
+   "add",
+   "--group",
+   "/C/L",
+   "--name",
+   "Y",
+   "--kind",
+   "STRING"
+  ]
+ }
+]

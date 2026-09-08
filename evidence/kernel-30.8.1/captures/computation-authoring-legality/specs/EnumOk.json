@@ -1,0 +1,14 @@
+{
+ "computedField": "/C/E",
+ "alternatives": [
+  {
+   "operation": "\"ALPHA\""
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "c EnumOk"
+  }
+ ]
+}

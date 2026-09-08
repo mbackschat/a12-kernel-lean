@@ -1,0 +1,144 @@
+{
+  "header" : {
+    "id" : "CalcProbe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CalcProbe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/C",
+        "name" : "C",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/C/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/C/N",
+            "name" : "N",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/C/P",
+            "name" : "P",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/C/D",
+            "name" : "D",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/C/E",
+            "name" : "E",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "ALPHA"
+                  }, {
+                    "value" : "BETA"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/C/L",
+            "name" : "L",
+            "Group" : {
+              "repeatability" : 4,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/C/L/X",
+                "name" : "X",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/C/L/Y",
+                "name" : "Y",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/C/NComp",
+            "name" : "NComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../N",
+              "computationAlternatives" : [ {
+                "operation" : "[/C/P] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c Ctrl"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

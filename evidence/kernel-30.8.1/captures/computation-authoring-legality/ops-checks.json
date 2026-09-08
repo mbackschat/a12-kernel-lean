@@ -1,0 +1,164 @@
+[
+ {
+  "id": "Ctrl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/Ctrl.json"
+  ]
+ },
+ {
+  "id": "EnumOk",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/EnumOk.json"
+  ]
+ },
+ {
+  "id": "EnumBad",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/EnumBad.json"
+  ]
+ },
+ {
+  "id": "EnumNum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/EnumNum.json"
+  ]
+ },
+ {
+  "id": "PreOr",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/PreOr.json"
+  ]
+ },
+ {
+  "id": "PreCmp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/PreCmp.json"
+  ]
+ },
+ {
+  "id": "CommonOr",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/CommonOr.json"
+  ]
+ },
+ {
+  "id": "RepUnq",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/RepUnq.json"
+  ]
+ },
+ {
+  "id": "CustomC",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/CustomC.json"
+  ]
+ },
+ {
+  "id": "SelfCalc",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/SelfCalc.json"
+  ]
+ },
+ {
+  "id": "BadField",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/BadField.json"
+  ]
+ },
+ {
+  "id": "BadOper",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/BadOper.json"
+  ]
+ },
+ {
+  "id": "Tol",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/Tol.json"
+  ]
+ },
+ {
+  "id": "DateCalc",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/DateCalc.json"
+  ]
+ },
+ {
+  "id": "StrCalc",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/StrCalc.json"
+  ]
+ },
+ {
+  "id": "RowCalc",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/RowCalc.json"
+  ]
+ },
+ {
+  "id": "RowSum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/RowSum.json"
+  ]
+ },
+ {
+  "id": "GateStar",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "specs/GateStar.json"
+  ]
+ }
+]

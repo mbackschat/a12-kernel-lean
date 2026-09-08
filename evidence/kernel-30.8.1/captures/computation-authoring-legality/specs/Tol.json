@@ -1,0 +1,15 @@
+{
+ "computedField": "/C/N",
+ "alternatives": [
+  {
+   "operation": "[/C/P] + 1",
+   "toleranceRangeOp": "DiffersWithToleranceRange1"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "c Tol"
+  }
+ ]
+}

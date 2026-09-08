@@ -1,0 +1,116 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "dispatched 3 ops; 2 of 3 exited nonzero (0 failed, 2 reported a negative verdict or comparison) \u2014 earlier writes were not rolled back",
+  "data": {
+    "ops": 3,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "dot",
+        "verb": "field",
+        "args": [
+          "add",
+          "--group",
+          "/C",
+          "--name",
+          "a.b",
+          "--kind",
+          "NUMBER",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "field",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "the field is rejected by the kernel",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {}
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "colon",
+        "verb": "field",
+        "args": [
+          "add",
+          "--group",
+          "/C",
+          "--name",
+          "a:b",
+          "--kind",
+          "NUMBER",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "field",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "the field is rejected by the kernel",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+              "summary": "<redacted: Kernel message text is an EUPL localisation resource; the code above is the identity>",
+              "where": {}
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "idx",
+        "verb": "field",
+        "args": [
+          "add",
+          "--group",
+          "/C/L",
+          "--name",
+          "K",
+          "--kind",
+          "STRING",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "field",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "would add field /C/L/K",
+          "changed": {
+            "added": "/C/L/K",
+            "kind": "STRING"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

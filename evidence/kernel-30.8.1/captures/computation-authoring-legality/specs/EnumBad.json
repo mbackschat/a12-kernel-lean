@@ -1,0 +1,14 @@
+{
+ "computedField": "/C/E",
+ "alternatives": [
+  {
+   "operation": "\"GAMMA\""
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "c EnumBad"
+  }
+ ]
+}

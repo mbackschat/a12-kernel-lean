@@ -1,0 +1,14 @@
+{
+ "computedField": "/C/N",
+ "alternatives": [
+  {
+   "operation": "Sum(/C/L*/X)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "c RowSum"
+  }
+ ]
+}
