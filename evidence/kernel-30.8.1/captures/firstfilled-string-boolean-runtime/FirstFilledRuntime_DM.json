@@ -1,0 +1,267 @@
+{
+  "header" : {
+    "id" : "FirstFilledRuntime_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FirstFilledRuntime_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Review",
+        "name" : "Review",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Review/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Review/Rows/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Review/Rows/Flag",
+                "name" : "Flag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Review/Projects",
+            "name" : "Projects",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Review/Projects/Choices",
+                "name" : "Choices",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Review/Projects/Choices/Code",
+                    "name" : "Code",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Review/Projects/Choices/Flag",
+                    "name" : "Flag",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Review/Projects/Tasks",
+                "name" : "Tasks",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Review/Projects/Tasks/Selected",
+                    "name" : "Selected",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType",
+                        "StringType" : {
+                          "errorMessage" : [ {
+                            "locale" : "en_US",
+                            "text" : "Use A characters."
+                          } ],
+                          "maxLength" : 3,
+                          "pattern" : "A+"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Review/Projects/Tasks/SelectedFlag",
+                    "name" : "SelectedFlag",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Review/Projects/Tasks/SelectedComp",
+                    "name" : "SelectedComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Selected",
+                      "computationAlternatives" : [ {
+                        "operation" : "FirstFilledValue(../Choices*/Code)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Selected value differs."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Review/Projects/Tasks/SelectedFlagComp",
+                    "name" : "SelectedFlagComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SelectedFlag",
+                      "computationAlternatives" : [ {
+                        "operation" : "FirstFilledValue(../Choices*/Flag)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Selected value differs."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Review/FixedMax",
+            "name" : "FixedMax",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Review/FixedPattern",
+            "name" : "FixedPattern",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Use A characters."
+                  } ],
+                  "pattern" : "A+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Review/FixedMin",
+            "name" : "FixedMin",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "minLength" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Review/FixedFlag",
+            "name" : "FixedFlag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Review/FixedMaxComp",
+            "name" : "FixedMaxComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedMax",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows*/Code)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Selected value differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Review/FixedPatternComp",
+            "name" : "FixedPatternComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedPattern",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows*/Code)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Selected value differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Review/FixedMinComp",
+            "name" : "FixedMinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedMin",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows*/Code)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Selected value differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Review/FixedFlagComp",
+            "name" : "FixedFlagComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedFlag",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows*/Flag)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Selected value differs."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

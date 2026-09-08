@@ -42,9 +42,12 @@ private def patternTarget : FlatFieldDecl := {
   stringPatternSource := some "A+"
 }
 
+private def minimumTarget := stringField 11 ["Review"] "Minimum" []
+  { minLength := some 2 }
+
 private def model : FlatModel := {
   fields := [target, source, repeatedTarget, rawSource, customSource,
-    nestedSource, unrelated, customTarget, rawTarget, patternTarget,
+    nestedSource, unrelated, customTarget, rawTarget, patternTarget, minimumTarget,
 ]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 3 },
@@ -224,6 +227,61 @@ example : resultApplicationSummary? = some {
     unrelatedValue := .presentValue ⟨"KEEP", by decide⟩
     residual := [.malformed]
   } := by
+  native_decide
+
+private structure RuntimeProjection where
+  changes : List String := []
+  errors : List (String × StringTargetError) := []
+  cleared : Bool := false
+  deriving Repr, DecidableEq
+
+private def runtimeProjection? (targetField : FieldId)
+    (sourceTexts : List (Option String)) (targetStored : Option String) :
+    Option RuntimeProjection := do
+  let operation ← checked? targetField (star source.name)
+  let targetDecl ← (model.lookupUniqueId targetField).toOption
+  let sourceCells := sourceTexts.zipIdx |>.flatMap fun (text, index) =>
+    (text.map fun stored =>
+      placed source stored (.parsed (.str stored)) [index + 1]).toList
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := sourceTexts.zipIdx |>.map fun (_, index) =>
+      { group := 10, path := [index + 1] }
+    cells := sourceCells ++ (targetStored.map fun stored =>
+      placed targetDecl stored (.parsed (.str stored))).toList
+  }).toOption
+  let result ← operation.executeResult prepared.patterns input
+    ([] : List FormalCause) |>.toOption
+  pure {
+    changes := result.string.withChanges.map (·.value.text)
+    errors := result.string.withErrors.map fun item => (item.attempted.text, item.cause)
+    cleared := !result.string.cleared.isEmpty
+  }
+
+example :
+    runtimeProjection? target.id [none, some "AAA"] none =
+      some { changes := ["AAA"] } ∧
+    runtimeProjection? target.id [some "AAA"] (some "AAA") =
+      some {} ∧
+    runtimeProjection? target.id [none] (some "AA") =
+      some { cleared := true } ∧
+    runtimeProjection? target.id [none] none = some {} ∧
+    runtimeProjection? target.id [] (some "AA") = some { cleared := true } := by
+  native_decide
+
+example :
+    runtimeProjection? patternTarget.id [some "B"] (some "AA") =
+      some { errors := [("B", .pattern)] } ∧
+    runtimeProjection? target.id [some "AAAA"] (some "AA") =
+      some { errors := [("AAAA", .tooLong)] } ∧
+    runtimeProjection? minimumTarget.id [some "A"] (some "AA") =
+      some { errors := [("A", .tooShort)] } := by
+  native_decide
+
+example :
+    runtimeProjection? target.id [some "A\n", some "AAA"] (some "AA") =
+      some { cleared := true } ∧
+    runtimeProjection? target.id [some "AAA", some "A\n"] (some "AA") =
+      some { changes := ["AAA"] } := by
   native_decide
 
 end A12Kernel.Conformance.StringFirstFilledComputation

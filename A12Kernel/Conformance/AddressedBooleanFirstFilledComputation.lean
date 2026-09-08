@@ -234,6 +234,61 @@ private def input? : Option (CheckedDocument model) :=
     cell target.id [4, 1] "false",
     cell unrelated.id [] "true"]
 
+private structure RuntimeProjection where
+  changes : List (CellAddr × Bool)
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def runtimeModel : FlatModel := { model with
+  repeatableGroups := model.repeatableGroups.map fun group => { group with
+    indexField := none
+    repeatability := if group.level == 10 then some 7 else group.repeatability
+  }
+}
+
+private def runtimePrepared : PreparedFlatStringContext runtimeModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler runtimeModel).toOption.get (by native_decide)
+
+private def runtimeProjection? (seeded : Bool) : Option RuntimeProjection := do
+  let operation ← (checkAddressedBooleanFirstFilledComputation runtimeModel
+    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+  let sources : List (List (Option String)) := [
+    [none, some "false"], [some "true"], [], [some "false"],
+    [some "maybe", some "false"], [some "false", some "maybe"], [some "true"]]
+  let targetSeeds : List (List Nat × String) := [
+    ([1, 1], "false"), ([1, 2], "true"), ([2, 1], "true"), ([3, 1], "false"),
+    ([4, 1], "true"), ([5, 1], "true"), ([6, 1], "true")]
+  let sourceRows := sources.zipIdx |>.flatMap fun (texts, parent) =>
+    [{ group := 10, path := [parent + 1] : RowAddr }] ++
+      (texts.zipIdx.map fun (_, index) =>
+        { group := 20, path := [parent + 1, index + 1] })
+  let sourceCells := sources.zipIdx |>.flatMap fun (texts, parent) =>
+    texts.zipIdx.flatMap fun (text, index) =>
+      (text.map fun stored => cell source.id [parent + 1, index + 1] stored).toList
+  let input ← (checkDocument runtimePrepared "en_US" {
+    instantiatedRows := sourceRows ++ targetSeeds.map fun (path, _) => { group := 30, path }
+    cells := sourceCells ++ (if seeded then
+      targetSeeds.map fun (path, stored) => cell target.id path stored else [])
+  }).toOption
+  let result ← operation.executeResult input ([] : List FormalCause) |>.toOption
+  pure {
+    changes := result.boolean.withChanges.map fun item => (item.targetField, item.value)
+    cleared := result.boolean.cleared
+  }
+
+example : runtimeProjection? true = some {
+    changes := [(address target.id [1, 2], false), (address target.id [4, 1], false),
+      (address target.id [6, 1], false)]
+    cleared := [address target.id [3, 1], address target.id [5, 1]]
+  } ∧ runtimeProjection? false = some {
+    changes := [(address target.id [1, 1], false), (address target.id [1, 2], false),
+      (address target.id [2, 1], true), (address target.id [4, 1], false),
+      (address target.id [6, 1], false)]
+    cleared := []
+  } := by
+  native_decide
+
 /- Moving the declaration to an ancestor changes admission, never correlation: the ancestor-declared
 operations produce the same rows, in the same order, with the same values as the declaration at the target's
 own group. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)

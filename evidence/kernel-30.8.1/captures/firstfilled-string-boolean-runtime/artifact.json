@@ -1,0 +1,2223 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "ad4d5ff643eef95ebaee9b423180c03c3c4464b4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FirstFilledRuntime_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-09-08T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "string-empty-prefix-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-unchanged",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-empty-seeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-empty-unseeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-no-source-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-pattern-rejection",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-maximum-rejection",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAAA"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAAA"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-minimum-rejection",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "A"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "A"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-poison-before-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Rows/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Rows/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Rows/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Rows/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-poison-after-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Rows[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Rows[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FixedMaxComp",
+              "field" : "Review/FixedMax",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMax"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedMinComp",
+              "field" : "Review/FixedMin",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedMin"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FixedPatternComp",
+              "field" : "Review/FixedPattern",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Code",
+                "Review/FixedPattern"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Rows[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedMax",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedMin",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              },
+              {
+                "field" : "Review/FixedPattern",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Rows[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-addressed-seeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedComp",
+              "field" : "Review/Projects/Tasks[2]/Selected",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[1]/Choices[0]/Code",
+                "Review/Projects/Tasks[2]/Selected"
+              ],
+              "fillToFix" : [
+                "/Review[1]/Projects[1]/Choices[0]/Code",
+                "Review/Projects/Tasks[2]/Selected"
+              ]
+            },
+            {
+              "code" : "SelectedComp",
+              "field" : "Review/Projects[2]/Tasks/Selected",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[2]/Choices[0]/Code",
+                "Review/Projects[2]/Tasks/Selected"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedComp",
+              "field" : "Review/Projects[6]/Tasks/Selected",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[6]/Choices[0]/Code",
+                "Review/Projects[6]/Tasks/Selected"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[5]/Choices/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[6]/Choices[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks[2]/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AA"
+              },
+              {
+                "field" : "Review/Projects[2]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AB"
+              },
+              {
+                "field" : "Review/Projects[3]/Tasks/Selected",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/Projects[5]/Tasks/Selected",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[5]/Choices/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[6]/Choices[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedComp",
+              "field" : "Review/Projects/Tasks[2]/Selected",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[1]/Choices[0]/Code",
+                "Review/Projects/Tasks[2]/Selected"
+              ],
+              "fillToFix" : [
+                "/Review[1]/Projects[1]/Choices[0]/Code",
+                "Review/Projects/Tasks[2]/Selected"
+              ]
+            },
+            {
+              "code" : "SelectedComp",
+              "field" : "Review/Projects[2]/Tasks/Selected",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[2]/Choices[0]/Code",
+                "Review/Projects[2]/Tasks/Selected"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedComp",
+              "field" : "Review/Projects[6]/Tasks/Selected",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[6]/Choices[0]/Code",
+                "Review/Projects[6]/Tasks/Selected"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[5]/Choices/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[6]/Choices[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks[2]/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AA"
+              },
+              {
+                "field" : "Review/Projects[2]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AB"
+              },
+              {
+                "field" : "Review/Projects[3]/Tasks/Selected",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/Projects[5]/Tasks/Selected",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[5]/Choices/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[6]/Choices[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "string-addressed-unseeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[5]/Choices/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[6]/Choices[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AA"
+              },
+              {
+                "field" : "Review/Projects/Tasks[2]/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AA"
+              },
+              {
+                "field" : "Review/Projects[2]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AB"
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[5]/Choices/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[6]/Choices[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[5]/Choices/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringMitNewline",
+              "field" : "Review/Projects[6]/Choices[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AA"
+              },
+              {
+                "field" : "Review/Projects/Tasks[2]/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AA"
+              },
+              {
+                "field" : "Review/Projects[2]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AB"
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "AAAA"
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/Selected",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "AAA"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[5]/Choices/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringMitNewline",
+                "field" : "Review/Projects[6]/Choices[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-false-first",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-false-unchanged",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-empty-prefix",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FixedFlagComp",
+              "field" : "Review/FixedFlag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Flag",
+                "Review/FixedFlag"
+              ],
+              "fillToFix" : [
+                "/Review[1]/Rows[0]/Flag",
+                "Review/FixedFlag"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FixedFlagComp",
+              "field" : "Review/FixedFlag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Flag",
+                "Review/FixedFlag"
+              ],
+              "fillToFix" : [
+                "/Review[1]/Rows[0]/Flag",
+                "Review/FixedFlag"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-empty-seeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-empty-unseeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-poison-before-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Rows/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Rows/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Rows/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Rows/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-poison-before-unseeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Rows/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Rows/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Rows/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Rows/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-poison-after-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FixedFlagComp",
+              "field" : "Review/FixedFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Flag",
+                "Review/FixedFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Rows[2]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows[2]/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Rows[2]/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows[2]/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FixedFlagComp",
+              "field" : "Review/FixedFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Rows[0]/Flag",
+                "Review/FixedFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Rows[2]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Rows[2]/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/FixedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Rows[2]/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Rows[2]/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-addressed-seeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedFlagComp",
+              "field" : "Review/Projects/Tasks[2]/SelectedFlag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[1]/Choices[0]/Flag",
+                "Review/Projects/Tasks[2]/SelectedFlag"
+              ],
+              "fillToFix" : [
+                "/Review[1]/Projects[1]/Choices[0]/Flag",
+                "Review/Projects/Tasks[2]/SelectedFlag"
+              ]
+            },
+            {
+              "code" : "SelectedFlagComp",
+              "field" : "Review/Projects[4]/Tasks/SelectedFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[4]/Choices[0]/Flag",
+                "Review/Projects[4]/Tasks/SelectedFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedFlagComp",
+              "field" : "Review/Projects[6]/Tasks/SelectedFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[6]/Choices[0]/Flag",
+                "Review/Projects[6]/Tasks/SelectedFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[5]/Choices/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[6]/Choices[2]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks[2]/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[3]/Tasks/SelectedFlag",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[5]/Tasks/SelectedFlag",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[5]/Choices/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Flag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[6]/Choices[2]/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedFlagComp",
+              "field" : "Review/Projects/Tasks[2]/SelectedFlag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[1]/Choices[0]/Flag",
+                "Review/Projects/Tasks[2]/SelectedFlag"
+              ],
+              "fillToFix" : [
+                "/Review[1]/Projects[1]/Choices[0]/Flag",
+                "Review/Projects/Tasks[2]/SelectedFlag"
+              ]
+            },
+            {
+              "code" : "SelectedFlagComp",
+              "field" : "Review/Projects[4]/Tasks/SelectedFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[4]/Choices[0]/Flag",
+                "Review/Projects[4]/Tasks/SelectedFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedFlagComp",
+              "field" : "Review/Projects[6]/Tasks/SelectedFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "/Review[1]/Projects[6]/Choices[0]/Flag",
+                "Review/Projects[6]/Tasks/SelectedFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[5]/Choices/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[6]/Choices[2]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks[2]/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[3]/Tasks/SelectedFlag",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[5]/Tasks/SelectedFlag",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[5]/Choices/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Flag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[6]/Choices[2]/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boolean-addressed-unseeded",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[5]/Choices/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[6]/Choices[2]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects/Tasks[2]/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[2]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[5]/Choices/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Flag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[6]/Choices[2]/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[5]/Choices/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[5]/Choices/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "feldJaNeinFalsch",
+              "field" : "Review/Projects[6]/Choices[2]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: kernel prose]",
+              "referenced" : [
+                "Review/Projects[6]/Choices[2]/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Review/Projects/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects/Tasks[2]/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[2]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "Review/Projects[4]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "Review/Projects[6]/Tasks/SelectedFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[5]/Choices/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[5]/Choices/Flag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "feldJaNeinFalsch",
+                "field" : "Review/Projects[6]/Choices[2]/Flag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: kernel prose]",
+                "referenced" : [
+                  "Review/Projects[6]/Choices[2]/Flag"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

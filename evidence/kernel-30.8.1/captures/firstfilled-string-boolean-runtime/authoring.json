@@ -1,0 +1,211 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Review",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Review",
+    "name": "Projects",
+    "repeatable": 10
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Review/Projects",
+    "name": "Choices",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Review/Projects",
+    "name": "Tasks",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review/Rows",
+    "name": "Code",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review/Rows",
+    "name": "Flag",
+    "kind": "BOOLEAN"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review/Projects/Choices",
+    "name": "Code",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review/Projects/Choices",
+    "name": "Flag",
+    "kind": "BOOLEAN"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review",
+    "name": "FixedMax",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 3
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review",
+    "name": "FixedPattern",
+    "kind": "STRING",
+    "string": {
+      "pattern": "A+",
+      "patternMessage": "Use A characters."
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review",
+    "name": "FixedMin",
+    "kind": "STRING",
+    "string": {
+      "minLength": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review",
+    "name": "FixedFlag",
+    "kind": "BOOLEAN"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review/Projects/Tasks",
+    "name": "Selected",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 3,
+      "pattern": "A+",
+      "patternMessage": "Use A characters."
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Review/Projects/Tasks",
+    "name": "SelectedFlag",
+    "kind": "BOOLEAN"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Review/FixedMax",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Rows*/Code)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Selected value differs."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Review/FixedPattern",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Rows*/Code)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Selected value differs."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Review/FixedMin",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Rows*/Code)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Selected value differs."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Review/FixedFlag",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Rows*/Flag)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Selected value differs."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Review/Projects/Tasks/Selected",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(../Choices*/Code)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Selected value differs."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Review/Projects/Tasks/SelectedFlag",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(../Choices*/Flag)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Selected value differs."
+      }
+    ]
+  }
+]

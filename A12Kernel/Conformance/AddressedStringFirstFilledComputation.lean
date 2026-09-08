@@ -239,6 +239,64 @@ private def inputCells : List ClassifiedCellInput := [
 
 private def input? : Option (CheckedDocument model) := document? inputCells
 
+private structure RuntimeProjection where
+  changes : List (CellAddr × String)
+  errors : List (CellAddr × String × StringTargetError)
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def runtimeModel : FlatModel := { model with
+  repeatableGroups := model.repeatableGroups.map fun group => {
+    group with
+    indexField := none
+    repeatability := if group.level == 10 then some 7 else group.repeatability
+  }
+}
+
+private def runtimePrepared : PreparedFlatStringContext runtimeModel patternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    patternCompiler runtimeModel).toOption.get (by native_decide)
+
+private def runtimeProjection? (seeded : Bool) : Option RuntimeProjection := do
+  let operation ← (checkAddressedStringFirstFilledComputation runtimeModel
+    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+  let sourceCells := inputCells.filter fun item =>
+    item.address != address source.id [1, 1] &&
+      item.address != address source.id [5, 1] &&
+      (seeded || item.address.field != target.id)
+  let input ← (checkDocument runtimePrepared "en_US" {
+    instantiatedRows := rows ++ [
+      { group := 20, path := [5, 2] }, { group := 20, path := [6, 2] },
+      { group := 30, path := [1, 2] }, { group := 10, path := [7] },
+      { group := 20, path := [7, 1] }]
+    cells := sourceCells ++ [cell source.id [5, 1] "A\n",
+      cell source.id [5, 2] "AA", cell source.id [6, 2] "A\n",
+      cell source.id [7, 1] "AAA"] ++
+      (if seeded then [cell target.id [1, 2] "A"] else [])
+  }).toOption
+  let result ← operation.executeResult runtimePrepared.patterns input
+    ([] : List FormalCause) |>.toOption
+  pure {
+    changes := result.string.withChanges.map fun item => (item.targetField, item.value.text)
+    errors := result.string.withErrors.map fun item =>
+      (item.targetField, item.attempted.text, item.cause)
+    cleared := result.string.cleared
+  }
+
+example : runtimeProjection? true = some {
+    changes := [(address target.id [6, 1], "AAA"), (address target.id [1, 2], "AA")]
+    errors := [(address target.id [2, 1], "AB", .pattern),
+      (address target.id [4, 1], "AAAA", .tooLong)]
+    cleared := [address target.id [3, 1], address target.id [5, 1]]
+  } ∧ runtimeProjection? false = some {
+    changes := [(address target.id [1, 1], "AA"),
+      (address target.id [6, 1], "AAA"), (address target.id [1, 2], "AA")]
+    errors := [(address target.id [2, 1], "AB", .pattern),
+      (address target.id [4, 1], "AAAA", .tooLong)]
+    cleared := []
+  } := by
+  native_decide
+
 private def missingTargetMatcher :
     PreparedFlatStringPatterns model patternCompiler := {
   fields := []

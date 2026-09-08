@@ -205,4 +205,42 @@ example :
       (checked? target.id nestedStar).isNone = true := by
   native_decide
 
+private structure RuntimeProjection where
+  changes : List Bool := []
+  cleared : Bool := false
+  deriving Repr, DecidableEq
+
+private def runtimeProjection? (sources : List (Option String))
+    (seed : Option String) : Option RuntimeProjection := do
+  let placed (field : FieldId) (path : List Nat) (stored : String) : ClassifiedCellInput := {
+    address := { field, path }, stored, raw := classifyStoredBooleanText stored
+  }
+  let sourceCells := sources.zipIdx |>.flatMap fun (text, index) =>
+    (text.map fun stored => placed source.id [index + 1] stored).toList
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := sources.zipIdx |>.map fun (_, index) =>
+      { group := 10, path := [index + 1] }
+    cells := sourceCells ++ (seed.map (placed target.id [])).toList
+  }).toOption
+  let result ← resultView? input
+  pure { changes := result.withChanges.map (·.value), cleared := !result.cleared.isEmpty }
+
+example :
+    runtimeProjection? [some "false", some "true"] none =
+      some { changes := [false] } ∧
+    runtimeProjection? [some "false", some "true"] (some "false") = some {} ∧
+    runtimeProjection? [none, some "false"] (some "true") =
+      some { changes := [false] } ∧
+    runtimeProjection? [none, none] (some "true") = some { cleared := true } ∧
+    runtimeProjection? [none, none] none = some {} := by
+  native_decide
+
+example :
+    runtimeProjection? [some "maybe", some "false"] (some "true") =
+      some { cleared := true } ∧
+    runtimeProjection? [some "maybe", some "false"] none = some {} ∧
+    runtimeProjection? [some "false", some "maybe"] (some "true") =
+      some { changes := [false] } := by
+  native_decide
+
 end A12Kernel.Conformance.BooleanFirstFilledComputation

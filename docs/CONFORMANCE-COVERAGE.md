@@ -14,7 +14,7 @@ different one, multi-pattern fixed-string whole-word matching, aborting on any d
 not on the default path because it costs about forty seconds against this one's four. Run it after any
 change to how coverage is counted; it also checks capability record boundaries and gap-shard ownership.
 
-Measured at `29a705e7` on 2026-09-08.
+Measured at `367e2e71` on 2026-09-08.
 
 ## Headline
 
@@ -34,7 +34,7 @@ together the modelled figure leads.
 | Distinct refusal classes in the Kernel's `error_messages_en.properties` catalogs | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 300 | 60% |
 | Named in tracked Lean source | 455 | 91% |
-| Observed in a retained probe artifact | 203 | 41% |
+| Observed in a retained probe artifact | 204 | 41% |
 | Touched by any of the three | 489 | 98% |
 | **Untouched everywhere** | **6** | **1%** |
 
@@ -65,7 +65,7 @@ one: it counts whether a record cites external calibration, not how much of its 
 | | records | share |
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 207 | 100% |
-| Citing a Kernel checkpoint or calibration | 107 | 51% |
+| Citing a Kernel checkpoint or calibration | 111 | 53% |
 | Carrying an explicit evidence-pending note | 52 | 25% |
 
 ## Axis 3 — open obligation load
@@ -74,7 +74,7 @@ one: it counts whether a record cites external calibration, not how much of its 
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 25 |
 | `remaining` rows across those gaps | 235 |
-| Gaps whose route is **blocked** | 0 |
+| Gaps whose route is **blocked** | 1 |
 | Ledger entries `pending` with a12-dmkits | 5 |
 | Ledger entries `handed-off` | 0 |
 
@@ -88,7 +88,7 @@ evidence alone to stay below one third of theory.
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 207922 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 208111 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8691 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -99,7 +99,7 @@ a subset, so it is a defect in this generator rather than in the estate.
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 191 |
+| Retained capture directories under `../evidence/` | 192 |
 | Retained observation rows across all artifacts | 476 |
 
 ## Velocity
@@ -159,4 +159,5 @@ Datetime is the referenced revision's commit time in ISO 8601 format, including 
 | 2026-09-08T19:44:27+02:00 | `3a457eea` | 489 | 454 | 6 | 108 | 25 |
 | 2026-09-08T20:40:25+02:00 | `1a163c9e` | 489 | 455 | 6 | 108 | 25 |
 | 2026-09-08T21:01:33+02:00 | `29a705e7` | 489 | 455 | 6 | 107 | 25 |
+| 2026-09-08T21:18:34+02:00 | `367e2e71` | 489 | 455 | 6 | 111 | 25 |
 <!-- velocity-history:end -->

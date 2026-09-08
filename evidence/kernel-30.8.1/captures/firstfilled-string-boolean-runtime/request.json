@@ -1,0 +1,615 @@
+{
+  "model": "FirstFilledRuntime_DM.json",
+  "locale": "en_US",
+  "clock": "2026-09-08T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "string-empty-prefix-value",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {},
+            {
+              "Code": "AAA"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "string-unchanged",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Code": "AAA"
+            }
+          ],
+          "FixedMax": "AAA",
+          "FixedPattern": "AAA",
+          "FixedMin": "AAA"
+        }
+      }
+    },
+    {
+      "name": "string-empty-seeded",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {}
+          ],
+          "FixedMax": "AA",
+          "FixedPattern": "AA",
+          "FixedMin": "AA"
+        }
+      }
+    },
+    {
+      "name": "string-empty-unseeded",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "string-no-source-rows",
+      "documentInline": {
+        "Review": {
+          "Rows": [],
+          "FixedMax": "AA",
+          "FixedPattern": "AA",
+          "FixedMin": "AA"
+        }
+      }
+    },
+    {
+      "name": "string-pattern-rejection",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Code": "B"
+            }
+          ],
+          "FixedMax": "AA",
+          "FixedPattern": "AA",
+          "FixedMin": "AA"
+        }
+      }
+    },
+    {
+      "name": "string-maximum-rejection",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Code": "AAAA"
+            }
+          ],
+          "FixedMax": "AA",
+          "FixedPattern": "AA",
+          "FixedMin": "AA"
+        }
+      }
+    },
+    {
+      "name": "string-minimum-rejection",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Code": "A"
+            }
+          ],
+          "FixedMax": "AA",
+          "FixedPattern": "AA",
+          "FixedMin": "AA"
+        }
+      }
+    },
+    {
+      "name": "string-poison-before-value",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Code": "A\n"
+            },
+            {
+              "Code": "AAA"
+            }
+          ],
+          "FixedMax": "AA",
+          "FixedPattern": "AA",
+          "FixedMin": "AA"
+        }
+      }
+    },
+    {
+      "name": "string-poison-after-value",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Code": "AAA"
+            },
+            {
+              "Code": "A\n"
+            }
+          ],
+          "FixedMax": "AA",
+          "FixedPattern": "AA",
+          "FixedMin": "AA"
+        }
+      }
+    },
+    {
+      "name": "string-addressed-seeded",
+      "documentInline": {
+        "Review": {
+          "Projects": [
+            {
+              "Choices": [
+                {},
+                {
+                  "Code": "AA"
+                }
+              ],
+              "Tasks": [
+                {
+                  "Selected": "AA"
+                },
+                {
+                  "Selected": "A"
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AB"
+                }
+              ],
+              "Tasks": [
+                {
+                  "Selected": "A"
+                }
+              ]
+            },
+            {
+              "Choices": [],
+              "Tasks": [
+                {
+                  "Selected": "A"
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AAAA"
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "A\n"
+                },
+                {
+                  "Code": "AA"
+                }
+              ],
+              "Tasks": [
+                {
+                  "Selected": "A"
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AAA"
+                },
+                {
+                  "Code": "A\n"
+                }
+              ],
+              "Tasks": [
+                {
+                  "Selected": "A"
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AAA"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "string-addressed-unseeded",
+      "documentInline": {
+        "Review": {
+          "Projects": [
+            {
+              "Choices": [
+                {},
+                {
+                  "Code": "AA"
+                }
+              ],
+              "Tasks": [
+                {},
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AB"
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AAAA"
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "A\n"
+                },
+                {
+                  "Code": "AA"
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AAA"
+                },
+                {
+                  "Code": "A\n"
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Code": "AAA"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "boolean-false-first",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Flag": false
+            },
+            {
+              "Flag": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "boolean-false-unchanged",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Flag": false
+            },
+            {
+              "Flag": true
+            }
+          ],
+          "FixedFlag": false
+        }
+      }
+    },
+    {
+      "name": "boolean-empty-prefix",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {},
+            {
+              "Flag": false
+            }
+          ],
+          "FixedFlag": true
+        }
+      }
+    },
+    {
+      "name": "boolean-empty-seeded",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {},
+            {}
+          ],
+          "FixedFlag": true
+        }
+      }
+    },
+    {
+      "name": "boolean-empty-unseeded",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {},
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "boolean-poison-before-value",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Flag": "maybe"
+            },
+            {
+              "Flag": false
+            }
+          ],
+          "FixedFlag": true
+        }
+      }
+    },
+    {
+      "name": "boolean-poison-before-unseeded",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Flag": "maybe"
+            },
+            {
+              "Flag": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "boolean-poison-after-value",
+      "documentInline": {
+        "Review": {
+          "Rows": [
+            {
+              "Flag": false
+            },
+            {
+              "Flag": "maybe"
+            }
+          ],
+          "FixedFlag": true
+        }
+      }
+    },
+    {
+      "name": "boolean-addressed-seeded",
+      "documentInline": {
+        "Review": {
+          "Projects": [
+            {
+              "Choices": [
+                {},
+                {
+                  "Flag": false
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedFlag": false
+                },
+                {
+                  "SelectedFlag": true
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": true
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedFlag": true
+                }
+              ]
+            },
+            {
+              "Choices": [],
+              "Tasks": [
+                {
+                  "SelectedFlag": false
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": false
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedFlag": true
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": "maybe"
+                },
+                {
+                  "Flag": false
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedFlag": true
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": false
+                },
+                {
+                  "Flag": "maybe"
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedFlag": true
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "boolean-addressed-unseeded",
+      "documentInline": {
+        "Review": {
+          "Projects": [
+            {
+              "Choices": [
+                {},
+                {
+                  "Flag": false
+                }
+              ],
+              "Tasks": [
+                {},
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": true
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": false
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": "maybe"
+                },
+                {
+                  "Flag": false
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": false
+                },
+                {
+                  "Flag": "maybe"
+                }
+              ],
+              "Tasks": [
+                {}
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "Flag": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
