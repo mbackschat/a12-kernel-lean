@@ -33,6 +33,26 @@ private def isDeclaredConstraintPoison :
   | .ok (.poison .declaredConstraint) => true
   | _ => false
 
+example :
+    let policy : StringFieldPolicy := { minLength := some 2, maxLength := some 3 }
+    let matcher : Option (String → Bool) := some fun text => text == "1" || text == "12"
+    (errorOf (policy.checkTextWithPattern matcher "a\n")).map StringFieldError.errorCode =
+        some "stringMitNewline" ∧
+      (errorOf (policy.checkTextWithPattern matcher "a")).map StringFieldError.errorCode =
+        some "stringFalschesMuster" ∧
+      (errorOf (policy.checkTextWithPattern matcher "1")).map StringFieldError.errorCode =
+        some "stringZuKurz" ∧
+      (errorOf (policy.checkText "1234")).map StringFieldError.errorCode =
+        some "stringZuLang" ∧
+      isCheckedText (some "12") (policy.checkTextWithPattern matcher "12") = true ∧
+      isCheckedText none (policy.checkTextWithPattern matcher "") = true := by
+  native_decide
+
+example : StringFieldError.pattern.toBaseFormalCause =
+      StringFieldError.tooLong.toBaseFormalCause ∧
+    StringFieldError.pattern.errorCode ≠ StringFieldError.tooLong.errorCode := by
+  native_decide
+
 /- The raw line-break gate precedes normalization and length. -/
 example : isStringFieldError .lineBreak
     (({ maxLength := some 1 } : StringFieldPolicy).checkText "AB\r\nCD") = true := by

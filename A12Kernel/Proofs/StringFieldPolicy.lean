@@ -4,6 +4,11 @@ import A12Kernel.Semantics.StringFieldPolicy
 
 namespace A12Kernel
 
+/-- Ordinary String failure codes retain the local clause identity that checked-cell invalidity forgets. -/
+theorem stringFieldError_errorCode_injective (left right : StringFieldError) :
+    left.errorCode = right.errorCode ↔ left = right := by
+  cases left <;> cases right <;> decide
+
 /-- Empty String input bypasses every format bound and remains semantic emptiness. -/
 @[simp] theorem stringFieldPolicy_checkText_empty (policy : StringFieldPolicy) :
     policy.checkText "" = .ok none := by

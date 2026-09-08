@@ -21,6 +21,13 @@ inductive StringFieldError where
 
 namespace StringFieldError
 
+/-- Project the ordinary String check's first failure before checked-cell invalidity erases its diagnostic identity. -/
+def errorCode : StringFieldError → String
+  | .lineBreak => "stringMitNewline"
+  | .pattern => "stringFalschesMuster"
+  | .tooShort => "stringZuKurz"
+  | .tooLong => "stringZuLang"
+
 def toBaseFormalCause (_error : StringFieldError) : BaseFormalCause :=
   .declaredConstraint
 

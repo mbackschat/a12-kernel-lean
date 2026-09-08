@@ -1841,6 +1841,7 @@ run_cmd do
 #print axioms A12Kernel.normalizeEvaluatedString_notIdempotent
 #print axioms A12Kernel.formalCheckString_cachesNormalized
 #print axioms A12Kernel.checkedString_phasesReadNormalized
+#print axioms A12Kernel.stringFieldError_errorCode_injective
 #print axioms A12Kernel.stringFieldPolicy_checkText_empty
 #print axioms A12Kernel.stringFieldPolicy_checkTextWithPattern_empty
 #print axioms A12Kernel.stringFieldPolicy_forbiddenLineBreak_preemptsLength
