@@ -73,6 +73,7 @@ import A12Kernel.Proofs.ErrorTextRowParameter
 import A12Kernel.Proofs.IndexParameterResolution
 import A12Kernel.Proofs.IndexParameterSuffix
 import A12Kernel.Proofs.ErrorTextParameterModelKind
+import A12Kernel.Proofs.ErrorTextParameterAddressing
 import A12Kernel.Proofs.EnumerationCategoryConstant
 import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay

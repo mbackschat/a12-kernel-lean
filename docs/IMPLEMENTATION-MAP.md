@@ -501,6 +501,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The `index(...)` parameter's two suffix readings](implementation/cross-clause.md#cap-index-parameter-suffix)
 <a id="cap-errortext-parameter-model-kind"></a>
 - [The model kind's partition of the `#` message parameters](implementation/cross-clause.md#cap-errortext-parameter-model-kind)
+<a id="cap-errortext-parameter-addressing"></a>
+- [The message parameter's coordinate, path and value-access gates](implementation/cross-clause.md#cap-errortext-parameter-addressing)
 <a id="cap-enumeration-category-constant"></a>
 - [The enumeration-category constant gate](implementation/cross-clause.md#cap-enumeration-category-constant)
 <a id="cap-resolved-firstfilledvalue"></a>

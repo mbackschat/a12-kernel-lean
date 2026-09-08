@@ -84,6 +84,7 @@ import A12Kernel.Conformance.ErrorTextRowParameter
 import A12Kernel.Conformance.IndexParameterResolution
 import A12Kernel.Conformance.IndexParameterSuffix
 import A12Kernel.Conformance.ErrorTextParameterModelKind
+import A12Kernel.Conformance.ErrorTextParameterAddressing
 import A12Kernel.Conformance.EnumerationCategoryConstant
 import A12Kernel.Conformance.ConstructedDateComponents
 import A12Kernel.Conformance.ConstructedDateDay

@@ -2784,6 +2784,15 @@ run_cmd do
 #print axioms A12Kernel.unparsedCondition_splits_the_hash_parameters
 #print axioms A12Kernel.unparsedCondition_admits_iteration_parameters
 #print axioms A12Kernel.pathSpec_and_newWorld_are_opposite
+#print axioms A12Kernel.coordinateRefusal_class_follows_coordinate
+#print axioms A12Kernel.literalOne_is_a_spelling
+#print axioms A12Kernel.literalOne_admitted_everywhere
+#print axioms A12Kernel.symbolic_escapes_the_bound
+#print axioms A12Kernel.starGate_is_a12_only
+#print axioms A12Kernel.declarationGate_ignores_model_kind
+#print axioms A12Kernel.nonString_never_skips_validation
+#print axioms A12Kernel.relativeUpRefusal_iff
+#print axioms A12Kernel.relativeUp_to_root_admitted
 #print axioms A12Kernel.enumConstant_enumeration_value_fails_category
 #print axioms A12Kernel.enumConstant_valueList_splits
 #print axioms A12Kernel.enumConstant_equality_collapses
