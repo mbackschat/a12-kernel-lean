@@ -1164,6 +1164,7 @@ run_cmd do
 #print axioms A12Kernel.fixedCurrentRepetition_generated_identity
 #print axioms A12Kernel.boundCurrentRepetition_fixed_coordinate
 #print axioms A12Kernel.boundCurrentRepetition_repeatable_coordinate
+#print axioms A12Kernel.addressedRepetitionComputation_excludes_target
 #print axioms A12Kernel.validationCondition_guardedRootCurrentRepetition_evalSelected
 #print axioms A12Kernel.validationCondition_guardedRootCurrentRepetition_filled
 #print axioms A12Kernel.validationCondition_guardedRootCurrentRepetition_empty

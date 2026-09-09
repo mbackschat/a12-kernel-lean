@@ -31,6 +31,7 @@ import A12Kernel.Conformance.AddressedNumberPower
 import A12Kernel.Conformance.AddressedNumberRound
 import A12Kernel.Conformance.AddressedNumericOperationConsumer
 import A12Kernel.Conformance.AddressedRangeAsNumber
+import A12Kernel.Conformance.AddressedRepetitionComputation
 import A12Kernel.Conformance.AddressedShiftedTimeConstruction
 import A12Kernel.Conformance.AddressedStringFirstFilledComputation
 import A12Kernel.Conformance.AddressedStringLength

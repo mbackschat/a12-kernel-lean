@@ -405,6 +405,25 @@ inductive ResolvedNumericAtom (Field : Type)
   | filledGroupCount (groups : List ResolvedGroupReference)
   deriving Repr, DecidableEq
 
+/-- Resolve structural identity against an explicit binding scope. Validation supplies its host
+    scope; computation supplies its target scope, retaining that carrier choice at the call site. -/
+def FlatModel.resolveNumericCurrentRepetition (model : FlatModel)
+    (declaringGroup : GroupPath) (available : List RepeatableLevel)
+    (reference : SurfaceGroupPath) :
+    Except FixedGroupReferenceError (ResolvedNumericAtom Field Aggregate) := do
+  let path ← reference.resolveAgainst declaringGroup |>.mapError .reference
+  if !model.hasGroupPath path then throw (.unknownGroup path)
+  let scope := model.repeatableScopeForGroupPath path
+  if scope.isEmpty then
+    return .fixedCurrentRepetition
+      (← model.resolveFixedGroupReference declaringGroup (.path reference))
+  let source : BoundCurrentRepetitionSource :=
+    { path, scope, level := (model.repeatableGroups.find? (·.path == path)).map (·.level) }
+  if source.wellFormedIn model available then
+    pure (.boundCurrentRepetition source)
+  else
+    throw (.repeatableGroupRequiresAddress path)
+
 namespace ResolvedNumericAtom
 
 def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool

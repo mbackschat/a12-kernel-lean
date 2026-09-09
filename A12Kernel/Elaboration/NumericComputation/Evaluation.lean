@@ -403,12 +403,12 @@ def evalBinary (op : NumericScaleBinaryOp) :
         left right
 
 /-- Evaluate an ordered pair once. A left poison prevents the right computation from being reached; a value or domain failure reaches it and delegates the final result to the supplied semantic combiner. -/
-def evalOrdered
-    (left : Except NumericComputationFault NumericComputationResult)
-    (right : Unit → Except NumericComputationFault NumericComputationResult)
+def evalOrdered {Fault : Type}
+    (left : Except Fault NumericComputationResult)
+    (right : Unit → Except Fault NumericComputationResult)
     (combine : NumericComputationResult → NumericComputationResult →
       NumericComputationResult) :
-    Except NumericComputationFault NumericComputationResult := do
+    Except Fault NumericComputationResult := do
   let leftResult ← left
   match leftResult with
   | .poison cause => pure (.poison cause)
@@ -530,10 +530,10 @@ def computationFault? (expression : LoweredNumericExpr FlatFieldDecl) :
   expression.computationFaultWith? FlatFieldDecl.numericComputationFault?
 
 /-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic, including runtime-invalid power. -/
-def evalComputation
-    (read : Atom → Except NumericComputationFault NumericComputationResult) :
+def evalComputation {Fault : Type}
+    (read : Atom → Except Fault NumericComputationResult) :
     LoweredNumericExpr Atom →
-      Except NumericComputationFault NumericComputationResult
+      Except Fault NumericComputationResult
   | .atom sourceAtom => read sourceAtom
   | .literal amount => pure (.value amount)
   | .binary op left right =>

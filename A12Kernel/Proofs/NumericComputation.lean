@@ -597,7 +597,7 @@ theorem numericComputationResult_combineReached_value_rightDomain
 
 /-- Ordered evaluation returns a left poison independently of the right thunk. -/
 theorem numericComputationResult_evalOrdered_leftPoison
-    (right : Unit → Except NumericComputationFault NumericComputationResult)
+    {Fault : Type} (right : Unit → Except Fault NumericComputationResult)
     (combine : NumericComputationResult → NumericComputationResult →
       NumericComputationResult)
     (cause : FormalCause) :
@@ -607,8 +607,9 @@ theorem numericComputationResult_evalOrdered_leftPoison
 
 /-- A nonpoison left result reaches the supplied right result and delegates both results to the combiner. -/
 theorem numericComputationResult_evalOrdered_of_notPoison
+    {Fault : Type}
     (left rightResult : NumericComputationResult)
-    (right : Unit → Except NumericComputationFault NumericComputationResult)
+    (right : Unit → Except Fault NumericComputationResult)
     (combine : NumericComputationResult → NumericComputationResult →
       NumericComputationResult)
     (leftNotPoison : ∀ cause, left ≠ .poison cause)

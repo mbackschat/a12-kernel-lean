@@ -222,22 +222,10 @@ private def resolveAddressedNumericDeclaration (model : FlatModel)
 private def resolveAddressedNumericAtom (model : FlatModel)
     (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
-  | .currentRepetition reference => do
-      let path ← reference.resolveAgainst rowGroup
-        |>.mapError (fun error => .currentRepetitionSource (.reference error))
-      if !model.hasGroupPath path then
-        throw (.currentRepetitionSource (.unknownGroup path))
-      let scope := model.repeatableScopeForGroupPath path
-      if scope.isEmpty then
-        resolveNumericAtom model rowGroup (.currentRepetition reference)
-      else
-        let source : BoundCurrentRepetitionSource :=
-          { path, scope
-            level := (model.repeatableGroups.find? (·.path == path)).map (·.level) }
-        if source.wellFormedIn model (model.repeatableScopeForGroupPath rowGroup) then
-          pure (.boundCurrentRepetition source)
-        else
-          throw (.currentRepetitionSource (.repeatableGroupRequiresAddress path))
+  | .currentRepetition reference =>
+      model.resolveNumericCurrentRepetition rowGroup
+        (model.repeatableScopeForGroupPath rowGroup) reference
+        |>.mapError .currentRepetitionSource
   | .field reference => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
