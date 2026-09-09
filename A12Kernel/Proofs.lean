@@ -91,6 +91,7 @@ import A12Kernel.Proofs.CurrentRepetitionAlternatingChainRelation
 import A12Kernel.Proofs.CurrentRepetitionAlternatingEnumerationHaving
 import A12Kernel.Proofs.CurrentRepetitionComputation
 import A12Kernel.Proofs.FixedCurrentRepetitionNumeric
+import A12Kernel.Proofs.BoundCurrentRepetitionNumeric
 import A12Kernel.Proofs.CurrentRepetitionNumberToString
 import A12Kernel.Proofs.CurrentRepetitionNumberToStringRelation
 import A12Kernel.Proofs.CurrentRepetitionStringToNumber

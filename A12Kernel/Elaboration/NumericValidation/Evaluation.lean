@@ -36,6 +36,7 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
   | .field field => context.fields.resolveNumericArithmetic field
   | .baseYear year => .ok (.value year .fixed)
   | .fixedCurrentRepetition _ => .ok (.value 1 .fixed)
+  | .boundCurrentRepetition _ => .error .groupState
   | .baseYearDatePart year source part =>
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .temporalFieldPart field part =>
@@ -180,12 +181,17 @@ def addressedDirectRelevant
     (_context : AddressedValidationEvaluationContext model) :
     FlatRelevance := fun _ => true
 
-/-- Resolve every addressed field of one ordinary atom in authored encounter order, then reuse its scalar evaluator over the checked substitutions. Full validation substitutes only repeatable fields; a partial view substitutes every referenced field so call-local generated findings cannot fall back to immutable scalar input. -/
+/-- Structural coordinate faults stay outside numeric unavailability. Field-backed atoms reuse
+    their scalar evaluator over checked substitutions: full validation substitutes repeatable fields,
+    while a partial view substitutes every referenced field to preserve call-local findings. -/
 private def resolveAddressedOrdinary
     (source : NumericValidationAtom)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  if let .boundCurrentRepetition repetition := source then
+    let coordinate ← repetition.coordinateAt context.outer |>.mapError .environment
+    return .ok (.value coordinate .fixed)
   let rec readAddressed :
       List FieldId →
         Except CheckedAddressingError

@@ -188,6 +188,7 @@ import A12Kernel.Conformance.FilledFieldStarCount
 import A12Kernel.Conformance.FilledFieldStarCountHaving
 import A12Kernel.Conformance.FixedRepetitionHaving
 import A12Kernel.Conformance.FixedCurrentRepetitionNumeric
+import A12Kernel.Conformance.BoundCurrentRepetitionNumeric
 import A12Kernel.Conformance.HavingFilterDiagnostic
 import A12Kernel.Conformance.FirstFilledValue
 import A12Kernel.Conformance.FirstFilledValueElaboration

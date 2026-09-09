@@ -178,6 +178,7 @@ def FlatModel.admitsNumericComputationOperand
   | .numeric (.baseYear year) => model.baseYear == some year
   | .numeric (.fixedCurrentRepetition reference) =>
       reference.scalarRepetitionWellFormedBool model
+  | .numeric (.boundCurrentRepetition _) => false
   | .numeric (.baseYearDatePart year _ _) => model.baseYear == some year
   | .numeric (.temporalFieldPart source part) =>
       model.admitsTemporalComputationOperand source
@@ -272,6 +273,7 @@ def CheckedNumericComputationAtom.references
   | .numeric (.field declaration) => declaration.id == field
   | .numeric (.baseYear _) => false
   | .numeric (.fixedCurrentRepetition _) => false
+  | .numeric (.boundCurrentRepetition _) => false
   | .numeric (.baseYearDatePart _ _ _) => false
   | .numeric (.temporalFieldPart source _) => source.id == field
   | .numeric (.dateRangeBoundPart source _ _) => source.id == field

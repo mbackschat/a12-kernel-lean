@@ -306,6 +306,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Guarded nonrepeatable-root `CurrentRepetition`](implementation/repetition-and-paths.md#cap-guarded-nonrepeatable-root-currentrepetition)
 <a id="cap-fixed-currentrepetition-numeric"></a>
 - [Fixed `CurrentRepetition` in numeric expressions](implementation/repetition-and-paths.md#cap-fixed-currentrepetition-numeric)
+<a id="cap-bound-currentrepetition-numeric"></a>
+- [Row-bound `CurrentRepetition` in numeric validation](implementation/repetition-and-paths.md#cap-bound-currentrepetition-numeric)
 <a id="cap-guarded-same-group-repeatable-currentrepetition"></a>
 - [Guarded same-group repeatable `CurrentRepetition`](implementation/repetition-and-paths.md#cap-guarded-same-group-repeatable-currentrepetition)
 

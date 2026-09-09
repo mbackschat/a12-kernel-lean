@@ -317,6 +317,11 @@ def NumericValidationAtom.admitted
           model.admitsNumberModelWide source
   | .baseYear year => model.baseYear == some year
   | .fixedCurrentRepetition reference => reference.scalarRepetitionWellFormedBool model
+  | .boundCurrentRepetition source =>
+      match scope with
+      | .sameGroupAddressed =>
+          source.wellFormedIn model (model.repeatableScopeForGroupPath rowGroup)
+      | .sameGroup | .modelWideNonrepeatable | .modelWideCheckedComputation => false
   | .baseYearDatePart year _ _ => model.baseYear == some year
   | .temporalFieldPart source part =>
       (match scope with
@@ -505,6 +510,7 @@ def NumericValidationAtom.referencesField (model : FlatModel) :
     NumericValidationAtom → FieldId → Bool
   | .field source, field => source.id == field
   | .fixedCurrentRepetition _, _ => false
+  | .boundCurrentRepetition _, _ => false
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
   | .temporalFieldPart source _, field => source.id == field
   | .dateRangeBoundPart source _ _, field => source.id == field
@@ -528,6 +534,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   match atom with
   | .field source => isRelevant source.id
   | .fixedCurrentRepetition _ => true
+  | .boundCurrentRepetition _ => true
   | .baseYear _ | .baseYearDatePart _ _ _ => true
   | .temporalFieldPart source _ => isRelevant source.id
   | .dateRangeBoundPart source _ _ => isRelevant source.id

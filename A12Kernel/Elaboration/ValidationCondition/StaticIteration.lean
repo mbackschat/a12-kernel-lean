@@ -267,6 +267,7 @@ private def ordinaryNumericAtomIterationScope
     (model : FlatModel) (source : NumericValidationAtom) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
   match source with
+  | .boundCurrentRepetition repetition => pure (some repetition.scope)
   | .filledGroupCount groups =>
       mergeIterationScopeList (groups.map fun reference =>
         if reference.boundRepeatableScope.isEmpty then

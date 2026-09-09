@@ -143,6 +143,7 @@ def readNumericComputationAtomWith
   | .field declaration => context.readNumeric declaration
   | .baseYear year => pure (.value year)
   | .fixedCurrentRepetition _ => pure (.value 1)
+  | .boundCurrentRepetition _ => throw .repeatableContextRequired
   | .baseYearDatePart year source part =>
       pure (.value (baseYearDateSourceNumericPart year source part))
   | .temporalFieldPart field part =>
@@ -430,6 +431,7 @@ def NumericComputationAtom.numericComputationFault? :
   | .field declaration => declaration.numericComputationFault?
   | .baseYear _ => none
   | .fixedCurrentRepetition _ => none
+  | .boundCurrentRepetition _ => some .repeatableContextRequired
   | .baseYearDatePart _ _ _ => none
   | .temporalFieldPart _ _ => none
   | .dateRangeBoundPart _ _ _ => none

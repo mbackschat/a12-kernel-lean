@@ -98,8 +98,10 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .sumOfProducts source => source.scaleSummary
   | .filledGroupCountMixed _ => NumericScaleSummary.field 0
 
-/-- An ordinary direct atom needs addressed evaluation exactly when any checked field declaration is repeatable. Specialized sources retain their established addressed criteria. -/
+/-- Structural coordinates and group counts retain their binding requirements independently of
+    field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
+  | .ordinary (.boundCurrentRepetition _) => true
   | .ordinary (.filledGroupCount groups) =>
       groups.any fun reference => !reference.boundRepeatableScope.isEmpty
   | .ordinary source =>
@@ -210,9 +212,10 @@ def OrderedNumericComparison.requiresAddressedValidation
   comparison.left.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation ||
     comparison.right.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation
 
-/-- Whether partial addressed evaluation has an exact interpretation for an atom. Ordinary atoms use per-field relevance; entity-list aggregates use their source-owned extent relevance. `false` is structural unsupported information, never numeric UNKNOWN. -/
+/-- Whether partial addressed evaluation has an exact interpretation for an atom. Supported ordinary atoms use per-field relevance; entity-list aggregates use their source-owned extent relevance. `false` is structural unsupported information, never numeric UNKNOWN. -/
 def OrderedNumericValidationAtom.supportsAddressedPartial :
     OrderedNumericValidationAtom model → Bool
+  | .ordinary (.boundCurrentRepetition _) => false
   | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _

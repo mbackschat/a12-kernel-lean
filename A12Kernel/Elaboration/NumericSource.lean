@@ -333,6 +333,31 @@ def ResolvedGroupReference.scalarRepetitionWellFormedBool
   reference.origin == .path && reference.boundRepeatableScope.isEmpty &&
     reference.fixedWellFormedBool model reference.path
 
+/-- A row-bound structural operand retains its complete ancestry separately from its own coordinate:
+    a fixed descendant requires ancestor bindings but returns one (`spec/08` §4). -/
+structure BoundCurrentRepetitionSource where
+  path : GroupPath
+  scope : List RepeatableLevel
+  level : Option RepeatableLevel
+  deriving Repr, DecidableEq
+
+def BoundCurrentRepetitionSource.wellFormedIn
+    (source : BoundCurrentRepetitionSource) (model : FlatModel)
+    (available : List RepeatableLevel) : Bool :=
+  model.hasGroupPath source.path && !source.scope.isEmpty &&
+    source.scope == model.repeatableScopeForGroupPath source.path &&
+    source.scope.isPrefixOf available &&
+    source.level == (model.repeatableGroups.find? (·.path == source.path)).map (·.level)
+
+/-- Check every required binding before selecting the group's own coordinate. A present terminal
+    coordinate cannot compensate for a missing, duplicated, or zero ancestor binding. -/
+def BoundCurrentRepetitionSource.coordinateAt (source : BoundCurrentRepetitionSource)
+    (environment : Env) : Except EnvBindingError Nat := do
+  let _ ← environment.pathForScope source.scope
+  match source.level with
+  | none => pure 1
+  | some level => environment.bindingAt level
+
 inductive SurfaceNumericAtom
     (Aggregate : Type := SurfaceNumericAggregateFields) where
   | field (path : SurfaceFieldPath)
@@ -360,6 +385,7 @@ inductive ResolvedNumericAtom (Field : Type)
     (Aggregate : Type := ResolvedNumericAggregateFields) where
   | field (source : Field)
   | fixedCurrentRepetition (reference : ResolvedGroupReference)
+  | boundCurrentRepetition (source : BoundCurrentRepetitionSource)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
       (part : DateNumericPart)
@@ -384,6 +410,7 @@ namespace ResolvedNumericAtom
 def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
   | .field _ => true
   | .fixedCurrentRepetition _ => false
+  | .boundCurrentRepetition _ => false
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
@@ -403,6 +430,7 @@ def summaryWith (fieldSummary : Field → NumericScaleSummary)
     ResolvedNumericAtom Field Aggregate → NumericScaleSummary
   | .field source => fieldSummary source
   | .fixedCurrentRepetition _ => NumericScaleSummary.field 0
+  | .boundCurrentRepetition _ => NumericScaleSummary.field 0
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
