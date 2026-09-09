@@ -326,9 +326,17 @@ def scaleSummary (op : NumericAggregateOp)
 
 end NumericAggregateOp
 
+/-- Scalar repetition operands retain group identity for checked re-elaboration; fixed value alone
+    does not establish the binding boundary in `spec/07` §3. -/
+def ResolvedGroupReference.scalarRepetitionWellFormedBool
+    (reference : ResolvedGroupReference) (model : FlatModel) : Bool :=
+  reference.origin == .path && reference.boundRepeatableScope.isEmpty &&
+    reference.fixedWellFormedBool model reference.path
+
 inductive SurfaceNumericAtom
     (Aggregate : Type := SurfaceNumericAggregateFields) where
   | field (path : SurfaceFieldPath)
+  | currentRepetition (path : SurfaceGroupPath)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | temporalFieldPart (path : SurfaceFieldPath) (part : TemporalNumericPart)
@@ -351,6 +359,7 @@ inductive SurfaceNumericAtom
 inductive ResolvedNumericAtom (Field : Type)
     (Aggregate : Type := ResolvedNumericAggregateFields) where
   | field (source : Field)
+  | fixedCurrentRepetition (reference : ResolvedGroupReference)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
       (part : DateNumericPart)
@@ -374,6 +383,7 @@ namespace ResolvedNumericAtom
 
 def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
   | .field _ => true
+  | .fixedCurrentRepetition _ => false
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
@@ -392,6 +402,7 @@ def summaryWith (fieldSummary : Field → NumericScaleSummary)
     (aggregateSummary : NumericAggregateOp → Aggregate → NumericScaleSummary) :
     ResolvedNumericAtom Field Aggregate → NumericScaleSummary
   | .field source => fieldSummary source
+  | .fixedCurrentRepetition _ => NumericScaleSummary.field 0
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0

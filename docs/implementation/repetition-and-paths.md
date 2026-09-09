@@ -173,6 +173,15 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: E/P closed for the exact shape; dynamic Groovy, generated Java, and interpreter L at a12-dmkits [source registry](../SOURCES.md); C/X/Q none
 - `remains`: Captured row lookup, fixed nested groups, wider root comparisons, computation, filters, partial validation, arithmetic wrappers, and parsing: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
+<a id="cap-fixed-currentrepetition-numeric"></a>
+#### Fixed `CurrentRepetition` in numeric expressions
+
+- `boundary`: The shared scalar numeric tree admits an ordinary group path with no repeatable ancestry, retaining its resolved identity through comparison, arithmetic, computation, and generated mismatch validation. The structural source has integral scale, value `1`, fixed validation provenance, and no field dependency, including when its group contains the target. Checked construction rejects unknown groups, repeatable terminals, and fixed descendants requiring row bindings; raw-core validation also rejects forged origin or scope metadata.
+- `owner`: [numeric atoms](../../A12Kernel/Elaboration/NumericSource.lean), [validation resolution](../../A12Kernel/Elaboration/NumericValidation/Resolution.lean), [computation resolution](../../A12Kernel/Elaboration/NumericComputation/Core.lean), [generated validation](../../A12Kernel/Elaboration/GeneratedComputationValidation.lean), [proofs](../../A12Kernel/Proofs/FixedCurrentRepetitionNumeric.lean), [cases](../../A12Kernel/Conformance/FixedCurrentRepetitionNumeric.lean)
+- `assurance`: E/P internally closed for this scalar source. Universal raw-reader laws fix the result independently of field contents, and generated validation preserves the resolved reference. Cases distinguish root/nested identity, unrelated malformed fields, both comparison outcomes, arithmetic, generated mismatch outcomes, binding refusal, and forged metadata. Replacing the source with a literal before checking changes `Abs` admission and is a checked non-law.
+- `evidence`: The [operand-carrier checkpoint](../sources/group-and-iteration-probes.md#src-currentrepetition-operand-carriers) establishes broader static source admission; it does not calibrate this complete scalar matrix. Fixed-group arithmetic, generated mismatch, wrapper admission, and partial-validation correspondence remain external evidence pending. No public protocol or independent consumer qualification is added.
+- `remains`: Row-bound operands and broader expression carriers: [SG19](../gaps/paths-and-groups.md#gap-sg19).
+
 <a id="cap-guarded-same-group-repeatable-currentrepetition"></a>
 #### Guarded same-group repeatable `CurrentRepetition`
 

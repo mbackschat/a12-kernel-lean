@@ -93,6 +93,7 @@ inductive NumericComputationElabError where
   | booleanValueCount (error : BooleanValueCountElabError)
   | productAggregate (error : NumericProductAggregateElabError)
   | groupReference (error : SingleGroupElabError)
+  | currentRepetitionSource (error : FixedGroupReferenceError)
   | unknownGroupInCount (path : GroupPath)
   | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
@@ -175,6 +176,8 @@ def FlatModel.admitsNumericComputationOperand
             declaration.toNumberField?.isSome
       | .error _ => false
   | .numeric (.baseYear year) => model.baseYear == some year
+  | .numeric (.fixedCurrentRepetition reference) =>
+      reference.scalarRepetitionWellFormedBool model
   | .numeric (.baseYearDatePart year _ _) => model.baseYear == some year
   | .numeric (.temporalFieldPart source part) =>
       model.admitsTemporalComputationOperand source
@@ -268,6 +271,7 @@ def CheckedNumericComputationAtom.references
       operands.any fun operand => operand.referencesField model field
   | .numeric (.field declaration) => declaration.id == field
   | .numeric (.baseYear _) => false
+  | .numeric (.fixedCurrentRepetition _) => false
   | .numeric (.baseYearDatePart _ _ _) => false
   | .numeric (.temporalFieldPart source _) => source.id == field
   | .numeric (.dateRangeBoundPart source _ _) => source.id == field
@@ -337,6 +341,7 @@ def SurfaceNumericAtom.toNumberEntityComputationAtom :
     SurfaceNumericAtom →
       SurfaceNumericAtom SurfaceNumberEntitySource
   | .field path => .field path
+  | .currentRepetition path => .currentRepetition path
   | .baseYear => .baseYear
   | .baseYearDatePart source part => .baseYearDatePart source part
   | .temporalFieldPart path part => .temporalFieldPart path part
@@ -425,6 +430,10 @@ private def FlatModel.resolveNumericComputationExpression
         match model.baseYear with
         | some year => pure (.numeric (.baseYear year))
         | none => throw .baseYearNotDeclared
+    | .numeric (.currentRepetition path) => do
+        let reference ← model.resolveFixedGroupReference declaringGroup (.path path)
+          |>.mapError .currentRepetitionSource
+        pure (.numeric (.fixedCurrentRepetition reference))
     | .numeric (.baseYearDatePart source part) =>
         match model.baseYear with
         | some year => pure (.numeric (.baseYearDatePart year source part))

@@ -35,6 +35,7 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       Except NumericValidationUnavailable NumericArithmeticOutcome
   | .field field => context.fields.resolveNumericArithmetic field
   | .baseYear year => .ok (.value year .fixed)
+  | .fixedCurrentRepetition _ => .ok (.value 1 .fixed)
   | .baseYearDatePart year source part =>
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .temporalFieldPart field part =>

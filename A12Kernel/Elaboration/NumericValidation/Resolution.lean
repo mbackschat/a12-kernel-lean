@@ -88,6 +88,10 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       match model.baseYear with
       | some year => pure (.baseYear year)
       | none => throw .baseYearNotDeclared
+  | .currentRepetition path => do
+      let reference ← model.resolveFixedGroupReference rowGroup (.path path)
+        |>.mapError .currentRepetitionSource
+      pure (.fixedCurrentRepetition reference)
   | .baseYearDatePart source part =>
       match model.baseYear with
       | some year => pure (.baseYearDatePart year source part)

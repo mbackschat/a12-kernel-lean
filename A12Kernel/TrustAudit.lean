@@ -1160,6 +1160,8 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_repeatablePresence_supported
 #print axioms A12Kernel.checkedValidationCondition_coherent
 #print axioms A12Kernel.rootCurrentRepetitionComparison_results
+#print axioms A12Kernel.fixedCurrentRepetition_scalar_readers
+#print axioms A12Kernel.fixedCurrentRepetition_generated_identity
 #print axioms A12Kernel.validationCondition_guardedRootCurrentRepetition_evalSelected
 #print axioms A12Kernel.validationCondition_guardedRootCurrentRepetition_filled
 #print axioms A12Kernel.validationCondition_guardedRootCurrentRepetition_empty

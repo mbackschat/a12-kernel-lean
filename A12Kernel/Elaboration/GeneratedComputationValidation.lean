@@ -408,6 +408,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
       | some field => pure (.ordinary (.field field))
       | none => throw (.conditionAssembly .incoherentCore)
   | .numeric (.baseYear year) => pure (.ordinary (.baseYear year))
+  | .numeric (.fixedCurrentRepetition reference) =>
+      pure (.ordinary (.fixedCurrentRepetition reference))
   | .numeric (.baseYearDatePart year source part) =>
       pure (.ordinary (.baseYearDatePart year source part))
   | .numeric (.temporalFieldPart source part) =>

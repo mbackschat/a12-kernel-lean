@@ -122,6 +122,7 @@ inductive NumericValidationElabError where
   | baseYearNotDeclared
   | aggregate (error : NumericAggregateElabError)
   | groupReference (error : SingleGroupElabError)
+  | currentRepetitionSource (error : FixedGroupReferenceError)
   | unknownGroupInCount (path : GroupPath)
   | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
@@ -315,6 +316,7 @@ def NumericValidationAtom.admitted
       | .modelWideNonrepeatable | .modelWideCheckedComputation =>
           model.admitsNumberModelWide source
   | .baseYear year => model.baseYear == some year
+  | .fixedCurrentRepetition reference => reference.scalarRepetitionWellFormedBool model
   | .baseYearDatePart year _ _ => model.baseYear == some year
   | .temporalFieldPart source part =>
       (match scope with
@@ -502,6 +504,7 @@ structure CheckedNumericComparison (model : FlatModel) where
 def NumericValidationAtom.referencesField (model : FlatModel) :
     NumericValidationAtom → FieldId → Bool
   | .field source, field => source.id == field
+  | .fixedCurrentRepetition _, _ => false
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
   | .temporalFieldPart source _, field => source.id == field
   | .dateRangeBoundPart source _ _, field => source.id == field
@@ -524,6 +527,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
     (isRelevant : FlatRelevance) : Bool :=
   match atom with
   | .field source => isRelevant source.id
+  | .fixedCurrentRepetition _ => true
   | .baseYear _ | .baseYearDatePart _ _ _ => true
   | .temporalFieldPart source _ => isRelevant source.id
   | .dateRangeBoundPart source _ _ => isRelevant source.id
