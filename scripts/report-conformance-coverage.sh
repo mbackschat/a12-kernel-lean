@@ -352,6 +352,24 @@ Working-tree counts generated on ${today}; HEAD was \`${revision}\`. The vocabul
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
+## Terminology
+
+| Term | Meaning in this report |
+|---|---|
+| Diagnostic identifier / class | A name from the selected Kernel diagnostic catalogs or runtime formal-code constants. Counting its occurrence measures vocabulary coverage. |
+| Touched / untouched | A diagnostic name occurs somewhere in the scanned prose, Lean source, or evidence JSON / occurs in none of them. |
+| Lean names | Diagnostic names found in Lean source, including comments and fixtures; not a count of implemented or proved behaviours. |
+| Capability record (\`cap\`) | An entry in [the implementation map](IMPLEMENTATION-MAP.md) describing one supported semantic scope, its assurance, and its limits. It need not cover an entire operator or family. |
+| Checkpoint | A source or measurement record documenting provenance, findings, and their scope; follow its links to inspect the supporting observations. |
+| Checkpoint-citing capabilities (formerly \`checkpoint caps\`) | Capability records whose text mentions a checkpoint or calibration. This is a record count, not a count of fully calibrated capabilities. |
+| Calibration / evidence pending | Calibration compares the executable account with retained Kernel observations for specified cases. An evidence-pending note identifies correspondence still to establish; a capability can have both calibrated and pending parts. |
+| Open gap / remaining-work row | A gap is an unresolved semantic topic in [the gap index](SEMANTICS-GAPS.md). A remaining-work row is one entry within a topic; entries vary in size and may overlap. |
+| Blocked route | The recorded way to obtain a needed observation cannot currently proceed. This blocks dependent work, not every open gap. |
+| Ledger pending / handed-off | Nonterminal cross-project reconciliation states in [the synchronization ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md). Neither state means the claim is accepted or closed. |
+| Theory / support / evidence estate | Groups of tracked Lean source counted by nonblank lines: executable semantics, proofs and cases / supporting process and tooling / the evidence subset of support. |
+| Capture directory / \`inputHash\` marker | A directory retaining probe artifacts / an input-identity field in the selected compact observation files. Neither count measures independent semantic cases. |
+| Velocity | Changes in the historical table's selected counts. Unchanged counts can accompany semantic progress; the table is not a measure of completed behaviour per hour. |
+
 ## Axis 1 — diagnostic vocabulary, with a finite denominator
 
 | | classes | share |
@@ -432,7 +450,7 @@ One row is appended when one of the recorded counts changes. Flat vocabulary cou
 Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it is not the report's execution time. The revision is context for working-tree counts, not a claim that every counted byte was committed there.
 
 <!-- velocity-history:start -->
-| datetime | revision | touched | Lean names | untouched | checkpoint caps | open gaps |
+| datetime | revision | touched | Lean names | untouched | checkpoint-citing capabilities | open gaps |
 |---|---|---|---|---|---|---|
 AXES
 } > "$work/report"
