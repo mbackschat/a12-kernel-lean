@@ -17,6 +17,8 @@ private def textDecl : FlatFieldDecl :=
   { target with id := 6, name := "Text", policy := { kind := .string }, numericTargetConstraints := {} }
 private def whenDecl : FlatFieldDecl :=
   { target with id := 8, name := "When", policy := { kind := .temporal .date dateComponents }, numericTargetConstraints := {} }
+private def spanDecl : FlatFieldDecl :=
+  { target with id := 9, name := "Span", policy := { kind := .dateRange }, numericTargetConstraints := {}, dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } }
 private def model : FlatModel :=
   { fields := [target, { target with id := 2, name := "Base" },
       { target with id := 3, groupPath := fixedPath, name := "FixedField" },
@@ -26,7 +28,7 @@ private def model : FlatModel :=
       -- bound by a disjoint repeatable level, which is the separator the scope rule must refuse.
       textDecl,
       { target with id := 7, groupPath := asidePath, name := "AsideText", repeatableScope := [30], policy := { kind := .string }, numericTargetConstraints := {} },
-      whenDecl]
+      whenDecl, spanDecl]
     repeatableGroups := [
       { level := 10, path := outerPath, repeatability := some 3 },
       { level := 20, path := innerPath, repeatability := some 3 },
@@ -179,6 +181,30 @@ example :
     run (.binary .add (repetition innerPath) len) = some (.value 7) ∧
       run (.binary .add (repetition innerPath) (.atom .baseYear)) = some (.value 2023) ∧
       run (.binary .add (repetition innerPath) year) = some (.value 2024) := by
+  native_decide
+
+/-- The three remaining single-source kinds, each authored through the surface and each carrying its
+own refusal. `RangeAsNumber` answers the shared interval rule, so a reversed interval is refused on
+a declaration the same expression otherwise admits; a DateRange endpoint component needs a DateRange
+declaration, so the String field is refused in that position; and the Base-Year date component reads
+no cell, matching the bare Base Year. The difference families were measured admitted beside a
+repetition operand too but are deliberately not modelled here — their two-operand scope rule is a
+separate mechanism, and no second consumer has asked for it. -/
+example :
+    let span : AuthoredNumericExpr SurfaceNumericAtom :=
+      .atom (.dateRangeBoundPart { base := .relative 0, groups := [], field := "Span" }
+        .start (.year))
+    let badSpan : AuthoredNumericExpr SurfaceNumericAtom :=
+      .atom (.dateRangeBoundPart { base := .relative 0, groups := [], field := "Text" }
+        .start (.year))
+    let rng (start finish : Nat) : AuthoredNumericExpr SurfaceNumericAtom :=
+      .atom (.stringRange { base := .relative 0, groups := [], field := "Text" } start finish)
+    (operation (.binary .add (repetition innerPath) (rng 1 2))).isOk = true ∧
+      (operation (.binary .add (repetition innerPath) (rng 3 2))).isOk = false ∧
+      (operation (.binary .add (repetition innerPath) span)).isOk = true ∧
+      (operation (.binary .add (repetition innerPath) badSpan)).isOk = false ∧
+      (operation (.binary .add (repetition innerPath)
+        (.atom (.baseYearDatePart .direct .year)))).isOk = true := by
   native_decide
 
 private def poisonBeforeMissingBinding (reverse : Bool) : Option (Sum EnvBindingError NumericComputationResult) := do

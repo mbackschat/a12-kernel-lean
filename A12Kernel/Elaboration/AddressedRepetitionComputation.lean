@@ -36,10 +36,16 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
   | .fixedCurrentRepetition reference => reference.scalarRepetitionWellFormedBool model
   | .boundCurrentRepetition source =>
       source.wellFormedIn model target.targetDeclaration.repeatableScope
-  -- The model's own Base Year reads no cell, so it carries no scope to bind.
+  -- The model's own Base Year reads no cell, so neither constant carries a scope to bind.
   | .baseYear _ => true
+  | .baseYearDatePart _ _ _ => true
   | .stringLength source =>
       target.admitsSourceField source.id fun owned => owned.toStringValueField? == some source
+  | .stringRange source start finish =>
+      validStringRange start finish &&
+        target.admitsSourceField source.id fun owned => owned.toStringValueField? == some source
+  | .dateRangeBoundPart source _ _ =>
+      target.admitsSourceField source.id fun owned => owned.toDateRangeField? == some source
   | .temporalFieldPart source part =>
       target.admitsSourceField source.id fun owned =>
         owned.toTemporalField? == some source && part.admittedBy source model.baseYear.isSome
@@ -113,6 +119,26 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
           |>.mapError .source
         match declaration.toStringValueField? with
         | some field => pure (.stringLength field)
+        | none => throw .unsupportedExpression
+    | .stringRange reference start finish => do
+        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
+          |>.mapError .source
+        -- The interval rule is the shared one; suppression cannot widen it, so it is checked here
+        -- rather than left to the target's scale gate.
+        if validStringRange start finish then
+          match declaration.toStringValueField? with
+          | some field => pure (.stringRange field start finish)
+          | none => throw .unsupportedExpression
+        else throw .unsupportedExpression
+    | .baseYearDatePart source part =>
+        match model.baseYear with
+        | some year => pure (.baseYearDatePart year source part)
+        | none => throw .baseYearNotDeclared
+    | .dateRangeBoundPart reference bound part => do
+        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
+          |>.mapError .source
+        match declaration.toDateRangeField? with
+        | some field => pure (.dateRangeBoundPart field bound part)
         | none => throw .unsupportedExpression
     | .temporalFieldPart reference part => do
         let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
@@ -193,8 +219,15 @@ def AddressedRepetitionOperand.readAt {model : FlatModel}
   case boundCurrentRepetition source =>
     exact (source.coordinateAt environment).map (fun coordinate => .value coordinate)
       |>.mapError .environment
-  -- The Base Year is model state, so it reads no cell and cannot fail in a row.
+  -- Both Base Year constants are model state, so they read no cell and cannot fail in a row.
   case baseYear year => exact .ok (.value year)
+  case baseYearDatePart year source part =>
+    exact .ok (.value (baseYearDateSourceNumericPart year source part))
+  case stringRange source start finish =>
+    exact readFieldSourceAtom model source.id (.stringRange source start finish) read environment
+  case dateRangeBoundPart source bound part =>
+    exact readFieldSourceAtom model source.id (.dateRangeBoundPart source bound part) read
+      environment
   case stringLength source =>
     exact readFieldSourceAtom model source.id (.stringLength source) read environment
   case temporalFieldPart source part =>
