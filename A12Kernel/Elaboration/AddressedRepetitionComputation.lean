@@ -315,11 +315,13 @@ def AddressedRepetitionOperand.readAt {model : FlatModel}
 
 namespace CheckedAddressedRepetitionComputation
 
+/-- Whether this operation reads a field. It answers through the shared atom walk rather than a
+    local match, because a local one silently reported `false` for every source kind added after it
+    was written — a dependency query that forgets a kind fails nothing and hands a consumer a
+    missing edge as a fact. -/
 def referencesField (operation : CheckedAddressedRepetitionComputation model)
     (field : FieldId) : Bool :=
-  operation.expression.anyAtom fun atom => match atom.val with
-    | .field declaration => declaration.id == field
-    | _ => false
+  operation.expression.anyAtom fun atom => atom.val.referencesField model field
 
 def evaluateAtEnvironmentWithRead
     (operation : CheckedAddressedRepetitionComputation model)

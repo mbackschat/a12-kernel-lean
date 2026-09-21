@@ -285,4 +285,21 @@ example :
       run 11 (months (.field whenRef) (.field untilRef)) = some (.poison .dateFormat) := by
   native_decide
 
+/-- The dependency query reports a source that is not a plain field reference. Every row here
+answered `false` while the query matched only the plain-field atom, which is the shape of an
+under-report that fails nothing and reaches a consumer as a missing edge. -/
+example :
+    let refers (expression : AuthoredNumericExpr SurfaceNumericAtom) (field : FieldId) :=
+      (operation expression).toOption.map (·.referencesField field)
+    refers (.binary .add (repetition innerPath)
+        (.atom (.stringLength { base := .relative 0, groups := [], field := "Text" }))) 6
+        = some true ∧
+      refers (.binary .add (repetition innerPath)
+        (.atom (.temporalFieldPart { base := .relative 0, groups := [], field := "When" }
+          (.date .year)))) 8 = some true ∧
+      refers (months (.field whenRef) (.field untilRef)) 11 = some true ∧
+      refers (months (.field whenRef) (.baseYear .direct)) 11 = some false ∧
+      refers (.binary .add (repetition innerPath) (.atom .baseYear)) 8 = some false := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedRepetitionComputation

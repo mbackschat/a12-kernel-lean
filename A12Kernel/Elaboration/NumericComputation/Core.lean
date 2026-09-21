@@ -259,6 +259,38 @@ def CheckedNumericComputationAtom.numericScaleSummary
   -- A count is integral, exactly like the fixed-only form's `filledGroupCount` summary.
   | .filledGroupCountMixed _ => NumericScaleSummary.field 0
 
+/-- Whether one resolved numeric atom reads a given field. Structural coordinates and model
+    constants read none; every other kind reports the field or fields it addresses, including both
+    endpoints of a two-operand difference. Carriers share this rather than re-deciding it, because a
+    dependency query that silently answers `false` for a source kind it forgot is worse than one
+    that refuses: nothing fails, and the missing edge reaches a consumer as a fact. -/
+def ResolvedNumericAtom.referencesFieldWith {Aggregate : Type}
+    (model : FlatModel) (field : FieldId)
+    (referencesAggregate : Aggregate → Bool) :
+    ResolvedNumericAtom FlatFieldDecl Aggregate → Bool
+  | .field declaration => declaration.id == field
+  | .baseYear _ => false
+  | .fixedCurrentRepetition _ => false
+  | .boundCurrentRepetition _ => false
+  | .baseYearDatePart _ _ _ => false
+  | .temporalFieldPart source _ => source.id == field
+  | .dateRangeBoundPart source _ _ => source.id == field
+  | .stringLength source => source.id == field
+  | .stringRange source _ _ => source.id == field
+  | .fieldValueAsNumber source => source.fieldId == field
+  | .dateDifference _ left right => left.references field || right.references field
+  | .dateTimeDifference _ left right =>
+      left.dateTimeDifferenceReferences field || right.dateTimeDifferenceReferences field
+  | .dayDifference _ left right => left.references field || right.references field
+  | .aggregate _ source => referencesAggregate source
+  | .filledGroupCount groups => groups.any fun group => group.referencesField model field
+
+/-- The ordinary computation atom's instance of that walk, resolving its aggregate through the
+    checked entity-list source. -/
+def NumericComputationAtom.referencesField (model : FlatModel) (field : FieldId)
+    (atom : NumericComputationAtom) : Bool :=
+  atom.referencesFieldWith model field (·.referencesField field)
+
 def CheckedNumericComputationAtom.references
     (model : FlatModel) (field : FieldId) :
     CheckedNumericComputationAtom model → Bool
@@ -270,26 +302,7 @@ def CheckedNumericComputationAtom.references
       source.left.field.id == field || source.right.field.id == field
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
-  | .numeric (.field declaration) => declaration.id == field
-  | .numeric (.baseYear _) => false
-  | .numeric (.fixedCurrentRepetition _) => false
-  | .numeric (.boundCurrentRepetition _) => false
-  | .numeric (.baseYearDatePart _ _ _) => false
-  | .numeric (.temporalFieldPart source _) => source.id == field
-  | .numeric (.dateRangeBoundPart source _ _) => source.id == field
-  | .numeric (.stringLength source) => source.id == field
-  | .numeric (.stringRange source _ _) => source.id == field
-  | .numeric (.fieldValueAsNumber source) => source.fieldId == field
-  | .numeric (.dateDifference _ left right) =>
-      left.references field || right.references field
-  | .numeric (.dateTimeDifference _ left right) =>
-      left.dateTimeDifferenceReferences field ||
-        right.dateTimeDifferenceReferences field
-  | .numeric (.dayDifference _ left right) =>
-      left.references field || right.references field
-  | .numeric (.aggregate _ source) => source.referencesField field
-  | .numeric (.filledGroupCount groups) =>
-      groups.any fun group => group.referencesField model field
+  | .numeric atom => atom.referencesFieldWith model field (·.referencesField field)
 
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation model) : Bool :=
