@@ -104,6 +104,10 @@ Two edge shapes matter:
 
 A model carries two families of behaviour, both written in the one shared language ([`12-concrete-syntax.md`](12-concrete-syntax.md)).
 
+**A declaration can be filtered out of the model before anything examines it, and this conditions every other statement in this document.** A Field, a Rule, and a Computation — those three carriers and no group carrier — may each carry an optional `variantFilter`, serialized `{ "filterType": "ONLY" | "ALL_EXCEPT", "variants": [<names>] }`. Conversion into the checked model keeps a declaration only while the filter accepts it: an absent filter accepts, `ONLY` accepts when the active variant is named, and `ALL_EXCEPT` accepts when it is not. **At the default variant nothing is named**, so the membership test is false for every list — including an empty list, the empty-string name, and an absent `variants` member — and the filter *type* alone decides: `ONLY` rejects, `ALL_EXCEPT` accepts. A rejected declaration is not disabled or flagged; it is **absent** from the model that static checking and evaluation then see.
+
+The consequence splits by carrier, in opposite directions, so neither arm may be inferred from the other. A rejected **rule or computation** is simply not there: it is not checked, emits no code, and never evaluates, so a declaration with a deliberately unresolvable condition is reported **clean**. A rejected **field** is absent from its group, so every surviving declaration that names it is naming something undeclared — a condition mentioning it draws `MVK_INVALID_ENTITY`, and targeting it draws the error-target pair instead, the answer following the naming *role*. **A clean static verdict is therefore not a clean bill of health for a declaration carrying `ONLY`**, and a consumer that resolves references against every declared field under-reports against A12. Measured by the peer on all three carriers with unfiltered and `ALL_EXCEPT` controls (`KF299`, `KF305`) and independently reproduced here on both the rule and field arms ([checkpoint](../docs/SOURCES.md#src-variant-filter-declaration-omission)).
+
 ### 3.1 Rules (validation)
 
 A **rule** has:
