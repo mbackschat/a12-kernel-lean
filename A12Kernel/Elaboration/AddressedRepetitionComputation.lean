@@ -6,7 +6,7 @@ namespace A12Kernel
     model-owned, must not be the target itself, and must be bound by the target's repeatable scope.
     `certify` re-derives the atom's own payload from that declaration, which is what keeps a forged
     kind, component set, or conversion projection out of a checked operand. -/
-private def CheckedAddressedNumericTarget.admitsSourceField
+def CheckedAddressedNumericTarget.admitsSourceField
     (target : CheckedAddressedNumericTarget model) (id : FieldId)
     (certify : FlatFieldDecl → Bool) : Bool :=
   match model.lookupUniqueId id with
@@ -14,6 +14,18 @@ private def CheckedAddressedNumericTarget.admitsSourceField
       certify owned && id != target.targetField &&
         owned.repetitionBoundBy target.targetDeclaration.repeatableScope
   | .error _ => false
+
+/-- One endpoint of a completed-period difference. A field endpoint answers exactly the scope rule
+    above; the Base-Year endpoint reads no cell and is admitted only at the year this model declares,
+    so a forged constant cannot enter a checked operand. The unit's own component gate is applied
+    once over the pair rather than here, because its year position is satisfiable by the model's
+    Base Year and that is a property of the pair's agreement, not of one endpoint. -/
+def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
+    (target : CheckedAddressedNumericTarget model) :
+    ResolvedDateDifferenceOperand → Bool
+  | .field source =>
+      target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
+  | .baseYear year _ => model.baseYear == some year
 
 /-- Source admission retains model-owned fields and structural paths separately. Computation row
     bindings come from the checked target; scalar-only operations keep their existing owners.
@@ -23,8 +35,11 @@ private def CheckedAddressedNumericTarget.admitsSourceField
     the Kernel on `BaseYear`, `Length`, and `YearFromDate` in both positions, with the
     `FieldValueAsNumber` String/Enumeration pair separating an operand-kind refusal from a mixing
     one ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)).
-    The scope rule above is therefore the only additional gate this carrier imposes. Aggregates,
-    group counts, and the difference families stay outside it: none was measured here. -/
+    The scope rule above is therefore the only additional gate this carrier imposes, and the
+    completed-period difference applies it to each of its two endpoints. Aggregates and group counts
+    stay outside: each carries a group operand and a scope of its own that this rule does not
+    reach, and a group operand naming the target's own repeatable group is refused by the Kernel's
+    calculated-field self-reference gate rather than by anything here. -/
 def CheckedAddressedNumericTarget.admitsRepetitionOperand
     (target : CheckedAddressedNumericTarget model) : NumericComputationAtom → Bool
   | .field declaration =>
@@ -55,6 +70,9 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
           owned.id != target.targetField &&
             owned.repetitionBoundBy target.targetDeclaration.repeatableScope
       | none => false
+  | .dateDifference unit left right =>
+      DateDifferenceUnit.compatible unit model.baseYear.isSome left.components right.components &&
+        target.admitsDateDifferenceEndpoint left && target.admitsDateDifferenceEndpoint right
   | _ => false
 
 abbrev AddressedRepetitionOperand (target : CheckedAddressedNumericTarget model) :=
@@ -95,6 +113,25 @@ structure CheckedAddressedRepetitionComputation (model : FlatModel) where
   scaleAdmitted : (expression.summary? repetitionOperandSummary).any
     (exactNumericScaleComparisonAllowedWithSuppression suppressExactScaleWarning
       (.field target.targetPolicy.info.scale)) = true
+
+/-- Resolve one authored difference endpoint against the target's own declaring group. `Now` is
+    refused rather than resolved: it needs an evaluation world this carrier's row read does not
+    carry, and a structural refusal keeps that missing input out of the value domain. -/
+private def resolveDateDifferenceEndpoint (target : CheckedAddressedNumericTarget model)
+    (surface : SurfaceDateDifferenceOperand) :
+    Except AddressedRepetitionComputationElabError ResolvedDateDifferenceOperand := do
+  match surface with
+  | .field reference => do
+      let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
+        |>.mapError .source
+      match declaration.toTemporalField? with
+      | some field => pure (.field field)
+      | none => throw .unsupportedExpression
+  | .baseYear source =>
+      match model.baseYear with
+      | some year => pure (.baseYear year source)
+      | none => throw .baseYearNotDeclared
+  | .now => throw .unsupportedExpression
 
 private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget model)
     (surface : SurfaceNumericAtom) :
@@ -152,6 +189,10 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         match declaration.resolveFieldValueAsNumberSource source.projectionRef with
         | .ok resolved => pure (.fieldValueAsNumber resolved)
         | .error _ => throw .unsupportedExpression
+    | .dateDifference unit left right => do
+        let left ← resolveDateDifferenceEndpoint target left
+        let right ← resolveDateDifferenceEndpoint target right
+        pure (.dateDifference unit left right)
     | _ => throw .unsupportedExpression
   if admitted : target.admitsRepetitionOperand atom = true then
     pure ⟨atom, admitted⟩
@@ -201,6 +242,40 @@ private def readFieldSourceAtom (model : FlatModel) (id : FieldId)
       let context : ScalarComputationContext := { read := fun _ => cell }
       context.readNumericComputationAtom atom |>.mapError .evaluation
 
+/-- Read the cell one difference endpoint addresses in this row, paired with the field it answers
+    for. A Base-Year endpoint reads nothing and reports no field, which is what lets the caller build
+    a context that asks only about the endpoints that exist. -/
+private def readDateDifferenceEndpointCell (model : FlatModel)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
+    ResolvedDateDifferenceOperand →
+      Except AddressedNumericLeafFault (Option (FieldId × CheckedCell))
+  | .baseYear _ _ => .ok none
+  | .field source =>
+      match model.lookupUniqueId source.id with
+      | .error _ => .error (.evaluation (.fieldKindMismatch source.id))
+      | .ok declaration => do
+          let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
+          let cell ← read { field := source.id, path } |>.mapError .sourceRead
+          pure (some (source.id, cell))
+
+/-- Evaluate a two-endpoint difference through the shared resolved evaluator. Both endpoints are
+    read **before** the atom is evaluated, so each one's row address is resolved from its own
+    declaration rather than from the other's, and the context then answers by identity: the shared
+    evaluator asks only for the ids the atom names, so a two-way choice keyed on the left endpoint
+    covers every id it can ask and needs no default cell to stand in for an absent one. -/
+private def readDateDifferenceAtom (model : FlatModel) (atom : NumericComputationAtom)
+    (left right : ResolvedDateDifferenceOperand)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
+    Except AddressedNumericLeafFault NumericComputationResult := do
+  let leftRead ← readDateDifferenceEndpointCell model read environment left
+  let rightRead ← readDateDifferenceEndpointCell model read environment right
+  let absent : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+  let context : ScalarComputationContext :=
+    { read := fun id =>
+        if leftRead.map (·.1) == some id then leftRead.elim absent (·.2)
+        else rightRead.elim absent (·.2) }
+  context.readNumericComputationAtom atom |>.mapError .evaluation
+
 /-- Structural coordinates and addressed fields reuse one ordered arithmetic evaluator while
     preserving the addressed source's own error domain. Rejected atom kinds are unconstructible. -/
 def AddressedRepetitionOperand.readAt {model : FlatModel}
@@ -234,6 +309,8 @@ def AddressedRepetitionOperand.readAt {model : FlatModel}
     exact readFieldSourceAtom model source.id (.temporalFieldPart source part) read environment
   case fieldValueAsNumber source =>
     exact readFieldSourceAtom model source.fieldId (.fieldValueAsNumber source) read environment
+  case dateDifference unit left right =>
+    exact readDateDifferenceAtom model (.dateDifference unit left right) left right read environment
   all_goals simp [CheckedAddressedNumericTarget.admitsRepetitionOperand] at admitted
 
 namespace CheckedAddressedRepetitionComputation

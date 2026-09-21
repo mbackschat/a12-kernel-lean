@@ -28,6 +28,12 @@ private def model : FlatModel :=
       -- bound by a disjoint repeatable level, which is the separator the scope rule must refuse.
       textDecl,
       { target with id := 7, groupPath := asidePath, name := "AsideText", repeatableScope := [30], policy := { kind := .string }, numericTargetConstraints := {} },
+      -- A Date on that same disjoint level, so the difference endpoint's refusal is attributable to
+      -- the scope rule rather than to the kind the String row already separates.
+      { whenDecl with id := 10, groupPath := asidePath, name := "AsideWhen", repeatableScope := [30] },
+      -- A second Date in the target's own row, so a two-endpoint difference addresses two distinct
+      -- cells and each endpoint's read is separately observable.
+      { whenDecl with id := 11, name := "Until" },
       whenDecl, spanDecl]
     repeatableGroups := [
       { level := 10, path := outerPath, repeatability := some 3 },
@@ -187,9 +193,7 @@ example :
 own refusal. `RangeAsNumber` answers the shared interval rule, so a reversed interval is refused on
 a declaration the same expression otherwise admits; a DateRange endpoint component needs a DateRange
 declaration, so the String field is refused in that position; and the Base-Year date component reads
-no cell, matching the bare Base Year. The difference families were measured admitted beside a
-repetition operand too but are deliberately not modelled here — their two-operand scope rule is a
-separate mechanism, and no second consumer has asked for it. -/
+no cell, matching the bare Base Year. -/
 example :
     let span : AuthoredNumericExpr SurfaceNumericAtom :=
       .atom (.dateRangeBoundPart { base := .relative 0, groups := [], field := "Span" }
@@ -228,6 +232,57 @@ example :
       (.literal { value := 3 / 2, authoredScale := 1 })
     (checkAddressedRepetitionComputation model innerPath 1 fractional).isOk = false ∧
       (checkAddressedRepetitionComputation model innerPath 1 fractional true).isOk = true := by
+  native_decide
+
+private def whenRef : SurfaceFieldPath := { base := .relative 0, groups := [], field := "When" }
+private def textRef : SurfaceFieldPath := { base := .relative 0, groups := [], field := "Text" }
+private def asideWhenRef : SurfaceFieldPath :=
+  { base := .absolute, groups := asidePath, field := "AsideWhen" }
+private def months (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add (repetition innerPath) (.atom (.dateDifference .months left right))
+
+/-- The completed-period difference is authorable beside the operand, and **each** of its two
+endpoints answers the same scope rule a single-field source answers — which is the whole reason a
+two-operand source needed its own admission arm rather than the single-field one. `AsideWhen` is the
+separator: same Date declaration as `When`, disjoint repeatable level, refused in the endpoint
+position that `When` occupies in the admitted row above it. `Now` is refused because this carrier's
+row read carries no evaluation world. The Kernel admits the field pair beside the operand
+([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)). -/
+example :
+    (operation (months (.field whenRef) (.field whenRef))).isOk = true ∧
+      (operation (months (.field whenRef) (.baseYear .direct))).isOk = true ∧
+      (operation (months (.field textRef) (.field whenRef))).isOk = false ∧
+      (operation (months (.field whenRef) (.field asideWhenRef))).isOk = false ∧
+      (operation (months (.field whenRef) .now)).isOk = false := by
+  native_decide
+
+private def untilRef : SurfaceFieldPath := { base := .relative 0, groups := [], field := "Until" }
+private def dateAt (year month day : Nat) : CheckedCell :=
+  whenDecl.checkRaw (.parsed (.temporal (.date {
+    instant := { epochMillis := 0 }
+    parts := { year := year, month := month, day := day }
+    basis := .storedGregorian })))
+/-- `When` is 2021-06-01 and `Until` 2022-02-01, with `spoil` naming at most one of them as a
+    rejected stored date so a single endpoint can be poisoned while the other stays clean. -/
+private def readEndpoints (spoil : FieldId) (address : CellAddr) :
+    Except CheckedDocumentError CheckedCell :=
+  .ok (if address.field == spoil then whenDecl.checkRaw (.rejected .dateFormat)
+    else if address.field == 8 then dateAt 2021 6 1
+    else if address.field == 11 then dateAt 2022 2 1
+    else target.checkRaw (.parsed (.num 9)))
+
+/-- Both endpoints are read, each at its own field, and either one's formal invalidity reaches the
+result. The two poison rows are what separate that from a reader that resolves one cell and serves
+it for every id: under such a reader the `Until`-only row would still answer 11. -/
+example :
+    let run (spoil : FieldId) (expression : AuthoredNumericExpr SurfaceNumericAtom) :=
+      ((operation expression).toOption.bind fun checked =>
+        (checked.evaluateAtEnvironmentWithRead (readEndpoints spoil) [(10, 2), (20, 3)]).toOption)
+    run 0 (months (.field whenRef) (.field untilRef)) = some (.value 11) ∧
+      run 0 (months (.field whenRef) (.baseYear .direct)) = some (.value (-14)) ∧
+      run 8 (months (.field whenRef) (.field untilRef)) = some (.poison .dateFormat) ∧
+      run 11 (months (.field whenRef) (.field untilRef)) = some (.poison .dateFormat) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedRepetitionComputation
