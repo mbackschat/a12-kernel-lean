@@ -48,7 +48,7 @@ At receipt this was a peer report, not a pin: the peer described committed test 
 
 Two consequences for this project's own records, both corrections of local error rather than inbound deltas. SG22's stated **recommendation** was format-equality, which would have over-rejected the admitted differently-spelled pair — the inverse of the over-admission class it was guarding against, and a case where [`LF116`](LEAN-FINDINGS.md)'s refusal to carry a gate across a carrier was the correct instinct. SG22's **premise** for the compared-identity question — that a mandatory single format makes the decoded and stored-text accounts agree on every constructible input — is refuted by the same rows, since the admitted pair supplies the separating witness. That premise was an unmeasured reachability claim and is withdrawn.
 
-The later runtime [identity checkpoint](sources/evaluation-and-application-routes.md#src-distinct-count-temporal-identity-both-strategies) records local re-derivation on both codegen strategies.
+The later runtime [identity checkpoint](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies) records local re-derivation on both codegen strategies.
 
 <a id="inbound-2026-09-05f"></a>
 ### Reported 2026-09-05f — the distinct count's temporal identity is the decoded date, and the first-operand grid's envelope
@@ -61,7 +61,7 @@ The same message carries their `KF226` envelope for the first-operand grid, orac
 
 **Two limits the peer stated and this project must carry.** The grid is two-operand throughout, so "the first operand fixes the class" is measured at arity 2 and not where a third family enters; and every row places the offender second, so the flip separates naming-the-offender from naming-the-leading-class but does not measure a list violating the leading class twice.
 
-Peer-reported when received and **now locally re-derived on both codegen strategies** ([checkpoint](sources/evaluation-and-application-routes.md#src-distinct-count-temporal-identity-both-strategies)). [temporal distinct-count capability](implementation/strings-and-enumerations.md#cap-temporal-distinct-count) owns the implemented fold and evidence scope and this project's own rows already agree with the grid independently, on different fixtures against the same terminal oracle.
+Peer-reported when received and **now locally re-derived on both codegen strategies** ([checkpoint](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)). [temporal distinct-count capability](implementation/strings-and-enumerations.md#cap-temporal-distinct-count) owns the implemented fold and evidence scope and this project's own rows already agree with the grid independently, on different fixtures against the same terminal oracle.
 
 <a id="inbound-2026-09-06b"></a>
 ### Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message

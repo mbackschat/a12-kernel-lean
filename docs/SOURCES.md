@@ -711,7 +711,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-later-position-kinds-and-group-expansion-class"></a>
 - [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/static-admission-and-class-probes.md#src-later-position-kinds-and-group-expansion-class)
 <a id="src-parser-static-legality-sweep"></a>
-- [Ten condition-level refusal classes named in one generated sweep: the type/arity gates `MVK_NO_STRING_OR_NUMBER_FOR_ADD`, `MVK_INVALID_TYPE_FOR_TOLERANCE_OP`, `MVK_PARAMSIZE_INVALID1`, `MVK_NO_FIELDS_ALLOWED`, the category twins `MVK_CATEGORY_UNKOWN` and `MVK_NO_ENUMERATION`, the constant-pair gate `MVK_INVALID_COMPARE_TO_CONST`, and the filter star gate `MVK_WILDCARDS_REQUIRED`](sources/static-admission-and-class-probes.md#src-parser-static-legality-sweep)
+- [Ten condition-level refusal classes named in one generated sweep: the type/arity gates `MVK_NO_STRING_OR_NUMBER_FOR_ADD`, `MVK_INVALID_TYPE_FOR_TOLERANCE_OP`, `MVK_PARAMSIZE_INVALID1`, `MVK_NO_FIELDS_ALLOWED`, the category twins `MVK_CATEGORY_UNKOWN` and `MVK_NO_ENUMERATION`, the constant-pair gate `MVK_INVALID_COMPARE_TO_CONST`, and the filter star gate `MVK_WILDCARDS_REQUIRED`](sources/diagnostic-class-vocabulary-and-sweeps.md#src-parser-static-legality-sweep)
 
 <a id="src-typedef-resolves-to-base-kind"></a>
 - [A typedef field is its base kind at three independent gates, which makes `spec/01`'s model-expansion exclusion measured rather than assumed](sources/static-admission-and-class-probes.md#src-typedef-resolves-to-base-kind)
@@ -736,7 +736,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`FirstFilledValue`'s sole-operand rule is the disjunction its own Kernel message states — more than one field **or** at least one group — while the entity-valued value list admits a sole field on each side](sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)
 
 <a id="src-notind-declaration-properties-are-mapping-provenance"></a>
-- [The six `@NotInD` declaration properties never reach validation codegen or the runtime, the structural-mapping tool is their sole semantic consumer and overrides the format there, and the annotation's own no-effect Javadoc is falsified by its use on the decimal separator](sources/static-admission-and-class-probes.md#src-notind-declaration-properties-are-mapping-provenance)
+- [The six `@NotInD` declaration properties never reach validation codegen or the runtime, the structural-mapping tool is their sole semantic consumer and overrides the format there, and the annotation's own no-effect Javadoc is falsified by its use on the decimal separator](sources/diagnostic-class-vocabulary-and-sweeps.md#src-notind-declaration-properties-are-mapping-provenance)
 
 <a id="src-aggregate-operand-list-takes-paths-only"></a>
 - [Composition is one-way: an aggregate nests inside a wrapper, but no expression nests inside an aggregate's operand list](sources/computation-placement-and-constant-probes.md#src-aggregate-operand-list-takes-paths-only)
@@ -753,7 +753,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-temporal-difference-gates-read-the-format"></a>
 - [Every temporal operand gate reads the declared format and never the declared kind — difference families, both DateTime extractors, the full-Date copy, and both `Date(...)` constructor source forms — removing nine under-admitting kind conjuncts](sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)
 <a id="src-yearless-day-bound-reads-the-base-year"></a>
-- [A yearless stored day is bounded by its month's length in the declared Base Year](sources/computation-placement-and-constant-probes.md#src-yearless-day-bound-reads-the-base-year)
+- [A yearless stored day is bounded by its month's length in the declared Base Year](sources/temporal-constant-and-base-year-probes.md#src-yearless-day-bound-reads-the-base-year)
 <a id="src-datetime-carrier-stores-by-its-format"></a>
 - [The DATETIME carrier's cross-kind store is governed by its format too, inbound from a12-dmkits](sources/computation-placement-and-constant-probes.md#src-datetime-carrier-stores-by-its-format)
 <a id="src-computed-target-gate-is-carrier-invariant"></a>
@@ -886,7 +886,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A temporal constructor checks each operand position separately, and two classes distinguish a misplaced extractor from an inadmissible one](sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)
 
 <a id="src-form-condition-constructs"></a>
-- [The form-level constructs are German-only, so an A12 model's diagnostic for them depends on its condition language](sources/static-admission-and-class-probes.md#src-form-condition-constructs)
+- [The form-level constructs are German-only, so an A12 model's diagnostic for them depends on its condition language](sources/diagnostic-class-vocabulary-and-sweeps.md#src-form-condition-constructs)
 
 <a id="src-generated-rule-identity"></a>
 - [The four auto-generated rules carry three projections that partition them differently](sources/model-structure-and-declaration-probes.md#src-generated-rule-identity)
@@ -906,11 +906,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-enumeration-category-constant"></a>
 - [A literal compared against an enumeration's category is refused by a class the carrier chooses, and an enumeration value is not a category value](sources/static-admission-and-class-probes.md#src-enumeration-category-constant)
 <a id="src-computation-normal-form-generation"></a>
-- [An A12 computation's normalized condition is generated from its structure](sources/static-admission-and-class-probes.md#src-computation-normal-form-generation)
+- [An A12 computation's normalized condition is generated from its structure](sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>
-- [`ValueNotConsistent` is inert in an A12 document model](sources/static-admission-and-class-probes.md#src-table-enumeration-inertness)
+- [`ValueNotConsistent` is inert in an A12 document model](sources/diagnostic-class-vocabulary-and-sweeps.md#src-table-enumeration-inertness)
 <a id="src-iteration-and-semantic-index-legality"></a>
-- [Iteration, parallel iteration, and the semantic index share one two-layer static gate](sources/static-admission-and-class-probes.md#src-iteration-and-semantic-index-legality)
+- [Iteration, parallel iteration, and the semantic index share one two-layer static gate](sources/diagnostic-class-vocabulary-and-sweeps.md#src-iteration-and-semantic-index-legality)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
@@ -929,35 +929,35 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-number-formal-cascade-code-axis-and-load-canonicalisation"></a>
 - [The Number formal cascade's surfaced code and its message text are independent axes, and the canonical Document JSON load removes four refusals' preconditions](sources/evaluation-and-application-routes.md#src-number-formal-cascade-code-axis-and-load-canonicalisation)
 <a id="src-index-iteration-and-constant-refusal-classes"></a>
-- [Twenty-five parser refusal classes across the index, iteration, date-construction and constant families](sources/static-admission-and-class-probes.md#src-index-iteration-and-constant-refusal-classes)
+- [Twenty-five parser refusal classes across the index, iteration, date-construction and constant families](sources/diagnostic-class-vocabulary-and-sweeps.md#src-index-iteration-and-constant-refusal-classes)
 <a id="src-codegen-classes-reach-ordinary-authoring"></a>
-- [The Kernel code-generation check family is reachable from ordinary authoring, because the consistency check runs the generator](sources/static-admission-and-class-probes.md#src-codegen-classes-reach-ordinary-authoring)
+- [The Kernel code-generation check family is reachable from ordinary authoring, because the consistency check runs the generator](sources/diagnostic-class-vocabulary-and-sweeps.md#src-codegen-classes-reach-ordinary-authoring)
 <a id="src-unraised-diagnostic-vocabulary"></a>
-- [Fifteen catalog keys the Kernel declares but never reports](sources/static-admission-and-class-probes.md#src-unraised-diagnostic-vocabulary)
+- [Fifteen catalog keys the Kernel declares but never reports](sources/diagnostic-class-vocabulary-and-sweeps.md#src-unraised-diagnostic-vocabulary)
 <a id="src-default-locale-message-bundles"></a>
-- [The default-locale message bundle is a placeholder for every tool-time catalog](sources/static-admission-and-class-probes.md#src-default-locale-message-bundles)
+- [The default-locale message bundle is a placeholder for every tool-time catalog](sources/diagnostic-class-vocabulary-and-sweeps.md#src-default-locale-message-bundles)
 <a id="src-shipped-custom-field-type-vocabulary"></a>
-- [The thirteen shipped custom field types and their thirty-six refusal keys](sources/static-admission-and-class-probes.md#src-shipped-custom-field-type-vocabulary)
+- [The thirteen shipped custom field types and their thirty-six refusal keys](sources/diagnostic-class-vocabulary-and-sweeps.md#src-shipped-custom-field-type-vocabulary)
 <a id="src-universal-value-formal-precheck"></a>
 - [The type-independent formal pre-check every stored value passes](sources/static-admission-and-class-probes.md#src-universal-value-formal-precheck)
 <a id="src-unraised-diagnostic-runtime-corroboration"></a>
-- [A second carrier for the never-raised form-line diagnostic](sources/static-admission-and-class-probes.md#src-unraised-diagnostic-runtime-corroboration)
+- [A second carrier for the never-raised form-line diagnostic](sources/diagnostic-class-vocabulary-and-sweeps.md#src-unraised-diagnostic-runtime-corroboration)
 <a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
-- [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
+- [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/temporal-runtime-fold-probes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>
-- [The extrema order a yearless list under a declared Base Year on both strategies, and no document on such a model can say what they order on](sources/evaluation-and-application-routes.md#src-yearless-extrema-base-year-ordering)
+- [The extrema order a yearless list under a declared Base Year on both strategies, and no document on such a model can say what they order on](sources/temporal-runtime-fold-probes.md#src-yearless-extrema-base-year-ordering)
 <a id="src-extrema-component-omitting-fold"></a>
-- [The extrema fold a component-omitting operand, yearless included, and order it correctly](sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)
+- [The extrema fold a component-omitting operand, yearless included, and order it correctly](sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)
 <a id="src-cross-kind-format-runtime-parser"></a>
-- [The runtime text parser is the declared format's, not the declared kind's](sources/evaluation-and-application-routes.md#src-cross-kind-format-runtime-parser)
+- [The runtime text parser is the declared format's, not the declared kind's](sources/temporal-runtime-fold-probes.md#src-cross-kind-format-runtime-parser)
 <a id="src-distinct-count-group-expansion-fold"></a>
-- [A group operand's distinct count reaches its whole subtree at runtime, and an uninstantiated row contributes nothing](sources/evaluation-and-application-routes.md#src-distinct-count-group-expansion-fold)
+- [A group operand's distinct count reaches its whole subtree at runtime, and an uninstantiated row contributes nothing](sources/temporal-runtime-fold-probes.md#src-distinct-count-group-expansion-fold)
 <a id="src-distinct-count-time-bearing-fold"></a>
-- [The distinct count folds a time-bearing operand too, and a TIME agrees with a time-only DATETIME](sources/evaluation-and-application-routes.md#src-distinct-count-time-bearing-fold)
+- [The distinct count folds a time-bearing operand too, and a TIME agrees with a time-only DATETIME](sources/temporal-runtime-fold-probes.md#src-distinct-count-time-bearing-fold)
 <a id="src-distinct-count-component-omitting-fold"></a>
-- [The distinct count folds a component-omitting date at its declared precision](sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)
+- [The distinct count folds a component-omitting date at its declared precision](sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>
-- [The distinct count's temporal identity is the decoded date on both codegen strategies](sources/evaluation-and-application-routes.md#src-distinct-count-temporal-identity-both-strategies)
+- [The distinct count's temporal identity is the decoded date on both codegen strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
 <a id="src-filter-reference-two-levels-above"></a>
 - [Both filter gates read path membership and nothing about depth, and the admitted constant is keyed to the referenced level](sources/having-filter-probes.md#src-filter-reference-two-levels-above)
 <a id="src-filter-reference-level-runtime"></a>
@@ -1147,28 +1147,28 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A Number constant's scale is read twice, differently: the gate keeps trailing zeros, the store strips them and pads](sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-scale-rendering)
 
 <a id="src-date-constant-target-formatting"></a>
-- [A Date constant is classified by its own spelling and stored in the target's format](sources/computation-placement-and-constant-probes.md#src-date-constant-target-formatting)
+- [A Date constant is classified by its own spelling and stored in the target's format](sources/temporal-constant-and-base-year-probes.md#src-date-constant-target-formatting)
 
 <a id="src-date-constant-pre-1900-target"></a>
-- [A Date constant reaches the target's opt-in pre-1900 policy after rendering](sources/computation-placement-and-constant-probes.md#src-date-constant-pre-1900-target)
+- [A Date constant reaches the target's opt-in pre-1900 policy after rendering](sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)
 
 <a id="src-constant-literal-family-gate"></a>
-- [A bare constant's admission is gated by the target's declared format string, never its kind](sources/computation-placement-and-constant-probes.md#src-constant-literal-family-gate)
+- [A bare constant's admission is gated by the target's declared format string, never its kind](sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate)
 <a id="src-temporal-format-gate-not-component-sets"></a>
-- [The temporal admission gate reads family and year agreement, never component sets](sources/computation-placement-and-constant-probes.md#src-temporal-format-gate-not-component-sets)
+- [The temporal admission gate reads family and year agreement, never component sets](sources/temporal-constant-and-base-year-probes.md#src-temporal-format-gate-not-component-sets)
 <a id="src-yearless-anchor-is-the-base-year"></a>
-- [A yearless temporal literal resolves against the model's Base Year, while its calendar check ignores that year](sources/computation-placement-and-constant-probes.md#src-yearless-anchor-is-the-base-year)
+- [A yearless temporal literal resolves against the model's Base Year, while its calendar check ignores that year](sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year)
 <a id="src-temporal-constant-literal-composition"></a>
-- [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/computation-placement-and-constant-probes.md#src-temporal-constant-literal-composition)
+- [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition)
 
 <a id="src-datetime-constant-zone-split"></a>
-- [A DateTime constant is checked against two different zones at two different phases](sources/computation-placement-and-constant-probes.md#src-datetime-constant-zone-split)
+- [A DateTime constant is checked against two different zones at two different phases](sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split)
 
 <a id="src-component-omitting-date-formats"></a>
-- [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/computation-placement-and-constant-probes.md#src-component-omitting-date-formats)
+- [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/temporal-constant-and-base-year-probes.md#src-component-omitting-date-formats)
 
 <a id="src-base-year-yearless-store"></a>
-- [A declared Base Year gates a yearless target's authoring and contributes nothing to its store](sources/computation-placement-and-constant-probes.md#src-base-year-yearless-store)
+- [A declared Base Year gates a yearless target's authoring and contributes nothing to its store](sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
