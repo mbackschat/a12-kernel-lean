@@ -67,6 +67,11 @@ inductive AddressedRepetitionComputationElabError where
   | source (cause : ResolveError)
   | repetition (cause : FixedGroupReferenceError)
   | unsupportedExpression
+  /-- A `BaseYear` operand in a model declaring none. Kept distinct from `unsupportedExpression`
+  because the remedy differs — declare the model's Base Year, rather than rewrite the expression —
+  and because this is an elaboration refusal only: which class the Kernel draws for that model was
+  not measured, so no diagnostic is claimed here. -/
+  | baseYearNotDeclared
   | authoring (result : NumericAuthoringCheck)
   | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
   deriving Repr, DecidableEq
@@ -96,6 +101,31 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
     | .currentRepetition reference =>
         model.resolveNumericCurrentRepetition target.declaringGroup
           target.targetDeclaration.repeatableScope reference |>.mapError .repetition
+    -- The widened kinds resolve against the target's own declaring group, which is what lets a
+    -- source in the target's row elaborate here; the shared nonrepeatable scalar resolver refuses
+    -- exactly that, so it is not reused. Admission below still applies the one scope rule.
+    | .baseYear =>
+        match model.baseYear with
+        | some year => pure (.baseYear year)
+        | none => throw .baseYearNotDeclared
+    | .stringLength reference => do
+        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
+          |>.mapError .source
+        match declaration.toStringValueField? with
+        | some field => pure (.stringLength field)
+        | none => throw .unsupportedExpression
+    | .temporalFieldPart reference part => do
+        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
+          |>.mapError .source
+        match declaration.toTemporalField? with
+        | some field => pure (.temporalFieldPart field part)
+        | none => throw .unsupportedExpression
+    | .fieldValueAsNumber source => do
+        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup
+          source.reference |>.mapError .source
+        match declaration.resolveFieldValueAsNumberSource source.projectionRef with
+        | .ok resolved => pure (.fieldValueAsNumber resolved)
+        | .error _ => throw .unsupportedExpression
     | _ => throw .unsupportedExpression
   if admitted : target.admitsRepetitionOperand atom = true then
     pure ⟨atom, admitted⟩
