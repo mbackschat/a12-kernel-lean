@@ -98,6 +98,16 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
           DateTimeSubdayUnit.compatible unit leftComponents rightComponents &&
             target.admitsSubdayEndpoint left && target.admitsSubdayEndpoint right
       | _, _ => false
+  -- A direct field list answers the same scope rule one field answers, member by member. The
+  -- freedom a starred aggregate operand has from the target's scope does not apply here, because
+  -- this payload carries no star: the Kernel refuses an unstarred read of a disjoint repeatable
+  -- group `MVK_NO_WILDCARD` and admits a nonrepeatable one, which is exactly what the shared rule
+  -- decides, since an empty repeatable scope is bound by any scope. The two list gates are the
+  -- family's own and carry their own classes.
+  | .aggregate _ source =>
+      source.hasMultipleFields && source.hasUniqueFields &&
+        source.fields.all fun field =>
+          target.admitsSourceField field.id fun owned => owned.toNumberField? == some field
   | _ => false
 
 abbrev AddressedRepetitionOperand (target : CheckedAddressedNumericTarget model) :=
@@ -228,6 +238,17 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         match declaration.resolveFieldValueAsNumberSource source.projectionRef with
         | .ok resolved => pure (.fieldValueAsNumber resolved)
         | .error _ => throw .unsupportedExpression
+    | .aggregate op source => do
+        let resolveNumber (reference : SurfaceFieldPath) :
+            Except AddressedRepetitionComputationElabError FlatNumberField := do
+          let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
+            |>.mapError .source
+          match declaration.toNumberField? with
+          | some field => pure field
+          | none => throw .unsupportedExpression
+        let first ← resolveNumber source.first
+        let rest ← source.rest.mapM resolveNumber
+        pure (.aggregate op { first, rest })
     | .dateDifference unit left right => do
         let left ← resolveDateDifferenceEndpoint target left
         let right ← resolveDateDifferenceEndpoint target right
@@ -274,55 +295,29 @@ def checkAddressedRepetitionComputation
     else throw .unsupportedExpression
   else throw .unsupportedExpression
 
-/-- Read the one cell a field-bearing source atom addresses in this row, then evaluate the atom
-    through the shared resolved evaluator so each source kind keeps its own conversion rules.
+/-- Read every cell an atom addresses in this row, each at its own declaration's scope, and then
+    evaluate the atom through the shared resolved evaluator. The reads happen **before** evaluation
+    so that one operand's row address is resolved from its own declaration rather than from a
+    neighbour's, and the context then answers by identity over the retained association: the shared
+    evaluator asks only for the ids the atom names, so every id it can ask is present and the
+    fallback stands for nothing reachable.
 
-    The lookup cannot fail for a checked operand — `admitsSourceField` already resolved the same id
-    against the same model — but the failure is reported rather than defaulted, because a silent
-    fallback cell would turn a broken invariant into an ordinary value. -/
-private def readFieldSourceAtom (model : FlatModel) (id : FieldId)
-    (atom : NumericComputationAtom)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
-    Except AddressedNumericLeafFault NumericComputationResult :=
-  match model.lookupUniqueId id with
-  | .error _ => .error (.evaluation (.fieldKindMismatch id))
-  | .ok declaration => do
-      let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
-      let cell ← read { field := id, path } |>.mapError .sourceRead
-      let context : ScalarComputationContext := { read := fun _ => cell }
-      context.readNumericComputationAtom atom |>.mapError .evaluation
-
-/-- Read the cell one difference endpoint addresses in this row, paired with the field it answers
-    for. A constant endpoint reads nothing and reports no field, which is what lets the caller build
-    a context that asks only about the endpoints that exist. -/
-private def readEndpointCell (model : FlatModel)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
-    Option FieldId → Except AddressedNumericLeafFault (Option (FieldId × CheckedCell))
-  | none => .ok none
-  | some id =>
-      match model.lookupUniqueId id with
-      | .error _ => .error (.evaluation (.fieldKindMismatch id))
-      | .ok declaration => do
-          let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
-          let cell ← read { field := id, path } |>.mapError .sourceRead
-          pure (some (id, cell))
-
-/-- Evaluate a two-endpoint difference through the shared resolved evaluator. Both endpoints are
-    read **before** the atom is evaluated, so each one's row address is resolved from its own
-    declaration rather than from the other's, and the context then answers by identity: the shared
-    evaluator asks only for the ids the atom names, so a two-way choice keyed on the left endpoint
-    covers every id it can ask and needs no default cell to stand in for an absent one. -/
-private def readTwoEndpointAtom (model : FlatModel) (atom : NumericComputationAtom)
-    (leftField rightField : Option FieldId)
+    The association is keyed by id, so an atom that names one field twice reads it once and cannot
+    see two different cells for it. -/
+private def readAddressedAtom (model : FlatModel) (atom : NumericComputationAtom)
+    (fields : List FieldId)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
     Except AddressedNumericLeafFault NumericComputationResult := do
-  let leftRead ← readEndpointCell model read environment leftField
-  let rightRead ← readEndpointCell model read environment rightField
+  let cells ← fields.mapM fun id =>
+    match model.lookupUniqueId id with
+    | .error _ => .error (.evaluation (.fieldKindMismatch id))
+    | .ok declaration => do
+        let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
+        let cell ← read { field := id, path } |>.mapError .sourceRead
+        pure (id, cell)
   let absent : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
   let context : ScalarComputationContext :=
-    { read := fun id =>
-        if leftRead.map (·.1) == some id then leftRead.elim absent (·.2)
-        else rightRead.elim absent (·.2) }
+    { read := fun id => (cells.find? (·.1 == id)).elim absent (·.2) }
   context.readNumericComputationAtom atom |>.mapError .evaluation
 
 /-- The field a difference endpoint addresses, or none for a constant. -/
@@ -360,25 +355,26 @@ def AddressedRepetitionOperand.readAt {model : FlatModel}
   case baseYearDatePart year source part =>
     exact .ok (.value (baseYearDateSourceNumericPart year source part))
   case stringRange source start finish =>
-    exact readFieldSourceAtom model source.id (.stringRange source start finish) read environment
+    exact readAddressedAtom model (.stringRange source start finish) [source.id] read environment
   case dateRangeBoundPart source bound part =>
-    exact readFieldSourceAtom model source.id (.dateRangeBoundPart source bound part) read
-      environment
+    exact readAddressedAtom model (.dateRangeBoundPart source bound part) [source.id] read environment
   case stringLength source =>
-    exact readFieldSourceAtom model source.id (.stringLength source) read environment
+    exact readAddressedAtom model (.stringLength source) [source.id] read environment
   case temporalFieldPart source part =>
-    exact readFieldSourceAtom model source.id (.temporalFieldPart source part) read environment
+    exact readAddressedAtom model (.temporalFieldPart source part) [source.id] read environment
   case fieldValueAsNumber source =>
-    exact readFieldSourceAtom model source.fieldId (.fieldValueAsNumber source) read environment
+    exact readAddressedAtom model (.fieldValueAsNumber source) [source.fieldId] read environment
   case dateDifference unit left right =>
-    exact readTwoEndpointAtom model (.dateDifference unit left right)
-      left.endpointField? right.endpointField? read environment
+    exact readAddressedAtom model (.dateDifference unit left right)
+      ([left.endpointField?, right.endpointField?].filterMap id) read environment
   case dayDifference profile left right =>
-    exact readTwoEndpointAtom model (.dayDifference profile left right)
-      left.endpointField? right.endpointField? read environment
+    exact readAddressedAtom model (.dayDifference profile left right)
+      ([left.endpointField?, right.endpointField?].filterMap id) read environment
   case dateTimeDifference unit left right =>
-    exact readTwoEndpointAtom model (.dateTimeDifference unit left right)
-      left.subdayEndpointField? right.subdayEndpointField? read environment
+    exact readAddressedAtom model (.dateTimeDifference unit left right)
+      ([left.subdayEndpointField?, right.subdayEndpointField?].filterMap id) read environment
+  case aggregate op source =>
+    exact readAddressedAtom model (.aggregate op source) (source.fields.map (·.id)) read environment
   all_goals simp [CheckedAddressedNumericTarget.admitsRepetitionOperand] at admitted
 
 namespace CheckedAddressedRepetitionComputation

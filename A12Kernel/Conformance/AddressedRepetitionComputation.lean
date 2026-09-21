@@ -39,6 +39,10 @@ private def model : FlatModel :=
       -- A complete instant, which the day difference admits and the completed-period units refuse;
       -- the sub-day units need it, so one declaration separates all three families.
       stampDecl, { stampDecl with id := 13, name := "StampTwo" },
+      -- A Number on the disjoint repeatable level. An aggregate list may name a nonrepeatable
+      -- field outside the target's row, so this is what separates "outside the row" from "outside
+      -- the target's scope" — only the second is refused.
+      { target with id := 14, groupPath := asidePath, name := "AsideNum", repeatableScope := [30], numericTargetConstraints := {} },
       whenDecl, spanDecl]
     repeatableGroups := [
       { level := 10, path := outerPath, repeatability := some 3 },
@@ -360,6 +364,45 @@ example :
       run 0 (hours (.field stampRef) (.field stampTwoRef)) = some (.value 6) ∧
       run 12 (hours (.field stampRef) (.field stampTwoRef)) = some (.poison .dateFormat) ∧
       run 13 (hours (.field stampRef) (.field stampTwoRef)) = some (.poison .dateFormat) := by
+  native_decide
+
+private def rowField (name : String) : SurfaceFieldPath :=
+  { base := .relative 0, groups := [], field := name }
+private def asideNum : SurfaceFieldPath :=
+  { base := .absolute, groups := asidePath, field := "AsideNum" }
+private def scalarPath : SurfaceFieldPath :=
+  { base := .absolute, groups := ["Root"], field := "Scalar" }
+private def aggregate (op : NumericAggregateOp) (first : SurfaceFieldPath)
+    (rest : List SurfaceFieldPath) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add (repetition innerPath) (.atom (.aggregate op { first, rest }))
+
+/-- The direct field list answers the same scope rule one field answers, member by member, and the
+nonrepeatable `Scalar` is what shows the rule is about *binding* rather than about the target's row:
+it sits outside the row and is admitted, because an empty repeatable scope is bound by any scope,
+while the Number on the disjoint repeatable level is refused. The Kernel agrees on both, refusing
+the disjoint read as a missing wildcard, and its two list gates draw their own classes
+([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-aggregate-operand-scope)). -/
+example :
+    (operation (aggregate .sum (rowField "Base") [scalarPath])).isOk = true ∧
+      (operation (aggregate .minimum scalarPath [rowField "Base"])).isOk = true ∧
+      (operation (aggregate .sum (rowField "Base") [asideNum])).isOk = false ∧
+      (operation (aggregate .sum (rowField "Base") [rowField "Target"])).isOk = false ∧
+      (operation (aggregate .sum (rowField "Base") [rowField "Base"])).isOk = false ∧
+      (operation (aggregate .sum (rowField "Base") [])).isOk = false ∧
+      (operation (aggregate .sum (rowField "Base") [rowField "Text"])).isOk = false := by
+  native_decide
+
+/-- Every member is read at its own declaration's scope in the same row, so the nonrepeatable member
+answers from outside the row while the row-local one answers from inside it, and either one's formal
+invalidity reaches the result. -/
+example :
+    let run (spoil : FieldId) (expression : AuthoredNumericExpr SurfaceNumericAtom) :=
+      ((operation expression).toOption.bind fun checked =>
+        (checked.evaluateAtEnvironmentWithRead (readEndpoints spoil) [(10, 2), (20, 3)]).toOption)
+    run 0 (aggregate .sum (rowField "Base") [scalarPath]) = some (.value 21) ∧
+      run 0 (aggregate .minimum (rowField "Base") [scalarPath]) = some (.value 12) ∧
+      run 2 (aggregate .sum (rowField "Base") [scalarPath]) = some (.poison .dateFormat) ∧
+      run 4 (aggregate .sum (rowField "Base") [scalarPath]) = some (.poison .dateFormat) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedRepetitionComputation

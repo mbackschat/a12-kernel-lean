@@ -1166,6 +1166,7 @@ run_cmd do
 #print axioms A12Kernel.boundCurrentRepetition_repeatable_coordinate
 #print axioms A12Kernel.addressedRepetitionComputation_excludes_target
 #print axioms A12Kernel.admitsSourceField_rowBound
+#print axioms A12Kernel.admitsSourceField_notTarget
 #print axioms A12Kernel.admitsRepetitionOperand_rowBound
 #print axioms A12Kernel.addressedRepetitionComputation_rowBound
 #print axioms A12Kernel.validationCondition_guardedRootCurrentRepetition_evalSelected

@@ -41,6 +41,32 @@ private theorem certifiedFieldValueAsNumberDeclaration_id {model : FlatModel}
     owned.id = source.fieldId :=
   lookupUniqueId_id (certifiedFieldValueAsNumberDeclaration_lookup found)
 
+/-- An admitted source id is not the target's own field. The row-bound half of the same certificate
+    is stated separately below, because the two theorems here need opposite halves of it. -/
+theorem admitsSourceField_notTarget {model : FlatModel}
+    {target : CheckedAddressedNumericTarget model} {id : FieldId} {certify : FlatFieldDecl → Bool}
+    (admitted : target.admitsSourceField id certify = true) :
+    (id == target.targetField) = false := by
+  simp only [CheckedAddressedNumericTarget.admitsSourceField] at admitted
+  cases found : model.lookupUniqueId id with
+  | error _ => simp [found] at admitted
+  | ok _ => simp [found] at admitted; simpa using admitted.1.2
+
+/-- A direct field list references only members the shared scope rule certified. The list walk is
+    done once here because the self-exclusion and row-binding theorems consume different halves of
+    that certificate. -/
+private theorem admitsAggregateMember {model : FlatModel}
+    {target : CheckedAddressedNumericTarget model} {source : ResolvedNumericAggregateFields}
+    (admitted : source.fields.all (fun field =>
+      target.admitsSourceField field.id fun owned => owned.toNumberField? == some field) = true)
+    {field : FieldId} (referenced : source.referencesField field = true) :
+    ∃ member : FlatNumberField, member.id = field ∧
+      target.admitsSourceField member.id
+        (fun owned => owned.toNumberField? == some member) = true := by
+  simp only [ResolvedNumericAggregateFields.referencesField, List.any_eq_true] at referenced
+  obtain ⟨member, mem, isField⟩ := referenced
+  exact ⟨member, by simpa using isField, (List.all_eq_true.mp admitted) member mem⟩
+
 /-- Neither endpoint of an admitted completed-period difference is the target itself. -/
 private theorem admitsDateDifferenceEndpoint_not_target {model : FlatModel}
     {target : CheckedAddressedNumericTarget model} {operand : ResolvedDateDifferenceOperand}
@@ -120,6 +146,17 @@ theorem addressedRepetitionComputation_excludes_target
         simp [admitsSubdayEndpoint_not_target admitted.1.2,
           admitsSubdayEndpoint_not_target admitted.2]
       case h_2 => simp at admitted
+    case aggregate _ source =>
+      simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand,
+        Bool.and_eq_true] at admitted
+      simp only [ResolvedNumericAtom.referencesFieldWith]
+      cases referenced : source.referencesField operation.target.targetField with
+      | false => rfl
+      | true =>
+          obtain ⟨_, isField, member⟩ :=
+            admitsAggregateMember (by simpa using admitted.2) referenced
+          simp [isField] at member
+          simpa using admitsSourceField_notTarget member
     all_goals
       simp_all [CheckedAddressedNumericTarget.admitsRepetitionOperand,
         CheckedAddressedNumericTarget.admitsSourceField,
@@ -230,6 +267,11 @@ theorem admitsRepetitionOperand_rowBound {model : FlatModel}
       rcases Bool.or_eq_true _ _ |>.mp referenced with reads | reads
       · exact admitsSubdayEndpoint_rowBound admitted.1.2 reads
       · exact admitsSubdayEndpoint_rowBound admitted.2 reads
+  case aggregate _ source =>
+    simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand, Bool.and_eq_true] at admitted
+    obtain ⟨_, isField, member⟩ := admitsAggregateMember (by simpa using admitted.2) referenced
+    subst isField
+    exact admitsSourceField_rowBound member
   -- The four arms that reach the shared predicate directly. Their certify closures differ, which is
   -- exactly what the predicate abstracts over, so each is one rewrite plus the shared law.
   case stringLength source =>
