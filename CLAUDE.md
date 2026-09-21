@@ -228,6 +228,8 @@ printf 'import A12Kernel.Semantics.NumericAggregate\nopen A12Kernel\n#eval repr 
 
 Run it from the repository root so Lake resolves the package; a path outside the package loses the build search path. This leaves nothing to clean up, so it never creates an untracked project file and never needs a deletion. Use it before writing expected values rather than inferring a fixture's legality from a failing case: probe first, then write the case. `#eval` needs a `Repr` instance and aborts on a term that depends on `sorry`, so project a decidable view when the type has none.
 
+**When the probe's purpose is to produce a conformance case's expected values, put the `#eval` in that conformance module beside the fixture it will lock, then replace it with the `example`.** A piped probe is a *second* fixture, and a second fixture can differ from the one the case will use in a way neither file shows: a scratch projection that collapsed a row-level skip onto `notFired` produced expected values that the real module then rejected, costing a build round to attribute. Writing the probe where the case will live makes them the same definitions by construction. The piped form above stays right for the question it answers — a constructor name, an operand's legality, one evaluation — none of which is about a fixture you are also building.
+
 The canonical red/green workflow, executable-example conventions, proof/trust boundary, external replay method, and final gate are documented in [`docs/TESTING.md`](docs/TESTING.md). Follow it for every semantic capsule.
 
 ## Layout and dependency spine
