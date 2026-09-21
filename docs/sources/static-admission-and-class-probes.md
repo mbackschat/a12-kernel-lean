@@ -2,6 +2,21 @@
 
 Static admission, operand kind gates, and diagnostic-class probes. Evaluation and application routes are owned by [`evaluation-and-application-routes.md`](evaluation-and-application-routes.md).
 
+<a id="src-comparison-constant-gate-immediacy"></a>
+#### The comparison's constant gate asks whether both sides are **immediate** written-out literals, not whether either reads a cell, measured locally 2026-09-22
+
+- `revision`: a12-dmkits `9c86459b352f7989b9dbdae80f71e6dd6cec6066`, `CLEAN`, from the pinned measurement checkout; `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Both sibling checkouts were clean before and after.
+- `route`: `rule check` through `batch --observations`, fourteen children across four runs, every kernel-reaching child answering a verdict.
+- `retained`: **nothing, deliberately.** Five `dmtool` edits build the model and every condition is spelled below ([`LF138`](../LEAN-FINDINGS.md)).
+- `model`: root `Src`; repeatable `/Src/Rows` (max 5) declaring String `Err` and Number `Base`; model Base Year 2020. Every condition carries error field `/Src/Rows/Err` and, where a guard is needed, the same `FieldFilled(/Src/Rows/Err) And …` prefix, so the only thing that varies between rows is the compared expression.
+- `question`: this project's checked numeric comparison refused a constant-only tree by asking whether either side contained a **data-dependent** atom — one that reads a cell. Peer [`kf382`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf382) establishes the gate and its position first in the order, but its measured population is written-out literals only, so what counts as a constant to it had never been settled.
+- `claim`: **the gate fires exactly when both sides are immediate literals.** `1 > 0` and `-1 > 0` draw `MVK_INVALID_COMPARE_TO_CONST` — a sign belongs to the literal — while `1 + 2 > 0` and `1 > 1 + 2` are both admitted. So a literal under any operation stops being immediate, and one non-immediate side suffices.
+- `claim`: **three cell-free operands clear the gate.** `BaseYear > 1`, `YearFromDate(BaseYear) > 1`, `CurrentRepetition(/Src/Rows) > 1`, and `BaseYear > YearFromDate(BaseYear)` are each admitted under the guard. None reads a cell, so the account this project shipped refused all four plus the two arithmetic rows — six legal shapes.
+- `separator`: the unguarded spellings are what attribute each refusal to its own gate rather than to a shared one. `CurrentRepetition(/Src/Rows) > 1` alone draws `MVK_NEG_CONDITION_IN_ITERATION` and `BaseYear > 1` alone draws `MVK_ERROR_FIELD_NOT_REFERENCED`, both **different** classes from the constant one, so each had cleared the constant gate before meeting the gate that refused it. A single admitted guarded row would have been consistent with the guard satisfying the constant gate on the whole condition's behalf.
+- `adjacent-gate`: `Abs(1) > 0` draws `MVK_NO_CONST`, the operand-list wrapper gate peer [`kf167`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf167) owns, which therefore answers ahead of this one. `(1) > 0` draws `MVK_UNEXPECTED_TOKEN`: the parenthesised literal does not parse at this site, so this record claims nothing about it and the Lean account's treatment of that shape is unobservable rather than asserted.
+- `limit`: Number comparisons, one locale, one model, ordering and equality operators only. Tolerance operators, the String and temporal comparison families, and whether a rule-level guard can ever satisfy the gate for an unguarded sibling branch are untouched. Nothing here establishes runtime behaviour.
+- `sync`: [`spec/04` §1](../../spec/04-numbers-and-decimals.md#1-scale-gates---checked-at-parse-time) gains the gate's own paragraph, and [`SPEC-2026-09-22-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-22-01) carries it outbound because the immediacy criterion is locally originated rather than read off `kf382`.
+
 <a id="src-rounding-argument"></a>
 #### Rounding argument overflow
 

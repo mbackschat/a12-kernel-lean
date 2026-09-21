@@ -445,8 +445,7 @@ def NumericComparison.wellFormedInBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
-  (comparison.left.anyAtom ResolvedNumericAtom.isDataDependent ||
-      comparison.right.anyAtom ResolvedNumericAtom.isDataDependent) &&
+  !(comparison.left.isImmediateLiteral && comparison.right.isImmediateLiteral) &&
     comparison.left.isAdmittedResolvedNumericOperation &&
     comparison.right.isAdmittedResolvedNumericOperation &&
     comparison.left.allAtoms (NumericValidationAtom.admitted model rowGroup scope) &&

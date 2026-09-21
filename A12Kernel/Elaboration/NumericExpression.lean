@@ -107,6 +107,17 @@ def allAtoms (predicate : Atom → Bool) : AuthoredNumericExpr Atom → Bool
   | .abs body | .extremumCall _ body => body.allAtoms predicate
   | .round _ _ body => body.allAtoms predicate
 
+/-- Whether this side is an **immediate** written-out value rather than an expression. The
+    comparison's constant gate reads exactly this and nothing else: two immediate literals are
+    refused while `1 + 2 > 0` and `1 > 1 + 2` are admitted, so a literal under any operation stops
+    being immediate. A signed literal is still one literal. The parenthesised form does not reach
+    this gate — the Kernel's parser refuses it at that site — so classifying `.group` as an
+    expression is unobservable rather than a claim. -/
+def isImmediateLiteral : AuthoredNumericExpr Atom → Bool
+  | .literal _ => true
+  | .atom _ | .group _ | .binary _ _ _ | .power _ _ | .extremum _ _ _
+  | .abs _ | .extremumCall _ _ | .round _ _ _ => false
+
 def anyAtom (predicate : Atom → Bool) : AuthoredNumericExpr Atom → Bool
   | .atom sourceAtom => predicate sourceAtom
   | .literal _ => false

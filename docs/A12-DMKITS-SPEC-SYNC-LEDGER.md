@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-22-01"></a>
+### `SPEC-2026-09-22-01` — the comparison's constant gate reads immediacy, not cell access
+
+- `status`: pending
+- `origin`: locally originated. Found while building a partial-validation fixture: this project's checked comparison refused `CurrentRepetition(group) > 1` as a constant expression, and the Kernel had just admitted that exact rule in a probe, so the account rather than the fixture was wrong.
+- `clause`: [`04-numbers-and-decimals.md` §1](../spec/04-numbers-and-decimals.md#1-scale-gates---checked-at-parse-time) — a new paragraph beside the scale gate, which described no constant gate at all.
+- `delta`: `MVK_INVALID_COMPARE_TO_CONST` fires exactly when **both** comparison sides are immediate written-out literals. `1 > 0` and `-1 > 0` are refused, a sign belonging to the literal, while `1 + 2 > 0` and `1 > 1 + 2` are admitted — a literal under any operation stops being immediate, and one non-immediate side suffices.
+- `delta`: three operands that read no cell clear the gate: `BaseYear`, a Base-Year date part such as `YearFromDate(BaseYear)`, and `CurrentRepetition(group)`, each admitted against a bare literal and against each other. A reading phrased as "one side must read a field" therefore refuses six legal shapes, which is the defect this entry corrects locally.
+- `basis`: fourteen `rule check` children across four batches at a12-dmkits `9c86459b352f7989b9dbdae80f71e6dd6cec6066` (clean), `dmtool` 0.13.0, Kernel `30.8.1`. The unguarded spellings are the attribution: `CurrentRepetition(group) > 1` alone draws `MVK_NEG_CONDITION_IN_ITERATION` and `BaseYear > 1` alone draws `MVK_ERROR_FIELD_NOT_REFERENCED`, both different classes, so each had cleared the constant gate before meeting the one that refused it. Route and per-row verdicts at the [constant-gate immediacy checkpoint](sources/static-admission-and-class-probes.md#src-comparison-constant-gate-immediacy).
+- `acceptance`: state the immediacy criterion and the three cell-free operands that clear it, or supply a contrary kernel observation in which one of `BaseYear > 1`, `YearFromDate(BaseYear) > 1`, or `CurrentRepetition(group) > 1` draws `MVK_INVALID_COMPARE_TO_CONST` under a guard that the field-reading control clears.
+- `relation`: [`KF382`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf382) establishes the gate and its position first in the comparison order; nothing here contradicts it. Its measured population is written-out literals, so it settles *that* the gate exists without settling what counts as a constant to it, which is the whole of this entry. [`KF167`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf167)'s wrapper gate is adjacent and answers ahead: `Abs(1) > 0` draws `MVK_NO_CONST`, not this class.
+- `limit`: Number comparisons, ordering and equality operators, one locale and one model. Tolerance operators, the String and temporal comparison families, and whether a rule-level guard can satisfy the gate for an unguarded sibling branch are untouched. A parenthesised literal does not parse at this site, so its classification is claimed nowhere.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-21-03"></a>
 ### `SPEC-2026-09-21-03` — Base Year reaches the year difference's operand gate, and the refusal class moves with it
 

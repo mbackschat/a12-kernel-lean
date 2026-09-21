@@ -42,8 +42,24 @@ example :
         (raw (.parsed (.num 1))) true baseYearModel = some (.fired .value) := by
   native_decide
 
-example : errorOf (twoSided .equal baseYear (literal 2020 0)) baseYearModel =
-    some .constantExpression := by
+/-- **The constant gate asks whether both sides are immediate written-out literals, and nothing
+else.** Every row here is the Kernel's
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-comparison-constant-gate-immediacy)):
+a Base-Year operand, a Base-Year date part, and a repetition coordinate each clear it although none
+reads a cell, and so does *literal arithmetic* on either side, while two bare literals — signed or
+not — are refused. An account that asked for a field read, as this one did, refuses six admitted
+shapes; an account that asked for "no atom" still refuses the two arithmetic rows. -/
+example :
+    errorOf (twoSided .equal baseYear (literal 2020 0)) baseYearModel = none ∧
+      errorOf (twoSided .equal (baseYearDatePart .direct .year) (literal 2020 0)) baseYearModel
+        = none ∧
+      errorOf (twoSided .equal baseYear (baseYearDatePart .direct .year)) baseYearModel = none ∧
+      errorOf (twoSided .equal
+        (.binary .add (literal 1 0) (literal 2 0)) (literal 0 0)) = none ∧
+      errorOf (twoSided .equal (literal 1 0)
+        (.binary .add (literal 1 0) (literal 2 0))) = none ∧
+      errorOf (twoSided .equal (literal 1 0) (literal 0 0)) = some .constantExpression ∧
+      errorOf (twoSided .equal (literal (-1) 0) (literal 0 0)) = some .constantExpression := by
   native_decide
 
 example :
@@ -65,8 +81,7 @@ example :
 
 example :
     let finishDay := baseYearDatePart (.range .finish) .day
-    errorOf (twoSided .equal finishDay (literal 31 0)) baseYearModel =
-        some .constantExpression ∧
+    errorOf (twoSided .equal finishDay (literal 31 0)) baseYearModel = none ∧
       verdictOf (twoSided .equal (.abs finishDay) (atom "U"))
         (raw (.parsed (.num 31))) true baseYearModel = some (.fired .value) ∧
       (elaborateNumericComparison baseYearModel ["Order"]

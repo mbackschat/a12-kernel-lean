@@ -668,6 +668,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+<a id="src-comparison-constant-gate-immediacy"></a>
+- [The comparison's constant gate asks whether both sides are immediate written-out literals, not whether either reads a cell](sources/static-admission-and-class-probes.md#src-comparison-constant-gate-immediacy)
+
 <a id="src-rounding-argument"></a>
 - [Rounding places distinguish signed-64-bit overflow from ordinary scale refusal](sources/static-admission-and-class-probes.md#src-rounding-argument)
 

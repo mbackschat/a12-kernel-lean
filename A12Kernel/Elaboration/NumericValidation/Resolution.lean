@@ -407,8 +407,7 @@ private def elaborateNumericComparisonWith
         throw (.resolve (.invalidRuleGroup rowGroup))
       let left ← surface.left.mapM resolveAtom
       let right ← surface.right.mapM resolveAtom
-      if !(left.anyAtom ResolvedNumericAtom.isDataDependent ||
-          right.anyAtom ResolvedNumericAtom.isDataDependent) then
+      if left.isImmediateLiteral && right.isImmediateLiteral then
         throw .constantExpression
       if !left.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression

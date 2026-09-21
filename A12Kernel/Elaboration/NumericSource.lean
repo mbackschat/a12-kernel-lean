@@ -426,24 +426,6 @@ def FlatModel.resolveNumericCurrentRepetition (model : FlatModel)
 
 namespace ResolvedNumericAtom
 
-def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
-  | .field _ => true
-  | .fixedCurrentRepetition _ => false
-  | .boundCurrentRepetition _ => false
-  | .baseYear _ => false
-  | .baseYearDatePart _ _ _ => false
-  | .temporalFieldPart _ _ => true
-  | .dateRangeBoundPart _ _ _ => true
-  | .stringLength _ => true
-  | .stringRange _ _ _ => true
-  | .fieldValueAsNumber _ => true
-  | .dateDifference _ left right => left.isField || right.isField
-  | .dateTimeDifference _ left right =>
-      !left.fields.isEmpty || !right.fields.isEmpty
-  | .dayDifference _ left right => left.isField || right.isField
-  | .aggregate _ _ => true
-  | .filledGroupCount _ => true
-
 def summaryWith (fieldSummary : Field → NumericScaleSummary)
     (aggregateSummary : NumericAggregateOp → Aggregate → NumericScaleSummary) :
     ResolvedNumericAtom Field Aggregate → NumericScaleSummary

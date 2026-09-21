@@ -82,12 +82,6 @@ private def checkedTokenValueCountAdmittedIn
             | .modelWideNonrepeatable => true
             | .modelWideCheckedComputation => true
 
-def isDataDependent : OrderedNumericValidationAtom model → Bool
-  | .ordinary source => source.isDataDependent
-  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .aggregate _ _ | .sumOfProducts _
-  | .filledGroupCountMixed _ => true
-
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
@@ -179,8 +173,7 @@ def OrderedNumericComparison.wellFormedInBool
     (comparison : OrderedNumericComparison model)
     (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
-  (comparison.left.anyAtom OrderedNumericValidationAtom.isDataDependent ||
-      comparison.right.anyAtom OrderedNumericValidationAtom.isDataDependent) &&
+  !(comparison.left.isImmediateLiteral && comparison.right.isImmediateLiteral) &&
     comparison.left.isAdmittedResolvedNumericOperation &&
     comparison.right.isAdmittedResolvedNumericOperation &&
     comparison.left.allAtoms (·.admitted rowGroup scope) &&
