@@ -204,4 +204,82 @@ example :
       some .unknown := by
   native_decide
 
+
+/-! ## The repetition operand under a caller's coverage
+
+One repeatable group, two rules differing in a single operand, and the coverages the caller declares
+([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)).
+-/
+
+private def repRows : GroupPath := ["Src", "Rows"]
+private def repErr : FlatFieldDecl :=
+  { id := 301, groupPath := repRows, name := "Err", policy := { kind := .string },
+    repeatableScope := [10] }
+private def repBase : FlatFieldDecl :=
+  { id := 302, groupPath := repRows, name := "Base",
+    policy := { kind := .number { scale := 0, signed := true } }, repeatableScope := [10] }
+private def repModel : FlatModel :=
+  { fields := [repErr, repBase],
+    repeatableGroups := [{ level := 10, path := repRows, repeatability := some 5 }] }
+/-- `Length(Err)` stands in for the Kernel fixture's `FieldFilled(Err)` guard. Both rules carry it
+    identically and it names the error field, which the rule assembly requires; because it is the
+    same operand in both, any difference below is the second operand's. -/
+private def repGuard : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.stringLength { base := .absolute, groups := repRows, field := "Err" })
+private def repRule? (second : AuthoredNumericExpr SurfaceNumericAtom) :
+    Option (CheckedResolvedValidationRule repModel) := do
+  let comparison ← (elaborateRepeatableNumericComparison repModel repRows
+    { op := .ordinary .greater, left := .binary .add repGuard second,
+      right := .literal { value := 2, authoredScale := 0 } }).toOption
+  let condition ← (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+  (assembleResolvedValidationRule repModel condition repErr.id "R" .error { parts := [] }).toOption
+private def repetitionOperand : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.currentRepetition { base := .absolute, groups := repRows })
+private def baseOperand : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.field { base := .absolute, groups := repRows, field := "Base" })
+private def repDocument : DocumentData :=
+  { instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] }]
+    cells :=
+      [{ address := { field := 301, path := [1] }, stored := "x", raw := .parsed (.str "x") },
+       { address := { field := 301, path := [2] }, stored := "x", raw := .parsed (.str "x") },
+       { address := { field := 302, path := [1] }, stored := "5", raw := .parsed (.num 5) },
+       { address := { field := 302, path := [2] }, stored := "5", raw := .parsed (.num 5) }] }
+private def repCoverage (paths : List GroupPath) : ValidationRelevanceScope :=
+  .partialSet (paths.map fun path => { path, indices := path.map fun _ => .all })
+private def repOutcomes (second : AuthoredNumericExpr SurfaceNumericAtom)
+    (scope : ValidationRelevanceScope) : Option (List (Env × PartialRuleOutcome)) := do
+  let rule ← repRule? second
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler repModel).toOption
+  let checked ← (checkDocument prepared "en_US" repDocument).toOption
+  match ← (rule.evalOrdinaryRepeatablePartial checked scope).toOption with
+  | .skipped => some []
+  | .evaluated rows => some rows
+/-- Project one row's partial outcome to `none` for the rule-level relevance skip and `some verdict`
+    for every evaluated row. Collapsing a skip onto `notFired` would erase exactly the distinction
+    these cases exist to lock. -/
+private def repVerdicts (second : AuthoredNumericExpr SurfaceNumericAtom)
+    (scope : ValidationRelevanceScope) : Option (List (Option Verdict)) :=
+  (repOutcomes second scope).map fun rows => rows.map fun row =>
+    match row.2 with
+    | .skipped => none
+    | .evaluated outcome => some outcome.verdict
+
+/-- **A repetition operand introduces no relevance dependency, so a coverage naming only the error
+field leaves it answering exactly as full validation does** — while its field-reading twin, identical
+in every other respect, goes UNKNOWN under that same coverage. The twin is what makes these rows a
+measurement of the masking layer rather than of a partial validation that ignores coverage. The
+error-field gate is separate and stricter, and it is checked per row before any addressed read: a
+coverage naming only the *other* field skips both rows even though that rule's own operand reads
+nothing at all, and the empty coverage does the same. Every row is the Kernel's
+([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)). -/
+example :
+    let fired := some (Verdict.fired .value)
+    repVerdicts repetitionOperand .full = some [some .notFired, fired] ∧
+      repVerdicts repetitionOperand (repCoverage [repErr.path]) = some [some .notFired, fired] ∧
+      repVerdicts baseOperand .full = some [fired, fired] ∧
+      repVerdicts baseOperand (repCoverage [repErr.path]) = some [some .unknown, some .unknown] ∧
+      repVerdicts repetitionOperand (repCoverage [repBase.path]) = some [none, none] ∧
+      repVerdicts repetitionOperand (repCoverage []) = some [none, none] := by
+  native_decide
+
 end A12Kernel.Conformance.ValidationRule.Partial

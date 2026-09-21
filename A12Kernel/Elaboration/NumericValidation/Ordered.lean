@@ -205,10 +205,11 @@ def OrderedNumericComparison.requiresAddressedValidation
   comparison.left.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation ||
     comparison.right.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation
 
-/-- Whether partial addressed evaluation has an exact interpretation for an atom. Supported ordinary atoms use per-field relevance; entity-list aggregates use their source-owned extent relevance. `false` is structural unsupported information, never numeric UNKNOWN. -/
+/-- Whether partial addressed evaluation has an exact interpretation for an atom. Supported ordinary atoms use per-field relevance; entity-list aggregates use their source-owned extent relevance. `false` is structural unsupported information, never numeric UNKNOWN.
+
+    A bound repetition coordinate **is** supported, and it is the one supported atom that reads no cell: it answers from the row environment, so its relevance query is vacuously satisfied and no coverage can mask it. That is the Kernel's behaviour — a rule reading it answers under a coverage that drives its field-reading twin to UNKNOWN ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)) — and refusing it here made the whole rule structurally unsupported rather than merely unmasked. Unmaskable is not unconditional: the separate error-field gate still skips the row before any of this is reached, so a coverage naming neither field reports nothing. -/
 def OrderedNumericValidationAtom.supportsAddressedPartial :
     OrderedNumericValidationAtom model → Bool
-  | .ordinary (.boundCurrentRepetition _) => false
   | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _

@@ -35,6 +35,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-22-02"></a>
+### `SPEC-2026-09-22-02` — partial validation masks references, and a repetition coordinate is not one
+
+- `status`: pending
+- `origin`: locally originated. This project's partial route refused a rule whose only non-field operand was `CurrentRepetition(group)`, reporting it structurally unsupported, while the Kernel evaluated it normally under the same coverage.
+- `clause`: [`10-validation-and-polarity.md` §5](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) — a new bullet beside the existing relevance rules, which described masking only for field and group references and left the structural coordinate unstated.
+- `delta`: a relevant set cannot drive `CurrentRepetition(G)` to UNKNOWN, because it answers from the iterated row rather than from a cell. Under a coverage naming only the error field, a rule reading the coordinate answers exactly as under full validation, while a rule identical in every other respect reading a field in that same operand position goes UNKNOWN.
+- `delta`: the error-field gate is independent of this and still runs first, per row. A coverage naming only the *other* field skips both rows even though the coordinate needed no coverage at all, and so does the empty coverage. The correct reading is therefore "not masked", never "always evaluated".
+- `basis`: one `:adapter:kernelProbe` artifact observing `validateFull` and `validatePart` over four coverages on a two-row `/Src/Rows` group, at a12-dmkits `9c86459b352f7989b9dbdae80f71e6dd6cec6066` (clean), `dmtool` 0.13.0, Kernel `30.8.1` ([checkpoint](sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)). The field-reading twin is the separator: it shares the rule's guard, error field, comparison operator, and threshold, so the coverages are asking one question about the operand alone. Measured at one repetition level only.
+- `acceptance`: state that partial masking applies to cell-backed references and exempt the structural repetition coordinate, keeping the error-field gate separate and prior; or supply a contrary kernel observation in which a rule reading only that coordinate is suppressed under a coverage its error field satisfies.
+
 <a id="spec-2026-09-22-01"></a>
 ### `SPEC-2026-09-22-01` — the comparison's constant gate reads immediacy, not cell access
 

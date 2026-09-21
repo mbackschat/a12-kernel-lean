@@ -111,8 +111,12 @@ example : error? innerPath outerPath =
       some (.currentRepetitionSource (.repeatableGroupRequiresAddress fixedPath)) := by
   native_decide
 
-example : retained? innerPath = some (innerPath, [10, 20], some 20, false) ∧
-    retained? fixedPath = some (fixedPath, [10, 20], none, false) := by
+/-- Retention preserves the authored path, its bound scope, and the level the coordinate names, and
+    both shapes support partial evaluation: the coordinate answers from the row environment rather
+    than from a cell, so no coverage can leave it unresolved
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)). -/
+example : retained? innerPath = some (innerPath, [10, 20], some 20, true) ∧
+    retained? fixedPath = some (fixedPath, [10, 20], none, true) := by
   native_decide
 
 example :
