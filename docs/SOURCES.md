@@ -623,6 +623,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-repetition-numeric-source-kinds"></a>
 - [Mixing with `CurrentRepetition` does not narrow a repeatable Number target's admitted source kinds](sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)
 
+<a id="src-ancestor-declared-repetition-computation"></a>
+- [A computation's declaring group selects neither its iteration nor its values; containment of the target is the only thing it decides](sources/group-and-iteration-probes.md#src-ancestor-declared-repetition-computation)
+
 <a id="src-repetition-aggregate-operand-scope"></a>
 - [An aggregate operand answers the calculated-field ban through a star, and answers no scope rule at all](sources/group-and-iteration-probes.md#src-repetition-aggregate-operand-scope)
 

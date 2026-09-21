@@ -506,4 +506,64 @@ example :
       run .degraded 2 baseYear = some (.value 2022) := by
   native_decide
 
+/-! ## The Kernel-calibrated two-level declaring-group matrix
+
+A computation lives where it is declared and writes where its target is, and A12 lets those differ.
+This section replays the retained two-level observation for that split
+([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-ancestor-declared-repetition-computation)).
+-/
+
+private def ancOuter : GroupPath := ["Src", "Outer"]
+private def ancInner : GroupPath := ancOuter ++ ["Inner"]
+private def ancTarget : FlatFieldDecl :=
+  { id := 200, groupPath := ancInner, name := "AltA", repeatableScope := [60, 70],
+    policy := { kind := .number { scale := 0, signed := true } } }
+private def ancModel : FlatModel :=
+  { fields := [ancTarget, { ancTarget with id := 201, name := "InnerBase" },
+      { ancTarget with id := 202, groupPath := ancOuter, name := "OuterBase", repeatableScope := [60] }],
+    repeatableGroups := [
+      { level := 60, path := ancOuter, repeatability := some 5 },
+      { level := 70, path := ancInner, repeatability := some 5 }],
+    baseYear := some 2020 }
+/-- `OuterBase` is 10 then 20; `InnerBase` runs 1 2 3 4 over the four physical inner rows, so a
+    reading that lost either coordinate would answer a value this matrix does not contain. -/
+private def ancRead (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  .ok (ancTarget.checkRaw (.parsed (.num (
+    if address.field == 202 then (match address.path with | [1] => 10 | _ => 20)
+    else (match address.path with
+      | [1, 1] => 1 | [1, 2] => 2 | [2, 1] => 3 | _ => 4)))))
+private def ancRun (declaring : GroupPath) (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (outerRow innerRow : Nat) : Option NumericComputationResult :=
+  (checkAddressedRepetitionComputation ancModel declaring 200 expression).toOption.bind
+    fun checked =>
+      (checked.evaluateAtEnvironmentWithRead ancRead [(60, outerRow), (70, innerRow)]).toOption
+private def ancRows (declaring : GroupPath) (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    List (Option NumericComputationResult) :=
+  [ancRun declaring expression 1 1, ancRun declaring expression 1 2,
+    ancRun declaring expression 2 1, ancRun declaring expression 2 2]
+
+/-- **The declaring group does not change what a row computes.** The same inner-level expression
+answers the same four values whether it is declared at the target's own group, at the ancestor, or at
+the root — and the fourth row is what makes that a statement about iteration rather than about the
+operand: an ancestor-level `CurrentRepetition` keeps the *ancestor's* coordinate, repeated across that
+outer row's inner rows, while the target still iterates below it. So one expression reads two levels
+at once, and the declaring group selects neither of them. An unrelated repeatable sibling is the
+negative control: it contains no target, derives its own iteration, and is refused. -/
+example :
+    let inner := AuthoredNumericExpr.binary .add
+      (.atom (.currentRepetition { base := .absolute, groups := ancInner }))
+      (.atom (.field { base := .absolute, groups := ancInner, field := "InnerBase" }))
+    let outer := AuthoredNumericExpr.binary .add
+      (.atom (.currentRepetition { base := .absolute, groups := ancOuter }))
+      (.atom (.field { base := .absolute, groups := ancOuter, field := "OuterBase" }))
+    let rows := [some (.value 2), some (.value 4), some (.value 4), some (.value 6)]
+    ancRows ancInner inner = rows ∧
+      ancRows ancOuter inner = rows ∧
+      ancRows ["Src"] inner = rows ∧
+      ancRows ancOuter outer =
+        [some (.value 11), some (.value 11), some (.value 22), some (.value 22)] ∧
+      (checkAddressedRepetitionComputation ancModel ["Src", "Other"] 200
+        (.atom (.currentRepetition { base := .absolute, groups := ancInner }))).isOk = false := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedRepetitionComputation
