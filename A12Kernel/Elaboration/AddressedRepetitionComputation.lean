@@ -2,8 +2,29 @@ import A12Kernel.Elaboration.AddressedNumericLeaf
 
 namespace A12Kernel
 
+/-- The one scope rule every field-reading source atom answers to: the declaration must be
+    model-owned, must not be the target itself, and must be bound by the target's repeatable scope.
+    `certify` re-derives the atom's own payload from that declaration, which is what keeps a forged
+    kind, component set, or conversion projection out of a checked operand. -/
+private def CheckedAddressedNumericTarget.admitsSourceField
+    (target : CheckedAddressedNumericTarget model) (id : FieldId)
+    (certify : FlatFieldDecl → Bool) : Bool :=
+  match model.lookupUniqueId id with
+  | .ok owned =>
+      certify owned && id != target.targetField &&
+        owned.repetitionBoundBy target.targetDeclaration.repeatableScope
+  | .error _ => false
+
 /-- Source admission retains model-owned fields and structural paths separately. Computation row
-    bindings come from the checked target; scalar-only operations keep their existing owners. -/
+    bindings come from the checked target; scalar-only operations keep their existing owners.
+
+    **Mixing with a repetition operand does not narrow the source set.** Every numeric source kind a
+    repeatable Number target admits alone is admitted beside `CurrentRepetition`, measured against
+    the Kernel on `BaseYear`, `Length`, and `YearFromDate` in both positions, with the
+    `FieldValueAsNumber` String/Enumeration pair separating an operand-kind refusal from a mixing
+    one ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)).
+    The scope rule above is therefore the only additional gate this carrier imposes. Aggregates,
+    group counts, and the difference families stay outside it: none was measured here. -/
 def CheckedAddressedNumericTarget.admitsRepetitionOperand
     (target : CheckedAddressedNumericTarget model) : NumericComputationAtom → Bool
   | .field declaration =>
@@ -15,6 +36,19 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
   | .fixedCurrentRepetition reference => reference.scalarRepetitionWellFormedBool model
   | .boundCurrentRepetition source =>
       source.wellFormedIn model target.targetDeclaration.repeatableScope
+  -- The model's own Base Year reads no cell, so it carries no scope to bind.
+  | .baseYear _ => true
+  | .stringLength source =>
+      target.admitsSourceField source.id fun owned => owned.toStringValueField? == some source
+  | .temporalFieldPart source part =>
+      target.admitsSourceField source.id fun owned =>
+        owned.toTemporalField? == some source && part.admittedBy source model.baseYear.isSome
+  | .fieldValueAsNumber source =>
+      match model.certifiedFieldValueAsNumberDeclaration? source with
+      | some owned =>
+          owned.id != target.targetField &&
+            owned.repetitionBoundBy target.targetDeclaration.repeatableScope
+      | none => false
   | _ => false
 
 abbrev AddressedRepetitionOperand (target : CheckedAddressedNumericTarget model) :=
@@ -93,9 +127,28 @@ def checkAddressedRepetitionComputation
     else throw .unsupportedExpression
   else throw .unsupportedExpression
 
+/-- Read the one cell a field-bearing source atom addresses in this row, then evaluate the atom
+    through the shared resolved evaluator so each source kind keeps its own conversion rules.
+
+    The lookup cannot fail for a checked operand — `admitsSourceField` already resolved the same id
+    against the same model — but the failure is reported rather than defaulted, because a silent
+    fallback cell would turn a broken invariant into an ordinary value. -/
+private def readFieldSourceAtom (model : FlatModel) (id : FieldId)
+    (atom : NumericComputationAtom)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
+    Except AddressedNumericLeafFault NumericComputationResult :=
+  match model.lookupUniqueId id with
+  | .error _ => .error (.evaluation (.fieldKindMismatch id))
+  | .ok declaration => do
+      let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
+      let cell ← read { field := id, path } |>.mapError .sourceRead
+      let context : ScalarComputationContext := { read := fun _ => cell }
+      context.readNumericComputationAtom atom |>.mapError .evaluation
+
 /-- Structural coordinates and addressed fields reuse one ordered arithmetic evaluator while
     preserving the addressed source's own error domain. Rejected atom kinds are unconstructible. -/
-def AddressedRepetitionOperand.readAt (source : AddressedRepetitionOperand target)
+def AddressedRepetitionOperand.readAt {model : FlatModel}
+    {target : CheckedAddressedNumericTarget model} (source : AddressedRepetitionOperand target)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
     Except AddressedNumericLeafFault NumericComputationResult := by
   rcases source with ⟨atom, admitted⟩
@@ -110,6 +163,14 @@ def AddressedRepetitionOperand.readAt (source : AddressedRepetitionOperand targe
   case boundCurrentRepetition source =>
     exact (source.coordinateAt environment).map (fun coordinate => .value coordinate)
       |>.mapError .environment
+  -- The Base Year is model state, so it reads no cell and cannot fail in a row.
+  case baseYear year => exact .ok (.value year)
+  case stringLength source =>
+    exact readFieldSourceAtom model source.id (.stringLength source) read environment
+  case temporalFieldPart source part =>
+    exact readFieldSourceAtom model source.id (.temporalFieldPart source part) read environment
+  case fieldValueAsNumber source =>
+    exact readFieldSourceAtom model source.fieldId (.fieldValueAsNumber source) read environment
   all_goals simp [CheckedAddressedNumericTarget.admitsRepetitionOperand] at admitted
 
 namespace CheckedAddressedRepetitionComputation

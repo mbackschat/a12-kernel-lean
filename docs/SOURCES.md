@@ -620,6 +620,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-filter-scope-versus-iteration-gates"></a>
 - [A filter's scope gate and its other-iteration prohibition are two gates, separated by one conjunct](sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)
 
+<a id="src-repetition-numeric-source-kinds"></a>
+- [Mixing with `CurrentRepetition` does not narrow a repeatable Number target's admitted source kinds](sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)
 <a id="src-currentrepetition-operand-carriers"></a>
 - [The operand is an ordinary Number expression wherever one is legal, while `$` is filter-only by site and no aggregate accepts it](sources/group-and-iteration-probes.md#src-currentrepetition-operand-carriers)
 

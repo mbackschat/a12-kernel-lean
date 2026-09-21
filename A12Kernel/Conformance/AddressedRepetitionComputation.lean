@@ -5,6 +5,10 @@ namespace A12Kernel.Conformance.AddressedRepetitionComputation
 private def outerPath : GroupPath := ["Root", "Rows"]
 private def innerPath : GroupPath := outerPath ++ ["Items"]
 private def fixedPath : GroupPath := innerPath ++ ["Fixed"]
+private def asidePath : GroupPath := ["Root", "Aside"]
+/-- `yyyy-MM-dd`: the date half only, so a time component is the temporal row's own separator. -/
+private def dateComponents : TemporalComponents :=
+  { year := true, month := true, day := true, hour := false, minute := false, second := false }
 private def target : FlatFieldDecl :=
   { id := 1, groupPath := innerPath, name := "Target", repeatableScope := [10, 20]
     policy := { kind := .number { scale := 0, signed := true } }
@@ -13,10 +17,16 @@ private def model : FlatModel :=
   { fields := [target, { target with id := 2, name := "Base" },
       { target with id := 3, groupPath := fixedPath, name := "FixedField" },
       { target with id := 4, groupPath := ["Root"], name := "Scalar", repeatableScope := [] },
-      { target with id := 5, groupPath := outerPath, name := "OuterTarget", repeatableScope := [10] }]
+      { target with id := 5, groupPath := outerPath, name := "OuterTarget", repeatableScope := [10] },
+      -- Non-Number sources for the widened operand set: one bound by the target's own scope and one
+      -- bound by a disjoint repeatable level, which is the separator the scope rule must refuse.
+      { target with id := 6, name := "Text", policy := { kind := .string }, numericTargetConstraints := {} },
+      { target with id := 7, groupPath := asidePath, name := "AsideText", repeatableScope := [30], policy := { kind := .string }, numericTargetConstraints := {} },
+      { target with id := 8, name := "When", policy := { kind := .temporal .date dateComponents }, numericTargetConstraints := {} }]
     repeatableGroups := [
       { level := 10, path := outerPath, repeatability := some 3 },
-      { level := 20, path := innerPath, repeatability := some 3 }] }
+      { level := 20, path := innerPath, repeatability := some 3 },
+      { level := 30, path := asidePath, repeatability := some 3 }] }
 private def repetition (path : GroupPath) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.currentRepetition { base := .absolute, groups := path })
 private def field (name : String) : AuthoredNumericExpr SurfaceNumericAtom :=
@@ -100,6 +110,26 @@ example :
       checked.target.admitsRepetitionOperand (.boundCurrentRepetition { source with level := none }) = false ∧
       checked.target.admitsRepetitionOperand
         (.field { target with id := 2, name := "Base", repeatableScope := [] }) = false := by
+  native_decide
+
+/-- The widened source set: mixing with `CurrentRepetition` does not narrow which numeric source
+kinds a repeatable Number target admits, measured against the Kernel on `BaseYear`, `Length`, and
+`YearFromDate` beside a repetition operand and each alone
+([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)).
+The scope rule is the only gate, so `AsideText` — a String on a disjoint repeatable level — is
+refused where the same atom on the target's own level is admitted. The temporal row carries a
+component the declared format lacks as its own separator, so admission is not merely by kind. -/
+example :
+    let checked := (operation mixed).toOption.get (by native_decide)
+    checked.target.admitsRepetitionOperand (.baseYear 2020) = true ∧
+      checked.target.admitsRepetitionOperand (.stringLength { id := 6 }) = true ∧
+      checked.target.admitsRepetitionOperand (.stringLength { id := 7 }) = false ∧
+      checked.target.admitsRepetitionOperand
+        (.temporalFieldPart { id := 8, kind := .date, components := dateComponents }
+          (.date .year)) = true ∧
+      checked.target.admitsRepetitionOperand
+        (.temporalFieldPart { id := 8, kind := .date, components := dateComponents }
+          (.time .hour)) = false := by
   native_decide
 
 private def poisonBeforeMissingBinding (reverse : Bool) : Option (Sum EnvBindingError NumericComputationResult) := do
