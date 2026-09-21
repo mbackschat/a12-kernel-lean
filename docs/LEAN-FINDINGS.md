@@ -2319,3 +2319,15 @@ Related: [[LF121]] on searching for the values a settling observation would carr
 **The technique.** Validate the fixture directly before debugging the cases: `#eval FlatModel.validate <model>` names the offending path and rule in one line, where the case failures name neither. Build each variant separately and evaluate them side by side, which turns "something broke" into "this row broke" in a single piped probe ([`CLAUDE.md`](../CLAUDE.md) owns the throwaway-probe form). When a fixture's base declaration carries kind-specific constraints, clear them explicitly in the update rather than trusting the defaults to be inert.
 
 Related: [[LF116]] on a mechanism's reuse across a carrier being a claim rather than an inheritance — the same shape one level down, where a *fixture's* reuse across a kind carries constraints that do not transfer.
+
+## LF174 — widening an admission predicate does not widen the entry point, and a case that calls the predicate directly is blind to the difference
+
+**The defect.** A checked-operand carrier usually has two gates in series: a **resolver** that turns an authored surface atom into a resolved one, and an **admission predicate** that accepts or rejects the resolved atom. Widening only the predicate looks complete — the new kinds are accepted, the conformance case passes, the coverage record reads as closed — while the resolver still answers `unsupportedExpression`, so no authored expression can reach the widened set at all. The capability is real in the type and absent from the product.
+
+**Why the case did not catch it.** The case asserted `target.admitsRepetitionOperand (.stringLength ⟨6⟩) = true`, constructing the resolved atom by hand. That is the wrong attachment point: it tests the gate that changed instead of the path a consumer takes, so it passes for exactly the reason the feature is broken. A case that authors the surface atom and elaborates it — `(operation (.binary .add rep len)).isOk = true` — fails until both gates move, because it crosses both.
+
+**The rule.** When a change widens what a carrier accepts, attach at least one case at the **public entry point**, not at the predicate the change touched. State it as the question a consumer asks — *can this be authored and does it evaluate* — rather than as the question the implementation asks. A predicate-level case is still worth keeping for its separators, where hand-constructing the atom is the only way to reach a branch, but it never establishes reachability. The [consumer-adequacy rule](../CLAUDE.md) is the general form; this is its cheapest concrete test.
+
+**The tell in review.** A widening whose diff touches an admission or well-formedness predicate and no resolver, elaborator, or parser is the shape to check. Ask which function turns the authored form into the accepted one, and whether the diff touched it.
+
+Related: [[LF116]] on a mechanism's reuse across a carrier being a claim rather than an inheritance; [[LF173]] on validating the fixture before debugging the cases.
