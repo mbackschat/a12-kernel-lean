@@ -27,6 +27,14 @@ def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
       target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
   | .baseYear year _ => model.baseYear == some year
 
+/-- One endpoint of a sub-day difference. Only a field is admitted: `Now` needs an evaluation world
+    this carrier's row read does not carry, and Base Year is not a legal sub-day operand at all. -/
+def CheckedAddressedNumericTarget.admitsSubdayEndpoint
+    (target : CheckedAddressedNumericTarget model) : FlatTemporalOperand → Bool
+  | .fieldValue source =>
+      target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
+  | _ => false
+
 /-- Source admission retains model-owned fields and structural paths separately. Computation row
     bindings come from the checked target; scalar-only operations keep their existing owners.
 
@@ -73,6 +81,21 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
   | .dateDifference unit left right =>
       DateDifferenceUnit.compatible unit model.baseYear.isSome left.components right.components &&
         target.admitsDateDifferenceEndpoint left && target.admitsDateDifferenceEndpoint right
+  -- The profile is certified against the model's own zone, so a forged calendar cannot ride in on an
+  -- otherwise admissible operand pair.
+  | .dayDifference profile left right =>
+      ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+        CalendarDayDifference.admittedBy left.components &&
+        CalendarDayDifference.admittedBy right.components &&
+        CalendarDayDifference.yearCompatible model.baseYear.isSome
+          left.components right.components &&
+        target.admitsDateDifferenceEndpoint left && target.admitsDateDifferenceEndpoint right
+  | .dateTimeDifference unit left right =>
+      match left.dateTimeDifferenceComponents?, right.dateTimeDifferenceComponents? with
+      | some leftComponents, some rightComponents =>
+          DateTimeSubdayUnit.compatible unit leftComponents rightComponents &&
+            target.admitsSubdayEndpoint left && target.admitsSubdayEndpoint right
+      | _, _ => false
   | _ => false
 
 abbrev AddressedRepetitionOperand (target : CheckedAddressedNumericTarget model) :=
@@ -132,6 +155,20 @@ private def resolveDateDifferenceEndpoint (target : CheckedAddressedNumericTarge
       | some year => pure (.baseYear year source)
       | none => throw .baseYearNotDeclared
   | .now => throw .unsupportedExpression
+
+/-- Resolve one authored sub-day endpoint. Base Year is not a legal operand of this family and `Now`
+    needs an evaluation world, so only a field resolves here. -/
+private def resolveSubdayEndpoint (target : CheckedAddressedNumericTarget model)
+    (surface : SurfaceDateDifferenceOperand) :
+    Except AddressedRepetitionComputationElabError FlatTemporalOperand := do
+  match surface with
+  | .field reference => do
+      let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
+        |>.mapError .source
+      match declaration.toTemporalField? with
+      | some field => pure (.fieldValue field)
+      | none => throw .unsupportedExpression
+  | .baseYear _ | .now => throw .unsupportedExpression
 
 private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget model)
     (surface : SurfaceNumericAtom) :
@@ -193,6 +230,17 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         let left ← resolveDateDifferenceEndpoint target left
         let right ← resolveDateDifferenceEndpoint target right
         pure (.dateDifference unit left right)
+    | .dayDifference left right => do
+        let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+          | some profile => pure profile
+          | none => throw .unsupportedExpression
+        let left ← resolveDateDifferenceEndpoint target left
+        let right ← resolveDateDifferenceEndpoint target right
+        pure (.dayDifference profile left right)
+    | .dateTimeDifference unit left right => do
+        let left ← resolveSubdayEndpoint target left
+        let right ← resolveSubdayEndpoint target right
+        pure (.dateTimeDifference unit left right)
     | _ => throw .unsupportedExpression
   if admitted : target.admitsRepetitionOperand atom = true then
     pure ⟨atom, admitted⟩
@@ -243,38 +291,49 @@ private def readFieldSourceAtom (model : FlatModel) (id : FieldId)
       context.readNumericComputationAtom atom |>.mapError .evaluation
 
 /-- Read the cell one difference endpoint addresses in this row, paired with the field it answers
-    for. A Base-Year endpoint reads nothing and reports no field, which is what lets the caller build
+    for. A constant endpoint reads nothing and reports no field, which is what lets the caller build
     a context that asks only about the endpoints that exist. -/
-private def readDateDifferenceEndpointCell (model : FlatModel)
+private def readEndpointCell (model : FlatModel)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
-    ResolvedDateDifferenceOperand →
-      Except AddressedNumericLeafFault (Option (FieldId × CheckedCell))
-  | .baseYear _ _ => .ok none
-  | .field source =>
-      match model.lookupUniqueId source.id with
-      | .error _ => .error (.evaluation (.fieldKindMismatch source.id))
+    Option FieldId → Except AddressedNumericLeafFault (Option (FieldId × CheckedCell))
+  | none => .ok none
+  | some id =>
+      match model.lookupUniqueId id with
+      | .error _ => .error (.evaluation (.fieldKindMismatch id))
       | .ok declaration => do
           let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
-          let cell ← read { field := source.id, path } |>.mapError .sourceRead
-          pure (some (source.id, cell))
+          let cell ← read { field := id, path } |>.mapError .sourceRead
+          pure (some (id, cell))
 
 /-- Evaluate a two-endpoint difference through the shared resolved evaluator. Both endpoints are
     read **before** the atom is evaluated, so each one's row address is resolved from its own
     declaration rather than from the other's, and the context then answers by identity: the shared
     evaluator asks only for the ids the atom names, so a two-way choice keyed on the left endpoint
     covers every id it can ask and needs no default cell to stand in for an absent one. -/
-private def readDateDifferenceAtom (model : FlatModel) (atom : NumericComputationAtom)
-    (left right : ResolvedDateDifferenceOperand)
+private def readTwoEndpointAtom (model : FlatModel) (atom : NumericComputationAtom)
+    (leftField rightField : Option FieldId)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
     Except AddressedNumericLeafFault NumericComputationResult := do
-  let leftRead ← readDateDifferenceEndpointCell model read environment left
-  let rightRead ← readDateDifferenceEndpointCell model read environment right
+  let leftRead ← readEndpointCell model read environment leftField
+  let rightRead ← readEndpointCell model read environment rightField
   let absent : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
   let context : ScalarComputationContext :=
     { read := fun id =>
         if leftRead.map (·.1) == some id then leftRead.elim absent (·.2)
         else rightRead.elim absent (·.2) }
   context.readNumericComputationAtom atom |>.mapError .evaluation
+
+/-- The field a difference endpoint addresses, or none for a constant. -/
+private def ResolvedDateDifferenceOperand.endpointField? :
+    ResolvedDateDifferenceOperand → Option FieldId
+  | .field source => some source.id
+  | .baseYear _ _ => none
+
+/-- The same projection for a sub-day endpoint. Only the field form is admitted here, so every other
+    shape reports no field and would read nothing even if one were reachable. -/
+private def FlatTemporalOperand.subdayEndpointField? : FlatTemporalOperand → Option FieldId
+  | .fieldValue source => some source.id
+  | _ => none
 
 /-- Structural coordinates and addressed fields reuse one ordered arithmetic evaluator while
     preserving the addressed source's own error domain. Rejected atom kinds are unconstructible. -/
@@ -310,7 +369,14 @@ def AddressedRepetitionOperand.readAt {model : FlatModel}
   case fieldValueAsNumber source =>
     exact readFieldSourceAtom model source.fieldId (.fieldValueAsNumber source) read environment
   case dateDifference unit left right =>
-    exact readDateDifferenceAtom model (.dateDifference unit left right) left right read environment
+    exact readTwoEndpointAtom model (.dateDifference unit left right)
+      left.endpointField? right.endpointField? read environment
+  case dayDifference profile left right =>
+    exact readTwoEndpointAtom model (.dayDifference profile left right)
+      left.endpointField? right.endpointField? read environment
+  case dateTimeDifference unit left right =>
+    exact readTwoEndpointAtom model (.dateTimeDifference unit left right)
+      left.subdayEndpointField? right.subdayEndpointField? read environment
   all_goals simp [CheckedAddressedNumericTarget.admitsRepetitionOperand] at admitted
 
 namespace CheckedAddressedRepetitionComputation

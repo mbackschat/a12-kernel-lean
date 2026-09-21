@@ -49,6 +49,23 @@ private theorem admitsDateDifferenceEndpoint_not_target {model : FlatModel}
           simp [found] at admitted
           simp [ResolvedDateDifferenceOperand.references, admitted.1.2]
 
+/-- Neither endpoint of an admitted sub-day difference is the target itself. -/
+private theorem admitsSubdayEndpoint_not_target {model : FlatModel}
+    {target : CheckedAddressedNumericTarget model} {operand : FlatTemporalOperand}
+    (admitted : target.admitsSubdayEndpoint operand = true) :
+    operand.dateTimeDifferenceReferences target.targetField = false := by
+  cases operand
+  case fieldValue source =>
+    simp only [CheckedAddressedNumericTarget.admitsSubdayEndpoint,
+      CheckedAddressedNumericTarget.admitsSourceField] at admitted
+    cases found : model.lookupUniqueId source.id with
+    | error _ => simp [found] at admitted
+    | ok owned =>
+        simp [found] at admitted
+        simpa [FlatTemporalOperand.dateTimeDifferenceReferences, FlatTemporalOperand.fields,
+          FlatField.id] using admitted.1.2
+  all_goals simp [CheckedAddressedNumericTarget.admitsSubdayEndpoint] at admitted
+
 /-- A structural group containing the target does not create a self-dependency. Every real field
     dependency remains a separately certified atom, excluded from the target at admission. -/
 theorem addressedRepetitionComputation_excludes_target
@@ -80,6 +97,21 @@ theorem addressedRepetitionComputation_excludes_target
       simp only [ResolvedNumericAtom.referencesFieldWith]
       simp [admitsDateDifferenceEndpoint_not_target admitted.1.2,
         admitsDateDifferenceEndpoint_not_target admitted.2]
+    case dayDifference _ left right =>
+      simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand,
+        Bool.and_eq_true] at admitted
+      simp only [ResolvedNumericAtom.referencesFieldWith]
+      simp [admitsDateDifferenceEndpoint_not_target admitted.1.2,
+        admitsDateDifferenceEndpoint_not_target admitted.2]
+    case dateTimeDifference _ left right =>
+      simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand] at admitted
+      simp only [ResolvedNumericAtom.referencesFieldWith]
+      split at admitted
+      case h_1 =>
+        simp only [Bool.and_eq_true] at admitted
+        simp [admitsSubdayEndpoint_not_target admitted.1.2,
+          admitsSubdayEndpoint_not_target admitted.2]
+      case h_2 => simp at admitted
     all_goals
       simp_all [CheckedAddressedNumericTarget.admitsRepetitionOperand,
         CheckedAddressedNumericTarget.admitsSourceField,
@@ -90,34 +122,39 @@ theorem addressedRepetitionComputation_excludes_target
     induction expression <;> simp_all [AuthoredNumericExpr.anyAtom]
   exact walk operation.expression
 
+/-- An admitted difference endpoint reads a model-owned declaration the target's own repeatable
+    scope binds. Stated at the endpoint because that is where the rule lives: the completed-period
+    and day families share this predicate, so neither needs its own version, and the pair gate below
+    is the only thing that differs between them. -/
+theorem admitsDateDifferenceEndpoint_rowBound {model : FlatModel}
+    {target : CheckedAddressedNumericTarget model} {source : FlatTemporalField}
+    (admitted : target.admitsDateDifferenceEndpoint (.field source) = true) :
+    ∃ owned, model.lookupUniqueId source.id = .ok owned ∧
+      owned.repetitionBoundBy target.targetDeclaration.repeatableScope = true := by
+  simp only [CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint,
+    CheckedAddressedNumericTarget.admitsSourceField] at admitted
+  cases found : model.lookupUniqueId source.id with
+  | error _ => simp [found] at admitted
+  | ok declaration =>
+      refine ⟨declaration, rfl, ?_⟩
+      simp [found] at admitted
+      exact admitted.2
+
 /-- A checked completed-period difference reads no cell outside the target's row binding, on
     **either** endpoint. The pair gate is what makes this worth stating separately from the
     single-field rule: a two-operand source can satisfy its own component agreement while one
-    endpoint sits on an unbound level, and this rules that out for both positions at once. The
-    Base-Year endpoint reads nothing, so it carries no obligation and none is claimed for it. -/
-theorem addressedRepetitionComputation_differenceEndpoints_rowBound
-    {model : FlatModel} {target : CheckedAddressedNumericTarget model}
+    endpoint sits on an unbound level, and this specialization rules that out for both positions at
+    once. The Base-Year endpoint reads nothing, so it carries no obligation and none is claimed. -/
+theorem addressedRepetitionComputation_differenceEndpoints_rowBound {model : FlatModel}
+    {target : CheckedAddressedNumericTarget model}
     {unit : DateDifferenceUnit} {left right : ResolvedDateDifferenceOperand}
     (admitted : target.admitsRepetitionOperand (.dateDifference unit left right) = true)
     {source : FlatTemporalField} (endpoint : left = .field source ∨ right = .field source) :
     ∃ owned, model.lookupUniqueId source.id = .ok owned ∧
       owned.repetitionBoundBy target.targetDeclaration.repeatableScope = true := by
-  have bound : ∀ operand : ResolvedDateDifferenceOperand, operand = .field source →
-      target.admitsDateDifferenceEndpoint operand = true →
-      ∃ owned, model.lookupUniqueId source.id = .ok owned ∧
-        owned.repetitionBoundBy target.targetDeclaration.repeatableScope = true := by
-    rintro _ rfl endpointAdmitted
-    simp only [CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint,
-      CheckedAddressedNumericTarget.admitsSourceField] at endpointAdmitted
-    cases owned : model.lookupUniqueId source.id with
-    | error _ => simp [owned] at endpointAdmitted
-    | ok declaration =>
-        refine ⟨declaration, rfl, ?_⟩
-        simp [owned] at endpointAdmitted
-        exact endpointAdmitted.2
   simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand, Bool.and_eq_true] at admitted
   rcases endpoint with rfl | rfl
-  · exact bound _ rfl admitted.1.2
-  · exact bound _ rfl admitted.2
+  · exact admitsDateDifferenceEndpoint_rowBound admitted.1.2
+  · exact admitsDateDifferenceEndpoint_rowBound admitted.2
 
 end A12Kernel

@@ -17,6 +17,8 @@ private def textDecl : FlatFieldDecl :=
   { target with id := 6, name := "Text", policy := { kind := .string }, numericTargetConstraints := {} }
 private def whenDecl : FlatFieldDecl :=
   { target with id := 8, name := "When", policy := { kind := .temporal .date dateComponents }, numericTargetConstraints := {} }
+private def stampDecl : FlatFieldDecl :=
+  { target with id := 12, name := "Stamp", policy := { kind := .temporal .dateTime TemporalComponents.now }, numericTargetConstraints := {} }
 private def spanDecl : FlatFieldDecl :=
   { target with id := 9, name := "Span", policy := { kind := .dateRange }, numericTargetConstraints := {}, dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } }
 private def model : FlatModel :=
@@ -34,6 +36,9 @@ private def model : FlatModel :=
       -- A second Date in the target's own row, so a two-endpoint difference addresses two distinct
       -- cells and each endpoint's read is separately observable.
       { whenDecl with id := 11, name := "Until" },
+      -- A complete instant, which the day difference admits and the completed-period units refuse;
+      -- the sub-day units need it, so one declaration separates all three families.
+      stampDecl, { stampDecl with id := 13, name := "StampTwo" },
       whenDecl, spanDecl]
     repeatableGroups := [
       { level := 10, path := outerPath, repeatability := some 3 },
@@ -258,18 +263,31 @@ example :
   native_decide
 
 private def untilRef : SurfaceFieldPath := { base := .relative 0, groups := [], field := "Until" }
-private def dateAt (year month day : Nat) : CheckedCell :=
+/-- The exact instant is carried beside the decoded parts on purpose: the completed-period
+    difference reads the parts and the day difference reads the instant, so a fixture that pinned
+    both endpoints to one epoch would answer zero days while still answering the right months. -/
+private def dateAt (epochDay : Nat) (year month day : Nat) : CheckedCell :=
   whenDecl.checkRaw (.parsed (.temporal (.date {
-    instant := { epochMillis := 0 }
+    instant := { epochMillis := Int.ofNat (epochDay * 86400000) }
     parts := { year := year, month := month, day := day }
     basis := .storedGregorian })))
+/-- A complete instant on 1970-01-01 at the given hour, for the sub-day family. -/
+private def instantAt (hour : Fin 24) : CheckedCell :=
+  stampDecl.checkRaw (.parsed (.temporal (.dateTime
+    { epochMillis := Int.ofNat (hour * 3600000) }
+    { year := 1970, month := 1, day := 1 }
+    { hour := hour, minute := 0, second := 0, valid := by omega }
+    .storedGregorian)))
+
 /-- `When` is 2021-06-01 and `Until` 2022-02-01, with `spoil` naming at most one of them as a
     rejected stored date so a single endpoint can be poisoned while the other stays clean. -/
 private def readEndpoints (spoil : FieldId) (address : CellAddr) :
     Except CheckedDocumentError CheckedCell :=
   .ok (if address.field == spoil then whenDecl.checkRaw (.rejected .dateFormat)
-    else if address.field == 8 then dateAt 2021 6 1
-    else if address.field == 11 then dateAt 2022 2 1
+    else if address.field == 8 then dateAt 18779 2021 6 1
+    else if address.field == 11 then dateAt 19024 2022 2 1
+    else if address.field == 12 then instantAt 0
+    else if address.field == 13 then instantAt 3
     else target.checkRaw (.parsed (.num 9)))
 
 /-- Both endpoints are read, each at its own field, and either one's formal invalidity reaches the
@@ -300,6 +318,48 @@ example :
       refers (months (.field whenRef) (.field untilRef)) 11 = some true ∧
       refers (months (.field whenRef) (.baseYear .direct)) 11 = some false ∧
       refers (.binary .add (repetition innerPath) (.atom .baseYear)) 8 = some false := by
+  native_decide
+
+private def stampRef : SurfaceFieldPath := { base := .relative 0, groups := [], field := "Stamp" }
+private def stampTwoRef : SurfaceFieldPath :=
+  { base := .relative 0, groups := [], field := "StampTwo" }
+private def days (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add (repetition innerPath) (.atom (.dayDifference left right))
+private def hours (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add (repetition innerPath) (.atom (.dateTimeDifference .hours left right))
+
+/-- The day and sub-day families complete the three, and one declaration separates all of them: the
+complete instant `Stamp` is admitted at the day and sub-day units and refused at the completed-period
+one, while the date-only `When` is the mirror. Each endpoint still answers the scope rule, so the
+disjoint-level Date is refused in either position. -/
+example :
+    (operation (days (.field whenRef) (.field untilRef))).isOk = true ∧
+      (operation (days (.field stampRef) (.field stampRef))).isOk = true ∧
+      (operation (days (.field whenRef) (.field asideWhenRef))).isOk = false ∧
+      (operation (days (.field textRef) (.field untilRef))).isOk = false ∧
+      (operation (hours (.field stampRef) (.field stampRef))).isOk = true ∧
+      (operation (hours (.field whenRef) (.field untilRef))).isOk = false ∧
+      (operation (hours (.field stampRef) (.field asideWhenRef))).isOk = false ∧
+      (operation (months (.field stampRef) (.field stampRef))).isOk = false := by
+  native_decide
+
+
+/-- The day and sub-day families read their two endpoints the same way, and the fixture separates
+which half each one consults: `When` and `Until` carry decoded parts eight months apart and exact
+instants 245 days apart, so the completed-period answer above and this one cannot both come from the
+same half. Each family poisons from either endpoint alone. -/
+example :
+    let run (spoil : FieldId) (expression : AuthoredNumericExpr SurfaceNumericAtom) :=
+      ((operation expression).toOption.bind fun checked =>
+        (checked.evaluateAtEnvironmentWithRead (readEndpoints spoil) [(10, 2), (20, 3)]).toOption)
+    run 0 (days (.field whenRef) (.field untilRef)) = some (.value 248) ∧
+      run 8 (days (.field whenRef) (.field untilRef)) = some (.poison .dateFormat) ∧
+      run 11 (days (.field whenRef) (.field untilRef)) = some (.poison .dateFormat) ∧
+      run 0 (hours (.field stampRef) (.field stampTwoRef)) = some (.value 6) ∧
+      run 12 (hours (.field stampRef) (.field stampTwoRef)) = some (.poison .dateFormat) ∧
+      run 13 (hours (.field stampRef) (.field stampTwoRef)) = some (.poison .dateFormat) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedRepetitionComputation
