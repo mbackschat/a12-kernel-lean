@@ -2,6 +2,22 @@
 
 Static admission, operand kind gates, and diagnostic-class probes. Evaluation and application routes are owned by [`evaluation-and-application-routes.md`](evaluation-and-application-routes.md).
 
+<a id="src-value-list-slot-kind-set"></a>
+#### The String-literal value list's slot gate is one class over seven kinds and does not read the slot's shape, measured locally 2026-09-22
+
+- `revision`: three `dmtool batch` runs, twenty-two `rule check` children over one model, at a12-dmkits `9c86459b352f7989b9dbdae80f71e6dd6cec6066` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, every envelope `KERNEL_CONFIRMED`. Both sibling checkouts `git status --short` empty before and after.
+- `route`: `rule check` through `batch`. `rule check` persists nothing, so the verdicts are recorded here and the model is the retained byte.
+- `retained`: **nothing, deliberately.** Ten `dmtool` edits build the model and every condition is spelled below ([`LF138`](../LEAN-FINDINGS.md)).
+- `model`: root `Root` with ten nonrepeatable sibling groups, each holding two same-kind fields `A` and `B`: `StrG` STRING, `NumG` NUMBER, `EnumG` ENUM `{a, b}`, `DateG` DATE `dd.MM.yyyy`, `TimeG` TIME `HH:mm:ss`, `DtG` DATETIME `yyyy-MM-dd'T'HH:mm:ss`, `FragG` DATEFRAGMENT `yyyy-MM-dd`, `RangeG` DATERANGE `(yyyy-MM-dd, /)`, `BoolG` BOOLEAN, `ConfG` CONFIRM. Every row is `AtLeastOneFieldValueIncludedInValueList(… In "a", "b")` with error field `/Root/<G>/A`.
+- `question`: this project refused a homogeneous **Date group** with `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` and let every other refused kind fall through to a group error carrying **no class**, because a group's expansion is erased before the certification that classifies a direct field. The peer's rule names the admitted set and witnesses it with BOOLEAN and CONFIRM at the *field* slot ([`kf109`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf109)); neither estate had the three other temporal kinds, DATERANGE, or any non-DATE kind at a group slot.
+- `prediction`: recorded before the run. If the gate reads an admitted kind set, every kind outside `{String, Enumeration, Number}` draws one class in every slot shape, and NUMBER draws the comparison class instead.
+- `claim`: **seven kinds draw one class.** DATE, TIME, DATETIME, DATEFRAGMENT, DATERANGE, BOOLEAN and CONFIRM each draw `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` as a homogeneous group operand. That completes the `FieldKind` partition: every constructor outside the admitted set is now measured rather than inherited from DATE.
+- `claim`: **the gate does not read the slot's shape.** For the five kinds walked in all three shapes — a homogeneous group, a two-field list, and a sole field — the class is identical. So a carrier need not classify a group's expansion separately from a field's, which is exactly what this project's group path had been doing.
+- `separator`: **NUMBER is inside the admitted set and proves which gate answered.** A Number group and a Number field pair both clear this class and draw `MVK_INVALID_TYPES_FOR_COMPARISON` against the same String literals. Without that row an account keyed on "the slot disagrees with the literals" predicts every refusal here equally well, and the admitted STRING and ENUM rows alone cannot separate the two gates.
+- `separator`: the ENUM row uses literals inside its declared domain and the other rows literals outside every domain, so no kind row is decided by a literal that happens to be a declared token.
+- `local-consequence`: `TokenEntityValueList.lean` replaces its Date-only group discriminator with the admitted-kind-set partition, exhaustive over `FieldKind`, and adds the Number arm that falls to the comparison class. A conformance row recording that no observation assigned the Number group a class is flipped — [`LF180`](../LEAN-FINDINGS.md) is that shape.
+- `not-measured`: a **mixed** list pairing an admitted slot with a refused one, which the peer records as a separate homogeneity refusal; this project leaves it unmapped rather than assigning it either class. CUSTOM is not measured here and is carried as an ordinary String by this representation.
+
 <a id="src-variant-filter-declaration-omission"></a>
 #### An `ONLY` variant filter removes a declaration from the model, and the rule and field carriers then move in opposite directions, reproduced locally 2026-09-22
 

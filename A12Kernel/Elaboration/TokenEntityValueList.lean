@@ -151,7 +151,15 @@ inductive TokenEntityValueListElabError where
 inductive TokenEntityStringLiteralValueListElabError where
   | shape (error : FieldEntityShapeElabError)
   | fields (error : TokenEntityElabError)
-  | dateGroupAgainstStringValues (path : GroupPath)
+  /-- Every slot lies outside the admitted `{String, Enumeration, Number}` kind set. The payload
+  is the first slot's path; the class does not depend on which slot it is. -/
+  | slotKindNotStringEnumNumber (path : List String)
+  /-- Every slot is a Number, which this carrier's kind gate **admits**. The refusal is the literal
+  comparison one step later, because this form's values are String literals and a Number slot can
+  never match them. Keeping it apart from the gate above is the whole point of the Number row: the
+  two outcomes are different Kernel classes, and a reading that sorts kinds into admitted and
+  refused reports the gate's class for a kind the Kernel calls admitted. -/
+  | slotNumberAgainstStringLiterals (path : List String)
   | unsupportedFieldsFamily (found : Option TokenEntityValueListFamily)
   /-- A literal naming no token in a selected Enumeration domain. The Kernel checks the literal's
   **value** here, which is the one place a value list's own literals are constrained statically. -/
@@ -159,36 +167,74 @@ inductive TokenEntityStringLiteralValueListElabError where
   | emptyValues
   deriving Repr, DecidableEq
 
-private def FlatFieldDecl.isDate (declaration : FlatFieldDecl) : Bool :=
+/-- The kinds this carrier's field slot admits. The partition is exhaustive over `FieldKind` and
+    every refusing constructor is measured: DATE, TIME, DATETIME and DATEFRAGMENT on the temporal
+    arm, plus DATERANGE, BOOLEAN and CONFIRM
+    ([checkpoint](../../docs/SOURCES.md#src-value-list-slot-kind-set)).
+
+    NUMBER is the separator rather than an eighth refusal. It clears this gate and then draws the
+    comparison class against String literals, which is what shows the gate reads the declared kind
+    against an admitted set rather than reading the literals' type. Without that row an account
+    keyed on "the slot disagrees with the literals" predicts every row here equally well. -/
+private def FlatFieldDecl.valueListSlotKindAdmitted (declaration : FlatFieldDecl) : Bool :=
   match declaration.policy.kind with
-  | .temporal .date _ => true
-  | _ => false
+  | .string | .enumeration | .number _ => true
+  | .boolean | .confirm | .temporal _ _ | .dateRange => false
 
-/-- The exact measured discriminator is a homogeneous Date group. A direct Date field, a group
-    merely containing a Date, and every other group certification failure stay outside it. -/
-private def ResolvedFieldEntityOperand.homogeneousDateGroupPath? :
-    ResolvedFieldEntityOperand model → Option GroupPath
+/-- Whether this slot's whole expansion lies outside the admitted kind set. A group contributes its
+    subtree and a field-denoting slot its own declaration, so the test is the same for both — which
+    is the measured result: the class is identical for a homogeneous group, a two-field list, and a
+    sole field of the same kind. -/
+private def ResolvedFieldEntityOperand.refusedKindSlot :
+    ResolvedFieldEntityOperand model → Bool
   | operand =>
-      match operand.subtreePath? with
-      | none => none
-      | some path =>
-          let declarations := operand.expansionDeclarations
-          if !declarations.isEmpty && declarations.all FlatFieldDecl.isDate then
-            some path
-          else
-            none
+      let declarations := operand.expansionDeclarations
+      !declarations.isEmpty &&
+        declarations.all fun declaration => !declaration.valueListSlotKindAdmitted
 
-private def firstHomogeneousDateGroupPath? :
-    List (ResolvedFieldEntityOperand model) → Option GroupPath
+/-- The path of the first slot when **every** slot is refused-kind, so the list is homogeneous in a
+    kind outside this carrier's admitted set.
+
+    Requiring every slot rather than the first is deliberate and claims less. A list mixing an
+    admitted slot with a refused one is a different gate — the Kernel's own homogeneity refusal —
+    and no retained row here covers it, so such a list stays unmapped rather than being assigned
+    this class. -/
+private def refusedKindListPath? :
+    List (ResolvedFieldEntityOperand model) → Option (List String)
   | [] => none
-  | operand :: remaining =>
-      match operand.homogeneousDateGroupPath? with
-      | some path => some path
-      | none => firstHomogeneousDateGroupPath? remaining
+  | operands =>
+      if operands.all ResolvedFieldEntityOperand.refusedKindSlot then
+        (operands.head?).map ResolvedFieldEntityOperand.entityPath
+      else
+        none
 
-/-- Check the measured plural String-literal form in operator order. The Date-group class is
-    projected before token certification erases the rejected expansion's kind; no shared group
-    error is reclassified. -/
+/-- Whether this slot's whole expansion is Number, the admitted kind whose refusal is the literal
+    comparison rather than the kind gate. -/
+private def ResolvedFieldEntityOperand.numberSlot :
+    ResolvedFieldEntityOperand model → Bool
+  | operand =>
+      let declarations := operand.expansionDeclarations
+      !declarations.isEmpty &&
+        declarations.all fun declaration =>
+          match declaration.policy.kind with
+          | .number _ => true
+          | _ => false
+
+/-- The path of the first slot when every slot is a Number. A group reaches this the same way a
+    field does: its expansion is erased by token certification, which reports only that the
+    expansion is not a token and so loses the distinction the Kernel draws here. -/
+private def numberListPath? :
+    List (ResolvedFieldEntityOperand model) → Option (List String)
+  | [] => none
+  | operands =>
+      if operands.all ResolvedFieldEntityOperand.numberSlot then
+        (operands.head?).map ResolvedFieldEntityOperand.entityPath
+      else
+        none
+
+/-- Check the measured plural String-literal form in operator order. The kind-set class is projected
+    before token certification erases the rejected expansion's kind; no shared group error is
+    reclassified. -/
 def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceTokenEntityStringLiteralValueListSource) :
@@ -206,8 +252,11 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     match authored.values with
     | [] => throw .emptyValues
     | firstValue :: restValues => pure (firstValue, restValues)
-  match firstHomogeneousDateGroupPath? shape.operands with
-  | some path => throw (.dateGroupAgainstStringValues path)
+  match refusedKindListPath? shape.operands with
+  | some path => throw (.slotKindNotStringEnumNumber path)
+  | none => pure ()
+  match numberListPath? shape.operands with
+  | some path => throw (.slotNumberAgainstStringLiterals path)
   | none => pure ()
   let fields ← certifyTokenEntityShape model declaringGroup shape
     |>.mapError .fields
@@ -236,7 +285,8 @@ namespace TokenEntityStringLiteralValueListElabError
 def diagnostic? : TokenEntityStringLiteralValueListElabError →
     Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
-  | .dateGroupAgainstStringValues _ => some .onlyStringEnumNumberAllowed
+  | .slotKindNotStringEnumNumber _ => some .onlyStringEnumNumberAllowed
+  | .slotNumberAgainstStringLiterals _ => some .invalidTypesForComparison
   -- Delegated rather than dropped: the field side's own projection now carries the three-way kind
   -- partition this carrier's message vocabulary draws.
   | .fields error => error.diagnostic?

@@ -63,7 +63,27 @@ private def probeModel : FlatModel :=
       -- union rule is indistinguishable from an every-domain one on every row they can form.
       { id := 15, groupPath := ["Probe"], name := "Choice3",
         policy := { kind := .enumeration },
-        enumeration := some { storedTokens := ["C", "D"] } }] }
+        enumeration := some { storedTokens := ["C", "D"] } },
+      -- The three temporal kinds the original rows left out. All four temporal kinds share one
+      -- `FieldKind` constructor, so a partition keyed on it needs each of them measured.
+      { id := 16, groupPath := ["Probe"], name := "StartsAt",
+        policy := { kind := .temporal .time TemporalComponents.time },
+        temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      { id := 17, groupPath := ["Probe"], name := "EndsAt",
+        policy := { kind := .temporal .time TemporalComponents.time },
+        temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      { id := 18, groupPath := ["Probe"], name := "SeenAt",
+        policy := { kind := .temporal .dateTime TemporalComponents.now },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+      { id := 19, groupPath := ["Probe"], name := "LeftAt",
+        policy := { kind := .temporal .dateTime TemporalComponents.now },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+      { id := 20, groupPath := ["Probe"], name := "AnniversaryA",
+        policy := { kind := .temporal .date { year := false, month := true, day := true, hour := false, minute := false, second := false } },
+        temporalTargetPolicy := some { format := "MM-dd" } },
+      { id := 21, groupPath := ["Probe"], name := "AnniversaryB",
+        policy := { kind := .temporal .date { year := false, month := true, day := true, hour := false, minute := false, second := false } },
+        temporalTargetPolicy := some { format := "MM-dd" } }] }
 
 example : probeModel.validate.isOk = true := by native_decide
 
@@ -98,6 +118,86 @@ example :
     [pairAdmission "ReportedOn" "SettledOn", pairAdmission "Flag" "Flag2",
       pairAdmission "Span" "Span2", pairAdmission "Agreed" "Agreed2"] =
       List.replicate 4 (.refused (some .onlyStringEnumNumberAllowed)) := by
+  native_decide
+
+/- **The other three temporal kinds join them**, measured rather than inherited from DATE: TIME,
+   DATETIME, and a component-omitting DATEFRAGMENT declaration each draw the same class at this
+   slot. They share one `FieldKind` constructor with DATE, so without these rows a partition written
+   over that constructor would be right by luck on three quarters of its own arm. -/
+example :
+    [pairAdmission "StartsAt" "EndsAt", pairAdmission "SeenAt" "LeftAt",
+      pairAdmission "AnniversaryA" "AnniversaryB"] =
+      List.replicate 3 (.refused (some .onlyStringEnumNumberAllowed)) := by
+  native_decide
+
+/-! ### The same gate at a group slot
+
+A group declares no kind of its own, so it reaches this gate through its expansion. The Kernel's
+answer is the slot-shape-independent one: a homogeneous group draws exactly what the same kind
+draws as a field pair or as a sole field.
+-/
+
+private def kindGroupField (id : FieldId) (group : String) (name : String)
+    (kind : FieldKind) : FlatFieldDecl :=
+  { id, groupPath := ["Bag", group], name, policy := { kind } }
+
+private def dateFragmentComponents : TemporalComponents :=
+  { year := false, month := true, day := true, hour := false, minute := false, second := false }
+
+private def groupModel : FlatModel :=
+  { fields := [
+      kindGroupField 1 "StrG" "A" .string, kindGroupField 2 "StrG" "B" .string,
+      kindGroupField 3 "NumG" "A" (.number { scale := 0, signed := false }),
+      kindGroupField 4 "NumG" "B" (.number { scale := 0, signed := false }),
+      kindGroupField 7 "BoolG" "A" .boolean, kindGroupField 8 "BoolG" "B" .boolean,
+      kindGroupField 9 "ConfG" "A" .confirm, kindGroupField 10 "ConfG" "B" .confirm,
+      { id := 11, groupPath := ["Bag", "RangeG"], name := "A", policy := { kind := .dateRange }, dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } },
+      { id := 12, groupPath := ["Bag", "RangeG"], name := "B", policy := { kind := .dateRange }, dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } },
+      { id := 13, groupPath := ["Bag", "EnumG"], name := "A", policy := { kind := .enumeration }, enumeration := some { storedTokens := ["A", "B"] } },
+      { id := 14, groupPath := ["Bag", "EnumG"], name := "B", policy := { kind := .enumeration }, enumeration := some { storedTokens := ["A", "B"] } },
+      { id := 15, groupPath := ["Bag", "DateG"], name := "A", policy := { kind := .temporal .date TemporalComponents.fullDate }, temporalTargetPolicy := some { format := "dd.MM.yyyy" } },
+      { id := 16, groupPath := ["Bag", "DateG"], name := "B", policy := { kind := .temporal .date TemporalComponents.fullDate }, temporalTargetPolicy := some { format := "dd.MM.yyyy" } },
+      { id := 17, groupPath := ["Bag", "TimeG"], name := "A", policy := { kind := .temporal .time TemporalComponents.time }, temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      { id := 18, groupPath := ["Bag", "TimeG"], name := "B", policy := { kind := .temporal .time TemporalComponents.time }, temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      { id := 19, groupPath := ["Bag", "DtG"], name := "A", policy := { kind := .temporal .dateTime TemporalComponents.now }, temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+      { id := 20, groupPath := ["Bag", "DtG"], name := "B", policy := { kind := .temporal .dateTime TemporalComponents.now }, temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+      { id := 21, groupPath := ["Bag", "FragG"], name := "A", policy := { kind := .temporal .date dateFragmentComponents }, temporalTargetPolicy := some { format := "MM-dd" } },
+      { id := 22, groupPath := ["Bag", "FragG"], name := "B", policy := { kind := .temporal .date dateFragmentComponents }, temporalTargetPolicy := some { format := "MM-dd" } }] }
+
+example : groupModel.validate.isOk = true := by native_decide
+
+private def groupAdmissionWith (group : String) (values : List String) : Admission :=
+  match elaborateTokenEntityStringLiteralValueListSource groupModel ["Bag"]
+      { quantifier := .atLeastOne
+        fields := { first := .group (.path { base := .absolute, groups := ["Bag", group] }), rest := [] }
+        values := values } with
+  | .ok _ => .admitted
+  | .error error => .refused error.diagnostic?
+
+/-- The literals are outside every declared Enumeration domain in this fixture, which is what the
+    kind rows want: they must be decided by the slot's kind, never by a literal that happens to be a
+    declared token. The Enumeration row below supplies its own declared literals for that reason. -/
+private def groupAdmission (group : String) : Admission :=
+  groupAdmissionWith group ["x", "y"]
+
+/-- **Every kind outside the admitted set draws the class at a group slot too**, which this carrier
+previously reported for DATE alone — the other five reached no class at all, because a group's
+expansion is erased before the certification that classifies a direct field. The six rows are
+asserted together because the property is that the slot shape does not matter, not that each kind
+has an answer ([checkpoint](../../docs/SOURCES.md#src-value-list-slot-kind-set)). -/
+example :
+    ["DateG", "TimeG", "DtG", "FragG", "RangeG", "BoolG"].map groupAdmission =
+      List.replicate 6 (.refused (some .onlyStringEnumNumberAllowed)) ∧
+      groupAdmission "ConfG" = .refused (some .onlyStringEnumNumberAllowed) := by
+  native_decide
+
+/-- The admitted side, which keeps the six rows above from reading as "a group slot is refused".
+`NumG` is the separator that fixes *which* gate answered: it is inside the admitted set, so it
+passes this gate and falls to the literal comparison exactly as the Number field pair does. -/
+example :
+    groupAdmission "StrG" = .admitted ∧
+      groupAdmissionWith "EnumG" ["A", "B"] = .admitted ∧
+      groupAdmission "NumG" = .refused (some .invalidTypesForComparison) := by
   native_decide
 
 private def enumAdmission (values : List String) : Admission :=

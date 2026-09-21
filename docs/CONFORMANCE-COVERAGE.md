@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-09-22; HEAD was `c7573039`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-09-22; HEAD was `93008bc1`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -76,7 +76,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 23 |
 | `remaining` rows across those gaps | 215 |
 | Gaps whose route is **blocked** | 1 |
-| Ledger entries `pending` with a12-dmkits | 8 |
+| Ledger entries `pending` with a12-dmkits | 9 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route stops the work that depends on it. Other ready obligations can continue. Remaining-work entries differ in size and may overlap; their count is not a completion percentage.
@@ -87,7 +87,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 210528 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 210721 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8712 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 

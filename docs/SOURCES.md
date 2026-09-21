@@ -668,6 +668,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+<a id="src-value-list-slot-kind-set"></a>
+- [The String-literal value list's slot gate is one class over seven kinds and does not read the slot's shape, with NUMBER inside the admitted set](sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set)
 <a id="src-variant-filter-declaration-omission"></a>
 - [An `ONLY` variant filter removes a declaration from the model, so a broken rule reports clean while a filtered field breaks every reference to it](sources/static-admission-and-class-probes.md#src-variant-filter-declaration-omission)
 <a id="src-comparison-constant-gate-immediacy"></a>

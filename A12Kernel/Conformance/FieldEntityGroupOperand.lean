@@ -362,9 +362,14 @@ example :
       .refused (some .onlyStringEnumNumberAllowed) := by
   native_decide
 
-/- No retained row assigns the Date class to a Number-group refusal on this literal surface. -/
+/- A homogeneous **Number** group is refused by the literal comparison rather than by the kind gate,
+   which is the distinction this surface's message vocabulary draws: Number is inside the admitted
+   set, so it passes the set gate and fails one step later. This row previously recorded that no
+   retained observation assigned it a class; one now does, on all three slot shapes
+   ([checkpoint](../../docs/SOURCES.md#src-value-list-slot-kind-set)). -/
 example :
-    stringLiteralListAdmission (group ["Probe", "B"]) = .refused none := by
+    stringLiteralListAdmission (group ["Probe", "B"]) =
+      .refused (some .invalidTypesForComparison) := by
   native_decide
 
 /- A heterogeneous group is not the measured homogeneous Date-group discriminator. -/

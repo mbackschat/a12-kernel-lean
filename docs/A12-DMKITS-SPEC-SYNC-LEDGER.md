@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-22-03"></a>
+### `SPEC-2026-09-22-03` — the value list's slot gate is one class over seven kinds, shape-blind, with NUMBER inside the set
+
+- `status`: pending
+- `origin`: locally originated. This project classified only a homogeneous **Date** group and let every other refused kind reach a group error carrying no class, so the defect was visible as an under-projection rather than as a wrong verdict.
+- `clause`: [`06-strings-and-enumerations.md` §B.3](../spec/06-strings-and-enumerations.md#b3-the-value-list-quantifiers--per-cell-three-way-classification-) — the admitted-set bullet, which named the set and no class, no denominator, and no slot rule.
+- `delta`: the complete refused denominator is DATE, TIME, DATETIME, DATEFRAGMENT, DATERANGE, BOOLEAN and CONFIRM, each drawing `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED`. Your [`kf109`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf109) states the rule and witnesses it with BOOLEAN and CONFIRM at the field slot; the four temporal kinds and DATERANGE are added here.
+- `delta`: the gate is **shape-blind**. A homogeneous group, a two-field list, and a sole field of one kind draw the identical class, measured in all three shapes for five kinds. A consumer that classifies a group's expansion by its own rule will diverge exactly where the expansion is erased before certification, which is how this project's defect arose.
+- `delta`: **NUMBER is inside the admitted set**, and that is the separator rather than an eighth refusal: a Number group and a Number field pair both clear this class against String literals and draw `MVK_INVALID_TYPES_FOR_COMPARISON`. An account keyed on the slot disagreeing with the literals predicts every other row here equally well, so without the Number row the gate's identity is not fixed.
+- `basis`: three `dmtool batch` runs, twenty-two `rule check` children over one ten-group model, at a12-dmkits `9c86459b352f7989b9dbdae80f71e6dd6cec6066` (clean), `dmtool` 0.13.0, Kernel `30.8.1` ([checkpoint](sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set)).
+- `acceptance`: state the seven-kind denominator, the shape-blindness, and NUMBER's membership with its later comparison class; or supply a contrary observation in which one of those kinds draws a different class, or a group slot draws a class its field-pair twin does not.
+- `not-claimed`: a **mixed** list pairing an admitted slot with a refused one. Your ledger records a separate homogeneity refusal there and no row here covers it, so this project leaves it unmapped rather than assigning either class.
+
+
 <a id="spec-2026-09-22-02"></a>
 ### `SPEC-2026-09-22-02` — partial validation masks references, and a repetition coordinate is not one
 
