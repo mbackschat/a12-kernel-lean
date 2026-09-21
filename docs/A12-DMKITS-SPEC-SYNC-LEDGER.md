@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-21-03"></a>
+### `SPEC-2026-09-21-03` — Base Year reaches the year difference's operand gate, and the refusal class moves with it
+
+- `status`: pending
+- `origin`: locally originated. Measured while closing the difference families' admission beside a repetition operand; the class movement was not the question asked and was found by running the same operand against a Base-Year-free twin model.
+- `clause`: [`05-dates-and-time.md` §2](../spec/05-dates-and-time.md) — the operand-component paragraph, which already said a declared Base Year supplies the year position but named only the extractor carrier and no class consequence.
+- `delta`: `DifferenceInYears` admits a yearless `dd.MM.` operand under a declared Base Year and refuses it `MVK_WRONG_DATE_FORMAT_FOR_OP` without one, while `DifferenceInMonths` over the identical operand is admitted either way. **The refusal class is conditioned by the same axis**: a pure `HH:mm:ss` operand at `DifferenceInYears` draws `MVK_INVALID_TIME` with a Base Year declared and `MVK_WRONG_DATE_FORMAT_FOR_OP` without, while `DifferenceInMonths` draws the latter in both models. So two units of one family agree on every admitted operand and still answer different codes on a refused one.
+- `delta`: a complete `yyyy-MM-dd'T'HH:mm:ss` declaration is refused `MVK_WRONG_DATE_FORMAT_FOR_OP` at both completed-period units and **admitted** at `DifferenceInDays`, which refuses the pure clock instead. Each family's own missing half draws its own code.
+- `basis`: five `computation add --dry-run` batches, 33 children, over two models differing in exactly one Base-Year builder call, at a12-dmkits `9c86459b352f7989b9dbdae80f71e6dd6cec6066` (clean), `dmtool` 0.13.0, Kernel `30.8.1`. Four control rows do not move across the two models. Route, model shapes, and per-row verdicts at the [difference-gate conditioning checkpoint](sources/computation-placement-and-constant-probes.md#src-difference-gate-base-year-conditioning).
+- `acceptance`: state the Base-Year conditioning of both the admission and the class on the completed-period difference, or supply a contrary kernel observation in which `DifferenceInYears` answers one class for a clock operand regardless of the declared Base Year.
+- `relation`: [`KF392`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf392) holds the analogous gate order and Base-Year supplementation for the **shift** construct and states that `MVK_INVALID_TIME` is reachable only through the three clock shift operators. Nothing here contradicts that: its scope is `CheckDatumAddOpImpl`, and the difference construct is a separate one whose order this entry measures rather than reads from source. The prediction that the two constructs share the shape came from that finding and is what the two-model pair confirmed.
+- `limit`: static admission and diagnostic class only. No runtime value is established, the gate order is inferred from which class answers rather than read from Kernel source, and the sub-day units were measured at the complete-instant and clock formats rather than across a full kind×format cross.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-21-02"></a>
 ### `SPEC-2026-09-21-02` — the field-list kind gate admits two temporal kinds sharing one declared format, which answers the peer's own open question
 
