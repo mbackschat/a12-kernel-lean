@@ -2309,3 +2309,13 @@ The discharge rule names four corpora to grep before writing an unreachability o
 **The distinguishing mark of this failure is not a held axis.** [[LF161]] is about a constant the grid could not show and [[LF171]] about a topology no fixture reached; both are invisible from inside the evidence. This one was visible from outside it, in prose, in a file this project reads regularly for other purposes. That makes it cheaper to prevent and more embarrassing to repeat, and it is why the remedy is a search list rather than a better grid.
 
 Related: [[LF121]] on searching for the values a settling observation would carry rather than the words describing the question, [[LF145]] on the near-miss that produced the outbound search rule and its heading-first technique, and [[LF120]] on the phrasing that invites no correction.
+
+## LF173 — a `with`-built fixture inherits the constraint fields its new kind is forbidden to carry, and the validator blames the model rather than the field
+
+**The trap.** Adding a differently-kinded field to a Lean fixture by record update — `{ target with id := 6, name := "Text", policy := { kind := .string } }` — silently carries every constraint field the base declaration set for *its* kind. Here `target` declared `numericTargetConstraints := { maximum := some 22 }`, which a non-Number field may not hold, so `FlatModel.validate` answered `numericTargetConstraintsRequireNumber` and the whole model became invalid.
+
+**Why it costs more than it should.** The failure surfaces nowhere near its cause. Every `native_decide` in the module reports `(operation mixed).toOption.isSome = false` — the pre-existing cases, not the new one — so the module reads as though the change broke settled behaviour, when in fact one new fixture row made the model unconstructible and every consumer of it degraded together. The tell is that cases untouched by the change fail alongside the new one; that pattern means the shared fixture, not the semantics.
+
+**The technique.** Validate the fixture directly before debugging the cases: `#eval FlatModel.validate <model>` names the offending path and rule in one line, where the case failures name neither. Build each variant separately and evaluate them side by side, which turns "something broke" into "this row broke" in a single piped probe ([`CLAUDE.md`](../CLAUDE.md) owns the throwaway-probe form). When a fixture's base declaration carries kind-specific constraints, clear them explicitly in the update rather than trusting the defaults to be inert.
+
+Related: [[LF116]] on a mechanism's reuse across a carrier being a claim rather than an inheritance — the same shape one level down, where a *fixture's* reuse across a kind carries constraints that do not transfer.
