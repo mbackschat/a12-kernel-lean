@@ -620,4 +620,41 @@ example :
     (some .partialDateNotAllowed, true, true) := by
   native_decide
 
+/-! ### The kind gate at a group slot
+
+A group declares no kind, so it reaches the gate through its expansion. The Kernel's answer does not
+depend on the slot's shape, and this carrier's admitted set is wider than the String-literal value
+list's: all four date-like kinds pass here, while `DATERANGE`, `BOOLEAN` and `CONFIRM` do not
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set)).
+-/
+
+private def kindGroupModel : FlatModel :=
+  { fields := [
+      { id := 40, groupPath := ["Probe", "BoolBox"], name := "A", policy := { kind := .boolean } },
+      { id := 41, groupPath := ["Probe", "BoolBox"], name := "B", policy := { kind := .boolean } },
+      { id := 42, groupPath := ["Probe", "ConfBox"], name := "A", policy := { kind := .confirm } },
+      { id := 43, groupPath := ["Probe", "ConfBox"], name := "B", policy := { kind := .confirm } },
+      { id := 44, groupPath := ["Probe", "RangeBox"], name := "A", policy := { kind := .dateRange }, dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } },
+      { id := 45, groupPath := ["Probe", "RangeBox"], name := "B", policy := { kind := .dateRange }, dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } },
+      { id := 46, groupPath := ["Probe", "DateBox"], name := "A", policy := { kind := .temporal .date TemporalComponents.fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 47, groupPath := ["Probe", "DateBox"], name := "B", policy := { kind := .temporal .date TemporalComponents.fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } }] }
+
+example : kindGroupModel.validate.isOk = true := by native_decide
+
+private def groupSlotDiagnostic? (group : String) : Option KernelStaticDiagnostic :=
+  match elaborateTemporalDistinctCountSource kindGroupModel ["Probe"]
+      { first := .group (.path { base := .absolute, groups := ["Probe", group] }), rest := [] } with
+  | .error error => error.diagnostic?
+  | .ok _ => none
+
+/-- The three kinds outside this operator's three classes draw its own admitted-set code at a group
+    slot, the same one their field pairs draw. The admitted DATE group is what keeps the rows from
+    reading as a refusal of group operands, and it is also the contrast with the String-literal
+    value list, where every date-like kind is refused instead. -/
+example :
+    ["BoolBox", "ConfBox", "RangeBox"].map groupSlotDiagnostic? =
+      List.replicate 3 (some .onlyStringEnumNumberCmpDateAllowed) ∧
+      groupSlotDiagnostic? "DateBox" = none := by
+  native_decide
+
 end A12Kernel.Conformance.TemporalDistinctCount
