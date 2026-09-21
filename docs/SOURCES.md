@@ -623,6 +623,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-repetition-numeric-source-kinds"></a>
 - [Mixing with `CurrentRepetition` does not narrow a repeatable Number target's admitted source kinds](sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)
 
+<a id="src-repetition-operand-partial-relevance"></a>
+- [`CurrentRepetition` is structural for partial-validation relevance too, so a rule that reads it alone fires under a coverage that suppresses its field-reading neighbour](sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)
+
 <a id="src-ancestor-declared-repetition-computation"></a>
 - [A computation's declaring group selects neither its iteration nor its values; containment of the target is the only thing it decides](sources/group-and-iteration-probes.md#src-ancestor-declared-repetition-computation)
 
