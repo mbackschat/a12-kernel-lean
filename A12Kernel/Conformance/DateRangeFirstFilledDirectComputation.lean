@@ -52,7 +52,7 @@ private def directMonthEmptySecond :=
   rangeField 35 "DirectMonthEmptySecond" "MM" ""
 
 /-- Three further ISO/slash sources, so the list reaches **arity four**. Nothing had been executed
-past three sources on any profile until the [list arity checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix)
+past three sources on any profile until the [list arity checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 measured the Kernel admitting and recursing through a fourth. `directIsoSource` is the first of the
 four; it also serves the crossed-profile refusals above, which are a different operation. -/
 private def directIsoSecond :=
@@ -451,7 +451,7 @@ example :
       }] = some "POISON" := by
   native_decide
 
-/- Four ISO/slash sources keep the same authored-order recursion one position deeper, Kernel-calibrated on both codegen strategies at the [list arity checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-date-range-list-iso-arity-and-fragment-suffix). Three empty prefixes reach the fourth value, and a second-position value hides **both** remaining formal cells rather than only the next one — the discriminator against a scan that looks one position ahead. The suffix is hidden from the VALUE only: the same checkpoint measures the eager inventory reporting both malformed sources. -/
+/- Four ISO/slash sources keep the same authored-order recursion one position deeper, Kernel-calibrated on both codegen strategies at the [list arity checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-date-range-list-iso-arity-and-fragment-suffix). Three empty prefixes reach the fourth value, and a second-position value hides **both** remaining formal cells rather than only the next one — the discriminator against a scan that looks one position ahead. The suffix is hidden from the VALUE only: the same checkpoint measures the eager inventory reporting both malformed sources. -/
 example :
     directListSignature? target.id "DirectIsoSource"
       ["DirectIsoSecond", "DirectIsoThird", "DirectIsoFourth"] [{

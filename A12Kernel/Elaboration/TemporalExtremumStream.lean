@@ -29,7 +29,7 @@ distinction that survives a zone transition.
 **A component-omitting list folds too, on two further arms, and no interval element type is involved
 — which an earlier version of this note assumed.** The Kernel admits `yyyy-MM` or a yearless `MM`
 and orders it at the shared set's own precision, the yearless one even with no Base Year declared
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)).
 Within one shared component set a canonical representative is order-preserving, so the two arms are
 `FullDate` for a year-bearing set — its unnamed components masked to the canonical value the
 distinct count already fixes, `Semantics/FullDate.lean`'s `maskedDateComponents` — and

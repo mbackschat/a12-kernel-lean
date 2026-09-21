@@ -406,7 +406,7 @@ components admits every one of them, which is what this project did.
 This settles the **partially known** carrier and nothing beyond it: that operand never reaches the
 fold. It was once read as also settling the *component-omitting* one, and that inference was wrong —
 a component-omitting format carries no `datePrecision`, is admitted, and is ordered by the fold
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold),
+([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold),
 [`LF159`](../../docs/LEAN-FINDINGS.md)). -/
 
 example :

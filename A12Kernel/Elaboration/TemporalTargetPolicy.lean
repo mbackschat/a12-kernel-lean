@@ -313,7 +313,7 @@ structure CheckedOmittedComponentDateTarget (model : FlatModel) where
   the **pair**: a Base Year is required exactly when the constant and the target disagree about
   carrying a year, so a *yearless* constant reaches a yearless target with no Base Year declared —
   measured, admitted, storing the month alone
-  ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-format-gate-not-component-sets)).
+  ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-format-gate-not-component-sets)).
   This field states the requirement on the target alone, which is sound only because every constant
   reaching it is year-bearing by construction: `DateParts.year` is an `Int`, not an option, so the
   yearless literal is unrepresentable as a Date constant here. A carrier that gains a yearless

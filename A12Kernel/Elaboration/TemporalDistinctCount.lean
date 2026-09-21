@@ -170,7 +170,7 @@ inductive TemporalDistinctCountElabError where
     Measured on this operator at `baseYear: "2024"`: a yearless `MM` operand is admitted beside
     `yyyy-MM`, and `MM-dd` beside a complete date, while `MM-dd` beside `yyyy-MM` stays refused and
     both mixed pairs stay refused with no Base Year declared
-    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)).
+    ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)).
     Supplement-then-require-equality reproduces all four rows; plain equality refuses the first two,
     which are legal models. The Base Year supplies only the year, so a set that disagrees on any
     other component is refused exactly as before. -/
@@ -386,7 +386,7 @@ which is the honest shape.
 **Every date precision folds, at its own precision.** A component-omitting list is counted at the
 shared set after Base Year supplementation, and a list with no year available anywhere is counted on
 the calendar position it spells
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)).
+([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)).
 Each operand is projected through **its own** declared set, so one list may hold operands the Base
 Year supplements differently. The omitted components are supplied canonically by the projection
 rather than read off the cell, which is what keeps the count the declaration's rather than the
@@ -414,7 +414,7 @@ def TemporalDistinctCountFoldArm.kind : TemporalDistinctCountFoldArm → ValueLi
     Keyed on the declared **component set** and never on the declared kind, which is measured: a TIME
     and a DATETIME declared the degenerate `HH:mm:ss` count one value for one clock reading, so they
     must land in the same arm
-    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-time-bearing-fold)).
+    ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-time-bearing-fold)).
     Among the date arms a year is available when the set names one or the Base Year supplies it,
     which is the same supplementation the admission gate applies. -/
 def temporalDistinctCountFoldArm
@@ -439,7 +439,7 @@ def temporalDistinctCountFoldArm
     declaration's.
 
     Measured: the count compares at the shared set's precision after Base Year supplementation
-    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold)). -/
+    ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)). -/
 private def temporalDistinctCountCell
     (components : TemporalComponents) (baseYear : Option Int) :
     (arm : TemporalDistinctCountFoldArm) → CheckedAddressedCell →
@@ -524,7 +524,7 @@ def CheckedTemporalDistinctCountOperand.resolveDistinctCountCore
     they have — so a set omitting one would be folded at a precision it does not declare. No format
     in the admitted domain spells such a set: the twelve admitted date/time formats are the ten date
     sets, the complete clock, and the complete instant
-    ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-time-bearing-fold)).
+    ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-time-bearing-fold)).
     So this is a representable shape with no known witness rather than a measured gap, which is
     exactly why it stays a certificate instead of an invented projection. -/
 def timeBearingSetIsComplete (components : TemporalComponents) : Bool :=

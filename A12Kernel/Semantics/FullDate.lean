@@ -134,8 +134,8 @@ would answer differently for two producers spelling the same value, which is not
 **Why it lives here.** Two completed consumers compare at the shared set and mean the same thing by
 it: `NumberOfDifferentValues` folds distinct values at that precision, and `MinValue`/`MaxValue` order
 at it — both measured, on the same declarations
-([distinct count](../../docs/sources/evaluation-and-application-routes.md#src-distinct-count-component-omitting-fold),
-[extrema](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+([distinct count](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold),
+[extrema](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)).
 Their modules share only this projection, which is the reason `toFullDate?` sits here too.
 
 A caller reaching the year-bearing arm has a year available from the set or the Base Year, so the

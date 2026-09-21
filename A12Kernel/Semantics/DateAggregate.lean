@@ -83,7 +83,7 @@ end CellObservation
 
 A component-omitting Date list is admitted and **ordered** by the Kernel at the shared set's own
 precision, the yearless case even with no Base Year declared
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-extrema-component-omitting-fold)).
+([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)).
 No interval domain is involved: within one shared component set the canonical representative is
 order-preserving, so a year-bearing set orders as `FullDate` and a yearless one as `MonthDayValue`,
 each through the generic scan above. The omitted components are supplied by `maskedDateComponents`
