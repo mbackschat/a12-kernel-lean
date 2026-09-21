@@ -2333,3 +2333,15 @@ Related: [[LF116]] on a mechanism's reuse across a carrier being a claim rather 
 **The tell in review.** A widening whose diff touches an admission or well-formedness predicate and no resolver, elaborator, or parser is the shape to check. Ask which function turns the authored form into the accepted one, and whether the diff touched it.
 
 Related: [[LF116]] on a mechanism's reuse across a carrier being a claim rather than an inheritance; [[LF173]] on validating the fixture before debugging the cases.
+
+## LF175 — this repository's own checkpoints are heading-first searchable exactly like the peer's, and the value-grep the discharge rule prescribes walks straight past them
+
+**What happened.** Before opening a Custom-carrier calibration I searched `docs/sources/` for anchors matching the carrier, got `src-presence-confirm-custom-carriers` back in the first result set, and went on to read Kernel source and run a probe. The answer was in that file: an unregistered Custom type had been measured on 2026-09-04 with the same filled-versus-empty separator, retained bytes and all. The heading alone would have stopped the round — *"the presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value, measured locally 2026-09-04"*.
+
+**Why the prescribed technique misses it.** [The discharge rule](../CLAUDE.md) gives two search techniques and attaches them to the wrong corpora. It gives *heading-first* only for the peer's `KERNEL-FINDINGS.md`, and for the four local corpora it says to grep for **the literal values a settling observation would carry**. That is right for `spec/` and for a conformance module, where the value is the claim. It is wrong for `docs/sources/`, whose 363 checkpoints are shaped like the peer's: one `####` line carrying the full claim, its oracle and its date, above a keyed body. Grepping that corpus for a value finds the body line of whichever checkpoint happens to quote it and tells you nothing about which checkpoint *owns* the question, while the headings answer ownership in one screen — `grep -n '^#### ' docs/sources/*.md | grep -i <carrier>`.
+
+**The transferable test.** Match the technique to the corpus's shape, not to whether it is local. A corpus whose entries lead with a one-line claim is searched by those lines first; a corpus whose entries lead with a name is searched by the values inside them. The tell that you are in the first kind is an entry whose heading would be a complete sentence if you read it aloud.
+
+**The cost asymmetry is what makes this worth a rule.** A missed defeater ([[LF172]]) lets a false claim leave the repository; a missed *owner* only spends a measurement — but it spends it silently, because a redundant measurement agrees with the record it duplicated and so produces no signal at all. Nothing downstream fails. The only place it can be caught is before the probe.
+
+Related: [[LF172]] on the peer corpus being a defeater store rather than only a redundancy store, and [[LF121]] on searching for values rather than for the words describing the question — the technique this finding bounds.
