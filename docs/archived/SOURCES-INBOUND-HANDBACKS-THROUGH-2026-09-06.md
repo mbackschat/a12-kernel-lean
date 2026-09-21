@@ -1,6 +1,6 @@
-# Inbound 2026-09-05 and 2026-09-06 handback checkpoints
+# Archived inbound handback checkpoints through 2026-09-06
 
-Reconciled inbound handbacks and reports from the 2026-09-05 and 2026-09-06 exchange window, moved out of [`../SOURCES.md`](../SOURCES.md) when that hub reached its size ceiling. Every anchor below is still reachable by its original `SOURCES.md#inbound-…` spelling through the redirect stub the hub retains, so existing citations resolve unchanged. Later handbacks remain in the hub's clause-to-source drill map until they are moved the same way.
+This immutable archive contains the seven terminal inbound handback and report receipts from the 2026-09-05 and 2026-09-06 exchange window, frozen when [`../SOURCES.md`](../SOURCES.md) reached its 200,000-byte hub ceiling. Stable `inbound-` anchors remain authoritative here, and every original `SOURCES.md#inbound-…` citation still resolves through the compatibility entry the hub retains. New inbound provenance belongs in the [current hub](../SOURCES.md#provenance-checkpoint-index), not here.
 
 <a id="inbound-2026-09-05b"></a>
 ### Reviewed 2026-09-05b handback — three entries accepted, one peer premise retracted, and one overlap found by reading

@@ -261,22 +261,22 @@ That document run happened locally on 2026-09-03 and **refuted the discriminator
 
 ### Inbound 2026-09-05 and 2026-09-06 handbacks
 
-Moved to [`sources/inbound-2026-09-early-handbacks.md`](sources/inbound-2026-09-early-handbacks.md) when this hub reached its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md) when this hub reached its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-05b"></a>
-- [Reviewed 2026-09-05b handback — three entries accepted, one peer premise retracted, and one overlap found by reading](sources/inbound-2026-09-early-handbacks.md#inbound-2026-09-05b)
+- [Reviewed 2026-09-05b handback — three entries accepted, one peer premise retracted, and one overlap found by reading](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05b)
 <a id="inbound-2026-09-05c"></a>
-- [Reviewed 2026-09-05c handback — the reassigned row measured, and one over-admission found from a description of this project's code](sources/inbound-2026-09-early-handbacks.md#inbound-2026-09-05c)
+- [Reviewed 2026-09-05c handback — the reassigned row measured, and one over-admission found from a description of this project's code](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05c)
 <a id="inbound-2026-09-05d"></a>
-- [Reviewed 2026-09-05d handback — the DateTime family's cross-kind comparison, the last item open between the two projects](sources/inbound-2026-09-early-handbacks.md#inbound-2026-09-05d)
+- [Reviewed 2026-09-05d handback — the DateTime family's cross-kind comparison, the last item open between the two projects](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05d)
 <a id="inbound-2026-09-05e"></a>
-- [Reported 2026-09-05e — `NumberOfDifferentValues`' temporal admission gate, with later local re-derivation](sources/inbound-2026-09-early-handbacks.md#inbound-2026-09-05e)
+- [Reported 2026-09-05e — `NumberOfDifferentValues`' temporal admission gate, with later local re-derivation](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05e)
 <a id="inbound-2026-09-05f"></a>
-- [Reported 2026-09-05f — the distinct count's temporal identity is the decoded date, and the first-operand grid's envelope](sources/inbound-2026-09-early-handbacks.md#inbound-2026-09-05f)
+- [Reported 2026-09-05f — the distinct count's temporal identity is the decoded date, and the first-operand grid's envelope](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05f)
 <a id="inbound-2026-09-06b"></a>
-- [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](sources/inbound-2026-09-early-handbacks.md#inbound-2026-09-06b)
+- [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
-- [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](sources/inbound-2026-09-early-handbacks.md#inbound-2026-09-06a)
+- [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 <a id="inbound-2026-09-21b-corrections"></a>
 ### Reviewed 2026-09-21b reply handback — both contrary entries accepted, our own replacement reading corrected, and four clauses changed
 
