@@ -2405,3 +2405,13 @@ Removing one arm from `supportsAddressedPartial` — the arm refusing a bound re
 **The rule.** When a capability's `evidence` line names a leg as pending, treat its cases on that leg as recorded intent, not as constraints — and expect the first measurement of that leg to flip one. Flipping it is the capsule working. Do not let a green case argue against the measurement, and do not preserve its expected value by narrowing the fix; update the case and cite the checkpoint that settled it, so the next reader sees which of the two kinds it now is.
 
 Related: [[LF179]] on the failing-fixture half of the same asymmetry.
+
+## LF181 — a model-validator check must reduce definitionally, because `validate.isOk = true` is a proof field callers discharge by `rfl`
+
+Adding a reserved-root-name gate to `FlatModel.validate` broke seven unrelated conformance and reference modules at once, with errors like `'change' tactic failed` and `Tactic 'rfl' failed: the left-hand side is not definitionally equal` — none of them about names, models, or the new rule. The cause was one call: the gate asked `name.toLower == "id"`, and `String.toLower` does not reduce cheaply. Every `CheckedX` structure carries `modelWellFormed : model.validate.isOk = true` as a **proof field**, and callers discharge it definitionally, so a single opaque call anywhere in the validator stalls whnf for every fixture in the repository.
+
+**Why the failure is hard to attribute.** It does not surface at the edit, in the new module, or in any message naming the new code. It surfaces as unrelated proofs breaking, which reads like a fixture regression and invites bisecting the wrong thing — the first instinct is to inspect the broken fixtures, and none of them contains the defect. The cost is bounded only because the change was one commit wide.
+
+**The rule.** Before adding a check to a validator whose result is carried as a definitional proof field, ask whether every operation in it reduces: structure projections, `List` folds, `Nat` and `Char` comparison, and `String` equality on literals do; `String.toLower`, `String.map`, and anything walking a string's bytes do not. Where the law genuinely is case-insensitive, spell it character-wise — `match name.toList with | [a, b] => …` — which keeps the semantics and reduces. Build one existing consumer of the validator, not just the new module, before assuming a change is contained: the new module passing proves nothing about this failure mode.
+
+Related: [[LF180]] on the other way a green module misleads.

@@ -125,6 +125,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Requiredness scope](implementation/data-and-core.md#cap-requiredness-scope)
 <a id="cap-generated-required-staging"></a>
 - [Generated required staging](implementation/data-and-core.md#cap-generated-required-staging)
+<a id="cap-model-declaration-legality"></a>
+- [Model declaration legality](implementation/data-and-core.md#cap-model-declaration-legality)
 <a id="cap-group-content-gate"></a>
 - [Group-content gate](implementation/data-and-core.md#cap-group-content-gate)
 

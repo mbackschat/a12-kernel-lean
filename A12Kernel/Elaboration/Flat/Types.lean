@@ -424,6 +424,13 @@ inductive ResolveError where
   | ambiguousEntity (path : List String)
   | shortNameNotUnique (name : String)
   | repeatableReference (path : List String)
+  -- `reservedRootGroupName`: A12 reserves exactly one whole name, case-insensitively, and only on
+  -- the root carrier. This is a name equality rather than an alphabet rule, which is why it sits
+  -- apart from every other name check; `spec/01` §3 names the carriers.
+  | reservedRootGroupName (name : String)
+  -- `repeatabilityAboveCap`: the ceiling is the declaring carrier's, not one global bound. A single
+  -- bound would refuse a legal nested group or accept an illegal root one.
+  | repeatabilityAboveCap (path : List String) (declared cap : Nat)
   deriving Repr, DecidableEq
 
 /-- The Kernel class a resolution failure reports, projected once for every wrapping error type.

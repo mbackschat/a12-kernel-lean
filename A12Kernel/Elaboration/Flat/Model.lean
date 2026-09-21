@@ -236,7 +236,45 @@ private def repeatableScopeMismatch? (model : FlatModel) :
       else
         some (declaration.path, expected, declaration.repeatableScope)
 
+/-- The reserved name matched case-insensitively, spelled character-wise rather than through
+    `String.toLower`: the checked-model structures carry `validate.isOk = true` as a proof field that
+    callers discharge definitionally, and `toLower` does not reduce cheaply enough for that. -/
+private def isReservedRootName (name : String) : Bool :=
+  match name.toList with
+  | [first, second] =>
+      (first == 'I' || first == 'i') && (second == 'D' || second == 'd')
+  | _ => false
+
+/-- Every declared path's first segment names the root group, so this reads them all rather than
+    assuming a single-root model that `FlatModel` does not enforce elsewhere. -/
+private def reservedRootGroupName? (model : FlatModel) : Option String :=
+  (model.fields.map (·.groupPath) ++ model.repeatableGroups.map (·.path)).findSome? fun path =>
+    match path.head? with
+    | some name => if isReservedRootName name then some name else none
+    | none => none
+
+/-- The declared maximum row count A12 still admits, which depends on the declaring carrier: a root
+    group stops an order of magnitude below a nested one. Both bounds are measured
+    ([`kf365`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf365)). -/
+def repeatabilityCap (path : GroupPath) : Nat :=
+  if path.length ≤ 1 then 999999999 else 1999999999
+
+private def repeatabilityAboveCap? (groups : List RepeatableGroupDecl) :
+    Option (List String × Nat × Nat) :=
+  groups.findSome? fun group =>
+    match group.repeatability with
+    | some declared =>
+        let cap := repeatabilityCap group.path
+        if cap < declared then some (group.path, declared, cap) else none
+    | none => none
+
 def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
+  match reservedRootGroupName? model with
+  | some name => throw (.reservedRootGroupName name)
+  | none => pure ()
+  match repeatabilityAboveCap? model.repeatableGroups with
+  | some (path, declared, cap) => throw (.repeatabilityAboveCap path declared cap)
+  | none => pure ()
   match invalidDeclPath? model.fields with
   | some path => throw (.invalidModelPath path)
   | none => pure ()

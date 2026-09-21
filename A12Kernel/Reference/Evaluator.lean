@@ -146,6 +146,13 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   | .invalidIndexField groupPath field =>
       .make .invalidPath "$.model"
         (Json.mkObj [("groupPath", toJson groupPath), ("fieldId", toJson field)])
+  | .reservedRootGroupName name =>
+      .make .invalidPath "$.model"
+        (Json.mkObj [("reason", toJson "reservedRootGroupName"), ("name", toJson name)])
+  | .repeatabilityAboveCap path declared cap =>
+      .make .invalidPath "$.model"
+        (Json.mkObj [("reason", toJson "repeatabilityAboveCap"), ("path", toJson path),
+          ("declared", toJson declared), ("cap", toJson cap)])
   | .entityHierarchyCollision fieldPath groupPath =>
       .make .hierarchyCollision "$.model"
         (Json.mkObj [("fieldPath", toJson fieldPath), ("groupPath", toJson groupPath)])

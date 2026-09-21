@@ -219,6 +219,7 @@ import A12Kernel.Conformance.MessagePointer
 import A12Kernel.Conformance.MandatoryInformation
 import A12Kernel.Conformance.MandatoryInformationBooleanFormula
 import A12Kernel.Conformance.MandatoryInformationCountChain
+import A12Kernel.Conformance.ModelDeclarationLegality
 import A12Kernel.Conformance.ModelZone
 import A12Kernel.Conformance.NestedIteratedDateRangeCondition
 import A12Kernel.Conformance.NumberEntityGroupComputation

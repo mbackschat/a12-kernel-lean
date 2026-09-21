@@ -837,6 +837,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-repeatability-declaration-domain"></a>
 - [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-list-and-capacity-probes.md#src-repeatability-declaration-domain)
+<a id="src-group-declaration-admission-peer-measurement"></a>
+- [The repeatability ceiling depends on the declaring carrier, and `Id` is the one reserved whole name](sources/inbound-group-operand-batches.md#src-group-declaration-admission-peer-measurement)
 <a id="src-repeatability-domain-peer-measurement"></a>
 - [The `repeatability` domain is `> 0` and `1` is admitted, measured by a12-dmkits](sources/inbound-group-operand-batches.md#src-repeatability-domain-peer-measurement)
 <a id="src-erroneous-member-quantifier-undecidable"></a>
