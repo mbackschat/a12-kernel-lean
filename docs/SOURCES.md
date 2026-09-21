@@ -625,6 +625,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-repetition-aggregate-operand-scope"></a>
 - [An aggregate operand answers the calculated-field ban through a star, and answers no scope rule at all](sources/group-and-iteration-probes.md#src-repetition-aggregate-operand-scope)
+
+<a id="src-repetition-source-kinds-runtime"></a>
+- [Every widened source beside a repetition operand reads at its own declaration's scope in the reading row](sources/group-and-iteration-probes.md#src-repetition-source-kinds-runtime)
 <a id="src-currentrepetition-operand-carriers"></a>
 - [The operand is an ordinary Number expression wherever one is legal, while `$` is filter-only by site and no aggregate accepts it](sources/group-and-iteration-probes.md#src-currentrepetition-operand-carriers)
 

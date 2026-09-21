@@ -405,4 +405,105 @@ example :
       run 4 (aggregate .sum (rowField "Base") [scalarPath]) = some (.poison .dateFormat) := by
   native_decide
 
+/-! ## The Kernel-calibrated one-level matrix
+
+The examples above separate the carrier's mechanisms on a two-level fixture. This section replays the
+retained one-level observation instead, so the numbers below are the real engine's and not this
+account's: model `Src` with a nonrepeatable `Meta/Scalar` and a repeatable `Rows` declaring `Base`,
+`Text`, `When`, `Until`, Base Year 2020, and five computations of the form
+`CurrentRepetition(/Src/Rows) + <source>`
+([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-source-kinds-runtime)).
+-/
+
+private def calibratedTarget : FlatFieldDecl :=
+  { id := 100, groupPath := ["Src", "Rows"], name := "AltLen", repeatableScope := [50],
+    policy := { kind := .number { scale := 0, signed := true } } }
+private def calibratedText : FlatFieldDecl :=
+  { calibratedTarget with id := 101, name := "Text", policy := { kind := .string } }
+private def calibratedWhen : FlatFieldDecl :=
+  { calibratedTarget with id := 102, name := "When", policy := { kind := .temporal .date dateComponents } }
+private def calibratedModel : FlatModel :=
+  { fields := [calibratedTarget, { calibratedTarget with id := 103, name := "Base" },
+      { calibratedTarget with id := 104, groupPath := ["Src", "Meta"], name := "Scalar", repeatableScope := [] },
+      calibratedText, calibratedWhen, { calibratedWhen with id := 105, name := "Until" }],
+    repeatableGroups := [{ level := 50, path := ["Src", "Rows"], repeatability := some 20 }],
+    baseYear := some 2020 }
+private def calibratedOperation (expression : AuthoredNumericExpr SurfaceNumericAtom) :=
+  checkAddressedRepetitionComputation calibratedModel ["Src", "Rows"] 100 expression
+private def rowsRepetition : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.currentRepetition { base := .absolute, groups := ["Src", "Rows"] })
+private def rowPath (name : String) : SurfaceFieldPath :=
+  { base := .relative 0, groups := [], field := name }
+private def metaScalar : SurfaceFieldPath :=
+  { base := .absolute, groups := ["Src", "Meta"], field := "Scalar" }
+private def calibratedDate (year month day : Nat) : CheckedCell :=
+  calibratedWhen.checkRaw (.parsed (.temporal (.date {
+    instant := { epochMillis := 0 }
+    parts := { year := year, month := month, day := day }
+    basis := .storedGregorian })))
+private def emptyCell : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+
+/-- The three observed documents, as the reader each row's environment sees. -/
+private inductive CalibratedDocument where
+  | clean | degraded | noScalar
+  deriving DecidableEq
+
+private def calibratedRead (document : CalibratedDocument) (row : Nat) (address : CellAddr) :
+    Except CheckedDocumentError CheckedCell :=
+  let scalar : CheckedCell :=
+    match document with
+    | .noScalar => emptyCell
+    | _ => calibratedTarget.checkRaw (.parsed (.num 100))
+  let text (value : String) : CheckedCell := calibratedText.checkRaw (.parsed (.str value))
+  .ok <| match address.field, document, row with
+    | 104, _, _ => scalar
+    | _, .degraded, 1 => emptyCell
+    | 102, .degraded, 2 => calibratedWhen.checkRaw (.rejected .dateFormat)
+    | 101, _, 1 => text "abcd"
+    | 101, _, 2 => text "xy"
+    | 102, _, 1 => calibratedDate 2021 3 1
+    | 102, _, 2 => calibratedDate 2020 1 1
+    | 105, _, 1 => calibratedDate 2021 11 1
+    | 105, _, 2 => calibratedDate 2022 7 1
+    | 103, _, 1 => calibratedTarget.checkRaw (.parsed (.num 7))
+    | 103, _, _ => calibratedTarget.checkRaw (.parsed (.num 11))
+    | _, _, _ => emptyCell
+
+/-- Each source answers at its own declaration's scope in the reading row, and the one nonrepeatable
+member answers the same root cell from both rows — which is why the aggregate moves by the row's own
+`Base` alone across rows, and by the shared `Scalar` alone across documents. Empty is zero in every
+source that reads a cell; only formal invalidity poisons, and it poisons its own source in its own
+row while the other four complete. -/
+example :
+    let run (document : CalibratedDocument) (row : Nat)
+        (expression : AuthoredNumericExpr SurfaceNumericAtom) :=
+      ((calibratedOperation expression).toOption.bind fun checked =>
+        (checked.evaluateAtEnvironmentWithRead (calibratedRead document row) [(50, row)]).toOption)
+    let len := AuthoredNumericExpr.binary .add rowsRepetition
+      (.atom (.stringLength (rowPath "Text")))
+    let year := AuthoredNumericExpr.binary .add rowsRepetition
+      (.atom (.temporalFieldPart (rowPath "When") (.date .year)))
+    let diff := AuthoredNumericExpr.binary .add rowsRepetition
+      (.atom (.dateDifference .months (.field (rowPath "When")) (.field (rowPath "Until"))))
+    let agg := AuthoredNumericExpr.binary .add rowsRepetition
+      (.atom (.aggregate .sum { first := rowPath "Base", rest := [metaScalar] }))
+    let baseYear := AuthoredNumericExpr.binary .add rowsRepetition (.atom .baseYear)
+    -- clean
+    (run .clean 1 len, run .clean 2 len) = (some (.value 5), some (.value 4)) ∧
+      (run .clean 1 year, run .clean 2 year) = (some (.value 2022), some (.value 2022)) ∧
+      (run .clean 1 diff, run .clean 2 diff) = (some (.value 9), some (.value 32)) ∧
+      (run .clean 1 agg, run .clean 2 agg) = (some (.value 108), some (.value 113)) ∧
+      (run .clean 1 baseYear, run .clean 2 baseYear) = (some (.value 2021), some (.value 2022)) ∧
+      -- the nonrepeatable member alone moves, in both rows
+      (run .noScalar 1 agg, run .noScalar 2 agg) = (some (.value 8), some (.value 13)) ∧
+      -- every empty source answers zero rather than poisoning
+      (run .degraded 1 len, run .degraded 1 year) = (some (.value 1), some (.value 1)) ∧
+      (run .degraded 1 diff, run .degraded 1 agg) = (some (.value 1), some (.value 101)) ∧
+      -- one malformed date poisons its own two sources and leaves the other three complete
+      (run .degraded 2 year, run .degraded 2 diff) =
+        (some (.poison .dateFormat), some (.poison .dateFormat)) ∧
+      (run .degraded 2 len, run .degraded 2 agg) = (some (.value 4), some (.value 113)) ∧
+      run .degraded 2 baseYear = some (.value 2022) := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedRepetitionComputation
