@@ -27,8 +27,10 @@ def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
       target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
   | .baseYear year _ => model.baseYear == some year
 
-/-- One endpoint of a sub-day difference. Only a field is admitted: `Now` needs an evaluation world
-    this carrier's row read does not carry, and Base Year is not a legal sub-day operand at all. -/
+/-- One endpoint of a sub-day difference. Only a field is admitted, because `Now` needs an evaluation
+    world this carrier's row read does not carry and every other operand this type carries reads
+    outside the row. The sub-day operand type has no Base-Year form, so unlike the completed-period
+    endpoint there is no constant arm to certify. -/
 def CheckedAddressedNumericTarget.admitsSubdayEndpoint
     (target : CheckedAddressedNumericTarget model) : FlatTemporalOperand → Bool
   | .fieldValue source =>
@@ -43,8 +45,8 @@ def CheckedAddressedNumericTarget.admitsSubdayEndpoint
     the Kernel on `BaseYear`, `Length`, and `YearFromDate` in both positions, with the
     `FieldValueAsNumber` String/Enumeration pair separating an operand-kind refusal from a mixing
     one ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)).
-    The scope rule above is therefore the only additional gate this carrier imposes, and the
-    completed-period difference applies it to each of its two endpoints. Aggregates and group counts
+    The scope rule above is therefore the only additional gate this carrier imposes, and all three
+    difference families apply it to each of their two endpoints. Aggregates and group counts
     stay outside: each carries a group operand and a scope of its own that this rule does not
     reach, and a group operand naming the target's own repeatable group is refused by the Kernel's
     calculated-field self-reference gate rather than by anything here. -/
