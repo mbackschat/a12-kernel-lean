@@ -8,7 +8,7 @@ The AST the parser targets is the closed set of constructs described across §1�
 
 ## 1. Lexical structure
 
-- **Two keyword languages.** Every worded operator has an English and a German spelling (table in §5). The comparison and arithmetic *symbols* (`== != < <= > >= + - * / ^ -> $`) are **intrinsic** — identical in both languages.
+- **Two keyword languages, and the two vocabularies are nested rather than parallel.** A model's `conditionLanguage` selects **one** terminal map — the supported codes are exactly `en_US` and `de_DE`, and a model declaring any other is refused before lexing begins — and there is no fallback to the other map: a spelling the selected language does not carry lexes as an ordinary entity name rather than as a keyword. So `And` is an operator in an English model and a plain field name in a German one, and `Und` is the reverse. At kernel 30.8.1 the bundles hold **112 English spellings against 125 German**: every English terminal has a German twin, and the 13 extra German ones are the H-model form constructs, which therefore have no English spelling and are reserved words only in a German model. A consumer holding the *union* of both vocabularies reads such a field as an operator and drops the reference silently, because nothing failed ([inbound](../docs/SOURCES.md#inbound-2026-09-21-corrections)). The comparison and arithmetic *symbols* (`== != < <= > >= + - * / ^ -> $`) are **intrinsic** — identical in both languages.
 - **Keyword case variants are fixed per language-specific token family, and writing is canonical.** The lexer enumerates accepted spellings rather than case-folding. English admits `And`/`and`/`AND`, `Or`/`or`/`OR`, `In`/`in`/`IN`, and range-form `to`/`To`/`TO`; German admits `Und`/`und`/`UND`, `Oder`/`oder`/`ODER`, the same `In` family, and range-form `zu`/`Zu`/`ZU`. Every other language-specific keyword spelling has exactly one accepted casing: `fieldfilled`, `FIELDFILLED`, and arbitrary mixed case such as `aNd` are rejected. A case-folding lexer therefore over-accepts. Field/group *names* remain case-sensitive identifiers.
 - **Comments** are `;;` to end of line. A comment may sit before/after a condition branch and (in the engine's round-trip) the leading comment is preserved on write-back. Treat `;;…\n` as a skippable trivia token that a faithful round-tripping parser may choose to attach to the adjacent branch.
 - **Whitespace** separates tokens and is otherwise insignificant (except inside string literals).
@@ -22,7 +22,7 @@ The complete bilingual spelling table is source-characterized by the kernel's [`
 
 | Literal | Form | Notes |
 |---|---|---|
-| number | `123`, `-1.5`, `0.000` | decimal separator is always `.`; literals are **scale-exempt** in `==`/`!=` ([§5](04-numbers-and-decimals.md)); ≤ 15 digits |
+| number | `123`, `-1.5`, `0.000` | decimal separator is always `.`; a literal is **not** scale-exempt — it carries the scale it spells, and on `==`/`!=` only a written-out operand may be rescaled, and only *upward*, so `[Quantity] == 1.00` against a scale-0 field is refused in either operand order while `[UnitPrice] == 1` against a scale-2 field is admitted ([§5](04-numbers-and-decimals.md)); ≤ 15 digits |
 | date constant | `"31.12.2024"` | `DD.MM.YYYY`, day-first, always `.`; **a string literal matching this shape *is* a date** ([§6](05-dates-and-time.md)) |
 | omitted-year date | `"13.07."` | trailing dot, and it is load-bearing — `"13.07"` is not a date; completes against the model **Base Year** only where the target carries a year ([§10](09-computations.md)) |
 | date-time constant | `"05.03.2024T12:30:00"` | the date constant, a literal `T`, and the clock constant, concatenated; `"2024-03-05T12:30:00"` and the space-separated form are **not** date-times; after this spelling classifies, static checking of a spring-forward gap can still depend on the JVM default zone ([§10](09-computations.md)) |
@@ -40,7 +40,7 @@ Two tiers: **conditions** (yield a truth) and **operations** (arithmetic express
 
 Key structural laws baked into the grammar:
 
-- **No mixed `And`/`Or` without brackets**, and **at most three parts per bracket level** — `A And B And C` is fine, `A And B Or C` is a parse error ([§1](02-logic-and-formal-errors.md)).
+- **No mixed `And`/`Or` without brackets**, refused `MVK_BRACKET_MISSING` — `A And B And C` is fine, `A And B Or C` is rejected because the Kernel declines to supply a precedence rather than applying one silently ([§1](02-logic-and-formal-errors.md)). **A bracket level joins any number of parts**: four joined by `And` and four joined by `Or` are both admitted, so an earlier "at most three parts per bracket level" reading of the production — whose inner group is starred, its two connective labels being the check's operands rather than a cardinality — over-rejects, which is the one direction a checker may not take. **The level the check is scoped to is a bracket *pair*, not a depth**: two sibling parenthesised parts one level deep, one carrying `And` and the other `Or`, joined at the outer level by a single connective, are admitted, while mixing that outer level still refuses; a call's own parentheses and a `Having` filter's body each open a level of their own, so `And` inside a filter with `Or` outside it is admitted. A checker keyed on a depth *counter* over-rejects all of those ([inbound](../docs/SOURCES.md#inbound-2026-09-21-corrections)).
 - **At most one division per calculation without grouping braces** `{ … }`; powers `^` cannot be nested without brackets ([§5](04-numbers-and-decimals.md)).
 - A **`..` step itself may not carry `*`**; a named segment after the upward walk may carry it ([§10](08-paths-and-references.md)).
 
@@ -50,7 +50,7 @@ conditionStart   = [ preamble ] , condition , EOF ;
 preamble         = "@SuppressWarning" , "(" , warningName , ")" ;   (* the only preamble; NAME must be MVK_INVALID_COMPARE_DEC_PLACES *)
 
 (* ---- conditions ---- *)
-condition        = branch , { logOp , branch } ;                    (* all logOps at one level equal; ≤ 3 branches *)
+condition        = branch , { logOp , branch } ;                    (* all logOps at one bracket pair equal; branch count unbounded *)
 logOp            = "And" | "Or" ;
 branch           = [ comment ] , ( parenCondition | simpleCondition ) , [ comment ] ;
 parenCondition   = "(" , condition , ")" ;
@@ -71,7 +71,7 @@ compareOp        = "==" | "!=" | "<" | "<=" | ">" | ">="
 operand          = term , { ("+" | "-") , term } ;
 term             = factor , { ("*" | "/") , factor } ;               (* ≤ 1 "/" unless brace-grouped *)
 factor           = power ;
-power            = atom , [ "^" , atom ] ;                            (* no nesting without brackets *)
+power            = atom , [ "^" , atom ] ;                            (* no nesting without brackets; the EXPONENT is restricted semantically, not here — see the note below *)
 atom             = number | dateConst | stringConst
                  | fieldValue                 (* [ path ] *)
                  | braceGroup                  (* { operand } *)
@@ -94,6 +94,8 @@ valueListIntro   = "In" ;                                            (* separate
 
 *(Predicate/function argument shapes—how many operands and whether a `Having` or `$` form is allowed—vary per operator; consult the operator inventory in §5 and the semantics files for each family's operands. Those operator-specific attachments remain leaves in this sketch. The ordinary bracketed `fieldValue` production explicitly includes its optional literal- or field-keyed semantic index.)*
 
+**Which layer refuses an arithmetic symbol, because the grammar above does not say and a parser built from it alone gets two of them wrong.** The infix set is exactly `+ - * / ^`; `%` is not an operator at any layer and fails in the **lexer**, so no grammar rule mentions it. Against that, `^`'s operand restriction is **semantic and post-parse**: `[Base] ^ [Exponent]` over two Number fields *parses* and is then refused `MVK_INVALID_NUMBER_FOR_EXP`, while `[Base] ^ 2` is admitted — so a consumer whose parser narrows `power`'s right-hand `atom` to a literal names a parse defect for a text the Kernel's own parser accepts. The restriction is on the exponent's derived **scale**, not on its field-ness, and [§5](04-numbers-and-decimals.md) owns it ([inbound](../docs/SOURCES.md#inbound-2026-09-21-corrections)).
+
 > **Non-normative implementation note.** Parse to a single `inductive Ast` with constructors mirroring `simpleCondition`/`operand`/`function`. Encode the structural laws as *parser* rules (reject mixed And/Or, reject a star attached to a `..` step, reject a second unbraced `/`) rather than as post-hoc validation—they are genuinely syntactic. Keep `Having` and `For` as path modifiers and `$` as a correlated path form, since they modify how a path resolves ([§9](07-repetition-and-iteration.md)/[§10](08-paths-and-references.md)) rather than being operators in their own right.
 
 ---
@@ -113,7 +115,7 @@ valueListIntro   = "In" ;                                            (* separate
 
 ## 5. Keyword catalog (English ↔ German, verified pairs)
 
-Worded operators carry both spellings; symbols are language-neutral. A representative, verified sample (the full set is large; the pattern is systematic — German uses the domain nouns *Feld* = field, *Kontext* = repetition/group-context, *Wiederholung* = repetition, *Angegeben* = specified/filled):
+Every English terminal carries a German spelling, but not the converse — the 13 German-only H-model form constructs of §1 have no entry below and no English twin. Symbols are language-neutral. A representative, verified sample (the full set is large; the pattern is systematic — German uses the domain nouns *Feld* = field, *Kontext* = repetition/group-context, *Wiederholung* = repetition, *Angegeben* = specified/filled):
 
 | English | German |
 |---|---|
@@ -150,7 +152,7 @@ Worded operators carry both spellings; symbols are language-neutral. A represent
 
 - [ ] Two keyword languages; only the enumerated English `And`/`Or`/`In`/range-`to` and German `Und`/`Oder`/`In`/range-`zu` case families are accepted; writing is canonical; symbols are language-neutral; `;;` comments and quoted keyword-named identifiers are supported.
 - [ ] Literal kind (`number` / `dateConst` / `stringConst`) fixed at lex time; date-shape ⇒ date, ISO-shape ⇒ string, `""` ≠ empty value.
-- [ ] Parser enforces: no mixed `And`/`Or` unbracketed (≤ 3 parts/level); ≤ 1 unbraced `/`; `^` not nested unbracketed; `..`+`*` rejected.
+- [ ] Parser enforces: no mixed `And`/`Or` within one bracket pair (`MVK_BRACKET_MISSING`), with the part count unbounded and a call's or filter's parentheses opening their own pair; ≤ 1 unbraced `/`; `^` not nested unbracketed and its **exponent** semantically restricted ([§5](04-numbers-and-decimals.md)); `..`+`*` rejected.
 - [ ] Paths: absolute `/`, relative `../`, per-segment `*` (lower levels must star), short name, quoted names; specifiers `Having` / `For` with a string or field-reference key / `$` attach to paths.
 - [ ] Directives: `@SuppressWarning(only-that-code)`, `@From`, `RuleGroup`, `In`.
 - [ ] Bidirectional keyword table (EN canonical, DE supported).

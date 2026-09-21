@@ -84,16 +84,19 @@ example :
         some "MVK_ERROR_FIELDGROUP_ITERATION5_INVALID" := by
   native_decide
 
-/- **Parallel iteration turns on the rule's index-field level, and plain iteration decides first.**
+/- **Parallel iteration turns on the rule's index-field level, and the PARALLEL class decides first.**
    Four rows over one profile: the level guard both ways, then the order, then the parallel flag
-   itself. -/
+   itself. The third row is the separator — a profile offending both classes answers with the
+   parallel one, which the peer measured in both authored text orders precisely because a single
+   order cannot distinguish that from "the later read wins"
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
 example :
     key? (formOnly false { parallelIteration := true, indexFieldLevel := 1 }) =
         some "MVK_ERROR_FIELDGROUP_ITERATION5_INVALID" ∧
       key? (formOnly false { parallelIteration := true, indexFieldLevel := 0 }) = none ∧
       key? (formOnly false
         { firstInnerLevel := some 1, parallelIteration := true, indexFieldLevel := 1 }) =
-        some "MVK_ERROR_FIELDGROUP_ITERATION4_INVALID" ∧
+        some "MVK_ERROR_FIELDGROUP_ITERATION5_INVALID" ∧
       key? (formOnly false { parallelIteration := false, indexFieldLevel := 1 }) = none := by
   native_decide
 

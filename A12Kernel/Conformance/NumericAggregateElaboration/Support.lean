@@ -64,6 +64,13 @@ def packagedWeight : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } },
     repeatableScope := [10] }
 
+/-- A fixed Number in a *second* fixed group. Without it the product fixture cannot express a pair
+that is simultaneously repeatable-level-free and owned by two different groups, which is the exact
+cell that separates the owning-group gate from the repeatable-level one. -/
+def totalsFixed : FlatFieldDecl :=
+  { id := 12, groupPath := ["Form", "Totals"], name := "Carried",
+    policy := { kind := .number { scale := 0, signed := false } } }
+
 def rows : RepeatableGroupDecl :=
   { level := 10, path := ["Form", "Rows"], repeatability := some 3 }
 
@@ -80,7 +87,7 @@ def model : FlatModel :=
 
 def productModel : FlatModel :=
   { fields := model.fields ++ [repeatedPrice, repeatedText, otherRepeated,
-      nestedRepeated, packagedWeight]
+      nestedRepeated, packagedWeight, totalsFixed]
     repeatableGroups := [rows, otherRows, detailRows] }
 
 def bare (field : String) : SurfaceFieldPath :=

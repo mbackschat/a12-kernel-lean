@@ -35,6 +35,31 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-21-02"></a>
+### `SPEC-2026-09-21-02` — the field-list kind gate admits two temporal kinds sharing one declared format, which answers the peer's own open question
+
+- `status`: pending
+- `origin`: the [2026-09-21 inbound handback](SOURCES.md#inbound-2026-09-21-corrections) closes with a question this project can settle: its `kf391` states that the field-list type gate refuses "every pair of distinct kinds … including two temporal kinds", and records that every temporal field in its own fixture carries a different format, so its rows cannot separate that reading from the declared-format one. It asks for a same-format cross-kind witness. This entry supplies it; nothing in `spec/` changes.
+- `clause`: [`07-repetition-and-iteration.md`, the entity-list kind gate](../spec/07-repetition-and-iteration.md) — the paragraph already stating that among temporal operands the gate is the declared format string rather than the kind.
+- `delta`: on the `FirstFilledValue` carrier a **TIME** field and a **DATE_TIME** field both declared `HH:mm:ss` are **admitted**, while two **DATE_TIME** fields at two legal formats are refused `MVK_VARYING_TYPES_NOT_ALLOWED`. The pair is not open to the objection that the kernel treats the two kinds as one, and it is reachable only because a DateTime admits the degenerate time-only format. So "every pair of distinct kinds is refused" is false on this carrier and the gate is the declared format.
+- `basis`: **the witness is a12-dmkits' own**, which is why this is a pointer rather than a fresh account: `rulekit.validate.laws.FirstFilledValueFamilyLawsTest.theFormatKeyingHoldsOnASecondKindPairSharingOneFormat` asserts exactly those rows with both same-kind controls and the confounded two-kinds-two-formats row, read at a12-dmkits `9c86459b3`. `TimeOnlyDateTimeSurfaceLawsTest` supplies the declaration half — DATE_TIME admits two formats, TIME one. This project's own retained rows are at the [equal-set spelling checkpoint](sources/static-admission-and-class-probes.md#src-equal-set-spelling-families-carrier-split).
+- `acceptance`: correct `kf391`'s temporal row to the declared-format reading, or supply a contrary kernel observation in which two temporal kinds sharing one declared format are refused on a field-list carrier.
+- `limit`: the `FirstFilledValue` carrier and the TIME/DATE_TIME pair. Nothing here reopens the non-temporal half of `kf391` — the base-type reading with ENUM folded into STRING is untouched — and nothing claims the same answer for a carrier whose kind gate is measured to differ, the extrema and `FieldValuesNotUnique` splitting two-and-two on the equal-set pairs.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+<a id="spec-2026-09-21-01"></a>
+### `SPEC-2026-09-21-01` — three group-list carriers draw `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS`, not one
+
+- `status`: pending
+- `origin`: **a contrary observation**, invited by the [2026-09-21 inbound handback](SOURCES.md#inbound-2026-09-21-corrections), whose correction row 6 asserts that `NumberOfFilledGroups` alone draws this class and that this project's [`spec/02`](../spec/02-logic-and-formal-errors.md) is wrong to name `NoGroupFilled` and `AtLeastOneGroupFilled` beside it. The local clause is retained unchanged.
+- `clause`: [`02-logic-and-formal-errors.md`, the group-list diagnostic identities](../spec/02-logic-and-formal-errors.md).
+- `delta`: on a model with a **second root group**, a root operand beside a genuinely disjoint one draws `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS` on `AtLeastOneGroupFilled`, on `NoGroupFilled`, and on `NumberOfFilledGroups`; the all/not-all/not-collectively family draws `MVK_ROOT_GROUP_REFERENCED` instead. The peer's `kf388` summary table assigns the class to `NumberOfFilledGroups` alone, and its own `kf326` table and law test disagree with it.
+- `basis`: **the defeater is a12-dmkits' own maintained law**, read at `9c86459b3`: `rulekit.validate.laws.GroupListRootOperandLawsTest.whichClassARootBesideAnotherOperandDraws` expects `WITH_OTHERS` for `AtLeastOneGroupFilled(/Warehouse, Billing)` and `NoGroupFilled(/Warehouse, Billing)` on a three-root storefront fixture in which `Billing` sits under a different root, so the pair is disjoint and the nested-duplicate pre-emption cannot apply. `kf326`'s published table carries the same two rows. This project measured the same split independently on its own two-root model at the [group-list admission checkpoint](sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction) and again on the computation arm.
+- `fixture-caveat-answered`: the handback asked whether this project's row came from a one-root fixture, in which a root beside anything is a nested duplicate. It did not — the [list-extent checkpoint](sources/group-list-and-capacity-probes.md#src-group-count-list-extent) states its two-root model explicitly and carries the nonroot-beside-another-root's-star control that separates the root gate from a blanket cross-root refusal.
+- `acceptance`: correct `kf388`'s carrier column to the three singleton-admitting and count carriers, or supply a contrary kernel observation on a multi-root model in which `AtLeastOneGroupFilled` or `NoGroupFilled` answers a disjoint root pair with another class.
+- `limit`: the class assignment for a root beside a **disjoint** operand on a multi-root model. Everything else in `kf388` stands, including that the class is unreachable from any one-root fixture, that the duplicate gates precede it on all 28 carriers, and that `GroupFilled`/`GroupNotFilled` ask no root gate at all.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-08-08"></a>
 ### `SPEC-2026-09-08-08` — reference and index gates precede an empty message-category name
 

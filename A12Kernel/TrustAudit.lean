@@ -2738,7 +2738,8 @@ run_cmd do
 #print axioms A12Kernel.reachedThroughFormAlone_false_of_direct
 #print axioms A12Kernel.formOnlyIterationRefusal_hModel_classes
 #print axioms A12Kernel.formOnlyIterationRefusal_a12_never_zIteration
-#print axioms A12Kernel.formOnlyIterationRefusal_inner_precedes_parallel
+#print axioms A12Kernel.formOnlyIterationRefusal_parallel_precedes_inner
+#print axioms A12Kernel.formOnlyIterationRefusal_inner_when_parallel_clear
 #print axioms A12Kernel.formOnlyIterationRefusal_root_index_admits_parallel
 #print axioms A12Kernel.conditionSideRefusal_declaration_first
 #print axioms A12Kernel.conditionSideRefusal_usb_enters_cascade

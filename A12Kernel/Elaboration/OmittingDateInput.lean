@@ -4,9 +4,14 @@ import A12Kernel.Semantics.DateRangeOverlap
 /-! # Checked component-omitting Date input
 
 A DATE declaration may carry a format that **omits components**: measured at kernel 30.8.1, `yyyy`,
-`yyyy-MM`, `yyyyMM`, `MM`, `MM-dd`, `MMdd`, and `ddMM` are legal DATE formats alongside the three complete ones. Such a
-declaration's stored text is shorter than a complete date and its value denotes either an interval or a
-yearless calendar position.
+`yyyy-MM`, `yyyyMM`, `MM`, `MM-dd`, `MMdd`, `ddMM`, and `dd.MM.` are legal DATE formats alongside the three complete
+ones. Such a declaration's stored text is shorter than a complete date and its value denotes either an
+interval or a yearless calendar position.
+
+This module's checked subset is the first seven. `dd.MM.` — the German short date whose **trailing dot is
+load-bearing**, `dd.MM` without it staying refused — was found on a wider candidate sweep than the one this
+subset was built from and is not admitted here; `TemporalFormat.formatOf?` answers `none` for it, so a
+declaration carrying it is outside the certified fragment rather than silently reinterpreted.
 
 The three year-bearing formats classify into an existing `PartiallyKnownDateValue`: a year alone is the
 omitted-month shape and a year-month is the omitted-day shape, so every existing `ValueAsDate` consumer

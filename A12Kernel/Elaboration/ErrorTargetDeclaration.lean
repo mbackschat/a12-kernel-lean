@@ -156,21 +156,26 @@ structure IterationProfile where
   indexFieldLevel : Nat := 0
   deriving Repr, DecidableEq
 
-/-- **The form-only iteration cascade**, first-match-wins and split by model kind: the row-iteration
-class is reachable only in an H model, and the other two only in an A12 model, so no single model can
-produce all three. Clearing the cascade leaves the root-group and sub-scope iteration checks, whose
-vocabulary this module does not own. -/
+/-- **The form-only iteration cascade**, split by model kind: the row-iteration class is reachable
+only in an H model, and the other two only in an A12 model, so no single model can produce all three.
+Clearing the cascade leaves the root-group and sub-scope iteration checks, whose vocabulary this
+module does not own.
+
+The two A12 classes are ordered and **the parallel one wins**: a profile carrying an inner plain
+level *and* a parallel iteration at a nonzero index-field level answers with
+`MVK_ERROR_FIELDGROUP_ITERATION5_INVALID`. This module read it the other way until the peer measured
+the pair in both authored text orders, one order alone being unable to separate that precedence from
+"the later read decides" ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
 def formOnlyIterationRefusal (hModel : Bool) (profile : IterationProfile) :
     Option KernelStaticDiagnostic :=
   if hModel then
     if profile.rowIteration then some .errorFieldAndZIterationInvalid else none
+  else if profile.parallelIteration && profile.indexFieldLevel > 0 then
+    some .errorFieldGroupIteration5Invalid
   else
     match profile.firstInnerLevel with
     | some _ => some .errorFieldGroupIteration4Invalid
-    | none =>
-        if profile.parallelIteration && profile.indexFieldLevel > 0 then
-          some .errorFieldGroupIteration5Invalid
-        else none
+    | none => none
 
 /-- Everything the condition-side gates read. -/
 structure ErrorTargetInput where

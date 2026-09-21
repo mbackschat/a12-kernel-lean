@@ -115,6 +115,13 @@ example :
           (plainProductPath ["Form"] "UnsignedA")
           (plainProductPath ["Form"] "SignedB") =
         some "MVK_REPEATABLE_LEVEL_REQUIRED" ∧
+      -- The separator for that class: the pair below has no repeatable level EITHER, and differs
+      -- only in owning group. "No repeatable level" is therefore necessary and not sufficient, the
+      -- owning-group gate answering first ([inbound](../../../docs/SOURCES.md#inbound-2026-09-21-corrections)).
+      productDiagnosticCode?
+          (plainProductPath ["Form"] "UnsignedA")
+          (plainProductPath ["Form", "Totals"] "Carried") =
+        some "MVK_DIFFERENT_GROUPS" ∧
       productDiagnosticCode? aggregateStar (productStar "Price")
           (leftHaving := some productHaving) =
         some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧

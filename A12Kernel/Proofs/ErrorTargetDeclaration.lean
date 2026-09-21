@@ -77,21 +77,27 @@ the cascade's three classes unproduceable by any one model. -/
 theorem formOnlyIterationRefusal_a12_never_zIteration (profile : IterationProfile) :
     formOnlyIterationRefusal false profile ≠ some .errorFieldAndZIterationInvalid := by
   unfold formOnlyIterationRefusal
-  cases hinner : profile.firstInnerLevel with
-  | some _ => simp
-  | none =>
-    simp only [Bool.false_eq_true, if_false]
-    by_cases hparallel : (profile.parallelIteration && decide (profile.indexFieldLevel > 0)) = true
-    · simp [hparallel]
-    · simp [hparallel]
+  simp only [Bool.false_eq_true, if_false]
+  split
+  · simp
+  · cases profile.firstInnerLevel <;> simp
 
-/-- **Plain iteration decides before parallel.** While any inner level carries plain iteration the
-parallel facts are not consulted at all, so a consumer testing parallel first reports a class the
-Kernel does not. -/
-theorem formOnlyIterationRefusal_inner_precedes_parallel (profile : IterationProfile) (level : Nat)
-    (h : profile.firstInnerLevel = some level) :
+/-- **Parallel iteration decides before plain.** Once the rule parallel-iterates at a nonzero
+index-field level the inner plain level is not consulted at all, so a consumer testing plain
+iteration first reports a class the Kernel does not. This module held the opposite order until the
+peer measured a profile offending both in either authored text order. -/
+theorem formOnlyIterationRefusal_parallel_precedes_inner (profile : IterationProfile)
+    (hparallel : profile.parallelIteration = true) (hlevel : 0 < profile.indexFieldLevel) :
+    formOnlyIterationRefusal false profile = some .errorFieldGroupIteration5Invalid := by
+  simp [formOnlyIterationRefusal, hparallel, hlevel]
+
+/-- **The plain class therefore needs the parallel guard clear**, which is the half a reproduction
+keyed on the inner level alone loses. -/
+theorem formOnlyIterationRefusal_inner_when_parallel_clear (profile : IterationProfile) (level : Nat)
+    (h : profile.firstInnerLevel = some level)
+    (hclear : ¬(profile.parallelIteration = true ∧ 0 < profile.indexFieldLevel)) :
     formOnlyIterationRefusal false profile = some .errorFieldGroupIteration4Invalid := by
-  simp [formOnlyIterationRefusal, h]
+  simp [formOnlyIterationRefusal, h, hclear]
 
 /-- **Parallel iteration is admitted exactly at the root-group index level.** The guard reads the
 rule's own index-field level, so the same condition is refused under one rule placement and admitted
