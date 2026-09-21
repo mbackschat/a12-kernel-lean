@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-09-21; HEAD was `b6272517`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-09-21; HEAD was `e19f3a98`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -66,17 +66,17 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | records | share |
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 210 | 100% |
-| Citing a Kernel checkpoint or calibration | 116 | 55% |
-| Carrying an explicit evidence-pending note | 55 | 26% |
+| Citing a Kernel checkpoint or calibration | 117 | 55% |
+| Carrying an explicit evidence-pending note | 54 | 25% |
 
 ## Axis 3 — open obligation load
 
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 23 |
-| `remaining` rows across those gaps | 212 |
+| `remaining` rows across those gaps | 213 |
 | Gaps whose route is **blocked** | 1 |
-| Ledger entries `pending` with a12-dmkits | 7 |
+| Ledger entries `pending` with a12-dmkits | 6 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route stops the work that depends on it. Other ready obligations can continue. Remaining-work entries differ in size and may overlap; their count is not a completion percentage.
@@ -87,7 +87,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 209396 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 209652 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8701 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -166,4 +166,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-09-09T02:01:07+02:00 | `023fbc63` | 489 | 455 | 6 | 114 | 23 |
 | 2026-09-09T02:10:04+02:00 | `aa23c313` | 489 | 455 | 6 | 115 | 23 |
 | 2026-09-09T02:36:22+02:00 | `32729671` | 489 | 455 | 6 | 116 | 23 |
+| 2026-09-21T22:55:36+02:00 | `e19f3a98` | 489 | 455 | 6 | 117 | 23 |
 <!-- velocity-history:end -->
