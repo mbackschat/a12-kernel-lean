@@ -344,9 +344,9 @@ private def roundTrips (format : OmittingDateFormat) (month day : Nat) : Bool :=
    since a change to either one alone breaks it on every pair whose month and day differ. `MM` writes
    no day and reads back the implied day one. -/
 example : [OmittingDateFormat.month, .monthDay, .monthDayConcatenated,
-    .dayMonthConcatenated].map (fun format =>
+    .dayMonthConcatenated, .dayMonthDotted].map (fun format =>
       everyMonthDay.all fun pair => roundTrips format pair.1 pair.2) =
-    [true, true, true, true] := by
+    [true, true, true, true, true] := by
   native_decide
 
 /- The exhaustive pass above would also hold for a renderer that confused the two compact spellings
@@ -356,6 +356,45 @@ example : ((CivilDate.ofParts? { year := 2024, month := 6, day := 11 }).map fun 
       (OmittingDateFormat.renderCivilText .monthDayConcatenated date,
         OmittingDateFormat.renderCivilText .dayMonthConcatenated date)) =
     some ("0611", "1106") := by
+  native_decide
+
+/- **`dd.MM.`'s reading, on the exact texts the Kernel was asked.** The dotted short date is the one
+   member of this family whose format string ends in a separator, and every refusal below is a way of
+   getting that wrong. `05.03` is the format the Kernel refuses *as a declaration* appearing here as a
+   stored text; `05.03.2020` fills the trailing position instead of leaving it empty; `5.3.` and
+   `0503` are the width and separator failures the family already has. **`05.13.` is the row that
+   fixes the component order**: a month-then-day reading accepts it as May 13th, and the Kernel refuses
+   it. `31.02.` is the yearless day bound with no Base Year, where February reaches 29
+   ([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-dotted-short-date-format)). -/
+example :
+    classify? "dd.MM." "05.03." = .yearless 3 5 ∧
+    classify? "dd.MM." "05.03" = .rejected .dateFormat ∧
+    classify? "dd.MM." "5.3." = .rejected .dateFormat ∧
+    classify? "dd.MM." "05.13." = .rejected .dateFormat ∧
+    classify? "dd.MM." "31.02." = .rejected .dateFormat ∧
+    classify? "dd.MM." "05.03.2020" = .rejected .dateFormat ∧
+    classify? "dd.MM." "0503" = .rejected .dateFormat := by
+  native_decide
+
+/- **And its writing, which the round-trip above cannot settle.** A round trip holds for any renderer
+   its own parser agrees with, so the measured texts are what pin the spelling: both dots survive and
+   the day leads. The second pair is the separator — a day of 31 cannot be read as a month, so no
+   month-first account produces it — and the `ddMM` neighbour beside it shows the dots are the
+   format's and not an artifact of the order. -/
+example : ((CivilDate.ofParts? { year := 2024, month := 6, day := 11 }).map fun date =>
+      (OmittingDateFormat.renderCivilText .dayMonthDotted date,
+        OmittingDateFormat.renderCivilText .dayMonthConcatenated date)) =
+      some ("11.06.", "1106") ∧
+    ((CivilDate.ofParts? { year := 2024, month := 1, day := 31 }).map fun date =>
+      OmittingDateFormat.renderCivilText .dayMonthDotted date) = some "31.01." := by
+  native_decide
+
+/- The declaration vocabulary admits the dotted spelling and refuses the undotted one, which is the
+   pair that makes the trailing dot part of the format string rather than decoration. -/
+example :
+    OmittingDateFormat.ofSource? "dd.MM." = some .dayMonthDotted ∧
+    OmittingDateFormat.ofSource? "dd.MM" = none ∧
+    OmittingDateFormat.dayMonthDotted.carriesYear = false := by
   native_decide
 
 end A12Kernel.Conformance.OmittingDateInput

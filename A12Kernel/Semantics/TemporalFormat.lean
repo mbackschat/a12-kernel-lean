@@ -307,12 +307,17 @@ inductive OmittingDateFormat where
   | monthDayConcatenated
   /-- `ddMM` — the same yearless components in day-month order. -/
   | dayMonthConcatenated
+  /-- `dd.MM.` — the German short date, whose **trailing dot is part of the format**: `dd.MM` without
+  it is refused. Its component order is measured rather than read off the string — `05.13.` is
+  refused, which a month-then-day reading would accept as May 13th. -/
+  | dayMonthDotted
   deriving Repr, DecidableEq
 
 namespace OmittingDateFormat
 
-/-- Admit the seven measured component-omitting formats. The three complete formats belong to the full-Date
-classifier and are refused here. -/
+/-- Admit the eight measured component-omitting formats. The three complete formats belong to the full-Date
+classifier and are refused here, and so does `dd.MM` — the dotted format's **trailing dot is part of the
+string**, which is why a vocabulary derived by joining components and stopping cannot produce this member. -/
 def ofSource? : String → Option OmittingDateFormat
   | "yyyy" => some .year
   | "yyyy-MM" => some .yearMonthDashed
@@ -321,12 +326,14 @@ def ofSource? : String → Option OmittingDateFormat
   | "MM-dd" => some .monthDay
   | "MMdd" => some .monthDayConcatenated
   | "ddMM" => some .dayMonthConcatenated
+  | "dd.MM." => some .dayMonthDotted
   | _ => none
 
 /-- Whether this format's value carries a year, and therefore denotes an interval of concrete dates. -/
 def carriesYear : OmittingDateFormat → Bool
   | .year | .yearMonthDashed | .yearMonthConcatenated => true
-  | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated => false
+  | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated
+  | .dayMonthDotted => false
 
 /-- The component set a declaration of this format exposes.
 
@@ -345,7 +352,7 @@ def components : OmittingDateFormat → TemporalComponents
   | .month =>
       { year := false, month := true, day := false
         hour := false, minute := false, second := false }
-  | .monthDay | .monthDayConcatenated | .dayMonthConcatenated =>
+  | .monthDay | .monthDayConcatenated | .dayMonthConcatenated | .dayMonthDotted =>
       { year := false, month := true, day := true
         hour := false, minute := false, second := false }
 

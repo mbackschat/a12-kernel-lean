@@ -184,7 +184,10 @@ where the model declares a Base Year, so nothing here reads one.
 
 The two compact yearless spellings store the same components in opposite order — `MMdd` writes
 `0611` where `ddMM` writes `1106` for 11 June — which is measured rather than derived from the dashed
-siblings, since those cannot distinguish an order they do not vary. The exhaustive round-trip case in
+siblings, since those cannot distinguish an order they do not vary. `dd.MM.` writes `11.06.` for the
+same date and keeps **both** dots, measured on a cross-spelling copy out of an `MM-dd` source: the
+target does not receive the source's text, so this position renders rather than copies. Its sharpest
+row stores `31.01.`, where a day of 31 cannot be read as a month at all. The exhaustive round-trip case in
 [`Conformance/OmittingDateInput.lean`](../Conformance/OmittingDateInput.lean) keeps this direction
 agreeing with the reading one. -/
 def renderCivilText (format : OmittingDateFormat) (date : CivilDate) : String :=
@@ -203,6 +206,9 @@ def renderCivilText (format : OmittingDateFormat) (date : CivilDate) : String :=
       TemporalTargetText.twoDigits parts.month ++ TemporalTargetText.twoDigits parts.day
   | .dayMonthConcatenated =>
       TemporalTargetText.twoDigits parts.day ++ TemporalTargetText.twoDigits parts.month
+  | .dayMonthDotted =>
+      TemporalTargetText.twoDigits parts.day ++ "." ++
+        TemporalTargetText.twoDigits parts.month ++ "."
 
 /-- Render into the exact nonempty attempt a component-omitting target stores. -/
 def renderCivil (format : OmittingDateFormat) (date : CivilDate) : StoredDate :=

@@ -1,0 +1,6 @@
+{
+  "model" : "Dotted_DM.json",
+  "locale" : "en_US",
+  "observe" : [ "validateFull" ],
+  "rows" : [ { "name" : "stored-texts", "document" : "doc.json" } ]
+}

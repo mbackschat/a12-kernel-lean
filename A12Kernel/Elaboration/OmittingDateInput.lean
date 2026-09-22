@@ -8,10 +8,15 @@ A DATE declaration may carry a format that **omits components**: measured at ker
 ones. Such a declaration's stored text is shorter than a complete date and its value denotes either an
 interval or a yearless calendar position.
 
-This module's checked subset is the first seven. `dd.MM.` — the German short date whose **trailing dot is
-load-bearing**, `dd.MM` without it staying refused — was found on a wider candidate sweep than the one this
-subset was built from and is not admitted here; `TemporalFormat.formatOf?` answers `none` for it, so a
-declaration carrying it is outside the certified fragment rather than silently reinterpreted.
+All eight are in this module's checked subset. `dd.MM.` is the German short date whose **trailing dot is
+part of the format** — `dd.MM` without it stays refused as a declaration — and both of its directions are
+measured rather than read off the string. Reading: `05.13.` is refused, which a month-then-day format would
+accept as May 13th, so the order is day-then-month; `05.03` (no trailing dot), `5.3.` (short widths),
+`05.03.2020` (an extra component) and `0503` (no separators) are each refused, and every one of them draws
+the **same** format cause the rest of this family draws ([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-dotted-short-date-format)).
+Writing: a cross-spelling copy out of an `MM-dd` source stores `11.06.` and, in the row that settles it,
+`31.01.` — a day of 31 cannot be read as a month, so this position renders into the target's declared
+format rather than copying the source's text.
 
 The three year-bearing formats classify into an existing `PartiallyKnownDateValue`: a year alone is the
 omitted-month shape and a year-month is the omitted-day shape, so every existing `ValueAsDate` consumer
@@ -66,7 +71,8 @@ def parseYearComponents? (format : OmittingDateFormat) (text : String) :
         let month ← digitsOfWidth? (text.drop 4).toString 2
         pure ((year : Int), some month)
       else none
-  | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated => none
+  | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated
+  | .dayMonthDotted => none
 
 /-- The day bound a yearless value is checked against.
 
@@ -115,6 +121,16 @@ def parseYearlessComponents? (format : OmittingDateFormat) (baseYear : Option In
         let month ← digitsOfWidth? (text.drop 2).toString 2
         admit month day
       else none
+  | .dayMonthDotted =>
+      -- The trailing dot makes the third part exist and be empty; `dd.MM` yields two parts and is
+      -- refused here exactly as the Kernel refuses it as a *format*, while `dd.MM.yyyy` yields a
+      -- nonempty third part. Both are measured rows rather than consequences of this spelling.
+      match text.splitOn "." with
+      | [dayText, monthText, ""] => do
+          let day ← digitsOfWidth? dayText 2
+          let month ← digitsOfWidth? monthText 2
+          admit month day
+      | _ => none
   | .year | .yearMonthDashed | .yearMonthConcatenated => none
 
 end OmittingDateFormat

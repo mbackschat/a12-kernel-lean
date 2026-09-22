@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "2304a684939621a8848e1261be9ab8e6278dc532",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Dotted_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "stored-texts",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[2]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[2]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[3]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[3]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[4]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[4]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[5]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[5]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[6]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[6]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[7]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[7]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[8]/Dashed",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[8]/Dashed"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[2]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[2]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[3]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[3]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[4]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[4]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[5]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[5]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[6]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[6]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[7]/Dotted",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[7]/Dotted"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Probe/Rows[8]/Dashed",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[8]/Dashed"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

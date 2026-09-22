@@ -1,0 +1,72 @@
+{
+  "header" : {
+    "id" : "Dotted_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Dotted_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 8,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Dotted",
+                "name" : "Dotted",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "dd.MM."
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Dashed",
+                "name" : "Dashed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "MM-dd"
+                    }
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
