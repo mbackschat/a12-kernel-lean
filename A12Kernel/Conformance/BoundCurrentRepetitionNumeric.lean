@@ -58,6 +58,9 @@ private def error? (path host : GroupPath) : Option NumericValidationElabError :
   | .ok _ => none
   | .error error => some error
 
+private def scopeDiagnostic? (path host : GroupPath) : Option KernelStaticDiagnostic :=
+  (error? path host).bind NumericValidationElabError.repetitionScopeDiagnostic?
+
 private def retained? (path : GroupPath) :
     Option (GroupPath × List RepeatableLevel × Option RepeatableLevel × Bool) := do
   let checked ← (compare (repetition path)).toOption
@@ -109,6 +112,18 @@ example : error? innerPath outerPath =
       some (.currentRepetitionSource (.repeatableGroupRequiresAddress innerPath)) ∧
     error? fixedPath ["Root"] =
       some (.currentRepetitionSource (.repeatableGroupRequiresAddress fixedPath)) := by
+  native_decide
+
+/-- The coordinate clears the comparison's constant gate only where it **binds**. Hosted by the
+group it names, the comparison is admitted; hosted by an enclosing group, the identical comparison
+reports `MVK_NO_WILDCARD` — a different gate, and the one that decides the row. Both scopes are
+locked together because a reading that took the outer row for the constant gate's answer would
+conclude the opposite of the truth (peer `kf451`, measured 2026-09-22 at a12-dmkits `48a24aec9`). -/
+example : scopeDiagnostic? innerPath outerPath = some .noWildcard ∧
+    scopeDiagnostic? fixedPath ["Root"] = some .noWildcard ∧
+    error? innerPath innerPath = none ∧
+    error? outerPath outerPath = none ∧
+    KernelStaticDiagnostic.noWildcard.kernelCode = "MVK_NO_WILDCARD" := by
   native_decide
 
 /-- Retention preserves the authored path, its bound scope, and the level the coordinate names, and

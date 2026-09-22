@@ -152,6 +152,17 @@ def groupCountDiagnostic? :
   | .unknownGroupInCount _ => some .invalidEntity
   | _ => none
 
+/-- Project the measured scope class of a repetition coordinate. `CurrentRepetition(G)` is admitted
+in a rule whose scope binds `G` and refused `MVK_NO_WILDCARD` in a rule at an enclosing group. That
+is why the comparison's constant gate above is a claim about the rule's scope as much as about the
+operand: the coordinate reads no cell either way, so an outer-scope row reports the binding class and
+never the constant one (peer `kf451`, measured 2026-09-22). The unknown-group and plain-reference
+arms stay unmapped — no measurement separates their classes at this carrier. -/
+def repetitionScopeDiagnostic? :
+    NumericValidationElabError → Option KernelStaticDiagnostic
+  | .currentRepetitionSource (.repeatableGroupRequiresAddress _) => some .noWildcard
+  | _ => none
+
 /-- Project the measured DateRange-endpoint component class. The general temporal-source refusal
 stays unmapped, because it also covers a declaration that is not temporal at all, which the Kernel
 reports differently. -/
