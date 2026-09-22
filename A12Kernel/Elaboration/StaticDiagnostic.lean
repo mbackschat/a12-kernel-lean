@@ -11,7 +11,9 @@ Scope: the codes below cover the established field-list operand-admission includ
 
 namespace A12Kernel
 
-/-- One Kernel model-check diagnostic class this project has established. The constructor names are local; `kernelCode` carries the exact `MVK_` identity a consumer compares against. -/
+/-- One Kernel model-check diagnostic class this project has established. The constructor names are local; `kernelCode` carries the exact `MVK_` identity a consumer compares against.
+
+**That identity is derived, not reported, and the distinction is one layer a consumer must not lose.** The Kernel's own `Notification` carries a severity and a message and no code field at all; the `MVK_` string is a12-dmkits' extraction from the message ([provenance](../../docs/SOURCES.md)). So a consumer comparing `kernelCode` is comparing against a peer-established identifier for a class the Kernel distinguishes by its message, which is what makes the *class* observable — and a consumer reading codes straight off a Kernel channel will find none. -/
 inductive KernelStaticDiagnostic where
   /-- An operand kind the operator refuses outright, or a temporal operand list whose declared formats disagree. Both report this one code. -/
   | onlyStringEnumNumberDateAllowed

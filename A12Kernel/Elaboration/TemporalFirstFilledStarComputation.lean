@@ -5,7 +5,18 @@ import A12Kernel.Elaboration.CheckedStarShape
 
 namespace A12Kernel
 
-/-- Completed scalar temporal and DateRange declaration profiles sharing the direct-star computation shape. Additional policies remain excluded. -/
+/-- Completed scalar temporal and DateRange declaration profiles sharing the direct-star computation shape. Additional policies remain excluded.
+
+One of those exclusions is now known legal rather than undecided, and is named so its absence is not
+read as a gate. A **partially known** Date — a full-format DATE declaration carrying `DAY_OPTIONAL`,
+`MONTH_OPTIONAL` or `YEAR_OPTIONAL` — is admitted as a `FirstFilledValue` operand on every precision,
+measured against a full-precision control across the family's five field-list operators
+([inbound](../../docs/SOURCES.md#inbound-2026-09-07-dispositions)). The split runs three against two:
+the extrema and the distinct count refuse `MVK_PARTIAL_DATE_NOT_ALLOWED` and own that gate, while
+uniqueness and this operator admit. The two `fullDate…` carriers below are full-precision profiles,
+so this certificate does not reach a partial one at all — it neither admits nor refuses it, and the
+silence is carrier coverage rather than a gate. An extension that adds the precision must therefore
+widen the carrier set, not add a check. -/
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
   | yearFragment
