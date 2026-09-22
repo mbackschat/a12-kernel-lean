@@ -1,0 +1,9 @@
+{
+  "model" : "AppliedValueless_DM.json",
+  "locale" : "en_US",
+  "observe" : [ "validateFull", "compute", "computeResults" ],
+  "rows" : [
+    { "name" : "gate-empty", "document" : "doc-gate-empty.json" },
+    { "name" : "gate-filled", "document" : "doc-gate-filled.json" }
+  ]
+}

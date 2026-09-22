@@ -1,0 +1,139 @@
+{
+  "header" : {
+    "id" : "AppliedValueless_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "AppliedValueless_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 8
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Fit",
+                "name" : "Fit",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 8
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Short",
+                "name" : "Short",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 3
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Clear",
+                "name" : "Clear",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 8
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Rows/FitComp",
+                "name" : "FitComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Fit",
+                  "computationAlternatives" : [ {
+                    "operation" : "\"AB\""
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "fit mismatch"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Rows/ShortComp",
+                "name" : "ShortComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Short",
+                  "computationAlternatives" : [ {
+                    "operation" : "\"FIXEDLONG\""
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "short mismatch"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Rows/ClearComp",
+                "name" : "ClearComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Clear",
+                  "computationAlternatives" : [ {
+                    "precondition" : "FieldFilled(Gate)",
+                    "operation" : "\"X\""
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "clear mismatch"
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

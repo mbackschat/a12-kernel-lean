@@ -1238,6 +1238,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Fixed computation target under a star operand: no placement gate](sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
 - [The unsuppressed assignment-scale overflow has no authored witness](sources/computation-placement-and-constant-probes.md#src-unsuppressed-assignment-scale-reach)
+<a id="src-valueless-outcome-minting-and-application"></a>
+- [Two valueless outcomes leave the document identical and the result collection different, measured locally 2026-09-22](sources/evaluation-and-application-routes.md#src-valueless-outcome-minting-and-application)
 <a id="src-errored-target-applied-state"></a>
 - [An ERRORED computed target is cleared in the applied document and never carries its attempted payload, measured locally 2026-09-22](sources/evaluation-and-application-routes.md#src-errored-target-applied-state)
 <a id="src-applied-document-over-limit-unobservable"></a>

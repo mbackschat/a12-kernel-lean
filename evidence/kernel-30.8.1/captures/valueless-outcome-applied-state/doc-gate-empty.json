@@ -1,0 +1,13 @@
+{
+  "Probe" : {
+    "Rows" : [ { }, {
+      "Fit" : "SEED",
+      "Short" : "OK",
+      "Clear" : "SEED"
+    }, {
+      "Fit" : null,
+      "Short" : null,
+      "Clear" : null
+    } ]
+  }
+}

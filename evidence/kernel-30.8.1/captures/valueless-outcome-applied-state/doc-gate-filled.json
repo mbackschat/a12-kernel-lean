@@ -1,0 +1,17 @@
+{
+  "Probe" : {
+    "Rows" : [ {
+      "Gate" : "G"
+    }, {
+      "Gate" : "G",
+      "Fit" : "SEED",
+      "Short" : "OK",
+      "Clear" : "SEED"
+    }, {
+      "Gate" : "G",
+      "Fit" : null,
+      "Short" : null,
+      "Clear" : null
+    } ]
+  }
+}
