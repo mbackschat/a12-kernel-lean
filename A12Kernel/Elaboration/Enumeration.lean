@@ -40,6 +40,28 @@ inductive EnumerationDeclarationError where
   | emptyCategoryToken (name : String) (index : Nat)
   deriving Repr, DecidableEq
 
+/-- The Kernel code a declaration refusal surfaces, where one is measured.
+
+The arity mismatch is the only arm with a measured code, and it surfaces **two** chosen by
+*direction*: a category listing fewer tokens than the enumeration has values draws
+`MVK_MISSING_CATEGORY_VALUE`, and a longer one `MVK_MISSING_INTERNAL_VALUE`. One local error covers
+both because the direction is recoverable from its payload, which is why the constructor carries
+`expected` and `actual` rather than a bare flag.
+
+**What this cannot express is the multiplicity, and the difference is observable.** The Kernel
+reports the shortfall code *once per unclassified value* rather than once for the declaration, and
+the per-element behaviour holds on the surplus side too. `EnumerationDeclaration.validate` answers in
+`Except`, so it yields the first refusal and never a collection — a consumer counting findings will
+see one where the Kernel emits several. That is a collection-shape limit of the validator rather than
+a wrong verdict, and closing it means giving the whole validator a finding list, so it is recorded
+here rather than worked around at this arm. -/
+def EnumerationDeclarationError.kernelCode? :
+    EnumerationDeclarationError → Option String
+  | .categoryArityMismatch _ expected actual =>
+      some (if actual < expected then "MVK_MISSING_CATEGORY_VALUE"
+        else "MVK_MISSING_INTERNAL_VALUE")
+  | _ => none
+
 private def firstEmptyIndex? : List String → Nat → Option Nat
   | [], _ => none
   | value :: remaining, index =>

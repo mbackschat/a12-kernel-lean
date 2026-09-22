@@ -106,9 +106,15 @@ private def numericTargetConstraintsError? :
       let constraints := declaration.numericTargetConstraints
       match declaration.policy.kind with
       | .number info =>
-          -- `fieldScaleCap` before `fieldScaleOrdering`: with the cap enforced, a legal model
-          -- has `0 <= min <= max <= 14`, so both endpoints are bounded and a consumer may
-          -- bound either without over-rejecting (`spec/04`).
+          -- `fieldScaleCap` before `fieldScaleOrdering`. The ordering gate refuses exactly
+          -- `max >= 0 && min > max`, where an absent member reads as `0` and a *negative*
+          -- maximum takes the pair out of the comparison rather than failing it (`spec/04`).
+          -- Both members are `Nat` here, so the `max >= 0` conjunct is vacuous and the test
+          -- below is the whole gate for every declaration this model can express. The negative
+          -- maximum is therefore outside the represented universe rather than wrongly refused
+          -- — do not read this arm as deciding it. An earlier comment justified the order by
+          -- `0 <= min <= max <= 14`; that reading over-rejects in two directions and was
+          -- corrected from a12-dmkits' measurement ([inbound](../../../docs/SOURCES.md)).
           if declaredNumericScaleCap < info.scale then
             some (.numericFractionalDigitsAboveCap declaration.path
               info.scale declaredNumericScaleCap)

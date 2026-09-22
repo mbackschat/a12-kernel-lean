@@ -70,6 +70,28 @@ example : rejectsWith (declaration ["A", "B"] []
 example : rejectsWith (declaration ["A", "B"] []
     [category "Kind" ["X"]]) (.categoryArityMismatch "Kind" 2 1) := by native_decide
 
+/-- **The arity mismatch surfaces two codes, and the direction picks which.** A shortfall and a
+surplus are one local error because the payload separates them, so the pair is asserted rather than
+left to a reader to infer from the constructor's name — which names neither direction. The surplus
+row is the one an account keyed on "a category is missing a value" gets wrong. -/
+example :
+    (declaration ["A", "B"] [] [category "Kind" ["X"]]).validate.toOption.isNone ∧
+    (EnumerationDeclarationError.categoryArityMismatch "Kind" 2 1).kernelCode? =
+      some "MVK_MISSING_CATEGORY_VALUE" ∧
+    (EnumerationDeclarationError.categoryArityMismatch "Kind" 2 3).kernelCode? =
+      some "MVK_MISSING_INTERNAL_VALUE" ∧
+    (EnumerationDeclarationError.emptyStoredDomain).kernelCode? = none := by
+  native_decide
+
+/-- An empty category token list is a shortfall rather than a class of its own, so it draws the same
+code as any other short list. The Kernel reports it once per unclassified value where this validator
+reports once; [`Enumeration.lean`](../Elaboration/Enumeration.lean) owns why the multiplicity is not
+representable here, and this row locks the class it does decide. -/
+example : rejectsWith (declaration ["A", "B"] [] [category "Kind" []])
+      (.categoryArityMismatch "Kind" 2 0) ∧
+    (EnumerationDeclarationError.categoryArityMismatch "Kind" 2 0).kernelCode? =
+      some "MVK_MISSING_CATEGORY_VALUE" := by native_decide
+
 example : rejectsWith (declaration ["A", "B"] []
     [category "Kind" ["X", ""]]) (.emptyCategoryToken "Kind" 1) := by native_decide
 
