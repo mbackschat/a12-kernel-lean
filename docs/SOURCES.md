@@ -279,6 +279,17 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-22-temporal-category"></a>
+### Reviewed 2026-09-22 temporal-category handback — the four-member category measured, and a clause that was careful turned into an overclaim by the arrival of its own evidence
+
+a12-dmkits revision `58becf775d197d8e400a4fa024dd5d7e1111d8e5` on `main`, dated 2026-09-22, reachable from `main` at that checkout. The revision, the three named methods, the four field declarations with their formats, and the oracle path were read off the tree rather than taken from the letter. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**The temporal comparability category is one category and not two pairs, and the edge that shows it is the one neither project had.** `FieldValuesNotUniqueAdmissionLawsTest` admits `Date` beside `DateFragment` at an identical `yyyy`, `Time` beside `DateTime` at an identical `HH:mm:ss`, and a `Date` declared `HH:mm:ss` beside each of those two. The last pair is load-bearing on its own: two admitted pairs are equally what two categories each holding two kinds would produce, so every kind needed one measured edge to the rest before the four-member category was confirmed rather than merely unfalsified. Oracle `RuleValidator` over the real kernel; the fields are `GateOpenedTime`, `GateSealedStamp` and `GateAuditDate`, each carrying the clock format so only the declared kind varies.
+
+**This corrects a clause of ours that had been careful in exactly the way that fails.** [`spec/07`](../spec/07-repetition-and-iteration.md) had split the category by the evidence its members held, naming `Time` and `DateTime` as resting on a gate-order pre-emption and their membership as the better-supported of two live readings. That was accurate, and it was also the shape that converts into an overclaim on arrival: a clause stating exactly which members lack a witness reads as fully discharged the instant those members get one, because the scoping sentence is what a reader checks and it now reads satisfied. The peer's spanning edge is what stops the jump, and nothing in the careful clause would have asked for it. The peer amended their own `KF173` in the same revision, which had asserted the membership outright from the same pre-emption.
+
+**The clause is rewritten around the discriminator rather than around the evidence split**, so the account it states is the measured one and the same-format condition that makes a pair informative is stated once. The Lean [field entity list](../A12Kernel/Elaboration/FieldEntityList.lean) keeps its collapsed category constructor, which was always right; what changes is that its note now records a measured partition instead of an unequal one.
+
 <a id="inbound-2026-09-22-dispositions"></a>
 ### Reviewed 2026-09-22 dispositions handback — the whole pending queue answered, three clauses qualified, and both instrument asks implemented
 

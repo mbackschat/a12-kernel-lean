@@ -38,6 +38,28 @@ private def timeField (id : FieldId) (name : String) (format : String) :
   temporalTargetPolicy := some { format }
 }
 
+/-- A DATE_TIME declaration. Declared with the clock format below, so its component set is the
+    clock's and only its kind separates it from the TIME beside it. -/
+private def dateTimeField (id : FieldId) (name : String) (format : String) :
+    FlatFieldDecl := {
+  id
+  groupPath := ["Form"]
+  name
+  policy := { kind := .temporal .dateTime TemporalComponents.time }
+  temporalTargetPolicy := some { format }
+}
+
+/-- A DATE declaration carrying the **clock** format, which the Kernel admits: this is the carrier
+    that supplies an edge between the two date-shaped kinds and the two clock-shaped ones. -/
+private def clockFormatDateField (id : FieldId) (name : String) (format : String) :
+    FlatFieldDecl := {
+  id
+  groupPath := ["Form"]
+  name
+  policy := { kind := .temporal .date TemporalComponents.time }
+  temporalTargetPolicy := some { format }
+}
+
 private def stringField (id : FieldId) (name : String) : FlatFieldDecl :=
   { id, groupPath := ["Form"], name, policy := { kind := .string },
     stringPolicy := { lineBreaksPermitted := true } }
@@ -64,7 +86,9 @@ private def model : FlatModel := {
     stringField 7 "Code",
     stringField 8 "Alternate",
     formatlessField,
-    booleanField]
+    booleanField,
+    dateTimeField 11 "Stamp" "HH:mm:ss",
+    clockFormatDateField 12 "AuditDate" "HH:mm:ss"]
 }
 
 private def bare (field : String) : SurfaceFieldPath :=
@@ -278,6 +302,28 @@ example :
       some .onlyStringEnumNumberDateAllowed ∧
     tripleDiagnostic? "Start" "Flag" "Code" =
       some .onlyStringEnumNumberDateAllowed := by
+  native_decide
+
+/- **One comparability category of four kinds, not two categories of two.** Each admitted pair
+   shares one identical declared format, so the format gate has nothing to refuse and the admission
+   is the category's answer. The first two rows are the same-shape pairs; the **third and fourth are
+   the load-bearing ones**, because two admitted pairs are equally what two categories each holding
+   two kinds would produce, and only an edge crossing between them can tell those apart. A DATE
+   declared with the clock format supplies that edge to both clock kinds, leaving every kind one
+   measured edge from the rest ([inbound](../../docs/SOURCES.md#inbound-2026-09-22-temporal-category)).
+
+   The two controls are what keep the admissions readable. A DATE beside the TIME at **differing**
+   formats is refused by the format gate with the operand class and never reaches the category
+   comparison — which is why a differing-format cross-kind pair settles nothing here, and why this
+   estate's DATEFRAGMENT sharing `.date`'s constructor costs the matrix nothing. A DATE beside a
+   String is the category mismatch itself, and it draws the other code. -/
+example :
+    error? "Year" "YearFragment" = none ∧
+    error? "Clock" "Stamp" = none ∧
+    error? "AuditDate" "Clock" = none ∧
+    error? "AuditDate" "Stamp" = none ∧
+    diagnostic? "Start" "Clock" = some .onlyStringEnumNumberDateAllowed ∧
+    diagnostic? "Start" "Code" = some .varyingTypesNotAllowed := by
   native_decide
 
 end A12Kernel.Conformance.TemporalValuesNotUnique

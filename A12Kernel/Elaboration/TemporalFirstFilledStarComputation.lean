@@ -13,7 +13,7 @@ read as a gate. A **partially known** Date — a full-format DATE declaration ca
 measured against a full-precision control across the family's five field-list operators
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-07-dispositions)). The split runs three against two:
 the extrema and the distinct count refuse `MVK_PARTIAL_DATE_NOT_ALLOWED` and own that gate, while
-uniqueness and this operator admit. The two `fullDate…` carriers below are full-precision profiles,
+uniqueness and this operator accept them. The two `fullDate…` carriers below are full-precision profiles,
 so this certificate does not reach a partial one at all — it neither admits nor refuses it, and the
 silence is carrier coverage rather than a gate. An extension that adds the precision must therefore
 widen the carrier set, not add a check. -/
