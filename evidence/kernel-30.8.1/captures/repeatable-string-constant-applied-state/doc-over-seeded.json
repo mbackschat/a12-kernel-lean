@@ -1,0 +1,14 @@
+{
+  "Probe" : {
+    "Rows" : [ { }, {
+      "Fit" : "SEED",
+      "Short" : "SEED"
+    }, {
+      "Fit" : null,
+      "Short" : null
+    }, {
+      "Fit" : "SEED",
+      "Short" : "SEED"
+    } ]
+  }
+}

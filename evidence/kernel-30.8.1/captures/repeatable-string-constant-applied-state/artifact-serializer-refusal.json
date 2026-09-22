@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "2304a684939621a8848e1261be9ab8e6278dc532",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "AppliedState_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "at-capacity",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FitComp",
+              "field": "Probe/Rows[2]/Fit",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[2]/Fit"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "Probe/Rows[2]/Short",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[2]/Short"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/Rows/Fit",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows/Short",
+                "cleared": false,
+                "errored": true,
+                "value": "FIXEDLONG"
+              },
+              {
+                "field": "Probe/Rows[2]/Fit",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[2]/Short",
+                "cleared": false,
+                "errored": true,
+                "value": "FIXEDLONG"
+              },
+              {
+                "field": "Probe/Rows[3]/Fit",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[3]/Short",
+                "cleared": false,
+                "errored": true,
+                "value": "FIXEDLONG"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Probe/Rows/Fit",
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[2]/Fit",
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[3]/Fit",
+                "value": "AB"
+              }
+            ],
+            "errored": [
+              {
+                "field": "Probe/Rows/Short",
+                "value": "FIXEDLONG",
+                "errorMessage": {
+                  "code": "stringZuLang",
+                  "field": "Probe/Rows/Short",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "message": "[redacted: kernel prose]",
+                  "referenced": [
+                    "Probe/Rows/Short"
+                  ],
+                  "fillToFix": []
+                }
+              },
+              {
+                "field": "Probe/Rows[2]/Short",
+                "value": "FIXEDLONG",
+                "errorMessage": {
+                  "code": "stringZuLang",
+                  "field": "Probe/Rows[2]/Short",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "message": "[redacted: kernel prose]",
+                  "referenced": [
+                    "Probe/Rows[2]/Short"
+                  ],
+                  "fillToFix": []
+                }
+              },
+              {
+                "field": "Probe/Rows[3]/Short",
+                "value": "FIXEDLONG",
+                "errorMessage": {
+                  "code": "stringZuLang",
+                  "field": "Probe/Rows[3]/Short",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "message": "[redacted: kernel prose]",
+                  "referenced": [
+                    "Probe/Rows[3]/Short"
+                  ],
+                  "fillToFix": []
+                }
+              }
+            ],
+            "applied": {
+              "Probe": {
+                "Rows": [
+                  {
+                    "Fit": "AB"
+                  },
+                  {
+                    "Fit": "AB",
+                    "Short": null
+                  },
+                  {
+                    "Fit": "AB",
+                    "Short": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FitComp",
+              "field": "Probe/Rows[2]/Fit",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[2]/Fit"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "Probe/Rows[2]/Short",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: kernel prose]",
+              "referenced": [
+                "Probe/Rows[2]/Short"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/Rows/Fit",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows/Short",
+                "cleared": false,
+                "errored": true,
+                "value": "FIXEDLONG"
+              },
+              {
+                "field": "Probe/Rows[2]/Fit",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[2]/Short",
+                "cleared": false,
+                "errored": true,
+                "value": "FIXEDLONG"
+              },
+              {
+                "field": "Probe/Rows[3]/Fit",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[3]/Short",
+                "cleared": false,
+                "errored": true,
+                "value": "FIXEDLONG"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Probe/Rows/Fit",
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[2]/Fit",
+                "value": "AB"
+              },
+              {
+                "field": "Probe/Rows[3]/Fit",
+                "value": "AB"
+              }
+            ],
+            "errored": [
+              {
+                "field": "Probe/Rows/Short",
+                "value": "FIXEDLONG",
+                "errorMessage": {
+                  "code": "stringZuLang",
+                  "field": "Probe/Rows/Short",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "message": "[redacted: kernel prose]",
+                  "referenced": [
+                    "Probe/Rows/Short"
+                  ],
+                  "fillToFix": []
+                }
+              },
+              {
+                "field": "Probe/Rows[2]/Short",
+                "value": "FIXEDLONG",
+                "errorMessage": {
+                  "code": "stringZuLang",
+                  "field": "Probe/Rows[2]/Short",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "message": "[redacted: kernel prose]",
+                  "referenced": [
+                    "Probe/Rows[2]/Short"
+                  ],
+                  "fillToFix": []
+                }
+              },
+              {
+                "field": "Probe/Rows[3]/Short",
+                "value": "FIXEDLONG",
+                "errorMessage": {
+                  "code": "stringZuLang",
+                  "field": "Probe/Rows[3]/Short",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "message": "[redacted: kernel prose]",
+                  "referenced": [
+                    "Probe/Rows[3]/Short"
+                  ],
+                  "fillToFix": []
+                }
+              }
+            ],
+            "applied": {
+              "Probe": {
+                "Rows": [
+                  {
+                    "Fit": "AB"
+                  },
+                  {
+                    "Fit": "AB",
+                    "Short": null
+                  },
+                  {
+                    "Fit": "AB",
+                    "Short": null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "over-seeded",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "fault": {
+            "observation": "computeResults",
+            "chain": [
+              {
+                "type": "com.mgmtp.a12.kernel.md.document.api.services.DocumentSerializationException",
+                "message": "Following errors were found:\nMax repetition exceeded: Probe/Rows[0] (got 4 but max repetition is 3)"
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "fault": {
+            "observation": "computeResults",
+            "chain": [
+              {
+                "type": "com.mgmtp.a12.kernel.md.document.api.services.DocumentSerializationException",
+                "message": "Following errors were found:\nMax repetition exceeded: Probe/Rows[0] (got 4 but max repetition is 3)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "over-absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "fault": {
+            "observation": "computeResults",
+            "chain": [
+              {
+                "type": "com.mgmtp.a12.kernel.md.document.api.services.DocumentSerializationException",
+                "message": "Following errors were found:\nMax repetition exceeded: Probe/Rows[0] (got 4 but max repetition is 3)"
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "fault": {
+            "observation": "computeResults",
+            "chain": [
+              {
+                "type": "com.mgmtp.a12.kernel.md.document.api.services.DocumentSerializationException",
+                "message": "Following errors were found:\nMax repetition exceeded: Probe/Rows[0] (got 4 but max repetition is 3)"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -58,7 +58,9 @@ The codes stay usable as refusal-class identities, because the bracketed key is 
 
 The reusable provenance route is `scripts/prepare-dmtool-source.sh`: it accepts only the checkout's exact clean HEAD, reuses or rebuilds the JVM launcher as needed, and verifies its reported revision before returning it. Each retained observation records the actual launcher and kernel versions from that run rather than inheriting the historical 2026-08-06 launcher identity. [`TESTING.md`](TESTING.md#structured-dmtool-probes-and-feedback) owns the probe method and the required persisted-read-back check.
 
-**Two checkouts, and measurement runs in the second one.** `../a12-rulekit` stays the source of truth for reading peer code, findings, and specs, and remains strictly immutable. Observation commands run instead in the owner-approved read-only measurement checkout `../a12-rulekit-measure`, **pinned to a12-dmkits `9c86459b352f7989b9dbdae80f71e6dd6cec6066`**, re-pinned 2026-09-21 from `ad4d5ff643eef95ebaee9b423180c03c3c4464b4` so the instrument matches the revision the [2026-09-21 dispositions](#inbound-2026-09-21-corrections) cite. That record owns the re-pin's consequences and the one condition still blocking a launcher rebuild.
+**Two checkouts, and measurement runs in the second one.** `../a12-rulekit` stays the source of truth for reading peer code, findings, and specs, and remains strictly immutable. Observation commands run instead in the owner-approved read-only measurement checkout `../a12-rulekit-measure`, **pinned to a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532`**, re-pinned 2026-09-22 from `9c86459b352f7989b9dbdae80f71e6dd6cec6066` — deliberately, because `computeResults` and the inline-document fidelity fix land at `526778fa7`, which the previous pin predates, and the [applied-state measurement](sources/evaluation-and-application-routes.md#src-errored-target-applied-state) needs both.
+
+The launcher was rebuilt at that pin and reports it clean, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, catalog verified against 30.8.1; both checkouts read clean before and after. Receipts stamped an earlier pin stay valid as identities of their own bytes and are not comparable with a hash produced after a re-pin. The [2026-09-21 dispositions](#inbound-2026-09-21-corrections) own the previous re-pin.
 
 The root [`CLAUDE.md`](../CLAUDE.md) carve-out owns the exception's limits, and nothing in it permits editing, staging, or extending either checkout. The reason is availability rather than capability: the primary checkout is normally dirty because a peer session is working it, and the preparation script refuses a dirty tree, which had reduced kernel correspondence to windows lasting under a minute.
 
@@ -1225,6 +1227,10 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Fixed computation target under a star operand: no placement gate](sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
 - [The unsuppressed assignment-scale overflow has no authored witness](sources/computation-placement-and-constant-probes.md#src-unsuppressed-assignment-scale-reach)
+<a id="src-errored-target-applied-state"></a>
+- [An ERRORED computed target is cleared in the applied document and never carries its attempted payload, measured locally 2026-09-22](sources/evaluation-and-application-routes.md#src-errored-target-applied-state)
+<a id="src-applied-document-over-limit-unobservable"></a>
+- [The applied document of an over-capacity input cannot be observed, because the Kernel's own serializer refuses to write it, measured locally 2026-09-22](sources/evaluation-and-application-routes.md#src-applied-document-over-limit-unobservable)
 <a id="src-repeatable-string-application"></a>
 - [Finite one- and two-level String separate-destination application, measured locally 2026-08-26](sources/evaluation-and-application-routes.md#src-repeatable-string-application)
 <a id="src-repeatable-number-aggregate-cascade"></a>
