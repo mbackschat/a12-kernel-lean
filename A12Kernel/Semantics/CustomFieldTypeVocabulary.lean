@@ -10,7 +10,7 @@ Like the runtime formal number checks, the family answers on **two independent a
 Neither axis is a function of the other, and both counterexamples are worth keeping because each defeats a plausible simplification:
 
 * One type surfaces **two** codes. The identification number reports its own code for every refusal except one: a structurally valid number in the reserved test range surfaces a *separate* code, so a consumer keying off the code alone sees two unrelated failures where the Kernel sees one validator.
-* One detail key belongs to **two** types. Both date types share a single refusal key, whose message carries the expected format as a parameter rather than spelling it per type — so the key does not identify the type and the code does.
+* One detail key belongs to **two** types. Both date types share a single refusal key, so the key never identifies the type while the code always does. The expected format reaches the text by a literal placeholder the verifier substitutes *after* the catalog lookup rather than by a message parameter, and only two of the five shipped catalogs carry that placeholder — so the rendered text separates the two types under those locales and collapses to one text under the rest, which is why the code is the axis a consumer can rely on ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-shipped-custom-field-type-vocabulary)).
 
 Every check in this family runs at value-validation time. Static model checking accepts any type name, including one no validator is registered for, which is why this vocabulary is not part of [`StaticDiagnostic.lean`](../Elaboration/StaticDiagnostic.lean).
 
