@@ -277,6 +277,8 @@ inductive KernelStaticDiagnostic where
   | invalidCompareToEnumOrString
   /-- A value was assigned or compared against a Number declaration that cannot hold it. Distinct from the String/Enumeration class above, which is why the Boolean constant's target gate maps per kind rather than to one refusal. -/
   | inconsistentTypesCompared
+  /-- A Number declaration's fractional interval is inverted. The gate refuses exactly `max ≥ 0 ∧ min > max`, where an absent member reads as `0` and a *negative* maximum takes the pair out of the comparison rather than failing it — so this is narrower than `0 ≤ min ≤ max`, which over-rejects in two directions. A model-declaration class rather than a rule-refusal one, and the first of that family to carry a measured code here. -/
+  | fractDigitsInvalid
   /-- A full-year DateRange overlap operand was paired with an `MM` or `MM-dd` range that has no Base Year. -/
   | dateWithAndWithoutYear
   /-- Two temporal operands of a direct comparison disagree on year presence, or on whether they carry a date at all, with no Base Year to supply the missing year. -/
@@ -513,6 +515,7 @@ def kernelCode : KernelStaticDiagnostic → String
       "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON"
   | .invalidCompareToEnumOrString => "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
   | .inconsistentTypesCompared => "MVK_INCONSISTENT_TYPES_COMPARED"
+  | .fractDigitsInvalid => "MVK_FRACT_DIGITS_INVALID"
   | .dateWithAndWithoutYear => "MVK_DATE_WITH_AND_WITHOUT_YEAR"
   | .invalidCompareToDate => "MVK_INVALID_COMPARE_TO_DATE"
   | .noDate => "MVK_NO_DATE"
@@ -615,7 +618,8 @@ def all : List KernelStaticDiagnostic :=
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType,
     .invalidDateTypeForOp, .noDateRange,
     .partialDateNotAllowed,
-    .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
+    .invalidParameterForDateRangeComparison, .fractDigitsInvalid,
+    .dateWithAndWithoutYear,
     .invalidCompareToEnumOrString, .inconsistentTypesCompared,
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
     .invalidCompareToDate, .noDate, .semanticIndexContainedInIndex,

@@ -259,6 +259,25 @@ example :
         excessiveMinimum.path 1 0) := by
   native_decide
 
+/- The inverted interval reports a Kernel class; the scale cap beside it does not. Projecting *both*
+is what makes this a lock on `diagnostic?` reading the refusal rather than on validation having
+failed — the cap refusal is an MVK-less model check (see the `fieldScaleCap` case below), so a
+single coded row would not separate the two. -/
+example :
+    let excessiveMinimum := { target with
+      numericTargetConstraints := { minFractionalDigits := 1 } }
+    let aboveCap := { target with
+      policy := { target.policy with kind := .number { scale := 15, signed := true } } }
+    let diagnosticOf := fun (replacement : FlatFieldDecl) =>
+      (errorOf ({ model with
+        fields := model.fields.map fun (declaration : FlatFieldDecl) =>
+          if declaration.id == targetId then replacement else declaration }).validate).bind
+        ResolveError.diagnostic?
+    diagnosticOf excessiveMinimum = some .fractDigitsInvalid ∧
+    diagnosticOf aboveCap = none ∧
+    KernelStaticDiagnostic.fractDigitsInvalid.kernelCode = "MVK_FRACT_DIGITS_INVALID" := by
+  native_decide
+
 /- `fieldScaleCap`: 14 is declarable and 15 is not. The pair is the separator — a bound stated
 only as "at most 14" without the accepted side cannot distinguish this from an off-by-one, and
 the kernel's refusal here carries no MVK code. Distinct from `maxRoundingPlaces`, which bounds a

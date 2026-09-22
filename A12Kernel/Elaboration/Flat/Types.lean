@@ -449,6 +449,7 @@ itself would obscure the two arms that do carry a class. Add an explicit arm the
 failure is measured to report an `MVK_` class. -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
+  | .numericMinimumFractionalDigitsExceedMaximum _ _ _ => some .fractDigitsInvalid
   | _ => none
 
 inductive AuthoredFieldPathError where
