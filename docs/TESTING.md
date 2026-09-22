@@ -308,6 +308,23 @@ Rules 1 and 3 also compose: select several untouched blocks that share one model
 one spec, dispatch them in one `batch`, and write one checkpoint whose `denominator` row names every
 block the sweep covered.
 
+**A sixth candidate, kept as a technique rather than built.** A set difference between the `MVK_` codes
+named in `spec/` and the codes the theory handles finds a clause that reached prose and never reached an
+executable owner:
+
+```sh
+grep -oh 'MVK_[A-Z_]*' spec/*.md | sort -u > /tmp/spec-codes
+grep -roh 'MVK_[A-Z_]*' A12Kernel/ | sort -u > /tmp/lean-codes
+comm -23 /tmp/spec-codes /tmp/lean-codes
+```
+
+Run once on 2026-09-22 it returned 29 codes, 28 of them honest scope exclusions — the parser layer and
+name legality — and one a real defect: a measured class the theory refused to decide. That ratio is the
+reason it stays a technique. Gating on it needs an allowlist for the 28, and an allowlist is maintenance
+that rots invisibly; a second audit reaching for this is the signal to build it, and one run is not the
+repeated measured cost the standing tooling authorization asks for. It reads best beside rule 1, when the
+next batch is being chosen.
+
 ### Read the grammar or the checker first, then measure only the residual
 
 **The highest-yield move measured so far is not a wider batch — it is reading the Kernel's own grammar,
