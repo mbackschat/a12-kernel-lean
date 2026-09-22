@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-22-04"></a>
+### `SPEC-2026-09-22-04` — `DATERANGE` is not a fifth comparability category at `FieldValuesNotUnique`, because it never reaches that gate
+
+- `status`: pending
+- `origin`: locally originated, and it **withdraws a clause this project adopted from a12-dmkits** rather than proposing a new one. The 2026-09-21b reply described the operator's mixing gate as reading five comparability categories, the fifth being `{DateRange}` "beside the temporal one rather than a member of it". That was carried into [`spec/07`](../spec/07-repetition-and-iteration.md) at `f8c4bbec` without reconciliation against this repository's own measurement, which is contrary. Found by auditing whether each peer-driven `spec/` change since 2026-09-20 had reached the Lean theory; this one had not, and the reason it had not is that the Lean theory was right.
+- `clause`: [`07` §`FieldValuesNotUnique`](../spec/07-repetition-and-iteration.md) — the mixing-gate category list.
+- `delta`: the categories are four — `{String, Custom}`, `{Enumeration}`, `{Number}`, `{Date, Time, DateTime, DateFragment}`. `DATERANGE` is refused by the **prior kind gate** with `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED` and never reaches the mixing gate, so it has no comparability category at this carrier to be the fifth member of.
+- `basis`: measured locally at the [distinct-count sibling checkpoint](sources/group-list-and-capacity-probes.md), which records both distinct-count members refusing `DATERANGE` with **two different codes** — `NumberOfDifferentValues` reporting `MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED` and `FieldValuesNotUnique` the `CMP_`-less form — against `DATE` controls admitted in the same batch, so the refusal is the kind's and not the shape's. `SurfaceScalarKind.fieldListAdmission` in [`FieldEntityList.lean`](../A12Kernel/Elaboration/FieldEntityList.lean) has carried that refusal throughout and is unchanged by this entry.
+- `acceptance`: confirm that `DATERANGE` draws a kind-gate refusal at `FieldValuesNotUnique` rather than reaching the mixing gate, or supply the carrier and observation on which the fifth category *was* measured — the reading may well be right somewhere this project has not looked, and the entry claims only that it is wrong here.
+- `limit`: this carrier and this operator. Nothing is claimed about `DATERANGE`'s comparability at any carrier whose kind gate admits it, and no other member of the four-category list is re-measured here.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-22-03"></a>
 ### `SPEC-2026-09-22-03` — the value list's slot gate is one class over seven kinds, shape-blind, with NUMBER inside the set
 

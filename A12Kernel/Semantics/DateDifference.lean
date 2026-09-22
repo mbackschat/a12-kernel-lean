@@ -34,6 +34,46 @@ def compatible (unit : DateDifferenceUnit) (hasBaseYear : Bool)
   unit.admittedBy hasBaseYear left && unit.admittedBy hasBaseYear right &&
     (hasBaseYear || left.year == right.year)
 
+/-- Why a completed-period difference refuses an operand pair. `compatible` above answers *whether*,
+which was all this family had while its refusal classes were unmeasured; a12-dmkits measured them on
+both units across a declared/absent Base-Year pair, so the three grounds now carry distinct Kernel
+codes and a consumer mapping refusal to repair needs which one fired.
+
+This deliberately does **not** reuse [`TemporalOperationUnit.OperandFault`](TemporalFormat.lean),
+whose result domain is the two grounds its own family can report. The completed-period family has a
+third, and the extra one is Base-Year-conditioned rather than an ordinary granularity refusal, so the
+two are parallel accounts of different sizes rather than one shared mechanism. -/
+inductive DifferenceOperandFault where
+  /-- `MVK_WRONG_DATE_FORMAT_FOR_OP` — an operand lacks the component the unit steps. -/
+  | granularity
+  /-- `MVK_DATE_WITH_AND_WITHOUT_YEAR` — both operands step, and exactly one carries a year. -/
+  | yearDisagreement
+  /-- `MVK_INVALID_TIME` — a pure clock operand where a declared Base Year has already satisfied the
+  year requirement, so the question that answers instead is whether any calendar component exists. -/
+  | invalidTime
+  deriving Repr, DecidableEq
+
+/-- Whether a declared Base Year has satisfied this unit's own component requirement, leaving a pure
+clock operand to be refused as a time rather than as a granularity. Only `years` takes its component
+from the Base Year, which is why `months` reports the ordinary granularity code on the same operand. -/
+private def clockOutlivesComponentGate (unit : DateDifferenceUnit) (hasBaseYear : Bool)
+    (components : TemporalComponents) : Bool :=
+  unit == .years && hasBaseYear && components.hasTime && !components.hasDate
+
+/-- Classify one operand pair. The order is measured rather than chosen: a pure clock under a
+declared Base Year reports the time code although it also fails granularity, and a year mixture is
+only reachable once both operands step. `none` is admission and agrees with `compatible`. -/
+def operandFault? (unit : DateDifferenceUnit) (hasBaseYear : Bool)
+    (left right : TemporalComponents) : Option DifferenceOperandFault :=
+  if unit.clockOutlivesComponentGate hasBaseYear left
+      || unit.clockOutlivesComponentGate hasBaseYear right then
+    some .invalidTime
+  else if !(unit.admittedBy hasBaseYear left && unit.admittedBy hasBaseYear right) then
+    some .granularity
+  else if !(hasBaseYear || left.year == right.year) then
+    some .yearDisagreement
+  else none
+
 end DateDifferenceUnit
 
 namespace CalendarDayDifference

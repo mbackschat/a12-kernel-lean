@@ -110,4 +110,55 @@ example :
       DateDifferenceUnit.months.admittedBy true clockOnly = false := by
   native_decide
 
+/-- A full `dd.MM.yyyy` declaration, the dated partner that makes a mixture visible. -/
+private def dated : TemporalComponents :=
+  { year := true, month := true, day := true, hour := false, minute := false, second := false }
+
+/-- **The three refusal grounds are distinct classes, and `compatible` alone cannot report them.**
+Until this was measured the family answered whether an operand pair is admitted and never which gate
+refused it, so two Kernel codes collapsed onto one unmapped error — a spec clause without an
+executable counterpart. The rows below are a12-dmkits' grid at reviewed `48a24aec9`, both units
+across the Base-Year axis ([`SPEC-2026-09-21-03`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-21-03)).
+
+The mixed pair is the separating one: it is the only row where `months` and `years` answer
+*different* grounds on identical operands, and a grid carrying only it reports the mixture's class as
+though it were the unit's. The homogeneous rows beside it are what keep the two apart. -/
+example :
+    (DateDifferenceUnit.months.operandFault? false yearless dated,
+      DateDifferenceUnit.years.operandFault? false yearless dated) =
+      (some .yearDisagreement, some .granularity) ∧
+    (DateDifferenceUnit.months.operandFault? false yearless yearless,
+      DateDifferenceUnit.years.operandFault? false yearless yearless) =
+      (none, some .granularity) ∧
+    (DateDifferenceUnit.months.operandFault? true yearless dated,
+      DateDifferenceUnit.years.operandFault? true yearless dated) = (none, none) := by
+  native_decide
+
+/-- The clock operand's Base-Year-conditioned third ground, which is why this family's fault domain
+is larger than its sibling's two. Declaring a Base Year satisfies the year requirement `years` would
+have refused on, so the question answering instead is whether any calendar component exists at all;
+`months` still refuses on its own month component and reports granularity in both models. -/
+example :
+    (DateDifferenceUnit.years.operandFault? true clockOnly dated,
+      DateDifferenceUnit.years.operandFault? false clockOnly dated) =
+      (some .invalidTime, some .granularity) ∧
+    (DateDifferenceUnit.months.operandFault? true clockOnly dated,
+      DateDifferenceUnit.months.operandFault? false clockOnly dated) =
+      (some .granularity, some .granularity) ∧
+    (DateDifferenceUnit.years.operandFault? false dated dated,
+      DateDifferenceUnit.months.operandFault? true dated dated) = (none, none) := by
+  native_decide
+
+/-- The classifier refines `compatible` rather than restating it: admission agrees on every row of
+the grid above, so the fault domain adds the class without moving a verdict. -/
+example :
+    [(DateDifferenceUnit.months, false, yearless, dated),
+     (.years, false, yearless, dated), (.months, false, yearless, yearless),
+     (.years, false, yearless, yearless), (.months, true, yearless, dated),
+     (.years, true, clockOnly, dated), (.months, true, clockOnly, dated),
+     (.years, false, dated, dated)].all (fun row =>
+      (row.1.operandFault? row.2.1 row.2.2.1 row.2.2.2 == none) ==
+        row.1.compatible row.2.1 row.2.2.1 row.2.2.2) = true := by
+  native_decide
+
 end A12Kernel.Conformance.DateDifference
