@@ -2465,3 +2465,15 @@ Three times in one week a gate this project was measuring turned out to sit behi
 **Where it does not apply**, state that instead of padding the grid: a gate over operands that cannot cross a repeatable level has no binding question, and saying so in the fixture's own prose is the honest form of the same discipline.
 
 Related: [[LF182]] on a minimal model being minimal in the dimension the claim quantifies over, [[LF116]] on reusing a mechanism across a carrier boundary.
+
+## LF186 — "unmeasured" is a negative existential over *both* estates' measurements, so it needs the same defeater search as "unauthorable"
+
+[[LF172]] put the peer's `KERNEL-FINDINGS.md` on the corpus list for a claim written as *unreachable*, *unauthorable*, or *only this mechanism produces that*. One day later this project wrote a gap row saying a DATE_RANGE pre-1900 guard's runtime half "is unmeasured", having searched `spec/`, the checkpoints heading-first, the gap shards, and the implementation map — four corpora, all local, none of which held the answer. The peer's `kf276` held it in the paragraph immediately after the one the row already cited: a year-free range reads the base-year completion and fires `datumBereichDatumFalsch` under base year 1899, except the pure `MM` pairs, which reach neither that check nor the always-on 1583 floor.
+
+**The claim did not look like the class LF172 governs, and that is the whole lesson.** "Unauthorable" is visibly a statement about the Kernel and visibly falsifiable by anyone's witness. "Unmeasured" reads as a statement about *this project's own evidence*, where this project is the authority and a local search is by definition exhaustive. It is not: the quantifier ranges over every measurement either estate holds, and roughly half of those are the peer's by construction, so a local-only search has searched the smaller half and concluded over the whole.
+
+**The selection rule, which is cheaper than remembering a list.** Choose the corpus by *whose behaviour* the claim is about, not by which corpus is nearer. A claim about what the Kernel does — including a claim that nobody has yet seen what it does — is answered by the corpus of Kernel measurements, and the largest one is not in this repository. A claim about what this theory models stays local. The row that triggered this had both halves in one sentence and only the local half was searched.
+
+**The tell.** The row cited an inbound finding by id and then asserted something that finding did not say. Citing an entry is not reading it: the citation was carried forward from the record that consumed the entry's *declaration* half, and nobody opened the entry to see whether it also carried the runtime half. When a gap row's own citation is a peer finding, open that finding before writing what it leaves open ([[LF177]]).
+
+Related: [[LF172]] on the corpus list this extends, [[LF131]] on a premise being a conclusion, [[LF184]] on auditing by clause.
