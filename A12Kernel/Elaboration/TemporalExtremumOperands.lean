@@ -25,6 +25,14 @@ order draw a different code, and an arm that keyed on the offending kind alone w
 order and wrong in the other. The distinct count was already measured to select its class the same
 way, so this is one mechanism across the entity-list operators rather than a rule of the extrema.
 
+**The measured denominator of that rule is four operators and this module covers two.** The peer
+enumerated `MinValue`, `MaxValue`, `Min` and `Max` reporting the same two codes in the same two
+orders with a family-homogeneous control in both forms
+([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). `Min`/`Max` are the **value-expression** pair
+and a different operator from the field-list pair modelled here, so their agreement is coverage this
+project does not hold rather than a consequence of it, and nothing below should be read as deciding
+them ([SG23](../../docs/gaps/numeric-and-temporal.md)).
+
 A declared **Base Year** supplies a missing year to a yearless operand before the comparison, which
 is why `TemporalComponents.withBaseYear` is applied to both sides rather than tested as a special
 case: a yearless `MM` then equals `yyyy-MM`, `MM-dd` equals a complete date, and both still differ
