@@ -175,7 +175,14 @@ inductive TokenEntityStringLiteralValueListElabError where
     NUMBER is the separator rather than an eighth refusal. It clears this gate and then draws the
     comparison class against String literals, which is what shows the gate reads the declared kind
     against an admitted set rather than reading the literals' type. Without that row an account
-    keyed on "the slot disagrees with the literals" predicts every row here equally well. -/
+    keyed on "the slot disagrees with the literals" predicts every row here equally well.
+
+    **Exhaustive over `FieldKind` is not exhaustive over A12's declarable kinds.** The Kernel also
+    admits a CUSTOM slot here, measured by a12-dmkits on all three shapes, so the admitted set is
+    four kinds and the diagnostic's three-kind name is a misleading oracle for it. `FieldKind` has
+    no CUSTOM constructor, so that row is unrepresentable rather than refused, and this partition
+    claims nothing about it — do not read the `false` arm as covering it. Modelling a declared
+    CUSTOM kind is a core-type change tracked at its own gap. -/
 private def FlatFieldDecl.valueListSlotKindAdmitted (declaration : FlatFieldDecl) : Bool :=
   match declaration.policy.kind with
   | .string | .enumeration | .number _ => true
