@@ -83,7 +83,11 @@ private def probeModel : FlatModel :=
         temporalTargetPolicy := some { format := "MM-dd" } },
       { id := 21, groupPath := ["Probe"], name := "AnniversaryB",
         policy := { kind := .temporal .date { year := false, month := true, day := true, hour := false, minute := false, second := false } },
-        temporalTargetPolicy := some { format := "MM-dd" } }] }
+        temporalTargetPolicy := some { format := "MM-dd" } },
+      { id := 22, groupPath := ["Probe"], name := "SerialA",
+        policy := { kind := .string }, customType := some { name := "PolicySerial" } },
+      { id := 23, groupPath := ["Probe"], name := "SerialB",
+        policy := { kind := .string }, customType := some { name := "PolicySerial" } }] }
 
 example : probeModel.validate.isOk = true := by native_decide
 
@@ -106,6 +110,20 @@ private def pairAdmission (a b : String) : Admission :=
 /- The admitted kind, which keeps the refusals below from reading as "this operator refuses
    fields". -/
 example : pairAdmission "Email" "Phone" = .admitted := by native_decide
+
+/-- **The admitted set has four members, and the diagnostic's name lists three.** A CUSTOM slot is
+admitted here, measured by a12-dmkits on all three slot shapes, so
+`MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` is a misleading oracle for the set it appears to enumerate: a
+consumer deriving the admitted kinds from the code's name refuses a legal slot.
+
+This project reaches the right answer by construction rather than by a rule of its own, and the case
+is worth keeping for exactly that reason. A custom declaration must carry the String kind —
+`customTypeRequiresString` — so a CUSTOM field's `policy.kind` *is* `.string` and the slot predicate
+never sees a distinct kind to classify. The same construction is what makes the Kernel admit it, its
+string-likeness test taking a predefined type. An assumption that happens to hold produces no signal,
+so the row is asserted here beside the ordinary String control it must not be confused with. -/
+example : pairAdmission "SerialA" "SerialB" = .admitted ∧
+    pairAdmission "SerialA" "Email" = .admitted := by native_decide
 
 /- The middle class: admitted by the kind gate, refused by the literal comparison. -/
 example :

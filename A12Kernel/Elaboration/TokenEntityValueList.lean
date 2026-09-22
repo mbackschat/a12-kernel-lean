@@ -177,12 +177,15 @@ inductive TokenEntityStringLiteralValueListElabError where
     against an admitted set rather than reading the literals' type. Without that row an account
     keyed on "the slot disagrees with the literals" predicts every row here equally well.
 
-    **Exhaustive over `FieldKind` is not exhaustive over A12's declarable kinds.** The Kernel also
-    admits a CUSTOM slot here, measured by a12-dmkits on all three shapes, so the admitted set is
-    four kinds and the diagnostic's three-kind name is a misleading oracle for it. `FieldKind` has
-    no CUSTOM constructor, so that row is unrepresentable rather than refused, and this partition
-    claims nothing about it — do not read the `false` arm as covering it. Modelling a declared
-    CUSTOM kind is a core-type change tracked at its own gap. -/
+    **CUSTOM is the fourth admitted kind, and this partition admits it without a rung.** The Kernel
+    admits a CUSTOM slot here on all three shapes, so the diagnostic's three-kind name is a
+    misleading oracle for the set. A custom declaration must carry the String kind —
+    `customTypeRequiresString` — so its `policy.kind` *is* `.string` and the `true` arm above already
+    covers it. That agreement is by construction on both sides: the Kernel admits it because its
+    string-likeness test takes a predefined type, and this partition because a custom declaration
+    has no separate kind to classify. Locked beside the ordinary String control in
+    [`ValueListQuantifierKindGate.lean`](../Conformance/ValueListQuantifierKindGate.lean), because an
+    agreement nobody asserted produces no signal when either side changes. -/
 private def FlatFieldDecl.valueListSlotKindAdmitted (declaration : FlatFieldDecl) : Bool :=
   match declaration.policy.kind with
   | .string | .enumeration | .number _ => true
