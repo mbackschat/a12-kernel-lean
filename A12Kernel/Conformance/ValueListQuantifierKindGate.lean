@@ -180,7 +180,16 @@ private def groupModel : FlatModel :=
       { id := 19, groupPath := ["Bag", "DtG"], name := "A", policy := { kind := .temporal .dateTime TemporalComponents.now }, temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
       { id := 20, groupPath := ["Bag", "DtG"], name := "B", policy := { kind := .temporal .dateTime TemporalComponents.now }, temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
       { id := 21, groupPath := ["Bag", "FragG"], name := "A", policy := { kind := .temporal .date dateFragmentComponents }, temporalTargetPolicy := some { format := "MM-dd" } },
-      { id := 22, groupPath := ["Bag", "FragG"], name := "B", policy := { kind := .temporal .date dateFragmentComponents }, temporalTargetPolicy := some { format := "MM-dd" } }] }
+      { id := 22, groupPath := ["Bag", "FragG"], name := "B", policy := { kind := .temporal .date dateFragmentComponents }, temporalTargetPolicy := some { format := "MM-dd" } },
+      -- The repeatable arm of the 2x2 below: same two kinds, differing from their twins above in
+      -- repeatability alone, so kind and scope vary independently within one model.
+      { id := 23, groupPath := ["Bag", "RepStrG"], name := "A", policy := { kind := .string }, repeatableScope := [40] },
+      { id := 24, groupPath := ["Bag", "RepStrG"], name := "B", policy := { kind := .string }, repeatableScope := [40] },
+      { id := 25, groupPath := ["Bag", "RepNumG"], name := "A", policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [41] },
+      { id := 26, groupPath := ["Bag", "RepNumG"], name := "B", policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [41] }]
+    repeatableGroups := [
+      { level := 40, path := ["Bag", "RepStrG"], repeatability := some 50 },
+      { level := 41, path := ["Bag", "RepNumG"], repeatability := some 50 }] }
 
 example : groupModel.validate.isOk = true := by native_decide
 
@@ -197,6 +206,38 @@ private def groupAdmissionWith (group : String) (values : List String) : Admissi
     declared token. The Enumeration row below supplies its own declared literals for that reason. -/
 private def groupAdmission (group : String) : Admission :=
   groupAdmissionWith group ["x", "y"]
+
+private def starredGroupAdmission (group : String) : Admission :=
+  match elaborateTokenEntityStringLiteralValueListSource groupModel ["Bag"]
+      { quantifier := .atLeastOne
+        fields := { first := .starredGroup { base := .absolute, groups := [{ name := "Bag" }, { name := group, starred := true }] }, rest := [] }
+        values := ["x", "y"] } with
+  | .ok _ => .admitted
+  | .error error => .refused error.diagnostic?
+
+/-- **A scope gate outranks the kind gate, so every kind row above holds only once the level is
+bound.** This is the 2×2 that separates them: the two repeatable groups differ from their
+non-repeatable twins in repeatability alone, and the two kinds are one admitted and one refused, so
+scope and kind vary independently inside one model.
+
+Read down the scope axis and the kind gate is silent — an unstarred repeatable level draws
+`MVK_NO_WILDCARD` whether its expansion is String or Number, which is what "outranks" means. Read
+across the bound row and the kind gate answers exactly as it does on a non-repeatable carrier.
+
+The confound this removes was real and was in this module: every group in the fixture was
+non-repeatable, and none of the kind rows said so, so the whole set was consistent with an account
+that never mentions scope. a12-dmkits found it in a cold review of their own slice after publishing
+the kind denominator to this project, and the repeatable rows here reproduce their grid. The
+denominator and the four-member admitted set are unchanged by it; only the scope at which they hold
+was missing ([`SPEC-2026-09-22-03`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-22-03)). -/
+example :
+    (groupAdmission "RepStrG", starredGroupAdmission "RepStrG") =
+      (.refused (some .noWildcard), .admitted) ∧
+    (groupAdmission "RepNumG", starredGroupAdmission "RepNumG") =
+      (.refused (some .noWildcard), .refused (some .invalidTypesForComparison)) ∧
+    (groupAdmission "StrG", groupAdmission "NumG") =
+      (.admitted, .refused (some .invalidTypesForComparison)) := by
+  native_decide
 
 /-- **Every kind outside the admitted set draws the class at a group slot too**, which this carrier
 previously reported for DATE alone — the other five reached no class at all, because a group's
