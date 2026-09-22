@@ -164,7 +164,11 @@ def boundLevelCount : CheckedEntityGroupSource model → Nat
 
 end CheckedEntityGroupSource
 
-/-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain. -/
+/-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain.
+
+`temporal` collapses DATE, TIME, DATETIME and DATEFRAGMENT, and its four members do **not** rest on equal evidence. DATE beside DATEFRAGMENT is witnessed directly — identical declared `yyyy`, differing only in kind, admitted — which is a comparability answer precisely because the prior format gate had nothing to refuse. TIME and DATETIME are not witnessed that way: their membership rests on a gate-order pre-emption, and the record establishing it also states that no differing-format TIME or DATETIME witness was known, so their same-format rows could not separate format from kind. Any cross-kind temporal pair whose formats also differ moves two variables and is answered by the format gate, which is why the confound survives so easily here.
+
+The collapse is therefore the better-supported of two live readings for half its members, not a measured partition. It is kept as one constructor because splitting it would encode a distinction nothing can currently decide, and a four-constructor version would read as measured — but do not derive a new claim about TIME or DATETIME comparability from this type. [`spec/07`](../../spec/07-repetition-and-iteration.md) names the discriminating case. -/
 inductive FieldListComparabilityCategory where
   | string | enumeration | number | temporal
   deriving Repr, DecidableEq
