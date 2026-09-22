@@ -150,7 +150,20 @@ Date declaration **whose format carries a year**: the Kernel refuses a year-free
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-05c)). This arm admitted every year-free Date
 declaration with the guard set, which is an **over**-admission — a legal-looking model the Kernel
 rejects — and the opposite direction from the under-admissions the kind/format sweep was finding, so
-that sweep could not have surfaced it. -/
+that sweep could not have surfaced it.
+
+**Keying on components rather than on the declared kind is now measured, not assumed.** This estate
+represents a DATE_FRAGMENT as `.date` carrying fragment components, so the two carriers cannot be
+told apart here — a collapse that was a representational bet until `kf276` swept the twelve admitted
+fragment formats and found the five year-free spellings refused and the seven year-bearing ones
+admitted, exactly as DATE behaves ([inbound](../../docs/SOURCES.md#inbound-2026-09-08)). A case
+naming a fragment format would vary nothing and is deliberately absent. The same finding puts
+DATE_RANGE on the other side: it takes the guard on all eight admitted `(format, separator)` pairs,
+the four year-free ones included, so the co-requirement belongs to these carriers and not to the
+check. That arm is unreachable here by typing — `DateRangeDeclarationPolicy` carries no such flag —
+which is what keeps this gate from the uniform over-refusal `spec/05` warns a consumer against.
+Whether an accepted range guard then *fires* on a pre-1900 endpoint is unmeasured; see
+[`gaps/numeric-and-temporal.md`](../../docs/gaps/numeric-and-temporal.md). -/
 def TemporalTargetPolicy.errorFor?
     (policy : TemporalTargetPolicy)
     (kind : TemporalKind) (components : TemporalComponents) :
