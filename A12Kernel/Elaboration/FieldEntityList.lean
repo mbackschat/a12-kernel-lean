@@ -94,6 +94,13 @@ def expansionDeclarations : ResolvedFieldEntityOperand model →
   | .starredGroup source => model.groupSubtreeFields source.group.path
   | .starredGroupPresence source => model.groupSubtreeFields source.groupPath
 
+/-- The root a fixed group slot names, for the list-level root-group gate. Only the fixed form is
+    measured; a starred root would need a repeatable root, and no row places one on an entity list. -/
+def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
+  | .group reference => if reference.isRoot then some reference.path else none
+  | .field .. | .star _ | .starHaving _ _ | .starredGroup _ |
+      .starredGroupPresence _ => none
+
 /-- The authored path each slot occupies for the indirect duplicate arm. -/
 def entityPath : ResolvedFieldEntityOperand model → List String
   | .field declaration _ => declaration.path
@@ -264,6 +271,10 @@ inductive FieldEntityShapeElabError where
   | duplicateOperand (field : FieldId)
   | duplicateGroupOperand (path : GroupPath)
   | overlappingOperands (ancestor descendant : List String)
+  /-- A fixed root group in a list that passed both duplicate scans. Every entity of a model lies
+      under its root, so this arm is reached only by a root alone or beside another root's entities
+      ([checkpoint](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)). -/
+  | rootGroupOperand (path : GroupPath)
   deriving Repr, DecidableEq
 
 /-- The gates this shared checker owns, projected once. The **classes** do not vary by carrier, and
@@ -282,6 +293,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .duplicateOperand _ => some .duplicateParam1
   | .duplicateGroupOperand _ => some .duplicateParam1
   | .overlappingOperands _ _ => some .duplicateParam2
+  | .rootGroupOperand _ => some .rootGroupReferenced
   | .resolve error => error.diagnostic?
   | .groupReference (.repeatableGroupRequiresAddress _) => some .noWildcard
   | .starredGroup (.path (.wildcardOnNonrepeatable _)) => some .invalidWildcard
@@ -445,9 +457,11 @@ private def resolveFieldEntityOperands (model : FlatModel)
       pure ((← resolveFieldEntityOperandIn model declaringGroup scope operand) ::
         (← resolveFieldEntityOperands model declaringGroup scope remaining))
 
-/-- Validate the common entity-list shape: model, path resolution and its star gate, exact duplicates in authored encounter order, ancestor/descendant overlap, then the multiple-slots-or-one-already-many cardinality gate.
+/-- Validate the common entity-list shape: model, path resolution and its star gate, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, then the multiple-slots-or-one-already-many cardinality gate.
 
-    Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair. -/
+    Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair, and a root slot is already-many, so the root gate and cardinality never both fire.
+
+    The root gate is measured on `Sum`, the extrema, `FirstFilledValue`, `NumberOfDifferentValues`, `FieldValuesNotUnique`, `DateRangesOverlap`, and `NumberOfValueInFields`, all on the validation arm ([checkpoint](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)). The value-list quantifiers, `AtLeastOneDateRangeOverlaps`, and the computation carriers inherit it unmeasured, which refuses rather than admits where no row decides — the same loud direction `EntityListArity` takes. -/
 def elaborateFieldEntityShapeIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource)
@@ -467,18 +481,21 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
           | some (ancestor, descendant) =>
               throw (.overlappingOperands ancestor descendant)
           | none =>
-              if hMultiplicity :
-                  arity.allowsSole || first.isAlreadyMany || !rest.isEmpty then
-                pure {
-                  first
-                  rest
-                  modelWellFormed := by rw [hModel]; rfl
-                  arity
-                  requiredMultiplicity := hMultiplicity
-                  uniqueExactOperands := hDuplicate
-                  disjointOperands := hOverlap }
-              else
-                throw .tooFewFields
+              match (first :: rest).findSome? ResolvedFieldEntityOperand.rootGroupPath? with
+              | some root => throw (.rootGroupOperand root)
+              | none =>
+                  if hMultiplicity :
+                      arity.allowsSole || first.isAlreadyMany || !rest.isEmpty then
+                    pure {
+                      first
+                      rest
+                      modelWellFormed := by rw [hModel]; rfl
+                      arity
+                      requiredMultiplicity := hMultiplicity
+                      uniqueExactOperands := hDuplicate
+                      disjointOperands := hOverlap }
+                  else
+                    throw .tooFewFields
 
 /-- The scalar instance of the shared shape gates. -/
 def elaborateFieldEntityShape (model : FlatModel)

@@ -426,7 +426,7 @@ def certifyNumberEntityShape (model : FlatModel)
   else
     throw .incoherentCore
 
-/-- Validate one Number entity list in kernel order: resolve all references, apply the shared duplicate and overlap gates, require multiple slots or one already-many slot, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
+/-- Validate one Number entity list in kernel order: resolve all references, apply the shared duplicate, overlap, and root-group gates, require multiple slots or one already-many slot, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
 def elaborateNumberEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do

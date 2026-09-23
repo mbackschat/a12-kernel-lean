@@ -279,6 +279,15 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-23-entity-list-root-group-gate"></a>
+### Reviewed 2026-09-23 entity-list root-group gate — a Kernel gate the shared Lean shape did not ask
+
+a12-dmkits revisions `e7ce810633d2830e83f311fe1e1d72ebe7a828f8` (`rulekit.validate.laws.EntityListPreGateLawsTest`, whose root rows landed at `953ac33b` under the peer's `kf388`) and `5960d9ce422914794b2f076938d184d54054e2ae` (the root grid of `FirstFilledValueGateOrderLawsTest`, from the peer's 2026-09-23 letter), both on `main` and ancestors of that checkout's `HEAD` when read. Each verdict is the complete code list from the Kernel's `checkConsistency` on a validation rule condition. Not run here. Inbound from already committed and reviewed revisions, so no outbound entry follows.
+
+**The rows.** A lone root draws `MVK_ROOT_GROUP_REFERENCED` on `Sum`, `MaxValue`, `MinValue`, `FirstFilledValue`, `NumberOfDifferentValues`, `FieldValuesNotUnique`, `DateRangesOverlap` and `NumberOfValueInFields`; the root twice is `MVK_DUPLICATE_PARAM1` and the root beside its own subgroup `MVK_DUPLICATE_PARAM2` on each; `RepetitionNotUnique` over a lone root draws `MVK_NO_GROUPS_ALLOWED` instead. Under `FirstFilledValue` on a three-root model, a root beside an entity of its own root is `MVK_DUPLICATE_PARAM2` in either order, a root beside another root's field is the root class whether the pair is homogeneous (`/Extra, Title`) or mixed (`/Extra, Weight`), `/Item, Tier -> Band` is the root class, and `Title, /Extra/Code` is admitted.
+
+**Lean asked no root gate on the shared entity-list shape and admitted three of these lists:** a lone single-String root and `/Extra, Title` under `FirstFilledValue`, and an all-Number root under `FieldValuesNotUnique`; the mixed lists reached an unmapped kind refusal. [`FieldEntityRootGroup`](../A12Kernel/Conformance/FieldEntityRootGroup.lean) locks the gate after both duplicate scans. Lean still reports the nested duplicate for `/Item, Tier -> Band`, and [SG9](gaps/paths-and-groups.md#gap-sg9) owns that row with its non-root discriminator.
+
 <a id="inbound-2026-09-22e-first-filled-gate-order"></a>
 ### Reviewed 2026-09-23 `FirstFilledValue` gate-order handback — duplicates, then Confirm, then one type over the expanded fields, and a Kernel row behind a Lean lock
 
