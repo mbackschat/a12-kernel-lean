@@ -52,31 +52,36 @@ if [[ ! -s "$work/catalogs" ]]; then
   exit 1
 fi
 
-# A catalog entry becomes ONE regex: its literal words are escaped and each interpolation point —
+# A catalog entry becomes one pattern: its literal words are escaped and each interpolation point —
 # the `<named>` placeholders and the printf-style `%s` / `%1$s` / `%d` the Kernel also uses — becomes a
 # bounded wildcard. That is what catches a RENDERED message, which is how the copies actually arrive:
 # our prose quotes a diagnostic with the value already substituted, so it matches no catalog line
 # verbatim even though every word of it is the Kernel's.
 #
-# Splitting entries into fragments instead was tried on 2026-09-07 and rejected. It fires on things
-# like "decimal places." or "The index for group '" — ordinary English plus a quoted identifier, which
-# no one authored and no licence reaches — and acting on those findings would strip real documentation
-# to satisfy a gate. The unit of protectable expression is the sentence, so the sentence is the unit
-# compared.
+# Checking every short fragment unconditionally was tried on 2026-09-07 and rejected. It fires on a
+# two-word unit phrase or on a four-word opening before a quoted group name — ordinary English plus an
+# identifier, which no one authored and no licence reaches — and acting on those findings would strip
+# real documentation to satisfy a gate. A short fragment is therefore checked only where our prose
+# quotes it.
 #
 # The catalogs are ISO-8859-1, the Java properties default, and decoding them as UTF-8 does not fail
 # loudly — it drops more than half the files and mangles every umlaut in the rest, which leaves the
 # gate passing over prose it never actually read. Measured 2026-09-07: UTF-8 yields 491 entries
 # against latin-1's full set.
-#
-# The 25-character floor counts an entry's LITERAL words only, so a template that is mostly
-# placeholders is judged on the words it actually contributes.
-python3 - "$work/catalogs" > "$work/texts" <<'PYTHON'
+python3 - "$work/catalogs" "$work/checks" "$work/literals" <<'PYTHON'
 import re, sys
 
 INTERPOLATION = re.compile(r'<[a-zA-Z0-9]+>|%[0-9]*\$?[a-zA-Z]')
 
-patterns = set()
+# Each check is (kind, required literal, exact regex). The literal is a piece every match must contain,
+# which is what lets the corpus pass below stay a fixed-string search.
+checks = set()
+
+def add(kind, pieces, frame=''):
+    literal = max(pieces, key=len)
+    body = '.{0,80}'.join(re.escape(piece) for piece in pieces)
+    checks.add((kind, literal, f'{frame}{body}{frame}'))
+
 for path in open(sys.argv[1]):
     try:
         lines = open(path.strip(), encoding='latin-1').read().splitlines()
@@ -87,82 +92,123 @@ for path in open(sys.argv[1]):
         if not matched:
             continue
         body = matched.group(1).strip()
-        literal = INTERPOLATION.sub('', body)
-        if len(literal.strip()) < 25:
-            continue
-        pattern = ''.join(
-            '.{0,80}' if INTERPOLATION.fullmatch(piece) else re.escape(piece)
-            for piece in INTERPOLATION.split(body)
-            if piece != ''
-        ) if INTERPOLATION.search(body) else re.escape(body)
-        # re.split drops the separators, so rebuild with them retained.
-        pieces = INTERPOLATION.split(body)
-        separators = INTERPOLATION.findall(body)
-        rebuilt = []
-        for index, piece in enumerate(pieces):
-            if piece:
-                rebuilt.append(re.escape(piece))
-            if index < len(separators):
-                rebuilt.append('.{0,80}')
-        pattern = ''.join(rebuilt)
-        if pattern:
-            patterns.add(pattern)
-        # A partial quote of a long sentence escapes the whole-entry pattern, because that pattern
-        # requires the sentence to end where the catalog ends. So each interpolation-free run of 40+
-        # characters is also a pattern in its own right. Forty is above the noise floor measured on
-        # 2026-09-07: at 15 the run set fires on "decimal places." and "The index for group '", which
-        # are ordinary English plus a quoted identifier, while at 40 every hit is a clause someone
-        # actually composed.
-        #
         # A run is trimmed of the quotes, colon and full stop that frame its neighbouring placeholder
         # before it is compared, because a quote drops that framing together with the placeholder:
         # `At '%s': There must be ...` leaves the run `': There must be ...`, which no prose quoting
         # the sentence alone ever contains. Untrimmed, eight catalog sentences in eighteen places
         # passed this gate on 2026-09-23.
-        for run in INTERPOLATION.split(body):
-            run = run.strip().strip("'\":,;.()[] ")
+        # Runs are also split at sentence ends, because a quote of the first sentence of a two-sentence
+        # entry otherwise matches no run: a rendered date-type refusal quoted that way passed on
+        # 2026-09-23.
+        runs = [sentence.strip().strip("'\":,;.()[] ")
+                for run in INTERPOLATION.split(body)
+                for sentence in re.split(r'(?<=[.!?])\s+', run)]
+        for run in runs:
+            # A partial quote of a long sentence escapes the whole-entry check, because that check
+            # requires the sentence to end where the catalog ends, so each run of 40+ characters is a
+            # check of its own. Forty is above the noise floor measured on 2026-09-07. Below forty a run
+            # of four or more words counts only where our prose quotes it, which is how all eleven short
+            # copies found on 2026-09-23 sat, while the coincidences at that length were unquoted.
             if len(run) >= 40:
-                patterns.add(re.escape(run))
-for pattern in sorted(patterns):
-    print(pattern)
+                add('long', [run])
+            elif len(run) >= 15 and len(run.split()) >= 4:
+                add('quoted', [run])
+        pieces = [piece for piece in INTERPOLATION.split(body) if piece]
+        # The 25-character floor counts an entry's LITERAL words only, so a template that is mostly
+        # placeholders is judged on the words it actually contributes.
+        if len(INTERPOLATION.sub('', body).strip()) >= 25:
+            add('long', pieces)
+        # In retained JSON every string is quoted, so quoting says nothing there; what marks a copy is a
+        # string value that renders a whole entry. That catches the short entries below the floor: a
+        # 23-character required-field sentence survived in two artifacts until 2026-09-23.
+        if pieces and len(INTERPOLATION.sub('', body).split()) >= 3:
+            add('json', pieces, frame='"')
+
+with open(sys.argv[2], 'w', encoding='utf-8') as out:
+    out.writelines(f'{kind}\t{literal}\t{pattern}\n' for kind, literal, pattern in sorted(checks))
+with open(sys.argv[3], 'w', encoding='utf-8') as out:
+    out.writelines(literal + '\n' for literal in sorted({literal for _, literal, _ in checks}))
 PYTHON
 
-# One multi-pattern pass over the corpus, not one pass per sentence. The per-sentence loop is the
-# obvious shape and takes minutes against this one's seconds, because it rescans the whole repository
-# a thousand times; the per-file lookup below runs only for a sentence already known to be present, so
-# on a clean tree it never runs at all.
+# ONE FIXED-STRING PASS, THEN EXACT CHECKS ON THE CANDIDATE LINES. Every check carries a literal that any
+# match must contain, so a fixed-string search over those literals finds every candidate line. Only
+# those lines are then tried against each check's full pattern, which cannot span a line either.
+# Feeding the full patterns to ripgrep instead costs regex compilation per pattern: 1,878 of them used
+# more than 60 CPU-seconds per run on 2026-09-23, where the 2026-09-07 comment here had measured under
+# 2s for 1,096. A context prefix on each short pattern then left ripgrep no literal to anchor on at all,
+# and the search ran unbounded at full CPU.
 #
 # ripgrep when it is available, BSD grep otherwise. Measured 2026-09-07 on this repository: 1096
-# patterns over the four content roots cost about 98s through BSD `grep -F -f` and under 2s through
-# `rg -Ff`, because ripgrep builds one Aho-Corasick automaton where BSD grep rescans per pattern. The
-# fallback is kept so the gate still runs where ripgrep is absent, just slowly.
+# fixed strings cost about 98s through BSD `grep -F -f` and under 2s through `rg -Ff`, because ripgrep
+# builds one Aho-Corasick automaton where BSD grep rescans per pattern. The fallback is kept so the gate
+# still runs where ripgrep is absent, just slowly.
+#
+# Both tools exit 1 for "no match" and 2 for an error, and only the first means a clean tree. The gate
+# once discarded that difference, so a pattern set too large to compile read as a pass on 2026-09-23.
+search_status=0
 if command -v rg >/dev/null 2>&1; then
-  rg --no-filename --only-matching --file "$work/texts" \
+  rg --fixed-strings --no-heading --with-filename --line-number --file "$work/literals" \
     --glob '*.lean' --glob '*.md' --glob '*.sh' --glob '*.json' \
-    A12Kernel spec docs scripts evidence 2>/dev/null \
-    | sort -u > "$work/found" || : > "$work/found"
+    A12Kernel spec docs scripts evidence > "$work/candidates" || search_status=$?
 else
-  grep -rhoE -f "$work/texts" A12Kernel spec docs scripts evidence \
-    --include='*.lean' --include='*.md' --include='*.sh' --include='*.json' 2>/dev/null \
-    | sort -u > "$work/found" || : > "$work/found"
+  grep -rnF -f "$work/literals" A12Kernel spec docs scripts evidence \
+    --include='*.lean' --include='*.md' --include='*.sh' --include='*.json' \
+    > "$work/candidates" || search_status=$?
 fi
+if (( search_status > 1 )); then
+  echo "kernel prose guard could not search the corpus (exit ${search_status}); refusing to pass" >&2
+  exit 1
+fi
+
+python3 - "$work/checks" "$work/candidates" > "$work/found" <<'PYTHON'
+import re, sys
+
+checks = []
+for row in open(sys.argv[1], encoding='utf-8'):
+    kind, literal, pattern = row.rstrip('\n').split('\t')
+    checks.append((kind, literal, re.compile(pattern)))
+
+CODE_SPAN = re.compile(r'`[^`]*`')
+# An italic opens on a `*` that follows no word character and precedes a non-space, and closes on one
+# that follows a non-space and precedes no word character. A star operand such as `Rows*` is neither
+# an opener nor, inside prose, a reason to read what follows as quoted.
+ITALIC_OPEN = re.compile(r'(?<![\w*/])\*(?=[^\s*])')
+ITALIC_CLOSE = re.compile(r'(?<=[^\s*])\*(?![\w*])')
+
+def quoted(text, at):
+    # Code spans quote syntax rather than prose, and a `**` pair is emphasis in our own voice.
+    before = CODE_SPAN.sub(lambda span: ' ' * len(span.group(0)), text[:at]).replace('**', '  ')
+    if before.count('"') % 2 == 1 or before.rfind('\u201c') > before.rfind('\u201d'):
+        return True
+    openers = [match.start() for match in ITALIC_OPEN.finditer(before)]
+    closers = [match.start() for match in ITALIC_CLOSE.finditer(before)]
+    return bool(openers) and (not closers or openers[-1] > closers[-1])
+
+for hit in open(sys.argv[2], encoding='utf-8', errors='replace'):
+    path, _, rest = hit.rstrip('\n').partition(':')
+    number, _, text = rest.partition(':')
+    is_json = path.endswith('.json')
+    for kind, literal, pattern in checks:
+        if literal not in text or (kind == 'json') != is_json and kind != 'long':
+            continue
+        for match in pattern.finditer(text):
+            if kind in ('long', 'json') or quoted(text, match.start()):
+                print(f'{match.group(0)}\t{path}:{number}')
+                break
+PYTHON
 
 violations="$(wc -l < "$work/found" | tr -d ' ')"
-if [[ "$violations" -gt 0 ]]; then
-  while IFS= read -r sentence; do
-    echo "EUPL message prose copied into MIT source:" >&2
-    echo "  text: ${sentence}" >&2
-    grep -rlF "$sentence" A12Kernel spec docs scripts evidence \
-      --include='*.lean' --include='*.md' --include='*.sh' --include='*.json' 2>/dev/null \
-      | while IFS= read -r file; do echo "  file: ${file}" >&2; done
-  done < "$work/found"
-fi
+while IFS=$'\t' read -r sentence location; do
+  echo "EUPL message prose copied into MIT source:" >&2
+  echo "  text: ${sentence}" >&2
+  echo "  file: ${location}" >&2
+done < "$work/found"
 
-if [[ "$violations" -gt 0 ]]; then
+if (( violations > 0 )); then
   echo >&2
   echo "${violations} Kernel sentence(s) reproduced verbatim. Replace each with the class key plus your" >&2
   echo "own description of what it says. Naming the key is required; copying the sentence is not." >&2
   exit 1
 fi
 
-echo "kernel prose guard passed: $(wc -l < "$work/texts" | tr -d ' ') catalog sentences, none reproduced"
+echo "kernel prose guard passed: $(wc -l < "$work/checks" | tr -d ' ') catalog checks, none reproduced"
