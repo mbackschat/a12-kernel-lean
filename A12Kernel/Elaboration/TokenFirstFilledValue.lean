@@ -3,7 +3,7 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked String/Enumeration `FirstFilledValue`
 
-This consumer applies the common checked String/ordinary stored-Enumeration entity list to `FirstFilledValue`. It owns the operator-specific measured two-declaration kind discriminator, lazy authored-order scanning, relevance, filter selection, and token-family empty-result semantics; common token admission and declaration-owned classification stay in `TokenEntityList`.
+This consumer applies the common checked String/ordinary stored-Enumeration entity list to `FirstFilledValue`. It owns the operator-specific Confirm and type classes over the expanded list, lazy authored-order scanning, relevance, filter selection, and token-family empty-result semantics; common token admission and declaration-owned classification stay in `TokenEntityList`.
 -/
 
 namespace A12Kernel
@@ -15,46 +15,83 @@ abbrev CheckedFirstFilledTokenStarSource := CheckedTokenStarSource
 abbrev CheckedFirstFilledTokenOperand := CheckedTokenEntityOperand
 abbrev CheckedFirstFilledTokenSource := CheckedTokenEntitySource
 
-/-- Operator-specific static refusals stay outside the shared token carrier. The two measured arms
-    intentionally retain only the exact two-declaration matrix established for group operands and
-    their explicit expansions; every wider kind or declaration-policy combination remains an
-    unmapped source refusal. -/
+/-- Operator-specific static refusals stay outside the shared token carrier. Both kind arms are read
+    off the expanded list and projected only where a row measures them; every other kind or
+    declaration-policy combination remains an unmapped source refusal. -/
 inductive FirstFilledTokenElabError where
   | source (error : TokenEntityElabError)
-  | confirmPair (first second : List String)
-  | stringNumberPair (stringPath numberPath : List String)
+  /-- The first Confirm declaration of the expanded list. -/
+  | confirmOperand (path : List String)
+  /-- The expanded list's first declaration and the first later one of another type family. -/
+  | varyingTypes (leaderPath memberPath : List String)
   deriving Repr, DecidableEq
 
 def firstDuplicateDirectFirstFilledTokenField? :=
   @firstDuplicateDirectTokenField?
 
-private def firstFilledMeasuredDeclarationError? :
-    List FlatFieldDecl → Option FirstFilledTokenElabError
-  | [first, second] =>
-      match first.policy.kind.surfaceKind, second.policy.kind.surfaceKind with
-      | .confirm, .confirm => some (.confirmPair first.path second.path)
-      | .string, .number =>
-          if first.toStoredTokenSlot?.isSome && first.customType.isNone then
-            some (.stringNumberPair first.path second.path)
-          else
-            none
-      | _, _ => none
-  | _ => none
+/-- The type families this classifier compares. Raw String, temporal, and DateRange declarations
+    have none here, so a list holding one stays unmapped: the temporal and DateRange rows key the
+    family on the declared format, and no row places a raw String at this gate. -/
+private inductive FirstFilledTypeFamily where
+  | text
+  | boolean
+  | number
+  deriving DecidableEq
 
-/-- Retain the exact measured carriers and declaration policies: one fixed group or two direct
-    stored fields, with the String/Number arm requiring an ordinary evaluated String. Starred,
-    filtered, projected, raw/custom String, reversed, and wider sources stay unmapped. -/
-private def firstFilledMeasuredKindError? (model : FlatModel) :
-    List (ResolvedFieldEntityOperand model) → Option FirstFilledTokenElabError
-  | [.group reference] =>
-      firstFilledMeasuredDeclarationError?
-        (model.groupSubtreeFields reference.path)
-  | [.field first .stored, .field second .stored] =>
-      firstFilledMeasuredDeclarationError? [first, second]
-  | _ => none
+private def firstFilledTypeFamily? (declaration : FlatFieldDecl) :
+    Option FirstFilledTypeFamily :=
+  match declaration.policy.kind.surfaceKind with
+  | .string => if declaration.isRawString then none else some .text
+  | .enumeration => some .text
+  | .boolean => some .boolean
+  | .number => some .number
+  | .confirm | .temporal _ | .dateRange => none
 
-/-- Resolve the common entity-list shape first, then project only the measured `FirstFilledValue`
-    kind pair before token certification would collapse both cases into a local kind mismatch. -/
+/-- Whether a leader/member split is measured to draw the type class. Only the measured order counts:
+    every text/Number and Boolean/Number row leads with the text or the Boolean, and the text/Boolean
+    rows lead with an ordinary String, so neither a reversed pair nor a Custom or Enumeration leader
+    beside a Boolean borrows the class. -/
+private def measuredTypeSplit (leader member : FlatFieldDecl) : Bool :=
+  match leader.policy.kind.surfaceKind, member.policy.kind.surfaceKind with
+  | .string, .number | .enumeration, .number | .boolean, .number => true
+  | .string, .boolean => leader.customType.isNone
+  | _, _ => false
+
+/-- The declarations a list contributes to the kind gates when every operand is a carrier those
+    gates are measured on: a direct stored field, or a fixed group read through its recursive
+    expansion. Starred, filtered, and projected operands leave the whole list unclassified. -/
+private def measuredKindExpansion? (model : FlatModel) :
+    List (ResolvedFieldEntityOperand model) → Option (List FlatFieldDecl)
+  | [] => some []
+  | .field declaration .stored :: rest =>
+      (declaration :: ·) <$> measuredKindExpansion? model rest
+  | .group reference :: rest =>
+      (model.groupSubtreeFields reference.path ++ ·) <$> measuredKindExpansion? model rest
+  | _ :: _ => none
+
+/-- The Confirm class is asked over the whole expanded list before the type class, so a Confirm
+    declaration in any position decides the list
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-23-first-filled-gate-positions)). The type
+    class compares each later declaration with the first and is projected only for a measured split
+    between the leader and the first member of another family. -/
+private def firstFilledMeasuredKindError? (model : FlatModel)
+    (operands : List (ResolvedFieldEntityOperand model)) :
+    Option FirstFilledTokenElabError := do
+  let declarations ← measuredKindExpansion? model operands
+  match declarations.find? (·.policy.kind.surfaceKind == .confirm) with
+  | some confirm => pure (.confirmOperand confirm.path)
+  | none =>
+      let leader :: members := declarations | none
+      let leaderFamily ← firstFilledTypeFamily? leader
+      let families ← members.mapM firstFilledTypeFamily?
+      let (member, _) ← (members.zip families).find? (·.2 != leaderFamily)
+      if measuredTypeSplit leader member then
+        pure (.varyingTypes leader.path member.path)
+      else
+        none
+
+/-- Resolve the common entity-list shape first, then project the measured `FirstFilledValue` kind
+    classes before token certification would collapse them into a local kind mismatch. -/
 def elaborateFirstFilledTokenSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFirstFilledTokenSource) :
     Except FirstFilledTokenElabError (CheckedFirstFilledTokenSource model) := do
@@ -67,12 +104,12 @@ def elaborateFirstFilledTokenSource (model : FlatModel)
 
 namespace FirstFilledTokenElabError
 
-/-- Project the exact measured pair and the shared shape classes. Every other token refusal remains
+/-- Project the measured kind classes and the shared shape classes. Every other token refusal remains
     unmapped rather than borrowing a diagnostic from another field-list operator. -/
 def diagnostic? : FirstFilledTokenElabError → Option KernelStaticDiagnostic
   | .source (.shape error) => error.diagnostic?
-  | .confirmPair _ _ => some .noBoolyAllowed
-  | .stringNumberPair _ _ => some .varyingTypesNotAllowed
+  | .confirmOperand _ => some .noBoolyAllowed
+  | .varyingTypes _ _ => some .varyingTypesNotAllowed
   -- The filter's class is the **filter's own**, measured identical across three structurally
   -- different wrapping carriers ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)),
   -- so it delegates here rather than being dropped. Only the filter half delegates: the shared

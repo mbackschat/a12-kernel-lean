@@ -387,7 +387,7 @@ example :
         some (.source (.shape (.duplicateOperand directString.id))) ∧
       checkedErrorOf (source (.field (directPath "Code"))
         [.field (directPath "Amount")]) =
-        some (.stringNumberPair directString.path directNumber.path) := by
+        some (.varyingTypes directString.path directNumber.path) := by
   native_decide
 
 /- The measured direct-field projection does not transfer to the reverse order or to starred

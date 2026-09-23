@@ -218,17 +218,50 @@ example :
 
 /- The shared duplicate gate precedes the measured kind projection. A repeated Confirm field is the
    only list on which both fire here, and the Kernel's order is measured on `Title, InStock, Title`
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-22e-first-filled-gate-order)). A Confirm-led
-   Confirm/String list is measured `MVK_NO_BOOLY_ALLOWED` as well, but it stays a rejected, unmapped
-   source here: the kind classifier keeps its two-declaration matrix, and SG8 owns widening it. -/
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-22e-first-filled-gate-order)). -/
 example :
     firstFilledDiagnosticDecision [
       fieldAt ["Form", "Boolies"] "Accepted",
       fieldAt ["Form", "Boolies"] "Accepted"] =
-        some (.mapped .duplicateParam1) ∧
+        some (.mapped .duplicateParam1) := by
+  native_decide
+
+/- The Confirm class is asked over the whole expanded list before the type class, so a Confirm field
+   draws it leading, trailing, and beside a group that already mixes text and number — the Kernel's
+   `InStock, Title`, `Title, Weight, InStock` and `Specs, InStock` rows
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-23-first-filled-gate-positions)). -/
+example :
     firstFilledDiagnosticDecision [
       fieldAt ["Form", "Boolies"] "Accepted", field "Loose"] =
-        some .rejectedUnmapped := by
+        some (.mapped .noBoolyAllowed) ∧
+    firstFilledDiagnosticDecision [field "Loose", field "Other",
+      fieldAt ["Form", "Boolies"] "Accepted"] = some (.mapped .noBoolyAllowed) ∧
+    firstFilledDiagnosticDecision [group ["Form", "Num"],
+      fieldAt ["Form", "Boolies"] "Accepted"] = some (.mapped .noBoolyAllowed) := by
+  native_decide
+
+/- Without a Confirm field the type class answers for each measured leader/member split, in lists
+   and group expansions alike: text then a group of mixed kinds (`Title, Specs`), text then Boolean
+   inside one group, Enumeration then Number, and Boolean then Number
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-22e-first-filled-gate-order)). -/
+example :
+    firstFilledDiagnosticDecision [field "Loose", group ["Form", "Num"]] =
+      some (.mapped .varyingTypesNotAllowed) ∧
+    firstFilledDiagnosticDecision [group ["Form", "Bad"]] =
+      some (.mapped .varyingTypesNotAllowed) ∧
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Mixed"] "Kind",
+      fieldAt ["Form", "Num", "Deep"] "Count"] = some (.mapped .varyingTypesNotAllowed) ∧
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Bad", "Deep"] "Flag",
+      fieldAt ["Form", "Num", "Deep"] "Count"] = some (.mapped .varyingTypesNotAllowed) := by
+  native_decide
+
+/- A split no row measures stays a rejected, unmapped source: every measured text/Number and
+   Boolean/Number row leads with the text or the Boolean, so the reversed orders claim nothing. -/
+example :
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Num", "Deep"] "Count", field "Loose"] =
+      some .rejectedUnmapped ∧
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Num", "Deep"] "Count",
+      fieldAt ["Form", "Bad", "Deep"] "Flag"] = some .rejectedUnmapped := by
   native_decide
 
 /- Arity and the nested duplicate also precede the Confirm class: a sole Confirm field and a Confirm
