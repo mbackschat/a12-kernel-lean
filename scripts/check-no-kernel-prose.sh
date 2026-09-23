@@ -113,8 +113,14 @@ for path in open(sys.argv[1]):
         # 2026-09-07: at 15 the run set fires on "decimal places." and "The index for group '", which
         # are ordinary English plus a quoted identifier, while at 40 every hit is a clause someone
         # actually composed.
+        #
+        # A run is trimmed of the quotes, colon and full stop that frame its neighbouring placeholder
+        # before it is compared, because a quote drops that framing together with the placeholder:
+        # `At '%s': There must be ...` leaves the run `': There must be ...`, which no prose quoting
+        # the sentence alone ever contains. Untrimmed, eight catalog sentences in eighteen places
+        # passed this gate on 2026-09-23.
         for run in INTERPOLATION.split(body):
-            run = run.strip()
+            run = run.strip().strip("'\":,;.()[] ")
             if len(run) >= 40:
                 patterns.add(re.escape(run))
 for pattern in sorted(patterns):
