@@ -28,7 +28,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -41,7 +41,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],
@@ -156,7 +156,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -169,7 +169,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],
@@ -290,7 +290,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -303,7 +303,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],
@@ -518,7 +518,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -531,7 +531,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],
@@ -752,7 +752,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -765,7 +765,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],
@@ -1123,7 +1123,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -1136,7 +1136,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],
@@ -1500,7 +1500,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -1513,7 +1513,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],
@@ -1662,7 +1662,7 @@
               "field" : "Project/Milestones/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones/Phase"
               ],
@@ -1675,7 +1675,7 @@
               "field" : "Project/Milestones[2]/Phase",
               "severity" : "ERROR",
               "type" : "OMISSION_ERROR",
-              "message" : "This field is required.",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
               "referenced" : [
                 "Project/Milestones[2]/Phase"
               ],

@@ -105,7 +105,7 @@ Power has two precision stages that are observable and must not be replaced with
 
 | name | value | what it constrains | refused as |
 |---|---|---|---|
-| `fieldScaleCap` | **14** | the largest declarable `maxFractionalDigits`, and `minFractionalDigits` alike | a real kernel gate reported with **no `MVK_*` class at all** (*"Only values smaller than or equal to 14 are allowed"*), and **one** diagnostic even when both keys breach |
+| `fieldScaleCap` | **14** | the largest declarable `maxFractionalDigits`, and `minFractionalDigits` alike | a real kernel gate reported with **no `MVK_*` class at all** (a message stating the upper bound 14), and **one** diagnostic even when both keys breach |
 | `fieldScaleOrdering` | refuses exactly `max ≥ 0 ∧ min > max` | the declared fractional interval, where an **absent** member reads as `0` and a **negative** maximum takes the pair out of the comparison altogether | `MVK_FRACT_DIGITS_INVALID` |
 | `enteredValueTotalDigits` | **15** | an entered **value**, integer **plus** fractional digits, on **every** number field | `stelligkeitZuLang` |
 | `amountIntegerCap` | **15 − scale** | an entered value's integer part, **amount trait only** | `zahlZuvieleVorkommastellen` |

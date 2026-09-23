@@ -89,7 +89,7 @@ example : admitted [unstarredRepeatable] = false := by
   native_decide
 
 /- A lone fixed operand is refused for a different reason — measured `MVK_PARAMSIZE_INVALIDGN`,
-   *"There must be more than one group"* — which is what makes the first row a statement about
+   the class requiring a second group — which is what makes the first row a statement about
    the star rather than about arity. -/
 example : admitted [fixedOperand ["Probe", "Flat"]] = false := by
   native_decide
