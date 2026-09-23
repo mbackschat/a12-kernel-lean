@@ -46,7 +46,7 @@ def declarations (checked : CheckedFilledFieldCountGroupSource model) :
     counted and does not make the count unknown: on a document whose in-capacity rows are
     instantiated and empty and whose only filled cell lies beyond capacity, kernel 30.8.1 answers
     `0` and fires a `< 1` rule, which an unknown count would leave silent
-    ([checkpoint](../../../docs/SOURCES.md#src-group-operand-over-limit-extent)). The complete
+    ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). The complete
     formal-cell view stays available on the checked document for the group consumers that have no
     such measurement. -/
 def evaluateCheckedDocumentValidation
@@ -62,7 +62,7 @@ def evaluateCheckedDocumentValidation
 /-- Lift the measured fixed-group validation count against its subtree's declared **slot capacity**.
     A subtree owning a repeatable descendant admits more cells than it declares fields, and the count
     stays grow-only until every one of those slots is filled; the declaration count would freeze it
-    early ([checkpoint](../../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). An
+    early ([checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). An
     unretained descendant maximum yields no operand at all rather than an unmeasured movement rule,
     matching the starred carrier and reachable in no authorable model. The starred carrier returns
     `none` here because its movement depends on a separate declared row extent. -/
