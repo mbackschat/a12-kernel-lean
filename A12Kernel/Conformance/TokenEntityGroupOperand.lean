@@ -219,8 +219,8 @@ example :
 /- The shared duplicate gate precedes the measured kind projection. A repeated Confirm field is the
    only list on which both fire here, and the Kernel's order is measured on `Title, InStock, Title`
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-22e-first-filled-gate-order)). A Confirm-led
-   Confirm/String list stays a rejected but deliberately unmapped source: the String-led order is
-   measured, and no row measures a Confirm field leading a mixed list. -/
+   Confirm/String list is measured `MVK_NO_BOOLY_ALLOWED` as well, but it stays a rejected, unmapped
+   source here: the kind classifier keeps its two-declaration matrix, and SG8 owns widening it. -/
 example :
     firstFilledDiagnosticDecision [
       fieldAt ["Form", "Boolies"] "Accepted",
@@ -229,6 +229,18 @@ example :
     firstFilledDiagnosticDecision [
       fieldAt ["Form", "Boolies"] "Accepted", field "Loose"] =
         some .rejectedUnmapped := by
+  native_decide
+
+/- Arity and the nested duplicate also precede the Confirm class: a sole Confirm field and a Confirm
+   group beside its own member, in either order, are the Kernel's `InStock` and `Flags, Flags/Fragile`
+   rows ([inbound](../../docs/SOURCES.md#inbound-2026-09-23-first-filled-gate-positions)). -/
+example :
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Boolies"] "Accepted"] =
+      some (.mapped .paramSizeInvalidN) ∧
+    firstFilledDiagnosticDecision [group ["Form", "Boolies"],
+      fieldAt ["Form", "Boolies"] "Accepted"] = some (.mapped .duplicateParam2) ∧
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Boolies"] "Accepted",
+      group ["Form", "Boolies"]] = some (.mapped .duplicateParam2) := by
   native_decide
 
 /- A nonrepeatable terminal group below an earlier star is admitted, while leaving a repeatable

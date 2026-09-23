@@ -279,6 +279,19 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-23-first-filled-gate-positions"></a>
+### Reviewed 2026-09-23 `FirstFilledValue` gate-position handback — operand reads first, then duplicates, root and arity, then Confirm wherever it stands
+
+a12-dmkits revision `5960d9ce422914794b2f076938d184d54054e2ae` on `main`, following `2756290df` and `107defe4c`, an ancestor of that checkout's `HEAD` when read; the letter is the peer's 2026-09-23 gate-position letter, continuing [the gate-order record](#inbound-2026-09-22e-first-filled-gate-order). `rulekit.validate.laws.FirstFilledValueGateOrderLawsTest` was read at that revision: each verdict is the complete code list from `checkConsistency` on a validation rule condition, and the Confirm rows compare against `Title` because `[InStock] == [InStock]` alone draws `MVK_INVALID_COMPARE_TO_YES`. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**The Confirm and arity rows.** A leading Confirm draws `MVK_NO_BOOLY_ALLOWED` (`InStock, Title`, `InStock, Weight`, `InStock, Title, Weight`), and a sole Confirm or String field draws `MVK_PARAMSIZE_INVALIDN`. `Flags, Flags/Fragile` draws `MVK_DUPLICATE_PARAM2` in either order, and `Flags, Title, Title` draws `MVK_DUPLICATE_PARAM1`.
+
+**The index rows.** An index on the unindexed `Grading` group draws `MVK_NO_INDEX_FIELD` ahead of its own member, before or after a repeated field, and leading a type defect, and one on its field does so after a repeated field. A leading empty key draws `MVK_INDEX_VALUE_INVALID`, and a leading `NUMBER` key field against the `STRING` index draws `MVK_INDEX_TYPE_INCONSISTENT`. A resolving key leaves the type, Confirm and both duplicate classes to answer, and `Keyed/Note` under two keys is admitted.
+
+**The root rows.** The empty root `/Other` draws `MVK_ROOT_GROUP_IS_EMPTY` alone, twice, and before or after a repeated field. A filter on `/Item`, alone or leading `Title`, draws `MVK_NO_GROUPS_ALLOWED`, as does its category projection alone, and an index on it draws `MVK_NO_INDEX_FIELD` alone or leading `Title`. That model's root-gate rows are [the root-gate record's](#inbound-2026-09-23-entity-list-root-group-gate).
+
+**Lean.** Its typed surface has no index form and cannot build an empty nonrepeatable root ([SG9](gaps/paths-and-groups.md#gap-sg9)), so the read-class rows have no Lean input. The sole Confirm field and the Confirm group beside its member are now Kernel rows behind [`TokenEntityGroupOperand`](../A12Kernel/Conformance/TokenEntityGroupOperand.lean) locks. The Confirm-led lists stay rejected and unmapped, because the kind classifier keeps its two-declaration matrix; [SG8](gaps/strings-and-messages.md#gap-sg8) owns widening it.
+
 <a id="inbound-2026-09-23-entity-list-root-group-gate"></a>
 ### Reviewed 2026-09-23 entity-list root-group gate — a Kernel gate the shared Lean shape did not ask
 
@@ -299,7 +312,7 @@ a12-dmkits revision `755ba48c5968a686cc0abc3a4334d11d7461e80f` on `main`, dated 
 
 **The Lean account already had the order, as a choice.** [`TokenEntityGroupOperand`](../A12Kernel/Conformance/TokenEntityGroupOperand.lean) locks a repeated Confirm field to `MVK_DUPLICATE_PARAM1` — the only list shape on which the duplicate gate and the narrow kind classifier both fire — and `Title, InStock, Title` is now a Kernel row behind it; the case's comment cites this record. Every row whose shape Lean classifies — a String/Number pair, a text-and-number group, a duplicate — carries the class Lean's existing cases lock for that shape. The Confirm-over-type order is not yet decidable in Lean, because the classifier keeps an exact two-declaration matrix, and [SG8](gaps/strings-and-messages.md#gap-sg8) now owns widening it.
 
-**Not measured by either project.** The peer's source-read gate sequence places a root-group gate and an arity gate between the duplicate scan and the Confirm check; no dual-defect row puts either on a list, so `spec/07` states their position as unmeasured. A Confirm field *leading* a mixed list is unmeasured too — every measured Confirm row has it after the first position or in an all-Confirm pair — and that is exactly the list Lean leaves unmapped.
+**Not measured at this revision, and measured since.** The root-group and arity positions and a Confirm field *leading* a mixed list had no row here; [the gate-position record](#inbound-2026-09-23-first-filled-gate-positions) holds them.
 
 <a id="inbound-2026-09-22d-first-filled-cross-kind"></a>
 ### Reviewed 2026-09-22 `FirstFilledValue` cross-kind handback — the date-bearing pairs measured at a date format, and a bound this project had relayed withdrawn
