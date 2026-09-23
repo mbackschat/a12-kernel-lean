@@ -279,6 +279,21 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-23b-entity-list-operand-reads"></a>
+### Reviewed 2026-09-23 entity-list operand-read handback — an unreadable operand answers first across the family, and the date walk sits behind the list gates
+
+a12-dmkits revision `fdbbda4882b9517a9f17782884852f3ae6990b67` on `main`, an ancestor of that checkout's `HEAD` when read; the letter is the peer's `-2026-09-23b`, following [the gate-position record](#inbound-2026-09-23-first-filled-gate-positions). `rulekit.validate.laws.EntityListOperandReadLawsTest` (the peer's `kf458`) and `EntityListLeaderRouteLawsTest` (its `kf389` extension) were read at that revision; each verdict is the complete code list from `checkConsistency` on a validation rule condition. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Operand reads.** On `Sum`, both extrema, `NumberOfDifferentValues` and `NumberOfFilledFields`, each of six unreadable operands — an index on an unindexed group or its field, an empty key, a `NUMBER` key field against the `STRING` index, the empty `Hollow`, the empty root `/Other` — draws its own class leading a repeated field, trailing one, and behind a String. Two unreadable operands answer in list order, `Sum(/Item, Hollow)` draws `MVK_GROUP_IS_EMPTY` over the containment, and an empty repeatable `Lapses*` draws it ahead of the date walk under both extrema.
+
+**Group count.** A lone `Hollow` or `/Other` draws its empty class where a lone field-bearing group or root draws `MVK_PARAMSIZE_INVALIDGN`, and `(Grading, /Other)` draws `MVK_ROOT_GROUP_IS_EMPTY` rather than the root-with-others class. `(Grading, /Extra)` draws `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS` in either order, and the peer's typed builder now repeats that [`spec/02`](../spec/02-logic-and-formal-errors.md) clause, so a change to it there has a copy to drift.
+
+**Kind and date walk.** `Sum` draws `MVK_NO_NUMBER` for a leading String and for one behind a group of Numbers, and a group's expansion is typed under the leader's class. A partial leader beside a repeated field draws the duplicate class and alone the arity class, a partial date and a component mismatch answer by position, a text leader is asked only its kind, a starred-group leader sets the family, and a `TIME` whose stored declaration lacks a format compares as `HH:mm:ss`.
+
+**Not adopted.** The letter's admitted `NumberOfDifferentValues(Weight, Grading)` has no test row at this revision; its retained neighbour is `Sum(Grading, Weight)`. The walk's rows sit in `EntityListLeaderRouteLawsTest` while `kf389`'s lock line names `DateAggregateBaseTypeGateLawsTest`. The letter's source-read mechanism stays a hypothesis, so `spec/` states the order and not its cause.
+
+**Lean.** Its typed surface has no index form and cannot build an empty nonrepeatable group, so most read-class rows have no Lean input. An empty starred repeatable group is refused in the Kernel's position but projects no class ([SG9](gaps/paths-and-groups.md#gap-sg9)), and `Sum`'s String class stays unprojected ([SG5](gaps/numeric-and-temporal.md#gap-sg5)). The read-order and walk-position rows are now locks in [`FieldEntityRootGroup`](../A12Kernel/Conformance/FieldEntityRootGroup.lean) and [`TemporalExtremumOperands`](../A12Kernel/Conformance/TemporalExtremumOperands.lean).
+
 <a id="inbound-2026-09-23-first-filled-gate-positions"></a>
 ### Reviewed 2026-09-23 `FirstFilledValue` gate-position handback — operand reads first, then duplicates, root and arity, then Confirm wherever it stands
 

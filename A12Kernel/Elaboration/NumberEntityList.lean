@@ -286,7 +286,8 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- date/time, so a Boolean or Confirm **first** operand is refused outright whatever follows
       -- it, while the same kind in a later position takes the leading family's homogeneity code
       -- instead ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)).
-      -- `Sum`'s own domain is unmeasured, so it still projects nothing here.
+      -- `Sum`'s String class is measured on plain fields only, while this arm also receives starred
+      -- operands, so it still projects nothing here ([SG5](../../docs/gaps/numeric-and-temporal.md#gap-sg5)).
       | .distinctCount =>
           match actual with
           | .boolean | .confirm => some .onlyStringEnumNumberCmpDateAllowed

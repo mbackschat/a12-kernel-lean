@@ -16,7 +16,9 @@ the Kernel measures it on, `FirstFilledValue` and the Number `FieldValuesNotUniq
 
 The fixture therefore carries three roots: `Item` is mixed, `Extra` holds a single String, and
 `Totals` holds only Numbers, so a missing gate shows up as an **admitted** list on the last two
-rather than as some other refusal.
+rather than as some other refusal. `Item/Lapses` is an empty repeatable group, the one unreadable
+operand this representation can build, and the last section locks that an operand's own read
+refusal precedes every list gate here, the root gate included.
 -/
 
 namespace A12Kernel.Conformance.FieldEntityRootGroup
@@ -38,7 +40,8 @@ private def rootsModel : FlatModel :=
       { id := 5, groupPath := ["Totals"], name := "Net",
         policy := { kind := .number unsigned } },
       { id := 6, groupPath := ["Totals"], name := "Gross",
-        policy := { kind := .number unsigned } }] }
+        policy := { kind := .number unsigned } }]
+    repeatableGroups := [{ level := 10, path := ["Item", "Lapses"], repeatability := some 3 }] }
 
 private def group (groups : GroupPath) : SurfaceFieldEntityOperand :=
   .group (.path { base := .absolute, groups })
@@ -117,13 +120,39 @@ example :
     firstFilled [field ["Item"] "Title", field ["Extra"] "Code"] = some .admitted := by
   native_decide
 
+private def shapeError? (operands : List SurfaceFieldEntityOperand) :
+    Option FieldEntityShapeElabError :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateFieldEntityShape rootsModel ["Item"] { first, rest } with
+      | .error error => some error
+      | .ok _ => none
+
 /- The shared shape names the root it refused, so the class above is the list gate's and not a
    carrier's own. -/
 example :
-    (match elaborateFieldEntityShape rootsModel ["Item"]
-        { first := field ["Item"] "Title", rest := [group ["Extra"]] } with
-      | .error error => some error
-      | .ok _ => none) = some (.rootGroupOperand ["Extra"]) := by
+    shapeError? [field ["Item"] "Title", group ["Extra"]] =
+      some (.rootGroupOperand ["Extra"]) := by
+  native_decide
+
+/-! ## An operand's own read refusal precedes every list gate
+
+The empty starred group is refused while it is resolved, and every operand is resolved before the
+duplicate scans, so it answers leading a repeated field, trailing one, and beside the root that
+contains it — the Kernel's `Lapses*` and `Sum(/Item, Hollow)` rows
+([inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). The shared
+projection names no class for that refusal ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)), so
+the shape error is what these lock. -/
+
+private def lapses : SurfaceFieldEntityOperand :=
+  .starredGroup { base := .absolute, groups := [{ name := "Item" }, { name := "Lapses", starred := true }] }
+
+example :
+    let empty := some (.starredGroup (.groupHasNoFields ["Item", "Lapses"]))
+    shapeError? [lapses, field ["Item"] "Title", field ["Item"] "Title"] = empty ∧
+    shapeError? [field ["Item"] "Title", field ["Item"] "Title", lapses] = empty ∧
+    shapeError? [group ["Item"], lapses] = empty := by
   native_decide
 
 end A12Kernel.Conformance.FieldEntityRootGroup

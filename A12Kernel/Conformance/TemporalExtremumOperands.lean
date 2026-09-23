@@ -417,4 +417,16 @@ example :
       some .partialDateNotAllowed, true) := by
   native_decide
 
+/- The precision question sits inside the per-operand walk rather than in a pass ahead of it: a
+   component mismatch before a partial Date answers first, and the swapped list answers with the
+   partial. The shared duplicate and arity gates precede both. These are the Kernel's
+   `Released, CoverFrom, ApproxDay` rows and their neighbours
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). -/
+example :
+    refusal? plainModel [2, 3, 41] = some .dateFormatsNotCompatible ∧
+    refusal? plainModel [2, 41, 3] = some .partialDateNotAllowed ∧
+    refusal? plainModel [41, 2, 2] = some .duplicateParam1 ∧
+    refusal? plainModel [41] = some .paramSizeInvalidN := by
+  native_decide
+
 end A12Kernel.Conformance.TemporalExtremumOperands
