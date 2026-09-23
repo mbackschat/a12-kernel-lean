@@ -621,16 +621,23 @@ example :
           some (.poison .malformed) := by
   native_decide
 
-/- A formally unavailable key field suppresses validation and poisons computation before row selection. -/
+/- A formally unavailable key field suppresses validation and poisons computation before row selection.
+   The malformed key is the Kernel's measured row: it is not a key that matches no row, which would
+   read empty instead ([inbound](../../docs/SOURCES.md#inbound-2026-09-23d-grandparent-fill-and-malformed-key)). -/
 example :
     let column := raw [1]
       (fun _ => .parsed (.num 5))
       (fun _ => .parsed (.num 7))
     let invalidKey := keyContext (.rejected .declaredConstraint)
+    let malformedKey := keyContext (.rejected .malformed)
     (fieldChecked.lookupValue column invalidKey .validation).toOption =
         some (.unknown .declaredConstraint) ∧
       (fieldChecked.lookupValue column invalidKey .computation).toOption =
-        some (.poison .declaredConstraint) := by
+        some (.poison .declaredConstraint) ∧
+      (fieldChecked.lookupValue column malformedKey .validation).toOption =
+        some (.unknown .malformed) ∧
+      (fieldChecked.lookupValue column malformedKey .computation).toOption =
+        some (.poison .malformed) := by
   native_decide
 
 /- The field-valued route checks the key declaration's Number kind instead of coercing stored text. -/

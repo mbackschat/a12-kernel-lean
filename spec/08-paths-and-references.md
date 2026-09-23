@@ -65,6 +65,7 @@ Index-key identity belongs to the declared index field. For a **Number** index f
 - **No matching row** *and* a **matched-but-empty** cell **both read as the kind's empty value** ([§2](03-empty-and-required.md)) — a number reads the fillable `0` (so `[X For "k"] == 0` fires and types OMISSION), a string/date reads NOT-GIVEN. Crucially, a no-match is **empty, never "unknown"**.
 - As a **presence** operand, an absent row is judged like an empty cell (**FALSE**) — `FieldNotFilled(X For "k")` **fires** when no row carries the key.
 - A **malformed matched cell**, or a **formally-invalid key field**, reads **UNKNOWN**.
+- **A malformed field-valued key is not a key that matches no row.** It makes every keyed consumer unusable ([inbound](../docs/SOURCES.md#inbound-2026-09-23d-grandparent-fill-and-malformed-key)). In validation it reads unknown under group presence and its negation, a multi-operand group quantifier, field presence of either polarity, a value comparison, and `FirstFilledValue` over the keyed group alike, so none of them fires, while a key matching no row fires the negative-presence consumers and a zero comparison over `FirstFilledValue`. In computation the same read poisons the precondition or operation holding it, so the table aborts rather than falling through to a later alternative. Confidence limit: measured for a Number index field keyed by a Number field holding malformed text.
 
 ### 4.2 Per-lookup (validation) vs per-column (compute)
 

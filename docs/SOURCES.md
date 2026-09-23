@@ -279,6 +279,17 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-23d-grandparent-fill-and-malformed-key"></a>
+### Reviewed 2026-09-23 grandparent-fill and malformed-key handback — the cascade fill reaches depth two, and a malformed field-valued key is unknown or poison on every keyed consumer
+
+a12-dmkits revision `64cf485b756db723814fe75866d4e2685af5cff7` on `main`, confirmed an ancestor of that checkout's `main` when read. The letter is the peer's `-2026-09-23d`, following [the cascade record](#inbound-2026-09-23c-computation-cascade-reads) and answering the depth question its adoption asked. `CascadeGroupPresenceDiffTest.aValueComputedTwoLevelsDownFillsTheGrandparentGroup` (the peer's `kf459`, one row added) and `MalformedIndexKeyDiffTest` (`kf460`) were read at that revision, each on the Kernel's dynamic Groovy and static Java routes. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Grandparent fill.** A value computed into `Extra/Detail/Code` makes `NoGroupFilled(/Order/Extra)` false where `Extra` holds no field of its own. The control stores `Code` under a computation that clears, and the guard then holds. Only non-repeatable groups at depth two are measured.
+
+**Malformed key.** `Packages For /Order/WantedNo` with `WantedNo` holding `"abc"` leaves nine validation consumers silent — group presence of both polarities, `NotAllGroupsFilled`, field presence of both polarities, a comparison and `FirstFilledValue` — where a no-match key fires the negative ones and a matching key the positive ones. The same reads in a computation precondition or operation clear the seeded target, where a merely false precondition falls through to the table's second row.
+
+**Lean.** The fill has no Lean input, because computation preconditions admit no group presence. The field-valued key already reads unknown in validation and poison in computation at [`SemanticIndex`](../A12Kernel/Semantics/SemanticIndex.lean)'s key boundary, and [`SemanticIndexElaboration`](../A12Kernel/Conformance/SemanticIndexElaboration.lean) now locks the malformed key beside the declared-constraint one.
+
 <a id="inbound-2026-09-23c-computation-cascade-reads"></a>
 ### Reviewed 2026-09-23 computation-cascade handback — a computed field's stored value is read by nothing inside one call, and a precondition has no row gate
 
