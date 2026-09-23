@@ -1,0 +1,145 @@
+[
+ {
+  "id": "agf-hollow-title",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Hollow*, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-rows-title-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Rows*, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-title-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Title, Hollow*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-rows-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Rows*, Hollow*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-hollow-alone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Hollow*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-rows-alone-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-hollow-title",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(Hollow*, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-rows-title-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(Rows*, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-hollow-title",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(Hollow*, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-rows-title-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(Rows*, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-fields-admitted-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Title, Weight)",
+   "--code",
+   "E1"
+  ]
+ }
+]

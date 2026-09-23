@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.NumberValuesNotUnique
 import A12Kernel.Elaboration.TokenFirstFilledValue
+import A12Kernel.Elaboration.TokenEntityValueList
 
 /-! # A12Kernel.Conformance.FieldEntityRootGroup — the shared entity list's root-group gate
 
@@ -7,7 +8,8 @@ A root group is refused as an entity-list operand with `MVK_ROOT_GROUP_REFERENCE
 asked of the list the duplicate scans return rather than of each operand as it is read. Two
 consequences separate it from a per-operand refusal, and the cases below lock both on two carriers
 the Kernel measures it on, `FirstFilledValue` and the Number `FieldValuesNotUnique`
-([inbound](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)):
+([inbound](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)), plus the
+value-list quantifier's root rows:
 
 * every entity of a model lies under its root, so a root beside any entity of its **own** root is a
   nested duplicate and the root gate never speaks there;
@@ -136,6 +138,27 @@ example :
       some (.rootGroupOperand ["Extra"]) := by
   native_decide
 
+/- The value-list quantifier reaches the same gate through the same shape, with a root alone as well
+   as beside another root's field, where two direct fields from different roots are admitted
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). -/
+private def valueList (operands : List SurfaceFieldEntityOperand) : Option Decision :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateTokenEntityStringLiteralValueListSource rootsModel ["Item"]
+          { quantifier := .atLeastOne, fields := { first, rest }, values := ["x"] } with
+      | .ok _ => some .admitted
+      | .error error =>
+          some (match error.diagnostic? with
+            | some diagnostic => .mapped diagnostic
+            | none => .rejectedUnmapped)
+
+example :
+    valueList [group ["Extra"]] = some (.mapped .rootGroupReferenced) ∧
+    valueList [group ["Extra"], field ["Item"] "Title"] = some (.mapped .rootGroupReferenced) ∧
+    valueList [field ["Extra"] "Code", field ["Item"] "Title"] = some .admitted := by
+  native_decide
+
 /-! ## An operand's own read refusal precedes every list gate
 
 The empty starred group is refused while it is resolved, and every operand is resolved before the
@@ -165,8 +188,9 @@ example :
   native_decide
 
 /- `RuleGroup` in a rule declared at the empty group is the one spelling the shape lets through, so
-   each carrier's own empty-expansion refusal is reachable only that way, and it stays unmapped
-   because no row measures it ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)). -/
+   each carrier's own empty-expansion refusal is reachable only that way. It stays unmapped because
+   no row measures it: the measurement instrument refuses a rule declared there before the Kernel
+   sees it ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)). -/
 example :
     (elaborateFieldEntityShape rootsModel ["Item", "Lapses"]
       { first := .group (.ruleGroup false), rest := [] }).toOption.isSome = true := by

@@ -31,7 +31,9 @@ private def probeModel : FlatModel :=
         policy := { kind := .number unsigned }, repeatableScope := [10] },
       { id := 5, groupPath := ["Other"], name := "OtherVal",
         policy := { kind := .number unsigned } }]
-    repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] }] }
+    -- `Hollow` declares no field anywhere below it, which a repeatable declaration can express.
+    repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] },
+      { level := 20, path := ["Probe", "Hollow"] }] }
 
 private def group (groups : GroupPath) : SurfaceGroupListOperand :=
   .group (.path { base := .absolute, groups })
@@ -40,6 +42,11 @@ private def rowsStar : SurfaceGroupListOperand :=
   .starredGroup {
     base := .absolute
     groups := [{ name := "Probe" }, { name := "Rows", starred := true }] }
+
+private def hollowStar : SurfaceGroupListOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [{ name := "Probe" }, { name := "Hollow", starred := true }] }
 
 private def diagnostic? (operator : GroupFillQuantifier)
     (operands : List SurfaceGroupListOperand) : Option KernelStaticDiagnostic :=
@@ -161,6 +168,20 @@ example :
 
 /- Two disjoint fixed operands are the accepted control. -/
 example : countDiagnostic? [["Probe", "A"], ["Probe", "B"]] = none := by
+  native_decide
+
+/- An empty starred group is read before every list gate, so it answers under all five quantifiers
+   ahead of the star gate the three multi-operand ones apply, ahead of arity, and behind a populated
+   star that the star gate alone would already refuse. The populated-star twin is that gate's own
+   class, which is what attributes the rows to the operand read
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). -/
+example :
+    [GroupFillQuantifier.allGroupsFilled, .notAllGroupsFilled, .groupsNotCollectivelyFilled,
+      .atLeastOneGroupFilled, .noGroupFilled].map (fun operator =>
+        (diagnostic? operator [hollowStar], diagnostic? operator [hollowStar, group ["Probe", "B"]])) =
+      List.replicate 5 (some .groupIsEmpty, some .groupIsEmpty) ∧
+    diagnostic? .allGroupsFilled [rowsStar, hollowStar] = some .groupIsEmpty ∧
+    diagnostic? .allGroupsFilled [rowsStar, group ["Probe", "B"]] = some .noWildcardsGAllowed := by
   native_decide
 
 end A12Kernel.Conformance.GroupListDiagnostic

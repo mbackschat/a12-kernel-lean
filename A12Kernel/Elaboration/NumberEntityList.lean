@@ -244,6 +244,16 @@ private def extremaRefuseKind : SurfaceScalarKind → Bool
   -- ([provenance](../../docs/SOURCES.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)).
   | .enumeration | .boolean | .confirm | .dateRange => true
 
+/-- Whether `Sum` is measured to refuse a field operand of this declared kind with its own domain
+    class. That class reads neither position nor form: a String leading, behind a Number, and starred
+    in either place all draw it
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)),
+    so one predicate serves both field arms. Every other kind is unmeasured on a field operand. -/
+private def sumRefuseKind : SurfaceScalarKind → Bool
+  | .string => true
+  | .number => false
+  | .temporal _ | .enumeration | .boolean | .confirm | .dateRange => false
+
 /-- Whether the extrema are measured to refuse an operand of this declared kind **after** a Number one. Temporal joins String here, which is the whole difference from first position. -/
 private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
   | .string | .temporal _ => true
@@ -259,8 +269,8 @@ private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
 
     Direct and starred field-kind refusals retain leading versus later position. The distinct count
     therefore projects its Number-leading field class as well as the group class below
-    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Sum` keeps its
-    measured group projection separate from its unclassified field-kind refusals. -/
+    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Sum` projects its
+    domain class from both field arms alike, because it is not keyed by position; see `sumRefuseKind`. -/
 def aggregateDiagnostic? (op : NumericAggregateOp) :
     NumberEntityElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
@@ -288,13 +298,11 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- date/time, so a Boolean or Confirm **first** operand is refused outright whatever follows
       -- it, while the same kind in a later position takes the leading family's homogeneity code
       -- instead ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)).
-      -- `Sum`'s String class is measured on plain fields only, while this arm also receives starred
-      -- operands, so it still projects nothing here ([SG5](../../docs/gaps/numeric-and-temporal.md#gap-sg5)).
       | .distinctCount =>
           match actual with
           | .boolean | .confirm => some .onlyStringEnumNumberCmpDateAllowed
           | _ => none
-      | .sum => none
+      | .sum => if sumRefuseKind actual then some .noNumber else none
   | .laterFieldKindMismatch _ actual =>
       match op with
       | .minimum | .maximum =>
@@ -311,9 +319,7 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). The domain
       -- code is a **first-operand** class only.
       | .distinctCount => some .numberAndNonNumber
-      -- `Sum` is not keyed by position in anything measured, and this arm exists for the extrema;
-      -- giving it a class here would be carried, not observed.
-      | .sum => none
+      | .sum => if sumRefuseKind actual then some .noNumber else none
   | .star _ | .groupExpansionEmpty _ | .groupExpansionMixedSign _
   | .incoherentCore => none
 

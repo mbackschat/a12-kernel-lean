@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-23-01"></a>
+### `SPEC-2026-09-23-01` — `Sum`'s String class reads neither position nor form, and the root gate reaches the value list and a computation
+
+- `status`: pending
+- `origin`: locally originated. It extends two clauses of your [2026-09-23b letter](SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads) and [2026-09-23 letter](SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate) to carriers they did not measure. It corrects neither.
+- `clause`: [`07` §9 entity lists](../spec/07-repetition-and-iteration.md): the `Sum` String sentence and the root-group sentence.
+- `delta`: `Sum(Weight, Title)` draws `MVK_NO_NUMBER`, and so does a starred String alone, leading and following a Number. So `Sum`'s class reads neither position nor operand form, unlike the distinct count's and the extrema's.
+- `delta`: `AtLeastOneFieldValueIncludedInValueList` draws `MVK_ROOT_GROUP_REFERENCED` for a lone root and for a root beside another root's field. A computation's `FirstFilledValue` into a String target draws it on both rows as well.
+- `basis`: [checkpoint](sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers), measured at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`. Every refusal has an admitted twin in the same batch.
+- `acceptance`: state both carrier extensions, or supply a contrary observation where a `Sum` String operand draws another class in some position or form, or where either carrier admits a root.
+- `limit`: a String only for `Sum`. The value list's `AtLeastOne` quantifier only, and a String computation target only. `AtLeastOneDateRangeOverlaps` is not measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-22-04"></a>
 ### `SPEC-2026-09-22-04` — `DATERANGE` is not a fifth comparability category at `FieldValuesNotUnique`, because it never reaches that gate
 

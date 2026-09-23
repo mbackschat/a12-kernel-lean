@@ -647,11 +647,12 @@ example :
   native_decide
 
 /- The sibling carriers are unmoved, which is what keeps the rows above from being a change to the
-   shared gate. `Sum` still claims nothing from either position, and the extrema still report their
-   own ordering class for the same String that draws the distinct count's Number code. -/
+   shared gate. `Sum` reports its own domain class for the String, and the extrema their own ordering
+   class, where the distinct count reports its Number code. -/
 example :
     aggregateDiagnostic? .sum
-        [field ["Probe", "A"] "AVal", field ["Probe", "A", "Deep"] "DeepText"] = none ∧
+        [field ["Probe", "A"] "AVal", field ["Probe", "A", "Deep"] "DeepText"] =
+      some .noNumber ∧
     aggregateDiagnostic? .maximum
         [field ["Probe", "A"] "AVal", field ["Probe", "A", "Deep"] "DeepText"] =
       some .notSortable := by
@@ -661,10 +662,9 @@ example :
    the expansion's kinds rather than to groupness. -/
 example : aggregateDiagnostic? .sum [group ["Probe", "B"]] = none := by native_decide
 
-/- The **explicit** list separates what does and does not carry across operand forms. Under the
-   extrema the written-out list draws the same unsortable class as the group, which places that gate
-   on the operand's kind; under `Sum` no row places a class on the explicit form, so it stays
-   unprojected rather than inheriting the group's. -/
+/- The **explicit** list draws the group's class under both operators, which places each gate on the
+   operand's kind rather than its form. `Sum`'s String class is measured leading, behind a Number, and
+   starred ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). -/
 example :
     aggregateDiagnostic? .maximum [field ["Probe", "A"] "AVal",
       field ["Probe", "A", "Deep"] "DeepText"] = some .notSortable := by
@@ -672,7 +672,9 @@ example :
 
 example :
     aggregateDiagnostic? .sum [field ["Probe", "A"] "AVal",
-      field ["Probe", "A", "Deep"] "DeepText"] = none := by
+      field ["Probe", "A", "Deep"] "DeepText"] = some .noNumber ∧
+    aggregateDiagnostic? .sum [field ["Probe", "A", "Deep"] "DeepText",
+      field ["Probe", "A"] "AVal"] = some .noNumber := by
   native_decide
 
 /-! ### The extrema's sortable set is wider than this family's representable set, and **position**
@@ -721,9 +723,9 @@ example :
       field ["Probe", "A"] "AVal"] = none := by
   native_decide
 
-/- `Sum` is not keyed by position in anything measured, so the same later-Date list claims no class
-   under it. The split exists for the extrema and does not spread to a sibling by having been
-   added. -/
+/- `Sum`'s measured field class is the String's, so the same later-Date list claims no class under
+   it: a Date field operand is unmeasured for `Sum`, and the extrema's positional split does not
+   spread to a sibling by having been added. -/
 example :
     aggregateDiagnostic? .sum [field ["Probe", "A"] "AVal",
       field ["Probe", "Milestones"] "ReportedOn"] = none := by

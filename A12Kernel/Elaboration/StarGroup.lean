@@ -31,9 +31,12 @@ inductive StarredGroupElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- The class of an empty starred group, for the carriers that measured it: the extrema and the
-validation group count ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). An empty **root**
+/-- The class of an empty starred group, for the carriers that measured it: the extrema, the five
+group-list quantifiers, and the group count on both arms
+([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group),
+[inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads),
+[checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
+The read precedes every list gate, the quantifiers' star gate included. An empty **root**
 draws a different code, measured only on a nonrepeatable root this model cannot express, so a
 starred root projects nothing rather than borrowing either code. -/
 def StarredGroupElabError.emptyGroupDiagnostic? :

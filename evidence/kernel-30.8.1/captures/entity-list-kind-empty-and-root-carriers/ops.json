@@ -1,0 +1,302 @@
+[
+ {
+  "id": "sum-star-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Note) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-number-then-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Weight, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-string-then-number-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Title, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-number-then-star-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Weight, Rows*/Note) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-star-string-then-number",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Note, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-admitted-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Weight, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-star-number-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alogf-hollow-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Hollow*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alogf-rows-star-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nogf-hollow-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(Hollow*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nofg-hollow-star-validation",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Hollow*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nofg-rows-star-validation-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rulegroup-at-hollow-declared",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(/Item/Weight)",
+   "--code",
+   "E1",
+   "--group",
+   "/Item/Hollow"
+  ]
+ },
+ {
+  "id": "rulegroup-at-hollow-count",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(/Item/Weight) And NumberOfFilledFields(RuleGroup) > 0",
+   "--code",
+   "E1",
+   "--group",
+   "/Item/Hollow"
+  ]
+ },
+ {
+  "id": "rulegroup-at-hollow-sum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(/Item/Weight) And Sum(RuleGroup) > 0",
+   "--code",
+   "E1",
+   "--group",
+   "/Item/Hollow"
+  ]
+ },
+ {
+  "id": "rulegroup-at-rows-count-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Qty",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) > 0",
+   "--code",
+   "E1",
+   "--group",
+   "/Item/Rows"
+  ]
+ },
+ {
+  "id": "valuelist-root-alone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(/Extra In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "valuelist-root-beside-other",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(/Extra, Title In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "valuelist-fields-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(/Extra/Code, Title In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "comp-nofg-hollow-star",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "comp-nofg-rows-star-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "comp-ffv-root-alone",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "comp-ffv-root-beside-other",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "comp-ffv-fields-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5.json",
+   "--dry-run"
+  ]
+ }
+]

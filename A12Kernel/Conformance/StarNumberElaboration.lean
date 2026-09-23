@@ -636,9 +636,13 @@ example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Note"] 
 example : entityDiagnostic .minimum (starOperand "Amount") = none := by
   native_decide
 
-/-- `Sum` is not keyed by position in anything measured, so it claims no class here. Its own domain
-    refusal is `MVK_NO_NUMBER` and is a different gate's row. -/
-example : entityDiagnostic .sum (starOperand "Note") = none := by
+/-- `Sum` draws its own domain class for a starred String in every position, not the extrema's
+    ordering class ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). -/
+example :
+    (entityDiagnostic .sum (starOperand "Note"),
+      entityDiagnostic .sum (starOperand "Amount") [starOperand "Note"],
+      entityDiagnostic .sum (starOperand "Note") [starOperand "Amount"]) =
+      (some .noNumber, some .noNumber, some .noNumber) := by
   native_decide
 
 /-- Each of the four kinds the grid added leads no overload, so each draws the sortable class in

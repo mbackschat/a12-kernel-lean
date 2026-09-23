@@ -1,0 +1,78 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "1d06ab67dae35e98b39fa823255545eca842d641b7ae47a968669e8b3c924742",
+  "observations" : [ {
+    "id" : "agf-hollow-title",
+    "inputHash" : "ce68e1aed59408a54ec7d9239eac93a37fe0f9a8836657f56eb32428ae3ebbc5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_GROUP_IS_EMPTY" ]
+  }, {
+    "id" : "agf-rows-title-control",
+    "inputHash" : "87c61b873bb27f7dce5017ecb1cb6831cf73dd1713966d7d0926f81467f5ddef",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_G_ALLOWED" ]
+  }, {
+    "id" : "agf-title-hollow",
+    "inputHash" : "eb543b2d863762ef16163cec96b42dab9990dc7b3bc962a5cf4bad838b386f65",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_GROUP_IS_EMPTY" ]
+  }, {
+    "id" : "agf-rows-hollow",
+    "inputHash" : "5888d05a14a5cb9b9926f546e2a2398a79b515fbfaeb4e01eaccc34394717810",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_GROUP_IS_EMPTY" ]
+  }, {
+    "id" : "agf-hollow-alone",
+    "inputHash" : "de2641b740f55fee58fef774733585c19c202c9f5ba10a6e26e0088bc71922b5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_GROUP_IS_EMPTY" ]
+  }, {
+    "id" : "agf-rows-alone-control",
+    "inputHash" : "6953d4e5c74508542b55c331706533b7edc68ac843317091d0c59aa7a77a0b67",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_G_ALLOWED" ]
+  }, {
+    "id" : "nagf-hollow-title",
+    "inputHash" : "39af1b6c486d9699134bd9a33de81bc2117fa0eff9f2cb2ec9ec01078c561cd2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_GROUP_IS_EMPTY" ]
+  }, {
+    "id" : "nagf-rows-title-control",
+    "inputHash" : "53f79e60e537f4869f500c214c33602c0056ac9c21f303cf8a564a7ee183f065",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_G_ALLOWED" ]
+  }, {
+    "id" : "gncf-hollow-title",
+    "inputHash" : "b9d6c91a559abb81ccccb690b25c22a24fc8cbe13459e1997fff0185e4f058f8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_GROUP_IS_EMPTY" ]
+  }, {
+    "id" : "gncf-rows-title-control",
+    "inputHash" : "9c2179e4e340351f5eaf81fdef68f1efa5f6efccb928c64cb1d867bfa2b50234",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_G_ALLOWED" ]
+  }, {
+    "id" : "agf-fields-admitted-control",
+    "inputHash" : "65f44d6f525a9cdbe621858293c28f42b397d033ee7f0d9ffe53a54d1017f5b0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

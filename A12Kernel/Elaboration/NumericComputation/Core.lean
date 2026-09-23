@@ -127,9 +127,9 @@ def groupCountDiagnostic? :
   -- No diagnostic: the Kernel admits this shape, so a refusal here is this fragment's
   -- boundary rather than a Kernel class, and guessing one would misattribute it.
   | .starredGroupCountOperand _ => none
-  -- The plan's empty-group refusal has a Kernel class, measured on the validation arm only
-  -- (`NumericValidationElabError.groupCountDiagnostic?`), so this arm does not borrow it.
-  | .starredGroupCountPlan _ => none
+  -- The plan's empty-group class is measured on this arm too, not borrowed from validation's
+  -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
+  | .starredGroupCountPlan error => error.emptyGroupDiagnostic?
   | .overlappingGroupCountOperands left right =>
       if left == right then some .duplicateParam1 else some .duplicateParam2
   | .repeatableGroupCountRequiresStar _ => some .noWildcard

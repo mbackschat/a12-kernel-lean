@@ -60,6 +60,10 @@ def groupListDiagnostic? :
   | .starredGroupNotAllowed _ => some .noWildcardsGAllowed
   | .repeatableGroupRequiresAddress _ => some .noWildcard
   | .unknownGroup _ => some .invalidEntity
+  -- Operands are read before every list gate, so an empty starred group answers ahead of the star
+  -- gate and arity under all five quantifiers
+  -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
+  | .starredGroup error => error.emptyGroupDiagnostic?
   | _ => none
 
 end ValidationConditionAssemblyError

@@ -117,6 +117,7 @@ private def gateTarget : FieldId := 8
 private def nestedLevel : RepeatableLevel := 12
 private def innerLevel : RepeatableLevel := 13
 private def secondLevel : RepeatableLevel := 14
+private def hollowLevel : RepeatableLevel := 15
 
 /-- A repeatable group under a **fixed** one, a repeatable group under a **repeatable** one, and a
     repeatable group under a **second root**. Those three carriers are what the model above lacks:
@@ -137,7 +138,9 @@ private def gateModel : FlatModel :=
       [ { level := rowsLevel, path := ["Probe", "Rows"], repeatability := some 3 }
       , { level := nestedLevel, path := ["Probe", "Flat", "Nested"], repeatability := some 2 }
       , { level := innerLevel, path := ["Probe", "Rows", "Inner"], repeatability := some 2 }
-      , { level := secondLevel, path := ["Second", "SRows"], repeatability := some 3 } ] }
+      , { level := secondLevel, path := ["Second", "SRows"], repeatability := some 3 }
+      -- Declares no field anywhere below it.
+      , { level := hollowLevel, path := ["Probe", "Hollow"], repeatability := some 3 } ] }
 
 private def gateCode? (operands : List SurfaceGroupCountOperand) : Option KernelStaticDiagnostic :=
   match elaborateNumericComputationOperation gateModel ["Probe"] gateTarget
@@ -156,6 +159,16 @@ example :
       gateCode? [gateStar ["Probe", "Rows"], gateStar ["Probe", "Rows", "Inner"]],
       gateCode? [fixedOperand ["Probe", "Flat"], gateStar ["Probe", "Rows"]]) =
     (some .duplicateParam2, some .duplicateParam2, some .duplicateParam2, none) := by
+  native_decide
+
+/- An empty starred group draws its own class on this arm, alone and behind a fixed operand, where
+   the populated star beside it is admitted
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). -/
+example :
+    (gateCode? [gateStar ["Probe", "Hollow"]],
+      gateCode? [fixedOperand ["Probe", "Flat"], gateStar ["Probe", "Hollow"]],
+      gateCode? [gateStar ["Probe", "Rows"]]) =
+    (some .groupIsEmpty, some .groupIsEmpty, none) := by
   native_decide
 
 /- Two stars naming the **same** group are admitted and count once per position, which is the
