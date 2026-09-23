@@ -213,7 +213,9 @@ inductive NumberEntityElabError where
       ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
   | groupExpansionNotNumber (path : List String) (kinds : List SurfaceScalarKind)
       (numberLeads : Bool)
-  /-- A group slot whose subtree declares no field at all. Unmeasured, so refused without a class. -/
+  /-- A group slot whose subtree declares no field at all, reached only as `RuleGroup` in a rule
+      declared at an empty repeatable group; the shared shape refuses an explicit empty starred
+      group first, as `MVK_GROUP_IS_EMPTY`. That spelling is unmeasured, so no class is claimed. -/
   | groupExpansionEmpty (path : List String)
   /-- A group slot whose expanded declarations disagree on signedness. A representation limit rather than a Kernel gate; see `CheckedNumberEntityGroup.uniformSigned`. -/
   | groupExpansionMixedSign (path : List String)

@@ -164,4 +164,12 @@ example :
     numberNotUnique [field ["Item"] "Weight", lapses] = some (.mapped .groupIsEmpty) := by
   native_decide
 
+/- `RuleGroup` in a rule declared at the empty group is the one spelling the shape lets through, so
+   each carrier's own empty-expansion refusal is reachable only that way, and it stays unmapped
+   because no row measures it ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)). -/
+example :
+    (elaborateFieldEntityShape rootsModel ["Item", "Lapses"]
+      { first := .group (.ruleGroup false), rest := [] }).toOption.isSome = true := by
+  native_decide
+
 end A12Kernel.Conformance.FieldEntityRootGroup

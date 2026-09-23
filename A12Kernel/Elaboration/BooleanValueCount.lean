@@ -17,7 +17,7 @@ inductive BooleanValueCountElabError where
   | fieldKindMismatch (path : List String) (expected : Bool)
       (actual : SurfaceScalarKind)
   | having (error : CorrelationElabError)
-  /-- A group slot whose recursive subtree declares no field. Unmeasured, so refused without a diagnostic class. -/
+  /-- A group slot whose recursive subtree declares no field, reached only as `RuleGroup` in a rule declared at an empty repeatable group, since the shared shape refuses an explicit empty starred group first. -/
   | groupExpansionEmpty (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq

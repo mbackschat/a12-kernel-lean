@@ -66,7 +66,10 @@ inductive TemporalExtremumOperandElabError where
   | firstNotTemporal (path : List String) (actual : SurfaceScalarKind)
   /-- A **later** operand is not temporal after a temporal first one. This is the Kernel's own refusal, `MVK_DATE_AND_NONDATE`, and its text states the positional rule outright. -/
   | laterNotTemporal (path : List String) (actual : SurfaceScalarKind)
-  /-- A group slot whose subtree declares no field, so no component set exists to agree on. -/
+  /-- A group slot whose subtree declares no field, so no component set exists to agree on. Only
+      `RuleGroup` in a rule declared at an empty repeatable group reaches this: the shared shape
+      refuses an explicit empty starred group first, as `MVK_GROUP_IS_EMPTY`, and a fixed or
+      presence group provably carries a field. No row measures the `RuleGroup` spelling. -/
   | groupExpansionEmpty (path : List String)
   /-- A **partially known** Date operand, which this operator admits only fully known. Measured on
       all three declared precisions at both extrema
@@ -241,7 +244,8 @@ end TemporalExtremumOperands
 
 namespace TemporalExtremumOperandElabError
 
-/-- Two refusals carry a Kernel class, and they are told apart by operand **position** rather than by kind. A first non-temporal operand means the authored list is the Number family's, whose own list draws `MVK_NOT_SORTABLE`, so this arm claims nothing. An empty expansion is unauthorable rather than refused. -/
+/-- Two refusals carry a Kernel class, and they are told apart by operand **position** rather than by kind. A first non-temporal operand means the authored list is the Number family's, whose own list draws `MVK_NOT_SORTABLE`, so this arm claims nothing. An empty expansion claims nothing either, because the one spelling
+that reaches it is unmeasured. -/
 def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagnostic
   | .incompatibleComponents _ _ _ => some .dateFormatsNotCompatible
   | .firstNotTemporal _ _ => none

@@ -28,7 +28,7 @@ inductive TemporalValuesNotUniqueElabError where
   | missingDeclaredFormat (path : List String)
   | mixedDeclaredFormats (path : List String) (found expected : String)
   | having (error : CorrelationElabError)
-  /-- A group slot whose recursive subtree declares no field. Unmeasured, so refused without a diagnostic class. -/
+  /-- A group slot whose recursive subtree declares no field, reached only as `RuleGroup` in a rule declared at an empty repeatable group; the shared shape refuses an explicit empty starred group first, as `MVK_GROUP_IS_EMPTY`. That spelling is unmeasured, so no class is claimed. -/
   | groupExpansionEmpty (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -308,7 +308,7 @@ namespace TemporalValuesNotUniqueElabError
 
 /-- The Kernel diagnostic class this refusal corresponds to, or `none` where this project refuses a shape whose Kernel class it has not established.
 
-`none` is deliberate rather than a placeholder: `missingDeclaredFormat` is this project's own insufficiency for a declaration the Kernel rejects earlier at model level with an unmeasured code, an empty group expansion is unmeasured, and a filter failure belongs to the correlation surface. Mapping any of them to a plausible-looking name would assert an unmeasured correspondence. Every shape refusal delegates to the shared checker's own projection, because the star, arity, and duplicate gates do not vary by carrier. -/
+`none` is deliberate rather than a placeholder: `missingDeclaredFormat` is this project's own insufficiency for a declaration the Kernel rejects earlier at model level with an unmeasured code, an empty group expansion reaches here only through the unmeasured `RuleGroup` spelling, and a filter failure belongs to the correlation surface. Mapping any of them to a plausible-looking name would assert an unmeasured correspondence. Every shape refusal delegates to the shared checker's own projection, because the star, arity, and duplicate gates do not vary by carrier. -/
 def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
   | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
