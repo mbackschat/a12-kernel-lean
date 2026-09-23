@@ -159,6 +159,17 @@ example :
     valueList [field ["Extra"] "Code", field ["Item"] "Title"] = some .admitted := by
   native_decide
 
+/- A field name that does not resolve is the shared resolver's refusal carried through the same
+   shape, so an unknown root segment and an unknown name below a known root keep their two classes
+   on every entity-list carrier; `FirstFilledValue` is the one measured with the resolver batch
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+example :
+    firstFilled [field ["Nope"] "Title", field ["Item"] "Title"] =
+      some (.mapped .invalidRootGroup) ∧
+    firstFilled [field ["Item"] "Nope", field ["Item"] "Title"] =
+      some (.mapped .invalidEntity) := by
+  native_decide
+
 /-! ## An operand's own read refusal precedes every list gate
 
 The empty starred group is refused while it is resolved, and every operand is resolved before the

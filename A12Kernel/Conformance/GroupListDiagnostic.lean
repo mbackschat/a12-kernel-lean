@@ -184,4 +184,21 @@ example :
     diagnostic? .allGroupsFilled [rowsStar, group ["Probe", "B"]] = some .noWildcardsGAllowed := by
   native_decide
 
+/- A field operand's resolver failure reaches the group-list projection with the resolver's own class,
+   beside a group operand that is admitted with a resolving field
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+private def fieldAt (base : PathBase) (groups : List String) (name : String) :
+    SurfaceGroupListOperand :=
+  .field { base, groups, field := name }
+
+example :
+    [fieldAt .absolute ["Probe"] "Nope", fieldAt .absolute ["Nope"] "AVal",
+      fieldAt (.relative 0) [] "Nope", fieldAt (.relative 1) [] "AVal"].map (fun operand =>
+        diagnostic? .atLeastOneGroupFilled [operand, group ["Probe", "B"]]) =
+      [some .invalidEntity, some .invalidRootGroup, some .invalidEntity,
+        some .tooManyParentGroups] ∧
+    diagnostic? .atLeastOneGroupFilled
+      [fieldAt .absolute ["Probe", "A"] "AVal", group ["Probe", "B"]] = none := by
+  native_decide
+
 end A12Kernel.Conformance.GroupListDiagnostic

@@ -64,6 +64,7 @@ def groupListDiagnostic? :
   -- gate and arity under all five quantifiers
   -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
   | .starredGroup error => error.emptyGroupDiagnostic?
+  | .fieldReference error => error.diagnostic?
   | _ => none
 
 end ValidationConditionAssemblyError

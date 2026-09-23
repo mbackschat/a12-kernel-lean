@@ -1,0 +1,84 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "1d06ab67dae35e98b39fa823255545eca842d641b7ae47a968669e8b3c924742",
+  "observations" : [ {
+    "id" : "cmp-lone",
+    "inputHash" : "04b85ac5662e1576bbd9adf1bab7babf4fdaa368a4e164ceb2a3fe5ddd56c91a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "ff-lone",
+    "inputHash" : "5a43f6ddf70117278ca756a89e4b0e18cddfb7e9ebb508624ce4d3cecfe6341c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "cnum-lone",
+    "inputHash" : "f46539bc464b4c79d3f5c6c64129bd337e05d83c286aa8567b01dde38cd1da1c",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "cmp-loneroot",
+    "inputHash" : "4c3e09baaa8e1eb9b530a68a9e87ec5fd089d83282d0a361ccfe879c9edcec70",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  }, {
+    "id" : "ff-loneroot",
+    "inputHash" : "0b107a204b0bf114b0797883e2701b61b4766f3542299c36fa3b09ce4f80532d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ROOT_GROUP_REFERENCED" ]
+  }, {
+    "id" : "cnum-loneroot",
+    "inputHash" : "a3c8f02875b4f23ae28062ea71424c8c5b152254bfbc6f69acbedb71fdd9b36c",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  }, {
+    "id" : "cmp-middle",
+    "inputHash" : "205b756d211d18f49f975d4f4958879c54b1c492ec1fea2bd6333d9dc4156e05",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "ff-middle",
+    "inputHash" : "6a2298e4d29d486631e2ac8060b3d1b2c3559cc73fa620281c9a99e9761f77e1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "cnum-middle",
+    "inputHash" : "889a10411463f92543f73f1b5bfc7bd70a9d48540e0dc8a2c28b27911e2afd49",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "cmp-nested",
+    "inputHash" : "bea55dbccf8d08890508b49479a56866791a55405d8b955e00899ccf2ac495aa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "ff-nested",
+    "inputHash" : "c4d1d8ab5678c12118defefbd2f5fce86d9deab0d1b8c494f314b23eb5847e58",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "cnum-nested",
+    "inputHash" : "26a685576f37f9ee323f7af9b9b11280eef9cc4728f595c5967b04503f846a5c",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  } ]
+}

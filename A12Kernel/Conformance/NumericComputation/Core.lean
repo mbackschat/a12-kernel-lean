@@ -503,6 +503,24 @@ example :
         some (.targetNotNumber wrongId) := by
   native_decide
 
+/- **A computation operand's name failure is the shared resolver's, so its class is too.** The
+   computation projection is scoped to group counts, which is why this reads the class off the
+   carried resolver error: an unknown root segment, an unknown name below a known root, an unknown
+   bare name, and a parent walk above the root
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+example :
+    let key? (operand : SurfaceFieldPath) : Option KernelStaticDiagnostic :=
+      match checkedErrorOf (.binary .add (.atom (.field operand))
+          (.literal { value := 1, authoredScale := 0 })) with
+      | some (.resolve error) => error.diagnostic?
+      | _ => none
+    key? (surfacePath ["Root"] "Nope") = some .invalidEntity ∧
+      key? (surfacePath ["Nope"] "Source") = some .invalidRootGroup ∧
+      key? { base := .relative 0, groups := [], field := "Nope" } = some .invalidEntity ∧
+      key? { base := .relative 1, groups := [], field := "Source" } =
+        some .tooManyParentGroups := by
+  native_decide
+
 /- Authoring and result-scale checks precede runtime evaluation and retain their distinct rejection classes. -/
 example :
     let twoDivisions :=

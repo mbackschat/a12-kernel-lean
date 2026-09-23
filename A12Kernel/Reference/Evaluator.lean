@@ -176,6 +176,12 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   | .invalidEntity reference =>
       .make .unknownField referenceLocation
         (Json.mkObj [("field", fieldReferenceJson reference)])
+  -- The protocol predates the resolver's split of an undeclared root for the Kernel class, so each
+  -- input keeps the code it had: a lone absolute segment was a malformed reference and a longer path
+  -- an unknown field. Changing either would change the versioned public contract.
+  | .unknownRootGroup reference =>
+      .make (if reference.groups.isEmpty then .invalidReference else .unknownField)
+        referenceLocation (Json.mkObj [("field", fieldReferenceJson reference)])
   | .ambiguousEntity path =>
       .make .ambiguousField referenceLocation (pathDetails path)
   | .shortNameNotUnique name =>

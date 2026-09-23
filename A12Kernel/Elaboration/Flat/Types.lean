@@ -421,6 +421,10 @@ inductive ResolveError where
   | invalidReference (reference : SurfaceFieldPath)
   | aboveRoot (parents : Nat)
   | invalidEntity (reference : SurfaceFieldPath)
+  -- `unknownRootGroup`: an absolute path whose first segment names no declared root is its own
+  -- class, reported whatever the rest of the path says, so it is checked before the path's shape
+  -- and lookup. A lone segment is included, since the Kernel reads it as a root first.
+  | unknownRootGroup (reference : SurfaceFieldPath)
   | ambiguousEntity (path : List String)
   | shortNameNotUnique (name : String)
   | repeatableReference (path : List String)
@@ -445,10 +449,18 @@ is 42 arms and all but a handful are **model-declaration validity** failures —
 a raw String carrying a pattern, an enumeration without a declaration — reached while building the
 flat model rather than while refusing a rule. A new arm is overwhelmingly one of those, so the
 compile error an exhaustive list would raise is noise in the case that matters least and the list
-itself would obscure the two arms that do carry a class. Add an explicit arm the moment a resolution
-failure is measured to report an `MVK_` class. -/
+itself would obscure the arms that do carry a class. Add an explicit arm the moment a resolution
+failure is measured to report an `MVK_` class.
+
+The three name-resolution arms were measured together on 2026-09-23 across eight condition carriers
+and two computation carriers, each reporting the same class for the same failure, which is what makes
+them the resolver's rather than any carrier's
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
+  | .invalidEntity _ => some .invalidEntity
+  | .unknownRootGroup _ => some .invalidRootGroup
+  | .aboveRoot _ => some .tooManyParentGroups
   | .numericMinimumFractionalDigitsExceedMaximum _ _ _ => some .fractDigitsInvalid
   | _ => none
 

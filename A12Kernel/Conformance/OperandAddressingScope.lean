@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.OperandAddressingScope
+import A12Kernel.Elaboration.Flat.Model
 
 /-! # Locks on the operand addressing and scope gates
 
@@ -87,6 +88,39 @@ example :
       rootKey? false ["R1", "R2"] = none ∧
       rootKey? true ["R1", "R1"] = none ∧
       rootKey? true ["R1"] = none := by
+  native_decide
+
+private def resolverModel : FlatModel :=
+  { fields := [{ id := 1, groupPath := ["Item"], name := "Title", policy := { kind := .string } }] }
+
+private def resolveKey? (reference : SurfaceFieldPath) : Option String :=
+  match resolverModel.resolveFieldDeclarationUnchecked ["Item"] reference with
+  | .ok _ => none
+  | .error error => error.diagnostic?.map KernelStaticDiagnostic.kernelCode
+
+/- **The shared field resolver draws the same four classes on every carrier measured**, so they are
+   the resolver's and belong on its projection: an unknown root segment, an unknown name below a known
+   root, an unknown bare name, and a parent walk above the root. The resolved control projects nothing
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+example :
+    resolveKey? { base := .absolute, groups := ["Item"], field := "Nope" } =
+        some "MVK_INVALID_ENTITY" ∧
+      resolveKey? { base := .absolute, groups := ["Nope"], field := "Title" } =
+        some "MVK_INVALID_ROOT_GROUP" ∧
+      resolveKey? { base := .absolute, groups := ["Nope", "Deeper"], field := "Title" } =
+        some "MVK_INVALID_ROOT_GROUP" ∧
+      resolveKey? { base := .absolute, groups := ["Item", "Nope"], field := "Title" } =
+        some "MVK_INVALID_ENTITY" ∧
+      -- A lone segment is still read as a root before the path's missing field is judged, while a
+      -- lone declared root is a group in a field slot, whose class each carrier chooses.
+      resolveKey? { base := .absolute, groups := [], field := "Nope" } =
+        some "MVK_INVALID_ROOT_GROUP" ∧
+      resolveKey? { base := .absolute, groups := [], field := "Item" } = none ∧
+      resolveKey? { base := .relative 0, groups := [], field := "Nope" } =
+        some "MVK_INVALID_ENTITY" ∧
+      resolveKey? { base := .relative 1, groups := [], field := "Title" } =
+        some "MVK_TOO_MANY_PARENT_GROUPS" ∧
+      resolveKey? { base := .absolute, groups := ["Item"], field := "Title" } = none := by
   native_decide
 
 end A12Kernel.Conformance.OperandAddressingScope

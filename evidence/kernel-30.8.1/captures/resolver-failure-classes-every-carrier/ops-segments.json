@@ -1,0 +1,142 @@
+[
+ {
+  "id": "cmp-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Nope] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cnum-lone",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-lone.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cmp-loneroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-loneroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(/Item)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cnum-loneroot",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-loneroot.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cmp-middle",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Nope/Title] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-middle",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(/Item/Nope/Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cnum-middle",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-middle.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cmp-nested",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Rows/Note] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-nested",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(/Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cnum-nested",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-nested.json",
+   "--dry-run"
+  ]
+ }
+]

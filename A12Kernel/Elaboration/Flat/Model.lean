@@ -578,6 +578,12 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
   if !GroupPath.isValid declaringGroup then throw (.invalidRuleGroup declaringGroup)
+  -- The Kernel resolves an absolute path segment by segment, so an undeclared first segment answers
+  -- before any later segment and before a lone segment's missing field is judged
+  -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)).
+  if let .absolute := reference.base then
+    let root := reference.groups.headD reference.field
+    if validName root && !model.hasGroupPath [root] then throw (.unknownRootGroup reference)
   if !reference.hasValidShape then throw (.invalidReference reference)
   match reference.base with
   | .absolute =>

@@ -1,0 +1,612 @@
+[
+ {
+  "id": "cmp-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Nope] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cmp-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Nope/Title] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cmp-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Nope] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cmp-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [../Title] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cmp-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Weight2] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(/Item/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(/Nope/Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(../Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ff-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(/Item/Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Item/Nope, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Nope/Title, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Nope, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(../Title, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Item/Weight2, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Item/Nope, Title) == \"x\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Nope/Title, Title) == \"x\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Nope, Title) == \"x\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(../Title, Title) == \"x\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Extra/Code, Title) == \"x\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "vl-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(/Item/Nope In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "vl-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(/Nope/Title In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "vl-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(Nope In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "vl-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(../Title In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "vl-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldValueIncludedInValueList(/Extra/Code In \"x\")",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Item/Nope, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Nope/Title, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Nope, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(../Title, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Extra/Code, Title)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nfff-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(/Item/Nope, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nfff-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(/Nope/Title, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nfff-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Nope, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nfff-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(../Title, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nfff-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(/Extra/Code, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ndv-deep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfDifferentValues(/Item/Nope, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ndv-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfDifferentValues(/Nope/Title, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ndv-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfDifferentValues(Nope, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ndv-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfDifferentValues(../Title, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ndv-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfDifferentValues(/Extra/Code, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "cnum-deep",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-deep.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnum-root",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-root.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnum-bare",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-bare.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnum-above",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-above.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnum-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnum-control.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cffv-deep",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cffv-deep.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cffv-root",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cffv-root.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cffv-bare",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cffv-bare.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cffv-above",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cffv-above.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cffv-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cffv-control.json",
+   "--dry-run"
+  ]
+ }
+]
