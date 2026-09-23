@@ -216,8 +216,11 @@ example :
       fieldAt ["Form", "Contact"] "Phone"] = some .admitted := by
   native_decide
 
-/- The shared duplicate gate precedes the measured kind projection, while an unmeasured
-   Confirm/String combination remains a rejected but deliberately unmapped source. -/
+/- The shared duplicate gate precedes the measured kind projection. A repeated Confirm field is the
+   only list on which both fire here, and the Kernel's order is measured on `Title, InStock, Title`
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-22e-first-filled-gate-order)). A Confirm-led
+   Confirm/String list stays a rejected but deliberately unmapped source: the String-led order is
+   measured, and no row measures a Confirm field leading a mixed list. -/
 example :
     firstFilledDiagnosticDecision [
       fieldAt ["Form", "Boolies"] "Accepted",
