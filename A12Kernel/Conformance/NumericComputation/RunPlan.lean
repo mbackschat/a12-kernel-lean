@@ -348,6 +348,20 @@ example :
           (targetId, .accepted { unscaled := 2, scale := 0 })] := by
   native_decide
 
+/- The stale value is hidden even when it is malformed: the dependent reads the computed `7` and
+   never formal-checks the stored bytes, which is what separates stripping from a presence-only hide
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-23c-computation-cascade-reads)). -/
+example :
+    runOutcomes? [
+      table? sourceId (literal 7),
+      table? targetId (.binary .add (surfaceField ["Root"] "Source") (literal 1))]
+      [{ address := { field := sourceId, path := [] }, stored := "abc",
+         raw := .rejected .malformed }] =
+        some [
+          (sourceId, .accepted { unscaled := 7, scale := 0 }),
+          (targetId, .accepted { unscaled := 8, scale := 0 })] := by
+  native_decide
+
 /- A clean no-result hides the stale computed input and supplies numeric empty-as-zero downstream. -/
 example :
     runOutcomes? [

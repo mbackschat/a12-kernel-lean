@@ -279,6 +279,19 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-23c-computation-cascade-reads"></a>
+### Reviewed 2026-09-23 computation-cascade handback — a computed field's stored value is read by nothing inside one call, and a precondition has no row gate
+
+a12-dmkits revision `b90e5f749a5e194e90450faacd51dad5062a8e44` on `main`, confirmed an ancestor of that checkout's `main` when read. The letter is the peer's `-2026-09-23c`, following [the operand-read record](#inbound-2026-09-23b-entity-list-operand-reads). `adapter.laws.CascadeGroupPresenceDiffTest` (the peer's `kf459`) was read at that revision and holds every row on the Kernel's dynamic Groovy and static Java `compute`, each verdict being the complete sorted change signature. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Content reads.** A computation guarded `NoGroupFilled(/Order/Extra)` clears when a computation earlier in the call fills `Extra`, and computes when `Extra` holds only a stored computed value whose own computation clears. `NumberOfFilledFields(/Order/Extra)` reads `1` and `0` for that pair. A category projection reads the computed value's category, and no category for a cleared stored one. A stored malformed computed value raises no operand error, because the read sees the computed value. A poisoned result fills nothing and the group read over it does not poison. A target's own stored value does not answer its own `GroupFilled` precondition, while a stored non-computed sibling does.
+
+**Row gate.** `[Quantity] < 5` selects on `{}`, on an empty `Order`, and on an `Order` holding only the target's stored value. A guard below a repeatable row selects over an empty, absent or `Length`-only `Dims`. An unindexed repeatable row is the control on which both regimes agree.
+
+**Mechanism.** The letter reads the calculation command's working-data construction as a whole-model strip. That stays a hypothesis here, so [`spec/09`](../spec/09-computations.md) states the reads and limits the whole-model reach and the fill's ancestor reach to a source reading.
+
+**Lean.** Its computation preconditions admit only `FieldFilled` and `FieldNotFilled`, and computation has no group-scope count or category read, so most rows have no Lean input and there is no row gate to diverge. The run overlay strips each run target and reads a completed one through its outcome, which is the field-read half. [`RunPlan`](../A12Kernel/Conformance/NumericComputation/RunPlan.lean) now locks the malformed-seed row beside its well-formed twin. The overlay's reach is the supplied plan rather than the model, which [SG4](gaps/keystone.md#gap-sg4) records.
+
 <a id="inbound-2026-09-23b-entity-list-operand-reads"></a>
 ### Reviewed 2026-09-23 entity-list operand-read handback — an unreadable operand answers first across the family, and the date walk sits behind the list gates
 
@@ -292,7 +305,7 @@ a12-dmkits revision `fdbbda4882b9517a9f17782884852f3ae6990b67` on `main`, an anc
 
 **Locked after the letter.** Its admitted `NumberOfDifferentValues(Weight, Grading)` had no test row at that revision; a12-dmkits `1ac99cad51ccc7c5948554cfa2c3c85d80b947a8` adds it and points `kf389`'s lock line at `EntityListLeaderRouteLawsTest` for the walk's rows. The letter's source-read mechanism stays a hypothesis, so `spec/` states the order and not its cause.
 
-**Lean.** Its typed surface has no index form and cannot build an empty nonrepeatable group, so most read-class rows have no Lean input. An empty starred repeatable group is refused in the Kernel's position and projects `MVK_GROUP_IS_EMPTY` on the carriers [SG9](gaps/paths-and-groups.md#gap-sg9) names, and `Sum`'s String class stays unprojected ([SG5](gaps/numeric-and-temporal.md#gap-sg5)). The read-order and walk-position rows are now locks in [`FieldEntityRootGroup`](../A12Kernel/Conformance/FieldEntityRootGroup.lean) and [`TemporalExtremumOperands`](../A12Kernel/Conformance/TemporalExtremumOperands.lean).
+**Lean.** Its typed surface has no index form and cannot build an empty nonrepeatable group, so most read-class rows have no Lean input. An empty starred repeatable group is refused in the Kernel's position and projects `MVK_GROUP_IS_EMPTY` on the carriers [SG9](gaps/paths-and-groups.md#gap-sg9) names, and `Sum`'s String class is projected since the [carrier checkpoint](sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers) measured its other positions and forms. The read-order and walk-position rows are now locks in [`FieldEntityRootGroup`](../A12Kernel/Conformance/FieldEntityRootGroup.lean) and [`TemporalExtremumOperands`](../A12Kernel/Conformance/TemporalExtremumOperands.lean).
 
 <a id="inbound-2026-09-23-first-filled-gate-positions"></a>
 ### Reviewed 2026-09-23 `FirstFilledValue` gate-position handback — operand reads first, then duplicates, root and arity, then Confirm wherever it stands
