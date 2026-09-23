@@ -448,7 +448,7 @@ A live a12-dmkits session is an accelerator, never a dependency. The **channel o
 
 Then tell the user what is queued and where. A live peer only shortens the latency on all four.
 
-**An inbound letter is deleted once it is processed.** The peer's correction letters arrive in the same exchange directory as `a12-kernel-lean-spec-corrections-YYYY-MM-DD*.md`. When each item has been adopted into a committed record or declined in one, delete that letter by its exact filename, at the owner's instruction of 2026-09-23. The committed record names the revision the letter pointed at, so the file has no further consumer, and a stale letter left behind reads as unprocessed work.
+**An inbound letter stays where it arrived once it is processed.** The peer's correction letters arrive in the same exchange directory as `a12-kernel-lean-spec-corrections-YYYY-MM-DD*.md`. Adopt or decline each item in a committed record, and leave the file in place; the owner withdrew an earlier instruction to delete processed letters on 2026-09-23. The committed record, not the file's presence, is what says a letter was processed.
 
 **Send pointers, not prose.** The [discharge rule](../CLAUDE.md) makes a peer message a claim-bearing channel and the least gated one. Prefer an entry id, checkpoint anchor, reviewed revision, and artifact SHA-256 over re-narrating a finding whose gated version is already written. Re-narration is how a message and its own record come to disagree, and only the record gets re-read.
 
