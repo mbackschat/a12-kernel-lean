@@ -12,6 +12,7 @@ inductive AddressedCustomFirstFilledComputationElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | targetNotCustom (path : List String)
   | source (cause : StarPathElabError)
   | sourceCustomTypeMismatch (path : List String)
@@ -98,6 +99,7 @@ private def mapAddressedCustomTargetError :
   | .targetOutsideDeclaringGroup path declaringGroup =>
       .targetOutsideDeclaringGroup path declaringGroup
   | .targetNotRepeatable path => .targetNotRepeatable path
+  | .targetIsIndexField path => .targetIsIndexField path
 
 private def mapAddressedCustomStarPlacementError :
     AddressedFirstFilledStarPlacementElabError →

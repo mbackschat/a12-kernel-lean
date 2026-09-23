@@ -15,6 +15,7 @@ inductive AddressedEnumerationComputationElabError where
   | ordinary (cause : EnumerationComputationElabError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | scopeMismatch (target source : List String)
   deriving Repr, DecidableEq
 
@@ -126,6 +127,8 @@ def checkAddressedEnumerationTarget
               | .ok projection =>
                 if hRepeatable : declaration.repeatableScope.isEmpty then
                   .error (.targetNotRepeatable declaration.path)
+                else if model.isIndexField targetField then
+                  .error (.targetIsIndexField declaration.path)
                 else
                   .ok {
                     declaringGroup, targetField, declaration

@@ -196,6 +196,7 @@ def diagnostic? :
     RepeatableBooleanConstantComputationElabError → Option KernelStaticDiagnostic
   | .operation _ cause => cause.diagnostic?
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .target (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .target (.target _) | .target (.targetNotRepeatable _) => none
 
 end RepeatableBooleanConstantComputationElabError

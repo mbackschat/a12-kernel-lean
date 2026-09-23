@@ -49,6 +49,7 @@ same class, which is why the format and kind refusals need not be told apart her
 def diagnostic? :
     RepeatableTimeConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .target (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .targetNotTime (.targetPolicy (.targetNotTemporal _ actual)) =>
       literalComparisonDiagnostic? .temporal actual
   | .targetNotTime _ => some .invalidCompareToDate

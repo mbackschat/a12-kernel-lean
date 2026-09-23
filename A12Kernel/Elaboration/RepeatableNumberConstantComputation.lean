@@ -48,6 +48,7 @@ carrier's own kind would name the wrong side. -/
 def diagnostic? :
     RepeatableNumberConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .target (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .constantScaleExceedsTarget _ _ _ => some .invalidCompareDecimalPlaces
   | .targetNotNumber _ actual => literalComparisonDiagnostic? .number actual
   | .target (.target _) | .target (.targetNotRepeatable _) => none

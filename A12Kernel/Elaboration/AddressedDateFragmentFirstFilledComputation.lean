@@ -12,6 +12,7 @@ inductive AddressedDateFragmentFirstFilledComputationElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | targetCarrier (path : List String)
   | source (cause : StarPathElabError)
   | sourceCarrier (path : List String)
@@ -63,6 +64,7 @@ private def mapAddressedDateFragmentTargetError :
   | .targetOutsideDeclaringGroup path declaringGroup =>
       .targetOutsideDeclaringGroup path declaringGroup
   | .targetNotRepeatable path => .targetNotRepeatable path
+  | .targetIsIndexField path => .targetIsIndexField path
 
 private def mapAddressedDateFragmentPlacementError :
     AddressedFirstFilledStarPlacementElabError →

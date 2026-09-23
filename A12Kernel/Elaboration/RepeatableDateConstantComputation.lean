@@ -58,6 +58,7 @@ kind of thing: the Kernel admits those, so there is no refusal to name. -/
 def diagnostic? :
     RepeatableDateConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .target (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .targetNotRenderableDate _ (.yearlessWithoutBaseYear _ _) => some .invalidCompareToDate
   | .targetNotRenderableDate _ (.targetPolicy (.targetNotTemporal _ actual)) =>
       literalComparisonDiagnostic? .temporal actual

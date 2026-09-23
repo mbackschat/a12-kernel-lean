@@ -12,6 +12,7 @@ inductive AddressedTimeFromDateTimeElabError where
   | target (cause : TimeTargetElabError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | source (cause : BoundCompleteDateTimeSourceElabError)
   deriving Repr, DecidableEq
 
@@ -42,6 +43,8 @@ def checkAddressedTimeFromDateTime
         declaringGroup target.checked.declaration.groupPath = true then
       if hRepeatable : target.checked.declaration.repeatableScope.isEmpty then
         throw (.targetNotRepeatable target.checked.declaration.path)
+      else if model.isIndexField targetField then
+        throw (.targetIsIndexField target.checked.declaration.path)
       else
         let sourceBinding ← checkBoundCompleteDateTimeSource model declaringGroup
           target.checked.declaration.path

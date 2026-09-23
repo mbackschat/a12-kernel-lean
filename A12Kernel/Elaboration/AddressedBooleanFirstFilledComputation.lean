@@ -12,6 +12,7 @@ inductive AddressedBooleanFirstFilledComputationElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | targetKind (path : List String) (actual : SurfaceScalarKind)
   | source (cause : StarPathElabError)
   | sourceKind (path : List String) (actual : SurfaceScalarKind)
@@ -95,6 +96,7 @@ private def mapAddressedBooleanTargetError :
   | .targetOutsideDeclaringGroup path declaringGroup =>
       .targetOutsideDeclaringGroup path declaringGroup
   | .targetNotRepeatable path => .targetNotRepeatable path
+  | .targetIsIndexField path => .targetIsIndexField path
 
 private def mapAddressedBooleanStarPlacementError :
     AddressedFirstFilledStarPlacementElabError →

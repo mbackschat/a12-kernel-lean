@@ -46,6 +46,7 @@ unmeasured declines. -/
 def diagnostic? :
     RepeatableStringConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .target (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .targetNotOrdinaryString _ actual =>
       literalComparisonDiagnostic? .stringLike actual
   | .target (.target _) | .target (.targetNotRepeatable _) => none

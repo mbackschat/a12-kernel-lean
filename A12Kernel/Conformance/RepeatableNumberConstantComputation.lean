@@ -206,4 +206,48 @@ example : (match checkRepeatableNumberConstantComputation model ["Probe"] note.i
     | .ok _ => (false, false)) = (false, true) := by
   native_decide
 
+/-! ## The group's index field is not a computation target
+
+A second fixture, because declaring an index changes which of its fields may be written. `Slot` is
+the index of `Hires` and `Fee` an ordinary sibling, both Number, as on the Kernel's row
+([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). The Kernel's separating control,
+a sort field declared beside the index and computed freely, has no counterpart in this model, so
+the sibling carries the admitted side. -/
+
+private def slot : FlatFieldDecl := {
+  id := 11
+  groupPath := ["Probe", "Hires"]
+  name := "Slot"
+  policy := { kind := .number { scale := 0, signed := false } }
+  repeatableScope := [20]
+}
+
+private def fee : FlatFieldDecl := {
+  id := 12
+  groupPath := ["Probe", "Hires"]
+  name := "Fee"
+  policy := { kind := .number { scale := 0, signed := false } }
+  repeatableScope := [20]
+}
+
+private def indexedModel : FlatModel := {
+  fields := [slot, fee]
+  repeatableGroups := [
+    { level := 20, path := ["Probe", "Hires"], repeatability := some 3, indexField := some slot.id }]
+}
+
+private def indexedCode? (declaringGroup : GroupPath) (target : FieldId) : Option String :=
+  match checkRepeatableNumberConstantComputation indexedModel declaringGroup target
+      { unscaled := 1, scale := 0 } with
+  | .error cause => cause.diagnostic?.map KernelStaticDiagnostic.kernelCode
+  | .ok _ => some "admitted"
+
+/- The refusal follows the target and not the computation's own group: the index is refused from its
+group and from the ancestor alike, and the sibling is admitted from both. -/
+example : ([["Probe", "Hires"], ["Probe"]].map (indexedCode? · slot.id),
+    [["Probe", "Hires"], ["Probe"]].map (indexedCode? · fee.id)) =
+    (["MVK_ERROR_INDEX_AS_CALCULATED_FIELD", "MVK_ERROR_INDEX_AS_CALCULATED_FIELD"].map some,
+     ["admitted", "admitted"].map some) := by
+  native_decide
+
 end A12Kernel.Conformance.RepeatableNumberConstantComputation

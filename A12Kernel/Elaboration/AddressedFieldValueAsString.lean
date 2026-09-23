@@ -20,6 +20,7 @@ inductive AddressedFieldValueAsStringElabError where
   | customStringTarget (path : List String)
   | enumeratedStringTarget (path : List String)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | sourceKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | scopeMismatch (target source : List String)
   deriving Repr, DecidableEq
@@ -89,6 +90,8 @@ def checkAddressedFieldValueAsString
                   if hRepeatable :
                       targetDeclaration.repeatableScope.isEmpty then
                     .error (.targetNotRepeatable targetDeclaration.path)
+                  else if model.isIndexField targetField then
+                    .error (.targetIsIndexField targetDeclaration.path)
                   else
                     match hSourceResolved :
                         model.resolveFieldDeclarationUnchecked

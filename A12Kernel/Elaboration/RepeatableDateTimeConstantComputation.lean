@@ -47,6 +47,7 @@ target outranks it; a kind, component-set, format, or zone refusal does not. -/
 def diagnostic? :
     RepeatableDateTimeConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .target (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .targetNotDateTime (.targetPolicy (.targetNotTemporal _ actual)) =>
       literalComparisonDiagnostic? .temporal actual
   | .targetNotDateTime _ => some .invalidCompareToDate

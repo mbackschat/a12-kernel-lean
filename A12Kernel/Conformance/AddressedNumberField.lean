@@ -219,4 +219,25 @@ example :
     ] := by
   native_decide
 
+/- Declaring `Target` as its group's index is the only change, and it turns the admitted copy into the
+index-target refusal, from the target's group and from its ancestor alike
+([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
+private def indexedModel : FlatModel := {
+  model with
+    repeatableGroups := [
+      { level := 10, path := ["Order", "Rows"], repeatability := some 4, indexField := some target.id },
+      { level := 20, path := ["Order", "Others"], repeatability := some 3 }]
+}
+
+example :
+    ([["Order", "Rows"], ["Order"]].map fun group =>
+      match checkAddressedNumberField indexedModel group target.id (bare "Source") with
+      | .error error => some error
+      | .ok _ => none) =
+      [some (.placement (.targetIsIndexField target.path)),
+       some (.placement (.targetIsIndexField target.path))] ∧
+    (checkAddressedNumberField model ["Order", "Rows"] target.id (bare "Source")).toOption.isSome =
+      true := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedNumberField

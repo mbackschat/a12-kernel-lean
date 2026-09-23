@@ -22,6 +22,7 @@ inductive ParallelComputationPlanError where
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
   | incoherentTargetPolicy (field : FieldId)
+  | targetIsIndexField (field : FieldId)
   | incoherentTargetScope (path : List String)
   | incoherentOperandScope (path : List String)
   deriving Repr, DecidableEq
@@ -414,6 +415,8 @@ def checkParallelNumericTargetRoute (model : FlatModel)
                   targetDeclaration.toNumericTargetPolicy? with
               | none => .error (.incoherentTargetPolicy targetField)
               | some targetPolicy => do
+                  if model.isIndexField targetField then
+                    throw (.targetIsIndexField targetField)
                   let targetGroup ←
                     indexedGroupForParallelComputation
                       model targetDeclaration

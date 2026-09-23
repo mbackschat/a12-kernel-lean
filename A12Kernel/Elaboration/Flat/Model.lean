@@ -405,6 +405,10 @@ def FlatModel.groupSubtreeFields (model : FlatModel) (path : GroupPath) :
     List FlatFieldDecl :=
   model.fields.filter fun declaration => path.isPrefixOf declaration.groupPath
 
+/-- Whether some repeatable group declares this field as its index. -/
+def FlatModel.isIndexField (model : FlatModel) (field : FieldId) : Bool :=
+  model.repeatableGroups.any fun group => group.indexField == some field
+
 /-- How many cells one declaration contributes beneath a group whose own repeatable ancestry already
 covers `enclosing` levels: one per row combination its remaining repeatable ancestors may reach.
 A declaration with no repeatable ancestor below that group contributes exactly one. `none` is an

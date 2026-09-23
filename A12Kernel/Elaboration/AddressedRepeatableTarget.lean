@@ -17,6 +17,14 @@ inductive AddressedRepeatableTargetElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  /-- The target is the field a repeatable group declares as its index. The Kernel refuses it
+  whether the computation is declared in that group or at an ancestor, while an ordinary sibling is
+  admitted; a rule may still report on it, so this belongs to the computation's target and not to
+  the field ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections),
+  [checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-index-iteration-and-constant-refusal-classes)).
+  Measured with a Number target under a constant and an aggregate; checked after placement, a
+  position no row separates. -/
+  | targetIsIndexField (path : List String)
   deriving Repr, DecidableEq
 
 /-- One model-owned repeatable target in its declaring group, before any carrier-specific admission. -/
@@ -32,6 +40,7 @@ structure CheckedAddressedRepeatableTarget (model : FlatModel) where
   /-- The target lies at or below the declaring group. Equality is the common case, not the rule. -/
   targetContained : GroupPath.isPrefixOf declaringGroup declaration.groupPath = true
   repeatable : declaration.repeatableScope ≠ []
+  notIndexField : model.isIndexField targetField = false
 
 /-- Check carrier-neutral target placement before an operation checks its own target kind. -/
 def checkAddressedRepeatableTarget
@@ -46,6 +55,8 @@ def checkAddressedRepeatableTarget
           GroupPath.isPrefixOf declaringGroup declaration.groupPath = true then
         if hRepeatable : declaration.repeatableScope.isEmpty then
           throw (.targetNotRepeatable declaration.path)
+        else if hIndex : model.isIndexField targetField then
+          throw (.targetIsIndexField declaration.path)
         else
           pure {
             declaringGroup
@@ -57,6 +68,7 @@ def checkAddressedRepeatableTarget
             repeatable := by
               intro empty
               simp [empty] at hRepeatable
+            notIndexField := by simpa using hIndex
           }
       else
         throw (.targetOutsideDeclaringGroup declaration.path declaringGroup)

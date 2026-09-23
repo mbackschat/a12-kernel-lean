@@ -21,11 +21,13 @@ inductive AddressedDateRangeBoundPartElabError where
 namespace AddressedDateRangeBoundPartElabError
 
 /-- Component exposure and an unsuppressed scale mismatch retain their independent classes.
-    Placement is this project's routing and claims no Kernel diagnostic. -/
+    Placement is this project's routing and claims no Kernel diagnostic, except an index-field
+    target, whose class follows the target rather than the operation. -/
 def diagnostic? :
     AddressedDateRangeBoundPartElabError → Option KernelStaticDiagnostic
   | .componentNotExposed _ _ => some .wrongDateFormatForOp
   | .scaleMismatch _ _ => some .invalidCompareDecimalPlaces
+  | .placement (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .placement _ => none
 
 end AddressedDateRangeBoundPartElabError

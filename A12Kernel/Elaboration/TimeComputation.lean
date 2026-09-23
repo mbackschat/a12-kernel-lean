@@ -188,6 +188,7 @@ inductive AddressedTimeConstructionElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | targetPolicy (cause : TimeTargetElabError)
   | component (cause : AddressedTimeConstructionComponentElabError)
   deriving Repr, DecidableEq
@@ -199,6 +200,7 @@ private def mapAddressedTimeConstructionTargetError :
   | .targetOutsideDeclaringGroup path declaringGroup =>
       .targetOutsideDeclaringGroup path declaringGroup
   | .targetNotRepeatable path => .targetNotRepeatable path
+  | .targetIsIndexField path => .targetIsIndexField path
 
 private def decodeAddressedTimeConstant (position : TimeComponentPosition)
     (source : String) : Except AddressedTimeConstructionComponentElabError Int :=

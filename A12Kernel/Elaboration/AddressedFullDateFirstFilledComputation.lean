@@ -12,6 +12,7 @@ inductive AddressedFullDateFirstFilledComputationElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | targetPolicy (cause : FullDateTargetElabError)
   | source (cause : StarPathElabError)
   | sourceCarrier (path : List String)
@@ -73,6 +74,7 @@ private def mapAddressedFullDateTargetError :
   | .targetOutsideDeclaringGroup path declaringGroup =>
       .targetOutsideDeclaringGroup path declaringGroup
   | .targetNotRepeatable path => .targetNotRepeatable path
+  | .targetIsIndexField path => .targetIsIndexField path
 
 private def mapAddressedFullDatePlacementError :
     AddressedFirstFilledStarPlacementElabError →

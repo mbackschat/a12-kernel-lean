@@ -16,6 +16,8 @@ inductive AddressedNumericPlacementElabError where
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | targetPolicyUnavailable (path : List String)
   | targetNotRepeatable (path : List String)
+  /-- The shared certificate's index-field refusal, `AddressedRepeatableTargetElabError.targetIsIndexField`. -/
+  | targetIsIndexField (path : List String)
   | targetSelfReference (field : FieldId)
   /-- The source crosses a repeatable level the target's own scope does not bind. -/
   | scopeMismatch (target source : List String)
@@ -37,6 +39,7 @@ structure CheckedAddressedNumericTarget (model : FlatModel) where
   targetPolicyOwned :
     targetDeclaration.toNumericTargetPolicy? = some targetPolicy
   targetRepeatable : targetDeclaration.repeatableScope ≠ []
+  targetNotIndexField : model.isIndexField targetField = false
 
 /-- The common checked placement of one Number target at a nonempty repeatable scope and one source declaration whose own repeatable levels that scope binds. -/
 structure CheckedAddressedNumericPlacement (model : FlatModel) where
@@ -124,6 +127,8 @@ def checkAddressedNumericTarget
             | some targetPolicy =>
               if hRepeatable : targetDeclaration.repeatableScope.isEmpty then
                 .error (.targetNotRepeatable targetDeclaration.path)
+              else if hIndex : model.isIndexField targetField then
+                .error (.targetIsIndexField targetDeclaration.path)
               else
                 .ok {
                   declaringGroup
@@ -140,6 +145,7 @@ def checkAddressedNumericTarget
                   targetRepeatable := by
                     intro empty
                     simp [empty] at hRepeatable
+                  targetNotIndexField := by simpa using hIndex
                 }
           | actual =>
               .error (.targetKindMismatch

@@ -12,6 +12,7 @@ inductive AddressedTimeFirstFilledComputationElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
+  | targetIsIndexField (path : List String)
   | targetPolicy (cause : TimeTargetElabError)
   | source (cause : StarPathElabError)
   | sourceCarrier (path : List String)
@@ -57,6 +58,7 @@ private def mapAddressedTimeTargetError :
   | .targetOutsideDeclaringGroup path declaringGroup =>
       .targetOutsideDeclaringGroup path declaringGroup
   | .targetNotRepeatable path => .targetNotRepeatable path
+  | .targetIsIndexField path => .targetIsIndexField path
 
 private def mapAddressedTimePlacementError :
     AddressedFirstFilledStarPlacementElabError →
