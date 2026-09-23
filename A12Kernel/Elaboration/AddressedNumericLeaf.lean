@@ -155,73 +155,30 @@ def checkAddressedNumericPlacement
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) :
     Except AddressedNumericPlacementElabError
-      (CheckedAddressedNumericPlacement model) :=
-  match hModel : model.validate with
-  | .error cause => .error (.model cause)
-  | .ok () =>
-    match hTargetOwned : model.lookupUniqueId targetField with
-    | .error cause => .error (.target cause)
-    | .ok targetDeclaration =>
-      if hValid : GroupPath.isValid declaringGroup = true then
-        if hGroup : GroupPath.isPrefixOf
-            declaringGroup targetDeclaration.groupPath = true then
-          match hTargetKind : targetDeclaration.policy.kind with
-          | .number _ =>
-            match hTargetPolicy :
-                targetDeclaration.toNumericTargetPolicy? with
-            | none =>
-                .error (.targetPolicyUnavailable targetDeclaration.path)
-            | some targetPolicy =>
-              if hRepeatable :
-                  targetDeclaration.repeatableScope.isEmpty then
-                .error (.targetNotRepeatable targetDeclaration.path)
-              else
-                match hSourceResolved :
-                    model.resolveFieldDeclarationUnchecked
-                      declaringGroup sourceReference with
-                | .error cause => .error (.source cause)
-                | .ok sourceDeclaration =>
-                  if hSelf : sourceDeclaration.id == targetField then
-                    .error (.targetSelfReference targetField)
-                  else if hScope :
-                      sourceDeclaration.repetitionBoundBy
-                        targetDeclaration.repeatableScope = true then
-                    .ok {
-                      target := {
-                        declaringGroup
-                        targetField
-                        targetDeclaration
-                        targetPolicy
-                        modelWellFormed := by
-                          rw [hModel]
-                          rfl
-                        targetOwned := hTargetOwned
-                        declaringGroupValid := hValid
-                        targetContainedInDeclaringGroup := hGroup
-                        targetPolicyOwned := hTargetPolicy
-                        targetRepeatable := by
-                          intro empty
-                          simp [empty] at hRepeatable
-                      }
-                      sourceReference
-                      sourceDeclaration
-                      sourceResolved := hSourceResolved
-                      sourceNotTarget := by
-                        intro equal
-                        simp [equal] at hSelf
-                      sourceScopeBound := hScope
-                    }
-                  else
-                    .error (.scopeMismatch
-                      targetDeclaration.path sourceDeclaration.path)
-          | actual =>
-              .error (.targetKindMismatch
-                targetDeclaration.path actual.surfaceKind)
-        else
-          .error (.targetOutsideDeclaringGroup
-            targetDeclaration.path declaringGroup)
-      else
-        .error (.target (.invalidRuleGroup declaringGroup))
+      (CheckedAddressedNumericPlacement model) := do
+  let target ← checkAddressedNumericTarget model declaringGroup targetField
+  match hSourceResolved :
+      model.resolveFieldDeclarationUnchecked target.declaringGroup sourceReference with
+  | .error cause => .error (.source cause)
+  | .ok sourceDeclaration =>
+    if hSelf : sourceDeclaration.id == target.targetField then
+      .error (.targetSelfReference target.targetField)
+    else if hScope :
+        sourceDeclaration.repetitionBoundBy
+          target.targetDeclaration.repeatableScope = true then
+      .ok {
+        target
+        sourceReference
+        sourceDeclaration
+        sourceResolved := hSourceResolved
+        sourceNotTarget := by
+          intro equal
+          simp [equal] at hSelf
+        sourceScopeBound := hScope
+      }
+    else
+      .error (.scopeMismatch
+        target.targetDeclaration.path sourceDeclaration.path)
 
 /-- Shared execution faults for one checked addressed numeric operation. Direct leaves use `sourceRead`; resolved repeatable sources retain their wider addressing failures separately. -/
 inductive AddressedNumericLeafFault where
