@@ -5,10 +5,6 @@ import A12Kernel.Elaboration.OperandAddressingScope
 `wildcardPlacement_lenience_splits_the_two` is the consumer-facing law: lenience moves exactly one of the
 two star gates, so a lenient reader cannot assume the strict vocabulary minus a uniform relaxation.
 
-`unresolvedName_partitions_by_depth` says the two unresolvable-name classes are a partition of one
-condition rather than two diagnoses, which is what a repair tool needs in order not to look for two
-different faults.
-
 The membership laws pin both edges of the parent-path test, the one that admits arbitrarily deep
 descendants and the one that excludes the scoping group itself.
 -/
@@ -22,13 +18,6 @@ theorem wildcardPlacement_lenience_splits_the_two :
       (∀ lenient, wildcardPlacementRefusal lenient .ruleContext = some .wildcardOnRuleContext) := by
   refine ⟨rfl, rfl, ?_⟩
   intro lenient; rfl
-
-/-- **The unresolvable-name classes partition by depth**, so exactly one is reported and which one is
-decided by the candidate alone. -/
-theorem unresolvedName_partitions_by_depth (candidate : EntityPath) :
-    (unresolvedNameRefusal candidate = .invalidRootGroup ↔ candidate.length ≤ 1) ∧
-      (unresolvedNameRefusal candidate = .invalidEntity ↔ ¬ candidate.length ≤ 1) := by
-  constructor <;> · unfold unresolvedNameRefusal; split <;> simp_all
 
 /-- A descendant at **any** depth lies within the scope, so the guard is not a direct-child test. -/
 theorem withinGroup_admits_any_descendant (scope below : EntityPath) (leaf : String) :

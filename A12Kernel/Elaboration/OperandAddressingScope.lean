@@ -2,9 +2,8 @@ import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Where a condition's operand may point, and where its star may sit
 
-Seven parser guards constrain an operand's *address* rather than its kind: three about the wildcard's
-placement, three about the scope a list of entities must share, and one about what an unresolvable name
-reports. They are grouped here because each is a small independent predicate over one reference, raised
+Six parser guards constrain an operand's *address* rather than its kind: three about the wildcard's
+placement and three about the scope a list of entities must share. They are grouped here because each is a small independent predicate over one reference, raised
 by a different checker, and because two pairs of them disagree in ways a single "scope rule" would hide.
 
 **The two star refusals disagree about lenience, and that is this module's sharpest fact.** A wildcard
@@ -20,13 +19,13 @@ must lie under the scoping group, so a descendant at any depth is inside — and
 is *outside*, because its own parent is one level up. Neither edge follows from "the entity is in the
 group" read informally.
 
-**An unresolvable name reports one of two classes by depth, not by fault.** At root-group depth it is
-`MVK_INVALID_ROOT_GROUP`; one segment deeper the identical failure is `MVK_INVALID_ENTITY`. The two
-partition a single condition, so a consumer treating them as different diagnoses is reading a distinction
-that is not there.
+**What an unresolvable name reports is not decided here.** Its class belongs to the shared field
+resolver's projection `ResolveError.diagnostic?`, which chooses it by the segment that missed rather than
+by the path's depth
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)).
 
-**Evidence.** The star-on-rule-context, star-required, `@From` repeatability, group-membership and
-root-group classes are measured
+**Evidence.** The star-on-rule-context, star-required, `@From` repeatability and group-membership
+classes are measured
 ([sweep](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-parser-static-legality-sweep), [membership row](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-table-enumeration-inertness)); the relative-step star's rule is
 stated in [`spec/08`](../../spec/08-paths-and-references.md) and its **lenient** arm is read from the
 guard rather than measured, no probe here authoring a lenient parse.
@@ -83,9 +82,5 @@ def sharedRootGroupRefusal (hModelCaller : Bool) (roots : List String) :
   else match roots with
     | [] => none
     | first :: rest => if rest.all (· == first) then none else some .entitiesInDifferentRootGroups
-
-/-- **The unresolvable-name partition.** One failure, two classes, chosen by the candidate's depth. -/
-def unresolvedNameRefusal (candidate : EntityPath) : KernelStaticDiagnostic :=
-  if candidate.length ≤ 1 then .invalidRootGroup else .invalidEntity
 
 end A12Kernel

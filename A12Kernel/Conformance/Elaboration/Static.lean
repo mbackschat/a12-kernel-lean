@@ -397,6 +397,29 @@ example : errorOf (model.resolveField ["Order"]
     some (.invalidEntity (absolute ["Order"] "Missing")) := by
   native_decide
 
+/- **A failed resolution reports one Kernel class per failure, the same on every carrier measured**, so
+   the class is the resolver's. The root class reads which segment missed rather than the path's depth:
+   an undeclared first segment reports it whatever follows, alone, and when it names a declared group
+   that is not a root, while a miss below a declared root is the entity class. A lone declared root is a
+   group in a field slot, whose class each carrier chooses, so the resolver projects none
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+example :
+    let key? (group : GroupPath) (reference : SurfaceFieldPath) : Option KernelStaticDiagnostic :=
+      match model.resolveField group reference with
+      | .ok _ => none
+      | .error error => error.diagnostic?
+    key? ["Order"] (absolute ["Order"] "Missing") = some .invalidEntity ∧
+      key? ["Order"] (absolute ["Nope"] "Quantity") = some .invalidRootGroup ∧
+      key? ["Order"] (absolute ["Nope", "Details"] "Limit") = some .invalidRootGroup ∧
+      key? ["Order"] (absolute ["Details"] "Limit") = some .invalidRootGroup ∧
+      key? ["Order"] (absolute [] "Nope") = some .invalidRootGroup ∧
+      key? ["Order"] (absolute ["Order", "Nope"] "Limit") = some .invalidEntity ∧
+      key? ["Order"] (absolute [] "Order") = none ∧
+      key? ["Order"] (bare "Nope") = some .invalidEntity ∧
+      key? ["Order", "Details"] (relative 2 [] "Quantity") = some .tooManyParentGroups ∧
+      key? ["Order"] (absolute ["Order", "Details"] "Limit") = none := by
+  native_decide
+
 private def keywordProfile : PathKeywordProfile :=
   { reserved := ["And", "Date", "Today"] }
 
