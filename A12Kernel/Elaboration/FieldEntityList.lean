@@ -297,6 +297,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .resolve error => error.diagnostic?
   | .groupReference (.repeatableGroupRequiresAddress _) => some .noWildcard
   | .starredGroup (.path (.wildcardOnNonrepeatable _)) => some .invalidWildcard
+  | .starredGroup error => error.emptyGroupDiagnostic?
   | .starPath (.iterationBelowWildcard _) => some .noWildcard
   | _ => none
 

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.GroupPresence
 import A12Kernel.Semantics.NumericComparison
 
@@ -29,6 +30,16 @@ inductive StarredGroupElabError where
   | path (error : StarPathElabError)
   | incoherentCore
   deriving Repr, DecidableEq
+
+/-- The class of an empty starred group, for the carriers that measured it: the extrema and the
+validation group count ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group),
+[inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). An empty **root**
+draws a different code, measured only on a nonrepeatable root this model cannot express, so a
+starred root projects nothing rather than borrowing either code. -/
+def StarredGroupElabError.emptyGroupDiagnostic? :
+    StarredGroupElabError → Option KernelStaticDiagnostic
+  | .groupHasNoFields groupPath => if groupPath.length == 1 then none else some .groupIsEmpty
+  | .resolve _ | .invalidGroupReference _ | .unknownGroup _ | .path _ | .incoherentCore => none
 
 /-- One terminal repeatable group and the shared checked plan that reaches each of its concrete rows exactly once. -/
 structure CheckedStarredGroupSource (model : FlatModel) where

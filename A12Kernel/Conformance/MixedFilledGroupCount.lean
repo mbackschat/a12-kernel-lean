@@ -57,7 +57,8 @@ private def model : FlatModel := {
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 },
     { level := 11, path := ["Probe", "G1", "Nested"], repeatability := some 2 },
     { level := 12, path := ["Probe", "Rows", "Inner"], repeatability := some 2 },
-    { level := 13, path := ["Probe", "Other"], repeatability := some 2 }]
+    { level := 13, path := ["Probe", "Other"], repeatability := some 2 },
+    { level := 14, path := ["Probe", "Hollow"], repeatability := some 2 }]
 }
 
 private def prepared : PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -263,6 +264,15 @@ example : ((comparison? [fixedOperand, starredOperand, otherStar]).isSome,
     (comparison? [fixedOperand, otherStar, starredOperand]).isSome,
     (comparison? [starredOperand, fixedOperand, otherStar]).isSome) =
     (true, true, true) := by
+  native_decide
+
+/- A starred group whose subtree declares no field is refused while it is read, so a lone one draws
+`MVK_GROUP_IS_EMPTY` rather than reaching the arity gate that a lone *fixed* member draws — the
+Kernel's `NumberOfFilledGroups(/Probe/EmptyRows*)` row
+([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)). -/
+example :
+    kernelCode? [.starred { base := .absolute, groups := ["Probe", "Hollow"] }] =
+      some "MVK_GROUP_IS_EMPTY" := by
   native_decide
 
 end A12Kernel.Conformance.MixedFilledGroupCount

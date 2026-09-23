@@ -150,6 +150,7 @@ def groupCountDiagnostic? :
       some (if left == right then .duplicateParam1 else .duplicateParam2)
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | .unknownGroupInCount _ => some .invalidEntity
+  | .starredGroupCountPlan error => error.emptyGroupDiagnostic?
   | _ => none
 
 /-- Project the measured scope class of a repetition coordinate. `CurrentRepetition(G)` is admitted

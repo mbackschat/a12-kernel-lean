@@ -141,9 +141,8 @@ example :
 The empty starred group is refused while it is resolved, and every operand is resolved before the
 duplicate scans, so it answers leading a repeated field, trailing one, and beside the root that
 contains it — the Kernel's `Lapses*` and `Sum(/Item, Hollow)` rows
-([inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). The shared
-projection names no class for that refusal ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)), so
-the shape error is what these lock. -/
+([inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). The shape error
+names the group, and both carriers project it to `MVK_GROUP_IS_EMPTY`. -/
 
 private def lapses : SurfaceFieldEntityOperand :=
   .starredGroup { base := .absolute, groups := [{ name := "Item" }, { name := "Lapses", starred := true }] }
@@ -153,6 +152,16 @@ example :
     shapeError? [lapses, field ["Item"] "Title", field ["Item"] "Title"] = empty ∧
     shapeError? [field ["Item"] "Title", field ["Item"] "Title", lapses] = empty ∧
     shapeError? [group ["Item"], lapses] = empty := by
+  native_decide
+
+example :
+    firstFilled [lapses, field ["Item"] "Title", field ["Item"] "Title"] =
+      some (.mapped .groupIsEmpty) ∧
+    firstFilled [field ["Item"] "Title", field ["Item"] "Title", lapses] =
+      some (.mapped .groupIsEmpty) ∧
+    firstFilled [group ["Item"], lapses] = some (.mapped .groupIsEmpty) ∧
+    numberNotUnique [lapses] = some (.mapped .groupIsEmpty) ∧
+    numberNotUnique [field ["Item"] "Weight", lapses] = some (.mapped .groupIsEmpty) := by
   native_decide
 
 end A12Kernel.Conformance.FieldEntityRootGroup

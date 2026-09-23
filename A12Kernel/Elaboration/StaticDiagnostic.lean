@@ -80,6 +80,8 @@ inductive KernelStaticDiagnostic where
   | rootGroupReferenced
   /-- A root group appears beside another operand under a carrier that admits it only as a singleton. -/
   | rootGroupWithOtherParameters
+  /-- An operand names a non-root group whose subtree declares no field. The model admits such a group, and naming it is refused on this code rather than the unknown-entity one; an empty **root** draws a code of its own that no representable operand reaches. -/
+  | groupIsEmpty
   /-- `RepetitionNotUnique` cannot select the repeated group: a second key lies in a nonrepeatable group, the sole key has no repeated group, or the rule is already placed at that repeated group. These shapes draw one class. -/
   | repeatableGroupMissing
   /-- A measured condition shape is refused at the error field's iterated level by the Kernel's syntax-sensitive iteration gate. This class does not assert a semantic notion of negativity. -/
@@ -406,6 +408,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .rootGroupReferenced => "MVK_ROOT_GROUP_REFERENCED"
   | .rootGroupWithOtherParameters =>
       "MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS"
+  | .groupIsEmpty => "MVK_GROUP_IS_EMPTY"
   | .repeatableGroupMissing => "MVK_REPEATABLE_GROUP_MISSING"
   | .negativeConditionInIteration => "MVK_NEG_CONDITION_IN_ITERATION"
   | .errorFieldNotReferenced => "MVK_ERROR_FIELD_NOT_REFERENCED"
@@ -581,6 +584,7 @@ def all : List KernelStaticDiagnostic :=
     .noGroupsAllowed, .noStringOrEnumOrExtEnum, .dateFormatsNotCompatible,
     .dateAndNonDate,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
+    .groupIsEmpty,
     .repeatableGroupMissing, .negativeConditionInIteration,
     .errorFieldNotReferenced, .invalidStringConstantForEnumeration,
     .invalidStringConstantForEnumerationCategory, .categoryUnknown,
