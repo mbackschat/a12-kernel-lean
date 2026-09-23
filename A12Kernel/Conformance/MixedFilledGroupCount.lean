@@ -185,14 +185,21 @@ example : (count false 2, count false 0) =
   native_decide
 
 /- The fixed-only list is refused here and stays on the established scalar carrier, so widening this
-operator costs the already-measured form nothing. A single operand and a root-group member are
-refused on the same terms the scalar list applies. -/
+operator costs the already-measured form nothing. A root-group member is refused on the same terms
+the scalar list applies. -/
 example : ((comparison? [fixedOperand]).isSome,
     (comparison? [fixedOperand, fixedOperand]).isSome,
     (comparison? [starredOperand]).isSome,
     (comparison? [.fixed (.path { base := .absolute, groups := ["Probe"] }),
       starredOperand]).isSome) =
     (false, false, false, false) := by
+  native_decide
+
+/- A lone star is refused too, but it is not the arity class: the Kernel admits it and the sole-star
+carrier owns it ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity)),
+so this refusal names no class, where a lone fixed operand's arity refusal on the scalar carrier
+does. -/
+example : kernelCode? [starredOperand] = none := by
   native_decide
 
 /- Containment between any two members is a duplicate, whichever is starred and in whichever order,

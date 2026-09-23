@@ -485,8 +485,9 @@ bare repeatable member is refused `MVK_NO_WILDCARD` upstream, so the star is man
 optional, and a starred member contributes its in-capacity instantiated row count
 ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)).
 
-The fixed-only list keeps the established scalar atom untouched and is refused here, so widening
-this operator costs the already-measured form nothing. The duplicate gate reaches every member: any
+The fixed-only list keeps the established scalar atom untouched and a lone star keeps its sole-star
+carrier, so both are refused here and widening this operator costs the already-measured forms
+nothing. The duplicate gate reaches every member: any
 containment refuses, and equal paths refuse unless both sides are starred, which the Kernel admits
 and counts once per position. -/
 def elaborateMixedFilledGroupCountComparison
@@ -514,8 +515,10 @@ def elaborateMixedFilledGroupCountComparison
                 pure (CheckedGroupCountOperand.starred source)
             | .ok (.terminalPresence _) =>
                 throw (NumericValidationElabError.starredGroupCountOperand path)
+  -- Some member is starred, so a short list is a lone star. The Kernel admits that as a complete
+  -- list and the sole-star carrier owns it; the arity class belongs to a lone *fixed* operand.
   if checked.length < 2 then
-    throw .groupCountNeedsMultipleOperands
+    throw .unsupportedExpression
   -- Containment runs **before** rootness, and the order is measured: a root beside its own
   -- descendant draws the overlap class in either operand order, while the root class is reserved for
   -- a root beside a disjoint operand. Reversed, this reports a root the author must remove where the
