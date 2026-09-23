@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.OperandAddressingScope
 /-! # Locks on the operand addressing and scope gates
 
 Five of the seven classes are measured
-([checkpoint](../../docs/SOURCES.md#src-static-admission-class-sweep)); the relative-step star's lenient
+([sweep](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-parser-static-legality-sweep), [membership row](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-table-enumeration-inertness)); the relative-step star's lenient
 arm is read from the guard, and the shared-root-group class is argued unreachable from an A12 model by a
 source enumeration re-derived in the owning module.
 

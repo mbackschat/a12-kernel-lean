@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MessagePointer
 
 /-! # A12Kernel.Semantics.CustomCondition — resolved callback leaf
 
-This capsule implements the successful reached-leaf boundary of [`spec/11-messages-and-custom.md` §4](../../spec/11-messages-and-custom.md#4-custom-conditions). A preceding integration layer has resolved a registered callback and ordinary validation orchestration has decided to reach it. The callback receives an effective data view, full-versus-partial relevance, the complete formal-invalid-address payload, and the current error pointer. The evaluator does not inspect those opaque channels or pre-suppress the callback because an address is formally invalid.
+This capsule implements the successful reached-leaf boundary of [`spec/11-messages-and-custom.md` §4](../../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch). A preceding integration layer has resolved a registered callback and ordinary validation orchestration has decided to reach it. The callback receives an effective data view, full-versus-partial relevance, the complete formal-invalid-address payload, and the current error pointer. The evaluator does not inspect those opaque channels or pre-suppress the callback because an address is formally invalid.
 
 The oracle is deliberately pure and total. Missing registration, host exceptions, effects, invocation count and order, concrete Java/Node data APIs, relevance construction, message-pointer construction, message emission, and surrounding row/connective evaluation remain outside this boundary. The data, relevance, and formal-invalid payloads remain abstract carriers; the error pointer uses the shared normalized message domain because that distinction is fixed by A12.
 -/

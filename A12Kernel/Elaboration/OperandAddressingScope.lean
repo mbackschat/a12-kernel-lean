@@ -27,7 +27,7 @@ that is not there.
 
 **Evidence.** The star-on-rule-context, star-required, `@From` repeatability, group-membership and
 root-group classes are measured
-([checkpoint](../../docs/SOURCES.md#src-static-admission-class-sweep)); the relative-step star's rule is
+([sweep](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-parser-static-legality-sweep), [membership row](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-table-enumeration-inertness)); the relative-step star's rule is
 stated in [`spec/08`](../../spec/08-paths-and-references.md) and its **lenient** arm is read from the
 guard rather than measured, no probe here authoring a lenient parse.
 `MVK_DIFFERENT_ROOT_GROUPS` is **unreachable from an A12 model** by source enumeration re-derived here:

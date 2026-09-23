@@ -271,7 +271,7 @@ example :
 /- The same holds for a starred **field** twice, and the pair with the unstarred repetition is what
    makes the gate legible: the Kernel refuses `(F, F)` `MVK_DUPLICATE_PARAM1` and admits
    `(G*/F, G*/F)`, measured together on four carriers
-   ([checkpoint](../../docs/SOURCES.md#src-duplicate-operand-gate-splits-by-read-form)). A starred
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-literal-domain-is-the-union)). A starred
    occurrence is a repetition-wide read rather than an exact reference, so two of them are two
    independent scans; without the refusing row beside it, the admission would read as this project
    having no duplicate gate at all. -/

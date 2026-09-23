@@ -357,49 +357,15 @@ else
   fi
 fi
 
-# Every relative link in tracked Markdown and Lean prose must name a file that exists. A moved
-# record keeps links relative to its old directory and a copied docstring keeps its old depth, and
-# neither fails anything else: 21 such links across seven files were found by hand on 2026-09-23.
-# A target outside the repository must lie inside a sibling checkout, since climbing one level too
-# far is the defect itself; it is checked when that sibling is present and skipped where CI has none.
-# `A12Kernel.*` declaration links are not paths, and inline code and fenced blocks quote links
-# rather than make them.
+# Every relative link in tracked Markdown and Lean prose must name a file, and an anchor, that
+# exists. A moved record keeps links relative to its old directory, a copied docstring keeps its old
+# depth, and a renamed heading or relocated record strands its anchors, and none of that fails
+# anything else: 21 dead files and 33 dead anchors across tracked prose were found by hand on
+# 2026-09-23, one of them a citation that never resolved. scripts/check-doc-links.py owns the rules.
 if ! command -v python3 >/dev/null 2>&1; then
   echo "documentation hygiene guard: the relative-link check needs python3, so it did NOT run" >&2
   failed=true
-elif ! git ls-files -z -- '*.md' '*.lean' | python3 -c '
-import os, re, sys
-root = os.getcwd()
-parent = os.path.dirname(root)
-siblings = {"a12-kernel", "a12-rulekit", "a12-rulekit-measure"}
-broken = False
-for path in sys.stdin.read().split("\0"):
-    if not path:
-        continue
-    text = open(path, encoding="utf-8").read()
-    text = re.sub(r"^```.*?^```", lambda m: "\n" * m.group(0).count("\n"), text, flags=re.S | re.M)
-    text = re.sub(r"`[^`\n]*`", "", text)
-    for number, line in enumerate(text.split("\n"), 1):
-        for target in re.findall(r"\]\(([^)\s]+)\)", line):
-            if re.match(r"(https?:|mailto:|#|<)", target) or re.fullmatch(r"A12Kernel\.[\w.'"'"']+", target):
-                continue
-            file = target.split("#")[0]
-            if not file:
-                continue
-            resolved = os.path.normpath(os.path.join(root, os.path.dirname(path), file))
-            if resolved.startswith(root + os.sep):
-                missing = not os.path.exists(resolved)
-            else:
-                sibling = os.path.relpath(resolved, parent).split(os.sep)[0]
-                if sibling not in siblings:
-                    missing = True
-                else:
-                    missing = os.path.isdir(os.path.join(parent, sibling)) and not os.path.exists(resolved)
-            if missing:
-                print(f"{path}:{number}: relative link target {file} does not exist", file=sys.stderr)
-                broken = True
-sys.exit(1 if broken else 0)
-'; then
+elif ! git ls-files -z -- '*.md' '*.lean' | python3 scripts/check-doc-links.py; then
   failed=true
 fi
 
