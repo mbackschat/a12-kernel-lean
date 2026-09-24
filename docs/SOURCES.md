@@ -279,6 +279,17 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24-ancestor-starred-group-count"></a>
+### Reviewed 2026-09-24 ancestor-starred group-count handback — a fixed group below a starred level is a sole `NumberOfFilledGroups` operand, and it counts filled instances only
+
+a12-dmkits revision `0c61dcadd57bfd5346876baaba1b4955d9af23b2` on `main`, confirmed an ancestor of that checkout's `HEAD` when read. The letter is the peer's `-2026-09-24`, a new topic after [the grandparent-fill record](#inbound-2026-09-23d-grandparent-fill-and-malformed-key). The peer's `kf462` was read at that revision, with its locks `validate.laws.GroupCountScopeOperandLawsTest` for admission, from the Kernel's `checkConsistency` on a rule condition, and `adapter.laws.AncestorStarredGroupCountDiffTest` for the counts, on the Kernel's dynamic Groovy and static Java routes. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Admission.** From a rule at `/Item`, which iterates nothing, `NumberOfFilledGroups` admits `Grading, Specs`, `Keyed*` and `Batches*/Seal`, where `Seal` is a fixed group inside the repeatable `Batches`. A lone `Grading` draws `MVK_PARAMSIZE_INVALIDGN`, so the arity exemption reads a star anywhere on the operand's path. `Grading, Weight` draws `MVK_NO_FIELDS_ALLOWED`, `Grading, /Lot*` `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS` and `Keyed For "k", Grading` `MVK_SEMANTIC_INDEX_NOT_ALLOWED`.
+
+**Counts.** Over six documents, `NumberOfFilledGroups(Batches*/Seal)` is `0` with no batch, `2` with two filled Seals, `1` when the second batch holds only its own field, `0` when both Seals are instantiated and empty, `2` when the first and third of three are filled, and `1` beside a filled `Grading`, where the pair counts `2`. The pair otherwise equals the sole form. The mechanism the letter source-reads is not adopted.
+
+**Lean.** Not modelled. A count operand's star lands on its terminal, so `Batches*/Seal` has no surface form, and [SG13](gaps/paths-and-groups.md#gap-sg13) owns the capsule. A field operand has no surface form in a group count either, so its class is parser-layer here.
+
 <a id="inbound-2026-09-23d-grandparent-fill-and-malformed-key"></a>
 ### Reviewed 2026-09-23 grandparent-fill and malformed-key handback — the cascade fill reaches depth two, and a malformed field-valued key is unknown or poison on every keyed consumer
 
