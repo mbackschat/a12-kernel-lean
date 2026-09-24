@@ -282,6 +282,7 @@ theorem checkedValidationRule_partial_evaluated
         (rule.condition.core.evalSelected {
           fields := (prepared.checkContext locale raw).withWorld prepared.world
           groups
+          pass := .part
         } fun field =>
           (scope.withGlobals model).coversField model field []))) := by
   simp [CheckedResolvedValidationRule.evalPartial,

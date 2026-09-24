@@ -246,7 +246,8 @@ def evalPartial (rule : CheckedResolvedValidationRule model)
   else
     let context : ValidationEvaluationContext := {
       fields := (prepared.checkContext locale raw).withWorld prepared.world
-      groups }
+      groups
+      pass := .part }
     .ok (.evaluated
       (rule.core.emit (rule.condition.core.evalSelected context isRelevant)))
 

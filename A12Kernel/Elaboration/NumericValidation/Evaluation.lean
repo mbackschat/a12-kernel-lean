@@ -89,7 +89,8 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       match context.groups.resolveAll groups with
       | none => .error .groupState
       | some states =>
-          match (numberOfFilledGroups states).availableWithFillability? groups.length with
+          match (context.pass.countFilledGroups states).availableWithFillability?
+              groups.length with
           | none => .error .groupState
           | some available => .ok (.value available.1 available.2)
 

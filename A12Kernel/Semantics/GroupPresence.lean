@@ -265,6 +265,20 @@ def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :
   if states.any (fun state => state.asFilledGroupCountPresence == .unavailable) then .unknown
   else .value (states.countP fun state => state.asFilledGroupCountPresence == .filled)
 
+/-- Whether partial validation decides a counted group's first instance: wholly covered **and** free
+    of errors. This is the one rule on which the two passes count differently. Full validation lets
+    an error block only the negative answer, as `numberOfFilledGroups` does, while under partial
+    validation a fixed group carrying a malformed covered cell beside admitted content leaves the
+    count undecidable
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)). -/
+def GroupPresenceState.decidesPartialCount (state : GroupPresenceState) : Bool :=
+  state.relevance == .fullyRelevant && !state.erroneous
+
+/-- The fixed-only count under partial validation, each group being its own first instance. -/
+def numberOfFilledGroupsPartial (states : List GroupPresenceState) : FilledGroupCount :=
+  if states.all GroupPresenceState.decidesPartialCount then .value (states.countP (·.content))
+  else .unknown
+
 /-- One validation-arm operand of a filled-group count whose list may carry a star. A fixed member
     keeps its resolved presence state, whose unavailability or nonrelevance makes the whole count
     unknown exactly as in the fixed-only list. A starred member contributes an in-capacity

@@ -283,20 +283,20 @@ theorem numericValidation_filledGroupCount_value
     (groups : List ResolvedGroupReference)
     (states : List GroupPresenceState) (count : Nat)
     (resolved : context.groups.resolveAll groups = some states)
-    (counted : numberOfFilledGroups states = .value count) :
+    (counted : context.pass.countFilledGroups states = .value count) :
     context.resolveNumericValidationAtom (.filledGroupCount groups) =
       .ok (.value count
         (if count < groups.length then .growOnly else .fixed)) := by
   simp [ValidationEvaluationContext.resolveNumericValidationAtom,
     resolved, counted, FilledGroupCount.availableWithFillability?]
 
-/-- An erroneous or not-fully-relevant group makes the whole fixed count cause-free unavailable; it is never rewritten to a fabricated formal cell cause. -/
+/-- A count its pass leaves undecided makes the whole fixed count cause-free unavailable; it is never rewritten to a fabricated formal cell cause. -/
 theorem numericValidation_filledGroupCount_unknown
     (context : ValidationEvaluationContext)
     (groups : List ResolvedGroupReference)
     (states : List GroupPresenceState)
     (resolved : context.groups.resolveAll groups = some states)
-    (counted : numberOfFilledGroups states = .unknown) :
+    (counted : context.pass.countFilledGroups states = .unknown) :
     context.resolveNumericValidationAtom (.filledGroupCount groups) =
       .error .groupState := by
   simp [ValidationEvaluationContext.resolveNumericValidationAtom,

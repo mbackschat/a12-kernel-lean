@@ -62,8 +62,7 @@ private def walkGroupCount (model : FlatModel) (scope : ValidationRelevanceScope
         let environment := bound ++ coordinate
         if held.contains environment then
           let state := (← resolveGroup groupPath environment).derive
-          if isFirst && (state.relevance != .fullyRelevant || state.erroneous) then
-            return none
+          if isFirst && !state.decidesPartialCount then return none
           if state.relevance == .noneRelevant then return none
           visit false (if state.content then count + 1 else count) remaining
         else if scope.groupRelevance model groupPath environment != .fullyRelevant then

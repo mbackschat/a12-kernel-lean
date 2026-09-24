@@ -1,10 +1,11 @@
-import A12Kernel.Elaboration.NumericValidation.Evaluation
+import A12Kernel.Elaboration.ValidationRule
 
 /-! # `NumberOfFilledGroups` under partial validation
 
 The count is decided on the counted group's own instances by the four-step walk. Every coverage
 below is a row of the peer's second `kf464` table, on its three group-count carriers: a starred
-repeatable terminal, a fixed group below that star, and a fixed-only list. A second fixture replays
+repeatable terminal, a fixed group below that star, and a fixed-only list; the second and third also
+run as whole rules on their partial routes. A second fixture replays
 `KF209`'s nine selections and three controls, which the walk reproduces because that fixture's group
 holds a second field the selections leave uncovered
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)).
@@ -174,6 +175,39 @@ example :
       [ some (some true), some (some true), some none, some none, some (some true),
         some (some true), some none, some none, some none, some (some true), some (some true),
         some (some true) ] := by
+  native_decide
+
+/-- The fixed-only pair as the peer's `== 2` rule on the scalar partial route, its group states read
+    off the same preliminary: `some true` fired, `some false` not fired, `none` UNKNOWN. -/
+private def fixedPairRule (fault : Fault) (entities : List RelevantEntityPattern) :
+    Option (Option Bool) := do
+  let (_, preliminary) ← setup 2 fault entities
+  let surface : SurfaceNumericComparison :=
+    { op := .ordinary .equal
+      left := .atom (.filledGroupCount [.fixed (fixedGroup "Label"), .fixed (fixedGroup "Stamp")])
+      right := .literal { value := 2, authoredScale := 0 } }
+  let comparison ← (elaborateNumericComparison (model 2) ["Item"] surface).toOption
+  let condition ← (CheckedValidationCondition.fromNumeric comparison).toOption
+  let rule ← (assembleResolvedValidationRule (model 2) condition 6 "PAIR" .error
+    { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler (model 2)).toOption
+  let groups : GroupPresenceContext := fun path =>
+    (preliminary.groupPresenceInput path [] false).toOption.map (·.derive)
+  match ← (rule.evalPartial prepared "en_US" { read := fun _ => .empty } groups
+      (.partialSet entities)).toOption with
+  | .skipped => none
+  | .evaluated outcome =>
+      match outcome.verdict with
+      | .fired _ => pure (some true)
+      | .notFired => pure (some false)
+      | .unknown => pure none
+
+/- The fixed column's two wholly covered rows through a whole rule: a `Label` carrying a malformed
+   covered `Grade` beside its admitted `Text` leaves the count undecidable, which full validation
+   would count, and the clean twin fires. -/
+example : (fixedPairRule .grade (everyField.map every), fixedPairRule .none (everyField.map every)) =
+    (some none, some (some true)) := by
   native_decide
 
 /-! ## `KF209`'s selections
