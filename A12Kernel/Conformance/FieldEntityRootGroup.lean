@@ -19,7 +19,7 @@ value-list quantifier's root rows:
 The fixture therefore carries four roots: `Item` is mixed, `Extra` holds a single String, and
 `Totals` holds only Numbers, so a missing gate shows up as an **admitted** list on the last two
 rather than as some other refusal, and `Ledger` holds only a Date, which the value list's kind gate
-refuses. `Item/Lapses` is an empty repeatable group, the one unreadable
+refuses. `Item/Handling` is the non-root fixed group every admitted group control reads. `Item/Lapses` is an empty repeatable group, the one unreadable
 operand this representation can build, and the last section locks that an operand's own read
 refusal precedes every list gate here, the root gate included.
 -/
@@ -45,7 +45,9 @@ private def rootsModel : FlatModel :=
       { id := 6, groupPath := ["Totals"], name := "Gross",
         policy := { kind := .number unsigned } },
       { id := 7, groupPath := ["Ledger"], name := "Booked",
-        policy := { kind := .temporal .date TemporalComponents.fullDate } }]
+        policy := { kind := .temporal .date TemporalComponents.fullDate } },
+      { id := 8, groupPath := ["Item", "Handling"], name := "Label",
+        policy := { kind := .string } }]
     repeatableGroups := [{ level := 10, path := ["Item", "Lapses"], repeatability := some 3 }] }
 
 private def group (groups : GroupPath) : SurfaceFieldEntityOperand :=
@@ -181,9 +183,10 @@ example :
         some (.mapped .onlyStringEnumNumberAllowed)) = true := by
   native_decide
 
-private def entityValueList (fields values : SurfaceFieldEntityOperand) : Option Decision :=
+private def entityValueList (fields values : SurfaceFieldEntityOperand)
+    (quantifier : ValueListQuantifier := .atLeastOne) : Option Decision :=
   match elaborateTokenEntityValueListSource rootsModel ["Item"]
-      { quantifier := .atLeastOne, fields := { first := fields, rest := [] },
+      { quantifier, fields := { first := fields, rest := [] },
         values := { first := values, rest := [] } } with
   | .ok _ => some .admitted
   | .error error =>
@@ -204,6 +207,27 @@ example :
     entityValueList (field ["Item"] "Title") (group ["Item"]) =
       some (.mapped .rootGroupReferenced) ∧
     entityValueList (field ["Extra"] "Code") (field ["Item"] "Title") = some .admitted := by
+  native_decide
+
+/- The peer's remaining value-list rows, on all three quantifiers: a non-root fixed group is
+   admitted alone and beside another root's field in the literal spelling and on either side of the
+   `In`, while a root across the `In` from another root's field draws the root class in either
+   direction, and the field-read rows above hold on `No` and `NotAll` too. -/
+example :
+    let handling := group ["Item", "Handling"]
+    let code := field ["Extra"] "Code"
+    quantifiers.all (fun quantifier =>
+      valueList [handling] quantifier == some .admitted &&
+      valueList [handling, code] quantifier == some .admitted &&
+      entityValueList handling code quantifier == some .admitted &&
+      entityValueList code handling quantifier == some .admitted &&
+      entityValueList (group ["Ledger"]) code quantifier == some (.mapped .rootGroupReferenced) &&
+      entityValueList code (group ["Ledger"]) quantifier == some (.mapped .rootGroupReferenced) &&
+      entityValueList (group ["Extra"]) (field ["Item"] "Title") quantifier ==
+        some (.mapped .rootGroupReferenced) &&
+      entityValueList (field ["Item"] "Title") (group ["Item"]) quantifier ==
+        some (.mapped .rootGroupReferenced) &&
+      entityValueList code (field ["Item"] "Title") quantifier == some .admitted) = true := by
   native_decide
 
 /- A field name that does not resolve is the shared resolver's refusal carried through the same
