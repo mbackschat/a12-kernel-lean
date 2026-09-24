@@ -78,6 +78,8 @@ Do not put every domain-undefined numeric operation in this clean-empty class. D
 
 Reading a **formally-invalid cell** (an invalid operand's target, a domain-invalid computed Number such as division by zero or runtime-invalid integral power, an ERRORED computed value, [§3](02-logic-and-formal-errors.md)'s third state generally) **throws** inside the computing instance: it **aborts**, skips its remaining alternatives, produces no value, and **is itself marked invalid** — so its dependents' reads poison in turn.
 
+**A category read is a read of that cell.** `[Plan -> Tier]` over a `Plan` holding a token outside its value list poisons exactly like the value read: the instance aborts and its target is reported CLEARED, whether a comparison, `FirstFilledValue`, or a value-list quantifier reaches the read ([inbound](../docs/SOURCES.md#inbound-2026-09-24b-category-read-poison)).
+
 Once a computed target is marked invalid, the cascade is **cause-blind**. The computation cache retains only invalid-target membership; a later value or presence read throws for that target without carrying the producer's attempted value, target-error subclass, originating formal cause, or message, and the generated catch marks the dependent invalid without adding a cascade message. Those producer details may remain in the producer's own rich outcome, but they do not pass through the dependency read.
 
 The poison is **read-driven, therefore order-dependent**:

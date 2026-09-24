@@ -123,11 +123,17 @@ example :
         some (.sourceIncompatible displayed.path target.path) := by
   native_decide
 
-/- A category source is checked by its projected token domain and bypasses direct display remapping. -/
+/- A category source is checked by its projected token domain and bypasses direct display remapping.
+   A stored token outside the source's own domain has no category to project, and the read poisons
+   rather than answering EMPTY, exactly like the direct read above
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-category-read-poison)). -/
 example :
     outcomeOf (.field (.category (bare "Category") "Target"))
         (rawAt category.id (.parsed (.enum "X"))) =
-      some (.accepted { text := "A", nonempty := by decide }) := by
+      some (.accepted { text := "A", nonempty := by decide }) ∧
+    outcomeOf (.field (.category (bare "Category") "Target"))
+        (rawAt category.id (.parsed (.enum "Z"))) =
+      some (.poison .declaredConstraint) := by
   native_decide
 
 /- Direct target self-reference is rejected before compatibility can make it look harmless. -/

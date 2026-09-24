@@ -271,13 +271,19 @@ example :
       some (.accepted { text := "A", nonempty := by decide }) := by
   native_decide
 
-/- Exhaustion stays no-value; a first formal error poisons before a later token. -/
+/- Exhaustion stays no-value; a first formal error poisons before a later token. A category read of a
+   token outside its source's domain is such an error, not an empty slot the scan passes over
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-category-read-poison)). -/
 example :
     outcomeOf (source (direct "Compatible") [category "Projected" "Target"]) []
         (directRead .empty .empty) (starRead .empty .empty .empty) =
         some .noValue ∧
       outcomeOf (source (direct "Compatible") [category "Projected" "Target"]) []
         (directRead (.rejected .declaredConstraint) (.parsed (.enum "X")))
+        (starRead .empty .empty .empty) =
+        some (.poison .declaredConstraint) ∧
+      outcomeOf (source (category "Projected" "Target") [direct "Compatible"]) []
+        (directRead (.parsed (.enum "A")) (.parsed (.enum "Z")))
         (starRead .empty .empty .empty) =
         some (.poison .declaredConstraint) := by
   native_decide
