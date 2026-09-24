@@ -1,0 +1,2506 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "GroupCountSeparators_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "filled-and-malformed-seals",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Batches[2]/Seal/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[2]/Seal/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Batches[2]/Seal/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[2]/Seal/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Batches[2]/Seal/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[2]/Seal/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Batches[2]/Seal/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[2]/Seal/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "over-limit-malformed-seal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches[3]/Seal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[3]/Seal"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches[3]/Seal/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[3]/Seal/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Batches[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches[3]/Seal",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[3]/Seal"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches[3]/Seal/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[3]/Seal/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Batches[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches[3]/Seal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[3]/Seal"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches[3]/Seal/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[3]/Seal/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Batches[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches[3]/Seal",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[3]/Seal"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches[3]/Seal/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[3]/Seal/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Batches[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "both-sealed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "crates-and-seal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "crates-full-seals-full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boxes-partial",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boxes-full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boxes-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches/Boxes[3]/BSeal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes[3]/BSeal"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches/Boxes[3]/BSeal/BCode",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes[3]/BSeal/BCode"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Batches/Boxes[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches/Boxes[3]/BSeal",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes[3]/BSeal"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches/Boxes[3]/BSeal/BCode",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes[3]/BSeal/BCode"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Batches/Boxes[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches/Boxes[3]/BSeal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes[3]/BSeal"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Batches/Boxes[3]/BSeal/BCode",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes[3]/BSeal/BCode"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Batches/Boxes[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches/Boxes[3]/BSeal",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes[3]/BSeal"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Batches/Boxes[3]/BSeal/BCode",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes[3]/BSeal/BCode"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Batches/Boxes[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boxes-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Batches/Boxes/BSeal/BCode",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes/BSeal/BCode"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Batches/Boxes/BSeal/BCode",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes/BSeal/BCode"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Batches/Boxes/BSeal/BCode",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Probe/Batches/Boxes/BSeal/BCode"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Batches/Boxes/BSeal/BCode",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Probe/Batches/Boxes/BSeal/BCode"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "boxes-empty-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BoxCntComp",
+              "field" : "Probe/Out/BoxCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Boxes[0]/BSeal[1]/BCode",
+                "Probe/Out/BoxCnt"
+              ]
+            },
+            {
+              "code" : "MixCntComp",
+              "field" : "Probe/Out/MixCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "/Probe[1]/Crates[0]/Ck",
+                "Probe/Out/MixCnt"
+              ]
+            },
+            {
+              "code" : "SealCntComp",
+              "field" : "Probe/Out/SealCnt",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealCnt"
+              ]
+            },
+            {
+              "code" : "SealTwiceComp",
+              "field" : "Probe/Out/SealTwice",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Batches[0]/Seal[1]/Code",
+                "/Probe[1]/Batches[0]/Seal[1]/Tag",
+                "Probe/Out/SealTwice"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Out/BoxCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/MixCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealCnt",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/Out/SealTwice",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

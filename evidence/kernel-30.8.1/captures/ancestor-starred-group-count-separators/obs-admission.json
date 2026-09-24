@@ -1,0 +1,40 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "d466f8b6249530f22903dd4e83b7d45fbe403c2ebbb0a48345526b08f7d5a369",
+  "observations" : [ {
+    "id" : "a-mix",
+    "inputHash" : "00d1e14f3f2d5cfcef89bb245c14d9ef1ec1b0ab2631fdecf9f5c33c4e507168",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "a-mix-unstarred-crates",
+    "inputHash" : "eb1320453ce4571a1a03ca084ad341be9c198c14b240b026a721dbec194cca08",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "a-box",
+    "inputHash" : "8deff50b0979f457f78bc9286be9669f09564b2d9abf76589e4edb97599bb0d8",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "a-box-inner-unstarred",
+    "inputHash" : "35c22f0c226be89682cb814e44a2cf2177f8f25133ca03ad2b744acd6093912d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "a-box-outer-unstarred",
+    "inputHash" : "ef310bb6fcc41626c17ae568cb91a64450460f3030a24bdb6d79cba739058543",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  } ]
+}

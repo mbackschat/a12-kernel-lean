@@ -388,8 +388,9 @@ def growthOfGroupCountOperands
     ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). A starred
     row count adds no unknown of its own on validation, measured at the
     [unavailability checkpoint](../../../docs/SOURCES.md#src-group-count-unavailability). One
-    undecided instance deciding the whole below-star operand carries the fixed list's measured rule
-    across to instances; no document separates it from an all-instances reading. -/
+    undecided instance decides the whole below-star operand, measured beside a filled one. An
+    instance in an over-limit row is not read, and suppresses nothing where the Kernel reports its
+    cell only as over-limit. -/
 def groupCountOperandDecided
     (context : NumericComputationEvaluationContext) (model : FlatModel) :
     CheckedGroupCountOperand model → Except NumericComputationFault Bool

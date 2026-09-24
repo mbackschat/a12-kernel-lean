@@ -1,0 +1,47 @@
+[
+ {
+  "id": "a-mix",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-mix.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-mix-unstarred-crates",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-mix-unstarred-crates.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-box",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-box.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-box-inner-unstarred",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-box-inner-unstarred.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-box-outer-unstarred",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-box-outer-unstarred.json",
+   "--dry-run"
+  ]
+ }
+]

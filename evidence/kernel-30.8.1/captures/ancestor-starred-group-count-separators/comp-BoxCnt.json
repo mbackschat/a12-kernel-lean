@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/BoxCnt",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(/Probe/Batches*/Boxes*/BSeal)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "BoxCnt"
+  }
+ ]
+}

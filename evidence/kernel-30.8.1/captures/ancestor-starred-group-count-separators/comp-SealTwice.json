@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/SealTwice",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(/Probe/Batches*/Seal, /Probe/Batches*/Seal)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "SealTwice"
+  }
+ ]
+}

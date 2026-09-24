@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/MixCnt",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(/Probe/Crates*, /Probe/Batches*/Seal)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "MixCnt"
+  }
+ ]
+}

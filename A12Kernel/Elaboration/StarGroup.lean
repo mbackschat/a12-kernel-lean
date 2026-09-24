@@ -446,7 +446,10 @@ def modelWellFormed? : List (CheckedGroupCountOperand model) →
 def duplicates (left right : CheckedGroupCountOperand model) : Bool :=
   if left.groupPath == right.groupPath then
     -- A fixed terminal below a starred ancestor shares the exception on the account that the gate
-    -- reads a reference's form, a star anywhere on it (peer `kf258`); no row measures that pair here.
+    -- reads a reference's form, a star anywhere on it (peer `kf258`). The computation arm admits that
+    -- pair and counts it once per position
+    -- ([checkpoint](../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)); no row
+    -- measures it on the validation arm.
     match left, right with
     | .fixed _, _ | _, .fixed _ => true
     | _, _ => false

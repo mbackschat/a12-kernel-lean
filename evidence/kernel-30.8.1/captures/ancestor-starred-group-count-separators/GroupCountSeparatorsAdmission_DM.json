@@ -1,0 +1,270 @@
+{
+  "header" : {
+    "id" : "GroupCountSeparators_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "GroupCountSeparators_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Batches",
+            "name" : "Batches",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Batches/Seal",
+                "name" : "Seal",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Seal/Code",
+                    "name" : "Code",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Seal/Tag",
+                    "name" : "Tag",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Batches/Boxes",
+                "name" : "Boxes",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Probe/Batches/Boxes/BSeal",
+                    "name" : "BSeal",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Probe/Batches/Boxes/BSeal/BCode",
+                        "name" : "BCode",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/Qty",
+                "name" : "Qty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Crates",
+            "name" : "Crates",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Crates/Ck",
+                "name" : "Ck",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Out",
+            "name" : "Out",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Out/SealCnt",
+                "name" : "SealCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/SealTwice",
+                "name" : "SealTwice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/MixCnt",
+                "name" : "MixCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/BoxCnt",
+                "name" : "BoxCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/SealCntComp",
+                "name" : "SealCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SealCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(/Probe/Batches*/Seal)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "SealCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/SealTwiceComp",
+                "name" : "SealTwiceComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SealTwice",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(/Probe/Batches*/Seal, /Probe/Batches*/Seal)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "SealTwice"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/MixCntComp",
+                "name" : "MixCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../MixCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(/Probe/Crates*, /Probe/Batches*/Seal)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "MixCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/BoxCntComp",
+                "name" : "BoxCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BoxCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(/Probe/Batches*/Boxes*/BSeal)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "BoxCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/Free",
+                "name" : "Free",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,317 @@
+{
+ "model": "GroupCountSeparators_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "empty",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     }
+    }
+   }
+  },
+  {
+   "name": "filled-and-malformed-seals",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": 1
+       }
+      },
+      {
+       "Seal": {
+        "Code": "bad"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "over-limit-malformed-seal",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {},
+      {},
+      {
+       "Seal": {
+        "Code": "bad"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "both-sealed",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": 1
+       }
+      },
+      {
+       "Seal": {
+        "Code": 2
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "crates-and-seal",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Crates": [
+      {
+       "Ck": 1
+      },
+      {}
+     ],
+     "Batches": [
+      {
+       "Seal": {
+        "Code": 1
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "crates-full-seals-full",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Crates": [
+      {},
+      {}
+     ],
+     "Batches": [
+      {
+       "Seal": {
+        "Code": 1
+       }
+      },
+      {
+       "Seal": {
+        "Code": 2
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "boxes-partial",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {
+       "Boxes": [
+        {
+         "BSeal": {
+          "BCode": 1
+         }
+        },
+        {
+         "BSeal": {}
+        }
+       ]
+      },
+      {
+       "Boxes": [
+        {
+         "BSeal": {
+          "BCode": 2
+         }
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "boxes-full",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {
+       "Boxes": [
+        {
+         "BSeal": {
+          "BCode": 1
+         }
+        },
+        {
+         "BSeal": {
+          "BCode": 2
+         }
+        }
+       ]
+      },
+      {
+       "Boxes": [
+        {
+         "BSeal": {
+          "BCode": 3
+         }
+        },
+        {
+         "BSeal": {
+          "BCode": 4
+         }
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "boxes-over-limit",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {
+       "Boxes": [
+        {},
+        {},
+        {
+         "BSeal": {
+          "BCode": 3
+         }
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "boxes-malformed",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {
+       "Boxes": [
+        {
+         "BSeal": {
+          "BCode": "bad"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "boxes-empty-rows",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealTwice": 9,
+      "MixCnt": 9,
+      "BoxCnt": 9
+     },
+     "Batches": [
+      {
+       "Boxes": [
+        {},
+        {}
+       ]
+      },
+      {
+       "Boxes": [
+        {},
+        {}
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}
