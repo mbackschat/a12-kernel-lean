@@ -482,11 +482,13 @@ The fixed-only list keeps the established scalar atom untouched and a lone star 
 carrier, so both are refused here and widening this operator costs the already-measured forms
 nothing. The duplicate gate reaches every member: any
 containment refuses, and equal paths refuse unless both sides are starred, which the Kernel admits
-and counts once per position. -/
+and counts once per position. `writtenGroup` is the error field's group, defaulting to the rule
+group; it places a walk refusal, a star's unstarred level below its first star included, as on the
+other validation carriers. -/
 def elaborateMixedFilledGroupCountComparison
     (model : FlatModel) (rowGroup : GroupPath)
     (operands : List SurfaceGroupCountOperand)
-    (op : NumericComparisonOp) (threshold : Rat) :
+    (op : NumericComparisonOp) (threshold : Rat) (writtenGroup : GroupPath := rowGroup) :
     Except NumericValidationElabError
       (CheckedOrderedNumericComparison model) := do
   if (SurfaceGroupCountOperand.fixedOnly? operands).isSome then
@@ -494,11 +496,15 @@ def elaborateMixedFilledGroupCountComparison
   let checked ← operands.mapM fun operand =>
     match operand with
     | .fixed reference => do
-        let resolved ← model.resolveFixedGroupReference rowGroup reference
+        let resolved ← model.resolveFixedGroupReference rowGroup reference (some writtenGroup)
           |>.mapError NumericValidationElabError.groupReference
         pure (CheckedGroupCountOperand.fixed resolved)
     | .starred path =>
         match elaborateStarredGroupOperandSource model rowGroup path with
+        | .error error@(.path pathError) =>
+            match model.belowStarContainment? rowGroup writtenGroup pathError with
+            | some unbound => throw (.unboundOperandLevel unbound)
+            | none => throw (NumericValidationElabError.starredGroupCountPlan error)
         | .error error =>
             throw (NumericValidationElabError.starredGroupCountPlan error)
         | .ok (.terminalRepeatable source) =>

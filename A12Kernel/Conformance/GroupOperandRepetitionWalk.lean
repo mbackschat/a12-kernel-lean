@@ -413,4 +413,44 @@ example :
       [containment, containment] := by
   native_decide
 
+/-- The peer's fulfilment sheet: a fixed `Summary` and `Ledger`, and a repeatable `Shipments`
+    holding a repeatable `Parcels` with a fixed `Seal`. -/
+private def fulfilmentModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Fulfilment", "Summary"], name := "Result", policy := number },
+      { id := 2, groupPath := ["Fulfilment", "Ledger"], name := "Total", policy := number },
+      { id := 3, groupPath := ["Fulfilment", "Shipments", "Parcels"], name := "Weight",
+        policy := number, repeatableScope := [1, 2] },
+      { id := 4, groupPath := ["Fulfilment", "Shipments", "Parcels", "Seal"], name := "SealCode",
+        policy := text, repeatableScope := [1, 2] }]
+    repeatableGroups := [
+      { level := 1, path := ["Fulfilment", "Shipments"] },
+      { level := 2, path := ["Fulfilment", "Shipments", "Parcels"] }] }
+
+/- Below the first star the error field places the refusal too. With it in `Summary`, outside the
+   rule group, `Parcels` left unstarred under `Shipments*` draws containment from `Ledger` and from
+   `Shipments`, on `Sum`'s source and on the group count; with the rule in `Summary` it stays the
+   missing star ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+example :
+    let summary := ["Fulfilment", "Summary"]
+    let belowStar : List SurfaceStarGroupSegment :=
+      [{ name := "Fulfilment" }, { name := "Shipments", starred := true }, { name := "Parcels" }]
+    let sum (rowGroup : GroupPath) : Option KernelStaticDiagnostic :=
+      match elaborateNumberEntitySource fulfilmentModel rowGroup
+          { first := .star { base := .absolute, groups := belowStar, field := "Weight" }, rest := [] }
+          (writtenGroup := summary) with
+      | .ok _ => none
+      | .error error => NumberEntityElabError.aggregateDiagnostic? .sum error
+    let count (rowGroup : GroupPath) : Option KernelStaticDiagnostic :=
+      match elaborateMixedFilledGroupCountComparison fulfilmentModel rowGroup
+          [.starred { base := .absolute, groups := belowStar ++ [{ name := "Seal" }] }] .greater 0
+          (writtenGroup := summary) with
+      | .ok _ => none
+      | .error error => error.groupCountDiagnostic?
+    [sum ["Fulfilment", "Ledger"], sum ["Fulfilment", "Shipments"], sum summary,
+      count ["Fulfilment", "Ledger"], count ["Fulfilment", "Shipments"], count summary] =
+    [some .fieldNotInRuleGroup, some .fieldNotInRuleGroup, some .noWildcard,
+      some .fieldNotInRuleGroup, some .fieldNotInRuleGroup, some .noWildcard] := by
+  native_decide
+
 end A12Kernel.Conformance.GroupOperandRepetitionWalk

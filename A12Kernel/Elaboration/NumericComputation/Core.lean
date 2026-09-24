@@ -600,8 +600,7 @@ private def FlatModel.resolveNumericComputationAtoms
               | .starred path => do
                   let checked ← match elaborateStarredGroupOperandSource model declaringGroup path with
                     | .error error@(.path pathError) =>
-                        match model.belowStarContainment? declaringGroup (some targetGroup)
-                            pathError with
+                        match model.belowStarContainment? declaringGroup targetGroup pathError with
                         | some unbound => throw (.unboundOperandLevel unbound)
                         | none => throw (NumericComputationElabError.starredGroupCountPlan error)
                     | .error error =>

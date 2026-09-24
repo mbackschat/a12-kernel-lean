@@ -396,7 +396,8 @@ private def resolveProjectedTokenEntityOperand (model : FlatModel)
 where
   star (source : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup source).mapError fun error =>
-      match model.belowStarContainment? declaringGroup fixedTargetGroup? error with
+      match model.belowStarContainment? declaringGroup (fixedTargetGroup?.getD declaringGroup)
+          error with
       | some unbound => .shape (.unboundOperandLevel unbound)
       | none => .shape (.starPath error)
 

@@ -449,9 +449,11 @@ def resolveFieldEntityOperandIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (authored : SurfaceFieldEntityOperand)
     (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath := declaringGroup) :
     Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model) :=
+  -- A computation's fixed target is the field it writes; a validation's error field otherwise.
+  let written := fixedTargetGroup?.getD writtenGroup
   let star (path : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup path).mapError fun error =>
-      match model.belowStarContainment? declaringGroup fixedTargetGroup? error with
+      match model.belowStarContainment? declaringGroup written error with
       | some unbound => .unboundOperandLevel unbound
       | none => .starPath error
   match authored with
@@ -479,7 +481,7 @@ def resolveFieldEntityOperandIn (model : FlatModel)
       let source ← elaborateStarredGroupOperandSource model declaringGroup reference
         |>.mapError fun
           | error@(.path pathError) =>
-              match model.belowStarContainment? declaringGroup fixedTargetGroup? pathError with
+              match model.belowStarContainment? declaringGroup written pathError with
               | some unbound => .unboundOperandLevel unbound
               | none => .starredGroup error
           | error => .starredGroup error
