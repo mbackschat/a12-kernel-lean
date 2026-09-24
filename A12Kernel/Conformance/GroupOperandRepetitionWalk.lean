@@ -1,0 +1,237 @@
+import A12Kernel.Elaboration.ValidationCondition
+import A12Kernel.Elaboration.NumericAggregate.Entities
+import A12Kernel.Elaboration.ValidationRule
+import A12Kernel.Elaboration.FilledFieldGroupCount
+
+/-! # A group operand's repetition walk
+
+A group operand is walked like a field, its own repeatable level included: an unstarred repeatable
+group read from outside it draws the missing-star class on every carrier, ahead of each carrier's
+own gates, while the rule that sits in a repeatable root passes the walk and meets the root classes.
+Every row is the peer's whole rule, `FieldFilled(<error field>) And <carrier>`, from the second
+`-24c` table's two models ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+-/
+
+namespace A12Kernel.Conformance.GroupOperandRepetitionWalk
+
+open A12Kernel
+
+private def number : FieldPolicy := { kind := .number { scale := 0, signed := false } }
+private def text : FieldPolicy := { kind := .string }
+
+private def policyModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Policy"], name := "Holder", policy := text },
+      { id := 2, groupPath := ["Policy", "Insured"], name := "Remark", policy := text },
+      { id := 3, groupPath := ["Policy", "Insured"], name := "Age", policy := number },
+      { id := 4, groupPath := ["Policy", "Broker"], name := "BrokerName", policy := text },
+      { id := 5, groupPath := ["Policy", "Claims"], name := "ClaimRef", policy := text,
+        repeatableScope := [10] },
+      { id := 6, groupPath := ["Policy", "Claims"], name := "Remark", policy := text,
+        repeatableScope := [10] },
+      { id := 7, groupPath := ["Policy", "Claims"], name := "Amount", policy := number,
+        repeatableScope := [10] }]
+    repeatableGroups := [{ level := 10, path := ["Policy", "Claims"], repeatability := some 20 }]
+    fieldRefByShortNameAllowed := true }
+
+private def storefrontModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Storefront"], name := "OrderRef", policy := text },
+      { id := 2, groupPath := ["Storefront", "Billing"], name := "Payer", policy := text },
+      { id := 3, groupPath := ["Storefront", "Billing", "Card"], name := "Last4", policy := text },
+      { id := 4, groupPath := ["Storefront", "Delivery"], name := "City", policy := text },
+      { id := 5, groupPath := ["Storefront", "Lines"], name := "Sku", policy := text,
+        repeatableScope := [10] },
+      { id := 6, groupPath := ["Storefront", "Lines"], name := "Qty", policy := number,
+        repeatableScope := [10] },
+      { id := 7, groupPath := ["Warehouse"], name := "Bay", policy := text },
+      { id := 8, groupPath := ["Batches"], name := "BatchCode", policy := text,
+        repeatableScope := [20] }]
+    repeatableGroups := [
+      { level := 10, path := ["Storefront", "Lines"], repeatability := some 40 },
+      { level := 20, path := ["Batches"], repeatability := some 6 }]
+    fieldRefByShortNameAllowed := true }
+
+private def rel (groups : List String) : SurfaceGroupReference :=
+  .path { base := .relative 0, groups }
+
+private def abs (groups : List String) : SurfaceGroupReference :=
+  .path { base := .absolute, groups }
+
+private def starAbs (groups : List (String × Bool)) : SurfaceStarGroupPath :=
+  { base := .absolute, groups := groups.map fun (name, starred) => { name, starred } }
+
+/-- A carrier's checked condition, or the Kernel class its own refusal projects. -/
+private abbrev Carrier (model : FlatModel) :=
+  Except (Option KernelStaticDiagnostic) (CheckedValidationCondition model)
+
+private def list (model : FlatModel) (rowGroup : GroupPath) (operator : GroupFillQuantifier)
+    (operands : List SurfaceGroupListOperand) : Carrier model :=
+  (CheckedValidationCondition.fromGroupList model rowGroup operator operands).mapError
+    (·.groupListDiagnostic?)
+
+private def presence (model : FlatModel) (rowGroup : GroupPath)
+    (reference : SurfaceGroupReference) (operator : GroupPresenceOperator) : Carrier model :=
+  (CheckedValidationCondition.fromGroupPresence model rowGroup reference operator).mapError
+    (·.groupListDiagnostic?)
+
+private def count (model : FlatModel) (rowGroup : GroupPath)
+    (operands : List SurfaceGroupReference) : Carrier model :=
+  let surface : SurfaceNumericComparison :=
+    { op := .ordinary .greater
+      left := .atom (.filledGroupCount (operands.map .fixed))
+      right := .literal { value := 0, authoredScale := 0 } }
+  match elaborateNumericComparison model rowGroup surface with
+  | .ok comparison =>
+      (CheckedValidationCondition.fromNumeric comparison).mapError (·.groupListDiagnostic?)
+  | .error error => .error error.groupCountDiagnostic?
+
+/-- A group count whose list carries a star, through the mixed carrier. -/
+private def mixedCount (model : FlatModel) (rowGroup : GroupPath)
+    (operands : List SurfaceGroupCountOperand) : Carrier model :=
+  match elaborateMixedFilledGroupCountComparison model rowGroup operands .greater 0 with
+  | .ok comparison =>
+      (CheckedValidationCondition.fromOrderedNumeric comparison).mapError (·.groupListDiagnostic?)
+  | .error error => .error error.groupCountDiagnostic?
+
+/-- The peer's whole rule, `FieldFilled(<error field>) And <carrier>`: `none` admitted, otherwise
+    the Kernel class of the first refusal, `some none` when that refusal projects none. -/
+private def ruleClass (model : FlatModel) (rowGroup : GroupPath) (errorPath : SurfaceFieldPath)
+    (errorField : FieldId) (carrier : Carrier model) : Option (Option KernelStaticDiagnostic) :=
+  match carrier with
+  | .error diagnostic => some diagnostic
+  | .ok condition =>
+      let flatGuard := (elaborate model rowGroup (.fieldFilled errorPath)).toOption.bind
+        fun guard => (CheckedValidationCondition.fromFlat guard).toOption
+      -- A repeatable error field is read by the addressed presence carrier instead.
+      let repeatableGuard := (CheckedValidationCondition.fromRepeatableFieldPresence model rowGroup
+        .filled errorPath).toOption
+      match flatGuard.orElse fun _ => repeatableGuard with
+      | none => some none
+      | some guard =>
+          match guard.and condition with
+          | .error _ => some none
+          | .ok whole =>
+              match assembleResolvedValidationRule model whole errorField "WALK" .error
+                  { parts := [] } with
+              | .ok _ => none
+              | .error error => some error.diagnostic?
+
+private def claims := rel ["Claims"]
+private def insured := rel ["Insured"]
+private def upClaims : SurfaceGroupReference := .path { base := .relative 1, groups := ["Claims"] }
+private def noWildcard : Option (Option KernelStaticDiagnostic) := some (some .noWildcard)
+
+/-- A rule at `/Policy` whose error field is `Holder`. -/
+private def atPolicy (carrier : Carrier policyModel) :=
+  ruleClass policyModel ["Policy"] { base := .relative 0, groups := [], field := "Holder" } 1 carrier
+
+/-- A rule at `/Policy/Insured` whose error field is the Insured's own `Remark`. -/
+private def atInsured (carrier : Carrier policyModel) :=
+  ruleClass policyModel ["Policy", "Insured"]
+    { base := .relative 0, groups := [], field := "Remark" } 2 carrier
+
+/- An unstarred repeatable group read from outside it draws the missing-star class on every carrier
+   ahead of each carrier's own gates: the group presence pair, the lone and paired quantifiers, and
+   the count, whose arity gate a lone fixed operand would otherwise draw. The fixed twins pass. -/
+example :
+    [atPolicy (presence policyModel ["Policy"] claims .filled),
+      atPolicy (presence policyModel ["Policy"] claims .notFilled),
+      atPolicy (list policyModel ["Policy"] .atLeastOneGroupFilled [.group claims]),
+      atPolicy (count policyModel ["Policy"] [claims])] = List.replicate 4 noWildcard ∧
+    [GroupFillQuantifier.atLeastOneGroupFilled, .allGroupsFilled, .noGroupFilled,
+      .notAllGroupsFilled, .groupsNotCollectivelyFilled].map (fun operator =>
+        atPolicy (list policyModel ["Policy"] operator [.group claims, .group insured])) =
+      List.replicate 5 noWildcard ∧
+    atPolicy (presence policyModel ["Policy"] insured .filled) = none ∧
+    atPolicy (list policyModel ["Policy"] .notAllGroupsFilled
+      [.group insured, .group (rel ["Broker"])]) = none := by
+  native_decide
+
+/- A nested rule reaching the same group by an up-step draws the same class. -/
+example :
+    atInsured (presence policyModel ["Policy", "Insured"] upClaims .filled) = noWildcard ∧
+    atInsured (list policyModel ["Policy", "Insured"] .atLeastOneGroupFilled [.group upClaims]) =
+      noWildcard := by
+  native_decide
+
+private def batches := abs ["Batches"]
+private def batchesStar := starAbs [("Batches", true)]
+
+/-- A rule at `/Storefront` whose error field is `OrderRef`. -/
+private def atStorefront (carrier : Carrier storefrontModel) :=
+  ruleClass storefrontModel ["Storefront"]
+    { base := .relative 0, groups := [], field := "OrderRef" } 1 carrier
+
+/-- A rule at `/Batches` whose error field is `BatchCode`. -/
+private def atBatches (carrier : Carrier storefrontModel) :=
+  ruleClass storefrontModel ["Batches"]
+    { base := .relative 0, groups := [], field := "BatchCode" } 8 carrier
+
+/- A repeatable root is walked like any other group. Read from the other root it draws the
+   missing-star class alone; from a rule inside it the walk passes and each carrier answers as it does
+   for a fixed root; starred, the root class answers wherever the carrier refuses a root, ahead of the
+   star gate. -/
+example :
+    [atStorefront (list storefrontModel ["Storefront"] .allGroupsFilled [.group batches]),
+      atStorefront (list storefrontModel ["Storefront"] .atLeastOneGroupFilled [.group batches]),
+      atStorefront (list storefrontModel ["Storefront"] .atLeastOneGroupFilled
+        [.group batches, .group (rel ["Billing"])]),
+      atStorefront (presence storefrontModel ["Storefront"] batches .filled),
+      atStorefront (count storefrontModel ["Storefront"] [batches])] =
+      List.replicate 5 noWildcard ∧
+    [atBatches (list storefrontModel ["Batches"] .allGroupsFilled [.group batches]),
+      atBatches (list storefrontModel ["Batches"] .atLeastOneGroupFilled [.group batches]),
+      atBatches (list storefrontModel ["Batches"] .atLeastOneGroupFilled
+        [.group batches, .group (abs ["Warehouse"])]),
+      atBatches (presence storefrontModel ["Batches"] batches .filled),
+      atBatches (count storefrontModel ["Batches"] [batches])] =
+      [some (some .rootGroupReferenced), none, some (some .rootGroupWithOtherParameters), none,
+        some (some .paramSizeInvalidGN)] ∧
+    [atStorefront (list storefrontModel ["Storefront"] .allGroupsFilled [.starredGroup batchesStar]),
+      atStorefront (list storefrontModel ["Storefront"] .atLeastOneGroupFilled
+        [.starredGroup batchesStar]),
+      atStorefront (list storefrontModel ["Storefront"] .atLeastOneGroupFilled
+        [.starredGroup batchesStar, .group (rel ["Billing"])])] =
+      [some (some .rootGroupReferenced), none, some (some .rootGroupWithOtherParameters)] := by
+  native_decide
+
+/- Beside another operand a starred root still draws its root class ahead of the star gate, in
+   either position, and the mixed count answers the class it gives any root beside a disjoint
+   operand. -/
+example :
+    [atStorefront (list storefrontModel ["Storefront"] .allGroupsFilled
+        [.starredGroup batchesStar, .group (rel ["Billing"])]),
+      atStorefront (list storefrontModel ["Storefront"] .allGroupsFilled
+        [.group (abs ["Warehouse"]), .starredGroup batchesStar]),
+      atStorefront (mixedCount storefrontModel ["Storefront"]
+        [.starred batchesStar, .fixed (rel ["Billing"])])] =
+      [some (some .rootGroupReferenced), some (some .rootGroupReferenced),
+        some (some .rootGroupWithOtherParameters)] := by
+  native_decide
+
+/- The entity-list carriers read the same operand through the shared resolver, so their own gates
+   never answer first: `Sum` over the pair and the sole unstarred group that `NumberOfValueInFields`
+   and `FirstFilledValue` would refuse as unstarred, the filled-field group source behind the field-fill
+   quantifiers, and `CurrentRepetition`, whose group is its only operand. -/
+example :
+    (match elaborateNumberEntitySource policyModel ["Policy"]
+        { first := .group claims, rest := [.group insured] } with
+      | .ok _ => none
+      | .error error => NumberEntityElabError.aggregateDiagnostic? .sum error) = some .noWildcard ∧
+    (match elaborateNumberEntitySource policyModel ["Policy"] { first := .group claims, rest := [] } with
+      | .ok _ => none
+      | .error error => NumberEntityElabError.aggregateDiagnostic? .sum error) = some .noWildcard ∧
+    (match elaborateFilledFieldCountFixedGroupValidationSource policyModel ["Policy"]
+        { group := { base := .relative 0, groups := ["Claims"] } } with
+      | .error (.shape error) => error.diagnostic?
+      | _ => none) = some .noWildcard ∧
+    (match elaborateNumericComparison policyModel ["Policy"]
+        { op := .ordinary .greater
+          left := .atom (.currentRepetition { base := .relative 0, groups := ["Claims"] })
+          right := .literal { value := 1, authoredScale := 0 } } with
+      | .ok _ => none
+      | .error error => error.repetitionScopeDiagnostic?) = some .noWildcard := by
+  native_decide
+
+end A12Kernel.Conformance.GroupOperandRepetitionWalk

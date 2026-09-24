@@ -262,6 +262,10 @@ private inductive FixedGroupScopePolicy where
   /-- Admitted from the declaring rule's exact repeatable scope, for carriers measured to bind an
   ordinary fixed child from the rule's enclosing row. -/
   | ruleBound
+  /-- As `ruleBound`, and a repeatable **root** the rule sits in is admitted too, so its carriers
+  reach the root classes the walk leaves them. A non-root repeatable group stays refused here: its
+  error-locus matrix is `OneLevelUnstarredGroupUse`'s, which builds no executable condition. -/
+  | validationBound
   /-- Refused with the class `UnboundOperandLevel` selects, for a computation whose target repeats
   at no level; the group's own level counts when it is repeatable. -/
   | fixedTarget
@@ -285,12 +289,16 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           match model.firstUnboundOperandLevel? declaringGroup [operandScope] with
           | none => pure resolved
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
-      | .scalar | .ruleBound =>
-          if model.repeatableGroups.any (fun group => group.path == resolved.path) then
+      | .scalar | .ruleBound | .validationBound =>
+          -- Every list pairing a root with another operand meets a root gate before its core is
+          -- checked, so admitting a bound repeatable root reaches no executable list the core
+          -- predicate refuses.
+          if model.repeatableGroups.any (fun group => group.path == resolved.path) &&
+              !(policy matches .validationBound && resolved.path.length == 1) then
             throw (.repeatableGroupRequiresAddress resolved.path)
           else if operandScope.isEmpty then
             pure resolved
-          else if policy matches .ruleBound &&
+          else if !(policy matches .scalar) &&
               operandScope == model.repeatableScopeForGroupPath declaringGroup then
             -- Kernel 30.8.1 binds this fixed child from the rule's enclosing row on every measured
             -- carrier; the retained scope prevents later consumers from treating it as scalar.
@@ -314,6 +322,14 @@ def FlatModel.resolveRuleBoundFixedGroupReference (model : FlatModel)
     Except FixedGroupReferenceError ResolvedGroupReference :=
   model.resolveFixedGroupReferenceWith .ruleBound declaringGroup surface
 
+/-- Resolve a fixed group operand of a validation carrier whose measured admission covers the
+repeatable group its rule sits in as well as a fixed child of it
+([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)). -/
+def FlatModel.resolveValidationBoundFixedGroupReference (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
+    Except FixedGroupReferenceError ResolvedGroupReference :=
+  model.resolveFixedGroupReferenceWith .validationBound declaringGroup surface
+
 /-- Resolve a fixed group operand of a computation whose target repeats at no level. -/
 def FlatModel.resolveFixedTargetGroupReference (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
@@ -331,6 +347,18 @@ def FlatModel.resolveRuleBoundFixedGroupReferences (model : FlatModel)
         model.resolveRuleBoundFixedGroupReference declaringGroup surface
       pure (resolved ::
         (← model.resolveRuleBoundFixedGroupReferences declaringGroup remaining))
+
+/-- Resolve validation-bound fixed operands in authored order. -/
+def FlatModel.resolveValidationBoundFixedGroupReferences (model : FlatModel)
+    (declaringGroup : GroupPath) :
+    List SurfaceGroupReference →
+      Except FixedGroupReferenceError (List ResolvedGroupReference)
+  | [] => pure []
+  | surface :: remaining => do
+      let resolved ←
+        model.resolveValidationBoundFixedGroupReference declaringGroup surface
+      pure (resolved ::
+        (← model.resolveValidationBoundFixedGroupReferences declaringGroup remaining))
 
 namespace ResolvedGroupReferences
 

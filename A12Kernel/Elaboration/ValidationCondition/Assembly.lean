@@ -363,7 +363,7 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
       pure (.field declaration)
   | .group reference => do
       let resolved ←
-        model.resolveRuleBoundFixedGroupReference rowGroup reference
+        model.resolveValidationBoundFixedGroupReference rowGroup reference
         |>.mapError ValidationConditionAssemblyError.groupReference
       pure (.group resolved)
   | .starredGroup reference => do
@@ -416,9 +416,6 @@ def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
   | .ok () => do
       let resolved ← resolveGroupListOperands model rowGroup operands
       if resolved.isEmpty then throw .emptyGroupList
-      if operator.requiresMultipleOperands &&
-          resolved.any ResolvedGroupListOperand.isStarred then
-        throw (.starredGroupNotAllowed operator)
       match ResolvedGroupListOperands.firstOverlap? resolved with
       | some (left, right) =>
           throw (ValidationConditionAssemblyError.overlappingGroupListOperands left right)
@@ -430,6 +427,13 @@ def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
           else if resolved.length != 1 then
             throw (.rootGroupRequiresSoleOperand root.entityPath)
       | none => pure ()
+      -- The star gate answers behind the root gate: a sole starred root draws the root class under a
+      -- quantifier that forbids a star. No row measures a star beside an overlap, so its place after
+      -- the overlap gate is the one ordering consistent with every measured row, not a measurement
+      -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+      if operator.requiresMultipleOperands &&
+          resolved.any ResolvedGroupListOperand.isStarred then
+        throw (.starredGroupNotAllowed operator)
       match resolved with
       | [operand] =>
           if operand.isStarred then

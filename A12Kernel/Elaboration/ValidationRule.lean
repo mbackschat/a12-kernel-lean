@@ -23,18 +23,29 @@ inductive FlatRuleAssemblyError where
 
 namespace FlatRuleAssemblyError
 
+/-- Whether the refusal is the walk's missing star: the condition reads a repeatable level that the
+    error field, sitting outside it, does not bind. It is measured on every carrier of the walk
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)). The level is not
+    attributed to the operand that derived it, so a level from a repetition key, a DateRange operand
+    or a filter's outer reference takes the class unmeasured
+    ([SG9](../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)). An error
+    field in a sibling repeatable scope is not measured and does not count. -/
+def missesStar : FlatRuleAssemblyError → Bool
+  | .iterationScopeMismatch _ derived errorScope =>
+      errorScope.isPrefixOf derived && errorScope != derived
+  | _ => false
+
 /-- Project the two measured whole-rule gates. The error field's presence in its own condition is a Kernel-checked rule property, and it is measured as its own class: an operand list that names a sibling key rather than the error field draws it, while naming the error field among the keys is admitted. An unguarded negative group-presence condition in a repeatable scope has its own measured class, while a direct positive group guard admits the same negative leaf. Every other assembly refusal returns `none`. -/
 def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
   | .errorFieldNotReferenced _ =>
       some KernelStaticDiagnostic.errorFieldNotReferenced
   | .negativeConditionInIteration _ =>
       some KernelStaticDiagnostic.negativeConditionInIteration
+  | error@(.iterationScopeMismatch _ _ _) => if error.missesStar then some .noWildcard else none
   -- Named rather than wildcarded: a new assembly refusal must be classified, not absorbed. The
   -- error-field forms are unmeasured through this project's own route, which refuses an error field
-  -- outside the declaring group before the Kernel sees it, and the two iteration-scope forms are
-  -- this project's rule-assembly boundary.
-  | .errorField _ | .repeatableErrorField _
-  | .iterationScope _ | .iterationScopeMismatch _ _ _ => none
+  -- outside the declaring group before the Kernel sees it.
+  | .errorField _ | .repeatableErrorField _ | .iterationScope _ => none
 
 end FlatRuleAssemblyError
 
@@ -669,13 +680,23 @@ def assembleResolvedValidationRule (model : FlatModel)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
   Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
-  match condition.core.iterationLegality with
-  | .ok (.invalid level) =>
-      .error (.negativeConditionInIteration level)
-  | .ok .legal | .ok (.insufficient _) | .error _ =>
-      assembleResolvedRule true model (fun checked => checked.core)
-        (fun core field => core.referencesField field)
-        ValidationCondition.ordinaryIterationScope
-        condition errorField errorCode severity messagePlan
+  let assembled := assembleResolvedRule true model (fun checked => checked.core)
+    (fun core field => core.referencesField field)
+    ValidationCondition.ordinaryIterationScope
+    condition errorField errorCode severity messagePlan
+  -- The walk's missing star answers ahead of the per-level negative-condition gate, which is measured
+  -- only where the error field binds the level; every other refusal keeps its place behind that gate
+  -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+  match assembled with
+  | .error error =>
+      if error.missesStar then .error error
+      else
+        match condition.core.iterationLegality with
+        | .ok (.invalid level) => .error (.negativeConditionInIteration level)
+        | .ok .legal | .ok (.insufficient _) | .error _ => .error error
+  | .ok rule =>
+      match condition.core.iterationLegality with
+      | .ok (.invalid level) => .error (.negativeConditionInIteration level)
+      | .ok .legal | .ok (.insufficient _) | .error _ => .ok rule
 
 end A12Kernel

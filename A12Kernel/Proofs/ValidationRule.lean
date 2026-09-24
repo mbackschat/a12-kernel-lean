@@ -213,7 +213,9 @@ theorem checkedValidationRule_once_plan_exact
   simp [CheckedResolvedValidationRule.ordinaryIterationPlan,
     noScope, repeatable]
 
-/-- Checked rule assembly rejects the first known unguarded repeatable level before it can enter runtime evaluation. -/
+/-- Checked rule assembly never admits a condition with an unguarded repeatable level: it refuses at
+    that level, or earlier as the walk's missing star when the error field does not bind a level the
+    condition reads. -/
 theorem assembleResolvedValidationRule_rejects_negativeIteration
     (model : FlatModel) (condition : CheckedValidationCondition model)
     (errorField : FieldId) (errorCode : String)
@@ -221,10 +223,17 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
     (level : RepeatableLevel)
     (invalid :
       condition.core.iterationLegality = .ok (.invalid level)) :
-    assembleResolvedValidationRule model condition errorField errorCode
-        severity messagePlan =
-      .error (.negativeConditionInIteration level) := by
-  simp [assembleResolvedValidationRule, invalid]
+    ∃ error, assembleResolvedValidationRule model condition errorField errorCode
+        severity messagePlan = .error error ∧
+      (error = .negativeConditionInIteration level ∨ error.missesStar = true) := by
+  unfold assembleResolvedValidationRule
+  simp only [invalid]
+  split
+  · rename_i error _
+    by_cases missing : error.missesStar = true
+    · exact ⟨error, by simp [missing], Or.inr missing⟩
+    · exact ⟨_, by simp [missing], Or.inl rfl⟩
+  · exact ⟨_, rfl, Or.inl rfl⟩
 
 /-- The already-derived negative-iteration assembly error projects to the exact measured Kernel diagnostic class. -/
 theorem flatRuleAssemblyError_negativeIteration_diagnostic
