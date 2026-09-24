@@ -278,13 +278,35 @@ def readGroupContent (context : NumericComputationEvaluationContext) (model : Fl
             repeatables.any fun group =>
               context.document.instantiatedRows.any fun row => row.group == group.level)
 
+/-- Read a fixed group below a starred level once in each in-capacity environment of its starred
+    ancestry, each instance exactly as `readGroupContent` reads a fixed operand's two constituents:
+    its cells at that environment's own scope, and whether a repeatable descendant holds a row under
+    that environment's address, decided by the validation slice's own `rowWithinGroup`. An over-limit
+    ancestor row supplies no environment, so its instance is not read
+    ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). -/
+def readGroupInstances (context : NumericComputationEvaluationContext) (model : FlatModel)
+    (source : CheckedStarredGroupPresenceSource model) :
+    Except NumericComputationFault (List (List CellObservation × Bool)) := do
+  let environments ← (source.inCapacityEnvironments context.document context.outer).mapError
+    NumericComputationFault.repeatableAddressing
+  let scope := model.repeatableScopeForGroupPath source.groupPath
+  let fields := (model.groupSubtreeFields source.groupPath).filter (·.repeatableScope == scope)
+  environments.mapM fun environment => do
+    let addressPrefix ← (environment.pathForScope scope).mapError fun error =>
+      NumericComputationFault.repeatableAddressing error.toStarAddressingError
+    pure (fields.map (fun declaration =>
+        observeCell .computation (context.starRead environment declaration.id)),
+      context.document.instantiatedRows.any
+        (CheckedDocument.rowWithinGroup model source.groupPath addressPrefix))
+
 /-- Read one group-count operand into its contribution.
 
     A **fixed** operand takes the same descendant extent and cell reads the scalar fixed-only reader
     takes wherever that reader answers, which is what keeps the two forms agreeing on any list they
     can both hold. Where it refuses for a repeatable descendant, this route answers instead, using
     the row constituent the scalar projection cannot express. A **starred** operand takes the
-    in-capacity instantiated row count, the quantity this route carries the document topology for. -/
+    in-capacity instantiated row count, the quantity this route carries the document topology for,
+    and a fixed group below a star takes one fixed reading per in-capacity environment. -/
 def readGroupCountOperand
     (context : NumericComputationEvaluationContext) (model : FlatModel) :
     CheckedGroupCountOperand model →
@@ -296,8 +318,8 @@ def readGroupCountOperand
       match source.inCapacityRowCount context.document context.outer with
       | .error error => .error (NumericComputationFault.repeatableAddressing error)
       | .ok rows => .ok (GroupCountOperandReading.starredRows rows)
-  -- The computation elaborator never builds this operand; the fault pass below refuses it first.
-  | .starredPresence source => .error (NumericComputationFault.unsupportedGroupCount source.groupPath)
+  | .starredPresence source =>
+      (context.readGroupInstances model source).map GroupCountOperandReading.instances
 
 /-- Count an all-fixed group-count operand list on the route that carries the document.
 
@@ -321,7 +343,9 @@ def readFilledGroupCount
     This is the same operand list the value reading traverses, seen through the other question the
     Kernel asks of it — `computedNumberSelfValidation` types the target's implicit message from
     these. A **fixed** operand can gain content while its subtree is empty; a **starred** one can
-    gain a row while its declared capacity is not exhausted.
+    gain a row while its declared capacity is not exhausted; a fixed group below a star can gain
+    content in any of its declared instances, an instantiated but empty one included. Whether the
+    message exists at all is `groupCountOperandsDecided`'s question, not this one's.
 
     A starred group whose model retains no finite extent yields no channel rather than an assumed
     unbounded one, matching `numberOfFilledGroupsOperand?`'s refusal on the validation arm: a
@@ -340,7 +364,10 @@ def growthOfGroupCountOperand
           match source.inCapacityRowCount context.document context.outer with
           | .error error => .error (NumericComputationFault.repeatableAddressing error)
           | .ok rows => .ok (some (.starredGroupCount rows capacity))
-  | .starredPresence source => .error (NumericComputationFault.unsupportedGroupCount source.groupPath)
+  | .starredPresence source =>
+      (context.readGroupInstances model source).map fun instances =>
+        (CheckedGroupCountOperand.starredPresence source).declaredExtent?.map fun extent =>
+          .fixedGroupInstances (GroupCountOperandReading.instances instances).contribution extent
 
 /-- The whole operand list's growth, refusing as soon as one operand has no retained extent.
 
@@ -352,6 +379,37 @@ def growthOfGroupCountOperands
     Except NumericComputationFault (Option (List ComputationOperandGrowth)) := do
   let channels ← operands.mapM (context.growthOfGroupCountOperand model)
   pure (channels.mapM id)
+
+/-- Whether validation's own reading of one group-count operand still answers, from the reads its
+    value takes.
+
+    The implicit message is a generated validation rule
+    ([§6](../../../spec/09-computations.md#6-the-implicit-validation-rule-precisely)), so it has no
+    answer where validation leaves the count unavailable, although this arm writes a count. What
+    this reader can see is the one cause measured on this carrier: a fixed group, or one instance of
+    a fixed group below a star, whose reads show only unparseable content
+    ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). A starred
+    row count adds no unknown of its own on validation, measured at the
+    [unavailability checkpoint](../../../docs/SOURCES.md#src-group-count-unavailability). One
+    undecided instance deciding the whole below-star operand carries the fixed list's measured rule
+    across to instances; no document separates it from an all-instances reading. -/
+def groupCountOperandDecided
+    (context : NumericComputationEvaluationContext) (model : FlatModel) :
+    CheckedGroupCountOperand model → Except NumericComputationFault Bool
+  | .fixed reference =>
+      (context.readGroupContent model reference).map fun content =>
+        !groupPresenceUndecided content.1 content.2
+  | .starred _ => .ok true
+  | .starredPresence source =>
+      (context.readGroupInstances model source).map fun instances =>
+        !instances.any fun reading => groupPresenceUndecided reading.1 reading.2
+
+/-- Whether validation's reading of the whole operand list still answers: every operand must. -/
+def groupCountOperandsDecided
+    (context : NumericComputationEvaluationContext) (model : FlatModel)
+    (operands : List (CheckedGroupCountOperand model)) :
+    Except NumericComputationFault Bool := do
+  pure ((← operands.mapM (context.groupCountOperandDecided model)).all id)
 
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
@@ -512,9 +570,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
         match operand with
         | .fixed reference => fixedGroupCountOperandFault? model reference
         | .starred _ => none
-        -- A fixed group below a starred level is measured on the rule arm only
-        -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24-ancestor-starred-group-count)).
-        | .starredPresence source => some (.unsupportedGroupCount source.groupPath)
+        | .starredPresence _ => none
 
 namespace LoweredNumericExpr
 

@@ -1,0 +1,141 @@
+[
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Grading"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Batches",
+  "repeatable": 2
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Batches",
+  "name": "Seal"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Batches/Seal",
+  "name": "Marks",
+  "repeatable": 2
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Out"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe",
+  "name": "W",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Grading",
+  "name": "Grade",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches",
+  "name": "Qty",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Seal",
+  "name": "Code",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Seal",
+  "name": "Tag",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Seal/Marks",
+  "name": "Mk",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Lab"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Lab",
+  "name": "Score",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "SealCnt",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "SealGrd",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "BatCnt",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "LabGrd",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ }
+]

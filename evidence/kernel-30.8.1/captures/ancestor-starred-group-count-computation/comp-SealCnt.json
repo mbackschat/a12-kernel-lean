@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/SealCnt",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(/Probe/Batches*/Seal)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "SealCnt"
+  }
+ ]
+}

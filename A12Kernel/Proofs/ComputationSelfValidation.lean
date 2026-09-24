@@ -108,6 +108,26 @@ theorem starredGroupCount_canGrow_eq_declared_extent_movement
   by_cases below : instantiated < capacity <;>
     simp [below, NumericFillability.growOnly, NumericFillability.fixed]
 
+/-- The gate is the only source of an absent message: the directional verdict itself always
+    answers, so the message is untyped exactly when validation's reading of the operation does not.
+    A consumer can therefore read `.unknown` as "no message" without a second channel. -/
+theorem computedNumberSelfValidationIfDecided_unknown_iff
+    (decided : Bool) (stored computed : Rat) (operands : List ComputationOperandGrowth) :
+    computedNumberSelfValidationIfDecided decided stored computed operands = .unknown ↔
+      decided = false := by
+  cases decided with
+  | false => simp [computedNumberSelfValidationIfDecided]
+  | true =>
+      simp only [computedNumberSelfValidationIfDecided, if_true, computedNumberSelfValidation,
+        NumericComparisonOp.eval, NumericComparisonOp.holds]
+      by_cases equal : normalizedComparisonValue computed = normalizedComparisonValue stored
+      · simp [equal]
+      · have fires :
+            (normalizedComparisonValue computed != normalizedComparisonValue stored) = true := by
+          simp [equal]
+        simp only [fires, if_pos]
+        split <;> simp
+
 /-- `fillToFix` is never a proper subset of the referenced set.
 
     It carries all of it or none of it, so a consumer reading a listed pointer as "this cell is
@@ -132,7 +152,8 @@ theorem fixedGroup_canGrow_iff_contributes_zero
     (ComputationOperandGrowth.fixedGroup
         (groupPresentForComputation cells || rowInstantiated)).canGrow = true ↔
       (GroupCountOperandReading.fixed cells rowInstantiated).contribution = 0 := by
-  simp only [ComputationOperandGrowth.canGrow, GroupCountOperandReading.contribution]
+  simp only [ComputationOperandGrowth.canGrow, GroupCountOperandReading.contribution,
+    groupInstanceContribution]
   cases groupPresentForComputation cells <;> cases rowInstantiated <;> simp
 
 /-- The two readings of a fixed operand refuse together, because they share one descendant read.
@@ -147,6 +168,17 @@ theorem growthOfGroupCountOperand_fixed_refuses_iff
   simp only [NumericComputationEvaluationContext.growthOfGroupCountOperand,
     NumericComputationEvaluationContext.readGroupCountOperand]
   cases context.readGroupContent model reference <;> simp [Except.map]
+
+/-- The two readings of a fixed group below a star refuse together, because both read its
+    instances once through `readGroupInstances`. -/
+theorem growthOfGroupCountOperand_starredPresence_refuses_iff
+    {model : FlatModel} (context : NumericComputationEvaluationContext)
+    (source : CheckedStarredGroupPresenceSource model) (fault : NumericComputationFault) :
+    context.growthOfGroupCountOperand model (.starredPresence source) = .error fault ↔
+      context.readGroupCountOperand model (.starredPresence source) = .error fault := by
+  simp only [NumericComputationEvaluationContext.growthOfGroupCountOperand,
+    NumericComputationEvaluationContext.readGroupCountOperand]
+  cases context.readGroupInstances model source <;> simp [Except.map]
 
 /-- Where the count's evaluation is admitted, the shared subtree extent is exactly the cells it reads.
 

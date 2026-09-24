@@ -95,12 +95,6 @@ inductive NumericComputationElabError where
   | groupReference (error : FixedGroupReferenceError)
   | currentRepetitionSource (error : FixedGroupReferenceError)
   | groupCountNeedsMultipleOperands
-  /-- A fixed group below a starred ancestor as a group-count operand, which the Kernel admits on
-  the rule arm and this arm refuses because no computation row measures it. Held apart from
-  `groupCountNeedsMultipleOperands` because the two gates are complementary rather than
-  alternatives: the arity minimum governs the unstarred form only, and a starred operand alone is
-  a complete list. -/
-  | starredGroupCountOperand (reference : SurfaceStarGroupPath)
   /-- The starred group plan itself refused; the underlying error carries the class. -/
   | starredGroupCountPlan (error : StarredGroupElabError)
   | overlappingGroupCountOperands (left right : GroupPath)
@@ -123,9 +117,6 @@ namespace NumericComputationElabError
 def groupCountDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .groupCountNeedsMultipleOperands => some .paramSizeInvalidGN
-  -- No diagnostic: the Kernel admits this shape, so a refusal here is this fragment's
-  -- boundary rather than a Kernel class, and guessing one would misattribute it.
-  | .starredGroupCountOperand _ => none
   -- The plan's empty-group class and the resolver classes are measured on this arm too, not
   -- borrowed from validation's
   -- ([empty](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers),
@@ -600,11 +591,10 @@ private def FlatModel.resolveNumericComputationExpression
                       throw (NumericComputationElabError.starredGroupCountPlan error)
                   | .ok (.terminalRepeatable source) =>
                       pure (CheckedGroupCountOperand.starred source)
-                  -- A fixed terminal below a starred ancestor is measured on the rule arm only
-                  -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24-ancestor-starred-group-count)),
-                  -- so this arm keeps it as the fragment's boundary rather than borrowing the count.
-                  | .ok (.terminalPresence _) =>
-                      throw (NumericComputationElabError.starredGroupCountOperand path)
+                  -- Admitted alone, beside a fixed group, and twice on this arm too
+                  -- ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)).
+                  | .ok (.terminalPresence source) =>
+                      pure (CheckedGroupCountOperand.starredPresence source)
             -- Containment reaches every member whichever side carries the star, and it runs
             -- **before** rootness: a root beside its own descendant draws the overlap class, and
             -- the root class is what remains for a root beside a disjoint operand. Both gates and

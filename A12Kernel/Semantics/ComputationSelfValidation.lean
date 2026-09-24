@@ -25,10 +25,12 @@ namespace A12Kernel
 
 /-- What one operand of a computed Number target can still contribute, as a growth channel.
 
-    The three constructors are the measured split, not a taxonomy: a count over a fixed group
-    grows by content, a count over a starred group grows by rows, and a value read inside starred
-    rows grows by either. The separating document holds a starred group at declared capacity with
-    every row empty — there the count cannot move and a sum over the same rows still can. -/
+    The constructors are the measured split, not a taxonomy: a count over a fixed group grows by
+    content, a count over a starred group grows by rows, and a value read inside starred rows grows
+    by either. The separating document holds a starred group at declared capacity with every row
+    empty — there the count cannot move and a sum over the same rows still can. A count over a fixed
+    group below a star grows by content in any instance, which the same document separates from the
+    row count ([checkpoint](../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). -/
 inductive ComputationOperandGrowth where
   /-- A fixed group operand, contributing an indicator of its subtree content.
 
@@ -42,6 +44,10 @@ inductive ComputationOperandGrowth where
   | starredGroupCount (instantiated capacity : Nat)
   /-- An operand reading cells inside starred rows, which a new row or a new value can move. -/
   | starredRowValues (instantiated capacity : Nat) (everyRowCellFilled : Bool)
+  /-- A fixed group below a starred level, with `present` of its `extent` instances holding
+      content, one instance per environment the star can reopen. An instantiated but empty instance
+      leaves it open even at full row capacity. -/
+  | fixedGroupInstances (present extent : Nat)
   deriving Repr, DecidableEq
 
 namespace ComputationOperandGrowth
@@ -55,6 +61,7 @@ def canGrow : ComputationOperandGrowth → Bool
   | .starredGroupCount instantiated capacity => instantiated < capacity
   | .starredRowValues instantiated capacity everyRowCellFilled =>
       instantiated < capacity || !everyRowCellFilled
+  | .fixedGroupInstances present extent => present < extent
 
 end ComputationOperandGrowth
 
@@ -73,6 +80,17 @@ def computedNumberSelfValidation (stored computed : Rat)
   NumericComparisonOp.notEqual.eval
     (.value computed (computedNumberFillability operands))
     (.value stored NumericFillability.fixed)
+
+/-- The implicit self-validation verdict once it is known whether validation's own reading of the
+    operation answers.
+
+    The message is a generated validation rule
+    ([§6](../../spec/09-computations.md#6-the-implicit-validation-rule-precisely)). Where that
+    reading leaves the operation unavailable the rule has no answer, `.unknown`, which fires nothing
+    and carries no message, even though the computation writes its value. -/
+def computedNumberSelfValidationIfDecided (decided : Bool) (stored computed : Rat)
+    (operands : List ComputationOperandGrowth) : Verdict :=
+  if decided then computedNumberSelfValidation stored computed operands else .unknown
 
 /-- The message's `fillToFix` projection.
 

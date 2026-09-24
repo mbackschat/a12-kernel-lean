@@ -1,0 +1,39 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "12fbaff87aa4a9643f7d6305f4f442a19008e49601abfc0f3e4d2cbfe795dd67",
+  "observations" : [ {
+    "id" : "a-seal",
+    "inputHash" : "affc700158bc5fcbb6d3e3fb112ccd93428e48fd47da3d8430e021577b896fe3",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "a-seal-grd",
+    "inputHash" : "9e691dbbf768f978bfd5601cfb4ad710f492a0b941bbf3139cd795206695342c",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "a-seal-unstarred",
+    "inputHash" : "cc65a0ece76784d6ee736c03264a85ee95b1447a713d914fbea5b4b67837ba40",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "a-seal-unstarred-grd",
+    "inputHash" : "0cc2372fbaf3e7f19400730a0d14c1412026d8bcad3334d9202f22846e3ebdb4",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "a-seal-twice",
+    "inputHash" : "873292f3ab88c7f9fc84f53a19e89d244b4dfbb37d86be802755af4fd625df49",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

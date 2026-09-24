@@ -2509,3 +2509,13 @@ The shared group walk set `hasUninstantiatedTail := false`, and its own docstrin
 **A value false by construction is a representation shortcut, and every consumer that patches around it is evidence that it is wrong at the root.** Fix the flag where it is produced and delete the patches in the same change. Here it closed contradictions with three retained artifacts that nobody had compared on type, and it made the partial token group type a firing as its explicit star expansion does, where the peer measures that equivalence on codes only.
 
 Related: [[LF116]] on reusing a mechanism across a carrier boundary, [[LF124]] on narrower accounts falling to measurement.
+
+## LF190 — key a multi-target row's messages by target before reading one target's polarity, because an expected message is found whether or not it is that target's
+
+The [nested invalid-descendant checkpoint](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid) said its malformed row kept the filled row's `VALUE_ERROR`, and read that as a third witness that malformed content counts. The row held two computed targets, and the `VALUE_ERROR` was the other one's: the target reading the malformed group had no message at all. The account predicted a message, a message was on the row, and nothing asked whose it was. A twelve-document run with an in-run fixed control measured the absence again on 2026-09-24 ([checkpoint](sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)).
+
+**Tabulate an artifact's messages by `field` before stating one target's type, and state absence as a result.** A per-row list of types answers "is there a message of this type" rather than "what did this target emit", and a supporting reading can only survive that question.
+
+**A computation's implicit message is a validation rule, so its presence follows the validation arm even where the value follows the computation arm.** The computation counts a malformed-only group while validation leaves it undecided, and the growth model had typed that from the computation arm's content. [§6](../spec/09-computations.md#6-the-implicit-validation-rule-precisely) already implied the absence; the wrong reading had hidden it since 2026-08-30.
+
+Related: [[LF189]] on checking every channel a case locks, [[LF116]] on reusing a mechanism across a boundary.

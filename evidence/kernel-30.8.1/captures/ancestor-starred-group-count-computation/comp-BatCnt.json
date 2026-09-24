@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/BatCnt",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(/Probe/Batches*)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "BatCnt"
+  }
+ ]
+}

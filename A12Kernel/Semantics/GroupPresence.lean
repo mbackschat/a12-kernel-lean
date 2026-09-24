@@ -310,6 +310,15 @@ def numberOfFilledGroupsForValidationOperands
 def groupPresentForComputation (cells : List CellObservation) : Bool :=
   cells.any CellObservation.presentForComputation
 
+/-- Whether one group instance's computation-phase reads show no instantiated descendant row, no
+    value, and at least one formal failure: the malformed-only group that validation leaves
+    undecided ([§2](../../spec/02-logic-and-formal-errors.md)) while `groupPresentForComputation`
+    counts it as present. It sees only what a computation read carries, so a validation-only finding
+    such as a required empty cell, and relevance, are outside it. -/
+def groupPresenceUndecided (cells : List CellObservation) (rowInstantiated : Bool) : Bool :=
+  !rowInstantiated && !(cells.any (·.asGroupListPresence == .filled)) &&
+    cells.any (·.asGroupListPresence == .unavailable)
+
 /-- The plain multi-group numeric count in the computation arm. Deliberately **not** a
     `FilledGroupCount`: unlike the validation projection above it cannot answer unknown,
     because a formally invalid descendant makes its group count as filled instead of making
@@ -339,20 +348,29 @@ def numberOfFilledGroupsForComputation (groups : List (List CellObservation)) : 
     which is exactly why a caller with no row topology must refuse the shape rather than answer
     it as absent. A caller whose operand owns no repeatable descendant passes `false`.
 
-    `starredRows` takes the **in-capacity** instantiated row count. Excluding an over-limit row
-    is the caller's, because this arm has no measurement for one: the validation carrier's
-    over-limit exclusion ([§7](../../spec/07-repetition-and-iteration.md)) is a separate
-    observation and is not assumed here. -/
+    `starredRows` takes the **in-capacity** instantiated row count, and excluding an over-limit row
+    is the caller's; this arm's exclusion is measured separately from validation's
+    ([checkpoint](../../docs/SOURCES.md#src-starred-group-count-computation)).
+
+    `instances` is a fixed group below a starred level: one `fixed` reading per in-capacity
+    environment of its starred ancestry, so it counts the instances holding content rather than the
+    ancestor rows ([checkpoint](../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). -/
 inductive GroupCountOperandReading where
   | fixed (cells : List CellObservation) (rowInstantiated : Bool)
   | starredRows (rows : Nat)
+  | instances (readings : List (List CellObservation × Bool))
   deriving Repr, DecidableEq
+
+/-- What one fixed group instance adds: one exactly when it holds content. -/
+def groupInstanceContribution (cells : List CellObservation) (rowInstantiated : Bool) : Nat :=
+  if groupPresentForComputation cells || rowInstantiated then 1 else 0
 
 /-- What one operand adds to the count. -/
 def GroupCountOperandReading.contribution : GroupCountOperandReading → Nat
-  | .fixed cells rowInstantiated =>
-      if groupPresentForComputation cells || rowInstantiated then 1 else 0
+  | .fixed cells rowInstantiated => groupInstanceContribution cells rowInstantiated
   | .starredRows rows => rows
+  | .instances readings =>
+      (readings.map fun reading => groupInstanceContribution reading.1 reading.2).sum
 
 /-- The computation-arm `NumberOfFilledGroups` over a mixed operand list. Contributions add,
     which is what lets a fixed operand's zero-or-one and a starred operand's row count stand in

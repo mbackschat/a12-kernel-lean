@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-24-02"></a>
+### `SPEC-2026-09-24-02` — `NumberOfFilledGroups` counts a fixed group below a star on the computation arm, and a computation reading a malformed-only operand group carries no implicit message
+
+- `status`: pending
+- `origin`: locally originated. It fills the computation arm your [`kf463`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf463) lists as unmeasured for `Batches*/Seal`, and it adds a message fact neither [`kf217`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf217) nor [`kf219`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf219) carries.
+- `clause`: [`02` the below-star composition bullet, the static gate paragraph, and the compute-arm inversion paragraph](../spec/02-logic-and-formal-errors.md). [`10` the computation-message bullets](../spec/10-validation-and-polarity.md).
+- `delta`: on the computation arm `Batches*/Seal` is admitted alone, beside a fixed group and twice, and `Batches/Seal` draws `MVK_NO_WILDCARD`. It counts one per in-capacity batch whose `Seal` holds a value, a formally invalid value, or an instantiated repeatable-descendant row; an instantiated but empty `Seal` and the third batch of an over-limit document add nothing.
+- `delta`: its growth channel is content per instance. With both declared batches instantiated and both `Seal`s empty it types OMISSION, where `NumberOfFilledGroups(Batches*)` over the same rows types VALUE.
+- `delta`: a group-count computation whose operand group holds only formally invalid content writes its count and carries **no** implicit message, for a fixed group and for a fixed group below a star, while a starred row count in the same document keeps its message. Beside an admitted value the same malformed cell keeps the message.
+- `basis`: [below-star computation checkpoint](sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation), one `batch` admission run and one `:adapter:kernelProbe` request of twelve seeded documents, both at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`, `enginesAgree: true` on every row. A fixed `Lab` beside `Grading` is the in-run control for the message fact, and the [nested invalid-descendant capture](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)'s retained artifact shows the same absence for a nested malformed descendant.
+- `surfaces`: any peer checker or evaluator that refuses or rereads the below-star operand on the computation arm, types the implicit message from the computation arm's content for a malformed-only operand group, or treats the below-star form as a row count.
+- `acceptance`: confirm the count and the message absence on your own fixture, or supply a contrary observation where a malformed-only operand group leaves the implicit message typed.
+- `limit`: one starred ancestor at `max 2`, one nested repeatable level under the `Seal`, one seed, and one formal cause, unparseable Number text. The validation half of the below-star count stays with your dated letter for `kf463`, so the message fact's validation premise is measured here for a fixed group only.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-24-01"></a>
 ### `SPEC-2026-09-24-01` — a group operand and a `RepetitionNotUnique` key draw the resolver's segment classes, not only the entity class
 

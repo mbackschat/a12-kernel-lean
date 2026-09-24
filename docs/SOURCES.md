@@ -288,7 +288,7 @@ a12-dmkits revision `0c61dcadd57bfd5346876baaba1b4955d9af23b2` on `main`, confir
 
 **Counts.** Over six documents, `NumberOfFilledGroups(Batches*/Seal)` is `0` with no batch, `2` with two filled Seals, `1` when the second batch holds only its own field, `0` when both Seals are instantiated and empty, `2` when the first and third of three are filled, and `1` beside a filled `Grading`, where the pair counts `2`. The pair otherwise equals the sole form. The mechanism the letter source-reads is not adopted.
 
-**Lean.** Modelled on the validation arm as the [ancestor-starred count operand](implementation/cross-clause.md#cap-mixed-validation-filled-group-count), and the computation arm refuses it. A field operand has no surface form in a group count, so its class is parser-layer here.
+**Lean.** Modelled on the validation arm as the [ancestor-starred count operand](implementation/cross-clause.md#cap-mixed-validation-filled-group-count); the computation arm was refused here until the [computation checkpoint](sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation) admitted it. A field operand has no surface form in a group count, so its class is parser-layer here.
 
 **Extent.** The operand's extent rows replay two rows of the peer's `kf463`, read at a12-dmkits `9c211788230050342b0805284d944d6c582ae6ea`, confirmed an ancestor of `main`, ahead of that finding's letter. Four sealed batches of four are full alone and can still grow beside an empty fixed group. Under `Batches` (2) holding `Boxes` (2), one batch with both boxes sealed can still grow. Nothing else of `kf463` is adopted here; the letter owns its record.
 
@@ -864,6 +864,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
 <a id="src-group-field-fill-declared-slots"></a>
 - [Field-group quantifiers retain declared slots and bound-parent capacity](sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)
+<a id="src-ancestor-starred-group-count-computation"></a>
+- [`NumberOfFilledGroups` counts a fixed group below a star on the computation arm by content per in-capacity instance, and a computation reading a malformed-only operand group emits no implicit message](sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)
 <a id="src-below-star-group-computation"></a>
 - [A fixed group below a star is admitted and computed on the expansion account on the computation arm too](sources/group-list-and-capacity-probes.md#src-below-star-group-computation)
 <a id="src-below-star-group-runtime"></a>

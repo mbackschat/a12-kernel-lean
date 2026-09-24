@@ -202,8 +202,24 @@ theorem numberOfFilledGroupsForComputationOperands_fixed
   | nil => rfl
   | cons cells rest ih =>
       simp only [List.map_cons, numberOfFilledGroupsForComputationOperands, ih,
-        GroupCountOperandReading.contribution, numberOfFilledGroupsForComputation,
-        List.countP_cons]
+        GroupCountOperandReading.contribution, groupInstanceContribution,
+        numberOfFilledGroupsForComputation, List.countP_cons]
       cases groupPresentForComputation cells <;> simp [Nat.add_comm]
+
+/-- A fixed group below a starred level contributes exactly what its instances would as separate
+    fixed operands, so the one operand is the fixed form repeated per environment rather than a
+    new notion of content: an instantiated but empty instance adds nothing, and a malformed one
+    counts, exactly as a fixed group does on this arm. -/
+theorem groupCountInstances_contribution_eq_fixed
+    (readings : List (List CellObservation × Bool)) :
+    (GroupCountOperandReading.instances readings).contribution =
+      numberOfFilledGroupsForComputationOperands
+        (readings.map fun reading => .fixed reading.1 reading.2) := by
+  induction readings with
+  | nil => rfl
+  | cons reading rest ih =>
+      simp only [GroupCountOperandReading.contribution, List.map_cons, List.sum_cons,
+        numberOfFilledGroupsForComputationOperands] at ih ⊢
+      rw [ih]
 
 end A12Kernel

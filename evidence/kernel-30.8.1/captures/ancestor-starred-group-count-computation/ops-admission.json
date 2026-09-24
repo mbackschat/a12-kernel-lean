@@ -1,0 +1,47 @@
+[
+ {
+  "id": "a-seal",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-seal.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-seal-grd",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-seal-grd.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-seal-unstarred",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-seal-unstarred.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-seal-unstarred-grd",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-seal-unstarred-grd.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "a-seal-twice",
+  "verb": "computation",
+  "args": [
+   "add",
+   "a-seal-twice.json",
+   "--dry-run"
+  ]
+ }
+]

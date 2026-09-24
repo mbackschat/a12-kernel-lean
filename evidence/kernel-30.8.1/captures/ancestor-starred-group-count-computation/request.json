@@ -1,0 +1,282 @@
+{
+ "model": "GroupCountBelow_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "empty",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     }
+    }
+   }
+  },
+  {
+   "name": "both-sealed",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": 1
+       }
+      },
+      {
+       "Seal": {
+        "Code": 2
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "first-sealed-second-qty",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": 1
+       }
+      },
+      {
+       "Qty": 5
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "seals-instantiated-empty",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {
+       "Seal": {}
+      },
+      {
+       "Seal": {}
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "malformed-only",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": "bad"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "malformed-beside-valid",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": "bad",
+        "Tag": "t"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "both-malformed",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": "bad"
+       }
+      },
+      {
+       "Seal": {
+        "Code": "bad"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "over-limit-only",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {},
+      {},
+      {
+       "Seal": {
+        "Code": 3
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "grading-and-seal",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Grading": {
+      "Grade": 1
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": 1
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "empty-mark-row",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Marks": [
+         {}
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "lab-malformed",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Lab": {
+      "Score": "bad"
+     },
+     "Grading": {
+      "Grade": 1
+     }
+    }
+   }
+  },
+  {
+   "name": "lab-and-seal-malformed",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Out": {
+      "SealCnt": 9,
+      "SealGrd": 9,
+      "BatCnt": 9,
+      "LabGrd": 9
+     },
+     "Lab": {
+      "Score": "bad"
+     },
+     "Grading": {
+      "Grade": 1
+     },
+     "Batches": [
+      {
+       "Seal": {
+        "Code": "bad"
+       }
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

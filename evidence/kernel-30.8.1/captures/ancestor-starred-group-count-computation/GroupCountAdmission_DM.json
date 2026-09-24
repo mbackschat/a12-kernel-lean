@@ -1,0 +1,233 @@
+{
+  "header" : {
+    "id" : "GroupCountBelow_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "GroupCountBelow_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Grading",
+            "name" : "Grading",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Grading/Grade",
+                "name" : "Grade",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Batches",
+            "name" : "Batches",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Batches/Seal",
+                "name" : "Seal",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Probe/Batches/Seal/Marks",
+                    "name" : "Marks",
+                    "Group" : {
+                      "repeatability" : 2,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Probe/Batches/Seal/Marks/Mk",
+                        "name" : "Mk",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "StringType"
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Seal/Code",
+                    "name" : "Code",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Seal/Tag",
+                    "name" : "Tag",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/Qty",
+                "name" : "Qty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Out",
+            "name" : "Out",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Out/SealCnt",
+                "name" : "SealCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/SealGrd",
+                "name" : "SealGrd",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/BatCnt",
+                "name" : "BatCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/SealCntComp",
+                "name" : "SealCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SealCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(/Probe/Batches*/Seal)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "SealCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/SealGrdComp",
+                "name" : "SealGrdComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SealGrd",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(/Probe/Batches*/Seal, /Probe/Grading)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "SealGrd"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/BatCntComp",
+                "name" : "BatCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BatCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(/Probe/Batches*)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "BatCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/Free",
+                "name" : "Free",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -90,7 +90,8 @@ def validate (path : StarPath) : Except StarAddressingError Unit := do
   | some level => throw (.invalidRepeatability level)
   | none => pure ()
 
-private def toStarAddressingError : EnvBindingError → StarAddressingError
+/-- An environment binding failure is the star-addressing failure of the same level. -/
+def _root_.A12Kernel.EnvBindingError.toStarAddressingError : EnvBindingError → StarAddressingError
   | .missingBinding level => .missingBinding level
   | .duplicateBinding level => .duplicateBinding level
   | .zeroBinding level => .invalidBinding level 0
@@ -99,7 +100,7 @@ private def toStarAddressingError : EnvBindingError → StarAddressingError
 def boundEnvironment (path : StarPath) (outer : Env) : Except StarAddressingError Env :=
   (path.axes.take path.firstStar).mapM fun axis => do
     let coordinate ←
-      (outer.bindingAt axis.level).mapError toStarAddressingError
+      (outer.bindingAt axis.level).mapError EnvBindingError.toStarAddressingError
     pure (axis.level, coordinate)
 
 end StarPath

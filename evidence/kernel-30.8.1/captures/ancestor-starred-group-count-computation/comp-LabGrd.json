@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/LabGrd",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(/Probe/Lab, /Probe/Grading)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "LabGrd"
+  }
+ ]
+}
