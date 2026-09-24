@@ -279,6 +279,15 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-25-parallel-index-gates"></a>
+### Reviewed `kf371` route table — a level beside the error field's group meets its index gates one level at a time, outermost first
+
+a12-dmkits revision `de84b2637220788026d1389fcb451fee54874849` introduced `ParallelIterationRouteLawsTest` and revision `73d419a7efac101ae9fe4f23f70f65b4509fe6d7` added its group-operand rows, both on that checkout's `main` when read on 2026-09-25, beside [`kf371`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371) and [`kf255`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf255). Admission verdicts from the Kernel's consistency check over the peer's fulfilment model, each rule `FieldFilled(<error field>) And [<operand>] > 0` declared in its error field's group unless a row says otherwise. Not run here. Inbound from already committed revisions, so no outbound entry follows.
+
+**Claim.** From `Invoices`, keyed under the name `Shipments` also carries, `Shipments/ShipmentCost` is admitted and the unkeyed `Parcels` below it draws `MVK_NO_WILDCARD`, while `Credits/Lines/LineAmount`, keyed at both levels, draws `MVK_MULTIPLE_INDEX_FIELDS`; from the unkeyed `Returns` both operands draw `MVK_ERROR_FIELD_NO_INDEX`. A sibling keyed under another name draws `MVK_ERROR_FIELD_INVALID_INDEX`, from `Invoices` and from a rule at the root reporting on `Invoices/ShipmentKey`; one keyed under the same name as a Number `MVK_ERROR_FIELD_INVALID_INDEX_TYPE`; an unkeyed one and a level below the error field's own `MVK_NO_WILDCARD`. `GroupFilled` of the four siblings gives the same four outcomes.
+
+**Lean.** `UnboundOperandLevel` meets these gates through `FlatModel.parallelIndexGate`, and the walk passes a legal parallel iteration to the next level. [`GroupOperandRepetitionWalk`](../A12Kernel/Conformance/GroupOperandRepetitionWalk.lean) replays the field rows on the flat comparison. The admitted rows stay refused without a class, the form-level control falls outside that comparison's row-group fragment, and the `GroupFilled` rows meet rule assembly's scope merge first; [SG9](gaps/paths-and-groups.md#gap-sg9) owns all three.
+
 <a id="inbound-2026-09-24e-misplaced-star"></a>
 ### Reviewed 2026-09-24e misplaced-star handback — a star on a field or fixed group draws `MVK_INVALID_WILDCARD` alone, even where the same reference leaves a repeatable level unstarred
 
@@ -333,31 +342,6 @@ The same letter and revision, its §6. `PartialGroupCountRelevanceDiffTest` was 
 
 **Lean.** [`PartialGroupCount`](../A12Kernel/Conformance/PartialGroupCount.lean) replays the three rows.
 
-<a id="inbound-2026-09-24b-keyed-partial-read"></a>
-### Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to
-
-The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §6, the peer's `KF461`. `PartialKeyedSelectionRelevanceDiffTest` was read at that revision: an order with a repeatable `Packages` indexed by `No`, holding `Carrier` and a fixed `Dims` {`Height`}, package 1 filled throughout and package 2 holding its key alone, beside `Extra` {`A` empty, `B` = 4} and `Service` {`S1` empty, `S2` = `EXPRESS`} with a `Speed` category, one rule per consumer with error field `Reference`, which every coverage includes. Full validation fires every rule. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
-
-**Claim.** A key no row carries, `For "3"`, under `NoGroupFilled` of `Packages` and of its `Dims`, `FieldNotFilled(Carrier)`, `[Height] == 0` and `FirstFilledValue(Dims) == 0`, fires under `Packages` wildcarded or every `Packages` field wildcarded, and is silent under the key column alone, the key column plus both rows concretely, and the two rows alone. A selected row, `For "1"` or `For "2"`, fires under every coverage reaching the target at that row and is silent under the key column alone, while `GroupFilled(Packages For "1")` fires under the key column alone and is silent under `Reference` alone. A key read from a field fires with the key fields covered beside `Packages` and is silent without them. `FirstFilledValue(A, B)` and `FirstFilledValue(/Order/Extra)` fire with both covered and are silent with `B` alone; `FirstFilledValue(B, A)` fires with `B` alone; the category pair and `[S2 -> Speed] == "FAST"` follow the same order.
-
-**Lean.** No validation leaf reads a keyed value at runtime, so no row is replayed; [SG9](gaps/paths-and-groups.md#gap-sg9) carries the keyed condition spine this needs.
-
-<a id="inbound-2026-09-24b-lexer-and-blank-text"></a>
-### Reviewed 2026-09-24b lexer and blank-text handback — whitespace is the lexer's five characters, the suppression list is parsed as preamble text, and member blankness follows `isWhitespace`
-
-The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §7. `ComputationSuppressionLawsTest` was read at that revision; `ConditionCharacterLawsTest`, the `whichSpacesMake…` tests of `RuleCodeAndSeverityLawsTest`, `RuleConditionAndTargetSlotLawsTest`, `ComputationAlternativeSlotLawsTest` and `FieldTypeBodyMemberLawsTest`, and the checker mirror `MemberBlanknessTest` were resolved there. The lexer's `WS` rule and its language-independent `#Zeile` token were read in the kernel's lexer grammar and agree. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
-
-**Claim.** Space, CR, TAB, FF and LF are discarded; a no-break space, a vertical tab, an em space, an ideographic space and U+0085 draw the lexer error in the same slot, and eleven characters inside a string literal are admitted. `#Zeile` lexes in an English model and is refused by the parser; `#Zeil`, a lone `!` and a lone `#` draw the lexer error. The suppression list is rendered as the preamble and parsed, with one row per entry shape as [the preamble clause](../spec/12-concrete-syntax.md#4-directives-and-the-special-entities) lists, including the German-model keyword reversal. Member blankness is sampled on six spaces per member as [the member clause](../spec/01-data-model.md#3-rules-and-computations) lists; the error code's content refusal carries no class key, so its rendered text is not reproduced here.
-
-**Lean.** This project models no parser and no model-member presence check, so none of it is replayed.
-
-<a id="inbound-2026-09-24b-category-read-poison"></a>
-### Reviewed 2026-09-24b category-read poison handback — a computation's category read of a malformed Enumeration cell poisons like its value read
-
-The same letter and revision, its §7 last paragraph. `EnumCategoryComputePoisonDiffTest` was read at that revision: a `Plan` Enumeration with values `BASIC`, `PREMIUM` and a `Tier` category, and four Number computations whose first alternative's precondition reads `[Plan -> Tier]` through a comparison, `FirstFilledValue` and a value-list quantifier, beside a control reading `[Plan]` itself. With `GOLD`, outside the value list, every target is CLEARED on both codegen strategies. Not run here. Inbound, so no outbound entry follows.
-
-**Lean.** [`EnumerationComputation`](../A12Kernel/Conformance/EnumerationComputation.lean) locks a category source over an out-of-domain token as poison, and [`EnumerationFirstFilledComputation`](../A12Kernel/Conformance/EnumerationFirstFilledComputation.lean) the same read as a first `FirstFilledValue` operand poisoning before a later filled one. Both place the read as an Enumeration computation's source, which no row measures; they take the precondition rows' poison as an assumption, and the precondition carriers themselves are not replayed.
-
 <a id="inbound-2026-09-24c-path-walk"></a>
 ### Reviewed 2026-09-24c path-walk handback — an up-step stands only in a relative path's leading run, and the short-name fallback answers a relative path's first segment alone
 
@@ -389,62 +373,26 @@ a12-dmkits revision `cd639fe72ac7e4469efd32527ae6f7204662af38` on `main`, confir
 
 **Lean.** [`Conformance/GroupOperandRepetitionWalk.lean`](../A12Kernel/Conformance/GroupOperandRepetitionWalk.lean) replays the rows on the carriers the rule surface represents: the presence pair, the five quantifiers, the scalar and mixed counts as whole rules, and the entity-list and `CurrentRepetition` sources at their operand read. Three defects closed. The whole-rule projector mapped a condition's unbound level to no class, and the per-level negative-condition gate answered ahead of it on `GroupNotFilled`. The group-list and count resolvers refused the repeatable root a rule sits in. And the group-list star gate answered ahead of the root gate. The star gate now follows the overlap gate too, where no row measures their order; the field-slot rows are §4's and a filter base on a group has no Lean representation.
 
+### Inbound 2026-09-24 and 2026-09-24b handbacks
+
+Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md) when this hub crossed its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+
+<a id="inbound-2026-09-24b-keyed-partial-read"></a>
+- [Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-keyed-partial-read)
+<a id="inbound-2026-09-24b-lexer-and-blank-text"></a>
+- [Reviewed 2026-09-24b lexer and blank-text handback — whitespace is the lexer's five characters, the suppression list is parsed as preamble text, and member blankness follows `isWhitespace`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-lexer-and-blank-text)
+<a id="inbound-2026-09-24b-category-read-poison"></a>
+- [Reviewed 2026-09-24b category-read poison handback — a computation's category read of a malformed Enumeration cell poisons like its value read](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-category-read-poison)
 <a id="inbound-2026-09-24b-kf463-validation"></a>
-### Reviewed 2026-09-24b `kf463` validation handback — a below-star `Seal` counts by its decided content, a malformed-only one leaves the count unavailable, and the extent is per operand
-
-The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §5a. `AncestorStarredGroupCountDiffTest` was read at that revision: thirteen documents over a `Batches` (4) holding a fixed `Seal` of a String `Code` and a Number `Weight`, beside fixed `Grading` and `Specs` groups and a `Crates` (2), each read by a ladder of `count == n` rules on the Kernel's dynamic Groovy and static Java routes and by the peer's interpreter; `MultiLevelStarredGroupCountDiffTest` carries `Batches` (2) holding `Boxes` (2). Not run here.
-
-**Counts.** On the validation arm `NumberOfFilledGroups(Batches*/Seal)` leaves the count unavailable when one `Seal` holds only a malformed `Weight`, alone and beside a sealed batch, and counts a `Seal` holding a `Code` beside a malformed `Weight`. `Batches*, Grading` counts every instantiated batch, a malformed-only one included, and a malformed-only `Grading` leaves every list naming it unavailable while a `Grading` holding a note beside a malformed grade counts. `Batches*, Crates*` counts a crate holding only a malformed `Tare` in its own row.
-
-**Extent.** One instance per fixed operand plus the product of the declared capacities of each starred operand's levels, two starred scopes adding: four sealed batches alone reach it, beside `Grading` they do not, and four batches with both crates reach six. `Batches*/Boxes*/Seal` reaches four only with every box sealed.
-
-**Lean.** [`Conformance/AncestorStarredGroupCount.lean`](../A12Kernel/Conformance/AncestorStarredGroupCount.lean) replays the thirteen documents on the three mixed lists, the two-scope rows and the two-level rows with no change to the theory, and locks the admission of `Batches*/Seal` twice from the rule-arm row of [the dispositions record](#inbound-2026-09-24b-dispositions). The fixed-only pair and the lone starred row count ride carriers this record does not replay.
-
+- [Reviewed 2026-09-24b `kf463` validation handback — a below-star `Seal` counts by its decided content, a malformed-only one leaves the count unavailable, and the extent is per operand](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-kf463-validation)
 <a id="inbound-2026-09-24b-kf464-partial-group-extent"></a>
-### Reviewed 2026-09-24b `kf464` first-table handback — a field-expanding aggregate over a starred group is evaluable under partial validation exactly when every field it contains is
-
-The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §5b first table. `PartialGroupStarFieldCoverageDiffTest` was read at that revision: seven coverages over an `Item` holding `Batches` (4) of a `Lot` and a fixed `Seal` of a `Code` and a Number `Weight`, and `Lines` (3) of Number `Qty` and `Price`, two rows each with every field filled but `Lot`, on the Kernel's dynamic Groovy and static Java routes and the peer's interpreter. Not run here.
-
-**Claim.** Each carrier is evaluable exactly when every field the starred group contains passes the extent gate its own starred field would. Field wildcards alone settle the extent, a wildcard on the descendant `Seal` covers its fields, concrete group rows beside a field wildcard are encompassed by it, and `Batches*/Seal` asks only the `Seal`'s own fields. For `Sum`, `MaxValue` and `NumberOfValueInFields(4 In Lines*)` the seven coverages read fires, silent, fires, fires, fires, silent, silent.
-
-**Lean.** A starred Number group operand evaluates under partial validation on both aggregate routes and on the checked-document value count, each asking its starred field's gate once per expanded field: the all-rows gate for the aggregates, the existential one for the value count. [`Conformance/PartialStarredGroupAggregate.lean`](../A12Kernel/Conformance/PartialStarredGroupAggregate.lean) replays the `Lines*` column on all three. `MinValue` and `NumberOfDifferentValues` take the same route and are not in the table. A fixed group operand under a coverage is not measured and stays a structural refusal. `NumberOfFilledFields` over a group is not replayed; the second table's group-count walk is [its own record](#inbound-2026-09-24b-kf464-partial-group-count).
-
+- [Reviewed 2026-09-24b `kf464` first-table handback — a field-expanding aggregate over a starred group is evaluable under partial validation exactly when every field it contains is](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-kf464-partial-group-extent)
 <a id="inbound-2026-09-24b-kf464-partial-group-count"></a>
-### Reviewed 2026-09-24b `kf464` second-table handback — `NumberOfFilledGroups` under partial validation is a four-step walk over the counted group's own instances
-
-The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §5b second table. `PartialGroupCountRelevanceDiffTest` was read at that revision: twelve coverages over an `Item` holding `Batches` of a `Lot` and a fixed `Seal` of a `Code` and a Number `Weight`, at capacity 4 or 2 as each row names, beside fixed `Label` (`Text`, Number `Grade`) and `Stamp` (`Mark`), with two batches holding every field and every fixed field filled, on the Kernel's dynamic Groovy and static Java routes and the peer's interpreter, each row beside its full-validation liveness control. `PartialExtentGateShapeDiffTest` was read there too: `KF209`'s `Items` (50) holds a `Tag` beside the `Qty` its selections cover. Not run here.
-
-**Claim.** The count asks the counted group's own identifiers, not its fields: those at or above it and every descendant cut back to its depth, wildcard-reduced, must wildcard each reopened level. The first declared instance must be fully relevant and not erroneous, and so must every declared instance the document lacks. A held instance counts by its admitted content. Over the twelve rows `Batches*` fires on rows 1–3, 7 and 10–12, `Batches*/Seal` on rows 1, 2, 5, 6 and 10–12, and `Label, Stamp` on row 12 only. The peer's source reading of each step is labelled a hypothesis and is not adopted here.
-
-**Lean.** [`Elaboration/PartialGroupCount.lean`](../A12Kernel/Elaboration/PartialGroupCount.lean) walks each operand shape on the partial preliminary, and [`Conformance/PartialGroupCount.lean`](../A12Kernel/Conformance/PartialGroupCount.lean) replays the twelve rows on all three carriers, each decided one at the full count of two, and `KF209`'s nine selections and three controls, which the walk reproduces because no selection names `Tag`. That replay retires the sole-star group-path gate and the one-field replica it was locked on. The mixed carrier's partial addressed route reaches the walk, and the `Seal` column replays through it.
-
+- [Reviewed 2026-09-24b `kf464` second-table handback — `NumberOfFilledGroups` under partial validation is a four-step walk over the counted group's own instances](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-kf464-partial-group-count)
 <a id="inbound-2026-09-24b-dispositions"></a>
-### Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling
-
-a12-dmkits revision `40f6d53c4ded07502f378325c202a0ff777b8d37` on `main`, confirmed an ancestor of that checkout's `main` when read. The letter is the peer's `-2026-09-24b`, frozen as sent in the user's exchange directory with SHA-256 `b8927d0ba4ed48e6f2dabcaa95afef185ea352822816f267f96493f98652ea2f`. Every lock it names was resolved by `git ls-tree` at that revision, and the ones below were read there. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
-
-**Dispositions.** [`SPEC-2026-09-23-01`](archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-23-01), [`SPEC-2026-09-24-01`](archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-24-01) and [`SPEC-2026-09-24-02`](archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-24-02) are accepted, each on the peer's own fixture; the ledger holds each receipt.
-
-**Root gate on the value list.** `EntityListRootGateCarrierLawsTest`, from the Kernel's `checkConsistency` on a rule condition and on a computation. On all three value-list quantifiers a root alone and a root beside another root's field draw `MVK_ROOT_GROUP_REFERENCED`, and a root beside its own field draws `MVK_DUPLICATE_PARAM2`. The root gate answers ahead of the kind gate: a root holding only a Date draws the root class where the Date alone draws `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED`. In the field-read spelling a root on either side of the `In` draws the root class, and so does a root across the `In` from its own field, while a fixed group on either side of a sole field is admitted. A String-target `FirstFilledValue` computation draws the same five classes as the literal list.
-
-**Rule-arm duplicates.** `GroupCountScopeOperandLawsTest.theKernelTakesAnyGroupEntityAsAnOperand`: on a rule `Batches*/Seal, Batches*/Seal` is admitted as a `NumberOfFilledGroups` operand list, beside `Grading, Grading`, which draws `MVK_DUPLICATE_PARAM1`.
-
-**Lean.** [`Conformance/FieldEntityRootGroup.lean`](../A12Kernel/Conformance/FieldEntityRootGroup.lean) replays the value-list rows on a four-root fixture. Replaying the admitted field-read controls exposed that the entity-valued elaborator still applied the entity-list arity gate to each side and refused the sole field this project's own [checkpoint](sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity) measured admitted, although the gap row had been closed on that measurement. Both sides now admit a sole slot, and a sole category projection takes that rule by assumption.
-
-The letter's §3 and §5–§7 are not adopted by this record.
-
+- [Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-dispositions)
 <a id="inbound-2026-09-24-ancestor-starred-group-count"></a>
-### Reviewed 2026-09-24 ancestor-starred group-count handback — a fixed group below a starred level is a sole `NumberOfFilledGroups` operand, and it counts filled instances only
-
-a12-dmkits revision `0c61dcadd57bfd5346876baaba1b4955d9af23b2` on `main`, confirmed an ancestor of that checkout's `HEAD` when read. The letter is the peer's `-2026-09-24`, a new topic after [the grandparent-fill record](#inbound-2026-09-23d-grandparent-fill-and-malformed-key). The peer's `kf462` was read at that revision, with its locks `validate.laws.GroupCountScopeOperandLawsTest` for admission, from the Kernel's `checkConsistency` on a rule condition, and `adapter.laws.AncestorStarredGroupCountDiffTest` for the counts, on the Kernel's dynamic Groovy and static Java routes. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
-
-**Admission.** From a rule at `/Item`, which iterates nothing, `NumberOfFilledGroups` admits `Grading, Specs`, `Keyed*` and `Batches*/Seal`, where `Seal` is a fixed group inside the repeatable `Batches`. A lone `Grading` draws `MVK_PARAMSIZE_INVALIDGN`, so the arity exemption reads a star anywhere on the operand's path. `Grading, Weight` draws `MVK_NO_FIELDS_ALLOWED`, `Grading, /Lot*` `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS` and `Keyed For "k", Grading` `MVK_SEMANTIC_INDEX_NOT_ALLOWED`.
-
-**Counts.** Over six documents, `NumberOfFilledGroups(Batches*/Seal)` is `0` with no batch, `2` with two filled Seals, `1` when the second batch holds only its own field, `0` when both Seals are instantiated and empty, `2` when the first and third of three are filled, and `1` beside a filled `Grading`, where the pair counts `2`. The pair otherwise equals the sole form. The mechanism the letter source-reads is not adopted.
-
-**Lean.** Modelled on the validation arm as the [ancestor-starred count operand](implementation/cross-clause.md#cap-mixed-validation-filled-group-count); the computation arm was refused here until the [computation checkpoint](sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation) admitted it. A field operand has no surface form in a group count, so its class is parser-layer here.
-
-**Extent.** The operand's extent rows replay two rows of the peer's `kf463`, read at a12-dmkits `9c211788230050342b0805284d944d6c582ae6ea`, confirmed an ancestor of `main`, ahead of that finding's letter. Four sealed batches of four are full alone and can still grow beside an empty fixed group. Under `Batches` (2) holding `Boxes` (2), one batch with both boxes sealed can still grow. Nothing else of `kf463` is adopted here; the letter owns its record.
+- [Reviewed 2026-09-24 ancestor-starred group-count handback — a fixed group below a starred level is a sole `NumberOfFilledGroups` operand, and it counts filled instances only](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24-ancestor-starred-group-count)
 
 ### Inbound 2026-09-23 handbacks
 

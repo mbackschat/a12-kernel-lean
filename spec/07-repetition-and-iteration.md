@@ -50,6 +50,8 @@ When a rule references **two repeatable groups where neither is nested in the ot
 FieldsNotCollectivelyFilled(Demand/Units, Capacity/Units)   -- iterated per shared Warehouse index value
 ```
 
+**The index gates are asked one level at a time, outermost first.** Each level a read crosses beside the error field's group meets its own: with no index field on that level it draws `MVK_NO_WILDCARD`, with none on the error field's path `MVK_ERROR_FIELD_NO_INDEX`, with a second keyed group above it on the operand's own chain `MVK_MULTIPLE_INDEX_FIELDS`, with index fields differing in name `MVK_ERROR_FIELD_INVALID_INDEX`, and with one name under two base types `MVK_ERROR_FIELD_INVALID_INDEX_TYPE`; a level passing them all is admitted and the walk asks the next, so an unkeyed level below an admitted one draws `MVK_NO_WILDCARD`. The outer level answers first: an operand keyed twice draws the multiple-index class beside a keyed error field and `MVK_ERROR_FIELD_NO_INDEX` beside an unkeyed one. A group operand meets the same gates ([inbound](../docs/SOURCES.md#inbound-2026-09-25-parallel-index-gates)).
+
 **Constraints:** at most **one** index field on the error field's path and on each parallel-iterated group; parallel iteration is **not allowed over rules using `RepetitionNotUnique`**; and **negative conditions are not allowed in a parallel iteration** except alongside a positive condition.
 
 **Mechanics (verified):**

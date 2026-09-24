@@ -546,4 +546,95 @@ example :
     [containment, containment, noWildcard] := by
   native_decide
 
+/-! ## A level beside the error field's group, keyed on both chains
+
+The walk asks each level it crosses on its own declaration. A level beside the error field's group
+that declares an index field, with the error field's path declaring one too, meets the index gates:
+another name draws `MVK_ERROR_FIELD_INVALID_INDEX`, the same name under another type
+`MVK_ERROR_FIELD_INVALID_INDEX_TYPE`, a second index field on the operand's own parallel chain
+`MVK_MULTIPLE_INDEX_FIELDS`, and the same name and type is a legal parallel iteration the Kernel
+admits. Each row is the peer's rule `FieldFilled(<error field>) And [<operand>] > 0`, declared in the
+error field's group unless it says otherwise ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371),
+[`kf255`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf255)). -/
+
+/-- The peer's route model: a keyed `Shipments` holding an unkeyed `Parcels`, a keyed `Invoices`
+    under the same key name, an unkeyed `Returns` carrying the key field undeclared, a keyed
+    `Credits` under the same name holding a keyed `Lines`, a keyed `Refunds` under another name, and
+    a keyed `Adjustments` under the same name as a Number. -/
+private def routeModel : FlatModel :=
+  let row (id : FieldId) (groups : List String) (name : String) (policy : FieldPolicy)
+      (scope : List RepeatableLevel) : FlatFieldDecl :=
+    { id, groupPath := "Fulfilment" :: groups, name, policy, repeatableScope := scope }
+  { fields := [
+      row 1 [] "OrderTotal" number [],
+      row 2 ["Shipments"] "ShipmentKey" text [1], row 3 ["Shipments"] "ShipmentCost" number [1],
+      row 4 ["Shipments", "Parcels"] "ParcelWeight" number [1, 2],
+      row 5 ["Invoices"] "ShipmentKey" text [3], row 6 ["Invoices"] "InvoiceAmount" number [3],
+      row 7 ["Returns"] "ShipmentKey" text [4], row 8 ["Returns"] "ReturnAmount" number [4],
+      row 9 ["Credits"] "ShipmentKey" text [5], row 10 ["Credits", "Lines"] "LineKey" text [5, 6],
+      row 11 ["Credits", "Lines"] "LineAmount" number [5, 6],
+      row 12 ["Refunds"] "RefundKey" text [7], row 13 ["Refunds"] "RefundAmount" number [7],
+      row 14 ["Adjustments"] "ShipmentKey" number [8],
+      row 15 ["Adjustments"] "AdjustmentAmount" number [8]]
+    repeatableGroups := [
+      { level := 1, path := ["Fulfilment", "Shipments"], indexField := some 2 },
+      { level := 2, path := ["Fulfilment", "Shipments", "Parcels"] },
+      { level := 3, path := ["Fulfilment", "Invoices"], indexField := some 5 },
+      { level := 4, path := ["Fulfilment", "Returns"] },
+      { level := 5, path := ["Fulfilment", "Credits"], indexField := some 9 },
+      { level := 6, path := ["Fulfilment", "Credits", "Lines"], indexField := some 10 },
+      { level := 7, path := ["Fulfilment", "Refunds"], indexField := some 12 },
+      { level := 8, path := ["Fulfilment", "Adjustments"], indexField := some 14 }] }
+
+private def routeComparison (groups : List String) (field : String) : SurfaceNumericComparison :=
+  { op := .ordinary .greater
+    left := .atom (.field { base := .absolute, groups := "Fulfilment" :: groups, field })
+    right := .literal { value := 0, authoredScale := 0 } }
+
+/-- `[<operand>] > 0` read from `rowGroup` beside an error field in `writtenGroup`: `none` when it
+    resolves, otherwise the class of its refusal. The flat comparison refuses a field outside its row
+    group as a fragment boundary, so the table's form-level control has no row here. -/
+private def routeRead (rowGroup : List String) (groups : List String) (field : String)
+    (writtenGroup : List String := rowGroup) : Option (Option KernelStaticDiagnostic) :=
+  match elaborateNumericComparison routeModel ("Fulfilment" :: rowGroup) (routeComparison groups field)
+      ("Fulfilment" :: writtenGroup) with
+  | .ok _ => none
+  | .error (.resolve error) => some error.diagnostic?
+  | .error _ => some none
+
+/-- The index gate the refused level met, for a read the walk refuses. -/
+private def routeGate (rowGroup : List String) (groups : List String) (field : String) :
+    Option ParallelIndexGate :=
+  match elaborateNumericComparison routeModel ("Fulfilment" :: rowGroup) (routeComparison groups field) with
+  | .error (.resolve (.unboundOperandLevel _ unbound)) => some unbound.parallelGate
+  | _ => none
+
+/- The route table's rows. Below the admitted keyed parallel level an unkeyed level is refused on
+   its own declaration and a keyed one meets the multiple-index gate, while into the unkeyed `Returns`
+   the outer level already draws the index class; the sibling cells follow, then a level below the
+   error field's own and the sibling read from a rule at the root. -/
+example :
+    [routeRead ["Invoices"] ["Shipments", "Parcels"] "ParcelWeight",
+      routeRead ["Invoices"] ["Credits", "Lines"] "LineAmount",
+      routeRead ["Returns"] ["Credits", "Lines"] "LineAmount",
+      routeRead ["Returns"] ["Shipments"] "ShipmentCost",
+      routeRead ["Invoices"] ["Refunds"] "RefundAmount",
+      routeRead ["Invoices"] ["Returns"] "ReturnAmount",
+      routeRead ["Invoices"] ["Adjustments"] "AdjustmentAmount",
+      routeRead ["Shipments"] ["Shipments", "Parcels"] "ParcelWeight",
+      routeRead [] ["Refunds"] "RefundAmount" ["Invoices"]] =
+    [noWildcard, some (some .multipleIndexFields), noIndex, noIndex,
+      some (some .errorFieldInvalidIndex), noWildcard, some (some .errorFieldInvalidIndexType),
+      noWildcard, some (some .errorFieldInvalidIndex)] := by
+  native_decide
+
+/- The keyed parallel level alone is a legal parallel iteration: the Kernel admits it, and this
+   route, which joins no parallel iteration, refuses it claiming no class. Its sibling under another
+   name meets the name gate, a separate outcome from the same walk. -/
+example :
+    [routeGate ["Invoices"] ["Shipments"] "ShipmentCost", routeGate ["Invoices"] ["Refunds"] "RefundAmount"] =
+      [some .legal, some .differentName] ∧
+    routeRead ["Invoices"] ["Shipments"] "ShipmentCost" = some none := by
+  native_decide
+
 end A12Kernel.Conformance.GroupOperandRepetitionWalk

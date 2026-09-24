@@ -47,6 +47,13 @@ inductive KernelStaticDiagnostic where
   field's group, draws `noWildcard`
   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
   | errorFieldNoIndex
+  /-- A read's level beside the written field's group declares an index field, the written field's
+  path declares one too, and the two differ in name
+  ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
+  | errorFieldInvalidIndex
+  /-- The same pair of index fields under one name and different base types
+  ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
+  | errorFieldInvalidIndexType
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
   /-- A filled-group count carries one fixed unstarred operand, including a repeatable operand whose level is bound by the error-field row. The same repeatable operand outside that row draws `noWildcard`; a single starred operand is admitted, so this is not simply an operand-count gate. -/
@@ -222,7 +229,7 @@ inductive KernelStaticDiagnostic where
   | entityMoveInA12ModelCondition
   /-- The same refusal from the service's error-text entry point, which reports a different class for the identical situation so a caller can tell which surface declined. -/
   | entityMoveInA12ModelErrortext
-  /-- A second index-declaring group lies above the first on the walked path. Reported without examining that second group's own multiplicity, so it outranks the class below. -/
+  /-- A second index-declaring group lies above the first on the walked path. Reported without examining that second group's own multiplicity, so it outranks the class below. The operand walk reports it too, at a keyed level beside the written field's group under another keyed parallel level ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
   | multipleIndexFields
   /-- The innermost index-declaring group on the path declares more than one index field name. -/
   | multipleIndexFields2
@@ -399,6 +406,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidCompareToYesNo => "MVK_INVALID_COMPARE_TO_YESNO"
   | .fieldNotInRuleGroup => "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
   | .errorFieldNoIndex => "MVK_ERROR_FIELD_NO_INDEX"
+  | .errorFieldInvalidIndex => "MVK_ERROR_FIELD_INVALID_INDEX"
+  | .errorFieldInvalidIndexType => "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
   | .paramSizeInvalidN => "MVK_PARAMSIZE_INVALIDN"
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
@@ -591,7 +600,7 @@ def all : List KernelStaticDiagnostic :=
     .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .invalidCompareToYesNo,
-    .fieldNotInRuleGroup, .errorFieldNoIndex,
+    .fieldNotInRuleGroup, .errorFieldNoIndex, .errorFieldInvalidIndex, .errorFieldInvalidIndexType,
     .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .differentGroups, .noWildcard, .wildcardOnlyAtLowestLevelAllowed,

@@ -83,7 +83,9 @@ inductive GroupRelation where
   /-- Off the error field's path, and a valid parallel iteration: both groups declare an index
   field of the same name and type. -/
   | offPathParallelIterable
-  /-- Off the path with no valid parallel iteration available. -/
+  /-- Off the path in a group that declares no index field. A keyed group that fails its index gates
+  draws those gates' own classes, which `UnboundOperandLevel.diagnostic?` owns
+  ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
   | offPathNotParallelIterable
   deriving Repr, DecidableEq
 
@@ -104,8 +106,8 @@ structure IndexedReference where
 /-- The iteration test at one level, against the wildcard bit as it stood *before* this level.
 
 An iteration is illegal when an outer wildcard already reopened the list, when the group lies below
-the error field, or when it lies off the path with no parallel iteration to match the two walks. The
-class then depends on the reference, not on which of the three conditions fired. -/
+the error field, or when it lies off the path in an unkeyed group. The class then depends on the
+reference, not on which of the three conditions fired. -/
 def levelIterationRefusal (level : IndexLevel) (outerWildcard carriesSemanticIndex : Bool) :
     Option IterationRefusal :=
   if level.marker != .iteration then

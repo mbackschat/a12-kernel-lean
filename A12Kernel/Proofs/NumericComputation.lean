@@ -17,6 +17,16 @@ theorem numericComputation_groupCount_duplicateParam1_iff
       some .duplicateParam1 ↔ left = right := by
   simp [NumericComputationElabError.groupCountDiagnostic?]
 
+/-- The walk refuses some level of a read exactly when the read leaves one: a read that passes every
+    level as a legal parallel iteration still returns its outermost. -/
+theorem walkRefusal_eq_none_iff (levels : List UnboundOperandLevel) :
+    UnboundOperandLevel.walkRefusal? levels = none ↔ levels = [] := by
+  cases levels with
+  | nil => simp [UnboundOperandLevel.walkRefusal?]
+  | cons head tail =>
+      simp only [UnboundOperandLevel.walkRefusal?, List.head?_cons, reduceCtorEq, iff_false]
+      cases List.find? _ _ <;> simp [Option.orElse]
+
 /-- The shared per-row decision finds a level exactly when some operand leaves one to bind. Which
     class it selects depends on where the target lies and on that level, so the law is stated over
     existence and not over the class. -/
@@ -25,8 +35,8 @@ theorem firstUnboundOperandLevel_eq_none_iff (model : FlatModel)
     model.firstUnboundOperandLevel? declaringGroup targetGroup scopes = none ↔
       scopes.all (·.isEmpty) = true := by
   unfold FlatModel.firstUnboundOperandLevel?
-  simp only [Option.map_eq_none_iff, List.findSome?_eq_none_iff, List.all_eq_true,
-    List.isEmpty_iff, List.head?_eq_none_iff]
+  simp only [walkRefusal_eq_none_iff, List.filterMap_eq_nil_iff, List.map_eq_nil_iff,
+    List.all_eq_true, List.isEmpty_iff]
 
 /-- The product-aggregate and group-count gate admits exactly the scope lists that leave no
     repeatable level to bind. It says nothing about the atoms that bypass it: an entity list asks the
