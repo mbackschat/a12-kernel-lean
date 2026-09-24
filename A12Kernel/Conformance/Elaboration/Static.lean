@@ -429,6 +429,35 @@ example :
       | .error error => error.diagnostic?) = some .fieldNameNotUnique := by
   native_decide
 
+/-- `Remark` is declared in `Insured` and in `Claims`, `Age` only in `Insured`, and `/Policy` declares
+neither, as in the peer's `policy` model. -/
+private def policyModel (shortNames : Bool := true) : FlatModel :=
+  { fields := [
+      { id := 0, groupPath := ["Policy"], name := "Holder", policy := { kind := .string } },
+      { id := 1, groupPath := ["Policy", "Insured"], name := "Remark", policy := { kind := .string } },
+      { id := 2, groupPath := ["Policy", "Insured"], name := "Age", policy := { kind := .string } },
+      { id := 3, groupPath := ["Policy", "Claims"], name := "Remark", policy := { kind := .string } }]
+    fieldRefByShortNameAllowed := shortNames }
+
+/- The short-name fallback answers a relative path's **first** segment whatever follows it: an
+   ambiguous one is the not-unique class where a positional reading names a miss, a unique one binds
+   its field so the segment below misses, and without the flag both miss. A first segment naming a
+   local group takes no fallback, so a later segment never reaches it
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)). -/
+example :
+    let key? (m : FlatModel) (reference : SurfaceFieldPath) : Option KernelStaticDiagnostic :=
+      match m.resolveField ["Policy"] reference with
+      | .ok _ => none
+      | .error error => error.diagnostic?
+    key? (policyModel) (relative 0 ["Remark"] "Nope") = some .fieldNameNotUnique ∧
+      key? (policyModel) (relative 0 ["Age"] "Nope") = some .invalidEntity ∧
+      key? (policyModel false) (relative 0 ["Remark"] "Nope") = some .invalidEntity ∧
+      key? (policyModel false) (relative 0 ["Age"] "Nope") = some .invalidEntity ∧
+      key? (policyModel) (relative 0 ["Insured"] "Holder") = some .invalidEntity ∧
+      resolvedIdOf ((policyModel).resolveField ["Policy"] (relative 0 ["Insured"] "Remark")) =
+        some 1 := by
+  native_decide
+
 private def keywordProfile : PathKeywordProfile :=
   { reserved := ["And", "Date", "Today"] }
 

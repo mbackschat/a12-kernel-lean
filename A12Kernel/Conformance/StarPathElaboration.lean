@@ -125,4 +125,36 @@ example :
       some (.addressing (.invalidRepeatability 20)) := by
   native_decide
 
+/-- The peer's `policy` shape: `Remark` in `Insured` and in the repeatable `Claims`, `Age` only in
+    `Insured`, short names on. -/
+private def policyModel : FlatModel :=
+  { fields := [
+      { id := 0, groupPath := ["Policy"], name := "Holder", policy := { kind := .string } },
+      { id := 1, groupPath := ["Policy", "Insured"], name := "Remark", policy := { kind := .string } },
+      { id := 2, groupPath := ["Policy", "Insured"], name := "Age", policy := { kind := .string } },
+      { id := 3, groupPath := ["Policy", "Claims"], name := "Remark", policy := { kind := .string },
+        repeatableScope := [10] },
+      { id := 4, groupPath := ["Policy", "Claims"], name := "Amount", policy := { kind := .string },
+        repeatableScope := [10] }]
+    repeatableGroups := [{ level := 10, path := ["Policy", "Claims"], repeatability := some 20 }]
+    fieldRefByShortNameAllowed := true }
+
+/- A starred first segment reaches the short-name fallback as an unstarred one does: an ambiguous
+   name is not unique, and a unique one binds its field, so its star is a star on a field ahead of
+   the miss below it ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)). The absolute
+   control takes no fallback, which is this account's reading and not a measured row. -/
+example :
+    let relative (groups : List SurfaceStarGroupSegment) (field : String) : SurfaceStarFieldPath :=
+      { base := .relative 0, groups, field }
+    let errorAt (source : SurfaceStarFieldPath) :=
+      match elaborateStarFieldPath policyModel ["Policy"] source with
+      | .ok _ => none
+      | .error error => error.diagnostic?
+    errorAt (relative [segment "Remark" true] "Nope") = some .fieldNameNotUnique ∧
+      errorAt (relative [segment "Age" true] "Nope") = some .invalidWildcard ∧
+      errorAt (relative [segment "Claims" true] "Age") = some .invalidEntity ∧
+      errorAt { base := .absolute, groups := [segment "Policy", segment "Age" true], field := "Nope" } =
+        some .invalidEntity := by
+  native_decide
+
 end A12Kernel.Conformance.StarPathElaboration

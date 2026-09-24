@@ -605,6 +605,27 @@ private def FlatModel.resolveBareDeclaration (model : FlatModel) (declaringGroup
       else
         throw (.invalidEntity reference)
 
+/-- The first segment of a longer relative path when the declaring group declares neither a group
+    nor a field by that name, which is where the short-name fallback answers. Measured only on paths
+    without a leading up-step, so any other path returns `none`. -/
+def FlatModel.unresolvedFirstSegment? (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Option String := do
+  let .relative 0 := reference.base | none
+  let first ← reference.groups.head?
+  let own := declaringGroup ++ [first]
+  if model.hasGroupPath own || model.fields.any (·.path == own) then none
+  pure first
+
+/-- The field the short-name fallback binds a longer relative path's first segment to, when exactly
+    one declaration carries that name. -/
+def FlatModel.shortNameFirstSegmentField? (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Option FlatFieldDecl := do
+  let first ← model.unresolvedFirstSegment? declaringGroup reference
+  if !model.fieldRefByShortNameAllowed then none
+  match model.fields.filter (·.name == first) with
+  | [declaration] => some declaration
+  | _ => none
+
 /-- Shared path mechanism for both non-repeatable and repeatable elaborators. This resolves one declaration without deciding whether its repeatable scope is legal for the caller. -/
 def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
@@ -624,6 +645,15 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
   | .relative parents =>
       if parents == 0 && reference.groups.isEmpty then
         model.resolveBareDeclaration declaringGroup reference
+      else if let some first := model.unresolvedFirstSegment? declaringGroup reference then
+        -- The short-name fallback answers a relative path's first segment whatever follows it. A
+        -- unique match binds a field and the segment below it misses, so only an ambiguous one
+        -- changes the class ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)).
+        if model.fieldRefByShortNameAllowed &&
+            (model.fields.filter (·.name == first)).length > 1 then
+          throw (.shortNameNotUnique first)
+        else
+          throw (.invalidEntity reference)
       else
         let base ← GroupPath.walkUp declaringGroup parents
         if !base.matchesTurningPoint reference.turningPoint then

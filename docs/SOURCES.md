@@ -279,6 +279,17 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24c-path-walk"></a>
+### Reviewed 2026-09-24c path-walk handback — an up-step stands only in a relative path's leading run, and the short-name fallback answers a relative path's first segment alone
+
+The same letter and revision as [the group-operand walk record](#inbound-2026-09-24c-group-operand-walk), its §1 and §2, which correct the first bullet of `-24b` §3. `PathSegmentWalkLawsTest` was read at that revision, every test in it: admission verdicts from the Kernel's consistency check over the `policy` model with short names on, `Remark` declared in `Insured` and in `Claims`, each operand `FieldFilled(<operand>)` beside the error field unless a row names another carrier. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Up-step.** With no named segment before a misplaced step starred, nothing before it resolves and the path draws `MVK_UNEXPECTED_TOKEN`: `Claims/Nope/..`, `Nope/../Claims*`, `/Nope/..`. A star before it, or a leading up-run, walks the prefix first: `Claims*/Nope/..` and `../Nope/..` draw `MVK_INVALID_ENTITY`, `/Nope/Claims*/..` `MVK_INVALID_ROOT_GROUP`, `Claims.*/Nope/..` `MVK_POINT_IN_A12_MODEL`, `Claims/Amount*/..` `MVK_INVALID_WILDCARD`, and a cleared prefix `MVK_UNEXPECTED_TOKEN`. `..Name` misplaced is an up-step. From `/Policy/Insured`, `FieldFilled(..)` draws `MVK_ROOT_GROUP_REFERENCED` and `AtLeastOneGroupFilled(..)` is admitted. Across a condition the first defect in text order answers. A message parameter's misplaced step is always `MVK_UNEXPECTED_TOKEN`, `$../Nope/..$` included.
+
+**Fallback.** `Remark/Nope`, `Remark*/Nope` and `Remark/Claims*` from `/Policy` draw `MVK_FIELDNAME_NOT_UNIQUE`; `Age/Nope` draws `MVK_INVALID_ENTITY` and `Age*/Nope` `MVK_INVALID_WILDCARD`; both miss with short names off. `Insured/Holder`, `Broker/Age`, `Insured/ClaimRef` and `Claims*/Age` draw `MVK_INVALID_ENTITY`. The message parameter `$Remark/Nope$` draws `ERROR_TEXT_FIELDNAME_NOT_UNIQUE`.
+
+**Lean.** The shared field resolver takes the fallback on a longer relative path's first segment when the declaring group declares nothing by that name, and the star-path resolver reads a starred first segment it binds to a field as a star on a field. [`Conformance/Elaboration/Static.lean`](../A12Kernel/Conformance/Elaboration/Static.lean) and [`Conformance/StarPathElaboration.lean`](../A12Kernel/Conformance/StarPathElaboration.lean) replay the fallback rows the structured paths spell. A structured path cannot hold an up-step after a named segment, a `.*` suffix or a text-order condition, and no message-parameter resolver carries the `ERROR_TEXT_` class, so those rows are spec-only.
+
 <a id="inbound-2026-09-24c-field-slot"></a>
 ### Reviewed 2026-09-24c field-slot handback — a group in `FieldFilled` or `FieldNotFilled` meets the walk, then a root's class, then the kind gate, and a star follows them
 

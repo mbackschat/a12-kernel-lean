@@ -694,7 +694,9 @@ theorem elaborateStarPathPlan_never_incoherentCore (model : FlatModel)
     judged before any group segment, an unknown root is the first segment missing, and model
     validation refuses the duplicate declaration behind an ambiguous one. So a miss is re-read for an
     earlier star landing on a nonrepeatable segment, which answers first
-    ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)). -/
+    ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)).
+    A starred first segment the short-name fallback binds to a field is such a star too
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)). -/
 private def starredMissError (model : FlatModel) (declaringGroup : GroupPath)
     (source : SurfaceStarFieldPath) (reference : SurfaceFieldPath) : StarPathElabError :=
   let base? := match source.base with
@@ -704,7 +706,10 @@ private def starredMissError (model : FlatModel) (declaringGroup : GroupPath)
           (GroupPath.matchesTurningPoint · source.turningPoint)
   match base?.bind (firstStarOnNamedNonrepeatable? model · source.groups) with
   | some path => .wildcardOnNonrepeatable path
-  | none => .resolve (.invalidEntity reference)
+  | none =>
+      match source.groups.head?, model.shortNameFirstSegmentField? declaringGroup reference with
+      | some { starred := true, .. }, some declaration => .wildcardOnNonrepeatable declaration.path
+      | _, _ => .resolve (.invalidEntity reference)
 
 private def resolveStarFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)
     (source : SurfaceStarFieldPath) : Except StarPathElabError FlatFieldDecl :=
