@@ -254,8 +254,9 @@ def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writ
   (scopes.findSome? List.head?).map (model.unboundOperandLevel declaringGroup writtenGroup)
 
 /-- A validation read's outermost level its rule group does not bind, placed by the written field,
-    or `none` when the rule group binds every level of it; `bound` is what the rule group binds. The
-    rule group decides the binding, and the written field only the class
+    or `none` when `bound` covers every level of it. `bound` defaults to what the rule group binds; a
+    caller with a narrower reading scope passes that. The binding scope decides which levels are
+    unbound, and the written field only the class
     ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
 def FlatModel.unboundReadLevel? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (scope : List RepeatableLevel)
@@ -595,8 +596,9 @@ def FlatFieldDecl.requireNonrepeatableAt (declaration : FlatFieldDecl)
     .error (.repeatableReference declaration.path)
 
 /-- Accept one operand whose repeatable levels the reading scope binds, and otherwise report the
-same repeatable-reference class the nonrepeatable resolver reports, because the Kernel reports one
-missing-wildcard class for both. -/
+same repeatable-reference class the nonrepeatable resolver reports: unplaced, the Kernel reports one
+missing-wildcard class for both. A caller that knows the written field replaces the refusal with
+the level `unboundReadLevel?` places. -/
 def FlatFieldDecl.requireRepetitionBoundBy (declaration : FlatFieldDecl)
     (scope : List RepeatableLevel) : Except ResolveError FlatFieldDecl :=
   if declaration.repetitionBoundBy scope then

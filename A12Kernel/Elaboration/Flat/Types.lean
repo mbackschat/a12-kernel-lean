@@ -511,8 +511,9 @@ An unstarred repeatable operand read from a rule locus that does not iterate its
 shared missing-wildcard class. From a locus that iterates every level of it the Kernel admits the
 read, so a fragment refusing it reports `boundRepeatableReference`, which carries no class
 ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
-A computation operand into a fixed target reports `unboundOperandLevel` instead, whose class the
-target's position and its outermost level select.
+A computation operand into a fixed target, and a validation read placed by its error field, report
+`unboundOperandLevel` instead, whose class the written field's position and the outermost unbound
+level select.
 
 **This is the one projection that keeps a wildcard, deliberately.** Elsewhere a `_ => none` arm is
 the anti-pattern this estate sweeps out, because it silently absorbs a form a later change adds and

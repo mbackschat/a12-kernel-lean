@@ -389,8 +389,8 @@ def StarPathElabError.diagnostic? : StarPathElabError → Option KernelStaticDia
 
 /-- Place a star's refusal by the written field — a computation's fixed target or a validation's
 error field. With the written field outside the declaring group, a level the star leaves unstarred
-below its first star meets the containment gate ahead of the missing-star class, measured on every
-validation star carrier and on the computation arm
+below its first star meets the containment gate ahead of the missing-star class, measured on twenty-two
+validation carriers and on the computation arm
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment),
 [checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)).
 A written field inside the declaring group, the default wherever a carrier names none, leaves every

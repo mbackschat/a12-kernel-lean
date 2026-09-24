@@ -24,10 +24,11 @@ inductive NumberValuesNotUniqueElabError where
 /-- Admit one Number `FieldValuesNotUnique` list in Kernel order: common shape, whole-list kind
     refusal, Number-category homogeneity, then the existing Number certificate. -/
 def elaborateNumberValuesNotUniqueSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceNumberValuesNotUniqueSource) :
+    (declaringGroup : GroupPath) (authored : SurfaceNumberValuesNotUniqueSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except NumberValuesNotUniqueElabError
       (CheckedNumberValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
     |>.mapError .shape
   match firstFieldListKindRefusal? shape.operands with
   | some refusal => throw (.inadmissibleKind refusal.path refusal.actual)

@@ -35,13 +35,27 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-25-01"></a>
+### `SPEC-2026-09-25-01` — two `-24e` generalizations reach past their rows: a star on a fixed group answers alone at containment only, and a member's class withholds the message on the classes measured
+
+- `status`: pending.
+- `origin`: locally originated from a cold review of this project's replay of your `-24e` letter. Both deltas narrow a claim's measured scope, and neither changes a measured outcome.
+- `clause`: [`08` the "A star may land only on a repeatable group" bullet](../spec/08-paths-and-references.md), [`11` the "A message is judged only beside a sound DSL member" bullet](../spec/11-messages-and-custom.md).
+- `delta`: a misplaced star answering alone is measured with the star on the field at every position your §1 table lists, and with the star on a fixed group at containment only ([inbound](SOURCES.md#inbound-2026-09-24e-misplaced-star)).
+- `delta`: the member's own class withholds the template classes on the classes measured: a name that does not resolve, a text that does not parse, a rule's `MVK_INVALID_WILDCARD`, `MVK_NO_WILDCARD`, `MVK_NO_WILDCARDS_ALLOWED` and `MVK_ERROR_FIELD_NOT_REFERENCED`, and a computation's `MVK_INVALID_WILDCARD` and, behind the control character only, `MVK_NO_WILDCARD`. "Whatever class" is kept as the account, predicted rather than measured ([inbound](SOURCES.md#inbound-2026-09-24e-message-withheld)).
+- `basis`: your `-24e` letter at a12-dmkits `9abe9925`, reviewed locally 2026-09-25.
+- `surfaces`: any peer statement of these two rows broader than the scope above.
+- `acceptance`: confirm each scope, or supply the rows beyond it: a starred fixed group at a non-containment position, and a member class outside the measured set beside a message defect.
+- `limit`: static admission only.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-24-06"></a>
-### `SPEC-2026-09-24-06` — below the first star the error field places the refusal on every validation star carrier, not only on `Sum` and the group count
+### `SPEC-2026-09-24-06` — below the first star the error field places the refusal on twenty-two measured validation carriers, not only on `Sum` and the group count
 
 - `status`: pending.
 - `origin`: locally originated. It extends your [`kf466`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf466) rule rows, which carry `Sum` and `NumberOfFilledGroups`, to the rest of the rule arm.
 - `clause`: [`07` the chain bullet](../spec/07-repetition-and-iteration.md).
-- `delta`: over `/Fulfilment/Shipments*/Parcels/…`, with the error field in `Summary`, twenty-two carriers draw `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` from `Ledger` and from `Shipments` and `MVK_NO_WILDCARD` from `Summary`: the aggregates, the group count, the seven field-fill quantifiers, `NumberOfFilledFields`, the three value-list quantifiers, four group-list quantifiers, `FieldValuesNotUnique` and `NumberOfDifferentValues`. `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` draw it ahead of their own star bar.
+- `delta`: over `/Fulfilment/Shipments*/Parcels/…`, with the error field in `Summary`, twenty-two carriers draw `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` from `Ledger` and from `Shipments` and `MVK_NO_WILDCARD` from `Summary`: `Sum`, `FirstFilledValue`, `NumberOfValueInFields`, `MaxValue`, the group count, the seven field-fill quantifiers, `NumberOfFilledFields`, the three value-list quantifiers over a String field, every group-list quantifier but `AllGroupsFilled`, and `FieldValuesNotUnique` and `NumberOfDifferentValues` over a Number field. `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` draw it ahead of their own star bar.
 - `basis`: [validation below-star checkpoint](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement), three `model check` runs over hand-placed rules at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
 - `surfaces`: any peer checker whose containment family offers a below-star read only on `Sum` and the group count, and your `kf466` rule-arm row.
 - `acceptance`: confirm the placed class on any carrier beyond `Sum` and the group count, or supply a contrary row.
@@ -49,20 +63,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-24-05"></a>
-### `SPEC-2026-09-24-05` — five restatements of your `-24b` and `-24d` rows claimed more than the rows measured, and the index class needs the error field's path unkeyed
+### `SPEC-2026-09-24-05` — six restatements of your `-24b`, `-24c` and `-24d` rows claimed more than the rows measured, and the index class needs the error field's path unkeyed
 
 - `status`: pending.
-- `origin`: locally originated from a cold review of this project's replay of your `-24b`, `-24c` and `-24d` letters. Every delta narrows a claim's measured scope or joins your [`kf371`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371) to a `-24d` row, and none changes a measured outcome.
-- `clause`: [`07` the bare group-operand bullet](../spec/07-repetition-and-iteration.md), [`09` §5, the unstarred-level bullet and the declaring-group paragraph](../spec/09-computations.md), [`10` the keyed-read bullet](../spec/10-validation-and-polarity.md), [`12` the whitespace bullet](../spec/12-concrete-syntax.md).
+- `origin`: locally originated from two cold reviews of this project's replay of your `-24b`, `-24c` and `-24d` letters. Every delta narrows a claim's measured scope or joins your [`kf371`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371) to a measured row, and none changes a measured outcome.
+- `clause`: [`02` the `FieldFilled` slot bullet](../spec/02-logic-and-formal-errors.md), [`07` the bare group-operand bullet](../spec/07-repetition-and-iteration.md), [`09` §5, the unstarred-level bullet and the declaring-group paragraph](../spec/09-computations.md), [`10` the keyed-read bullet](../spec/10-validation-and-polarity.md), [`12` the whitespace bullet](../spec/12-concrete-syntax.md).
 - `delta`: beside the error field's group, an index-keyed operand draws `MVK_ERROR_FIELD_NO_INDEX` only when the error field's own path declares no index field, by `kf371`'s parallel-iteration table; with both chains keyed, that table's own index gates decide.
+- `delta`: in the field slot a segment's own gates answer ahead of the walk's class wherever the segment sits, as `Claims.*` and `Claims/Amount*/..` show with `Claims` unbound ([inbound](SOURCES.md#inbound-2026-09-24c-path-walk)); an order that runs the walk first, or segment by segment with the gates, contradicts both rows.
 - `delta`: with the error field outside the rule group, containment first is measured on starred aggregates and on a field read ([inbound](SOURCES.md#inbound-2026-09-24d-star-containment)), and on no bare group operand.
 - `delta`: the containment gate's per-row source is any per-row read, whatever binds its level, as the `Ledger` rows show, rather than only a per-row operand of a repeatable declaring group; the fully starred control is measured admitted into a fixed target only.
 - `delta`: the order-aware `FirstFilledValue` keyed account is measured on separately named operands, on a group whose index field is a Number, keyed by a text literal ([inbound](SOURCES.md#inbound-2026-09-24b-keyed-partial-read)).
 - `delta`: the lexer's refusal of a non-ASCII space is measured where whitespace would separate tokens, not inside a comment ([inbound](SOURCES.md#inbound-2026-09-24b-lexer-and-blank-text)).
 - `basis`: the cited inbound records and `kf371`, reviewed locally 2026-09-24; [`Conformance/GroupOperandRepetitionWalk.lean`](../A12Kernel/Conformance/GroupOperandRepetitionWalk.lean) locks the keyed-chain withholding.
 - `surfaces`: any peer statement of these rows broader than the scope above.
-- `acceptance`: confirm each scope, or supply the rows that reach beyond it: a bare group operand with the error field outside the rule group, a keyed read over a group operand's fields or a String index, a comment holding a no-break space, and a keyed operand beside a keyed error-field path on the rule arm.
-- `limit`: `kf371` is measured on the computation arm; the rule arm's `-24d` rows carry an unkeyed error-field path.
+- `acceptance`: confirm each scope, or supply the rows that reach beyond it: a bare group operand with the error field outside the rule group, a keyed read over a group operand's fields or a String index, and a comment holding a no-break space.
+- `limit`: `kf371` is measured on the computation arm; on the rule arm the keyed-chain rows are your [`kf255`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf255) sibling triple.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-24-04"></a>

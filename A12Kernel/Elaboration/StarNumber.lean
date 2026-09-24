@@ -49,9 +49,9 @@ def elaborateStarNumberSource (model : FlatModel) (declaringGroup : GroupPath)
 /-- Resolve one general Number star and the narrow source-closed filter fragment against the same model-owned candidate/captured environment split. -/
 def elaborateStarNumberHavingSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceStarFieldPath)
-    (having : SurfaceCorrelatedHaving) :
+    (having : SurfaceCorrelatedHaving) (writtenGroup : GroupPath := declaringGroup) :
     Except StarNumberElabError (CheckedStarNumberHavingSource model) := do
-  let source ← elaborateStarNumberSource model declaringGroup authored
+  let source ← elaborateStarNumberSource model declaringGroup authored writtenGroup
   let filter ← elaborateStarHavingCore model declaringGroup source.source having
     |>.mapError .having
   pure { source, declaringGroup, filter }

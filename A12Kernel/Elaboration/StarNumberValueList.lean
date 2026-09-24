@@ -57,15 +57,15 @@ inductive StarNumberValueListElabError where
   deriving Repr, DecidableEq
 
 private def elaborateStarNumberValueListFields (model : FlatModel)
-    (declaringGroup : GroupPath) : SurfaceStarNumberValueListFields →
+    (declaringGroup writtenGroup : GroupPath) : SurfaceStarNumberValueListFields →
       Except StarNumberValueListElabError
         (CheckedStarNumberValueListFields model)
   | .star path => do
-      pure (.star (← elaborateStarNumberSource model declaringGroup path
+      pure (.star (← elaborateStarNumberSource model declaringGroup path writtenGroup
         |>.mapError .fields))
   | .starHaving path having => do
       pure (.starHaving (← elaborateStarNumberHavingSource model declaringGroup
-        path having |>.mapError .fields))
+        path having writtenGroup |>.mapError .fields))
 
 private def resolveStarNumberValueDeclarations (model : FlatModel)
     (declaringGroup : GroupPath) : List SurfaceFieldPath →
@@ -101,13 +101,15 @@ private def certifyStarNumberValueFields (model : FlatModel) :
 /-- Validate the model once, resolve both sides, reject repeated direct value fields
 before kind certification, and retain the existing checked star and Number-field owners. -/
 def elaborateStarNumberValueListSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceStarNumberValueListSource) :
+    (declaringGroup : GroupPath) (authored : SurfaceStarNumberValueListSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except StarNumberValueListElabError
       (CheckedStarNumberValueListSource model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let fields ← elaborateStarNumberValueListFields model declaringGroup authored.fields
+      let fields ← elaborateStarNumberValueListFields model declaringGroup writtenGroup
+        authored.fields
       let firstDeclaration ← model.resolveNonrepeatableFieldUnchecked declaringGroup
         authored.firstValue |>.mapError .resolve
       let restDeclarations ← resolveStarNumberValueDeclarations model declaringGroup

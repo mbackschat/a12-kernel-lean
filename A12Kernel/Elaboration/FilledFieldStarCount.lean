@@ -89,10 +89,12 @@ def hasHaving (checked : CheckedFilledFieldStarSource model) : Bool :=
 /-- Elaborate one starred filled-field operand, with or without a filter, reusing the established
     star-path gates and the shared star `Having` fragment. -/
 def elaborate (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceStarFieldPath) (having : Option SurfaceCorrelatedHaving) :
+    (authored : SurfaceStarFieldPath) (having : Option SurfaceCorrelatedHaving)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except FilledFieldStarCountElabError (CheckedFilledFieldStarSource model) := do
   let source ←
-    (elaborateFilledFieldStarValidationSource model declaringGroup authored).mapError .path
+    (elaborateFilledFieldStarValidationSource model declaringGroup authored writtenGroup).mapError
+      .path
   match having with
   | none => pure { declaringGroup, source, filter := none }
   | some authoredHaving =>
@@ -129,8 +131,8 @@ end CheckedFilledFieldStarSource
     point so a consumer never has to choose between two elaborators. -/
 def elaborateFilledFieldStarSource (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceStarFieldPath)
-    (having : Option SurfaceCorrelatedHaving) :
+    (having : Option SurfaceCorrelatedHaving) (writtenGroup : GroupPath := declaringGroup) :
     Except FilledFieldStarCountElabError (CheckedFilledFieldStarSource model) :=
-  CheckedFilledFieldStarSource.elaborate model declaringGroup authored having
+  CheckedFilledFieldStarSource.elaborate model declaringGroup authored having writtenGroup
 
 end A12Kernel

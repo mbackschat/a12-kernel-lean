@@ -313,9 +313,11 @@ example :
       none, none] := by
   native_decide
 
-/- A starred group operand of an entity list meets the same star check as a starred field, so its
-   inner level left unstarred below the star draws containment into a target outside the declaring
-   group, from `Ledger` and from `Batches` alike. -/
+/- Extrapolated, not measured: a starred group operand of an entity list meets the same star check
+   as a starred field, so its inner level left unstarred below the star draws containment into a
+   target outside the declaring group, from `Ledger` and from `Batches` alike. The measured rows
+   beside it read a starred field and the group count; no row reads a starred group operand in
+   `Sum`. -/
 example :
     let sealSum : AuthoredNumericExpr SurfaceNumericComputationAtom :=
       .atom (.numeric (.aggregate .sum

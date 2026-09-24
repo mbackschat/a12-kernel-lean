@@ -3,16 +3,21 @@ import A12Kernel.Elaboration.NumericAggregate.Entities
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.FilledFieldGroupCount
 import A12Kernel.Elaboration.FilledFieldStarCount
-import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Elaboration.StarNumberValueList
+import A12Kernel.Elaboration.NumberValuesNotUnique
 import A12Kernel.Elaboration.StarStringValueList
 
 /-! # A group operand's repetition walk
 
 A group operand is walked like a field, its own repeatable level included: an unstarred repeatable
-group read from outside it draws the missing-star class on every carrier, ahead of each carrier's
-own gates, while the rule that sits in a repeatable root passes the walk and meets the root classes.
-Every row is the peer's whole rule, `FieldFilled(<error field>) And <carrier>`, from the second
-`-24c` table's two models ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+group read from outside it draws the walk's class on every carrier, ahead of each carrier's own
+gates, while the rule that sits in a repeatable root passes the walk and meets the root classes.
+The first rows are the peer's whole rules, `FieldFilled(<error field>) And <carrier>`, from the
+second `-24c` table's two models ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+The later rows lock carriers at their own entry with the error field's group supplied: its position
+places the class, containment from a rule group it lies outside
+([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment), `kf371`, and the
+[validation checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)).
 -/
 
 namespace A12Kernel.Conformance.GroupOperandRepetitionWalk
@@ -458,37 +463,87 @@ example :
       some .fieldNotInRuleGroup, some .fieldNotInRuleGroup, some .noWildcard] := by
   native_decide
 
-/- Every other validation star carrier places it the same way: the Number and String value-list
-   sources, the filled-field star behind `NumberOfFilledFields` and the field-fill quantifiers, the
-   filled-field starred group source and a starred group-list operand each draw containment from
-   `Ledger` and `Shipments` and the missing star from `Summary`
+/-- The fulfilment path with `Shipments` starred and `Parcels` starred only when `starLast`. -/
+private def fulfilmentPath (starLast : Bool) : List SurfaceStarGroupSegment :=
+  [{ name := "Fulfilment" }, { name := "Shipments", starred := true },
+    { name := "Parcels", starred := starLast }]
+
+private def fulfilmentField (starLast : Bool) (name : String) : SurfaceStarFieldPath :=
+  { base := .absolute, groups := fulfilmentPath starLast, field := name }
+
+private def fulfilmentSeal (starLast : Bool) : SurfaceStarGroupPath :=
+  { base := .absolute, groups := fulfilmentPath starLast ++ [{ name := "Seal" }] }
+
+/-- Each measured carrier at its own entry, `none` when it is admitted. -/
+private def fulfilmentCarriers (starLast : Bool) (rowGroup : GroupPath) :
+    List (Option (Option KernelStaticDiagnostic)) :=
+  let summary := ["Fulfilment", "Summary"]
+  [match elaborateNumberValuesNotUniqueSource fulfilmentModel rowGroup
+      { first := .star (fulfilmentField starLast "Weight"), rest := [] } (writtenGroup := summary) with
+    | .error error => some error.diagnostic?
+    | .ok _ => none,
+   match elaborateStarStringValueListSource fulfilmentModel rowGroup
+      { quantifier := .atLeastOne, fields := fulfilmentField starLast "Code", values := ["x"] }
+      (writtenGroup := summary) with
+    | .error (.path error) => some error.diagnostic?
+    | .error _ => some none
+    | .ok _ => none,
+   match elaborateFilledFieldStarSource fulfilmentModel rowGroup (fulfilmentField starLast "Weight")
+      none (writtenGroup := summary) with
+    | .error (.path error) => some error.diagnostic?
+    | .error _ => some none
+    | .ok _ => none,
+   match elaborateFilledFieldCountStarredGroupValidationSource fulfilmentModel rowGroup
+      { group := fulfilmentSeal starLast } summary with
+    | .error (.shape (.starredGroup error)) => some error.diagnostic?
+    | .error _ => some none
+    | .ok _ => none,
+   match list fulfilmentModel rowGroup .atLeastOneGroupFilled [.starredGroup (fulfilmentSeal starLast)]
+      summary with
+    | .error diagnostic => some diagnostic
+    | .ok _ => none]
+
+/- Every measured carrier takes the error field's group at its own entry: `FieldValuesNotUnique`,
+   the String value list, the filled-field star behind `NumberOfFilledFields` and the field-fill
+   quantifiers, the filled-field starred group source and a starred group-list operand each draw
+   containment from `Ledger` and `Shipments` and the missing star from `Summary`, and each is
+   admitted with both levels starred
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)). -/
 example :
-    let summary := ["Fulfilment", "Summary"]
-    let belowStar : List SurfaceStarGroupSegment :=
-      [{ name := "Fulfilment" }, { name := "Shipments", starred := true }, { name := "Parcels" }]
-    let field (name : String) : SurfaceStarFieldPath := { base := .absolute, groups := belowStar, field := name }
-    let sealGroup : SurfaceStarGroupPath := { base := .absolute, groups := belowStar ++ [{ name := "Seal" }] }
-    let classes (rowGroup : GroupPath) : List (Option KernelStaticDiagnostic) :=
-      [match elaborateStarNumberSource fulfilmentModel rowGroup (field "Weight") summary with
-        | .error (.path error) => error.diagnostic?
-        | _ => none,
-       match elaborateStarStringSource fulfilmentModel rowGroup (field "Code") (writtenGroup := summary) with
-        | .error (.path error) => error.diagnostic?
-        | _ => none,
-       match elaborateFilledFieldStarValidationSource fulfilmentModel rowGroup (field "Weight") summary with
-        | .error error => error.diagnostic?
-        | _ => none,
-       match elaborateFilledFieldCountStarredGroupValidationSource fulfilmentModel rowGroup
-          { group := sealGroup } summary with
-        | .error (.shape (.starredGroup error)) => error.diagnostic?
-        | _ => none,
-       match list fulfilmentModel rowGroup .atLeastOneGroupFilled [.starredGroup sealGroup] summary with
-        | .error diagnostic => diagnostic
-        | .ok _ => none]
-    [classes ["Fulfilment", "Ledger"], classes ["Fulfilment", "Shipments"], classes summary] =
-    [List.replicate 5 (some .fieldNotInRuleGroup), List.replicate 5 (some .fieldNotInRuleGroup),
-      List.replicate 5 (some .noWildcard)] := by
+    [fulfilmentCarriers false ["Fulfilment", "Ledger"], fulfilmentCarriers false ["Fulfilment", "Shipments"],
+      fulfilmentCarriers false ["Fulfilment", "Summary"], fulfilmentCarriers true ["Fulfilment", "Ledger"],
+      fulfilmentCarriers true ["Fulfilment", "Shipments"]] =
+    [List.replicate 5 containment, List.replicate 5 containment, List.replicate 5 noWildcard,
+      List.replicate 5 none, List.replicate 5 none] := by
+  native_decide
+
+/- `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` forbid a star, yet below it they draw the
+   placed class alone: the placement answers ahead of their star bar, which the fully starred
+   operand meets ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)). -/
+example :
+    [GroupFillQuantifier.notAllGroupsFilled, .groupsNotCollectivelyFilled].flatMap (fun operator =>
+      [false, true].map fun starLast =>
+        match list fulfilmentModel ["Fulfilment", "Ledger"] operator
+            [.starredGroup (fulfilmentSeal starLast)] ["Fulfilment", "Summary"] with
+        | .error diagnostic => some diagnostic
+        | .ok _ => none) =
+    [containment, some (some .noWildcardsGAllowed), containment, some (some .noWildcardsGAllowed)] := by
+  native_decide
+
+/- Extrapolated, not measured: Lean's Number value list takes field values, and the retained Number
+   rows read a Number literal, whose fully starred controls the Kernel refuses on the literal. Their
+   below-star rows still drew the placed class ahead of that refusal, and the String rows carry the
+   family, so the starred side is placed the same way. -/
+example :
+    [["Fulfilment", "Ledger"], ["Fulfilment", "Shipments"], ["Fulfilment", "Summary"]].map (fun rowGroup =>
+      match elaborateStarNumberValueListSource fulfilmentModel rowGroup
+          { quantifier := .atLeastOne, fields := .star (fulfilmentField false "Weight"),
+            firstValue := { base := .absolute, groups := ["Fulfilment", "Ledger"], field := "Total" },
+            restValues := [] } (writtenGroup := ["Fulfilment", "Summary"]) with
+      | .error (.fields (.path error)) => some error.diagnostic?
+      | .error _ => some none
+      | .ok _ => none) =
+    [containment, containment, noWildcard] := by
   native_decide
 
 end A12Kernel.Conformance.GroupOperandRepetitionWalk

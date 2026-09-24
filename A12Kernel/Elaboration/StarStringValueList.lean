@@ -86,10 +86,12 @@ def elaborateStarStringSource (model : FlatModel) (declaringGroup : GroupPath)
 
 /-- Reuse the general checked star path, then retain only an exact String declaration and a nonempty literal side. -/
 def elaborateStarStringValueListSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceStarStringValueListSource) :
+    (declaringGroup : GroupPath) (authored : SurfaceStarStringValueListSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except StarStringValueListElabError
       (CheckedStarStringValueListSource model) := do
   let fields ← elaborateStarStringSource model declaringGroup authored.fields authored.having
+    writtenGroup
   match authored.values with
   | [] => throw .emptyValues
   | firstValue :: restValues => pure {
@@ -101,10 +103,12 @@ def elaborateStarStringValueListSource (model : FlatModel)
 /-- Validate the model through the starred side, then resolve and certify the direct nonrepeatable String field against the same model. -/
 def elaborateStringValueListStarValuesSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceStringValueListStarValuesSource) :
+    (authored : SurfaceStringValueListStarValuesSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except StarStringValueListElabError
       (CheckedStringValueListStarValuesSource model) := do
   let values ← elaborateStarStringSource model declaringGroup authored.values authored.having
+    writtenGroup
   let fieldDeclaration ← model.resolveNonrepeatableFieldUnchecked declaringGroup
     authored.field |>.mapError fun error => .path (.resolve error)
   match hField : fieldDeclaration.toStringValueField? with
