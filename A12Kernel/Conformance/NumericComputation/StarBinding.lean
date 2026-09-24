@@ -258,6 +258,34 @@ example :
       noIndex, contained, contained] := by
   native_decide
 
+/- An entity list's direct field is a plain read too: from the target's own group, where an
+   undeclared declaring group defaults, it draws the missing-star class, and the index class exactly
+   when its outermost level is index-keyed; a plain read beside a read of the target draws
+   containment ahead of self-reference (`c-sum-none`, `i-c-none` on both keyed models, `f4c`). -/
+example :
+    let direct : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+      .atom (.numeric (.aggregate .sum
+        { first := .field (absoluteField ["Probe", "Batches", "Boxes"] "Amt"), rest := [] }))
+    let free := absoluteField ["Probe", "Out"] "Free"
+    [admission model out direct, admission outerKeyed out direct, admission innerKeyed out direct,
+      admission model batches
+        (.binary .add (.atom (.numeric (.field free))) (.atom (.numeric (.field
+          (relativeField [] "BW")))))] =
+    [missingStar, noIndex, missingStar, contained] := by
+  native_decide
+
+/- The same list-wide gate answers a direct field and a fixed group read from the declaring group
+   that binds their level, with containment. No row measures either on an entity list; they take
+   the class a plain read and a group count's fixed operand draw there. -/
+example :
+    let sumOf (first : SurfaceFieldEntityOperand) : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+      .atom (.numeric (.aggregate .sum { first, rest := [rootW] }))
+    [admission model batches (sumOf (.field (absoluteField ["Probe", "Batches"] "BW"))),
+      admission model batches
+        (sumOf (.group (.path { base := .absolute, groups := ["Probe", "Batches", "Seal2"] })))] =
+    [contained, contained] := by
+  native_decide
+
 /-- `none` when admitted, otherwise the class the carried resolver error projects, for a String
     computation into the fixed `FreeS`. -/
 private def stringAdmission (m : FlatModel) (declaringGroup : GroupPath)

@@ -269,6 +269,9 @@ private inductive FixedGroupScopePolicy where
   /-- Refused with the class `UnboundOperandLevel` selects, for a computation whose target repeats
   at no level; the group's own level counts when it is repeatable. -/
   | fixedTarget
+  /-- As `fixedTarget`, but the whole repeatable scope is retained for the list's own gate, which
+  judges every operand's levels in authored order once the list resolves. -/
+  | fixedTargetList
 
 /-- Resolve one fixed group operand without applying an operator-specific root, arity, duplicate,
 or overlap rule. -/
@@ -289,6 +292,7 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           match model.firstUnboundOperandLevel? declaringGroup [operandScope] with
           | none => pure resolved
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
+      | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }
       | .scalar | .ruleBound | .validationBound =>
           -- Every list pairing a root with another operand meets a root gate before its core is
           -- checked, so admitting a bound repeatable root reaches no executable list the core
@@ -335,6 +339,13 @@ def FlatModel.resolveFixedTargetGroupReference (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
     Except FixedGroupReferenceError ResolvedGroupReference :=
   model.resolveFixedGroupReferenceWith .fixedTarget declaringGroup surface
+
+/-- Resolve a fixed group operand of a fixed-target entity list, leaving its levels to the list's
+    unbound-level gate. -/
+def FlatModel.resolveFixedTargetListGroupReference (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
+    Except FixedGroupReferenceError ResolvedGroupReference :=
+  model.resolveFixedGroupReferenceWith .fixedTargetList declaringGroup surface
 
 /-- Resolve rule-bound fixed children in authored order for a measured addressed carrier. -/
 def FlatModel.resolveRuleBoundFixedGroupReferences (model : FlatModel)
@@ -477,15 +488,15 @@ def FlatModel.checkSingleGroupContext (model : FlatModel)
 
 /-- A fixed group operand resolves only against a representable declaring group. Both surface forms
     guard it: an ordinary path walks from it, and the `RuleGroup` keyword *is* it. -/
-theorem FlatModel.resolveFixedGroupReference_declaringGroupValid
-    {model : FlatModel} {declaringGroup : GroupPath} {surface : SurfaceGroupReference}
-    {resolved : ResolvedGroupReference}
-    (ok : model.resolveFixedGroupReference declaringGroup surface = .ok resolved) :
+private theorem FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid
+    {model : FlatModel} {policy : FixedGroupScopePolicy} {declaringGroup : GroupPath}
+    {surface : SurfaceGroupReference} {resolved : ResolvedGroupReference}
+    (ok : model.resolveFixedGroupReferenceWith policy declaringGroup surface = .ok resolved) :
     GroupPath.isValid declaringGroup = true := by
   cases hValid : GroupPath.isValid declaringGroup with
   | true => rfl
   | false =>
-    unfold FlatModel.resolveFixedGroupReference FlatModel.resolveFixedGroupReferenceWith at ok
+    unfold FlatModel.resolveFixedGroupReferenceWith at ok
     cases surface with
     | path groupPath =>
         rw [SurfaceGroupReference.resolveAgainst, SurfaceGroupPath.resolveAgainst] at ok
@@ -497,5 +508,19 @@ theorem FlatModel.resolveFixedGroupReference_declaringGroupValid
         simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
           MonadExceptOf.throw, Except.mapError] at ok
         cases ok
+
+theorem FlatModel.resolveFixedGroupReference_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {surface : SurfaceGroupReference}
+    {resolved : ResolvedGroupReference}
+    (ok : model.resolveFixedGroupReference declaringGroup surface = .ok resolved) :
+    GroupPath.isValid declaringGroup = true :=
+  FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid ok
+
+theorem FlatModel.resolveFixedTargetListGroupReference_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {surface : SurfaceGroupReference}
+    {resolved : ResolvedGroupReference}
+    (ok : model.resolveFixedTargetListGroupReference declaringGroup surface = .ok resolved) :
+    GroupPath.isValid declaringGroup = true :=
+  FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid ok
 
 end A12Kernel
