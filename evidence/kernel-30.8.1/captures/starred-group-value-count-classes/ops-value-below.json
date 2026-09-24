@@ -1,0 +1,119 @@
+[
+ {
+  "id": "tok-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Texts*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tok-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Texts*/TDetail) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tok-below-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In /Item/Texts*/TDetail) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bool-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Flags*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bool-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Flags*/FDetail) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bool-below-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In /Item/Flags*/FDetail) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "num-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(4 In Rows*/Detail/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "num-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(4 In Rows*/Detail) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tok-fixed-unstarred",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Texts/TDetail) > 0",
+   "--code",
+   "E1"
+  ]
+ }
+]

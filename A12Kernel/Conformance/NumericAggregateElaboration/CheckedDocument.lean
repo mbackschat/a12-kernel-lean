@@ -465,4 +465,39 @@ example :
   native_decide
 
 
+/-- A fixed `Detail` inside the repeatable `Lines`, beside a Number of `Lines` itself, so a value
+    count over `Lines*/Detail` separates Detail's fields from the whole row. -/
+private def belowStarModel : FlatModel :=
+  { fields := [
+      { id := 70, groupPath := ["Form", "Lines"], name := "Qty",
+        policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [70] },
+      { id := 71, groupPath := ["Form", "Lines", "Detail"], name := "Amount",
+        policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [70] }]
+    repeatableGroups := [{
+      level := 70, path := ["Form", "Lines"], repeatability := some 2 }] }
+
+private def belowStarValueCount (cells : List (FieldId × Nat × Nat)) : Option NumericOperand := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler belowStarModel).toOption
+  let source ← (elaborateNumberEntitySource belowStarModel ["Form"]
+    { first := .starredGroup { base := .absolute, groups :=
+        [{ name := "Form" }, { name := "Lines", starred := true }, { name := "Detail" }] }
+      rest := [] }).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 70, path := [1] }, { group := 70, path := [2] }]
+    cells := cells.map fun (field, row, value) =>
+      { address := { field, path := [row] }, stored := toString value
+        raw := .parsed (.num value) } }).toOption
+  (source.evaluateCheckedDocumentValueCountValidation 4 document []).toOption
+
+/- The Kernel admits `NumberOfValueInFields(4 In Rows*/Detail)`
+   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)),
+   and the operand means every field inside the group with the star carried down
+   ([`spec/02`](../../../spec/02-logic-and-formal-errors.md)), so a `4` in `Qty` is not counted while
+   every reopened row's `Amount` is. The values are this account's, external evidence pending. -/
+example :
+    belowStarValueCount [(70, 1, 4), (71, 1, 3), (71, 2, 4)] = some (.value 1 .fixed) ∧
+    belowStarValueCount [(71, 1, 4), (71, 2, 4)] = some (.value 2 .fixed) := by
+  native_decide
+
 end A12Kernel.Conformance.NumericAggregateElaboration.CheckedDocument

@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TokenValueCount
 
 /-! # Checked starred String-group value-count conformance
 
-The maintained Kernel differentials admit one terminal repeatable starred String group as the whole operand list and reach matches across every expanded declaration and instantiated row. Checked computation additionally selects only in-capacity cells before classifying their String content. The explicit two-star source is the full-validation control. A separate Kernel admission row admits one fixed nonrepeatable String group; its checked runtime remains internal. A star above a nonrepeatable terminal remains refused.
+The maintained Kernel differentials admit one terminal repeatable starred String group as the whole operand list and reach matches across every expanded declaration and instantiated row. Checked computation additionally selects only in-capacity cells before classifying their String content. The explicit two-star source is the full-validation control. A separate Kernel admission row admits one fixed nonrepeatable String group; its checked runtime remains internal. The Kernel also admits a fixed group below a star on full validation, which this module counts on the expansion account alone.
 -/
 
 namespace A12Kernel
@@ -214,26 +214,41 @@ example :
       fixedExplicitResult = some (.value 2 .fixed) := by
   native_decide
 
-private def nonrepeatableTerminalModel : FlatModel :=
-  { fields := [{
-      id := 32, groupPath := ["Orders", "Details"], name := "A",
-      policy := { kind := .string }, repeatableScope := [32] }]
+/-! ## A fixed group below a star -/
+
+/-- A fixed `Detail` inside the repeatable `Lines`, beside a String of `Lines` itself, so a count
+    over `Lines*/Detail` separates Detail's fields from the whole row. -/
+private def belowStarModel : FlatModel :=
+  { fields := [
+      { id := 50, groupPath := ["Order", "Lines"], name := "A",
+        policy := { kind := .string }, repeatableScope := [50] },
+      { id := 51, groupPath := ["Order", "Lines", "Detail"], name := "D",
+        policy := { kind := .string }, repeatableScope := [50] }]
     repeatableGroups := [{
-      level := 32, path := ["Orders"], repeatability := some 2 }] }
+      level := 50, path := ["Order", "Lines"], repeatability := some 2 }] }
 
-private def nonrepeatableTerminalError : Option TokenValueCountElabError :=
-  match elaborateTokenValueCountStarredGroupValidationSource
-      nonrepeatableTerminalModel ["Orders"] "X" {
-        group := {
-          base := .absolute
-          groups := [
-            { name := "Orders", starred := true }, { name := "Details" }] } } with
-  | .ok _ => none
-  | .error error => some error
+private def belowStarResult (rows : List Nat) (cells : List (FieldId × Nat × String)) :
+    Option NumericOperand := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler belowStarModel).toOption
+  evaluate? (checkDocument prepared "en_US" {
+      instantiatedRows := rows.map fun index => { group := 50, path := [index] }
+      cells := cells.map fun (field, index, value) => cell field index value }).toOption
+    (elaborateTokenValueCountStarredGroupValidationSource belowStarModel ["Order"] "X"
+      (SurfaceTokenValueCountStarredGroupValidationSource.mk {
+        base := .absolute
+        groups := [{ name := "Order" }, { name := "Lines", starred := true },
+          { name := "Detail" }] })).toOption
 
+/- The Kernel admits `NumberOfValueInFields("x" In Texts*/TDetail)`
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)),
+   and the operand means every field inside the group with the star carried down
+   ([`spec/02`](../../spec/02-logic-and-formal-errors.md)), so the `X` in `A` is not counted while
+   every reopened row's `D` is. The values are this account's, external evidence pending. -/
 example :
-    nonrepeatableTerminalError = some (.source (.shape (.starredGroup
-      (.resolve (.unknownRepeatableGroup ["Orders", "Details"]))))) := by
+    belowStarResult [1, 2] [(50, 1, "X"), (51, 1, "Y"), (51, 2, "X")] =
+      some (.value 1 .fixed) ∧
+    belowStarResult [1, 2] [(51, 1, "X"), (51, 2, "X")] = some (.value 2 .fixed) := by
   native_decide
 
 end A12Kernel

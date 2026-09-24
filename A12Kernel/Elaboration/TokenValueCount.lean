@@ -18,7 +18,7 @@ abbrev SurfaceTokenValueCountOperand :=
 abbrev SurfaceTokenValueCountSource :=
   SurfaceProjectedTokenEntitySource
 
-/-- The measured full-validation authoring form with one terminal repeatable starred group as the whole value-count operand. -/
+/-- The measured full-validation authoring form with one starred group as the whole value-count operand. -/
 structure SurfaceTokenValueCountStarredGroupValidationSource where
   group : SurfaceStarGroupPath
   deriving Repr, DecidableEq
@@ -234,14 +234,20 @@ def elaborateTokenValueCountStarredGroupSource (model : FlatModel)
   else
     throw (.literalOutsideEnumerationDomain group.groupPath expected)
 
-/-- Compatibility entry point preserving the established general checked validation carrier. -/
+/-- Resolve one starred group as the whole full-validation operand through the common token
+    entity-list gates. Beside a repeatable terminal this admits a fixed group below a starred level,
+    which the Kernel admits here
+    ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes))
+    and the computation carrier above still refuses because its arm is unmeasured. -/
 def elaborateTokenValueCountStarredGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenValueCountStarredGroupValidationSource) :
-    Except TokenValueCountElabError (CheckedTokenValueCountSource model) :=
-  (elaborateTokenValueCountStarredGroupSource
-    model declaringGroup expected authored).map
-      CheckedTokenValueCountGroupSource.toCheckedTokenValueCountSource
+    Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
+  let source ← elaborateTokenEntitySource model declaringGroup {
+    first := .starredGroup authored.group
+    rest := [] }
+    |>.mapError .source
+  finishTokenValueCountSource expected source
 
 /-- Resolve the measured full-validation-only form with one fixed nonrepeatable path group through the common token entity-list gates. -/
 def elaborateTokenValueCountFixedGroupValidationSource (model : FlatModel)

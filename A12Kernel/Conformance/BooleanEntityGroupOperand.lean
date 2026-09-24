@@ -684,4 +684,40 @@ example :
         some (.poison .confirmToken, .poison .booleanToken) := by
   native_decide
 
+/-! ## A fixed group below a star -/
+
+/-- A fixed `Detail` inside the repeatable `Lines`, beside a Boolean of `Lines` itself, so a count
+    over `Lines*/Detail` separates Detail's fields from the whole row. -/
+private def belowStarModel : FlatModel :=
+  { fields := [
+      booleanField 60 ["Probe", "Lines"] "Flag" [60],
+      booleanField 61 ["Probe", "Lines", "Detail"] "Mark" [60]]
+    repeatableGroups := [{
+      level := 60, path := ["Probe", "Lines"], repeatability := some 2 }] }
+
+private def belowStarResult (cells : List (FieldId × Nat × Bool)) : Option NumericOperand := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler belowStarModel).toOption
+  let checked ← (elaborateBooleanValueCountSource belowStarModel ["Probe"] true {
+    first := .starredGroup {
+      base := .absolute
+      groups := [{ name := "Probe" }, { name := "Lines", starred := true }, { name := "Detail" }] }
+    rest := [] }).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 60, path := [1] }, { group := 60, path := [2] }]
+    cells := cells.map fun (field, index, value) =>
+      { address := { field, path := [index] }, stored := booleanValueCountToken value
+        raw := .parsed (.bool value) } }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+/- The Kernel admits `NumberOfValueInFields(True In Flags*/FDetail)`
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)),
+   and the operand means every field inside the group with the star carried down
+   ([`spec/02`](../../spec/02-logic-and-formal-errors.md)), so a true `Flag` is not counted while
+   every reopened row's `Mark` is. The values are this account's, external evidence pending. -/
+example :
+    belowStarResult [(60, 1, true), (61, 1, false), (61, 2, true)] = some (.value 1 .fixed) ∧
+    belowStarResult [(61, 1, true), (61, 2, true)] = some (.value 2 .fixed) := by
+  native_decide
+
 end A12Kernel.Conformance.BooleanEntityGroupOperand
