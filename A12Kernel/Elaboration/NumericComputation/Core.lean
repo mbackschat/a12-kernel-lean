@@ -379,7 +379,7 @@ private def FlatModel.resolveTemporalNumericComputationField
     (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
     Except NumericComputationElabError FlatTemporalField := do
   let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
   if declaration.id == target then
     throw (.targetSelfReference target)
   match declaration.toTemporalField? with
@@ -430,7 +430,7 @@ private def FlatModel.resolveNumericComputationExpression
         pure (.sumOfProducts checked)
     | .numeric (.field reference) => do
         let declaration ←
-          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
         if declaration.id == target then
           throw (.targetSelfReference target)
         else if declaration.toNumberField?.isSome then
@@ -456,7 +456,7 @@ private def FlatModel.resolveNumericComputationExpression
         pure (.numeric (.temporalFieldPart field part))
     | .numeric (.dateRangeBoundPart reference bound part) => do
         let declaration ←
-          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
+          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError
             .resolve
         -- The target is a Number field, so a DateRange operand can never be the target itself.
         let source : FlatDateRangeField := { id := declaration.id }
@@ -466,7 +466,7 @@ private def FlatModel.resolveNumericComputationExpression
           throw (.dateRangeBoundPartNotExposed declaration.path part)
     | .numeric (.stringLength reference) => do
         let declaration ←
-          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
         if declaration.id == target then
           throw (.targetSelfReference target)
         match declaration.toStringValueField? with
@@ -474,7 +474,7 @@ private def FlatModel.resolveNumericComputationExpression
         | none => throw (.lengthOperandNotEvaluatedString declaration.path)
     | .numeric (.stringRange reference start finish) => do
         let declaration ←
-          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
         if !validStringRange start finish then
           throw (.invalidStringRange start finish)
         match declaration.toStringValueField? with
@@ -485,7 +485,7 @@ private def FlatModel.resolveNumericComputationExpression
             pure (.numeric (.stringRange field start finish))
     | .numeric (.fieldValueAsNumber surface) => do
         let declaration ←
-          (model.resolveNonrepeatableFieldUnchecked
+          (model.resolveNonrepeatableComputationOperandUnchecked
             declaringGroup surface.reference).mapError .resolve
         if declaration.id == target then
           throw (.targetSelfReference target)
@@ -646,7 +646,7 @@ private def FlatModel.resolveDirectTargetAdmissionExpression?
     match operand with
     | .literal value => some (.literal value, false)
     | .atom (.numeric (.field reference)) =>
-        match model.resolveNonrepeatableFieldUnchecked declaringGroup reference with
+        match model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference with
         | .error _ => none
         | .ok declaration =>
             match declaration.toNumberField? with

@@ -49,7 +49,7 @@ def admitStringComputationValueField
 def elaborateStringValueField (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except StringComputationElabError FieldId := do
   let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
   admitStringComputationValueField declaration
 
 /-- Admit one already-resolved nonrepeatable Number declaration as a `FieldValueAsString` operand. -/
@@ -64,7 +64,7 @@ def elaborateNumberAsStringField (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except StringComputationElabError FieldId := do
   let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
   admitNumberAsStringField declaration
 
 /-- Whether one runtime leaf is the exact nonrepeatable String-value declaration in the model. -/
@@ -165,7 +165,7 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
   | StringExpr.literal value => pure (.literal value)
   | StringExpr.range reference start finish => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
       if !validStringRange start finish then
         throw (.invalidRange start finish)
       pure (.range (← admitStringComputationValueField declaration) start finish)

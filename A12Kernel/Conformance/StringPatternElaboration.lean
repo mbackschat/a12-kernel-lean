@@ -214,7 +214,12 @@ example :
         some (.fieldReference (.boundRepeatableReference ["Claim", "Items", "Code"])) ∧
     errorOf (elaborateStringPatternCondition compilePattern repeatableModel ["Claim"]
       { condition with field := { base := .relative 0, groups := ["Items"], field := "Code" } }) =
-        some (.fieldReference (.repeatableReference ["Claim", "Items", "Code"])) := by
+        some (.fieldReference (.repeatableReference ["Claim", "Items", "Code"])) ∧
+    diagnosticOf (elaborateStringPatternCondition compilePattern
+      repeatableModel ["Claim", "Items"] (condition)) = none ∧
+    diagnosticOf (elaborateStringPatternCondition compilePattern repeatableModel ["Claim"]
+      { condition with field := { base := .relative 0, groups := ["Items"], field := "Code" } }) =
+        some .noWildcard := by
   native_decide
 
 private def preparedCell (model : FlatModel) (field : FieldId)

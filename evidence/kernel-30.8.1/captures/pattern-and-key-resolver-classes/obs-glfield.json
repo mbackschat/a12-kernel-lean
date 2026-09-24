@@ -1,0 +1,24 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "81d1005a32a8bb9977dd8d0b910c45814f383dc8c54259ce79acba76e968c080",
+  "observations" : [ {
+    "id" : "gl-field-rowlocus-referenced",
+    "inputHash" : "49d069c1a76fed127522704d0b9e74aa5a0f78dc63d4312d33b7fd74d8ca3837",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "gl-field-rowlocus-guarded",
+    "inputHash" : "29f6025c2fdd8919b502fc5e291d49953f1a8115bafc1f500dd793b7319b2d32",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

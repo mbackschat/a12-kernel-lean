@@ -1,0 +1,511 @@
+[
+ {
+  "id": "agf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(/Item/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(/Nope/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(/Rows, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(/Item/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "agf-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllGroupsFilled(../Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(/Item/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(/Nope/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(/Rows, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(/Item/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nagf-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllGroupsFilled(../Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(/Item/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(/Nope/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(/Rows, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(/Item/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gncf-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupsNotCollectivelyFilled(../Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ngf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(/Item/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ngf-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(/Nope/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ngf-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ngf-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(/Rows, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ngf-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(/Item/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ngf-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ngf-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoGroupFilled(../Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-fixedstar-resolving",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Info*/Tag)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Nope] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-midmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Nope/Title] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Nope] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Nope] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Label] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-rowlocus",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--condition",
+   "[Note] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-outerlocus-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Rows/Note] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-outerlocus-rel",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Rows/Note] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-field-rowlocus",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--condition",
+   "AtLeastOneGroupFilled(Qty, /Item/Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-field-outerlocus",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Rows/Qty, Misc)",
+   "--code",
+   "E1"
+  ]
+ }
+]

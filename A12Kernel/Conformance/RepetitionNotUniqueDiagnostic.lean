@@ -117,6 +117,25 @@ example :
       | _ => none) = some .fieldNameNotUnique := by
   native_decide
 
+/- A model that fails validation never reaches the key's resolver projection: the refusal is the
+   model's, and no key row measures it. -/
+example :
+    let invalidModel : FlatModel :=
+      { probeModel with
+        fields := probeModel.fields.map fun declaration =>
+          if declaration.id == 4 then
+            { declaration with numericTargetConstraints := { minFractionalDigits := 1 } }
+          else declaration }
+    (match CheckedValidationCondition.fromRepetitionNotUnique invalidModel ["Probe"]
+        { firstKey := key ["Probe", "Rows"] "RowVal", restKeys := [] } with
+      | .error (.repetitionNotUnique (.model _)) => true
+      | _ => false) = true ∧
+    (match CheckedValidationCondition.fromRepetitionNotUnique invalidModel ["Probe"]
+        { firstKey := key ["Probe", "Rows"] "RowVal", restKeys := [] } with
+      | .error (.repetitionNotUnique error) => error.diagnostic?
+      | _ => none) = none := by
+  native_decide
+
 /-! ## Accepted controls
 
 Each names a shape the classes above must not claim: one key, two keys in the same repeatable group,

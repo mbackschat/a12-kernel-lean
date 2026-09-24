@@ -1,0 +1,28 @@
+[
+ {
+  "id": "gl-field-rowlocus-referenced",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Qty",
+   "--condition",
+   "AtLeastOneGroupFilled(Qty, /Item/Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "gl-field-rowlocus-guarded",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Qty",
+   "--condition",
+   "FieldFilled(Qty) And AtLeastOneGroupFilled(Note, /Item/Misc)",
+   "--code",
+   "E1"
+  ]
+ }
+]

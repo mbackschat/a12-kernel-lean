@@ -46,6 +46,9 @@ structure SurfaceRepetitionNotUniqueSemanticIndexUse where
   deriving Repr, DecidableEq
 
 inductive RepetitionNotUniqueElabError where
+  /-- The model itself failed validation, kept apart from `resolve` so a model defect never reaches
+  the key's resolver projection. -/
+  | model (error : ResolveError)
   | resolve (error : ResolveError)
   | scope (error : SingleGroupElabError)
   | duplicateKeyField (field : FieldId)
@@ -65,13 +68,13 @@ namespace RepetitionNotUniqueElabError
 
 /-- Project the measured `RepetitionNotUnique` key-admission classes. Three shapes draw one Kernel class: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group. The first two have distinct local errors; the third reaches the missing-reference-group arm in either absolute or relative spelling. A key that does not resolve draws the shared resolver's class ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)). Parallel repeatable paths remain unmapped because the two observed fixtures differ without an established discriminator.
 
-Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. Two are that boundary — a raw String key and a custom String key needing prepared checking are this theory's value-reading limits, not Kernel gates — and `incoherentCore` is the unreachable-by-construction arm. The rest are unmeasured Kernel refusals whose class this carrier has no evidence for. -/
+Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. Two are that boundary — a raw String key and a custom String key needing prepared checking are this theory's value-reading limits, not Kernel gates — `model` is routing rather than a key refusal, and `incoherentCore` is the unreachable-by-construction arm. The rest are unmeasured Kernel refusals whose class this carrier has no evidence for. -/
 def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .duplicateKeyField _ => some .duplicateParam1
   | .keyPathMismatch _ _ | .missingReferenceGroup _ =>
       some .repeatableGroupMissing
   | .resolve error => error.diagnostic?
-  | .scope _ | .unsupportedParallelRepeatableKeyPaths _ _
+  | .model _ | .scope _ | .unsupportedParallelRepeatableKeyPaths _ _
   | .unsupportedKeyKind _ _ | .rawStringValue _
   | .customStringRequiresPreparedChecking _
   | .referenceGroupNotRepeatable _ | .referenceGroupDoesNotContainKey _ _
@@ -367,7 +370,7 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
     Except RepetitionNotUniqueElabError
       (CheckedRepetitionNotUniqueSource model) :=
   match hModel : model.validate with
-  | .error error => .error (.resolve error)
+  | .error error => .error (.model error)
   | .ok () => do
       let modelWellFormed : model.validate.isOk = true := by rw [hModel]; rfl
       let firstDeclaration ← model.resolveFieldDeclarationUnchecked declaringGroup

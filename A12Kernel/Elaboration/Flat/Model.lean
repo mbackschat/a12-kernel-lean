@@ -622,12 +622,23 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
           | some declaration => pure declaration
           | none => throw (.invalidEntity reference)
 
-/-- Resolve a nonrepeatable declaration after a caller has validated the model. This is shared by checked condition and computation-expression lowering. -/
+/-- Resolve a nonrepeatable operand of a condition after a caller has validated the model.
+`declaringGroup` is the reading rule's group, so an operand that group already iterates is refused
+as this fragment's boundary rather than as the missing wildcard. -/
 def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
   (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatableAt
     (model.repeatableScopeForGroupPath declaringGroup)
+
+/-- Resolve a nonrepeatable operand of a computation after a caller has validated the model. A
+computation binds its operands by its target's scope rather than by the group declaring it
+([`spec/09`](../../../spec/09-computations.md)), and these carriers' targets are fixed, so a
+repeatable operand is refused as unbound wherever the computation is declared. -/
+def FlatModel.resolveNonrepeatableComputationOperandUnchecked (model : FlatModel)
+    (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
+    Except ResolveError FlatFieldDecl := do
+  (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatable
 
 /-- Resolve one structured field path against a validated expanded model while preserving its repeatable scope for a later elaborator. -/
 def FlatModel.resolveFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)

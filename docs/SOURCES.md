@@ -697,7 +697,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-starred-group-value-count-classes"></a>
 - [A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted there](sources/static-admission-and-class-probes.md#src-starred-group-value-count-classes)
 <a id="src-pattern-and-key-resolver-classes"></a>
-- [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a pattern field read from the rule that iterates it is admitted](sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)
+- [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a field read from the rule that iterates it is admitted on the pattern and group-list carriers](sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)
 <a id="src-group-operand-resolution-classes"></a>
 - [A group operand that does not resolve draws the class of the segment that missed, fixed or starred](sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)
 <a id="src-short-name-ambiguity-every-carrier"></a>
