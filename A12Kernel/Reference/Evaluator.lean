@@ -193,6 +193,9 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   -- input always had.
   | .boundRepeatableReference path =>
       .make .repeatableReference referenceLocation (pathDetails path)
+  -- Produced only by computation resolvers; a repeatable read keeps the public code it always had.
+  | .unboundOperandLevel path _ =>
+      .make .repeatableReference referenceLocation (pathDetails path)
 
 private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .resolve error => pure (resolveDiagnosticAt "$.condition" error)

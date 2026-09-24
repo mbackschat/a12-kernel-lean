@@ -1,0 +1,87 @@
+[
+ {
+  "id": "nlenhb",
+  "verb": "computation",
+  "args": ["add", "nlenhb.json", "--dry-run"]
+ },
+ {
+  "id": "nlenout",
+  "verb": "computation",
+  "args": ["add", "nlenout.json", "--dry-run"]
+ },
+ {
+  "id": "nfvnhb",
+  "verb": "computation",
+  "args": ["add", "nfvnhb.json", "--dry-run"]
+ },
+ {
+  "id": "nfvnout",
+  "verb": "computation",
+  "args": ["add", "nfvnout.json", "--dry-run"]
+ },
+ {
+  "id": "nlendeephb",
+  "verb": "computation",
+  "args": ["add", "nlendeephb.json", "--dry-run"]
+ },
+ {
+  "id": "scopyhb",
+  "verb": "computation",
+  "args": ["add", "scopyhb.json", "--dry-run"]
+ },
+ {
+  "id": "scopyout",
+  "verb": "computation",
+  "args": ["add", "scopyout.json", "--dry-run"]
+ },
+ {
+  "id": "scathb",
+  "verb": "computation",
+  "args": ["add", "scathb.json", "--dry-run"]
+ },
+ {
+  "id": "scatout",
+  "verb": "computation",
+  "args": ["add", "scatout.json", "--dry-run"]
+ },
+ {
+  "id": "sfvshb",
+  "verb": "computation",
+  "args": ["add", "sfvshb.json", "--dry-run"]
+ },
+ {
+  "id": "sfvsout",
+  "verb": "computation",
+  "args": ["add", "sfvsout.json", "--dry-run"]
+ },
+ {
+  "id": "sdeephb",
+  "verb": "computation",
+  "args": ["add", "sdeephb.json", "--dry-run"]
+ },
+ {
+  "id": "sselfhb",
+  "verb": "computation",
+  "args": ["add", "sselfhb.json", "--dry-run"]
+ },
+ {
+  "id": "sselfrevhb",
+  "verb": "computation",
+  "args": ["add", "sselfrevhb.json", "--dry-run"]
+ },
+ {
+  "id": "grephb",
+  "verb": "computation",
+  "args": ["add", "grephb.json", "--dry-run"]
+ },
+ {
+  "id": "grepout",
+  "verb": "computation",
+  "args": ["add", "grepout.json", "--dry-run"]
+ },
+ {
+  "id": "grepinhb",
+  "verb": "computation",
+  "args": ["add", "grepinhb.json", "--dry-run"]
+ }
+]

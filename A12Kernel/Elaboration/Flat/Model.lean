@@ -231,6 +231,17 @@ def FlatModel.repeatableScopeForGroupPath (model : FlatModel) (groupPath : Group
     (model.repeatableGroups.find? fun group =>
       group.path == groupPath.take (offset + 1)).map (·.level)
 
+/-- The first operand's outermost unbound level, for a list of operand binding scopes read by an
+    evaluation that binds none of them. Which operand decides when two would draw different classes
+    is not measured; this takes the first in authored order. -/
+def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup : GroupPath)
+    (scopes : List (List RepeatableLevel)) : Option UnboundOperandLevel :=
+  (scopes.findSome? List.head?).map fun level =>
+    { level
+      boundByDeclaringGroup := (model.repeatableScopeForGroupPath declaringGroup).contains level
+      indexKeyed := model.repeatableGroups.any fun group =>
+        group.level == level && group.indexField.isSome }
+
 private def repeatableScopeMismatch? (model : FlatModel) :
     List FlatFieldDecl →
       Option (List String × List RepeatableLevel × List RepeatableLevel)
@@ -634,11 +645,16 @@ def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
 /-- Resolve a nonrepeatable operand of a computation after a caller has validated the model. A
 computation binds its operands by its target's scope rather than by the group declaring it
 ([`spec/09`](../../../spec/09-computations.md)), and these carriers' targets are fixed, so a
-repeatable operand is refused as unbound wherever the computation is declared. -/
+repeatable operand is refused wherever the computation is declared, with the class its outermost
+level's binder selects
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def FlatModel.resolveNonrepeatableComputationOperandUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
-  (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatable
+  let declaration ← model.resolveFieldDeclarationUnchecked declaringGroup reference
+  match model.firstUnboundOperandLevel? declaringGroup [declaration.repeatableScope] with
+  | none => pure declaration
+  | some unbound => throw (.unboundOperandLevel declaration.path unbound)
 
 /-- Resolve one structured field path against a validated expanded model while preserving its repeatable scope for a later elaborator. -/
 def FlatModel.resolveFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)

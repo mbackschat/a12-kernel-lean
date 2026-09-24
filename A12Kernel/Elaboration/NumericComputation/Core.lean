@@ -140,13 +140,16 @@ def targetDiagnostic? :
   | .targetSelfReferenceAfterScale _ => some .errorReferenceToCalculatedField
   | _ => none
 
-/-- Project the per-row operand gate, whether this arm asked it or an entity list's shape did. The
+/-- Project the per-row operand gate, whether this arm, an operand's resolver or an entity list's
+    shape asked it. The
     target repeats at no level on this arm, so which class a per-row read draws is decided by who
     binds its outermost level
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def iterationDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .unboundOperandLevel unbound
+  | .resolve (.unboundOperandLevel _ unbound)
+  | .groupReference (.unboundOperandLevel _ unbound)
   | .aggregate (.shape (.unboundOperandLevel unbound))
   | .tokenValueCount (.source (.shape (.unboundOperandLevel unbound)))
   | .booleanValueCount (.shape (.unboundOperandLevel unbound)) => some unbound.diagnostic
@@ -571,7 +574,9 @@ private def FlatModel.resolveNumericComputationAtoms
     | .numeric (.filledGroupCount operands) => do
         match SurfaceGroupCountOperand.fixedOnly? operands with
         | some surfaces => do
-            let groups ← model.resolveFixedGroupReferences declaringGroup surfaces
+            -- Each operand's per-row class answers when it resolves, so ahead of the arity
+            -- minimum as the Kernel orders them.
+            let groups ← surfaces.mapM (model.resolveFixedTargetGroupReference declaringGroup)
               |>.mapError NumericComputationElabError.groupReference
             -- The arity minimum governs the unstarred form only. A list carrying a star takes the
             -- branch below, where one operand is a complete list; both halves are measured.
@@ -588,20 +593,23 @@ private def FlatModel.resolveNumericComputationAtoms
             let checked ← operands.mapM fun operand =>
               match operand with
               | .fixed reference => do
-                  let resolved ← model.resolveFixedGroupReference declaringGroup reference
+                  let resolved ← model.resolveFixedTargetGroupReference declaringGroup reference
                     |>.mapError NumericComputationElabError.groupReference
                   pure (CheckedGroupCountOperand.fixed resolved)
-              | .starred path =>
-                  match elaborateStarredGroupOperandSource model declaringGroup path with
-                  | .error error =>
-                      throw (NumericComputationElabError.starredGroupCountPlan error)
-                  | .ok (.terminalRepeatable source) =>
-                      pure (CheckedGroupCountOperand.starred source)
-                  -- Admitted alone, beside a fixed group, and twice on this arm too
-                  -- ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)).
-                  | .ok (.terminalPresence source) =>
-                      pure (CheckedGroupCountOperand.starredPresence source)
-            model.requireOperandLevelsBound declaringGroup (checked.map (·.bindingScope))
+              | .starred path => do
+                  let checked ← match elaborateStarredGroupOperandSource model declaringGroup path with
+                    | .error error =>
+                        throw (NumericComputationElabError.starredGroupCountPlan error)
+                    | .ok (.terminalRepeatable source) =>
+                        pure (CheckedGroupCountOperand.starred source)
+                    -- Admitted alone, beside a fixed group, and twice on this arm too
+                    -- ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)).
+                    | .ok (.terminalPresence source) =>
+                        pure (CheckedGroupCountOperand.starredPresence source)
+                  -- Judged where it resolves, as a fixed operand is, so the first per-row operand
+                  -- in authored order decides the class whichever form it takes.
+                  model.requireOperandLevelsBound declaringGroup [checked.bindingScope]
+                  pure checked
             -- Containment reaches every member whichever side carries the star, and it runs
             -- **before** rootness: a root beside its own descendant draws the overlap class, and
             -- the root class is what remains for a root beside a disjoint operand. Both gates and

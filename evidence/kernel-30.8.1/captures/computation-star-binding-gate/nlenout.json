@@ -1,0 +1,5 @@
+{
+ "computedField": "/Probe/Out/Free",
+ "alternatives": [{"operation": "Length(/Probe/Batches/BFreeS)"}],
+ "messages": [{"locale": "en_US", "text": "m"}]
+}

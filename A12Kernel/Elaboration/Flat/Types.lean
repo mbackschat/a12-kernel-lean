@@ -373,6 +373,26 @@ inductive RequirednessScope where
   | relativeTo (groupPath : GroupPath)
   deriving Repr, DecidableEq
 
+/-- A repeatable level an operand leaves for its evaluation to bind, on an arm whose target repeats
+    at no level, so nothing the target does can bind it. The Kernel classes the refusal by who binds
+    the operand list's outermost such level
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+structure UnboundOperandLevel where
+  level : RepeatableLevel
+  /-- The repeatable declaring group binds the level, which makes the operand a per-row read. -/
+  boundByDeclaringGroup : Bool
+  /-- The level's group declares an index field. -/
+  indexKeyed : Bool
+  deriving Repr, DecidableEq
+
+/-- The containment class for a per-row read, then the index class, then the missing-star class.
+    The index class is measured only where nothing binds the read's outermost level; under a bound
+    outer level a keyed deeper one draws the missing-star class, which no arm here reaches. -/
+def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStaticDiagnostic :=
+  if unbound.boundByDeclaringGroup then .fieldNotInRuleGroup
+  else if unbound.indexKeyed then .errorFieldNoIndex
+  else .noWildcard
+
 inductive ResolveError where
   | invalidModelPath (path : List String)
   | duplicateFieldId (id : FieldId)
@@ -428,6 +448,9 @@ inductive ResolveError where
   | ambiguousEntity (path : List String)
   | shortNameNotUnique (name : String)
   | repeatableReference (path : List String)
+  -- `unboundOperandLevel`: a computation operand whose repeatable levels a fixed target cannot bind,
+  -- carrying what selects the Kernel's class. `repeatableReference` stays the condition resolvers'.
+  | unboundOperandLevel (path : List String) (unbound : UnboundOperandLevel)
   -- `boundRepeatableReference`: a repeatable operand whose every level the reading rule already
   -- iterates, refused by a fragment that reads nonrepeatable operands only. The Kernel admits that
   -- read, so this is the fragment's boundary rather than `repeatableReference`'s missing wildcard.
@@ -446,6 +469,8 @@ An unstarred repeatable operand read from a rule locus that does not iterate its
 shared missing-wildcard class. From a locus that iterates every level of it the Kernel admits the
 read, so a fragment refusing it reports `boundRepeatableReference`, which carries no class
 ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
+A computation operand into a fixed target reports `unboundOperandLevel` instead, whose class the
+binder of its outermost level selects.
 
 **This is the one projection that keeps a wildcard, deliberately.** Elsewhere a `_ => none` arm is
 the anti-pattern this estate sweeps out, because it silently absorbs a form a later change adds and
@@ -466,6 +491,7 @@ a computation
 ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
+  | .unboundOperandLevel _ unbound => some unbound.diagnostic
   | .invalidEntity _ => some .invalidEntity
   | .unknownRootGroup _ => some .invalidRootGroup
   | .aboveRoot _ => some .tooManyParentGroups

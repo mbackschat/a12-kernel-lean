@@ -143,37 +143,6 @@ def bindingScope : ResolvedFieldEntityOperand model → List RepeatableLevel
 
 end ResolvedFieldEntityOperand
 
-/-- A repeatable level an operand leaves for its evaluation to bind, on an arm whose target repeats
-    at no level, so nothing the target does can bind it. The Kernel classes the refusal by who binds
-    the operand list's outermost such level
-    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
-structure UnboundOperandLevel where
-  level : RepeatableLevel
-  /-- The repeatable declaring group binds the level, which makes the operand a per-row read. -/
-  boundByDeclaringGroup : Bool
-  /-- The level's group declares an index field. -/
-  indexKeyed : Bool
-  deriving Repr, DecidableEq
-
-/-- The containment class for a per-row read, then the index class, then the missing-star class.
-    The index class is measured only where nothing binds the read's outermost level; under a bound
-    outer level a keyed deeper one draws the missing-star class, which no arm here reaches. -/
-def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStaticDiagnostic :=
-  if unbound.boundByDeclaringGroup then .fieldNotInRuleGroup
-  else if unbound.indexKeyed then .errorFieldNoIndex
-  else .noWildcard
-
-/-- The first operand's outermost unbound level, for a list of operand binding scopes read by an
-    evaluation that binds none of them. Which operand decides when two would draw different classes
-    is not measured; this takes the first in authored order. -/
-def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup : GroupPath)
-    (scopes : List (List RepeatableLevel)) : Option UnboundOperandLevel :=
-  (scopes.findSome? List.head?).map fun level =>
-    { level
-      boundByDeclaringGroup := (model.repeatableScopeForGroupPath declaringGroup).contains level
-      indexKeyed := model.repeatableGroups.any fun group =>
-        group.level == level && group.indexField.isSome }
-
 /-- The fixed and starred shapes an authored group-scope slot can take, shared by every carrier that retains one. A starred path preserves whether its terminal group is repeatable or ordinary. Every shape retains the **authored** reference: the wildcard gate reads the authored path, so a group operand and its written-out expansion are two different models and lowering one into the other can emit a model the Kernel refuses. -/
 inductive CheckedEntityGroupSource (model : FlatModel) where
   | fixed (reference : ResolvedGroupReference)

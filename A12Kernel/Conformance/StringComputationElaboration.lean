@@ -156,6 +156,10 @@ private def coreOf
     Option StringExpr :=
   result.toOption.map (·.core)
 
+/-- The fixture's repeatable `Rows`, read from the nonrepeatable `Form`, which declares no index. -/
+private def unboundRows : UnboundOperandLevel :=
+  { level := 10, boundByDeclaringGroup := false, indexKeyed := false }
+
 private def errorOf
     (result : Except StringComputationElabError (CheckedStringExpr model)) :
     Option StringComputationElabError :=
@@ -268,7 +272,7 @@ example :
         some (.resolve (.invalidEntity (bare "Missing"))) ∧
     errorOf (elaborateStringExpr model ["Form"]
       (.range (absolute ["Form", "Rows"] "Text") 0 3)) =
-        some (.resolve (.repeatableReference repeatedText.path)) := by
+        some (.resolve (.unboundOperandLevel repeatedText.path unboundRows)) := by
   native_decide
 
 /- Once the field shape resolves, malformed bounds precede String-kind admission. -/
@@ -323,7 +327,7 @@ example :
         some (.fieldKindMismatch amount.path .number) ∧
       errorOf (elaborateStringExpr model ["Form"]
         (.field (absolute ["Form", "Rows"] "Text"))) =
-        some (.resolve (.repeatableReference repeatedText.path)) := by
+        some (.resolve (.unboundOperandLevel repeatedText.path unboundRows)) := by
   native_decide
 
 /- Target lowering retains the exact declaration-owned policy, and target checking measures normalized CRLF while preserving the attempted literal payload. -/

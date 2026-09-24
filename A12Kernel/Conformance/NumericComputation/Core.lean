@@ -7,6 +7,10 @@ namespace A12Kernel.Conformance.NumericComputation.Core
 open A12Kernel
 open A12Kernel.Conformance.NumericComputation.Support
 
+/-- The fixture's repeatable `Rows`, read from the nonrepeatable root, which declares no index. -/
+private def unboundRows : UnboundOperandLevel :=
+  { level := 10, boundByDeclaringGroup := false, indexKeyed := false }
+
 private def targetDiagnosticOf
     (error? : Option NumericComputationElabError) :
     Option KernelStaticDiagnostic :=
@@ -193,7 +197,7 @@ example :
       checkedErrorOf targetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
       checkedErrorOf groupedTargetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
       checkedErrorOf targetThenRepeatable =
-        some (.resolve (.repeatableReference ["Root", "Rows", "Repeated"])) ∧
+        some (.resolve (.unboundOperandLevel ["Root", "Rows", "Repeated"] unboundRows)) ∧
       checkedErrorOf sameTarget = some (.targetSelfReference targetId) ∧
       checkedErrorOf twoDivisions = some (.targetSelfReference targetId) ∧
       checkedErrorOf stringLengthTarget =
@@ -501,7 +505,7 @@ example :
     checkedErrorOf (surfaceField ["Root"] "Wrong") =
         some (.operandNotNumber wrong.path) ∧
       checkedErrorOf (surfaceField ["Root", "Rows"] "Repeated") =
-        some (.resolve (.repeatableReference repeated.path)) ∧
+        some (.resolve (.unboundOperandLevel repeated.path unboundRows)) ∧
       checkedErrorOf (.literal { value := 1, authoredScale := 0 }) wrongId =
         some (.targetNotNumber wrongId) := by
   native_decide
