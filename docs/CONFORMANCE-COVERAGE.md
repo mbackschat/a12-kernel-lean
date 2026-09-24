@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-09-23; HEAD was `dda7ce3a`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-09-24; HEAD was `0b62e75f`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -66,7 +66,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | records | share |
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 211 | 100% |
-| Citing a Kernel checkpoint or calibration | 117 | 55% |
+| Citing a Kernel checkpoint or calibration | 118 | 55% |
 | Carrying an explicit evidence-pending note | 54 | 25% |
 
 ## Axis 3 — open obligation load
@@ -87,7 +87,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 211652 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 211737 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8717 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -97,7 +97,7 @@ Tracked Lean files in neither estate: 0. A nonzero value means the ratio above m
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 202 |
+| Retained capture directories under `../evidence/` | 203 |
 | `inputHash` markers in `*-obs.json` and `semantic-observations.json` | 512 |
 
 The marker count excludes other observation formats, including runtime `artifact.json` files with `rows` arrays. It is neither a total observation count nor a count of independent behavioural discriminators.
@@ -170,4 +170,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-09-22T00:41:01+02:00 | `c7573039` | 489 | 455 | 6 | 118 | 23 |
 | 2026-09-23T22:35:42+02:00 | `2c2f4c36` | 489 | 455 | 6 | 117 | 23 |
 | 2026-09-23T23:20:43+02:00 | `a4a91200` | 489 | 456 | 6 | 117 | 23 |
+| 2026-09-23T23:55:50+02:00 | `0b62e75f` | 489 | 456 | 6 | 118 | 23 |
 <!-- velocity-history:end -->

@@ -156,6 +156,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `boundary`: Bounded group-qualified star and correlation paths lower to named scopes/environments
 - `owner`: [`StarPath.lean`](../../A12Kernel/Elaboration/StarPath.lean), [`StarAddressing.lean`](../../A12Kernel/Semantics/StarAddressing.lean)
 - `assurance`: E/P closed for admitted shapes; selected C/X/Q
+- `assurance`: a starred field path is judged in the Kernel's segment order: a star on a declared nonrepeatable segment, a field included, answers `MVK_INVALID_WILDCARD` ahead of a later miss, and a segment naming nothing answers the resolver's class ahead of its own star. `StarPathElabError.diagnostic?` projects both through the shared entity shape, measured on four entity-list carriers ([checkpoint](../sources/static-admission-and-class-probes.md#src-starred-path-segment-order)).
 - `remains`: Wider nesting/legality: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
 <a id="cap-rulegroup-and-index-routes"></a>

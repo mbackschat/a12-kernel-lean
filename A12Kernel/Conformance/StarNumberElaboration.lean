@@ -636,6 +636,25 @@ example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Note"] 
 example : entityDiagnostic .minimum (starOperand "Amount") = none := by
   native_decide
 
+/-- A starred path's own refusals reach the aggregate through the shared shape: the resolver's three
+    name classes, and a star on a nonrepeatable segment, which answers ahead of a later miss. `Sum`,
+    `MaxValue`, `FirstFilledValue` and `FieldValuesNotUnique` gave one answer per row
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)). -/
+example :
+    let star (groups : List SurfaceStarGroupSegment) (field : String) (base := PathBase.absolute) :
+        SurfaceFieldEntityOperand := .star { base, groups, field }
+    let items : List SurfaceStarGroupSegment :=
+      [{ name := "Sections", starred := true }, { name := "Items", starred := true }]
+    entityDiagnostic .sum (star ({ name := "Shop" } :: items) "Nope") = some .invalidEntity ∧
+    entityDiagnostic .sum (star ({ name := "Nope" } :: items) "Amount") = some .invalidRootGroup ∧
+    entityDiagnostic .sum (star items "Amount" (.relative 1)) = some .tooManyParentGroups ∧
+    entityDiagnostic .sum (star ({ name := "Shop", starred := true } :: items) "Amount") =
+      some .invalidWildcard ∧
+    entityDiagnostic .maximum
+        (star [{ name := "Shop", starred := true }, { name := "Nope" }] "Amount") =
+      some .invalidWildcard := by
+  native_decide
+
 /-- `Sum` draws its own domain class for a starred String in every position, not the extrema's
     ordering class ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). -/
 example :

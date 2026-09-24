@@ -90,6 +90,33 @@ example :
     errorOf (relativeSource false false) = some (.missingWildcard amount.path) := by
   native_decide
 
+/- The gates run segment by segment, a segment's name before its star, so the earlier defective segment
+   answers: a star on a fixed group, on the root, or on a field read as a group outranks a later miss,
+   while a missing segment outranks its own star and every later one
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)).
+   The mismatched turning point is not a measured row; it is the order's consequence for the one
+   segment read before the groups. -/
+example :
+    let path (base : PathBase) (groups : List SurfaceStarGroupSegment) (field : String) :
+        SurfaceStarFieldPath := { base, groups, field }
+    let missBeforeStar := path .absolute
+      [segment "Shop", segment "Nope" true, segment "Sections" true, segment "Items" true] "Amount"
+    let turned := { path (.relative 3) [segment "Catalog" true] "Amount" with
+      turningPoint := some "Nope" }
+    errorOf (path (.relative 3) [segment "Catalog" true] "Nope") =
+      some (.wildcardOnNonrepeatable ["Shop", "Catalog"]) ∧
+    errorOf (path .absolute [segment "Shop" true, segment "Nope"] "Amount") =
+      some (.wildcardOnNonrepeatable ["Shop"]) ∧
+    errorOf (path .absolute [segment "Shop", segment "Catalog", segment "Sections" true,
+        segment "Items" true, segment "Amount" true] "Nope") =
+      some (.wildcardOnNonrepeatable ["Shop", "Catalog", "Sections", "Items", "Amount"]) ∧
+    errorOf missBeforeStar = some (.resolve (.invalidEntity missBeforeStar.toFieldPath)) ∧
+    errorOf (path .absolute [segment "Nope" true, segment "Catalog"] "Amount") =
+      some (.resolve (.unknownRootGroup
+        (path .absolute [segment "Nope" true, segment "Catalog"] "Amount").toFieldPath)) ∧
+    errorOf turned = some (.resolve (.invalidEntity turned.toFieldPath)) := by
+  native_decide
+
 /- Zero capacity is rejected by the shared topology invariant during checked lowering. -/
 example :
     let zeroItems := { items with repeatability := some 0 }

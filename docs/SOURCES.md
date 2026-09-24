@@ -681,6 +681,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+<a id="src-starred-path-segment-order"></a>
+- [A starred path is judged segment by segment, so a star on a nonrepeatable segment outranks a later miss and a miss outranks its own star](sources/static-admission-and-class-probes.md#src-starred-path-segment-order)
 <a id="src-resolver-failure-classes-every-carrier"></a>
 - [A field name that does not resolve draws one of three classes on every carrier asked, and the root class turns on the first segment](sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)
 <a id="src-entity-list-kind-empty-and-root-carriers"></a>

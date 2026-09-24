@@ -40,6 +40,7 @@ The two-tier mechanism and both flag arms are locked in a12-dmkits' [`ShortNameR
 ## 3. The asterisk and `$`
 
 - The **asterisk `*` flattens** a repeatable group into the list of its rows. **If an outer repeatable group uses `*`, every repeatable group below it in the path must also use `*`** (you cannot flatten an outer level while pinning an inner one).
+- **A star may land only on a repeatable group.** On a fixed group, the root, or a field it is refused with `MVK_INVALID_WILDCARD`. That refusal answers ahead of the slot's own wildcard gate and ahead of a later segment that names nothing, so a starred fixed group followed by an unknown leaf draws it. The [starred-path checkpoint](../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order) owns the matrix.
 - The **`$`** operator switches resolution to the complete captured outer repetition environment. The marked reference's resolved group/path selects the corresponding level's coordinate, so parent and nested-descendant `$` references may resolve through different row coordinates; correspondingly, `CurrentRepetition` over those paths may yield different indices. `$` may be used **only inside a filter condition**, and not every reference in the filter may be `$`-marked ([§9](07-repetition-and-iteration.md)).
 
 (How a star *binds* the enclosing indices — the anchor rules — is [§9 part 4](07-repetition-and-iteration.md#4-where-a-star-binds--the-anchor-rules-); this section is only about the *path syntax* constraints.)
@@ -81,7 +82,7 @@ Index-key identity belongs to the declared index field. For a **Number** index f
 - [ ] Keyword-named segments quoted; `RuleGroup` = the rule's group and counts as an error-field reference; its ordinary semantic-index suffix requires an index field, and no `*` is allowed on it.
 - [ ] A star on a `..` step is rejected (`MVK_INVALID_WILDCARD_REL`) — force absolute for that ancestor repetition; a later named segment after `../` may be starred.
 - [ ] Bare-name resolution: declaring group → flag-gated model-wide unique field lookup (distinct not-unique error, never a silent pick), with no implicit ancestor walk; `..Name` name is a validation label only.
-- [ ] `*` flatten requires every lower repeatable level to also `*`.
+- [ ] `*` flatten requires every lower repeatable level to also `*`; a star on a fixed group, the root, or a field is refused (`MVK_INVALID_WILDCARD`) ahead of a later segment's miss.
 - [ ] **No positional row addressing**; `CurrentRepetition` produces a numeric value by reading the named level from the selected candidate/outer environment; semantic index `[Field For key]` is the sole row selector, with its unsupported-combination restrictions.
 - [ ] Semantic-index no-match = **empty** (not unknown); presence on absence = FALSE ⇒ `FieldNotFilled(X For "k")` fires; malformed matched cell / invalid key = UNKNOWN.
 - [ ] Validation reads **per lookup**; compute reads **per column** (stricter).

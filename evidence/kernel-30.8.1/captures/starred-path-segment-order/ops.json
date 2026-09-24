@@ -1,0 +1,834 @@
+[
+ {
+  "id": "sum-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-nestctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Detail/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-absmissbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Item/Rows*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-absroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Nope/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Nope*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Nope/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-missthenstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Nope*/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Info*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Info*/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-nestfixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Rows*/Detail*/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-rootstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Item*/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-rootstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(/Item*/Nope/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Title*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sum-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(../Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-nestctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Rows*/Detail/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Rows*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-absmissbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(/Item/Rows*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-absroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(/Nope/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Nope*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Nope/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-missthenstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Rows*/Nope*/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Info*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Info*/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-nestfixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Rows*/Detail*/Amount) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-rootstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(/Item*/Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-rootstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(/Item*/Nope/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(Title*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "max-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MaxValue(../Rows*/Qty) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Rows*/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-nestctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Rows*/Detail/Amount, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Rows*/Nope, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-absmissbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Item/Rows*/Nope, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-absroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Nope/Rows*/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Rows*/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Nope*/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Nope/Rows*/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-missthenstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Rows*/Nope*/Amount, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Info*/Nope, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Info*/Amount, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-nestfixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Rows*/Detail*/Amount, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-rootstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Item*/Rows*/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-rootstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(/Item*/Nope/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Title*/Nope, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "ffv-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(../Rows*/Qty, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Rows*/Qty)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-nestctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Rows*/Detail/Amount)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Rows*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-absmissbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(/Item/Rows*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-absroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(/Nope/Rows*/Qty)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(/Rows*/Qty)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Nope*/Qty)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Nope/Rows*/Qty)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-missthenstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Rows*/Nope*/Amount)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Info*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Info*/Amount)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-nestfixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Rows*/Detail*/Amount)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-rootstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(/Item*/Rows*/Qty)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-rootstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(/Item*/Nope/Qty)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(Title*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "fvnu-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldValuesNotUnique(../Rows*/Qty)",
+   "--code",
+   "E1"
+  ]
+ }
+]

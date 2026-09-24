@@ -304,6 +304,16 @@ inductive StarPathElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+/-- The classes a starred path owns whichever carrier reads it: the resolver's name-failure classes,
+and a star landing on anything but a repeatable group, which pre-empts every slot's own wildcard gate.
+The two missing-star arms stay with the carrier, because the class a missing star draws is the
+slot's and differs between carriers
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)). -/
+def StarPathElabError.diagnostic? : StarPathElabError → Option KernelStaticDiagnostic
+  | .resolve error => error.diagnostic?
+  | .wildcardOnNonrepeatable _ => some .invalidWildcard
+  | _ => none
+
 /-- One field declaration and general star plan certified against the same validated model. -/
 structure CheckedStarFieldPath (model : FlatModel) where
   declaration : FlatFieldDecl
@@ -417,16 +427,18 @@ private structure MarkedStarAxis where
   axis : StarAxis
   starred : Bool
 
-private def firstInvalidWildcard? (model : FlatModel) :
-    GroupPath → List SurfaceStarGroupSegment → Option GroupPath
+/-- The first starred segment naming a declared group or field that is not a repeatable group,
+    scanned only while every segment names something, because a segment's name is read before its star
+    and a segment naming nothing stops the walk. Every planner caller has resolved the path already, so
+    there it reaches every segment; a starred path's lookup miss asks it of the prefix that resolves. -/
+private def firstStarOnNamedNonrepeatable? (model : FlatModel) :
+    GroupPath → List SurfaceStarGroupSegment → Option (List String)
   | _, [] => none
   | pathPrefix, segment :: rest =>
       let path := pathPrefix ++ [segment.name]
-      if segment.starred &&
-          !model.repeatableGroups.any (fun group => group.path == path) then
-        some path
-      else
-        firstInvalidWildcard? model path rest
+      if !(model.hasGroupPath path || model.fields.any (·.path == path)) then none
+      else if segment.starred && !model.repeatableGroups.any (·.path == path) then some path
+      else firstStarOnNamedNonrepeatable? model path rest
 
 private def markedAxes (model : FlatModel) :
     GroupPath → List SurfaceStarGroupSegment → List MarkedStarAxis
@@ -478,7 +490,7 @@ private def planFromMarkedAxes (marked : List MarkedStarAxis)
 def elaborateStarPathPlan (model : FlatModel) (basePath : GroupPath)
     (groups : List SurfaceStarGroupSegment) (targetPath : List String) :
     Except StarPathElabError CheckedStarPlan :=
-  match firstInvalidWildcard? model basePath groups with
+  match firstStarOnNamedNonrepeatable? model basePath groups with
   | some path => .error (.wildcardOnNonrepeatable path)
   | none =>
       let baseSegments := basePath.map fun name => ({ name } : SurfaceStarGroupSegment)
@@ -584,7 +596,7 @@ theorem elaborateStarPathPlan_ancestry (model : FlatModel) (basePath : GroupPath
     plan.path.axes.map (·.level) =
       model.repeatableScopeForGroupPath (basePath ++ groups.map (·.name)) := by
   unfold elaborateStarPathPlan at success
-  cases hWildcard : firstInvalidWildcard? model basePath groups with
+  cases hWildcard : firstStarOnNamedNonrepeatable? model basePath groups with
   | some path => simp [hWildcard] at success
   | none =>
       simp only [hWildcard] at success
@@ -601,7 +613,7 @@ theorem elaborateStarPathPlan_never_incoherentCore (model : FlatModel)
     (targetPath : List String) :
     elaborateStarPathPlan model basePath groups targetPath ≠ .error .incoherentCore := by
   unfold elaborateStarPathPlan
-  cases hWildcard : firstInvalidWildcard? model basePath groups with
+  cases hWildcard : firstStarOnNamedNonrepeatable? model basePath groups with
   | some path => simp
   | none =>
       simpa using
@@ -610,6 +622,39 @@ theorem elaborateStarPathPlan_never_incoherentCore (model : FlatModel)
             (basePath.map (fun name => ({ name } : SurfaceStarGroupSegment)) ++ groups))
           targetPath
 
+/-- Resolve the field a starred path names, answering in the Kernel's segment order. Only a lookup
+    miss can follow a readable star: the declaring group, the path's shape and the parent steps are
+    judged before any group segment, an unknown root is the first segment missing, and model
+    validation refuses the duplicate declaration behind an ambiguous one. So a miss is re-read for an
+    earlier star landing on a nonrepeatable segment, which answers first
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)). -/
+private def starredMissError (model : FlatModel) (declaringGroup : GroupPath)
+    (source : SurfaceStarFieldPath) (reference : SurfaceFieldPath) : StarPathElabError :=
+  let base? := match source.base with
+    | .absolute => some []
+    | .relative parents =>
+        (GroupPath.walkUp declaringGroup parents).toOption.filter
+          (GroupPath.matchesTurningPoint · source.turningPoint)
+  match base?.bind (firstStarOnNamedNonrepeatable? model · source.groups) with
+  | some path => .wildcardOnNonrepeatable path
+  | none => .resolve (.invalidEntity reference)
+
+private def resolveStarFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)
+    (source : SurfaceStarFieldPath) : Except StarPathElabError FlatFieldDecl :=
+  match model.resolveFieldDeclarationUnchecked declaringGroup source.toFieldPath with
+  | .ok declaration => .ok declaration
+  | .error (.invalidEntity reference) =>
+      .error (starredMissError model declaringGroup source reference)
+  | .error error => .error (.resolve error)
+
+private theorem resolveStarFieldDeclaration_resolved
+    {model : FlatModel} {declaringGroup : GroupPath} {source : SurfaceStarFieldPath}
+    {declaration : FlatFieldDecl}
+    (resolved : resolveStarFieldDeclaration model declaringGroup source = .ok declaration) :
+    model.resolveFieldDeclarationUnchecked declaringGroup source.toFieldPath = .ok declaration := by
+  unfold resolveStarFieldDeclaration at resolved
+  split at resolved <;> first | (cases resolved; assumption) | cases resolved
+
 /-- Resolve a legal starred field path into the exact model-owned ancestry consumed by `StarAddressing`. A relative turning point may precede later stars; the first star and every deeper repeatable level must be explicitly starred. -/
 def elaborateStarFieldPath (model : FlatModel) (declaringGroup : GroupPath)
     (source : SurfaceStarFieldPath) :
@@ -617,8 +662,7 @@ def elaborateStarFieldPath (model : FlatModel) (declaringGroup : GroupPath)
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let declaration ←
-        model.resolveFieldDeclarationUnchecked declaringGroup source.toFieldPath |>.mapError .resolve
+      let declaration ← resolveStarFieldDeclaration model declaringGroup source
       let basePath ← match source.base with
         | .absolute => pure []
         | .relative parents => GroupPath.walkUp declaringGroup parents |>.mapError .resolve
@@ -650,12 +694,12 @@ theorem elaborateStarFieldPath_declaringGroupValid
   unfold elaborateStarFieldPath at elaborated
   split at elaborated
   · cases elaborated
-  · cases hResolved :
-      model.resolveFieldDeclarationUnchecked declaringGroup source.toFieldPath with
+  · cases hResolved : resolveStarFieldDeclaration model declaringGroup source with
     | error _ =>
-        simp only [hResolved, bind, Except.bind, Except.mapError] at elaborated
+        simp only [hResolved, bind, Except.bind] at elaborated
         cases elaborated
     | ok declaration =>
-        exact FlatModel.resolveFieldDeclarationUnchecked_declaringGroupValid hResolved
+        exact FlatModel.resolveFieldDeclarationUnchecked_declaringGroupValid
+          (resolveStarFieldDeclaration_resolved hResolved)
 
 end A12Kernel
