@@ -2535,3 +2535,11 @@ Related: [[LF189]] on a case locking a channel its checkpoint never claimed, [[L
 **Replicate a peer's fixture declaration whole, including every field and capacity the selections never name.** Whatever is uncovered on every row is a constant of the matrix, and [`LF136`](LEAN-FINDINGS.md) already warns that an unnamed constant hides the variable a mechanism reads. The replica-specific trap is that trimming the constant looks like simplification, because no expected value mentions it. Before trimming a replicated model, ask what the selections leave uncovered on every row, and keep it.
 
 Related: [[LF136]] on a constant shared by every row, [[LF191]] on retaining the authored spelling rather than its class.
+
+## LF193 — a partial call covering every field reads the same group states as full validation, so a rule that differs by pass must be told the pass
+
+Under `validateFull` a formal error blocks only the negative answer of a filled-group count, so a group holding admitted content beside a malformed cell counts. Under `validatePart` the peer's `kf464` row 11 leaves the fixed-only count undecided for that same group with every field covered. The scalar evaluator saw only `GroupPresenceState`, and a fully covered partial call produces exactly the state full validation does: fully relevant, erroneous, with content. No projection of that state could answer both, and the scalar partial route silently took the full-validation answer until a whole-rule lock on row 11 reproduced it ([record](SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)). The fix names the pass in `ValidationEvaluationContext` and shares one first-instance rule between the walk and the scalar count.
+
+**When full and partial validation disagree on a value, check whether the disagreement survives full coverage before encoding it in the state.** Coverage-dependent rules fit in relevance. A rule that still differs at full coverage belongs to the pass, and the state cannot carry it.
+
+Related: [[LF192]] on the same table's fixture, [[LF116]] on reusing a mechanism across a boundary.
