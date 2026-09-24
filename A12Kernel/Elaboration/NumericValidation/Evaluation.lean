@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericValidation.Resolution
+import A12Kernel.Elaboration.PartialGroupCount
 
 /-! # Checked numeric-validation evaluation -/
 
@@ -620,7 +621,8 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
     (atom : OrderedNumericValidationAtom model)
     (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope)
-    (isRelevant : FlatRelevance) :
+    (isRelevant : FlatRelevance)
+    (resolveGroup : PartialGroupResolver) :
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
@@ -648,8 +650,25 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .result .nonRelevant => pure (.error .nonRelevant)
           | .result (.evaluated operand) =>
               pure operand.toValidationArithmetic
+  | .filledGroupCountMixed operands =>
+      -- A decided count keeps the full arm's declared extent and fillability, as the partial
+      -- aggregates keep theirs; only whether the count is decided is partial-specific.
+      match (operands.mapM CheckedGroupCountOperand.declaredExtent?).map List.sum with
+      | none => pure (.error .groupState)
+      | some extent =>
+          let document := match context.input with
+            | .legacy document _ => document
+            | .checked document | .partialView document _ =>
+                DocumentData.toDocument document.source
+          match ← CheckedGroupCountOperand.evaluatePartialWith operands scope resolveGroup
+              document context.outer with
+          | .nonRelevant => pure (.error .nonRelevant)
+          | .evaluated count =>
+              match count.availableWithFillability? extent with
+              | none => pure (.error .groupState)
+              | some available => pure (.ok (.value available.1 available.2))
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
+  | .booleanValueCount _ | .sumOfProducts _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/
@@ -657,14 +676,15 @@ def OrderedNumericComparison.evalAddressedPartial?
     (comparison : OrderedNumericComparison model)
     (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope)
-    (isRelevant : FlatRelevance) :
+    (isRelevant : FlatRelevance)
+    (resolveGroup : PartialGroupResolver) :
     Option (Except CheckedAddressingError Verdict) :=
   if comparison.supportsAddressedPartial then
     some do
       let left ← comparison.left.mapM fun atom =>
-        atom.resolveAddressedPartialUnchecked context scope isRelevant
+        atom.resolveAddressedPartialUnchecked context scope isRelevant resolveGroup
       let right ← comparison.right.mapM fun atom =>
-        atom.resolveAddressedPartialUnchecked context scope isRelevant
+        atom.resolveAddressedPartialUnchecked context scope isRelevant resolveGroup
       let resolved : NumericComparisonOf
           (Except NumericValidationUnavailable NumericArithmeticOutcome) := {
         op := comparison.op

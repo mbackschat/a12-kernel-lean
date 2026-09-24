@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.PartialGroupCount
+import A12Kernel.Elaboration.NumericValidation.Evaluation
 
 /-! # `NumberOfFilledGroups` under partial validation
 
@@ -70,9 +70,9 @@ private def carriers (model : FlatModel) : Option (List (List (CheckedGroupCount
   let stamp ← (model.resolveFixedGroupReference ["Item"] (fixedGroup "Stamp")).toOption
   pure [[.starred batchesSource], [.starredPresence sealSource], [.fixed label, .fixed stamp]]
 
-/-- Each carrier's partial count for one row of the table, in column order. -/
-private def counts (capacity : Nat) (fault : Fault) (entities : List RelevantEntityPattern) :
-    Option (List PartialValidationFilledGroupCountResult) := do
+/-- The checked document of one row and its partial preliminary. -/
+private def setup (capacity : Nat) (fault : Fault) (entities : List RelevantEntityPattern) :
+    Option (CheckedDocument (model capacity) × CheckedPartialPreliminary (model capacity)) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler (model capacity)).toOption
   let document ← (checkDocument prepared "en_US" {
@@ -80,9 +80,37 @@ private def counts (capacity : Nat) (fault : Fault) (entities : List RelevantEnt
     cells := cells fault }).toOption
   let preliminary ← (document.applyPartialGeneratedPreliminaryForScope
     (.partialSet entities)).toOption
+  pure (document, preliminary)
+
+/-- Each carrier's partial count for one row of the table, in column order. -/
+private def counts (capacity : Nat) (fault : Fault) (entities : List RelevantEntityPattern) :
+    Option (List PartialValidationFilledGroupCountResult) := do
+  let (_, preliminary) ← setup capacity fault entities
   let lists ← carriers (model capacity)
   (lists.mapM fun operands =>
     CheckedGroupCountOperand.evaluatePartial operands preliminary []).toOption
+
+/-- The lone `Batches*/Seal` carrier as the peer's rule comparison, `== 2`, through the partial
+    addressed route with the preliminary's own group slice: `some true` fired, `some false` not
+    fired, `none` UNKNOWN. -/
+private def sealRule (capacity : Nat) (fault : Fault) (entities : List RelevantEntityPattern) :
+    Option (Option Bool) := do
+  let (document, preliminary) ← setup capacity fault entities
+  let comparison ← (elaborateMixedFilledGroupCountComparison (model capacity) ["Item"]
+    [.starred sealPath] .equal 2).toOption
+  let context : AddressedValidationEvaluationContext (model capacity) := {
+    scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }
+    outer := []
+    input := .partialView document fun environment field =>
+      (document.validationAddressedCell environment field).map fun addressed => some addressed.cell }
+  let result ← comparison.core.evalAddressedPartial? context preliminary.relevance
+    (fun field => preliminary.relevance.coversField (model capacity) field [])
+    fun groupPath environment =>
+      (preliminary.groupPresenceInput groupPath environment false).mapError .group
+  match ← result.toOption with
+  | .fired _ => pure (some true)
+  | .notFired => pure (some false)
+  | .unknown => pure none
 
 private def every (path : List String) : RelevantEntityPattern :=
   RelevantEntityPattern.allInstances path
@@ -137,6 +165,15 @@ example :
         some [decided 2, decided 2, .nonRelevant],
         some [decided 2, decided 2, .nonRelevant],
         some [decided 2, decided 2, decided 2] ] := by
+  native_decide
+
+/- The partial rule route reaches the same walk: the `Seal` column's decided rows fire the peer's
+   `== 2` rule and its undecided rows are UNKNOWN, never a smaller count that would not fire. -/
+example :
+    rows.map (fun (capacity, fault, entities) => sealRule capacity fault entities) =
+      [ some (some true), some (some true), some none, some none, some (some true),
+        some (some true), some none, some none, some none, some (some true), some (some true),
+        some (some true) ] := by
   native_decide
 
 /-! ## `KF209`'s selections

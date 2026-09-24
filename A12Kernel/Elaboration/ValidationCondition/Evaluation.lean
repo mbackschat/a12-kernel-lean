@@ -134,7 +134,7 @@ def evalAddressedPartial?
       else
         pure .unknown)
   | .orderedNumeric _ comparison =>
-      comparison.evalAddressedPartial? context scope isRelevant
+      comparison.evalAddressedPartial? context scope isRelevant resolveGroup
   | .groupPresence operator reference =>
       some do
         let input ← resolveGroup reference.path context.outer

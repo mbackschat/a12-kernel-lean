@@ -41,15 +41,16 @@ private def declaredCoordinates : List StarAxis → Option (List Env)
       pure ((List.range capacity).flatMap fun index =>
         tails.map fun tail => (axis.level, index + 1) :: tail)
 
-namespace CheckedPartialPreliminary
+/-- The group-presence query a partial walk reads, answered by the call's relevance-selected slice. -/
+abbrev PartialGroupResolver :=
+  GroupPath → Env → Except CheckedAddressingError ResolvedGroupPresenceInput
 
 /-- Run the walk over one counted group. `bound` fixes the levels the enclosing evaluation binds,
     `reopened` lists the levels the operand walks, and `held` the instantiated in-capacity instances.
     `none` is an undecidable count, never zero. -/
-private def walkGroupCount (preliminary : CheckedPartialPreliminary model)
-    (groupPath : GroupPath) (bound : Env) (reopened : List StarAxis) (held : List Env)
+private def walkGroupCount (model : FlatModel) (scope : ValidationRelevanceScope)
+    (resolveGroup : PartialGroupResolver) (groupPath : GroupPath) (bound : Env) (reopened : List StarAxis) (held : List Env)
     (outer : Env) : Except CheckedAddressingError (Option Nat) := do
-  let scope := preliminary.relevance
   if !scope.coversGroupCountExtent model groupPath (bound.map (·.1))
       (reopened.map (·.level)) outer then
     return none
@@ -60,8 +61,7 @@ private def walkGroupCount (preliminary : CheckedPartialPreliminary model)
     | coordinate :: remaining => do
         let environment := bound ++ coordinate
         if held.contains environment then
-          let state := (← (preliminary.groupPresenceInput groupPath environment false).mapError
-            CheckedAddressingError.group).derive
+          let state := (← resolveGroup groupPath environment).derive
           if isFirst && (state.relevance != .fullyRelevant || state.erroneous) then
             return none
           if state.relevance == .noneRelevant then return none
@@ -72,40 +72,46 @@ private def walkGroupCount (preliminary : CheckedPartialPreliminary model)
           visit false count remaining
   visit true 0 coordinates
 
-end CheckedPartialPreliminary
-
 namespace CheckedGroupCountOperand
 
 /-- One operand's count under partial validation, or `none` when the walk leaves it undecidable. -/
-def partialCount (operand : CheckedGroupCountOperand model)
-    (preliminary : CheckedPartialPreliminary model) (outer : Env) :
+def partialCount (operand : CheckedGroupCountOperand model) (scope : ValidationRelevanceScope)
+    (resolveGroup : PartialGroupResolver) (document : Document) (outer : Env) :
     Except CheckedAddressingError (Option Nat) := do
-  let document := preliminary.index.base.source.toDocument
   match operand with
   | .fixed reference =>
       let bound ← reference.boundRepeatableScope.mapM fun level => do
         pure (level, ← (outer.bindingAt level).mapError CheckedAddressingError.environment)
-      preliminary.walkGroupCount reference.path bound [] [bound] outer
+      walkGroupCount model scope resolveGroup reference.path bound [] [bound] outer
   | .starred source => do
       let bound ← (source.path.boundEnvironment outer).mapError .addressing
       let held ← (source.path.inCapacityEnvironments document outer).mapError .addressing
-      preliminary.walkGroupCount source.group.path bound
+      walkGroupCount model scope resolveGroup source.group.path bound
         (source.path.axes.drop source.path.firstStar) held outer
   | .starredPresence source => do
       let bound ← (source.path.boundEnvironment outer).mapError .addressing
       let held ← (source.path.inCapacityEnvironments document outer).mapError .addressing
-      preliminary.walkGroupCount source.groupPath bound
+      walkGroupCount model scope resolveGroup source.groupPath bound
         (source.path.axes.drop source.path.firstStar) held outer
 
 /-- A filled-group count under partial validation: decided when every operand's walk is, counting
-    their sum. -/
-def evaluatePartial (operands : List (CheckedGroupCountOperand model))
-    (preliminary : CheckedPartialPreliminary model) (outer : Env) :
-    Except CheckedAddressingError PartialValidationFilledGroupCountResult := do
-  let counts ← operands.mapM (·.partialCount preliminary outer)
+    their sum. `resolveGroup` must answer from the same relevance-selected slice as `scope`. -/
+def evaluatePartialWith (operands : List (CheckedGroupCountOperand model))
+    (scope : ValidationRelevanceScope) (resolveGroup : PartialGroupResolver) (document : Document)
+    (outer : Env) : Except CheckedAddressingError PartialValidationFilledGroupCountResult := do
+  let counts ← operands.mapM (·.partialCount scope resolveGroup document outer)
   match counts.mapM id with
   | some each => pure (.evaluated (.value each.sum))
   | none => pure .nonRelevant
+
+/-- The same count read off one partial preliminary, which owns both the scope and the slice. -/
+def evaluatePartial (operands : List (CheckedGroupCountOperand model))
+    (preliminary : CheckedPartialPreliminary model) (outer : Env) :
+    Except CheckedAddressingError PartialValidationFilledGroupCountResult :=
+  evaluatePartialWith operands preliminary.relevance
+    (fun groupPath environment =>
+      (preliminary.groupPresenceInput groupPath environment false).mapError .group)
+    preliminary.index.base.source.toDocument outer
 
 end CheckedGroupCountOperand
 
