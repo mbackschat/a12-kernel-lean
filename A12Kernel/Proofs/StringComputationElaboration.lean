@@ -6,18 +6,18 @@ namespace A12Kernel
 
 /-- Decoded String literals pass through checked lowering unchanged. -/
 theorem elaborateStringExprCore_literal (model : FlatModel)
-    (declaringGroup : GroupPath) (value : String) :
-    elaborateStringExprCore model declaringGroup (.literal value) =
+    (declaringGroup targetGroup : GroupPath) (value : String) :
+    elaborateStringExprCore model declaringGroup targetGroup (.literal value) =
       .ok (.literal value) := by
   rfl
 
 /-- Successful `FieldValueAsString` lowering retains the dedicated coercion leaf around the resolved Number field. -/
 theorem elaborateStringExprCore_fieldValueAsString (model : FlatModel)
-    (declaringGroup : GroupPath) (reference : SurfaceFieldPath)
+    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath)
     (field : FieldId)
     (lowered :
-      elaborateNumberAsStringField model declaringGroup reference = .ok field) :
-    elaborateStringExprCore model declaringGroup
+      elaborateNumberAsStringField model declaringGroup targetGroup reference = .ok field) :
+    elaborateStringExprCore model declaringGroup targetGroup
       (.fieldValueAsString reference) =
         .ok (.fieldValueAsString field) := by
   unfold elaborateStringExprCore
@@ -26,14 +26,14 @@ theorem elaborateStringExprCore_fieldValueAsString (model : FlatModel)
 
 /-- A successfully lowered `RangeAsString` retains the exact authored interval around its resolved field leaf. -/
 theorem elaborateStringExprCore_range (model : FlatModel)
-    (declaringGroup : GroupPath) (reference : SurfaceFieldPath)
+    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath)
     (declaration : FlatFieldDecl) (field : FieldId) (start finish : Nat)
     (startPositive : 1 ≤ start) (ordered : start ≤ finish)
     (resolved :
-      (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError
+      (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference).mapError
         StringComputationElabError.resolve = .ok declaration)
     (admitted : admitStringComputationValueField declaration = .ok field) :
-    elaborateStringExprCore model declaringGroup (.range reference start finish) =
+    elaborateStringExprCore model declaringGroup targetGroup (.range reference start finish) =
       .ok (.range field start finish) := by
   unfold elaborateStringExprCore
   rw [resolved]
@@ -50,12 +50,12 @@ theorem elaborateStringExprCore_range (model : FlatModel)
 
 /-- Successful child lowering preserves the authored concatenation shape and order exactly. -/
 theorem elaborateStringExprCore_concat (model : FlatModel)
-    (declaringGroup : GroupPath)
+    (declaringGroup targetGroup : GroupPath)
     (left right : StringExpr SurfaceFieldPath)
     (loweredLeft loweredRight : StringExpr FieldId)
-    (leftOk : elaborateStringExprCore model declaringGroup left = .ok loweredLeft)
-    (rightOk : elaborateStringExprCore model declaringGroup right = .ok loweredRight) :
-    elaborateStringExprCore model declaringGroup (.concat left right) =
+    (leftOk : elaborateStringExprCore model declaringGroup targetGroup left = .ok loweredLeft)
+    (rightOk : elaborateStringExprCore model declaringGroup targetGroup right = .ok loweredRight) :
+    elaborateStringExprCore model declaringGroup targetGroup (.concat left right) =
       .ok (.concat loweredLeft loweredRight) := by
   unfold elaborateStringExprCore
   rw [leftOk, rightOk]

@@ -46,10 +46,11 @@ def admitStringComputationValueField
         throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
 
 /-- Resolve one legal nonrepeatable String-value field for scalar String computation syntax. -/
-def elaborateStringValueField (model : FlatModel) (declaringGroup : GroupPath)
+def elaborateStringValueField (model : FlatModel) (declaringGroup targetGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except StringComputationElabError FieldId := do
   let declaration ←
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup
+      reference).mapError .resolve
   admitStringComputationValueField declaration
 
 /-- Admit one already-resolved nonrepeatable Number declaration as a `FieldValueAsString` operand. -/
@@ -61,10 +62,11 @@ def admitNumberAsStringField
 
 /-- Resolve one legal nonrepeatable Number field for `FieldValueAsString`. -/
 def elaborateNumberAsStringField (model : FlatModel)
-    (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
+    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except StringComputationElabError FieldId := do
   let declaration ←
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup
+      reference).mapError .resolve
   admitNumberAsStringField declaration
 
 /-- Whether one runtime leaf is the exact nonrepeatable String-value declaration in the model. -/
@@ -154,25 +156,26 @@ structure CheckedStringComputationOperation (model : FlatModel) where
   targetNotReferenced : expression.core.referencesField targetField = false
 
 /-- Resolve one authored String-expression tree without evaluating or reordering it. The caller supplies a validated model; each field still passes through the shared nonrepeatable path resolver. -/
-def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
+def elaborateStringExprCore (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     StringExpr SurfaceFieldPath →
       Except StringComputationElabError (StringExpr FieldId)
   | StringExpr.field reference => do
-      pure (.field (← elaborateStringValueField model declaringGroup reference))
+      pure (.field (← elaborateStringValueField model declaringGroup targetGroup reference))
   | StringExpr.fieldValueAsString reference => do
       pure (.fieldValueAsString
-        (← elaborateNumberAsStringField model declaringGroup reference))
+        (← elaborateNumberAsStringField model declaringGroup targetGroup reference))
   | StringExpr.literal value => pure (.literal value)
   | StringExpr.range reference start finish => do
       let declaration ←
-        (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup
+          reference).mapError .resolve
       if !validStringRange start finish then
         throw (.invalidRange start finish)
       pure (.range (← admitStringComputationValueField declaration) start finish)
   | StringExpr.concat left right => do
       pure (.concat
-        (← elaborateStringExprCore model declaringGroup left)
-        (← elaborateStringExprCore model declaringGroup right))
+        (← elaborateStringExprCore model declaringGroup targetGroup left)
+        (← elaborateStringExprCore model declaringGroup targetGroup right))
 
 private def certifyStringExpr (model : FlatModel)
     (hModel : model.validate = .ok ()) (core : StringExpr FieldId) :
@@ -188,14 +191,14 @@ private def certifyStringExpr (model : FlatModel)
   else
     throw .incoherentCore
 
-/-- Validate the flat model once, preserve the authored expression tree exactly, and certify every resolved runtime leaf before returning it to computation evaluation. -/
+/-- Validate the flat model once, preserve the authored expression tree exactly, and certify every resolved runtime leaf before returning it to computation evaluation. Without a target the expression is judged as if its target lay in the declaring group, where an undeclared declaring group defaults. -/
 def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
-    (expression : StringExpr SurfaceFieldPath) :
+    (expression : StringExpr SurfaceFieldPath) (targetGroup : GroupPath := declaringGroup) :
     Except StringComputationElabError (CheckedStringExpr model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let core ← elaborateStringExprCore model declaringGroup expression
+      let core ← elaborateStringExprCore model declaringGroup targetGroup expression
       certifyStringExpr model hModel core
 
 /-- Check computation-group syntax independently of operands, including operand-free literals. -/
@@ -225,7 +228,8 @@ def elaborateStringComputationOperation
         throw (.rawStringTarget declaration.path)
       if declaration.customType.isSome then
         throw (.customStringTarget declaration.path)
-      let core ← elaborateStringExprCore model checkedDeclaringGroup.val expression
+      let core ←
+        elaborateStringExprCore model checkedDeclaringGroup.val declaration.groupPath expression
       let checked ← certifyStringExpr model hModel core
       if hReference : checked.core.referencesField targetField = true then
         if checked.core.isRootTargetReference targetField then

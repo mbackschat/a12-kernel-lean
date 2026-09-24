@@ -368,8 +368,10 @@ inductive StarPathElabError where
 and a star landing on anything but a repeatable group, which pre-empts every slot's own wildcard gate
 ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)).
 
-A repeatable level left unstarred **below** the first star is `noWildcard` on every carrier and both
-arms, whatever binds the level and whether or not its group is index-keyed. The Kernel judges each
+A repeatable level left unstarred **below** the first star is `noWildcard` on every carrier measured
+and both arms, whatever binds the level and whether or not its group is index-keyed, wherever the
+written field lies inside the declaring group; outside it the containment gate answers first, which a
+fixed-target computation asks through `FlatModel.belowStarContainment?`. The Kernel judges each
 level while it reads the reference ([`kf440`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf440)),
 so this class also answers ahead of a carrier's own star bar, as `AllGroupsFilled` shows
 ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
@@ -379,6 +381,21 @@ def StarPathElabError.diagnostic? : StarPathElabError → Option KernelStaticDia
   | .wildcardOnNonrepeatable _ => some .invalidWildcard
   | .iterationBelowWildcard _ => some .noWildcard
   | _ => none
+
+/-- On a fixed-target computation whose target lies outside the declaring group, a level a star
+leaves unstarred below its first star meets the containment gate ahead of the missing-star class
+([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+def FlatModel.belowStarContainment? (model : FlatModel) (declaringGroup : GroupPath)
+    (fixedTargetGroup? : Option GroupPath) : StarPathElabError → Option UnboundOperandLevel
+  | .iterationBelowWildcard path => do
+      let targetGroup ← fixedTargetGroup?
+      let group ← model.repeatableGroups.find? (·.path == path)
+      let unbound := model.unboundOperandLevel declaringGroup targetGroup group.level
+      match unbound.placement with
+      | .outside => some unbound
+      | .contained => none
+  | .resolve _ | .wildcardOnNonrepeatable _ | .missingWildcard _ | .addressing _ | .incoherentCore =>
+      none
 
 /-- One field declaration and general star plan certified against the same validated model. -/
 structure CheckedStarFieldPath (model : FlatModel) where

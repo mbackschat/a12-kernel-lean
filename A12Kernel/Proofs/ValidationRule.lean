@@ -225,14 +225,15 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
       condition.core.iterationLegality = .ok (.invalid level)) :
     ∃ error, assembleResolvedValidationRule model condition errorField errorCode
         severity messagePlan = .error error ∧
-      (error = .negativeConditionInIteration level ∨ error.missesStar = true) := by
+      (error = .negativeConditionInIteration level ∨
+        ∃ field unbound, error = .unboundOperandLevel field unbound) := by
   unfold assembleResolvedValidationRule
   simp only [invalid]
   split
   · rename_i error _
-    by_cases missing : error.missesStar = true
-    · exact ⟨error, by simp [missing], Or.inr missing⟩
-    · exact ⟨_, by simp [missing], Or.inl rfl⟩
+    cases hWalk : error.unboundLevel? model condition.rowGroup with
+    | some refusal => exact ⟨_, rfl, Or.inr ⟨refusal.1, refusal.2, rfl⟩⟩
+    | none => exact ⟨_, rfl, Or.inl rfl⟩
   · exact ⟨_, rfl, Or.inl rfl⟩
 
 /-- The already-derived negative-iteration assembly error projects to the exact measured Kernel diagnostic class. -/

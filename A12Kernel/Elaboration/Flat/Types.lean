@@ -373,25 +373,39 @@ inductive RequirednessScope where
   | relativeTo (groupPath : GroupPath)
   deriving Repr, DecidableEq
 
-/-- A repeatable level an operand leaves for its evaluation to bind, on an arm whose target repeats
-    at no level, so nothing the target does can bind it. The Kernel classes the refusal by who binds
-    the operand list's outermost such level
+/-- Where the written field lies relative to the group declaring its computation or rule. The Kernel
+    asks this containment question first of every read that leaves a repeatable level unstarred,
+    whatever binds that level
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+inductive WrittenFieldPlacement where
+  /-- At or below the declaring group. -/
+  | contained
+  /-- Outside it, including a declaring group beside the written field's own. -/
+  | outside
+  deriving Repr, DecidableEq
+
+/-- The outermost repeatable level a read leaves for its evaluation to bind where the written field
+    does not bind it
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 structure UnboundOperandLevel where
   level : RepeatableLevel
-  /-- The repeatable declaring group binds the level, which makes the operand a per-row read. -/
-  boundByDeclaringGroup : Bool
+  placement : WrittenFieldPlacement
+  /-- The level's group lies beside the written field's group rather than below it. -/
+  parallel : Bool
   /-- The level's group declares an index field. -/
   indexKeyed : Bool
   deriving Repr, DecidableEq
 
-/-- The containment class for a per-row read, then the index class, then the missing-star class.
-    The index class is measured only where nothing binds the read's outermost level; under a bound
-    outer level a keyed deeper one draws the missing-star class, which no arm here reaches. -/
+/-- Containment when the written field lies outside the declaring group, whatever the level. Inside
+    it, a level parallel to the written field's group draws the index class when it declares an index
+    field, and every other level the missing-star class, so an index below the written field's group
+    moves nothing
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
 def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStaticDiagnostic :=
-  if unbound.boundByDeclaringGroup then .fieldNotInRuleGroup
-  else if unbound.indexKeyed then .errorFieldNoIndex
-  else .noWildcard
+  match unbound.placement with
+  | .outside => .fieldNotInRuleGroup
+  | .contained =>
+      if unbound.parallel && unbound.indexKeyed then .errorFieldNoIndex else .noWildcard
 
 /-- Why a presence predicate's field slot naming a group is refused, in the Kernel's gate order: the
     repetition walk, then a root's own class, then the kind gate
@@ -493,7 +507,7 @@ shared missing-wildcard class. From a locus that iterates every level of it the 
 read, so a fragment refusing it reports `boundRepeatableReference`, which carries no class
 ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
 A computation operand into a fixed target reports `unboundOperandLevel` instead, whose class the
-binder of its outermost level selects.
+target's position and its outermost level select.
 
 **This is the one projection that keeps a wildcard, deliberately.** Elsewhere a `_ => none` arm is
 the anti-pattern this estate sweeps out, because it silently absorbs a form a later change adds and

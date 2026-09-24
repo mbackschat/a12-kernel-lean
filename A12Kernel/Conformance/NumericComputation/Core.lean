@@ -7,9 +7,10 @@ namespace A12Kernel.Conformance.NumericComputation.Core
 open A12Kernel
 open A12Kernel.Conformance.NumericComputation.Support
 
-/-- The fixture's repeatable `Rows`, read from the nonrepeatable root, which declares no index. -/
+/-- The fixture's repeatable `Rows`, read from the nonrepeatable root, which declares no index and
+    holds the target, so `Rows` lies below the target's group. -/
 private def unboundRows : UnboundOperandLevel :=
-  { level := 10, boundByDeclaringGroup := false, indexKeyed := false }
+  { level := 10, placement := .contained, parallel := false, indexKeyed := false }
 
 private def targetDiagnosticOf
     (error? : Option NumericComputationElabError) :

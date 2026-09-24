@@ -231,16 +231,25 @@ def FlatModel.repeatableScopeForGroupPath (model : FlatModel) (groupPath : Group
     (model.repeatableGroups.find? fun group =>
       group.path == groupPath.take (offset + 1)).map (·.level)
 
+def WrittenFieldPlacement.of (declaringGroup writtenGroup : GroupPath) : WrittenFieldPlacement :=
+  if GroupPath.isPrefixOf declaringGroup writtenGroup then .contained else .outside
+
+/-- The class facts of one level a read leaves unbound, for a construct declared in `declaringGroup`
+    that writes a field of `writtenGroup`. -/
+def FlatModel.unboundOperandLevel (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (level : RepeatableLevel) : UnboundOperandLevel :=
+  let group? := model.repeatableGroups.find? (·.level == level)
+  { level
+    placement := .of declaringGroup writtenGroup
+    parallel := !(group?.any fun group => GroupPath.isPrefixOf writtenGroup group.path)
+    indexKeyed := group?.any (·.indexField.isSome) }
+
 /-- The first operand's outermost unbound level, for a list of operand binding scopes read by an
     evaluation that binds none of them. Which operand decides when two would draw different classes
     is not measured; this takes the first in authored order. -/
-def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup : GroupPath)
+def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (scopes : List (List RepeatableLevel)) : Option UnboundOperandLevel :=
-  (scopes.findSome? List.head?).map fun level =>
-    { level
-      boundByDeclaringGroup := (model.repeatableScopeForGroupPath declaringGroup).contains level
-      indexKeyed := model.repeatableGroups.any fun group =>
-        group.level == level && group.indexField.isSome }
+  (scopes.findSome? List.head?).map (model.unboundOperandLevel declaringGroup writtenGroup)
 
 private def repeatableScopeMismatch? (model : FlatModel) :
     List FlatFieldDecl →
@@ -708,14 +717,14 @@ def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
 /-- Resolve a nonrepeatable operand of a computation after a caller has validated the model. A
 computation binds its operands by its target's scope rather than by the group declaring it
 ([`spec/09`](../../../spec/09-computations.md)), and these carriers' targets are fixed, so a
-repeatable operand is refused wherever the computation is declared, with the class its outermost
-level's binder selects
+repeatable operand is refused wherever the computation is declared, with the class the target's
+position and its outermost level select
 ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def FlatModel.resolveNonrepeatableComputationOperandUnchecked (model : FlatModel)
-    (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
+    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
   let declaration ← model.resolveFieldDeclarationUnchecked declaringGroup reference
-  match model.firstUnboundOperandLevel? declaringGroup [declaration.repeatableScope] with
+  match model.firstUnboundOperandLevel? declaringGroup targetGroup [declaration.repeatableScope] with
   | none => pure declaration
   | some unbound => throw (.unboundOperandLevel declaration.path unbound)
 

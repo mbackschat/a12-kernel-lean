@@ -279,6 +279,24 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24d-star-containment"></a>
+### Reviewed 2026-09-24d star-containment handback — containment, not binding, answers a per-row read into a written field outside the declaring group, and the written field's position names the walk's class
+
+a12-dmkits revision `4289d01f609f2768d08afb5e459173b533b2bb13` on `main`, confirmed an ancestor of that checkout's `main` when read. The letter is the peer's `-2026-09-24d`, frozen as sent in the user's exchange directory with SHA-256 `a2fba1f00690a6440fa4fd13f8d26457504c7e060091646a92984c403ae77b68`. `PartialStarContainmentLawsTest`, `ComputationStarBindingLawsTest`, `GroupOperandRepetitionScopeLawsTest` and `ErrorTargetContainmentLawsTest` were resolved at that revision, and the correction to [`kf464`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf464)'s row 7 was read there. Not run here. Inbound from an already committed and reviewed revision; it answers [`SPEC-2026-09-24-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-24-03) with a contrary observation, so that entry records the disposition and no new outbound entry follows.
+
+**Claim.** On a fulfilment sheet with a fixed `Summary` {`Result`}, a repeatable `Shipments` holding a repeatable `Parcels`, and a fixed `Ledger` beside `Summary` that binds nothing, a computation from `Ledger` into `Summary/Result` draws `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` for `Sum` and `NumberOfFilledGroups` over `../Shipments/Parcels*/…` and `../Shipments*/Parcels/…`, with `Shipments` index-keyed too, where each contained twin from `Summary` draws `MVK_NO_WILDCARD` or `MVK_ERROR_FIELD_NO_INDEX`; `Sum(../Shipments*/Parcels/Weight)` from `Shipments` draws containment too, and the fully starred operand is admitted from both. Rules reporting on `Summary/Result` from `Shipments` and from `Ledger` draw containment on the same operands.
+
+**Claim.** With the written field inside the declaring group, the outermost unstarred level it does not bind names the class: below the first star or below the written field's group `MVK_NO_WILDCARD` whatever the index, beside that group `MVK_ERROR_FIELD_NO_INDEX` when it declares an index field. `NumberOfFilledGroups(../Shipments)` and `(../Shipments/Parcels*)` draw the index class with `Shipments` keyed. On the rule arm, an unstarred keyed `Claims` read from the root draws the index class on twenty-two group carriers with the error field in `Insured` beside it, and `MVK_NO_WILDCARD` on all of them with the root field `Holder`, below whose group `Claims` lies.
+
+**Lean.** [`StarBinding`](../A12Kernel/Conformance/NumericComputation/StarBinding.lean) replays the `Ledger` computation rows; [`GroupOperandRepetitionWalk`](../A12Kernel/Conformance/GroupOperandRepetitionWalk.lean) replays the position rows on the group presence pair and a containment row on a field read. The other group carriers refuse the operand while their condition elaborates; [SG9](gaps/paths-and-groups.md#gap-sg9) owns that.
+
+<a id="inbound-2026-09-24d-mixed-group-count"></a>
+### Reviewed 2026-09-24d mixed group-count handback — a partial `NumberOfFilledGroups` list mixing a starred and a fixed operand is undecided when either operand is
+
+The same letter and revision, its §6. `PartialGroupCountRelevanceDiffTest` was resolved at that revision. On [`kf464`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf464)'s second fixture at capacity 2, `NumberOfFilledGroups(/Item/Batches*, /Item/Label) == 3` is silent with `Grade` malformed under every field covered, where `Batches*` alone fires, and silent with `Code` and `Weight` covered in row 2 only, where the fixed pair fires; with every field covered all three fire. Both codegen strategies agree. Inbound; it accepts [`SPEC-2026-09-24-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-24-04).
+
+**Lean.** [`PartialGroupCount`](../A12Kernel/Conformance/PartialGroupCount.lean) replays the three rows.
+
 <a id="inbound-2026-09-24b-keyed-partial-read"></a>
 ### Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to
 

@@ -450,9 +450,10 @@ def certifyNumberEntityShape (model : FlatModel)
 /-- Validate one Number entity list in kernel order: resolve all references, apply the shared duplicate, overlap, and root-group gates, require multiple slots or one already-many slot, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
 def elaborateNumberEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource)
-    (fixedTarget : Bool := false) :
+    (fixedTargetGroup? : Option GroupPath := none) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (fixedTarget := fixedTarget)
+  let shape ←
+    elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := fixedTargetGroup?)
     |>.mapError NumberEntityElabError.shape
   certifyNumberEntityShape model declaringGroup shape
 

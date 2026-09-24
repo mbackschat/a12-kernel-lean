@@ -234,6 +234,63 @@ example :
       | .error error => error.repetitionScopeDiagnostic?) = some .noWildcard := by
   native_decide
 
+/-! ## Where the error field lies
+
+The walk's class depends on the error field. Outside the rule group the containment class answers
+first, whatever the level's index declaration. Inside it an index-keyed level beside the error
+field's group draws the index class and a level below that group the missing star
+([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+
+/-- The policy model with `ClaimRef` declared the index field of `Claims` and nothing else moved. -/
+private def keyedPolicyModel : FlatModel :=
+  { policyModel with
+    repeatableGroups := [
+      { level := 10, path := ["Policy", "Claims"], repeatability := some 20, indexField := some 5 }] }
+
+private def noIndex : Option (Option KernelStaticDiagnostic) := some (some .errorFieldNoIndex)
+private def containment : Option (Option KernelStaticDiagnostic) := some (some .fieldNotInRuleGroup)
+
+/-- The group presence pair naming `Claims` unstarred from a rule at `/Policy`: the carriers whose
+    walk runs through the rule's iteration, where the error field is known. The other group carriers
+    refuse the operand while their condition elaborates, before the error field is in view
+    ([SG9](../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)). -/
+private def claimsPresence (model : FlatModel) : List (Carrier model) :=
+  [presence model ["Policy"] claims .filled, presence model ["Policy"] claims .notFilled]
+
+private def atPolicyWith (model : FlatModel) (errorPath : SurfaceFieldPath) (errorField : FieldId)
+    (carrier : Carrier model) :=
+  ruleClass model ["Policy"] errorPath errorField carrier
+
+private def remark : SurfaceFieldPath := { base := .relative 0, groups := ["Insured"], field := "Remark" }
+private def holder : SurfaceFieldPath := { base := .relative 0, groups := [], field := "Holder" }
+
+/- With the error field `Insured/Remark`, `Claims` lies beside its group and the index declaration
+   alone moves the class; with the root `Holder`, `Claims` lies below its group and stays the missing
+   star under the key. The nested rule's up-step read takes the index class as well. -/
+example :
+    (claimsPresence keyedPolicyModel).map (atPolicyWith keyedPolicyModel remark 2) =
+      [noIndex, noIndex] ∧
+    (claimsPresence policyModel).map (atPolicyWith policyModel remark 2) =
+      [noWildcard, noWildcard] ∧
+    (claimsPresence keyedPolicyModel).map (atPolicyWith keyedPolicyModel holder 1) =
+      [noWildcard, noWildcard] ∧
+    ruleClass keyedPolicyModel ["Policy", "Insured"]
+        { base := .relative 0, groups := [], field := "Remark" } 2
+        (presence keyedPolicyModel ["Policy", "Insured"] upClaims .filled) = noIndex := by
+  native_decide
+
+/- A rule in the repeatable `Claims` reporting on the root `Holder`, outside its group, reads
+   `Amount` per row and draws containment, index-keyed or not
+   ([`kf212`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf212)). -/
+example :
+    [policyModel, keyedPolicyModel].map (fun model =>
+      ruleClass model ["Policy", "Claims"] { base := .relative 1, groups := [], field := "Holder" } 1
+        ((CheckedValidationCondition.fromRepeatableFieldPresence model ["Policy", "Claims"] .filled
+          { base := .relative 0, groups := [], field := "Amount" }).mapError
+            (·.groupListDiagnostic?))) =
+      [containment, containment] := by
+  native_decide
+
 /-! ## The scalar field slot
 
 `FieldFilled` and `FieldNotFilled` naming a group meet the walk first, then a root's own class, then

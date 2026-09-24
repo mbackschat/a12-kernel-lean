@@ -442,32 +442,33 @@ end CheckedFieldEntityShape
     topology and are unaffected.
 
     On a fixed-target list neither an unstarred field nor a fixed group is judged here: both keep
-    their levels for the list's own unbound-level gate, which picks the class by who binds the
-    outermost one. Judging the field here reported the missing star where an index-keyed level
-    draws its index class ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+    their levels for the list's own unbound-level gate, which picks the class by where the target
+    lies and by the outermost level. Judging the field here reported the missing star where an
+    index-keyed level draws its index class ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def resolveFieldEntityOperandIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (authored : SurfaceFieldEntityOperand)
-    (fixedTarget : Bool := false) :
+    (fixedTargetGroup? : Option GroupPath := none) :
     Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model) :=
+  let star (path : SurfaceStarFieldPath) :=
+    (elaborateStarFieldPath model declaringGroup path).mapError fun error =>
+      match model.belowStarContainment? declaringGroup fixedTargetGroup? error with
+      | some unbound => .unboundOperandLevel unbound
+      | none => .starPath error
   match authored with
   | .field path form => do
       let resolved ←
         model.resolveFieldDeclarationUnchecked declaringGroup path
           |>.mapError .resolve
-      if fixedTarget then return .field resolved form
+      if fixedTargetGroup?.isSome then return .field resolved form
       let declaration ← resolved.requireRepetitionBoundBy scope
         |>.mapError .resolve
       pure (.field declaration form)
   | .star path => do
-      pure (.star (← elaborateStarFieldPath model declaringGroup path
-        |>.mapError .starPath))
+      pure (.star (← star path))
   | .starHaving path having => do
-      pure (.starHaving
-        (← elaborateStarFieldPath model declaringGroup path
-          |>.mapError .starPath)
-        having)
+      pure (.starHaving (← star path) having)
   | .group reference => do
-      let resolve := if fixedTarget then model.resolveFixedTargetListGroupReference
+      let resolve := if fixedTargetGroup?.isSome then model.resolveFixedTargetListGroupReference
         else model.resolveFixedGroupReference
       pure (.group (← resolve declaringGroup reference |>.mapError .groupReference))
   | .starredGroup reference => do
@@ -483,14 +484,14 @@ def resolveFieldEntityOperandUnchecked (model : FlatModel)
   resolveFieldEntityOperandIn model declaringGroup [] authored
 
 private def resolveFieldEntityOperands (model : FlatModel)
-    (declaringGroup : GroupPath) (scope : List RepeatableLevel) (fixedTarget : Bool) :
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel) (fixedTargetGroup? : Option GroupPath) :
     List SurfaceFieldEntityOperand →
       Except FieldEntityShapeElabError
         (List (ResolvedFieldEntityOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← resolveFieldEntityOperandIn model declaringGroup scope operand fixedTarget) ::
-        (← resolveFieldEntityOperands model declaringGroup scope fixedTarget remaining))
+      pure ((← resolveFieldEntityOperandIn model declaringGroup scope operand fixedTargetGroup?) ::
+        (← resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? remaining))
 
 /-- Validate the common entity-list shape: model, path resolution and its star gate, on a fixed-target arm the list-wide unbound-level gate, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, then the multiple-slots-or-one-already-many cardinality gate.
 
@@ -500,16 +501,17 @@ private def resolveFieldEntityOperands (model : FlatModel)
 def elaborateFieldEntityShapeIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource)
-    (arity : EntityListArity := .manyRequired) (fixedTarget : Bool := false) :
+    (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
       let first ←
-        resolveFieldEntityOperandIn model declaringGroup scope authored.first fixedTarget
-      let rest ← resolveFieldEntityOperands model declaringGroup scope fixedTarget authored.rest
-      if fixedTarget then
-        if let some unbound := model.firstUnboundOperandLevel? declaringGroup
+        resolveFieldEntityOperandIn model declaringGroup scope authored.first fixedTargetGroup?
+      let rest ←
+        resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? authored.rest
+      if let some targetGroup := fixedTargetGroup? then
+        if let some unbound := model.firstUnboundOperandLevel? declaringGroup targetGroup
             ((first :: rest).map ResolvedFieldEntityOperand.bindingScope) then
           throw (.unboundOperandLevel unbound)
       match hDuplicate : firstDuplicateResolvedEntityOperand? (first :: rest) with
@@ -539,9 +541,9 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
 /-- The scalar instance of the shared shape gates. -/
 def elaborateFieldEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
-    (arity : EntityListArity := .manyRequired) (fixedTarget : Bool := false) :
+    (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
-  elaborateFieldEntityShapeIn model declaringGroup [] authored arity fixedTarget
+  elaborateFieldEntityShapeIn model declaringGroup [] authored arity fixedTargetGroup?
 
 /-- One direct `Having` operand after origin-sensitive scope resolution. The resolved declaration,
     read form, and origin together are its exact authored identity. -/
@@ -646,9 +648,10 @@ def elaborateHavingDirectFieldSource (model : FlatModel)
     `declaringGroup` with its validity attached instead of leaving it uncertified. -/
 theorem resolveFieldEntityOperandIn_declaringGroupValid
     {model : FlatModel} {declaringGroup : GroupPath} {scope : List RepeatableLevel}
-    {authored : SurfaceFieldEntityOperand} {fixedTarget : Bool}
+    {authored : SurfaceFieldEntityOperand} {fixedTargetGroup? : Option GroupPath}
     {resolved : ResolvedFieldEntityOperand model}
-    (ok : resolveFieldEntityOperandIn model declaringGroup scope authored fixedTarget = .ok resolved) :
+    (ok : resolveFieldEntityOperandIn model declaringGroup scope authored fixedTargetGroup? =
+      .ok resolved) :
     GroupPath.isValid declaringGroup = true := by
   unfold resolveFieldEntityOperandIn at ok
   cases authored with
@@ -673,19 +676,20 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
           cases ok
       | ok checked => exact elaborateStarFieldPath_declaringGroupValid hStar
   | group reference =>
-      cases fixedTarget with
-      | true =>
+      cases fixedTargetGroup? with
+      | some targetGroup =>
           cases hGroup : model.resolveFixedTargetListGroupReference declaringGroup reference with
           | error _ =>
-              simp only [hGroup, if_true, bind, Except.bind, Except.mapError] at ok
+              simp only [hGroup, Option.isSome_some, if_true, bind, Except.bind,
+                Except.mapError] at ok
               cases ok
           | ok resolvedGroup =>
               exact FlatModel.resolveFixedTargetListGroupReference_declaringGroupValid hGroup
-      | false =>
+      | none =>
           cases hGroup : model.resolveFixedGroupReference declaringGroup reference with
           | error _ =>
-              simp only [hGroup, Bool.false_eq_true, if_false, bind, Except.bind,
-                Except.mapError] at ok
+              simp only [hGroup, Option.isSome_none, Bool.false_eq_true, if_false, bind,
+                Except.bind, Except.mapError] at ok
               cases ok
           | ok resolvedGroup =>
               exact FlatModel.resolveFixedGroupReference_declaringGroupValid hGroup
@@ -702,16 +706,16 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
     construction, so its first operand always reaches one of those guards. -/
 theorem elaborateFieldEntityShapeIn_declaringGroupValid
     {model : FlatModel} {declaringGroup : GroupPath} {scope : List RepeatableLevel}
-    {authored : SurfaceFieldEntitySource} {arity : EntityListArity} {fixedTarget : Bool}
-    {checked : CheckedFieldEntityShape model}
-    (ok : elaborateFieldEntityShapeIn model declaringGroup scope authored arity fixedTarget =
+    {authored : SurfaceFieldEntitySource} {arity : EntityListArity}
+    {fixedTargetGroup? : Option GroupPath} {checked : CheckedFieldEntityShape model}
+    (ok : elaborateFieldEntityShapeIn model declaringGroup scope authored arity fixedTargetGroup? =
       .ok checked) :
     GroupPath.isValid declaringGroup = true := by
   unfold elaborateFieldEntityShapeIn at ok
   split at ok
   · cases ok
   · cases hFirst :
-      resolveFieldEntityOperandIn model declaringGroup scope authored.first fixedTarget with
+      resolveFieldEntityOperandIn model declaringGroup scope authored.first fixedTargetGroup? with
     | error _ =>
         simp only [hFirst, bind, Except.bind] at ok
         cases ok

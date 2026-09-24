@@ -18,11 +18,11 @@ theorem numericComputation_groupCount_duplicateParam1_iff
   simp [NumericComputationElabError.groupCountDiagnostic?]
 
 /-- The shared per-row decision finds a level exactly when some operand leaves one to bind. Which
-    class it selects depends on that level alone, so the law is stated over existence and not over
-    the class. -/
-theorem firstUnboundOperandLevel_eq_none_iff (model : FlatModel) (declaringGroup : GroupPath)
-    (scopes : List (List RepeatableLevel)) :
-    model.firstUnboundOperandLevel? declaringGroup scopes = none ↔
+    class it selects depends on where the target lies and on that level, so the law is stated over
+    existence and not over the class. -/
+theorem firstUnboundOperandLevel_eq_none_iff (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (scopes : List (List RepeatableLevel)) :
+    model.firstUnboundOperandLevel? declaringGroup targetGroup scopes = none ↔
       scopes.all (·.isEmpty) = true := by
   unfold FlatModel.firstUnboundOperandLevel?
   simp only [Option.map_eq_none_iff, List.findSome?_eq_none_iff, List.all_eq_true,
@@ -31,13 +31,13 @@ theorem firstUnboundOperandLevel_eq_none_iff (model : FlatModel) (declaringGroup
 /-- The product-aggregate and group-count gate admits exactly the scope lists that leave no
     repeatable level to bind. It says nothing about the atoms that bypass it: an entity list asks the
     same decision inside its shape, and a plain read is refused by its resolver. -/
-theorem requireOperandLevelsBound_ok_iff (model : FlatModel) (declaringGroup : GroupPath)
-    (scopes : List (List RepeatableLevel)) :
-    model.requireOperandLevelsBound declaringGroup scopes = .ok () ↔
+theorem requireOperandLevelsBound_ok_iff (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (scopes : List (List RepeatableLevel)) :
+    model.requireOperandLevelsBound declaringGroup targetGroup scopes = .ok () ↔
       scopes.all (·.isEmpty) = true := by
-  rw [← firstUnboundOperandLevel_eq_none_iff model declaringGroup scopes]
+  rw [← firstUnboundOperandLevel_eq_none_iff model declaringGroup targetGroup scopes]
   unfold FlatModel.requireOperandLevelsBound
-  cases model.firstUnboundOperandLevel? declaringGroup scopes <;> simp [pure, Except.pure, throw, throwThe, MonadExceptOf.throw]
+  cases model.firstUnboundOperandLevel? declaringGroup targetGroup scopes <;> simp [pure, Except.pure, throw, throwThe, MonadExceptOf.throw]
 
 /-- A resolved computation aggregate atom consumes the same aggregate fold under computation-phase observation, then erases only validation fillability. -/
 theorem numericComputationAggregate_evaluatesThroughSharedFold

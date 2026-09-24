@@ -268,7 +268,7 @@ private inductive FixedGroupScopePolicy where
   | validationBound
   /-- Refused with the class `UnboundOperandLevel` selects, for a computation whose target repeats
   at no level; the group's own level counts when it is repeatable. -/
-  | fixedTarget
+  | fixedTarget (targetGroup : GroupPath)
   /-- As `fixedTarget`, but the whole repeatable scope is retained for the list's own gate, which
   judges every operand's levels in authored order once the list resolves. -/
   | fixedTargetList
@@ -286,10 +286,10 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
   | .path =>
       let operandScope := model.repeatableScopeForGroupPath resolved.path
       match policy with
-      | .fixedTarget =>
+      | .fixedTarget targetGroup =>
           -- Measured on a fixed child, a deeper one and the repeatable group itself, alone and
           -- beside a star ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
-          match model.firstUnboundOperandLevel? declaringGroup [operandScope] with
+          match model.firstUnboundOperandLevel? declaringGroup targetGroup [operandScope] with
           | none => pure resolved
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
       | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }
@@ -336,9 +336,9 @@ def FlatModel.resolveValidationBoundFixedGroupReference (model : FlatModel)
 
 /-- Resolve a fixed group operand of a computation whose target repeats at no level. -/
 def FlatModel.resolveFixedTargetGroupReference (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
+    (declaringGroup targetGroup : GroupPath) (surface : SurfaceGroupReference) :
     Except FixedGroupReferenceError ResolvedGroupReference :=
-  model.resolveFixedGroupReferenceWith .fixedTarget declaringGroup surface
+  model.resolveFixedGroupReferenceWith (.fixedTarget targetGroup) declaringGroup surface
 
 /-- Resolve a fixed group operand of a fixed-target entity list, leaving its levels to the list's
     unbound-level gate. -/

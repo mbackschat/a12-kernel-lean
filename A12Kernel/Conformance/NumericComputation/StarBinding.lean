@@ -5,11 +5,13 @@ import A12Kernel.Elaboration.StringComputation
 
 A star leaves the repeatable levels above its first star to be bound by its evaluation, and a plain
 read or a fixed group operand leaves every level its path crosses. On this arm the target repeats at
-no level, so any such level is refused, and the Kernel's class is decided by who binds the outermost
-one: the repeatable declaring group, nobody over an index-keyed group, or nobody. The String arm
-answers from the same table. A level left unstarred below the first star is refused with the
-missing-star class whatever binds it. Every expected value is a `computation add --dry-run` verdict
-([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
+no level, so any such level is refused. A target outside the declaring group draws containment on
+either side of the first star; inside it the outermost level names the class, the index class for a
+keyed level beside the target's group and the missing star otherwise, a level below the first star
+included. The String arm answers from the same table. Every expected value is a
+`computation add --dry-run` verdict
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
+the `Ledger` rows the peer's ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)).
 -/
 
 namespace A12Kernel.Conformance.NumericComputation.StarBinding
@@ -43,7 +45,8 @@ private def modelWith (batchesKey boxesKey : Option FieldId) : FlatModel :=
       { id := 11, groupPath := ["Probe", "Batches"], name := "BText", policy := { kind := .string },
         repeatableScope := [10] },
       number 12 ["Probe", "Batches", "Seal2"] "S2" [10],
-      { id := 13, groupPath := ["Probe", "Out"], name := "FreeS", policy := { kind := .string } }]
+      { id := 13, groupPath := ["Probe", "Out"], name := "FreeS", policy := { kind := .string } },
+      number 14 ["Probe", "Ledger"] "Total"]
     repeatableGroups := [
       { level := 10, path := ["Probe", "Batches"], repeatability := some 2,
         indexField := batchesKey },
@@ -144,8 +147,8 @@ example :
     admission innerKeyed out (expression .innerUnstarred .sum) = some (some .noWildcard) := by
   native_decide
 
-/- A repeatable declaring group that binds the outer level makes the star a per-row read, so the
-   containment class answers, in the relative spelling on every carrier and in the absolute one. -/
+/- From the repeatable `Batches` the target lies outside the declaring group, so the containment
+   class answers, in the relative spelling on every carrier and in the absolute one. -/
 example :
     row model batches .relativeInner = carriers.map (fun _ => some (some .fieldNotInRuleGroup)) ∧
     admission model batches (expression .outerUnstarred .sum) =
@@ -284,6 +287,28 @@ example :
       admission model batches
         (sumOf (.group (.path { base := .absolute, groups := ["Probe", "Batches", "Seal2"] })))] =
     [contained, contained] := by
+  native_decide
+
+private def ledger : GroupPath := ["Probe", "Ledger"]
+
+/- Containment rather than binding answers. `Ledger` binds nothing and the target lies outside it,
+   so every read that leaves a repeatable level unstarred draws containment there, on either side of
+   the first star and over an index-keyed level, as the below-star read from `Batches` does; the
+   fully starred control stays admitted
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+example :
+    [admission model ledger (expression .outerUnstarred .sum),
+      admission model ledger (expression .outerUnstarred .groupCount),
+      admission outerKeyed ledger (expression .outerUnstarred .sum),
+      admission model ledger (expression .innerUnstarred .sum),
+      admission model ledger (expression .innerUnstarred .groupCount),
+      admission model batches (expression .innerUnstarred .sum),
+      admission outerKeyed ledger (plusOne (absoluteField ["Probe", "Batches"] "BW")),
+      admission model ledger (plusOne (absoluteField ["Probe", "Batches"] "BW")),
+      admission model ledger (expression .bothStarred .sum),
+      admission model ledger (expression .bothStarred .groupCount)] =
+    [contained, contained, contained, contained, contained, contained, contained, contained,
+      none, none] := by
   native_decide
 
 /-- `none` when admitted, otherwise the class the carried resolver error projects, for a String

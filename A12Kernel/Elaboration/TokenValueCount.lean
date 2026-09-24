@@ -180,10 +180,10 @@ private def finishTokenValueCountSource (expected : String)
 /-- Resolve the projection-bearing entity-list shape, certify String/Enumeration membership, and reject the first selected-domain mismatch in authored order. -/
 def elaborateTokenValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
-    (authored : SurfaceTokenValueCountSource) (fixedTarget : Bool := false) :
+    (authored : SurfaceTokenValueCountSource) (fixedTargetGroup? : Option GroupPath := none) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
   let source ← elaborateProjectedTokenEntitySource model declaringGroup authored
-      (fixedTarget := fixedTarget)
+      (fixedTargetGroup? := fixedTargetGroup?)
     |>.mapError .source
   finishTokenValueCountSource expected source
 

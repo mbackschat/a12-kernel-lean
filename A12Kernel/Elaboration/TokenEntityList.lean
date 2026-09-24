@@ -375,7 +375,7 @@ private def bindingScope :
 end ResolvedProjectedTokenEntityOperand
 
 private def resolveProjectedTokenEntityOperand (model : FlatModel)
-    (declaringGroup : GroupPath) :
+    (declaringGroup : GroupPath) (fixedTargetGroup? : Option GroupPath) :
     SurfaceProjectedTokenEntityOperand →
       Except TokenEntityElabError
         (ResolvedProjectedTokenEntityOperand model)
@@ -390,13 +390,15 @@ private def resolveProjectedTokenEntityOperand (model : FlatModel)
           (fun error => .shape (.resolve error))
       pure (.field declaration projectionRef)
   | .star source projectionRef => do
-      let checked ← elaborateStarFieldPath model declaringGroup source
-        |>.mapError (fun error => .shape (.starPath error))
-      pure (.star checked projectionRef none)
+      pure (.star (← star source) projectionRef none)
   | .starHaving source projectionRef having => do
-      let checked ← elaborateStarFieldPath model declaringGroup source
-        |>.mapError (fun error => .shape (.starPath error))
-      pure (.star checked projectionRef (some having))
+      pure (.star (← star source) projectionRef (some having))
+where
+  star (source : SurfaceStarFieldPath) :=
+    (elaborateStarFieldPath model declaringGroup source).mapError fun error =>
+      match model.belowStarContainment? declaringGroup fixedTargetGroup? error with
+      | some unbound => .shape (.unboundOperandLevel unbound)
+      | none => .shape (.starPath error)
 
 private def firstDuplicateResolvedProjectedTokenField? :
     List (ResolvedProjectedTokenEntityOperand model) → Option FieldId
@@ -426,18 +428,18 @@ private def certifyProjectedTokenEntityOperand (model : FlatModel)
 def elaborateProjectedTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceProjectedTokenEntitySource)
-    (arity : EntityListArity := .manyRequired) (fixedTarget : Bool := false) :
+    (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) :=
   match hModel : model.validate with
   | .error error => .error (.shape (.resolve error))
   | .ok () => do
       let first ←
-        resolveProjectedTokenEntityOperand model declaringGroup authored.first
+        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? authored.first
       let rest ← authored.rest.mapM fun operand =>
-        resolveProjectedTokenEntityOperand model declaringGroup operand
+        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? operand
       -- The shared shape's list-wide gate, asked of this boundary's own resolved slots.
-      if fixedTarget then
-        if let some unbound := model.firstUnboundOperandLevel? declaringGroup
+      if let some targetGroup := fixedTargetGroup? then
+        if let some unbound := model.firstUnboundOperandLevel? declaringGroup targetGroup
             ((first :: rest).map ResolvedProjectedTokenEntityOperand.bindingScope) then
           throw (.shape (.unboundOperandLevel unbound))
       match firstDuplicateResolvedProjectedTokenField? (first :: rest) with

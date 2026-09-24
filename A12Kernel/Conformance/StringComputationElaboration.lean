@@ -156,9 +156,10 @@ private def coreOf
     Option StringExpr :=
   result.toOption.map (·.core)
 
-/-- The fixture's repeatable `Rows`, read from the nonrepeatable `Form`, which declares no index. -/
+/-- The fixture's repeatable `Rows`, read from the nonrepeatable `Form`, which declares no index and
+    holds the target, so `Rows` lies below the target's group. -/
 private def unboundRows : UnboundOperandLevel :=
-  { level := 10, boundByDeclaringGroup := false, indexKeyed := false }
+  { level := 10, placement := .contained, parallel := false, indexKeyed := false }
 
 private def errorOf
     (result : Except StringComputationElabError (CheckedStringExpr model)) :

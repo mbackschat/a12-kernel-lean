@@ -125,8 +125,8 @@ private def lot := ["Item", "Batches", "Lot"]
 private def code := ["Item", "Batches", "Seal", "Code"]
 private def weight := ["Item", "Batches", "Seal", "Weight"]
 private def batchFields := [lot, code, weight]
-private def everyField :=
-  batchFields ++ [["Item", "Label", "Text"], ["Item", "Label", "Grade"], ["Item", "Stamp", "Mark"]]
+private def fixedFields := [["Item", "Label", "Text"], ["Item", "Label", "Grade"], ["Item", "Stamp", "Mark"]]
+private def everyField := batchFields ++ fixedFields
 
 /-- The second table's twelve rows, in its order: capacity, fault, coverage. -/
 private def rows : List (Nat × Fault × List RelevantEntityPattern) :=
@@ -208,6 +208,29 @@ private def fixedPairRule (fault : Fault) (entities : List RelevantEntityPattern
    would count, and the clean twin fires. -/
 example : (fixedPairRule .grade (everyField.map every), fixedPairRule .none (everyField.map every)) =
     (some none, some (some true)) := by
+  native_decide
+
+/-- The starred pair's partial counts on the three coverages the peer measured it under: `Batches*`
+    alone, the fixed pair, and `Batches*` beside `Label`, in that order. -/
+private def pairCounts (fault : Fault) (entities : List RelevantEntityPattern) :
+    Option (List PartialValidationFilledGroupCountResult) := do
+  let (_, preliminary) ← setup 2 fault entities
+  let batchesSource ← (elaborateStarredGroupSource (model 2) ["Item"] batches).toOption
+  let label ← ((model 2).resolveFixedGroupReference ["Item"] (fixedGroup "Label")).toOption
+  let stamp ← ((model 2).resolveFixedGroupReference ["Item"] (fixedGroup "Stamp")).toOption
+  ([[.starred batchesSource], [.fixed label, .fixed stamp], [.starred batchesSource, .fixed label]]
+    |>.mapM fun operands => CheckedGroupCountOperand.evaluatePartial operands preliminary []).toOption
+
+/- A list mixing a starred and a fixed operand is undecided when either operand is, each way round,
+   and decided only when both are
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-mixed-group-count)). -/
+example :
+    [pairCounts .grade (everyField.map every),
+      pairCounts .none (every lot :: atRows code [2] ++ atRows weight [2] ++ fixedFields.map every),
+      pairCounts .none (everyField.map every)] =
+    [some [decided 2, .nonRelevant, .nonRelevant],
+      some [.nonRelevant, decided 2, .nonRelevant],
+      some [decided 2, decided 2, decided 3]] := by
   native_decide
 
 /-! ## `KF209`'s selections
