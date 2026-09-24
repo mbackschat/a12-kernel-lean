@@ -32,7 +32,10 @@ inductive StringFirstFilledComputationElabError where
 def StringFirstFilledComputationElabError.diagnostic? :
     StringFirstFilledComputationElabError → Option KernelStaticDiagnostic
   | .source cause => cause.diagnostic?
-  | _ => none
+  -- Named rather than wildcarded, so a new refusal must be classified rather than absorbed. None of
+  -- these is measured on this carrier.
+  | .target _ | .targetRepeatable _ | .targetNotOrdinaryString _ | .sourceNotOrdinaryString _
+  | .sourceShape _ => none
 
 /-- One fixed ordinary String target and one direct single-level ordinary String star. -/
 structure CheckedStringFirstFilledComputation (model : FlatModel) where
