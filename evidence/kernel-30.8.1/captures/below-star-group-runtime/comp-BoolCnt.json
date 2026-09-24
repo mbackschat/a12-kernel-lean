@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/BoolCnt",
+ "alternatives": [
+  {
+   "operation": "NumberOfValueInFields(True In /Probe/Rows*/Flags)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "BoolCnt"
+  }
+ ]
+}

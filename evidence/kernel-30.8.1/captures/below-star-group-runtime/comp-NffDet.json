@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/NffDet",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledFields(/Probe/Rows*/Detail)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "NffDet"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/MinDet",
+ "alternatives": [
+  {
+   "operation": "MinValue(/Probe/Rows*/Detail)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "MinDet"
+  }
+ ]
+}

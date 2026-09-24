@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/MaxDet",
+ "alternatives": [
+  {
+   "operation": "MaxValue(/Probe/Rows*/Detail)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "MaxDet"
+  }
+ ]
+}

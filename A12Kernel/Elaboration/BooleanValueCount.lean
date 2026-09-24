@@ -243,22 +243,28 @@ structure CheckedBooleanValueCountSource (model : FlatModel) where
   uniqueDirectOperands :
     firstDuplicateDirectBooleanValueCountField? (first :: rest) = none
 
-/-- The measured one-axis Boolean-group computation shape. The group certificate already owns the constant-specific field-kind gate. -/
+/-- The measured one-axis Boolean-group computation shape: a starred group, repeatable or fixed below
+    its star, whose every declaration repeats at that one axis and no deeper. The group certificate
+    already owns the constant-specific field-kind gate, and a fixed group has its own carrier. -/
 def measuredBooleanValueCountStarredGroupShape
-    (starred : CheckedStarredGroupSource model)
     (group : CheckedBooleanValueCountGroup model expected) : Bool :=
-  starred.path.axes.length == 1 &&
-    (group.fields.all fun declaration =>
-      declaration.repeatableScope == starred.path.axes.map (·.level))
+  let oneAxis (path : StarPath) :=
+    path.axes.length == 1 &&
+      (group.fields.all fun declaration =>
+        declaration.repeatableScope == path.axes.map (·.level))
+  match group.source with
+  | .starred source => oneAxis source.path
+  | .starredPresence source => oneAxis source.path
+  | .fixed _ => false
 
-/-- A measured Boolean-group computation form with one repeatable axis, no deeper repeated declaration, and the group certificate's constant-specific field kinds. The source equality excludes fixed groups and the separately admitted terminal-presence shape from this computation carrier. -/
+/-- A measured Boolean-group computation form with one repeatable axis, no deeper repeated
+    declaration, and the group certificate's constant-specific field kinds. The fixed below-star
+    form joined the repeatable terminal once the Kernel computed it on the expansion account
+    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-computation)). -/
 structure CheckedBooleanValueCountStarredGroupSource
     (model : FlatModel) (expected : Bool) where
-  starredSource : CheckedStarredGroupSource model
   group : CheckedBooleanValueCountGroup model expected
-  sourceOwned : group.source = .starred starredSource
-  measuredShape :
-    measuredBooleanValueCountStarredGroupShape starredSource group = true
+  measuredShape : measuredBooleanValueCountStarredGroupShape group = true
   modelWellFormed : model.validate.isOk = true
 
 /-- The measured fixed computation boundary: exactly two direct nonrepeatable declarations in the
@@ -384,30 +390,23 @@ def elaborateFalseValueCountFixedGroupSource (model : FlatModel)
   elaborateBooleanValueCountFixedGroupSource
     model declaringGroup false authored
 
-/-- Resolve one measured Boolean-group value-count computation shape without widening fixed groups, terminal-presence stars, mixed lists, or unmeasured declarations. -/
+/-- Resolve one measured Boolean-group value-count computation shape without widening fixed groups, mixed lists, or unmeasured declarations. -/
 def elaborateBooleanValueCountStarredGroupSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool)
     (authored : SurfaceStarGroupPath) :
     Except BooleanValueCountElabError
       (CheckedBooleanValueCountStarredGroupSource model expected) := do
-  let starred ← elaborateStarredGroupSource model declaringGroup authored
-    |>.mapError fun error => .shape (.starredGroup error)
-  let operand ←
-    certifyBooleanValueCountGroup model expected (.starred starred)
-  match operand with
+  let source ← match ← elaborateStarredGroupOperandSource model declaringGroup authored
+      |>.mapError fun error => .shape (.starredGroup error) with
+    | .terminalRepeatable starred => pure (CheckedEntityGroupSource.starred starred)
+    | .terminalPresence presence => pure (.starredPresence presence)
+  match ← certifyBooleanValueCountGroup model expected source with
   | .group group =>
-      match hSource : group.source with
-      | .starred source =>
-          if hMeasured :
-              measuredBooleanValueCountStarredGroupShape source group = true then
-            pure {
-              starredSource := source
-              group
-              sourceOwned := hSource
-              measuredShape := hMeasured
-              modelWellFormed := source.modelWellFormed }
-          else throw .incoherentCore
-      | .fixed _ | .starredPresence _ => throw .incoherentCore
+      if hMeasured : measuredBooleanValueCountStarredGroupShape group = true then
+        if hModel : model.validate.isOk = true then
+          pure { group, measuredShape := hMeasured, modelWellFormed := hModel }
+        else throw .incoherentCore
+      else throw .incoherentCore
   | .field _ | .star _ => throw .incoherentCore
 
 /-- Resolve a measured one-axis Boolean/Confirm `True` group computation. -/

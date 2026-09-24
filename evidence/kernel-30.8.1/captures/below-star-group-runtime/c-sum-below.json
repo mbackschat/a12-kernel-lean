@@ -1,0 +1,1 @@
+{"computedField": "/Out/Count", "alternatives": [{"operation": "Sum(/Item/Rows*/Detail)"}], "messages": [{"locale": "en_US", "text": "m"}]}

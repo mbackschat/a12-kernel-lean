@@ -1,0 +1,164 @@
+[
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Rows",
+  "repeatable": 2
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Rows",
+  "name": "Detail"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Rows",
+  "name": "Texts"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Rows",
+  "name": "Flags"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Out"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe",
+  "name": "W",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Rows",
+  "name": "Qty",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Rows/Detail",
+  "name": "Amount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Rows/Detail",
+  "name": "Extra",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Rows/Texts",
+  "name": "Note",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Rows/Flags",
+  "name": "Mark",
+  "kind": "BOOLEAN"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "NumCnt",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "TokCnt",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "BoolCnt",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "SumDet",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "MaxDet",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "MinDet",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "DistDet",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "NffDet",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ }
+]

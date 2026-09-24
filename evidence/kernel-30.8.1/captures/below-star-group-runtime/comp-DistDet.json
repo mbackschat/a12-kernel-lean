@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/DistDet",
+ "alternatives": [
+  {
+   "operation": "NumberOfDifferentValues(/Probe/Rows*/Detail)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "DistDet"
+  }
+ ]
+}

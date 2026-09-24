@@ -864,6 +864,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
 <a id="src-group-field-fill-declared-slots"></a>
 - [Field-group quantifiers retain declared slots and bound-parent capacity](sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)
+<a id="src-below-star-group-computation"></a>
+- [A fixed group below a star is admitted and computed on the expansion account on the computation arm too](sources/group-list-and-capacity-probes.md#src-below-star-group-computation)
 <a id="src-below-star-group-runtime"></a>
 - [A fixed group below a star counts its own fields in every reopened in-capacity row, moves until every declared slot below the star is filled, and a group operand's value count stays growable while a reopened row is missing](sources/group-list-and-capacity-probes.md#src-below-star-group-runtime)
 <a id="src-group-count-list-extent"></a>

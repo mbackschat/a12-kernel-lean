@@ -1,0 +1,92 @@
+[
+ {
+  "id": "c-tok-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tok-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tok-below",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tok-below.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-bool-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-bool-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-bool-below",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-bool-below.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-num-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-num-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-num-below",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-num-below.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tok-unstarred",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tok-unstarred.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-sum-below",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-sum-below.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nff-below",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nff-below.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nff-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nff-ctl.json",
+   "--dry-run"
+  ]
+ }
+]

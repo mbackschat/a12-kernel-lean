@@ -115,9 +115,8 @@ structure CheckedTokenValueCountSource (model : FlatModel) where
 /-- One checked whole-group token count. The dedicated carrier proves that runtime owns exactly one group extent, so its computation projection can narrow capacity without widening direct, star, or filtered computation. -/
 structure CheckedTokenValueCountGroupSource (model : FlatModel) where
   expected : String
-  starredSource : CheckedStarredGroupSource model
   group : CheckedTokenEntityGroup model
-  sourceOwned : group.source = .starred starredSource
+  groupStarred : group.source.isStarred = true
   modelWellFormed : model.validate.isOk = true
   expectedAllowed :
     (CheckedTokenEntityOperand.group group).allowsValueCountLiteral expected = true
@@ -187,58 +186,36 @@ def elaborateTokenValueCountSource (model : FlatModel)
     |>.mapError .source
   finishTokenValueCountSource expected source
 
-private theorem certifiedStarredTokenEntityGroup_source
-    (starred : CheckedStarredGroupSource model)
-    (group : CheckedTokenEntityGroup model)
-    (certified : certifyTokenEntityGroup model (.starred starred) = .ok group) :
-    group.source = .starred starred := by
-  unfold certifyTokenEntityGroup at certified
-  split at certified
-  · split at certified
-    · contradiction
-    · cases certified
-      rfl
-  · contradiction
-
-private def certifyStarredTokenValueCountGroup
-    (model : FlatModel) (starred : CheckedStarredGroupSource model) :
-    Except TokenEntityGroupError
-      { group : CheckedTokenEntityGroup model //
-        group.source = .starred starred } :=
-  match certified : certifyTokenEntityGroup model (.starred starred) with
-  | .error error => .error error
-  | .ok group =>
-      .ok ⟨group,
-        certifiedStarredTokenEntityGroup_source starred group certified⟩
-
-/-- Resolve the measured form with one terminal repeatable starred group and retain the exact whole-group carrier used by validation and computation. -/
+/-- Resolve one starred group, a repeatable terminal or a fixed group below a starred level, and
+    retain the whole-group carrier used by validation and computation. The Kernel admits the
+    below-star form on both arms and computes it on the expansion account
+    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-computation)). -/
 def elaborateTokenValueCountStarredGroupSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenValueCountStarredGroupSource) :
     Except TokenValueCountElabError
       (CheckedTokenValueCountGroupSource model) := do
-  let starred ← elaborateStarredGroupSource model declaringGroup authored.group
-    |>.mapError fun error => .source (.shape (.starredGroup error))
-  let checkedGroup ← certifyStarredTokenValueCountGroup model starred
-    |>.mapError fun error => .source (.group error)
-  let group := checkedGroup.1
-  if hAllowed : CheckedTokenEntityOperand.allowsValueCountLiteral
-      (.group group) expected = true then
-    pure {
-      expected
-      starredSource := starred
-      group
-      sourceOwned := checkedGroup.2
-      modelWellFormed := starred.modelWellFormed
-      expectedAllowed := hAllowed }
-  else
-    throw (.literalOutsideEnumerationDomain group.groupPath expected)
+  let source ← match ← elaborateStarredGroupOperandSource model declaringGroup authored.group
+      |>.mapError fun error => .source (.shape (.starredGroup error)) with
+    | .terminalRepeatable starred => pure (CheckedEntityGroupSource.starred starred)
+    | .terminalPresence presence => pure (.starredPresence presence)
+  let group ← certifyTokenEntityGroup model source |>.mapError fun error => .source (.group error)
+  if hStarred : group.source.isStarred = true then
+    if hModel : model.validate.isOk = true then
+      if hAllowed : CheckedTokenEntityOperand.allowsValueCountLiteral
+          (.group group) expected = true then
+        pure { expected, group, groupStarred := hStarred, modelWellFormed := hModel
+               expectedAllowed := hAllowed }
+      else
+        throw (.literalOutsideEnumerationDomain group.groupPath expected)
+    else throw .incoherentCore
+  else throw .incoherentCore
 
 /-- Resolve one starred group as the whole full-validation operand through the common token
     entity-list gates. Beside a repeatable terminal this admits a fixed group below a starred level,
     which the Kernel admits here
     ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes))
-    and the computation carrier above still refuses because its arm is unmeasured. -/
+    as the computation carrier above does. -/
 def elaborateTokenValueCountStarredGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenValueCountStarredGroupValidationSource) :

@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/NumCnt",
+ "alternatives": [
+  {
+   "operation": "NumberOfValueInFields(4 In /Probe/Rows*/Detail)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "NumCnt"
+  }
+ ]
+}

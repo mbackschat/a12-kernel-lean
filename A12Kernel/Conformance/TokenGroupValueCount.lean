@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TokenValueCount
 
 /-! # Checked starred String-group value-count conformance
 
-The maintained Kernel differentials admit one terminal repeatable starred String group as the whole operand list and reach matches across every expanded declaration and instantiated row. Checked computation additionally selects only in-capacity cells before classifying their String content. The explicit two-star source is the full-validation control. A separate Kernel admission row admits one fixed nonrepeatable String group; its checked runtime remains internal. The Kernel also admits a fixed group below a star on full validation, which this module counts on the expansion account alone.
+The maintained Kernel differentials admit one terminal repeatable starred String group as the whole operand list and reach matches across every expanded declaration and instantiated row. Checked computation additionally selects only in-capacity cells before classifying their String content. The explicit two-star source is the full-validation control. A separate Kernel admission row admits one fixed nonrepeatable String group; its checked runtime remains internal. The Kernel also admits a fixed group below a star on both arms; its Kernel matrix is replayed in `BelowStarGroupRuntime`.
 -/
 
 namespace A12Kernel

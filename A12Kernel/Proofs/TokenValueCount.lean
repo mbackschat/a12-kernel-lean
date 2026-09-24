@@ -185,8 +185,7 @@ theorem checkedBooleanValueCountStar_usesCapacityProjection
         hasNonRelevant := core.hasNonRelevant }) := by
   cases resolved : source.source.resolveCheckedValidationEntityOperandCore
       document outer (source.filter.map (·.condition)) <;>
-    simp [CheckedBooleanValueCountOperand.resolvedCheckedValidationSide,
-      Except.map, resolved] <;>
+    simp [CheckedBooleanValueCountOperand.resolvedCheckedValidationSide, resolved] <;>
     rfl
 
 /-- Every declaration retained by an operand admitted under `False` is Boolean; Confirm is

@@ -1,0 +1,351 @@
+{
+  "header" : {
+    "id" : "BelowStarComp_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "BelowStarComp_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Detail",
+                "name" : "Detail",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Detail/Amount",
+                    "name" : "Amount",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Detail/Extra",
+                    "name" : "Extra",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Texts",
+                "name" : "Texts",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Texts/Note",
+                    "name" : "Note",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Flags",
+                "name" : "Flags",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Flags/Mark",
+                    "name" : "Mark",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Qty",
+                "name" : "Qty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Out",
+            "name" : "Out",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Out/NumCnt",
+                "name" : "NumCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/TokCnt",
+                "name" : "TokCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/BoolCnt",
+                "name" : "BoolCnt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/SumDet",
+                "name" : "SumDet",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/MaxDet",
+                "name" : "MaxDet",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/MinDet",
+                "name" : "MinDet",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/DistDet",
+                "name" : "DistDet",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/NffDet",
+                "name" : "NffDet",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/NumCntComp",
+                "name" : "NumCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../NumCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfValueInFields(4 In /Probe/Rows*/Detail)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "NumCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/TokCntComp",
+                "name" : "TokCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../TokCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfValueInFields(\"x\" In /Probe/Rows*/Texts)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "TokCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/BoolCntComp",
+                "name" : "BoolCntComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BoolCnt",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfValueInFields(True In /Probe/Rows*/Flags)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "BoolCnt"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/SumDetComp",
+                "name" : "SumDetComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SumDet",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/Probe/Rows*/Detail)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "SumDet"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/MaxDetComp",
+                "name" : "MaxDetComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../MaxDet",
+                  "computationAlternatives" : [ {
+                    "operation" : "MaxValue(/Probe/Rows*/Detail)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "MaxDet"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/MinDetComp",
+                "name" : "MinDetComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../MinDet",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinValue(/Probe/Rows*/Detail)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "MinDet"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/DistDetComp",
+                "name" : "DistDetComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../DistDet",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfDifferentValues(/Probe/Rows*/Detail)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "DistDet"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Out/NffDetComp",
+                "name" : "NffDetComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../NffDet",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledFields(/Probe/Rows*/Detail)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "NffDet"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/SumDet",
+ "alternatives": [
+  {
+   "operation": "Sum(/Probe/Rows*/Detail)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "SumDet"
+  }
+ ]
+}

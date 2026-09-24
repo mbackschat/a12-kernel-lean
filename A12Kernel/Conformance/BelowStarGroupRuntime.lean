@@ -132,4 +132,57 @@ example :
      some "uuuou uuvvovo uuouu ouu ouu"] := by
   native_decide
 
+/-! ## The computation arm
+
+The same eight documents under `compute`, with one Number target per consumer, are retained at the
+[computation checkpoint](../../docs/SOURCES.md#src-below-star-group-computation). A malformed
+`Amount` leaves every Number consumer without an outcome, which is poison here. -/
+
+private def computedValue : Except CheckedAddressingError NumericOperand → Option Rat
+  | .ok (.value amount _) => some amount
+  | _ => none
+
+/-- `NumberOfValueInFields(4 …)`, `"x"` and `True`, then `Sum`, `MaxValue`, `MinValue` and
+    `NumberOfDifferentValues`, each read through its checked-document computation carrier. -/
+private def computation (rows : List Nat) (cells : List (FieldId × Nat × Cell)) :
+    Option (List (Option Rat)) := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := rows.map fun row => { group := 10, path := [row] }
+    cells := cells.map fun (field, row, cell) => cell.input field row }).toOption
+  let amounts ← (elaborateNumberEntitySource model ["Probe"]
+    { first := .starredGroup (belowRows "Detail"), rest := [] }).toOption
+  let notes ← (elaborateTokenValueCountStarredGroupSource model ["Probe"] "x"
+    { group := belowRows "Texts" }).toOption
+  let marks ← (elaborateTrueValueCountStarredGroupSource model ["Probe"]
+    (belowRows "Flags")).toOption
+  let aggregates := ([.sum, .maximum, .minimum, .distinctCount] : List NumericAggregateOp).map
+    fun op => amounts.evaluateCheckedDocumentComputationAggregate op document []
+  pure (([amounts.evaluateCheckedDocumentValueCountComputation 4 document [],
+      notes.evaluateCheckedDocumentComputation document [],
+      marks.evaluateCheckedDocumentComputation document []] ++ aggregates).map computedValue)
+
+/- Each value is the expansion account's, as on the validation arm: `Qty` and the third row never
+   reach an operand, and `mixed-values` separates the extrema and the distinct count. -/
+example :
+    [computation [] [],
+     computation [1] [(2, 1, .num 4)],
+     computation [1] [(3, 1, .num 4), (5, 1, .text "x"), (6, 1, .flag true)],
+     computation [1, 2] (filledRow 1 ++ filledRow 2),
+     computation [1, 2] (filledRow 1),
+     computation [1] [(3, 1, .malformed), (4, 1, .num 4)],
+     computation [1, 2, 3] [(3, 3, .num 4), (5, 3, .text "x"), (6, 3, .flag true)],
+     computation [1, 2] [(3, 1, .num 3), (4, 1, .num 4), (5, 1, .text "y"), (6, 1, .flag false),
+       (3, 2, .num 4)]] =
+    [some [some 0, some 0, some 0, some 0, some 0, some 0, some 0],
+     some [some 0, some 0, some 0, some 0, some 0, some 0, some 0],
+     some [some 1, some 1, some 1, some 4, some 4, some 4, some 1],
+     some [some 4, some 2, some 2, some 16, some 4, some 4, some 1],
+     some [some 2, some 1, some 1, some 8, some 4, some 4, some 1],
+     some [none, some 0, some 0, none, none, none, none],
+     some [some 0, some 0, some 0, some 0, some 0, some 0, some 0],
+     some [some 2, some 0, some 0, some 11, some 4, some 3, some 2]] := by
+  native_decide
+
 end A12Kernel.Conformance.BelowStarGroupRuntime
