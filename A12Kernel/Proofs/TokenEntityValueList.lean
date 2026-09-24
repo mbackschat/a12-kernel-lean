@@ -99,7 +99,8 @@ theorem checkedTokenEntityGroup_partialExtentRelevant_iff
           (slot.declaration.repeatableScope.take group.source.boundLevelCount)
           (slot.declaration.repeatableScope.drop group.source.boundLevelCount)
           outer = true := by
-  simp [CheckedTokenEntityGroup.partialExtentRelevant]
+  simp [CheckedTokenEntityGroup.partialExtentRelevant,
+    CheckedEntityGroupSource.everyDeclarationCovers]
 
 /-- Each reached cell is projected through the operand paired with it in the resolving walk: a field-denoting slot's one certified operand, or, for a group, the declaration that actually stored the cell. -/
 theorem resolvedCheckedTokenEntityOperand_valueListSideAt_cells

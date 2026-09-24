@@ -81,6 +81,18 @@ def referencesField (group : CheckedNumberEntityGroup model)
     (field : FieldId) : Bool :=
   group.fields.any (·.id == field)
 
+/-- The all-rows aggregates' reduced-universal partial gate, asked field by field. -/
+def allRowsRelevant (group : CheckedNumberEntityGroup model)
+    (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
+  group.source.everyDeclarationCovers (model.groupSubtreeFields group.groupPath)
+    fun path bound reopened => scope.coversAggregateExtent model path bound reopened outer
+
+/-- The value count's existential partial gate, asked field by field. -/
+def valueListExtentRelevant (group : CheckedNumberEntityGroup model)
+    (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
+  group.source.everyDeclarationCovers (model.groupSubtreeFields group.groupPath)
+    fun path bound reopened => scope.coversValueListExtent model path bound reopened outer
+
 end CheckedNumberEntityGroup
 
 /-- A checked Number slot retains exactly the owner needed by its direct, plain-star, filtered-star, or group-scope runtime consumer. -/

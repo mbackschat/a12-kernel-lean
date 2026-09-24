@@ -86,35 +86,35 @@ private inductive PartialViewNumberAggregateError where
 private def resolvePartialViewNumberCells
     (read : Env → FieldId →
       Except CheckedAddressingError (Option CheckedCell))
-    (field : FieldId)
     (classify : Env → CheckedCell → ValueListCell .number) :
-    List Env → List (ValueListCell .number) →
+    List (Env × FieldId) → List (ValueListCell .number) →
       Except PartialViewNumberAggregateError
         (Sum (List (ValueListCell .number))
           PartialValidationNumberAggregateResult)
   | [], reversed => pure (.inl reversed.reverse)
-  | environment :: remaining, reversed => do
-      match read environment field with
+  | (environment, fieldId) :: remaining, reversed => do
+      match read environment fieldId with
       | .error error => throw (.addressing error)
       | .ok none => throw .silentlyUnavailable
       | .ok (some checked) =>
           match classify environment checked with
           | .unknown cause => pure (.inr (.evaluated (.unknown cause)))
           | cell =>
-              resolvePartialViewNumberCells read field classify
+              resolvePartialViewNumberCells read classify
                 remaining (cell :: reversed)
 
+/-- Read each reached `(environment, field)` instance through the call-local view, in the order
+    given: one field's rows for a star, a group's in-capacity cells in its expansion order. -/
 private def resolvedPartialViewSide
     (read : Env → FieldId →
       Except CheckedAddressingError (Option CheckedCell))
-    (field : FieldId)
     (classify : Env → CheckedCell → ValueListCell .number)
-    (environments : List Env) (hasUninstantiatedTail hasHaving : Bool) :
+    (instances : List (Env × FieldId)) (hasUninstantiatedTail hasHaving : Bool) :
     Except PartialViewNumberAggregateError
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) := do
-  match ← resolvePartialViewNumberCells read field classify
-      environments [] with
+  match ← resolvePartialViewNumberCells read classify
+      instances [] with
   | .inl cells =>
       pure (.inl { cells, hasUninstantiatedTail, hasHaving })
   | .inr result => pure (.inr result)
@@ -296,8 +296,16 @@ def resolvedCheckedDocumentPartialAggregateSide
       else
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
+  -- A fixed group operand is not measured under a coverage, so it stays a structural refusal.
   | .group slot =>
-      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+      if !slot.isStarred then
+        .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+      else if slot.allRowsRelevant scope outer then do
+        match ← checked.resolvedCheckedDocumentValidationAggregateSide document outer with
+        | .inl side => pure (.inl side)
+        | .inr result => pure (.inr (.evaluated result))
+      else
+        pure (.inr .nonRelevant)
 
 /-- Resolve one unfiltered partial-validation slot through the caller's call-local checked-cell projection. Topology and all-rows relevance remain document-owned, while target classification observes preliminary index and required annotations instead of rereading the immutable base cells. -/
 private def resolvedPartialViewAggregateSide
@@ -312,10 +320,10 @@ private def resolvedPartialViewAggregateSide
   match checked with
   | .field source =>
       if scope.coversCell model source.declaration.path [] then
-        resolvedPartialViewSide read source.field.id
+        resolvedPartialViewSide read
           (fun _ cell =>
             (observeCell .validation cell).asNumberValueListCell)
-          [[]] false false
+          [([], source.field.id)] false false
       else
         pure (.inr .nonRelevant)
   | .star source => do
@@ -324,15 +332,27 @@ private def resolvedPartialViewAggregateSide
           |>.mapError fun error =>
             PartialViewNumberAggregateError.addressing (.addressing error)
       if source.source.allRowsRelevant scope outer then
-        resolvedPartialViewSide read source.field.id
+        resolvedPartialViewSide read
           (fun environment cell =>
             source.checkedValueListCell .validation cell environment)
-          resolved.environments resolved.domain.hasOpenTail false
+          (resolved.environments.map (·, source.field.id))
+          resolved.domain.hasOpenTail false
       else
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
   | .group slot =>
-      .error (.addressing (.addressing (.unsupportedGroupOperand slot.groupPath)))
+      if !slot.isStarred then
+        .error (.addressing (.addressing (.unsupportedGroupOperand slot.groupPath)))
+      else if slot.allRowsRelevant scope outer then do
+        let resolved ← (checked.resolveCheckedValidationOperand document outer).mapError
+          PartialViewNumberAggregateError.addressing
+        resolvedPartialViewSide read
+          (fun _ cell => (observeCell .validation cell).asNumberValueListCell)
+          (resolved.core.inCapacityAddressedCells.map fun addressed =>
+            (addressed.environment, addressed.address.field))
+          resolved.hasUninstantiatedTail false
+      else
+        pure (.inr .nonRelevant)
 
 /-- Resolve one partial `NumberOfValueInFields` slot through the local existential value-list account matching the measured outcome pattern. -/
 def resolvedCheckedDocumentPartialValueCountSide
@@ -364,7 +384,14 @@ def resolvedCheckedDocumentPartialValueCountSide
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
   | .group slot =>
-      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+      if !slot.isStarred then
+        .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+      else if slot.valueListExtentRelevant scope outer then do
+        match ← checked.resolvedCheckedDocumentValidationAggregateSide document outer with
+        | .inl side => pure (.inl side)
+        | .inr result => pure (.inr (.evaluated result))
+      else
+        pure (.inr .nonRelevant)
 
 /-- Resolve one partial-validation aggregate slot. Direct fields require their concrete cell; ordinary stars require complete wildcard/ancestor coverage and retain the established topology-produced side unchanged. Filtered slots return the rule-level skip marker without evaluating their filter. -/
 def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)

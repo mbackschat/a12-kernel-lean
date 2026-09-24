@@ -131,11 +131,8 @@ def resolveCheckedUninstantiatedTail (group : CheckedTokenEntityGroup model)
 /-- A token group has complete partial value-list extent only when every declaration in its certified expansion has one covering relevant identifier across the levels the group operand reopens. -/
 def partialExtentRelevant (group : CheckedTokenEntityGroup model)
     (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
-  group.slots.all fun slot =>
-    scope.coversValueListExtent model slot.declaration.path
-      (slot.declaration.repeatableScope.take group.source.boundLevelCount)
-      (slot.declaration.repeatableScope.drop group.source.boundLevelCount)
-      outer
+  group.source.everyDeclarationCovers (group.slots.map (·.declaration))
+    fun path bound reopened => scope.coversValueListExtent model path bound reopened outer
 
 /-- Resolve the same declaration-paired group extent for partial validation, retaining only relevant concrete cells and recording incomplete extent separately from the cell domain. -/
 def resolveCheckedPartialValidationCells

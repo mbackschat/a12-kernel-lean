@@ -179,6 +179,20 @@ def boundLevelCount : CheckedEntityGroupSource model → Nat
   | .starred source => source.path.firstStar
   | .starredPresence source => source.path.firstStar
 
+/-- Whether every declaration of the operand's expansion passes a starred field's partial extent
+    gate at its own path, bound and reopened levels split at the operand's own depth. Under partial
+    validation a group operand's extent is known exactly when this holds for the gate its operator
+    asks of a starred field: the group path is not the target, so field identifiers alone can settle
+    it and an identifier on a descendant group covers the fields below it
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-extent)). -/
+def everyDeclarationCovers (source : CheckedEntityGroupSource model)
+    (declarations : List FlatFieldDecl)
+    (covers : List String → List RepeatableLevel → List RepeatableLevel → Bool) : Bool :=
+  declarations.all fun declaration =>
+    covers declaration.path
+      (declaration.repeatableScope.take source.boundLevelCount)
+      (declaration.repeatableScope.drop source.boundLevelCount)
+
 end CheckedEntityGroupSource
 
 /-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain.

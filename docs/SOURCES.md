@@ -290,6 +290,15 @@ The same letter and revision as [the dispositions record](#inbound-2026-09-24b-d
 
 **Lean.** [`Conformance/AncestorStarredGroupCount.lean`](../A12Kernel/Conformance/AncestorStarredGroupCount.lean) replays the thirteen documents on the three mixed lists, the two-scope rows and the two-level rows with no change to the theory, and locks the admission of `Batches*/Seal` twice from the rule-arm row of [the dispositions record](#inbound-2026-09-24b-dispositions). The fixed-only pair and the lone starred row count ride carriers this record does not replay.
 
+<a id="inbound-2026-09-24b-kf464-partial-group-extent"></a>
+### Reviewed 2026-09-24b `kf464` first-table handback — a field-expanding aggregate over a starred group is evaluable under partial validation exactly when every field it contains is
+
+The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §5b first table. `PartialGroupStarFieldCoverageDiffTest` was read at that revision: seven coverages over an `Item` holding `Batches` (4) of a `Lot` and a fixed `Seal` of a `Code` and a Number `Weight`, and `Lines` (3) of Number `Qty` and `Price`, two rows each with every field filled but `Lot`, on the Kernel's dynamic Groovy and static Java routes and the peer's interpreter. Not run here.
+
+**Claim.** Each carrier is evaluable exactly when every field the starred group contains passes the extent gate its own starred field would. Field wildcards alone settle the extent, a wildcard on the descendant `Seal` covers its fields, concrete group rows beside a field wildcard are encompassed by it, and `Batches*/Seal` asks only the `Seal`'s own fields. For `Sum`, `MaxValue` and `NumberOfValueInFields(4 In Lines*)` the seven coverages read fires, silent, fires, fires, fires, silent, silent.
+
+**Lean.** A starred Number group operand evaluates under partial validation on both aggregate routes and on the checked-document value count, each asking its starred field's gate once per expanded field: the all-rows gate for the aggregates, the existential one for the value count. [`Conformance/PartialStarredGroupAggregate.lean`](../A12Kernel/Conformance/PartialStarredGroupAggregate.lean) replays the `Lines*` column on all three. `MinValue` and `NumberOfDifferentValues` take the same route and are not in the table. A fixed group operand under a coverage is not measured and stays a structural refusal. `NumberOfFilledFields` over a group and the second table's group-count walk are not replayed.
+
 <a id="inbound-2026-09-24b-dispositions"></a>
 ### Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling
 

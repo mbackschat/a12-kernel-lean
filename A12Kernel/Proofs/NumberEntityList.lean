@@ -17,6 +17,18 @@ theorem checkedDocument_numberValueListCellAt_delegates
   rw [resolved]
   rfl
 
+/-- A group operand's partial extent holds exactly when every expanded declaration passes the
+    supplied starred-field gate at its own path, split at the operand's own depth. The Number and
+    token group gates are this law's instances, differing only in the gate they supply. -/
+theorem checkedEntityGroupSource_everyDeclarationCovers_iff
+    (source : CheckedEntityGroupSource model) (declarations : List FlatFieldDecl)
+    (covers : List String → List RepeatableLevel → List RepeatableLevel → Bool) :
+    source.everyDeclarationCovers declarations covers = true ↔
+      ∀ declaration ∈ declarations,
+        covers declaration.path (declaration.repeatableScope.take source.boundLevelCount)
+          (declaration.repeatableScope.drop source.boundLevelCount) = true := by
+  simp [CheckedEntityGroupSource.everyDeclarationCovers]
+
 /-- Every checked Number entity list has either an already-many first slot or at least one trailing slot. A group slot is already-many by itself, so this is deliberately weaker than requiring a star. -/
 theorem checkedNumberEntitySource_requiredMultiplicity
     (checked : CheckedNumberEntitySource model) :
