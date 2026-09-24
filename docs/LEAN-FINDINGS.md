@@ -2489,3 +2489,13 @@ A clause in [`spec/07`](../spec/07-repetition-and-iteration.md) named the tempor
 **The tell, when reviewing an arriving handback.** The clause names the exact witness the handback supplies. That match feels like confirmation and is the moment to ask what the whole row set establishes, not what the named hole needed. [[LF182]]'s question — what did the fixture hold constant — is the same question asked of a model; this one asks it of a *claim*.
 
 Related: [[LF167]] on a hedge being a claim with its own denominator, [[LF182]] on a minimal fixture fixing the variables the claim quantifies over, [[LF116]] on reusing a settled mechanism across a carrier boundary.
+
+## LF188 — a class rule restated in prose drops the guard its executable predicate carries, and the refuting rows sitting beside it do not catch that
+
+Two `spec/` sentences narrowed at `aa93edab` gave `MVK_INVALID_ROOT_GROUP` to "a path whose first segment names no root". The Lean predicate each paraphrased was right: the field resolver asks the root question only under an absolute base, and the group miss reads the head of the *resolved* path, which for a relative path is the declaring group's root and so always declared. The prose dropped that guard. The same commit retained the rows that refute the prose, a bare `Nope` and `Nope*/Note` drawing `MVK_INVALID_ENTITY`, and the conformance cases locking them passed, because nothing executes a `spec/` sentence against a row. A cold review caught it ([`SPEC-2026-09-24-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-24-01)).
+
+**Write a class rule from the predicate's guards, not from the measured examples.** Examples show which classes occur. The guards show the domain on which each one is decided, and the domain is what the prose must state. Here the guard was one pattern match, `if let .absolute := reference.base`, a line a paraphrase from a table of absolute examples never meets.
+
+**The tell:** a rule stated over "the first segment", "the last level" or any positional property of a path, when the rows include a relative spelling. A relative path's positions are not the resolved path's positions, so every such sentence owes one relative row checked against it.
+
+Related: [[LF121]] on searching for the literal values a settling observation would carry, [[LF187]] on a scoped claim delivering its own overclaim.
