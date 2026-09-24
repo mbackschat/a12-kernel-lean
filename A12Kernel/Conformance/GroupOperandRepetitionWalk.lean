@@ -278,10 +278,15 @@ example :
   native_decide
 
 /- Only a miss on the reference is displaced by the group it names: an invalid rule group still
-   answers first. -/
+   answers first, and so does an absolute path's turning point, a spelling defect. -/
 example :
     (match elaborate policyModel [] (.fieldFilled (named .absolute ["Policy"] "Claims")) with
       | .error (.resolve (.invalidRuleGroup [])) => true
+      | _ => false) = true ∧
+    (match elaborate policyModel ["Policy"] (.fieldFilled
+        { base := .absolute, turningPoint := some "Policy", groups := ["Policy"], field := "Claims" })
+      with
+      | .error (.resolve (.invalidReference _)) => true
       | _ => false) = true := by
   native_decide
 
@@ -372,6 +377,28 @@ example :
     sources keyedPolicyModel ["Policy", "Insured"] = List.replicate 3 (some .errorFieldNoIndex) ∧
       sources policyModel ["Policy", "Insured"] = List.replicate 3 (some .noWildcard) ∧
       sources keyedPolicyModel ["Policy"] = List.replicate 3 (some .noWildcard) := by
+  native_decide
+
+/-- A keyed `Batches` holding a fixed `Seal` beside a keyed `Boxes`. -/
+private def keyedChainModel (batchesKeyed : Bool) : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Batches"], name := "Code", policy := text, repeatableScope := [1] },
+      { id := 2, groupPath := ["Batches", "Seal"], name := "Mark", policy := text,
+        repeatableScope := [1] },
+      { id := 3, groupPath := ["Batches", "Boxes"], name := "Tag", policy := text,
+        repeatableScope := [1, 2] }]
+    repeatableGroups := [
+      { level := 1, path := ["Batches"], indexField := if batchesKeyed then some 1 else none },
+      { level := 2, path := ["Batches", "Boxes"], indexField := some 3 }] }
+
+/- `Boxes` lies beside `Seal`. With nothing keyed on the written field's chain it draws the index
+   class; with `Batches` keyed too the level is a parallel iteration whose own index gates decide, so
+   the walk claims no class ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
+example :
+    ((keyedChainModel false).unboundOperandLevel ["Batches"] ["Batches", "Seal"] 2).diagnostic? =
+        some .errorFieldNoIndex ∧
+      ((keyedChainModel true).unboundOperandLevel ["Batches"] ["Batches", "Seal"] 2).diagnostic? =
+        none := by
   native_decide
 
 /- A rule in the repeatable `Claims` reporting on the root `Holder`, outside its group, reads

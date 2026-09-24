@@ -394,18 +394,26 @@ structure UnboundOperandLevel where
   parallel : Bool
   /-- The level's group declares an index field. -/
   indexKeyed : Bool
+  /-- A repeatable group on the written field's own path declares an index field. -/
+  writtenPathKeyed : Bool := false
   deriving Repr, DecidableEq
 
 /-- Containment when the written field lies outside the declaring group, whatever the level. Inside
     it, a level parallel to the written field's group draws the index class when it declares an index
-    field, and every other level the missing-star class, so an index below the written field's group
-    moves nothing
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
-def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStaticDiagnostic :=
+    field and the written field's path declares none, and every other level the missing-star class,
+    so an index below the written field's group moves nothing
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). With both chains
+    keyed the level is a parallel iteration, admitted or refused by its own index gates
+    ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)), so no walk class is
+    claimed. -/
+def UnboundOperandLevel.diagnostic? (unbound : UnboundOperandLevel) :
+    Option KernelStaticDiagnostic :=
   match unbound.placement with
-  | .outside => .fieldNotInRuleGroup
+  | .outside => some .fieldNotInRuleGroup
   | .contained =>
-      if unbound.parallel && unbound.indexKeyed then .errorFieldNoIndex else .noWildcard
+      if unbound.parallel && unbound.indexKeyed then
+        if unbound.writtenPathKeyed then none else some .errorFieldNoIndex
+      else some .noWildcard
 
 /-- Why a presence predicate's field slot naming a group is refused, in the Kernel's gate order: the
     repetition walk, then a root's own class, then the kind gate
@@ -419,10 +427,10 @@ inductive GroupFieldSlotRefusal where
   | group
   deriving Repr, DecidableEq
 
-def GroupFieldSlotRefusal.diagnostic : GroupFieldSlotRefusal → KernelStaticDiagnostic
-  | .unboundLevel unbound => unbound.diagnostic
-  | .root => .rootGroupReferenced
-  | .group => .noGroupsAllowed
+def GroupFieldSlotRefusal.diagnostic? : GroupFieldSlotRefusal → Option KernelStaticDiagnostic
+  | .unboundLevel unbound => unbound.diagnostic?
+  | .root => some .rootGroupReferenced
+  | .group => some .noGroupsAllowed
 
 inductive ResolveError where
   | invalidModelPath (path : List String)
@@ -525,13 +533,13 @@ a computation
 ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
-  | .unboundOperandLevel _ unbound => some unbound.diagnostic
+  | .unboundOperandLevel _ unbound => unbound.diagnostic?
   | .invalidEntity _ => some .invalidEntity
   | .unknownRootGroup _ => some .invalidRootGroup
   | .aboveRoot _ => some .tooManyParentGroups
   | .shortNameNotUnique _ => some .fieldNameNotUnique
   | .numericMinimumFractionalDigitsExceedMaximum _ _ _ => some .fractDigitsInvalid
-  | .groupInFieldSlot _ refusal _ => some refusal.diagnostic
+  | .groupInFieldSlot _ refusal _ => refusal.diagnostic?
   | _ => none
 
 inductive AuthoredFieldPathError where

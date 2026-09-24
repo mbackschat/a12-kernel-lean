@@ -141,9 +141,9 @@ def targetDiagnostic? :
   | _ => none
 
 /-- Project the per-row operand gate, whether this arm, an operand's resolver or an entity list's
-    shape asked it. The
-    target repeats at no level on this arm, so which class a per-row read draws is decided by who
-    binds its outermost level
+    shape asked it. The target repeats at no level on this arm, so a per-row read's class is
+    containment when the target lies outside the declaring group and otherwise decided by where its
+    outermost level lies beside or below the target's group
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def iterationDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
@@ -152,7 +152,7 @@ def iterationDiagnostic? :
   | .groupReference (.unboundOperandLevel _ unbound)
   | .aggregate (.shape (.unboundOperandLevel unbound))
   | .tokenValueCount (.source (.shape (.unboundOperandLevel unbound)))
-  | .booleanValueCount (.shape (.unboundOperandLevel unbound)) => some unbound.diagnostic
+  | .booleanValueCount (.shape (.unboundOperandLevel unbound)) => unbound.diagnostic?
   | _ => none
 
 end NumericComputationElabError

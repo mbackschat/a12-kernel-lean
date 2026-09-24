@@ -321,7 +321,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .duplicateGroupOperand _ => some .duplicateParam1
   | .overlappingOperands _ _ => some .duplicateParam2
   | .rootGroupOperand _ => some .rootGroupReferenced
-  | .unboundOperandLevel unbound => some unbound.diagnostic
+  | .unboundOperandLevel unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
   | .groupReference error => error.diagnostic?
   | .starredGroup error => error.diagnostic?
@@ -476,8 +476,14 @@ def resolveFieldEntityOperandIn (model : FlatModel)
         |>.mapError .groupReference
       pure (.group resolved)
   | .starredGroup reference => do
-      match ← elaborateStarredGroupOperandSource model declaringGroup reference
-          |>.mapError .starredGroup with
+      let source ← elaborateStarredGroupOperandSource model declaringGroup reference
+        |>.mapError fun
+          | error@(.path pathError) =>
+              match model.belowStarContainment? declaringGroup fixedTargetGroup? pathError with
+              | some unbound => .unboundOperandLevel unbound
+              | none => .starredGroup error
+          | error => .starredGroup error
+      match source with
       | .terminalRepeatable source => pure (.starredGroup source)
       | .terminalPresence source => pure (.starredGroupPresence source)
 

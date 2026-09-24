@@ -242,7 +242,9 @@ def FlatModel.unboundOperandLevel (model : FlatModel) (declaringGroup writtenGro
   { level
     placement := .of declaringGroup writtenGroup
     parallel := !(group?.any fun group => GroupPath.isPrefixOf writtenGroup group.path)
-    indexKeyed := group?.any (·.indexField.isSome) }
+    indexKeyed := group?.any (·.indexField.isSome)
+    writtenPathKeyed := model.repeatableGroups.any fun group =>
+      GroupPath.isPrefixOf group.path writtenGroup && group.indexField.isSome }
 
 /-- The first operand's outermost unbound level, for a list of operand binding scopes read by an
     evaluation that binds none of them. Which operand decides when two would draw different classes
@@ -688,7 +690,8 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
 def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (reference : SurfaceFieldPath) : Option (GroupPath × GroupFieldSlotRefusal) := do
   let base ← match reference.base with
-    | .absolute => some []
+    -- A turning point on an absolute path is a spelling defect, whatever group the path names.
+    | .absolute => if reference.turningPoint.isSome then none else some []
     | .relative parents =>
         match GroupPath.walkUp declaringGroup parents with
         | .ok base => if base.matchesTurningPoint reference.turningPoint then some base else none

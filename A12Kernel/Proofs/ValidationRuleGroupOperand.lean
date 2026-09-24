@@ -9,9 +9,10 @@ open OneLevelUnstarredGroupUse
 /-- Outside the repeated group, every shape in the measured denominator reaches the walk's class,
 whatever its own gates would say. -/
 theorem oneLevelUnstarredGroup_outside_refuses
-    (use : OneLevelUnstarredGroupUse) (unbound : UnboundOperandLevel) :
-    use.admission (.outside unbound) = .rejected unbound.diagnostic := by
-  cases use <;> rfl
+    (use : OneLevelUnstarredGroupUse) (unbound : UnboundOperandLevel)
+    (diagnostic : KernelStaticDiagnostic) (classed : unbound.diagnostic? = some diagnostic) :
+    use.admission (.outside unbound) = .rejected diagnostic := by
+  cases use <;> simp [OneLevelUnstarredGroupUse.admission, classed]
 
 /-- The three positive-presence shapes are admitted once the error field binds the measured level. -/
 theorem oneLevelUnstarredGroup_inside_positive_admitted :

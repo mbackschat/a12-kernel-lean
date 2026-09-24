@@ -35,14 +35,16 @@ inductive KernelStaticDiagnostic where
   | invalidCompareToYes
   /-- A Boolean computation target received a constant of any other family. It is the **top** of the shared literal-comparison ladder: measured across an eight-constant by ten-target grid, a Boolean target reports this class even against a temporal constant, which outranks every other target ([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)). Its Confirm neighbour reports `invalidCompareToYes` in the same position, so the two kinds do not share a class even though they share the ladder rung. -/
   | invalidCompareToYesNo
-  /-- A computation's target does not lie at or below its declaring group while the computation
-  iterates. Iteration is derived from the target's own repeatable scope or from a per-row operand of
-  a repeatable declaring group, so a bare constant into a repeatable target reaches this class with
-  no operand at all. -/
+  /-- A computation's or rule's written field does not lie at or below its declaring group while the
+  construct iterates. Iteration is derived from the written field's own repeatable scope or from any
+  per-row read, whatever binds its level, so a bare constant into a repeatable target reaches this
+  class with no operand at all
+  ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
   | fieldNotInRuleGroup
-  /-- A computation into a fixed target reads per row at a repeatable level nothing binds, the read's
-  outermost one, and that level's group declares an index field. The same read of an unkeyed level
-  draws `noWildcard`, and so does a keyed deeper level beneath one the target binds
+  /-- A read's outermost unbound repeatable level lies beside the written field's group, which lies
+  inside the declaring group, and that level's group declares an index field while the written
+  field's path declares none. The same read of an unkeyed level, or of a level below the written
+  field's group, draws `noWildcard`
   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
   | errorFieldNoIndex
   /-- An operand list below the operator's required arity. -/

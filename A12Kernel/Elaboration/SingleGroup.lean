@@ -252,7 +252,7 @@ def FixedGroupReferenceError.diagnostic? :
   | .unknownGroup _ => some .invalidEntity
   | .unknownRootGroup _ => some .invalidRootGroup
   | .repeatableGroupRequiresAddress _ => some .noWildcard
-  | .unboundOperandLevel _ unbound => some unbound.diagnostic
+  | .unboundOperandLevel _ unbound => unbound.diagnostic?
   | .reference _ => none
 
 /-- How a carrier treats a fixed group operand whose path crosses a repeatable level. -/

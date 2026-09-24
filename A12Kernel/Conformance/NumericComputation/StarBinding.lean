@@ -130,7 +130,7 @@ private def out : GroupPath := ["Probe", "Out"]
 private def batches : GroupPath := ["Probe", "Batches"]
 
 /- Both levels starred is admitted except by `SumOfProducts`, which requires its lone star at the
-   lowest level. Leaving the outer level unstarred from a nonrepeatable declaring group draws the
+   lowest level. Leaving the outer level unstarred from `Out`, the target's own group, draws the
    missing-star class on all seven; six of them used to admit it and fail only at evaluation, on a
    missing binding. -/
 example :
@@ -139,8 +139,8 @@ example :
     row model out .outerUnstarred = carriers.map (fun _ => some (some .noWildcard)) := by
   native_decide
 
-/- The inner level unstarred below the first star is the missing-star class on every carrier, and
-   an index declared on either level does not move it. -/
+/- From the target's own group the inner level unstarred below the first star is the missing-star
+   class on every carrier, and an index declared on either level does not move it. -/
 example :
     row model out .innerUnstarred = carriers.map (fun _ => some (some .noWildcard)) ∧
     admission outerKeyed out (expression .innerUnstarred .sum) = some (some .noWildcard) ∧
@@ -156,8 +156,8 @@ example :
   native_decide
 
 /- An unbound outer level draws the index class exactly when that level is index-keyed. An index on
-   the reopened inner level changes nothing, a keyed level the declaring group binds still draws
-   containment, and the fully starred control stays admitted. -/
+   the reopened inner level changes nothing, a keyed level read from `Batches`, which the target lies
+   outside, still draws containment, and the fully starred control stays admitted. -/
 example :
     [admission outerKeyed out (expression .outerUnstarred .sum),
       admission outerKeyed out (expression .outerUnstarred .groupCount),
@@ -206,9 +206,9 @@ private def plusOne (reference : SurfaceFieldPath) :
 
 private def bText : SurfaceFieldPath := absoluteField ["Probe", "Batches"] "BText"
 
-/- A plain read follows the star's table on every leaf that reads a field: containment from the
-   group that binds its outermost level, whether its deeper level is bound or not, and otherwise the
-   missing-star or index class. -/
+/- A plain read follows the star's table on every leaf that reads a field: containment from a
+   declaring group the target lies outside, whether its deeper level is bound or not, and otherwise
+   the missing-star or index class. -/
 example :
     let bwAbsolute := absoluteField ["Probe", "Batches"] "BW"
     let length (reference : SurfaceFieldPath) :
@@ -277,9 +277,9 @@ example :
     [missingStar, noIndex, missingStar, contained] := by
   native_decide
 
-/- The same list-wide gate answers a direct field and a fixed group read from the declaring group
-   that binds their level, with containment. No row measures either on an entity list; they take
-   the class a plain read and a group count's fixed operand draw there. -/
+/- The same list-wide gate answers a direct field and a fixed group read from `Batches`, which the
+   target lies outside, with containment. No row measures either on an entity list; they take the
+   class a plain read and a group count's fixed operand draw there. -/
 example :
     let sumOf (first : SurfaceFieldEntityOperand) : AuthoredNumericExpr SurfaceNumericComputationAtom :=
       .atom (.numeric (.aggregate .sum { first, rest := [rootW] }))
@@ -295,7 +295,9 @@ private def ledger : GroupPath := ["Probe", "Ledger"]
    so every read that leaves a repeatable level unstarred draws containment there, on either side of
    the first star and over an index-keyed level, as the below-star read from `Batches` does; the
    fully starred control stays admitted
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). No row measures the
+   keyed plain read or the fully starred group count from `Ledger`; they take the table's class and
+   the `Sum` control's admission. -/
 example :
     [admission model ledger (expression .outerUnstarred .sum),
       admission model ledger (expression .outerUnstarred .groupCount),
@@ -309,6 +311,18 @@ example :
       admission model ledger (expression .bothStarred .groupCount)] =
     [contained, contained, contained, contained, contained, contained, contained, contained,
       none, none] := by
+  native_decide
+
+/- A starred group operand of an entity list meets the same star check as a starred field, so its
+   inner level left unstarred below the star draws containment into a target outside the declaring
+   group, from `Ledger` and from `Batches` alike. -/
+example :
+    let sealSum : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+      .atom (.numeric (.aggregate .sum
+        { first := .starredGroup { base := .absolute, groups := [{ name := "Probe" },
+            { name := "Batches", starred := true }, { name := "Boxes" }, { name := "BSeal" }] }
+          rest := [] }))
+    [admission model ledger sealSum, admission model batches sealSum] = [contained, contained] := by
   native_decide
 
 /-- `none` when admitted, otherwise the class the carried resolver error projects, for a String

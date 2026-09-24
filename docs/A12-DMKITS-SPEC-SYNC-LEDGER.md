@@ -35,6 +35,23 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-24-05"></a>
+### `SPEC-2026-09-24-05` — five restatements of your `-24b` and `-24d` rows claimed more than the rows measured, and the index class needs the error field's path unkeyed
+
+- `status`: pending.
+- `origin`: locally originated from a cold review of this project's replay of your `-24b`, `-24c` and `-24d` letters. Every delta narrows a claim's measured scope or joins your [`kf371`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371) to a `-24d` row, and none changes a measured outcome.
+- `clause`: [`07` the bare group-operand bullet](../spec/07-repetition-and-iteration.md), [`09` §5, the unstarred-level bullet and the declaring-group paragraph](../spec/09-computations.md), [`10` the keyed-read bullet](../spec/10-validation-and-polarity.md), [`12` the whitespace bullet](../spec/12-concrete-syntax.md).
+- `delta`: beside the error field's group, an index-keyed operand draws `MVK_ERROR_FIELD_NO_INDEX` only when the error field's own path declares no index field, by `kf371`'s parallel-iteration table; with both chains keyed, that table's own index gates decide.
+- `delta`: with the error field outside the rule group, containment first is measured on starred aggregates and on a field read ([inbound](SOURCES.md#inbound-2026-09-24d-star-containment)), and on no bare group operand.
+- `delta`: the containment gate's per-row source is any per-row read, whatever binds its level, as the `Ledger` rows show, rather than only a per-row operand of a repeatable declaring group; the fully starred control is measured admitted into a fixed target only.
+- `delta`: the order-aware `FirstFilledValue` keyed account is measured on separately named operands, on a group whose index field is a Number, keyed by a text literal ([inbound](SOURCES.md#inbound-2026-09-24b-keyed-partial-read)).
+- `delta`: the lexer's refusal of a non-ASCII space is measured where whitespace would separate tokens, not inside a comment ([inbound](SOURCES.md#inbound-2026-09-24b-lexer-and-blank-text)).
+- `basis`: the cited inbound records and `kf371`, reviewed locally 2026-09-24; [`Conformance/GroupOperandRepetitionWalk.lean`](../A12Kernel/Conformance/GroupOperandRepetitionWalk.lean) locks the keyed-chain withholding.
+- `surfaces`: any peer statement of these rows broader than the scope above.
+- `acceptance`: confirm each scope, or supply the rows that reach beyond it: a bare group operand with the error field outside the rule group, a keyed read over a group operand's fields or a String index, a comment holding a no-break space, and a keyed operand beside a keyed error-field path on the rule arm.
+- `limit`: `kf371` is measured on the computation arm; the rule arm's `-24d` rows carry an unkeyed error-field path.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-24-04"></a>
 ### `SPEC-2026-09-24-04` — no `kf464` row isolates the group-count walk's reach check, and its list rule is measured on single operands and the fixed-only pair
 

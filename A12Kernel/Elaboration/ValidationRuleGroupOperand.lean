@@ -60,7 +60,10 @@ def admission (locus : OneLevelGroupErrorLocus) :
     OneLevelUnstarredGroupUse → RuleGroupOperandStaticAdmission
   | use =>
       match locus, use with
-      | .outside unbound, _ => .rejected unbound.diagnostic
+      | .outside unbound, _ =>
+          match unbound.diagnostic? with
+          | some diagnostic => .rejected diagnostic
+          | none => .unmapped
       | .inside, .groupFilled
       | .inside, .atLeastOneSole
       | .inside, .allThenFixed => .admitted

@@ -50,13 +50,13 @@ def unboundLevel? (model : FlatModel) (ruleGroup : GroupPath) :
   | .errorField _ | .repeatableErrorField _ | .iterationScope _ | .errorFieldNotReferenced _
   | .negativeConditionInIteration _ | .unboundOperandLevel _ _ => none
 
-/-- Project the two measured whole-rule gates. The error field's presence in its own condition is a Kernel-checked rule property, and it is measured as its own class: an operand list that names a sibling key rather than the error field draws it, while naming the error field among the keys is admitted. An unguarded negative group-presence condition in a repeatable scope has its own measured class, while a direct positive group guard admits the same negative leaf. Every other assembly refusal returns `none`. -/
+/-- Project the measured whole-rule gates. The error field's presence in its own condition is a Kernel-checked rule property, and it is measured as its own class: an operand list that names a sibling key rather than the error field draws it, while naming the error field among the keys is admitted. An unguarded negative group-presence condition in a repeatable scope has its own measured class, while a direct positive group guard admits the same negative leaf. An unbound operand level takes the walk's class. Every other assembly refusal returns `none`. -/
 def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
   | .errorFieldNotReferenced _ =>
       some KernelStaticDiagnostic.errorFieldNotReferenced
   | .negativeConditionInIteration _ =>
       some KernelStaticDiagnostic.negativeConditionInIteration
-  | .unboundOperandLevel _ unbound => some unbound.diagnostic
+  | .unboundOperandLevel _ unbound => unbound.diagnostic?
   -- Named rather than wildcarded: a new assembly refusal must be classified, not absorbed. A scope
   -- mismatch the walk explains arrives as `unboundOperandLevel`; what remains is unmeasured.
   | .iterationScopeMismatch _ _ _ | .errorField _ | .repeatableErrorField _ | .iterationScope _ =>
