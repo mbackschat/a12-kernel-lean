@@ -420,6 +420,15 @@ example :
       key? ["Order"] (absolute ["Order", "Details"] "Limit") = none := by
   native_decide
 
+/- A bare name that misses its declaring group and then matches several fields model-wide is a class
+   of its own, not a miss, and one class on every carrier measured, a computation included
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
+example :
+    (match model.resolveField ["Order", "Details", "Deep"] (bare "Limit") with
+      | .ok _ => none
+      | .error error => error.diagnostic?) = some .fieldNameNotUnique := by
+  native_decide
+
 private def keywordProfile : PathKeywordProfile :=
   { reserved := ["And", "Date", "Today"] }
 

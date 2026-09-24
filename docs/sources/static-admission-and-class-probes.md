@@ -2,6 +2,19 @@
 
 Static admission, operand kind gates, and diagnostic-class probes. Evaluation and application routes are owned by [`evaluation-and-application-routes.md`](evaluation-and-application-routes.md).
 
+<a id="src-short-name-ambiguity-every-carrier"></a>
+#### A bare name that matches several fields model-wide draws `MVK_FIELDNAME_NOT_UNIQUE` on every carrier asked, a computation included, measured locally 2026-09-24
+
+- `revision`: one `dmtool batch` run, fifty-five children (fifty-three `rule check`, two `computation add --dry-run`) over one model, at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout (each verdict stamps its source state `CLEAN`), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. The measurement checkout's `git status --short` was empty before and after. The batch's group rows are not claimed here.
+- `question`: the ambiguity class was measured on one Number carrier ([multi-root checkpoint](group-and-iteration-probes.md#src-multi-root-short-name-reach)), and Lean projected no class for it. Is it one class whatever carrier reads the name?
+- `model`: `ProbeJ_DM.json`, the [starred-path checkpoint](#src-starred-path-segment-order)'s model plus a fixed group `Misc` holding a String `Label`, with `fieldRefByShortNameAllowed` true. `Amount` is declared under `/Item/Info` and `/Item/Rows/Detail`, and `Code` only under `/Extra`. Every rule row is `FieldFilled(Weight) And <operand>` with error field `/Item/Weight`, and the computation is `[<name>] + 1` into `/Out/Count`.
+- `claim`: a bare `Amount` from `/Item` draws `MVK_FIELDNAME_NOT_UNIQUE` on `[N] == 1`, `FieldFilled(N)`, `Sum(N, Weight)`, `FirstFilledValue(N, Weight2)`, `NumberOfFilledFields(N, Title)` and the computation.
+- `separator`: a bare `Code`, unique model-wide, resolves on the same six. `FieldFilled` and `NumberOfFilledFields` admit it, and the other four refuse it on its String kind, a class read only after the name resolved.
+- `local-consequence`: `KernelStaticDiagnostic` gains `fieldNameNotUnique`, and `ResolveError.diagnostic?` projects `shortNameNotUnique` to it, which reaches every carrier delegating to that projection.
+- `assumption`: the delegating carriers not asked here inherit the class on the shared-resolver account, as the [resolver checkpoint](#src-resolver-failure-classes-every-carrier) records for the other three name classes.
+- `bytes`: [`group-operand-and-short-name-classes/`](../../evidence/kernel-30.8.1/captures/group-operand-and-short-name-classes/) retains the model, the ops list, both computation specs and the verdicts. The verdicts `obs.json` hash to `8ba75df010b851191be54d54a4d87dccabb6c6feb1e1c1b3c6635f826f9e0ce4` and carry codes only. They are bounded raw captures with no typed local replay, so neither `L` nor `C`.
+- `sync`: no clause. [spec §10](../../spec/08-paths-and-references.md) already names the class for the model-wide tier.
+
 <a id="src-starred-path-segment-order"></a>
 #### A starred path is judged segment by segment, so a star on a nonrepeatable segment outranks a later miss and a miss outranks its own star, one answer per row on four carriers, measured locally 2026-09-24
 

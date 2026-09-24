@@ -455,12 +455,16 @@ failure is measured to report an `MVK_` class.
 The three name-resolution arms were measured together on 2026-09-23 across eight condition carriers
 and two computation carriers, each reporting the same class for the same failure, which is what makes
 them the resolver's rather than any carrier's
-([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)).
+The short-name ambiguity arm was measured the same way on 2026-09-24, on five condition carriers and
+a computation
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
   | .invalidEntity _ => some .invalidEntity
   | .unknownRootGroup _ => some .invalidRootGroup
   | .aboveRoot _ => some .tooManyParentGroups
+  | .shortNameNotUnique _ => some .fieldNameNotUnique
   | .numericMinimumFractionalDigitsExceedMaximum _ _ _ => some .fractDigitsInvalid
   | _ => none
 

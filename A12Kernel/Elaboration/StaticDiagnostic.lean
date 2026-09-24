@@ -123,6 +123,9 @@ inductive KernelStaticDiagnostic where
   /-- A parent walk that climbs above the root group. Reported by the shared field resolver on every
   carrier measured, validation and computation alike. -/
   | tooManyParentGroups
+  /-- A bare name that misses the declaring group and then matches more than one field model-wide.
+  The model-wide tier never picks one, and the class is the same on every carrier measured. -/
+  | fieldNameNotUnique
   /-- A multiplication/division region carrying more than one open division. The region is **scoped**: grouping, addition, subtraction and power each start a fresh one, so the count is per region and never over the whole expression. -/
   | tooManyDivisionsInRegion
   /-- A power whose left operand is directly another power. Grouping the left operand defeats the check, so the refusal is about the ungrouped chain and not about nesting as such. -/
@@ -434,6 +437,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .entitiesInDifferentRootGroups => "MVK_DIFFERENT_ROOT_GROUPS"
   | .invalidRootGroup => "MVK_INVALID_ROOT_GROUP"
   | .tooManyParentGroups => "MVK_TOO_MANY_PARENT_GROUPS"
+  | .fieldNameNotUnique => "MVK_FIELDNAME_NOT_UNIQUE"
   | .tooManyDivisionsInRegion => "MVK_TOO_MANY_DIV_FOR_CALC"
   | .nestedPowerOnLeft => "MVK_TOO_MANY_POW_FOR_CALC"
   | .exponentScaleNotWhole => "MVK_INVALID_NUMBER_FOR_EXP"
@@ -596,7 +600,7 @@ def all : List KernelStaticDiagnostic :=
     .indexFieldRepeatabilityMismatch, .indexFieldNotIterating, .indexFieldNonRepeatableEnum,
     .wildcardOnRelativeStep, .wildcardsRequired, .wildcardOnRuleContext,
     .groupNotRepeatable, .entityNotInGroup, .entitiesInDifferentRootGroups, .invalidRootGroup,
-    .tooManyParentGroups,
+    .tooManyParentGroups, .fieldNameNotUnique,
     .tooManyDivisionsInRegion, .nestedPowerOnLeft, .exponentScaleNotWhole,
     .tooManyConstantsInOperandList, .invalidDigitForRounding, .noConvertInNumber,
     .charsetRangeStartAfterEnd, .charsetGraphemeClusterEqualsLength, .charsetParseError,

@@ -1,0 +1,709 @@
+[
+ {
+  "id": "sn-cmp-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Amount] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-cmp-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Code] == 1",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-ff-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(Amount)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-ff-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldFilled(Code)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-sum-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Amount, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-sum-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And Sum(Code, Weight) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-ffv-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Amount, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-ffv-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FirstFilledValue(Code, Weight2) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-nff-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Amount, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-nff-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Code, Title) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sn-comp-dup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "csn-dup.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "sn-comp-unique",
+  "verb": "computation",
+  "args": [
+   "add",
+   "csn-unique.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g-algf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Item/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-algf-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Nope/Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-algf-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-algf-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Item/Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-algf-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Nope, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-algf-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Rows, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-algf-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(../Info, Misc)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-nfg-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Item/Info, Misc) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-nfg-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Nope/Info, Misc) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-nfg-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Nope, Misc) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-nfg-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Item/Nope, Misc) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-nfg-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Nope, Misc) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-nfg-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Rows, Misc) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-nfg-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(../Info, Misc) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-gf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupFilled(/Item/Info)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-gf-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupFilled(/Nope/Info)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-gf-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupFilled(/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-gf-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupFilled(/Item/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-gf-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupFilled(Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-gf-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupFilled(/Rows)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-gf-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And GroupFilled(../Info)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Nope*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Nope/Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Rows*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Info*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-rootstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(/Item*/Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Title*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(../Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Nope/Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-algf-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneGroupFilled(Info*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Nope*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Nope/Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Rows*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Info*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-rootstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(/Item*/Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Title*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(../Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Nope/Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "sg-nfg-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledGroups(Info*) > 0",
+   "--code",
+   "E1"
+  ]
+ }
+]
