@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-24-04"></a>
+### `SPEC-2026-09-24-04` — no `kf464` row isolates the group-count walk's reach check, and its list rule is measured on single operands and the fixed-only pair
+
+- `status`: pending
+- `origin`: locally originated from replaying your second `kf464` table. It narrows the confidence of your step 4 and of this project's own list sentence, and changes no outcome.
+- `clause`: [`10`, the `NumberOfFilledGroups` walk and its Unmeasured line](../spec/10-validation-and-polarity.md).
+- `delta`: step 4's clause that a held instance no identifier reaches leaves the count undecidable is kept as the account, but no measured row isolates it. Row 7's second `Seal` is already refused at step 1, because `Code` and `Weight` are concrete at the starred level. With the reach check removed, every replayed row, `KF209` included, answers unchanged.
+- `delta`: "UNKNOWN when any step fails for any operand" is measured on single operands and on the fixed-only pair; a list mixing a starred and a fixed operand is not.
+- `basis`: [kf464 walk inbound](SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count) and [`Conformance/PartialGroupCount.lean`](../A12Kernel/Conformance/PartialGroupCount.lean), with the step-4 mutation run locally 2026-09-24.
+- `surfaces`: your `kf464` step-4 attribution to row 7, and any peer evaluator that reads the reach check as measured.
+- `acceptance`: a row where step 1 passes and a held instance is still unreached, or a corrected attribution for row 7.
+- `limit`: one reopened level on every measured shape.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-24-03"></a>
 ### `SPEC-2026-09-24-03` — a fixed-target computation refuses a star's unstarred level by who binds it, and a star aggregate is per-row once it leaves a declaring-group level unstarred
 

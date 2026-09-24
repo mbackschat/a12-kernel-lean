@@ -7,7 +7,7 @@ below is a row of the peer's second `kf464` table, on its three group-count carr
 repeatable terminal, a fixed group below that star, and a fixed-only list; the second and third also
 run as whole rules on their partial routes. A second fixture replays
 `KF209`'s nine selections and three controls, which the walk reproduces because that fixture's group
-holds a second field the selections leave uncovered
+holds a second field no selection names
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)).
 -/
 
@@ -212,8 +212,8 @@ example : (fixedPairRule .grade (everyField.map every), fixedPairRule .none (eve
 
 /-! ## `KF209`'s selections
 
-`Items` (max 50) of a `Tag` and a Number `Qty`, with two rows whose `Qty` the selections cover and
-whose `Tag` none does. -/
+`Items` (max 50) of a `Tag` and a Number `Qty`, with two rows whose `Qty` the selections name and
+whose `Tag` none names. -/
 
 private def itemsModel : FlatModel :=
   { fields := [
@@ -274,7 +274,8 @@ example :
 
 /- The three controls under a field and group wildcard: an instantiated row is a repeatable
    instance's content whether or not a field in it is filled, so two empty rows count two, and no
-   rows count zero. -/
+   rows count zero. The peer's controls are `> 0` rules, so they settle a decided positive count on
+   the first two and cannot tell zero from UNKNOWN on the third; the exact values are this walk's. -/
 example :
     let wildcard := [qtyAt .all .all .all, itemsAt .all .all]
     itemsCount 2 (some 11) wildcard = some (decided 2) ∧

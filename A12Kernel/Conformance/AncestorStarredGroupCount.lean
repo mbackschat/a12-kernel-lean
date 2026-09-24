@@ -164,10 +164,12 @@ private def documents : List Doc :=
 private def table (operands : List SurfaceGroupCountOperand) : List (Option Reading) :=
   documents.map (readingOf model operands)
 
-/- A `Seal` counts by its content: an instantiated empty one adds nothing, a malformed-only one leaves
+/- A `Seal` counts by its content: one holding none adds nothing, a malformed-only one leaves
    the count unevaluable, and one holding admitted content counts beside a malformed value. Four
    sealed batches reach the extent of one `Seal` per batch; beside `Grading` the same four can still
-   grow, which an extent of one per operand would close. -/
+   grow, which an extent of one per operand would close. The peer's fourth document instantiates
+   each `Seal` empty; a nonrepeatable group has no instance of its own here, so the fixture holds the
+   two batches alone and does not separate an instantiated `Seal` from an absent one. -/
 example :
     table [seals] = [o 0, o 2, o 1, o 0, o 2, v 4, o 1, unevaluable, unevaluable, o 1, o 1, o 1, o 0] ∧
     table [seals, grading] =
@@ -183,7 +185,7 @@ example :
   native_decide
 
 /- The same below-star operand twice is admitted on this arm as on the computation arm, since the
-   duplicate scan skips a starred operand (the peer's rule-arm row). -/
+   duplicate scan exempts equal starred paths (the peer's rule-arm row). -/
 example :
     (elaborateMixedFilledGroupCountComparison model ["Item"] [seals, seals] .greater 0).toOption.isSome =
       true := by
