@@ -279,6 +279,36 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24e-misplaced-star"></a>
+### Reviewed 2026-09-24e misplaced-star handback — a star on a field or fixed group draws `MVK_INVALID_WILDCARD` alone, even where the same reference leaves a repeatable level unstarred
+
+a12-dmkits revision `9abe9925049ae1a25a70b1884e47b1ff51ff89b2` on `main`, confirmed an ancestor of that checkout's `main` when read. The letter is the peer's `-2026-09-24e`, frozen as sent in the user's exchange directory with SHA-256 `f0d550898dd12b702c188faf0728697464afa65eb2e9e851d367ef79c74e0319`. `PartialStarContainmentLawsTest`, `DateArgumentSlotLawsTest`, `ScalarValueListGateLawsTest`, `SumOfProductsLawsTest`, `ErrorFieldReferenceReachLawsTest` and `MessageParameterConditionDependencyLawsTest` were resolved at that revision, with the extensions of [`kf328`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf328), [`kf338`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf338), [`kf350`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf350) and [`kf466`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf466) read there. Not run here. Inbound from an already committed and reviewed revision that answers no entry, so no outbound entry follows; the three records below share this provenance.
+
+**Claim.** Each misplaced star has a twin on the same model that moves only the star onto the level it follows. From `Ledger` into `Summary/Result`, `Sum(../Shipments/Parcels/Weight*)` and `NumberOfFilledGroups(../Shipments/Parcels/Seal*)` draw `MVK_INVALID_WILDCARD` where their twins draw containment; from `Summary` the `Sum` twin draws `MVK_NO_WILDCARD`; with every level starred, `Weight*` draws it where the twin is admitted. On the rule arm the misplaced field star draws it in the date slot and the scalar value-list subject, where the twins draw `MVK_NO_WILDCARDS_ALLOWED`, and in a `SumOfProducts` pair over different groups, where the twin draws `MVK_DIFFERENT_GROUPS`. Against an unreferenced error field it draws it where a sibling model's unstarred-field spelling draws `MVK_ERROR_FIELD_NOT_REFERENCED`, a two-model comparison rather than a twin.
+
+**Lean.** No surface spells a star on a field. [`StarBinding`](../A12Kernel/Conformance/NumericComputation/StarBinding.lean) replays the fixed-group row and its twin from `Ledger` on its own fixture.
+
+<a id="inbound-2026-09-24e-nested-partial-star"></a>
+### Reviewed 2026-09-24e nested partial-star handback — a star that leaves one nested level bare counts as the unstarred read, ahead of the unreferenced-target class
+
+The same letter and revision, its §2. From a rule in the root `Shipment` reporting on `Carrier`, with `Items` repeating inside `Parcels`, `Sum(Parcels*/Items/Qty) > 0` and `Sum(Parcels/Items*/Qty) > 0` draw `MVK_NO_WILDCARD`, so does the first with `FieldFilled(Carrier) And` beside it, and `Sum(Parcels*/Items*/Qty) > 0` draws `MVK_ERROR_FIELD_NOT_REFERENCED`.
+
+**Lean.** The checked validation spine carries no starred `Sum`, so none of it is replayed.
+
+<a id="inbound-2026-09-24e-message-withheld"></a>
+### Reviewed 2026-09-24e message-withholding handback — a message is judged only beside a sound DSL member, post-parse classes included, and a name or error-code class does not withhold it
+
+The same letter and revision, its §3. On a claims policy, with the message text fixed per column and one member moved per row: a TAB in the text draws `INVALID_CHARACTERS` and an unread parameter `INVALID_FIELD` beside the sound control, and neither is reported beside a rule condition drawing `MVK_INVALID_WILDCARD`, `MVK_NO_WILDCARD` or `MVK_NO_WILDCARDS_ALLOWED`, nor beside a computation operation drawing the first two. Beside a condition that resolves and parses but never names the error field, the TAB is withheld behind `MVK_ERROR_FIELD_NOT_REFERENCED`; the parameter column does not discriminate there. A rule-name refusal `MVK_RULE_NAME_INVALID` and a blank error code `MVK_ERROR_CODE_MISSING` are each reported together with the message's class.
+
+**Lean.** The rule-message elaborator takes a checked flat condition, so a refused flat condition yields no message verdict by construction. Rule assembly receives an already checked message plan, so its reference and walk refusals come after the message's verdict, and neither the rule name nor the error code is modeled; no rule-level verdict set exists to withhold from, and [SG10's withholding line](gaps/strings-and-messages.md#gap-sg10) owns that.
+
+<a id="inbound-2026-09-24e-filter-leaf"></a>
+### Reviewed 2026-09-24e filter-leaf handback — a `Having` filter's own leaf and a semantic index's value half are not per-row reads for containment
+
+The same letter and revision, its §4. From `Ledger` into `Summary/Result`, where the plain read `[../Shipments/ShipWeight] + 1` draws containment and the starred control is admitted, `Sum(../Shipments*/ShipWeight Having [../Shipments/ShipKey] == "X")` is admitted, and with `Shipments` keyed so is `[../Shipments/ShipWeight For "A"] + 1`; both are admitted from `Summary` too, and on the rule arm from `Ledger` reporting on `Summary/Result`.
+
+**Lean.** [`StarBinding`](../A12Kernel/Conformance/NumericComputation/StarBinding.lean) replays the filtered `Sum` from both declaring groups on its own fixture. No computation surface spells a keyed read, and the rule-arm rows are not replayed.
+
 <a id="inbound-2026-09-24d-star-containment"></a>
 ### Reviewed 2026-09-24d star-containment handback — containment, not binding, answers a per-row read into a written field outside the declaring group, and the written field's position names the walk's class
 

@@ -325,6 +325,34 @@ example :
     [admission model ledger sealSum, admission model batches sealSum] = [contained, contained] := by
   native_decide
 
+/- A star on a fixed group answers alone. From `Ledger` the misplaced star on `BSeal` draws the
+   wildcard class, where its twin with the star moved onto `Boxes` leaves `Batches` unstarred and
+   draws containment
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24e-misplaced-star)). -/
+example :
+    let misplaced : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+      .atom (.numeric (.filledGroupCount [.starred { base := .absolute, groups := [
+        { name := "Probe" }, { name := "Batches" }, { name := "Boxes" },
+        { name := "BSeal", starred := true }] }]))
+    [admission model ledger misplaced, admission model ledger (expression .outerUnstarred .groupCount)] =
+      [some (some .invalidWildcard), contained] := by
+  native_decide
+
+/- A `Having` filter's own leaf reads no row of the level it names: the starred control filtered on
+   `../Batches/Key`, which spells `Batches` unstarred, stays admitted from `Ledger`, which the target
+   lies outside, and from the target's own group
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24e-filter-leaf)). -/
+example :
+    let star : SurfaceStarFieldPath :=
+      { base := .relative 1, groups := [{ name := "Batches", starred := true }], field := "BW" }
+    let key : SurfaceHavingStringRef :=
+      { origin := .inner, field := { base := .relative 1, groups := ["Batches"], field := "Key" } }
+    let filtered : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+      .atom (.numeric (.aggregate .sum
+        { first := .starHaving star (.compareStrings .equal key "X"), rest := [] }))
+    [admission model ledger filtered, admission model out filtered] = [none, none] := by
+  native_decide
+
 /-- `none` when admitted, otherwise the class the carried resolver error projects, for a String
     computation into the fixed `FreeS`. -/
 private def stringAdmission (m : FlatModel) (declaringGroup : GroupPath)
