@@ -279,6 +279,15 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24b-keyed-partial-read"></a>
+### Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to
+
+The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §6, the peer's `KF461`. `PartialKeyedSelectionRelevanceDiffTest` was read at that revision: an order with a repeatable `Packages` indexed by `No`, holding `Carrier` and a fixed `Dims` {`Height`}, package 1 filled throughout and package 2 holding its key alone, beside `Extra` {`A` empty, `B` = 4} and `Service` {`S1` empty, `S2` = `EXPRESS`} with a `Speed` category, one rule per consumer with error field `Reference`, which every coverage includes. Full validation fires every rule. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Claim.** A key no row carries, `For "3"`, under `NoGroupFilled` of `Packages` and of its `Dims`, `FieldNotFilled(Carrier)`, `[Height] == 0` and `FirstFilledValue(Dims) == 0`, fires under `Packages` wildcarded or every `Packages` field wildcarded, and is silent under the key column alone, the key column plus both rows concretely, and the two rows alone. A selected row, `For "1"` or `For "2"`, fires under every coverage reaching the target at that row and is silent under the key column alone, while `GroupFilled(Packages For "1")` fires under the key column alone and is silent under `Reference` alone. A key read from a field fires with the key fields covered beside `Packages` and is silent without them. `FirstFilledValue(A, B)` and `FirstFilledValue(/Order/Extra)` fire with both covered and are silent with `B` alone; `FirstFilledValue(B, A)` fires with `B` alone; the category pair and `[S2 -> Speed] == "FAST"` follow the same order.
+
+**Lean.** No validation leaf reads a keyed value at runtime, so no row is replayed; [SG9](gaps/paths-and-groups.md#gap-sg9) carries the keyed condition spine this needs.
+
 <a id="inbound-2026-09-24c-path-walk"></a>
 ### Reviewed 2026-09-24c path-walk handback — an up-step stands only in a relative path's leading run, and the short-name fallback answers a relative path's first segment alone
 
