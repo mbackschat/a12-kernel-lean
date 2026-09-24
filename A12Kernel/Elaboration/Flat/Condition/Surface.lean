@@ -277,10 +277,12 @@ private def elaborateTextFieldOperand (model : FlatModel)
 private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
   | .fieldFilled reference => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolvePresenceOperand declaringGroup reference
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference)).mapError .resolve
       pure (.fieldFilled declaration.toPresenceField)
   | .fieldNotFilled reference => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolvePresenceOperand declaringGroup reference
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference)).mapError .resolve
       pure (.fieldNotFilled declaration.toPresenceField)
   | .compareTextFields op leftReference rightReference => do
       let (leftPath, leftOperand, leftProfile) ←

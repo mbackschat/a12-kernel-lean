@@ -196,6 +196,8 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   -- Produced only by computation resolvers; a repeatable read keeps the public code it always had.
   | .unboundOperandLevel path _ =>
       .make .repeatableReference referenceLocation (pathDetails path)
+  -- Split from the field miss for the Kernel projection only; the public code stays the miss's.
+  | .groupInFieldSlot _ _ fieldMiss => resolveDiagnosticAt referenceLocation fieldMiss
 
 private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .resolve error => pure (resolveDiagnosticAt "$.condition" error)

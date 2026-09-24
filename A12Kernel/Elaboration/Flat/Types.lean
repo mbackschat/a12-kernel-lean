@@ -393,6 +393,26 @@ def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStati
   else if unbound.indexKeyed then .errorFieldNoIndex
   else .noWildcard
 
+/-- Why a presence predicate's field slot naming a group is refused, in the Kernel's gate order: the
+    repetition walk, then a root's own class, then the kind gate
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-field-slot)). -/
+inductive GroupFieldSlotRefusal where
+  /-- The group crosses a repeatable level the reading rule does not bind. -/
+  | unboundLevel
+  /-- The repeatable root the reading rule sits in. -/
+  | boundRoot
+  /-- A root with no repeatable level. No row measures its class. -/
+  | fixedRoot
+  /-- Any other group, which the walk passes and the kind gate refuses. -/
+  | group
+  deriving Repr, DecidableEq
+
+def GroupFieldSlotRefusal.diagnostic? : GroupFieldSlotRefusal → Option KernelStaticDiagnostic
+  | .unboundLevel => some .noWildcard
+  | .boundRoot => some .rootGroupReferenced
+  | .fixedRoot => none
+  | .group => some .noGroupsAllowed
+
 inductive ResolveError where
   | invalidModelPath (path : List String)
   | duplicateFieldId (id : FieldId)
@@ -462,6 +482,9 @@ inductive ResolveError where
   -- `repeatabilityAboveCap`: the ceiling is the declaring carrier's, not one global bound. A single
   -- bound would refuse a legal nested group or accept an illegal root one.
   | repeatabilityAboveCap (path : List String) (declared cap : Nat)
+  -- `groupInFieldSlot`: a presence predicate's field operand whose path names a declared group. It
+  -- keeps the field miss it displaces, which the versioned public protocol still reports.
+  | groupInFieldSlot (path : GroupPath) (refusal : GroupFieldSlotRefusal) (fieldMiss : ResolveError)
   deriving Repr, DecidableEq
 
 /-- The Kernel class a resolution failure reports, projected once for every wrapping error type.
@@ -497,6 +520,7 @@ def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .aboveRoot _ => some .tooManyParentGroups
   | .shortNameNotUnique _ => some .fieldNameNotUnique
   | .numericMinimumFractionalDigitsExceedMaximum _ _ _ => some .fractDigitsInvalid
+  | .groupInFieldSlot _ refusal _ => refusal.diagnostic?
   | _ => none
 
 inductive AuthoredFieldPathError where

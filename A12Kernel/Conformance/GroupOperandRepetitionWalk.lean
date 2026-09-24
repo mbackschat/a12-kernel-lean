@@ -234,4 +234,38 @@ example :
       | .error error => error.repetitionScopeDiagnostic?) = some .noWildcard := by
   native_decide
 
+/-! ## The scalar field slot
+
+`FieldFilled` and `FieldNotFilled` naming a group meet the walk first, then a root's own class, then
+the kind gate. The starred spellings, the `.*` suffix and the two-operand arity rows have no flat
+surface here ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-field-slot)). -/
+
+private def fieldSlot (model : FlatModel) (rowGroup : GroupPath) (filled : Bool)
+    (path : SurfaceFieldPath) : Carrier model :=
+  match elaborate model rowGroup (if filled then .fieldFilled path else .fieldNotFilled path) with
+  | .ok flat => (CheckedValidationCondition.fromFlat flat).mapError (·.groupListDiagnostic?)
+  | .error (.resolve error) => .error error.diagnostic?
+  | .error _ => .error none
+
+private def named (base : PathBase) (groups : List String) (field : String) : SurfaceFieldPath :=
+  { base, groups, field }
+
+/- The unbound repeatable group and a field inside it draw the missing star, from the rule's own
+   group and by an up-step, and so does the other root; a fixed group meets the kind gate; and the
+   repeatable root a rule sits in passes the walk and draws its root class. -/
+example :
+    [atPolicy (fieldSlot policyModel ["Policy"] true (named (.relative 0) [] "Claims")),
+      atPolicy (fieldSlot policyModel ["Policy"] false (named (.relative 0) [] "Claims")),
+      atPolicy (fieldSlot policyModel ["Policy"] true (named (.relative 0) ["Claims"] "Amount")),
+      atInsured (fieldSlot policyModel ["Policy", "Insured"] true (named (.relative 1) [] "Claims")),
+      atStorefront (fieldSlot storefrontModel ["Storefront"] true (named .absolute [] "Batches")),
+      atStorefront (fieldSlot storefrontModel ["Storefront"] true
+        (named .absolute ["Batches"] "BatchCode"))] =
+      List.replicate 6 noWildcard ∧
+    atPolicy (fieldSlot policyModel ["Policy"] true (named (.relative 0) [] "Insured")) =
+      some (some .noGroupsAllowed) ∧
+    atBatches (fieldSlot storefrontModel ["Batches"] true (named .absolute [] "Batches")) =
+      some (some .rootGroupReferenced) := by
+  native_decide
+
 end A12Kernel.Conformance.GroupOperandRepetitionWalk

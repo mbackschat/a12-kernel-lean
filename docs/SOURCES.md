@@ -279,6 +279,15 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24c-field-slot"></a>
+### Reviewed 2026-09-24c field-slot handback — a group in `FieldFilled` or `FieldNotFilled` meets the walk, then a root's class, then the kind gate, and a star follows them
+
+The same letter and revision as [the group-operand walk record](#inbound-2026-09-24c-group-operand-walk), its §4. `GroupOperandRepetitionScopeLawsTest` (`theScalarFieldSlotsRefuseAGroupThenAStar`, `theStarGateHoldsInsideAFilter`) and `EntityListPreGateLawsTest` were read at that revision: admission verdicts from the Kernel's consistency check over the `policy` model, a rule at `/Policy` with error field `../Holder` unless a row says otherwise, and an order model with a repeatable `Lines` for the arity row. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Claim.** `Claims` and `Claims/Amount` draw `MVK_NO_WILDCARD`, `Claims.*` `MVK_POINT_IN_A12_MODEL`, `Claims*/Amount*` and `Insured*/Age` `MVK_INVALID_WILDCARD`, `..*/Claims` from `/Policy/Insured` `MVK_INVALID_WILDCARD_REL`, `Claims*` on both predicates and `Insured` `MVK_NO_GROUPS_ALLOWED`, and `Claims*/Amount` on both predicates and `../Claims*/Amount` from `/Policy/Insured` `MVK_NO_WILDCARDS_ALLOWED`. Inside a `Having` body `FieldFilled(Claims*/Remark)` and `FieldNotFilled(Claims*/Remark)` draw the star class and `FieldFilled(Claims/Remark)` is admitted. Two starred operands draw `MVK_PARAMSIZE_INVALID1` on both field predicates and both group presence predicates. The §3 root table adds `FieldFilled(/Batches)`: the walk's class from another root, `MVK_ROOT_GROUP_REFERENCED` from a rule inside it.
+
+**Lean.** Both presence predicates, on the flat and the addressed route, class a field operand whose path names a group through `FlatModel.groupFieldSlotRefusal?` with the rule group's scope as the reading scope, and the public protocol keeps the field-miss code those inputs always had. [`Conformance/GroupOperandRepetitionWalk.lean`](../A12Kernel/Conformance/GroupOperandRepetitionWalk.lean) replays the unstarred rows as whole rules. The flat field path cannot spell a star, the `.*` suffix or a second operand, so those rows are not replayed; a fixed root keeps no class.
+
 <a id="inbound-2026-09-24c-group-operand-walk"></a>
 ### Reviewed 2026-09-24c group-operand walk handback — an unstarred repeatable group draws the missing star ahead of every carrier gate, and a repeatable root is walked like any group
 

@@ -140,7 +140,8 @@ def fromRepeatableFieldPresence (model : FlatModel) (rowGroup : GroupPath)
   | .error error => .error (.invalidModel error)
   | .ok () => do
       let declaration ←
-        (model.resolveFieldDeclarationUnchecked rowGroup reference)
+        (model.resolvePresenceOperand rowGroup reference
+          (model.resolveFieldDeclarationUnchecked rowGroup reference))
           |>.mapError .fieldReference
       if declaration.repeatableScope.isEmpty then
         throw (.repeatableFieldRequired declaration.path)

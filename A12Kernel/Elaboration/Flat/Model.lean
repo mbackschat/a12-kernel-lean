@@ -633,6 +633,39 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
           | some declaration => pure declaration
           | none => throw (.invalidEntity reference)
 
+/-- Class a presence predicate's field operand whose path names a declared group rather than a
+    field, or `none` when it names none. `readingScope` is what the reading rule binds; the rule
+    group stands in for the error field, which is where every measured row places it. -/
+def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup : GroupPath)
+    (readingScope : List RepeatableLevel) (reference : SurfaceFieldPath) :
+    Option (GroupPath × GroupFieldSlotRefusal) := do
+  let base ← match reference.base with
+    | .absolute => some []
+    | .relative parents =>
+        match GroupPath.walkUp declaringGroup parents with
+        | .ok base => if base.matchesTurningPoint reference.turningPoint then some base else none
+        | .error _ => none
+  let group := base ++ reference.groups ++ [reference.field]
+  if !model.hasGroupPath group then none
+  let scope := model.repeatableScopeForGroupPath group
+  if !scope.all readingScope.contains then some (group, .unboundLevel)
+  else if group.length == 1 then
+    some (group, if scope.isEmpty then .fixedRoot else .boundRoot)
+  else some (group, .group)
+
+/-- Resolve a presence predicate's field operand with `resolve`, classing a path that names a group
+    by `groupFieldSlotRefusal?` instead of as the field miss `resolve` reports. -/
+def FlatModel.resolvePresenceOperand (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) (resolve : Except ResolveError FlatFieldDecl) :
+    Except ResolveError FlatFieldDecl :=
+  match resolve with
+  | .ok declaration => .ok declaration
+  | .error error =>
+      match model.groupFieldSlotRefusal? declaringGroup
+          (model.repeatableScopeForGroupPath declaringGroup) reference with
+      | some (group, refusal) => .error (.groupInFieldSlot group refusal error)
+      | none => .error error
+
 /-- Resolve a nonrepeatable operand of a condition after a caller has validated the model.
 `declaringGroup` is the reading rule's group, so an operand that group already iterates is refused
 as this fragment's boundary rather than as the missing wildcard. -/
