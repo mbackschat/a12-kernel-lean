@@ -894,6 +894,7 @@ run_cmd do
 #print axioms A12Kernel.computedNumberSelfValidationIfDecided_unknown_iff
 #print axioms A12Kernel.fixedGroup_canGrow_iff_contributes_zero
 #print axioms A12Kernel.growthOfGroupCountOperand_fixed_refuses_iff
+#print axioms A12Kernel.growthOfGroupCountOperand_starred_refuses_iff
 #print axioms A12Kernel.growthOfGroupCountOperand_starredPresence_refuses_iff
 #print axioms A12Kernel.referencedFields_fixed_eq_computationDescendants
 #print axioms A12Kernel.numericComputation_groupCount_duplicateParam1_iff

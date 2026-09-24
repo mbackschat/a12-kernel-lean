@@ -169,6 +169,18 @@ theorem growthOfGroupCountOperand_fixed_refuses_iff
     NumericComputationEvaluationContext.readGroupCountOperand]
   cases context.readGroupContent model reference <;> simp [Except.map]
 
+/-- The two readings of a starred operand refuse together, a model retaining no row maximum
+    included: the row count is read before the missing extent withholds the channel, so an
+    addressing fault cannot hide behind the unknown movement. -/
+theorem growthOfGroupCountOperand_starred_refuses_iff
+    {model : FlatModel} (context : NumericComputationEvaluationContext)
+    (source : CheckedStarredGroupSource model) (fault : NumericComputationFault) :
+    context.growthOfGroupCountOperand model (.starred source) = .error fault ↔
+      context.readGroupCountOperand model (.starred source) = .error fault := by
+  simp only [NumericComputationEvaluationContext.growthOfGroupCountOperand,
+    NumericComputationEvaluationContext.readGroupCountOperand]
+  cases source.inCapacityRowCount context.document context.outer <;> simp
+
 /-- The two readings of a fixed group below a star refuse together, because both read its
     instances once through `readGroupInstances`. -/
 theorem growthOfGroupCountOperand_starredPresence_refuses_iff

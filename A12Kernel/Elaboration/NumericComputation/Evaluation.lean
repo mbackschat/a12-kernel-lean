@@ -358,12 +358,9 @@ def growthOfGroupCountOperand
       (context.readGroupContent model reference).map fun content =>
         some (.fixedGroup (groupPresentForComputation content.1 || content.2))
   | .starred source =>
-      match source.group.repeatability with
-      | none => .ok none
-      | some capacity =>
-          match source.inCapacityRowCount context.document context.outer with
-          | .error error => .error (NumericComputationFault.repeatableAddressing error)
-          | .ok rows => .ok (some (.starredGroupCount rows capacity))
+      match source.inCapacityRowCount context.document context.outer with
+      | .error error => .error (NumericComputationFault.repeatableAddressing error)
+      | .ok rows => .ok (source.group.repeatability.map (.starredGroupCount rows ·))
   | .starredPresence source =>
       (context.readGroupInstances model source).map fun instances =>
         (CheckedGroupCountOperand.starredPresence source).declaredExtent?.map fun extent =>
