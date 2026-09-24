@@ -38,7 +38,8 @@ private def finishTextFieldComparison (op : SurfaceComparisonOp)
 
 /-- Resolve one direct nonrepeatable stored/category Enumeration operand with its exact checked projection and runtime core. -/
 def elaborateEnumerationFieldOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceTextFieldOperand) :
+    (declaringGroup : GroupPath) (surface : SurfaceTextFieldOperand)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except ElabError
       (List String × CheckedEnumerationProjection × FlatEnumerationOperand) := do
   let reference := match surface with
@@ -47,7 +48,7 @@ def elaborateEnumerationFieldOperand (model : FlatModel)
     | .direct _ => .stored
     | .category _ name => .category name
   let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
   match declaration.policy.kind, declaration.enumeration with
   | .enumeration, some source =>
       match elaborateEnumeration source with
@@ -64,10 +65,10 @@ def elaborateEnumerationFieldOperand (model : FlatModel)
       throw (.textFieldOperandKindMismatch declaration.path kind.surfaceKind)
 
 private def elaborateEnumerationLiteralList (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceTextFieldOperand)
+    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceTextFieldOperand)
     (values : List String) : Except ElabError FlatEnumerationOperand := do
   let (path, checked, operand) ←
-    elaborateEnumerationFieldOperand model declaringGroup surface
+    elaborateEnumerationFieldOperand model declaringGroup surface writtenGroup
   if values.isEmpty then
     throw (.emptyValueList path)
   else
@@ -90,11 +91,11 @@ private def duplicateElaboratedEnumerationOperand? :
         duplicateElaboratedEnumerationOperand? remaining
 
 private def elaborateEnumerationOperandList (model : FlatModel)
-    (declaringGroup : GroupPath) (surfaces : List SurfaceTextFieldOperand)
+    (declaringGroup writtenGroup : GroupPath) (surfaces : List SurfaceTextFieldOperand)
     (emptyError : ElabError) : Except ElabError (List ElaboratedEnumerationOperand) := do
   if surfaces.isEmpty then
     throw emptyError
-  surfaces.mapM (elaborateEnumerationFieldOperand model declaringGroup)
+  surfaces.mapM (elaborateEnumerationFieldOperand model declaringGroup · writtenGroup)
 
 private def rejectDuplicateEnumerationOperands
     (resolved : List ElaboratedEnumerationOperand) : Except ElabError Unit :=
@@ -104,9 +105,9 @@ private def rejectDuplicateEnumerationOperands
   | none => pure ()
 
 private def elaborateEnumerationLiteralFieldList (model : FlatModel)
-    (declaringGroup : GroupPath) (surfaces : List SurfaceTextFieldOperand)
+    (declaringGroup writtenGroup : GroupPath) (surfaces : List SurfaceTextFieldOperand)
     (values : List String) : Except ElabError (List FlatEnumerationOperand) := do
-  let resolved ← elaborateEnumerationOperandList model declaringGroup surfaces
+  let resolved ← elaborateEnumerationOperandList model declaringGroup writtenGroup surfaces
     .emptyValueListFields
   rejectDuplicateEnumerationOperands resolved
   match resolved with
@@ -124,11 +125,11 @@ private def elaborateEnumerationLiteralFieldList (model : FlatModel)
         | none => pure ((first :: remaining).map (·.2.2))
 
 private def elaborateEnumerationFieldValueSides (model : FlatModel)
-    (declaringGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceTextFieldOperand) :
+    (declaringGroup writtenGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceTextFieldOperand) :
     Except ElabError (List FlatEnumerationOperand × List FlatEnumerationOperand) := do
-  let fields ← elaborateEnumerationOperandList model declaringGroup fieldSurfaces
+  let fields ← elaborateEnumerationOperandList model declaringGroup writtenGroup fieldSurfaces
     .emptyValueListFields
-  let values ← elaborateEnumerationOperandList model declaringGroup valueSurfaces
+  let values ← elaborateEnumerationOperandList model declaringGroup writtenGroup valueSurfaces
     .emptyValueListValueFields
   rejectDuplicateEnumerationOperands (fields ++ values)
   pure (fields.map (·.2.2), values.map (·.2.2))
@@ -156,29 +157,29 @@ private def duplicateExactValueListOperand? {operand : Type} [BEq operand] :
         duplicateExactValueListOperand? remaining
 
 private def elaborateStringValueListOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceFieldPath) :
+    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath) :
     Except ElabError ElaboratedStringValueListOperand := do
   let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface).mapError .resolve
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError .resolve
   let field ← requireStringValueField declaration
   pure (declaration.path, .string field)
 
 private def elaborateStringLiteralList (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceFieldPath)
+    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath)
     (values : List String) : Except ElabError FlatTextFieldOperand := do
   let (path, operand) ←
-    elaborateStringValueListOperand model declaringGroup surface
+    elaborateStringValueListOperand model declaringGroup writtenGroup surface
   if values.isEmpty then
     throw (.emptyValueList path)
   else
     pure operand
 
 private def elaborateStringValueListOperands (model : FlatModel)
-    (declaringGroup : GroupPath) (surfaces : List SurfaceFieldPath)
+    (declaringGroup writtenGroup : GroupPath) (surfaces : List SurfaceFieldPath)
     (emptyError : ElabError) : Except ElabError (List ElaboratedStringValueListOperand) := do
   if surfaces.isEmpty then
     throw emptyError
-  surfaces.mapM (elaborateStringValueListOperand model declaringGroup)
+  surfaces.mapM (elaborateStringValueListOperand model declaringGroup writtenGroup)
 
 private def rejectDuplicateStringValueListOperands
     (resolved : List ElaboratedStringValueListOperand) : Except ElabError Unit :=
@@ -187,9 +188,9 @@ private def rejectDuplicateStringValueListOperands
   | none => pure ()
 
 private def elaborateStringLiteralFieldList (model : FlatModel)
-    (declaringGroup : GroupPath) (surfaces : List SurfaceFieldPath)
+    (declaringGroup writtenGroup : GroupPath) (surfaces : List SurfaceFieldPath)
     (values : List String) : Except ElabError (List FlatTextFieldOperand) := do
-  let resolved ← elaborateStringValueListOperands model declaringGroup surfaces
+  let resolved ← elaborateStringValueListOperands model declaringGroup writtenGroup surfaces
     .emptyValueListFields
   rejectDuplicateStringValueListOperands resolved
   match resolved with
@@ -201,11 +202,11 @@ private def elaborateStringLiteralFieldList (model : FlatModel)
         pure ((first :: remaining).map (·.2))
 
 private def elaborateStringFieldValueSides (model : FlatModel)
-    (declaringGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceFieldPath) :
+    (declaringGroup writtenGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceFieldPath) :
     Except ElabError (List FlatTextFieldOperand × List FlatTextFieldOperand) := do
-  let fields ← elaborateStringValueListOperands model declaringGroup fieldSurfaces
+  let fields ← elaborateStringValueListOperands model declaringGroup writtenGroup fieldSurfaces
     .emptyValueListFields
-  let values ← elaborateStringValueListOperands model declaringGroup valueSurfaces
+  let values ← elaborateStringValueListOperands model declaringGroup writtenGroup valueSurfaces
     .emptyValueListValueFields
   rejectDuplicateStringValueListOperands (fields ++ values)
   pure (fields.map (·.2), values.map (·.2))
@@ -213,10 +214,10 @@ private def elaborateStringFieldValueSides (model : FlatModel)
 private abbrev ElaboratedNumberValueListOperand := List String × FlatNumberField
 
 private def elaborateNumberValueListOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceFieldPath) :
+    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath) :
     Except ElabError ElaboratedNumberValueListOperand := do
   let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface).mapError .resolve
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError .resolve
   match declaration.toNumberField? with
   | some operand => pure (declaration.path, operand)
   | none =>
@@ -224,11 +225,11 @@ private def elaborateNumberValueListOperand (model : FlatModel)
         declaration.policy.kind.surfaceKind)
 
 private def elaborateNumberValueListOperands (model : FlatModel)
-    (declaringGroup : GroupPath) (surfaces : List SurfaceFieldPath)
+    (declaringGroup writtenGroup : GroupPath) (surfaces : List SurfaceFieldPath)
     (emptyError : ElabError) : Except ElabError (List ElaboratedNumberValueListOperand) := do
   if surfaces.isEmpty then
     throw emptyError
-  surfaces.mapM (elaborateNumberValueListOperand model declaringGroup)
+  surfaces.mapM (elaborateNumberValueListOperand model declaringGroup writtenGroup)
 
 private def rejectDuplicateNumberValueListOperands
     (resolved : List ElaboratedNumberValueListOperand) : Except ElabError Unit :=
@@ -237,30 +238,30 @@ private def rejectDuplicateNumberValueListOperands
   | none => pure ()
 
 private def elaborateNumberLiteralMembership (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceFieldPath)
+    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath)
     (values : List Int) : Except ElabError (FlatNumberField × List Rat) := do
   let (path, operand) ←
-    elaborateNumberValueListOperand model declaringGroup surface
+    elaborateNumberValueListOperand model declaringGroup writtenGroup surface
   if values.isEmpty then
     throw (.emptyValueList path)
   pure (operand, values.map Rat.ofInt)
 
 private def elaborateNumberFieldValueSides (model : FlatModel)
-    (declaringGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceFieldPath) :
+    (declaringGroup writtenGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceFieldPath) :
     Except ElabError (List FlatNumberField × List FlatNumberField) := do
-  let fields ← elaborateNumberValueListOperands model declaringGroup fieldSurfaces
+  let fields ← elaborateNumberValueListOperands model declaringGroup writtenGroup fieldSurfaces
     .emptyValueListFields
-  let values ← elaborateNumberValueListOperands model declaringGroup valueSurfaces
+  let values ← elaborateNumberValueListOperands model declaringGroup writtenGroup valueSurfaces
     .emptyValueListValueFields
   rejectDuplicateNumberValueListOperands (fields ++ values)
   pure (fields.map (·.2), values.map (·.2))
 
 private def elaborateTextFieldOperand (model : FlatModel)
-    (declaringGroup : GroupPath) : SurfaceTextFieldOperand →
+    (declaringGroup writtenGroup : GroupPath) : SurfaceTextFieldOperand →
       Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
   | .direct reference => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       match declaration.toTextFieldComparison? with
       | some (operand, profile) => pure (declaration.path, operand, profile)
       | none =>
@@ -271,74 +272,74 @@ private def elaborateTextFieldOperand (model : FlatModel)
               declaration.policy.kind.surfaceKind)
   | surface@(.category _ _) => do
       let (path, _, operand) ←
-        elaborateEnumerationFieldOperand model declaringGroup surface
+        elaborateEnumerationFieldOperand model declaringGroup surface writtenGroup
       pure (path, .enumeration operand, .category)
 
-private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
+private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
   | .fieldFilled reference => do
-      let declaration ← (model.resolvePresenceOperand declaringGroup reference
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference)).mapError .resolve
+      let declaration ← (model.resolvePresenceOperand declaringGroup writtenGroup reference
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)).mapError .resolve
       pure (.fieldFilled declaration.toPresenceField)
   | .fieldNotFilled reference => do
-      let declaration ← (model.resolvePresenceOperand declaringGroup reference
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference)).mapError .resolve
+      let declaration ← (model.resolvePresenceOperand declaringGroup writtenGroup reference
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)).mapError .resolve
       pure (.fieldNotFilled declaration.toPresenceField)
   | .compareTextFields op leftReference rightReference => do
       let (leftPath, leftOperand, leftProfile) ←
-        elaborateTextFieldOperand model declaringGroup leftReference
+        elaborateTextFieldOperand model declaringGroup writtenGroup leftReference
       let (rightPath, rightOperand, rightProfile) ←
-        elaborateTextFieldOperand model declaringGroup rightReference
+        elaborateTextFieldOperand model declaringGroup writtenGroup rightReference
       finishTextFieldComparison op leftPath rightPath
         (leftOperand, leftProfile) (rightOperand, rightProfile)
   | .enumerationValueList quantifier surfaces values => do
       let operands ←
-        elaborateEnumerationLiteralFieldList model declaringGroup surfaces values
+        elaborateEnumerationLiteralFieldList model declaringGroup writtenGroup surfaces values
       pure (.tokenValueList quantifier (operands.map .enumeration) (.literals values))
   | .enumerationFieldValueList quantifier fieldSurfaces valueSurfaces => do
       let (fields, values) ←
-        elaborateEnumerationFieldValueSides model declaringGroup fieldSurfaces valueSurfaces
+        elaborateEnumerationFieldValueSides model declaringGroup writtenGroup fieldSurfaces valueSurfaces
       pure (.tokenValueList quantifier (fields.map .enumeration)
         (.fields (values.map .enumeration)))
   | .stringValueList quantifier surfaces values => do
       let operands ←
-        elaborateStringLiteralFieldList model declaringGroup surfaces values
+        elaborateStringLiteralFieldList model declaringGroup writtenGroup surfaces values
       pure (.tokenValueList quantifier operands (.literals values))
   | .stringFieldValueList quantifier fieldSurfaces valueSurfaces => do
       let (fields, values) ←
-        elaborateStringFieldValueSides model declaringGroup fieldSurfaces valueSurfaces
+        elaborateStringFieldValueSides model declaringGroup writtenGroup fieldSurfaces valueSurfaces
       pure (.tokenValueList quantifier fields (.fields values))
   | .stringValueMembership op surface values => do
-      let operand ← elaborateStringLiteralList model declaringGroup surface values
+      let operand ← elaborateStringLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [operand] (.literals values))
   | .stringFieldValueMembership op surface valueSurfaces => do
       let (fields, values) ←
-        elaborateStringFieldValueSides model declaringGroup [surface] valueSurfaces
+        elaborateStringFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier fields (.fields values))
   | .numberValueMembership op surface values => do
       let (operand, values) ←
-        elaborateNumberLiteralMembership model declaringGroup surface values
+        elaborateNumberLiteralMembership model declaringGroup writtenGroup surface values
       pure (.numberValueList op.quantifier [operand] (.literals values))
   | .numberFieldValueMembership op surface valueSurfaces => do
       let (fields, values) ←
-        elaborateNumberFieldValueSides model declaringGroup [surface] valueSurfaces
+        elaborateNumberFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.numberValueList op.quantifier fields (.fields values))
   | .numberFieldValueList quantifier fieldSurfaces valueSurfaces => do
       let (fields, values) ←
-        elaborateNumberFieldValueSides model declaringGroup fieldSurfaces valueSurfaces
+        elaborateNumberFieldValueSides model declaringGroup writtenGroup fieldSurfaces valueSurfaces
       pure (.numberValueList quantifier fields (.fields values))
   | .enumerationValueMembership op surface values => do
       let operand ←
-        elaborateEnumerationLiteralList model declaringGroup surface values
+        elaborateEnumerationLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values))
   | .enumerationFieldValueMembership op surface valueSurfaces => do
       let (fields, values) ←
-        elaborateEnumerationFieldValueSides model declaringGroup [surface] valueSurfaces
+        elaborateEnumerationFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier (fields.map .enumeration)
         (.fields (values.map .enumeration)))
   | .compareFields op leftReference rightReference => do
-      let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
-      let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve
+      let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference writtenGroup).mapError .resolve
+      let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference writtenGroup).mapError .resolve
       if left.isRawString then
         throw (.rawStringValue left.path)
       else if right.isRawString then
@@ -362,7 +363,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
                 leftKind.surfaceKind rightKind.surfaceKind)
   | .compareToday op position reference => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .temporal kind components =>
           let comparison := op.toTemporal
@@ -393,7 +394,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
         | some year => pure year
         | none => throw .baseYearNotDeclared
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .number info =>
           let fieldOp := match position with
@@ -436,7 +437,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
         | some year => pure year
         | none => throw .baseYearNotDeclared
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       let sourcePath := endpoint.surfacePath
       match declaration.policy.kind with
       | .temporal kind components =>
@@ -464,7 +465,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
                 kind.surfaceKind (.temporal .date))
   | .compareNow op position reference => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .temporal kind components =>
           let comparison := op.toTemporal
@@ -493,10 +494,10 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
                 kind.surfaceKind (.temporal .dateTime))
   | .compareEnumeration op reference projectionRef expected => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       elaborateEnumerationCore declaration op projectionRef expected
   | .compare op reference literal => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .number info => do
           let numeric ← match op.toNumeric? with
@@ -569,7 +570,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       | .dateRange =>
           throw (.literalKindMismatch declaration.path .dateRange literal.kind)
   | .lengthCompare op reference expected => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       if declaration.isRawString then
         throw (.rawStringLength declaration.path)
       else
@@ -582,7 +583,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
         | none => throw (.lengthOperandKindMismatch declaration.path
             declaration.policy.kind.surfaceKind)
   | .literalCompareLength expected op reference => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       if declaration.isRawString then
         throw (.rawStringLength declaration.path)
       else
@@ -595,20 +596,21 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
         | none => throw (.lengthOperandKindMismatch declaration.path
             declaration.policy.kind.surfaceKind)
   | .and left right => do
-      pure (.and (← elaborateCore model declaringGroup left)
-        (← elaborateCore model declaringGroup right))
+      pure (.and (← elaborateCore model declaringGroup writtenGroup left)
+        (← elaborateCore model declaringGroup writtenGroup right))
   | .or left right => do
-      pure (.or (← elaborateCore model declaringGroup left)
-        (← elaborateCore model declaringGroup right))
+      pure (.or (← elaborateCore model declaringGroup writtenGroup left)
+        (← elaborateCore model declaringGroup writtenGroup right))
 
 /-- Checked surface-to-core lowering. Later consumers receive the proof-bearing wrapper,
     not a caller-asserted field/policy pairing. -/
 def elaborate (model : FlatModel) (declaringGroup : GroupPath)
-    (condition : SurfaceCondition) : Except ElabError (CheckedFlatCondition model) :=
+    (condition : SurfaceCondition) (writtenGroup : GroupPath := declaringGroup) :
+    Except ElabError (CheckedFlatCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let core ← elaborateCore model declaringGroup condition
+      let core ← elaborateCore model declaringGroup writtenGroup condition
       core.checkAgainstValidatedModel model declaringGroup hModel
 
 end A12Kernel

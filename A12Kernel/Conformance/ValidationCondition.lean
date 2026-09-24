@@ -540,7 +540,8 @@ example :
     groupListError? .atLeastOneGroupFilled [
       groupOperand ["Order", "Items"],
       groupOperand ["Order", "Details"]] =
-      some (.groupReference (.repeatableGroupRequiresAddress ["Order", "Items"])) := by
+      some (.groupReference (.unboundOperandLevel ["Order", "Items"]
+        { level := 10, placement := .contained, parallel := false, indexKeyed := false })) := by
   native_decide
 
 /- Fixed child groups whose repeatable ancestry is already bound by the declaring rule iterate at
@@ -687,7 +688,8 @@ example :
           ["Order", "Details"] ["Order", "Details"]) ∧
     groupCountError? (groupCountComparison
       [["Order", "Items"], ["Order", "Details"]]) =
-        some (.groupReference (.repeatableGroupRequiresAddress ["Order", "Items"])) ∧
+        some (.groupReference (.unboundOperandLevel ["Order", "Items"]
+        { level := 10, placement := .contained, parallel := false, indexKeyed := false })) ∧
     groupCountError? (groupCountComparison
       [["Order", "Missing"], ["Order", "Details"]]) =
         some (.groupReference (.unknownGroup ["Order", "Missing"])) ∧

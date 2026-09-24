@@ -412,7 +412,7 @@ def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStati
     ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-field-slot)). -/
 inductive GroupFieldSlotRefusal where
   /-- The group crosses a repeatable level the reading rule does not bind. -/
-  | unboundLevel
+  | unboundLevel (unbound : UnboundOperandLevel)
   /-- A root the walk passes: a fixed root, or a repeatable one the reading rule sits in. -/
   | root
   /-- Any other group, which the walk passes and the kind gate refuses. -/
@@ -420,7 +420,7 @@ inductive GroupFieldSlotRefusal where
   deriving Repr, DecidableEq
 
 def GroupFieldSlotRefusal.diagnostic : GroupFieldSlotRefusal → KernelStaticDiagnostic
-  | .unboundLevel => .noWildcard
+  | .unboundLevel unbound => unbound.diagnostic
   | .root => .rootGroupReferenced
   | .group => .noGroupsAllowed
 
@@ -479,8 +479,8 @@ inductive ResolveError where
   | ambiguousEntity (path : List String)
   | shortNameNotUnique (name : String)
   | repeatableReference (path : List String)
-  -- `unboundOperandLevel`: a computation operand whose repeatable levels a fixed target cannot bind,
-  -- carrying what selects the Kernel's class. `repeatableReference` stays the condition resolvers'.
+  -- `unboundOperandLevel`: an operand with a repeatable level its reader does not bind, a fixed
+  -- computation target or a validation rule group, carrying what selects the Kernel's class.
   | unboundOperandLevel (path : List String) (unbound : UnboundOperandLevel)
   -- `boundRepeatableReference`: a repeatable operand whose every level the reading rule already
   -- iterates, refused by a fragment that reads nonrepeatable operands only. The Kernel admits that

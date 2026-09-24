@@ -137,14 +137,14 @@ def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
 /-- Resolve one ordinary non-starred repeatable field presence reference. The declaration itself is the checked source; no wildcard topology or caller-supplied environment is manufactured here. -/
 def fromRepeatableFieldPresence (model : FlatModel) (rowGroup : GroupPath)
     (operator : RepeatableFieldPresenceOperator)
-    (reference : SurfaceFieldPath) :
+    (reference : SurfaceFieldPath) (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () => do
       let declaration ←
-        (model.resolvePresenceOperand rowGroup reference
+        (model.resolvePresenceOperand rowGroup writtenGroup reference
           (model.resolveFieldDeclarationUnchecked rowGroup reference))
           |>.mapError .fieldReference
       if declaration.repeatableScope.isEmpty then
@@ -358,17 +358,18 @@ def fromGuardedRepeatableCurrentRepetition
           declaration source comparison)
         (by rw [hModel]; rfl)
 
-private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
+private def resolveGroupListOperand (model : FlatModel) (rowGroup writtenGroup : GroupPath) :
     SurfaceGroupListOperand →
       Except ValidationConditionAssemblyError
         (ResolvedGroupListOperand model)
   | .field reference => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked rowGroup reference).mapError .fieldReference
+        (model.resolveNonrepeatableFieldUnchecked rowGroup reference writtenGroup).mapError
+          .fieldReference
       pure (.field declaration)
   | .group reference => do
       let resolved ←
-        model.resolveValidationBoundFixedGroupReference rowGroup reference
+        model.resolveValidationBoundFixedGroupReference rowGroup reference writtenGroup
         |>.mapError ValidationConditionAssemblyError.groupReference
       pure (.group resolved)
   | .starredGroup reference => do
@@ -379,14 +380,14 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
       | .terminalRepeatable checked => pure (.starredGroup checked)
       | .terminalPresence checked => pure (.starredGroupPresence checked)
 
-private def resolveGroupListOperands (model : FlatModel) (rowGroup : GroupPath) :
+private def resolveGroupListOperands (model : FlatModel) (rowGroup writtenGroup : GroupPath) :
     List SurfaceGroupListOperand →
       Except ValidationConditionAssemblyError
         (List (ResolvedGroupListOperand model))
   | [] => pure []
   | operand :: rest => do
-      let resolved ← resolveGroupListOperand model rowGroup operand
-      pure (resolved :: (← resolveGroupListOperands model rowGroup rest))
+      let resolved ← resolveGroupListOperand model rowGroup writtenGroup operand
+      pure (resolved :: (← resolveGroupListOperands model rowGroup writtenGroup rest))
 
 /-- Fixed singletons have an existing checked scalar owner. Keeping them out of the list leaf prevents a second representation of field or group presence. -/
 private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
@@ -414,12 +415,12 @@ private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
 /-- Resolve one field/group entity list and enforce the kernel's shared duplicate/overlap checks plus its operator-specific arity, root-group, and wildcard gates. The two count-zero/count-positive members retain checked starred-group topology beside plain operands. -/
 def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
     (operator : GroupFillQuantifier)
-    (operands : List SurfaceGroupListOperand) :
+    (operands : List SurfaceGroupListOperand) (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () => do
-      let resolved ← resolveGroupListOperands model rowGroup operands
+      let resolved ← resolveGroupListOperands model rowGroup writtenGroup operands
       if resolved.isEmpty then throw .emptyGroupList
       match ResolvedGroupListOperands.firstOverlap? resolved with
       | some (left, right) =>

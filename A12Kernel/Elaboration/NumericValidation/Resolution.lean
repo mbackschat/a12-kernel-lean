@@ -9,10 +9,10 @@ remains in `NumericValidation.Evaluation`.
 
 namespace A12Kernel
 
-private def resolveTemporalNumericField (model : FlatModel) (rowGroup : GroupPath)
+private def resolveTemporalNumericField (model : FlatModel) (rowGroup writtenGroup : GroupPath)
     (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
     Except NumericValidationElabError FlatTemporalField := do
-  let declaration ← (model.resolveField rowGroup reference).mapError .resolve
+  let declaration ← (model.resolveField rowGroup reference writtenGroup).mapError .resolve
   if declaration.groupPath != rowGroup then
     throw (.fieldOutsideRowGroup declaration.path rowGroup)
   match declaration.toTemporalField? with
@@ -67,11 +67,11 @@ private def resolveFieldValueAsNumberAtom
   | .ok source => pure (.fieldValueAsNumber source)
   | .error error => throw (.fieldValueAsNumberSource declaration.path error)
 
-private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
+private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
   | .field reference => do
       let declaration ←
-        (model.resolveField rowGroup reference).mapError .resolve
+        (model.resolveField rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       match declaration.toNumberField? with
@@ -91,14 +91,14 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       | none => throw .baseYearNotDeclared
   | .temporalFieldPart reference part => do
       let declaration ←
-        (model.resolveField rowGroup reference).mapError .resolve
+        (model.resolveField rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       let field ← checkTemporalNumericPartField model declaration part
       pure (.temporalFieldPart field part)
   | .dateRangeBoundPart reference bound part => do
       let declaration ←
-        (model.resolveField rowGroup reference).mapError .resolve
+        (model.resolveField rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       let source : FlatDateRangeField := { id := declaration.id }
@@ -107,14 +107,14 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       else
         throw (.dateRangeBoundPartNotExposed declaration.path part)
   | .stringLength reference => do
-      let declaration ← (model.resolveField rowGroup reference).mapError .resolve
+      let declaration ← (model.resolveField rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       match declaration.toStringValueField? with
       | some field => pure (.stringLength field)
       | none => throw (.lengthOperandNotEvaluatedString declaration.path)
   | .stringRange reference start finish => do
-      let declaration ← (model.resolveField rowGroup reference).mapError .resolve
+      let declaration ← (model.resolveField rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       if !validStringRange start finish then
@@ -124,14 +124,14 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       | none => throw (.rangeOperandNotString declaration.path)
   | .fieldValueAsNumber surface => do
       let declaration ←
-        (model.resolveField rowGroup surface.reference).mapError .resolve
+        (model.resolveField rowGroup surface.reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
       let resolveOperand := resolveDateDifferenceOperandWith model
         (fun reference =>
-          resolveTemporalNumericField model rowGroup reference
+          resolveTemporalNumericField model rowGroup writtenGroup reference
             (fun source =>
               unit.admittedBy model.hasBaseYear source.components))
       let resolvedLeft ← resolveOperand left
@@ -148,7 +148,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         | .baseYear _ => throw .incompatibleDateDifference
         | .now => pure .nowValue
         | .field path => do
-            let field ← resolveTemporalNumericField model rowGroup path
+            let field ← resolveTemporalNumericField model rowGroup writtenGroup path
               (fun source => unit.admittedBy source.components)
             pure (.fieldValue field)
       let resolvedLeft ← resolveOperand left
@@ -167,7 +167,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         | none => throw (.unsupportedCalendarProfile model.timeZoneId)
       let resolveOperand := resolveDateDifferenceOperandWith model
         (fun reference =>
-          resolveTemporalNumericField model rowGroup reference
+          resolveTemporalNumericField model rowGroup writtenGroup reference
             (fun source =>
               CalendarDayDifference.admittedBy source.components))
       let resolvedLeft ← resolveOperand left
@@ -190,7 +190,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
             throw (NumericValidationElabError.starredGroupCountOperand
               ((SurfaceGroupCountOperand.firstStarred? operands).getD
                 { base := .absolute, groups := [] }))
-      let groups ← model.resolveValidationBoundFixedGroupReferences rowGroup surfaces
+      let groups ← model.resolveValidationBoundFixedGroupReferences rowGroup writtenGroup surfaces
         |>.mapError NumericValidationElabError.groupReference
       if groups.length < 2 then
         throw .groupCountNeedsMultipleOperands
@@ -323,14 +323,14 @@ private def resolveAddressedNumericAtom (model : FlatModel)
         pure (.dayDifference profile resolvedLeft resolvedRight)
       else
         throw .incompatibleDateDifference
-  | source => resolveNumericAtom model rowGroup source
+  | source => resolveNumericAtom model rowGroup rowGroup source
 
 /-- Resolve one ordinary same-group numeric atom through the established validation source boundary. -/
 def resolveNumericValidationAtom
     (model : FlatModel) (rowGroup : GroupPath)
-    (surface : SurfaceNumericAtom) :
+    (surface : SurfaceNumericAtom) (writtenGroup : GroupPath := rowGroup) :
     Except NumericValidationElabError NumericValidationAtom :=
-  resolveNumericAtom model rowGroup surface
+  resolveNumericAtom model rowGroup writtenGroup surface
 
 private def elaborateNumericValidationExpressionWith
     (model : FlatModel) (rowGroup : GroupPath)
@@ -441,10 +441,10 @@ private def elaborateNumericComparisonWith
 
 /-- Resolve and check both nonrepeatable operands before performing their one-pass lowering at evaluation time. -/
 def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
-    (surface : SurfaceNumericComparison) :
+    (surface : SurfaceNumericComparison) (writtenGroup : GroupPath := rowGroup) :
     Except NumericValidationElabError (CheckedNumericComparison model) :=
   elaborateNumericComparisonWith model rowGroup .sameGroup
-    (resolveNumericAtom model rowGroup) surface
+    (resolveNumericAtom model rowGroup writtenGroup) surface
 
 /-- Admit ordinary addressed field operands through the existing ordered-numeric carrier. Each atom retains its typed declaration certificates while only repeatable reads change from scalar to addressed. -/
 def elaborateRepeatableNumericComparison

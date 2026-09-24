@@ -227,7 +227,8 @@ example :
     errorOf (sum (bare "Text") [bare "UnsignedA"]) =
         some (.fieldKindMismatch text.path .string) ∧
       errorOf (sum (absolute ["Form", "Rows"] "Amount") [bare "UnsignedA"]) =
-        some (.resolve (.repeatableReference repeated.path)) := by
+        some (.resolve (.unboundOperandLevel repeated.path
+          { level := 10, placement := .contained, parallel := false, indexKeyed := false })) := by
   native_decide
 
 /- A singleton plain field is not a legal direct field-list aggregate; single starred/group operands belong to their expansion owners. -/

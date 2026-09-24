@@ -6,11 +6,11 @@ namespace A12Kernel
 
 open OneLevelUnstarredGroupUse
 
-/-- Outside the repeated group, every shape in the measured denominator reaches the missing-star class. -/
+/-- Outside the repeated group, every shape in the measured denominator reaches the walk's class,
+whatever its own gates would say. -/
 theorem oneLevelUnstarredGroup_outside_refuses
-    (use : OneLevelUnstarredGroupUse) :
-    use.admission .outside =
-      .rejected KernelStaticDiagnostic.noWildcard := by
+    (use : OneLevelUnstarredGroupUse) (unbound : UnboundOperandLevel) :
+    use.admission (.outside unbound) = .rejected unbound.diagnostic := by
   cases use <;> rfl
 
 /-- The three positive-presence shapes are admitted once the error field binds the measured level. -/
@@ -36,8 +36,8 @@ theorem oneLevelUnstarredGroup_carrier_nonlaw :
 
 /-- The reviewed outside-error-field carrier has its exact refusal, while the unmeasured inside
 locus remains explicitly unmapped rather than inheriting it. -/
-theorem filledGroupCountSemanticIndex_locus_separates :
-    OneLevelGroupErrorLocus.outside.filledGroupCountSemanticIndexAdmission =
+theorem filledGroupCountSemanticIndex_locus_separates (unbound : UnboundOperandLevel) :
+    (OneLevelGroupErrorLocus.outside unbound).filledGroupCountSemanticIndexAdmission =
         .rejected KernelStaticDiagnostic.semanticIndexNotAllowed ∧
       OneLevelGroupErrorLocus.inside.filledGroupCountSemanticIndexAdmission =
         .unmapped := by

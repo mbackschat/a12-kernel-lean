@@ -214,7 +214,8 @@ example :
         some (.fieldReference (.boundRepeatableReference ["Claim", "Items", "Code"])) ∧
     errorOf (elaborateStringPatternCondition compilePattern repeatableModel ["Claim"]
       { condition with field := { base := .relative 0, groups := ["Items"], field := "Code" } }) =
-        some (.fieldReference (.repeatableReference ["Claim", "Items", "Code"])) ∧
+        some (.fieldReference (.unboundOperandLevel ["Claim", "Items", "Code"]
+          { level := 10, placement := .contained, parallel := false, indexKeyed := false })) ∧
     diagnosticOf (elaborateStringPatternCondition compilePattern
       repeatableModel ["Claim", "Items"] (condition)) = none ∧
     diagnosticOf (elaborateStringPatternCondition compilePattern repeatableModel ["Claim"]

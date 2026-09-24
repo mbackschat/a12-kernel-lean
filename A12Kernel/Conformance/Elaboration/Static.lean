@@ -553,7 +553,8 @@ example : errorOf (elaborate duplicatePathModel ["Order"]
 
 example : errorOf (elaborate model ["Order"]
     (.fieldFilled (absolute ["Order", "Items"] "Count"))) =
-    some (.resolve (.repeatableReference ["Order", "Items", "Count"])) := by
+    some (.resolve (.unboundOperandLevel ["Order", "Items", "Count"]
+      { level := 10, placement := .contained, parallel := false, indexKeyed := false })) := by
   native_decide
 
 example : errorOf (elaborate model ["Order"]

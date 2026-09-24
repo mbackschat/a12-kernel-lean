@@ -168,6 +168,24 @@ example :
         groupOperand ["Shipment", "Parcels"]] = .admitted := by
   native_decide
 
+/- Outside the repeated group the walk's placement names the class: with `Parcels` index-keyed, an
+   error field in `Destination` beside it draws the index class on every measured shape, and the root
+   `TrackingCode`, above it, the missing star
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+example :
+    let shapes (errorField : FieldId) : List RuleGroupOperandStaticAdmission :=
+      [projectGroupFilledRuleAdmission semanticIndexModel ["Shipment"] errorField
+          (group ["Shipment", "Parcels"]),
+        projectGroupListRuleAdmission semanticIndexModel ["Shipment"] errorField
+          .atLeastOneGroupFilled [groupOperand ["Shipment", "Parcels"]],
+        projectGroupListRuleAdmission semanticIndexModel ["Shipment"] errorField .allGroupsFilled
+          [groupOperand ["Shipment", "Parcels"], groupOperand ["Shipment", "Destination"]],
+        projectFilledGroupCountGreaterZeroRuleAdmission semanticIndexModel ["Shipment"] errorField
+          [group ["Shipment", "Parcels"]]]
+    shapes 2 = List.replicate 4 (.rejected .errorFieldNoIndex) ∧
+      shapes 1 = List.replicate 4 (.rejected .noWildcard) := by
+  native_decide
+
 /- Count multiplicity and the iteration gate remain distinct after the same locus is bound. -/
 example :
     groupCount ["Shipment"] 1 [group ["Shipment", "Parcels"]] =

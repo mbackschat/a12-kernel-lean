@@ -251,6 +251,15 @@ def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writ
     (scopes : List (List RepeatableLevel)) : Option UnboundOperandLevel :=
   (scopes.findSome? List.head?).map (model.unboundOperandLevel declaringGroup writtenGroup)
 
+/-- A validation read's outermost level its rule group does not bind, placed by the written field,
+    or `none` when the rule group binds every level of it. The rule group decides the binding, and
+    the written field only the class
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+def FlatModel.unboundReadLevel? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (scope : List RepeatableLevel) : Option UnboundOperandLevel :=
+  let bound := model.repeatableScopeForGroupPath declaringGroup
+  model.firstUnboundOperandLevel? declaringGroup writtenGroup [scope.filter (!bound.contains ·)]
+
 private def repeatableScopeMismatch? (model : FlatModel) :
     List FlatFieldDecl →
       Option (List String × List RepeatableLevel × List RepeatableLevel)
@@ -673,11 +682,10 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
           | none => throw (.invalidEntity reference)
 
 /-- Class a presence predicate's field operand whose path names a declared group rather than a
-    field, or `none` when it names none. `readingScope` is what the reading rule binds; the rule
-    group stands in for the error field, which is where every measured row places it. -/
-def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup : GroupPath)
-    (readingScope : List RepeatableLevel) (reference : SurfaceFieldPath) :
-    Option (GroupPath × GroupFieldSlotRefusal) := do
+    field, or `none` when it names none. The rule group binds and the written field places an
+    unbound level, as for any read. -/
+def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Option (GroupPath × GroupFieldSlotRefusal) := do
   let base ← match reference.base with
     | .absolute => some []
     | .relative parents =>
@@ -686,20 +694,18 @@ def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup : Group
         | .error _ => none
   let group := base ++ reference.groups ++ [reference.field]
   if !model.hasGroupPath group then none
-  let scope := model.repeatableScopeForGroupPath group
-  if !scope.all readingScope.contains then some (group, .unboundLevel)
-  else if group.length == 1 then some (group, .root)
-  else some (group, .group)
+  match model.unboundReadLevel? declaringGroup writtenGroup (model.repeatableScopeForGroupPath group) with
+  | some unbound => some (group, .unboundLevel unbound)
+  | none => if group.length == 1 then some (group, .root) else some (group, .group)
 
 /-- Resolve a presence predicate's field operand with `resolve`, classing a path that names a group
     by `groupFieldSlotRefusal?` instead of as the field miss `resolve` reports. Only a failure about
     the reference is displaced: an invalid rule group answers ahead of any operand. -/
-def FlatModel.resolvePresenceOperand (model : FlatModel) (declaringGroup : GroupPath)
+def FlatModel.resolvePresenceOperand (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (reference : SurfaceFieldPath) (resolve : Except ResolveError FlatFieldDecl) :
     Except ResolveError FlatFieldDecl :=
   let displace (error : ResolveError) : Except ResolveError FlatFieldDecl :=
-    match model.groupFieldSlotRefusal? declaringGroup
-        (model.repeatableScopeForGroupPath declaringGroup) reference with
+    match model.groupFieldSlotRefusal? declaringGroup writtenGroup reference with
     | some (group, refusal) => .error (.groupInFieldSlot group refusal error)
     | none => .error error
   match resolve with
@@ -710,12 +716,17 @@ def FlatModel.resolvePresenceOperand (model : FlatModel) (declaringGroup : Group
 
 /-- Resolve a nonrepeatable operand of a condition after a caller has validated the model.
 `declaringGroup` is the reading rule's group, so an operand that group already iterates is refused
-as this fragment's boundary rather than as the missing wildcard. -/
+as this fragment's boundary rather than as the missing wildcard, and a level it leaves unbound is
+classed by `writtenGroup`, the error field's group, which the rule group stands in for when a caller
+has none. -/
 def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
-    (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
+    (declaringGroup : GroupPath) (reference : SurfaceFieldPath)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except ResolveError FlatFieldDecl := do
-  (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatableAt
-    (model.repeatableScopeForGroupPath declaringGroup)
+  let declaration ← model.resolveFieldDeclarationUnchecked declaringGroup reference
+  match model.unboundReadLevel? declaringGroup writtenGroup declaration.repeatableScope with
+  | some unbound => throw (.unboundOperandLevel declaration.path unbound)
+  | none => declaration.requireNonrepeatableAt (model.repeatableScopeForGroupPath declaringGroup)
 
 /-- Resolve a nonrepeatable operand of a computation after a caller has validated the model. A
 computation binds its operands by its target's scope rather than by the group declaring it
@@ -739,9 +750,10 @@ def FlatModel.resolveFieldDeclaration (model : FlatModel) (declaringGroup : Grou
 
 /-- Resolve one structured field path against a validated expanded model. -/
 def FlatModel.resolveField (model : FlatModel) (declaringGroup : GroupPath)
-    (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
+    (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :
+    Except ResolveError FlatFieldDecl := do
   model.validate
-  model.resolveNonrepeatableFieldUnchecked declaringGroup reference
+  model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup
 
 /-- Validate selected-language quote provenance and then reuse the sole checked nonrepeatable field resolver. -/
 def FlatModel.resolveAuthoredField (model : FlatModel)

@@ -102,8 +102,8 @@ example :
       (.atom (.aggregate .sum {
         first := path ["Order"] "U"
         rest := [path ["Order", "Items"] "Item"] })) 0) =
-      some (.aggregate (.resolve (.repeatableReference
-        ["Order", "Items", "Item"]))) := by
+      some (.aggregate (.resolve (.unboundOperandLevel ["Order", "Items", "Item"]
+        { level := 10, placement := .contained, parallel := false, indexKeyed := false }))) := by
   native_decide
 
 private def aggregateTraversal : Option (Bool × Bool × Bool × Bool) := do

@@ -296,7 +296,8 @@ example :
 
 example : errorOf
     (comparison .equal (.atom (.field (path ["Order", "Items"] "Item"))) 0) =
-      some (.resolve (.repeatableReference ["Order", "Items", "Item"])) := by
+      some (.resolve (.unboundOperandLevel ["Order", "Items", "Item"]
+        { level := 10, placement := .contained, parallel := false, indexKeyed := false })) := by
   native_decide
 
 example : errorOf

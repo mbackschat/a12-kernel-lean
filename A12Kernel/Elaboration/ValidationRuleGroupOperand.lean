@@ -19,9 +19,11 @@ inductive RuleGroupOperandStaticAdmission where
   | unmapped
   deriving Repr, DecidableEq
 
-/-- The only two error-field loci measured for this one-level profile. -/
+/-- The only two error-field loci measured for this one-level profile. Outside the repeated group
+the walk refuses the level with the class its placement selects
+([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
 inductive OneLevelGroupErrorLocus where
-  | outside
+  | outside (unbound : UnboundOperandLevel)
   | inside
   deriving Repr, DecidableEq
 
@@ -37,7 +39,7 @@ namespace OneLevelGroupErrorLocus
 /-- Preserve the unmeasured inside-error-field locus while projecting the exact outside refusal. -/
 def filledGroupCountSemanticIndexAdmission :
     OneLevelGroupErrorLocus → RuleGroupOperandStaticAdmission
-  | .outside => .rejected .semanticIndexNotAllowed
+  | .outside _ => .rejected .semanticIndexNotAllowed
   | .inside => .unmapped
 
 end OneLevelGroupErrorLocus
@@ -58,7 +60,7 @@ def admission (locus : OneLevelGroupErrorLocus) :
     OneLevelUnstarredGroupUse → RuleGroupOperandStaticAdmission
   | use =>
       match locus, use with
-      | .outside, _ => .rejected .noWildcard
+      | .outside unbound, _ => .rejected unbound.diagnostic
       | .inside, .groupFilled
       | .inside, .atLeastOneSole
       | .inside, .allThenFixed => .admitted
@@ -96,7 +98,8 @@ private def resolveOneLevelUnstarredGroupBinding?
               declaration.repeatableScope == [level] then
             some { reference, locus := .inside }
           else if declaration.repeatableScope.isEmpty then
-            some { reference, locus := .outside }
+            some { reference,
+                   locus := .outside (model.unboundOperandLevel declaringGroup declaration.groupPath level) }
           else
             none
         | _ => none

@@ -122,7 +122,8 @@ before any component check: it fires for a component the profile exposes and for
 alike, so the exposure gate never masks it. -/
 example :
     scalarFailure? rowExact .month =
-        some (.resolve (.repeatableReference rowExact.path)) ∧
+        some (.resolve (.unboundOperandLevel rowExact.path
+          { level := 10, placement := .contained, parallel := false, indexKeyed := false })) ∧
       locusFailure? rowExact .month = some .noWildcard ∧
       locusFailure? rowMonths .month = some .noWildcard ∧
       locusFailure? rowMonths .year = some .noWildcard := by

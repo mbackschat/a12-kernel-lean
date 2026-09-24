@@ -2545,3 +2545,11 @@ Under `validateFull` a formal error blocks only the negative answer of a filled-
 **When full and partial validation disagree on a value, check whether the disagreement survives full coverage before encoding it in the state.** Coverage-dependent rules fit in relevance. A rule that still differs at full coverage belongs to the pass, and the state cannot carry it.
 
 Related: [[LF192]] on the same table's fixture, [[LF116]] on reusing a mechanism across a boundary.
+
+## LF194 — a refusal whose class needs the rule's error field cannot wait for rule assembly when the carrier's own gates follow it
+
+The walk's class depends on where the error field lies, and a validation condition elaborates before the rule assembly that knows the error field. Group presence already refuses there, at assembly, because its derived scope carries the unbound level through; the group-list quantifiers and the group count cannot, since deferring their refusal lets their own arity, root and overlap gates answer first, against `-24c` §3's measurement that the walk answers ahead of every carrier gate ([record](SOURCES.md#inbound-2026-09-24d-star-containment)). The fix passes the error field's group into elaboration as `writtenGroup`, defaulting to the rule group, so the refusal is placed where it is raised by the same table the computation arm uses.
+
+**Before moving a refusal to the stage that holds its classifying input, check which gates the move puts ahead of it.** If any are measured to follow it, bring the input to the refusal instead.
+
+Related: [[LF89]] on the shared walk table, [[LF116]] on reusing a mechanism across a boundary.
