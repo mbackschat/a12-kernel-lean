@@ -1,0 +1,67 @@
+[
+ {
+  "id": "f4a",
+  "verb": "computation",
+  "args": ["add", "f4a.json", "--dry-run"]
+ },
+ {
+  "id": "f4b",
+  "verb": "computation",
+  "args": ["add", "f4b.json", "--dry-run"]
+ },
+ {
+  "id": "f4c",
+  "verb": "computation",
+  "args": ["add", "f4c.json", "--dry-run"]
+ },
+ {
+  "id": "f5a",
+  "verb": "computation",
+  "args": ["add", "f5a.json", "--dry-run"]
+ },
+ {
+  "id": "f5b",
+  "verb": "computation",
+  "args": ["add", "f5b.json", "--dry-run"]
+ },
+ {
+  "id": "f5c",
+  "verb": "computation",
+  "args": ["add", "f5c.json", "--dry-run"]
+ },
+ {
+  "id": "f3a",
+  "verb": "computation",
+  "args": ["add", "f3a.json", "--dry-run"]
+ },
+ {
+  "id": "f3b",
+  "verb": "computation",
+  "args": ["add", "f3b.json", "--dry-run"]
+ },
+ {
+  "id": "r3a",
+  "verb": "rule",
+  "args": ["check", "--code", "r3a", "--field", "/Probe/Batches/Boxes/Amt2", "--group", "/Probe/Batches/Boxes", "--condition", "Sum(/Probe/Batches*/Boxes/Amt) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "r3b",
+  "verb": "rule",
+  "args": ["check", "--code", "r3b", "--field", "/Probe/Batches/Boxes/Amt2", "--group", "/Probe/Batches/Boxes", "--condition", "Sum(/Probe/Batches*/Boxes*/Amt) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "r11a",
+  "verb": "rule",
+  "args": ["check", "--code", "r11a", "--field", "/Probe/Batches/BW", "--group", "/Probe", "--condition", "NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "r11b",
+  "verb": "rule",
+  "args": ["check", "--code", "r11b", "--field", "/Probe/W", "--group", "/Probe/Batches", "--condition", "NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "r11c",
+  "verb": "rule",
+  "args": ["check", "--code", "r11c", "--field", "/Probe/Batches/BW", "--group", "/Probe/Batches", "--condition", "NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal) > 0", "--message", "en_US=m"]
+ }
+]

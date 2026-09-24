@@ -367,6 +367,11 @@ private def directReference? :
   | .field declaration projectionRef => some (declaration.id, projectionRef)
   | .star _ _ _ => none
 
+private def bindingScope :
+    ResolvedProjectedTokenEntityOperand model → List RepeatableLevel
+  | .field declaration _ => declaration.repeatableScope
+  | .star source _ _ => source.bindingScope
+
 end ResolvedProjectedTokenEntityOperand
 
 private def resolveProjectedTokenEntityOperand (model : FlatModel)
@@ -421,7 +426,7 @@ private def certifyProjectedTokenEntityOperand (model : FlatModel)
 def elaborateProjectedTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceProjectedTokenEntitySource)
-    (arity : EntityListArity := .manyRequired) :
+    (arity : EntityListArity := .manyRequired) (fixedTarget : Bool := false) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) :=
   match hModel : model.validate with
   | .error error => .error (.shape (.resolve error))
@@ -430,6 +435,11 @@ def elaborateProjectedTokenEntitySource (model : FlatModel)
         resolveProjectedTokenEntityOperand model declaringGroup authored.first
       let rest ← authored.rest.mapM fun operand =>
         resolveProjectedTokenEntityOperand model declaringGroup operand
+      -- The shared shape's list-wide gate, asked of this boundary's own resolved slots.
+      if fixedTarget then
+        if let some unbound := model.firstUnboundOperandLevel? declaringGroup
+            ((first :: rest).map ResolvedProjectedTokenEntityOperand.bindingScope) then
+          throw (.shape (.unboundOperandLevel unbound))
       match firstDuplicateResolvedProjectedTokenField? (first :: rest) with
       | some field => throw (.shape (.duplicateOperand field))
       | none =>

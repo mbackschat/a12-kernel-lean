@@ -225,19 +225,19 @@ example :
     (match checkRepeatableNumberAggregateCascade model
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (leafOnlyNestedStar "Helper") .maximum with
-      | .error (.aggregate error) => error == .unboundOperandLevel 10 false
+      | .error (.aggregate error) => error.iterationDiagnostic? == some .noWildcard
       | _ => false) = true ∧
     (match checkRepeatableNumberMultiStarAggregateCascade model
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (nestedStar "Helper")
           (leafOnlyNestedStar "Price") [] .maximum with
-      | .error (.aggregate error) => error == .unboundOperandLevel 10 false
+      | .error (.aggregate error) => error.iterationDiagnostic? == some .noWildcard
       | _ => false) = true ∧
     (match checkRepeatableNumberMixedAggregateCascade model
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (leafOnlyNestedStar "Price")
           (nestedStar "Helper") priceBelowHelper .filteredThenPlain .maximum with
-      | .error (.aggregate error) => error == .unboundOperandLevel 10 false
+      | .error (.aggregate error) => error.iterationDiagnostic? == some .noWildcard
       | _ => false) = true := by
   native_decide
 

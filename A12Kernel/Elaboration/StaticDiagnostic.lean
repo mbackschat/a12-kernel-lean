@@ -40,9 +40,9 @@ inductive KernelStaticDiagnostic where
   a repeatable declaring group, so a bare constant into a repeatable target reaches this class with
   no operand at all. -/
   | fieldNotInRuleGroup
-  /-- A computation operand reads per row at a repeatable level that neither the target nor the
-  declaring group binds, and that level's group declares an index field. The same read of an unkeyed
-  group draws `noWildcard`, so the index declaration alone moves the class
+  /-- A computation into a fixed target reads per row at a repeatable level nothing binds, the read's
+  outermost one, and that level's group declares an index field. The same read of an unkeyed level
+  draws `noWildcard`, and so does a keyed deeper level beneath one the target binds
   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
   | errorFieldNoIndex
   /-- An operand list below the operator's required arity. -/

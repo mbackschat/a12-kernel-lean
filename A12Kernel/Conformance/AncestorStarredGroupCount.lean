@@ -232,17 +232,36 @@ private def iterationScopeOf (operand : SurfaceGroupCountOperand) :
   let condition ← (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
   condition.core.ordinaryIterationScope.toOption
 
+/-- Whether a rule whose error field is `field` may carry the group count over `operand`, reading the
+    rule's iteration off the checked condition rather than supplying it. -/
+private def admitsErrorField (field : FlatFieldDecl) (operand : SurfaceGroupCountOperand) :
+    Option Bool := do
+  let scope ← iterationScopeOf operand
+  pure (ruleErrorScopeCompatible true field scope)
+
 /- `Batches/Boxes*/Seal` reads its batch per row, so the rule iterates `Batches` exactly as every
    other star with an unstarred level above it makes it, while starring the batch too leaves the rule
    without an iteration. Rule assembly then admits an error field inside `Batches` and refuses one
-   outside it. The Kernel admits the first rule from a batch row and draws `MVK_NO_WILDCARD` from the
-   root ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate));
+   outside it. The Kernel admits the first rule and draws `MVK_NO_WILDCARD` for the second, on the
+   checkpoint's `Batches/Boxes*/BSeal`, the same two-level shape under a `Probe` root
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate));
    this project's refusal there carries no class yet. -/
 example :
     iterationScopeOf outerUnstarredSeals = some (some [10]) ∧
     iterationScopeOf boxSeals = some none ∧
-    ruleErrorScopeCompatible true lot (some [10]) = true ∧
-    ruleErrorScopeCompatible true title (some [10]) = false := by
+    admitsErrorField lot outerUnstarredSeals = some true ∧
+    admitsErrorField title outerUnstarredSeals = some false := by
+  native_decide
+
+/- An unstarred level below the first star is refused while the operand resolves, with the
+   missing-star class, before any iteration is derived; the checkpoint measures it on this carrier
+   at both error-field loci. -/
+example :
+    (match elaborateMixedFilledGroupCountComparison nestedModel ["Item"]
+        [starred [{ name := "Batches", starred := true }, { name := "Boxes" }, { name := "Seal" }]]
+        .greater 0 with
+      | .ok _ => none
+      | .error error => error.groupCountDiagnostic?) = some .noWildcard := by
   native_decide
 
 end A12Kernel.Conformance.AncestorStarredGroupCount

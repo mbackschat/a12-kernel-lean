@@ -1,0 +1,5 @@
+{
+ "computedField": "/Probe/Batches/Boxes/Amt2",
+ "alternatives": [{"operation": "Sum(/Probe/Batches*/Boxes*/Amt)"}],
+ "messages": [{"locale": "en_US", "text": "m"}]
+}

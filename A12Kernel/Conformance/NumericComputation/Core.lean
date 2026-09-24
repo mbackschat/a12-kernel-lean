@@ -147,8 +147,13 @@ example :
         some .errorReferenceToCalculatedField := by
   native_decide
 
-/- Unmeasured or invalid target-reading shapes retain the old immediate local
-refusal, including when a later operand would otherwise fail resolution. -/
+/- Unmeasured target-reading shapes keep a local refusal with no class, judged
+once every atom has resolved and been kind-checked. A per-row read measurably
+answers ahead of it in either operand order
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
+as the scale comparison does on the deferred shapes, so a later operand's
+repeatable or wrongly kinded read reports its own refusal first; that consequence
+for a kind refusal is this account's, not a measured row. -/
 example :
     let targetField := surfaceField ["Root"] "Target"
     let wrongField := surfaceField ["Root"] "Wrong"
@@ -185,18 +190,16 @@ example :
       checkedErrorOf (.binary .multiply targetField
           (.literal { value := 2, authoredScale := 0 })) =
         some (.targetSelfReferenceAfterScale targetId) ∧
-      checkedErrorOf targetThenWrong = some (.targetSelfReference targetId) ∧
-      checkedErrorOf groupedTargetThenWrong = some (.targetSelfReference targetId) ∧
-      checkedErrorOf targetThenRepeatable = some (.targetSelfReference targetId) ∧
+      checkedErrorOf targetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
+      checkedErrorOf groupedTargetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
+      checkedErrorOf targetThenRepeatable =
+        some (.resolve (.repeatableReference ["Root", "Rows", "Repeated"])) ∧
       checkedErrorOf sameTarget = some (.targetSelfReference targetId) ∧
       checkedErrorOf twoDivisions = some (.targetSelfReference targetId) ∧
-      checkedErrorOf stringLengthTarget = some (.targetSelfReference targetId) ∧
-      targetDiagnosticOf (checkedErrorOf targetThenWrong) = none ∧
-      targetDiagnosticOf (checkedErrorOf groupedTargetThenWrong) = none ∧
-      targetDiagnosticOf (checkedErrorOf targetThenRepeatable) = none ∧
+      checkedErrorOf stringLengthTarget =
+        some (.lengthOperandNotEvaluatedString ["Root", "Target"]) ∧
       targetDiagnosticOf (checkedErrorOf sameTarget) = none ∧
-      targetDiagnosticOf (checkedErrorOf twoDivisions) = none ∧
-      targetDiagnosticOf (checkedErrorOf stringLengthTarget) = none := by
+      targetDiagnosticOf (checkedErrorOf twoDivisions) = none := by
   native_decide
 
 /- Target policy is attached once: a different scale/signedness summary is rejected before evaluation. -/

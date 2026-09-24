@@ -24,6 +24,16 @@ inductive StringFirstFilledComputationElabError where
   | sourceShape (path : List String)
   deriving Repr, DecidableEq
 
+/-- Project the source star's own refusals, whose classes belong to the path rather than the
+    carrier: an unstarred level below the first star is the missing-star class on every carrier
+    measured, the String `FirstFilledValue` computation among them
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
+    The other refusals stay unmapped. -/
+def StringFirstFilledComputationElabError.diagnostic? :
+    StringFirstFilledComputationElabError → Option KernelStaticDiagnostic
+  | .source cause => cause.diagnostic?
+  | _ => none
+
 /-- One fixed ordinary String target and one direct single-level ordinary String star. -/
 structure CheckedStringFirstFilledComputation (model : FlatModel) where
   private mk ::

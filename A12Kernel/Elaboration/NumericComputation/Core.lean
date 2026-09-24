@@ -101,12 +101,9 @@ inductive NumericComputationElabError where
   /-- A root group beside any other operand. Reached only once containment is ruled out, because
   the Kernel checks the two gates in that order on both arms. -/
   | rootGroupInGroupCount (path : GroupPath)
-  /-- An operand reads per row at a repeatable level that the declaring group binds, which derives
-  an iteration this arm's fixed target cannot lie inside. -/
-  | iterationOutsideDeclaringGroup (level : RepeatableLevel)
-  /-- An operand reads per row at a repeatable level that nothing binds. `indexKeyed` records whether
-  that level's group declares an index field, which selects the class. -/
-  | unboundOperandLevel (level : RepeatableLevel) (indexKeyed : Bool)
+  /-- An operand leaves a repeatable level for its evaluation to bind, which this arm's fixed target
+  cannot do; the record carries what selects the class. -/
+  | unboundOperandLevel (unbound : UnboundOperandLevel)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceAfterScale (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
@@ -143,14 +140,16 @@ def targetDiagnostic? :
   | .targetSelfReferenceAfterScale _ => some .errorReferenceToCalculatedField
   | _ => none
 
-/-- Project the per-row operand gate. The target repeats at no level on this arm, so which class a
-    per-row read draws is decided by who binds its outermost level
+/-- Project the per-row operand gate, whether this arm asked it or an entity list's shape did. The
+    target repeats at no level on this arm, so which class a per-row read draws is decided by who
+    binds its outermost level
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def iterationDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
-  | .iterationOutsideDeclaringGroup _ => some .fieldNotInRuleGroup
-  | .unboundOperandLevel _ indexKeyed =>
-      some (if indexKeyed then .errorFieldNoIndex else .noWildcard)
+  | .unboundOperandLevel unbound
+  | .aggregate (.shape (.unboundOperandLevel unbound))
+  | .tokenValueCount (.source (.shape (.unboundOperandLevel unbound)))
+  | .booleanValueCount (.shape (.unboundOperandLevel unbound)) => some unbound.diagnostic
   | _ => none
 
 end NumericComputationElabError
@@ -382,96 +381,57 @@ def SurfaceNumericAtom.toNumberEntityComputationAtom :
   | .filledGroupCount groups => .filledGroupCount groups
 
 private def FlatModel.resolveTemporalNumericComputationField
-    (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
+    (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
     Except NumericComputationElabError FlatTemporalField := do
   let declaration ←
     (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
-  if declaration.id == target then
-    throw (.targetSelfReference target)
   match declaration.toTemporalField? with
   | some field =>
       if accepts field then pure field
       else throw (.incompatibleTemporalSource declaration.path)
   | none => throw (.incompatibleTemporalSource declaration.path)
 
-private def CheckedNumberEntitySource.bindingScopes
-    (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
-  (source.first :: source.rest).map fun
-    | .field _ => []
-    | .star operand => operand.source.bindingScope
-    | .starHaving operand => operand.source.source.bindingScope
-    | .group operand => operand.source.bindingScope
-
-private def CheckedTokenEntitySource.bindingScopes
-    (source : CheckedTokenEntitySource model) : List (List RepeatableLevel) :=
-  (source.first :: source.rest).map fun
-    | .field _ => []
-    | .star operand => operand.source.bindingScope
-    | .group operand => operand.source.bindingScope
-
-private def CheckedBooleanValueCountSource.bindingScopes
-    (source : CheckedBooleanValueCountSource model) : List (List RepeatableLevel) :=
-  (source.first :: source.rest).map fun
-    | .field _ => []
-    | .star operand => operand.source.bindingScope
-    | .group operand => operand.source.bindingScope
-
-/-- Refuse an operand that reads per row. Each scope lists the repeatable levels one operand leaves
-    for its evaluation to bind, and this arm's target repeats at none, so the first nonempty scope is
-    refused and its outermost level alone decides the class. A repeatable declaring group binding
-    that level derives an iteration the target cannot lie inside; a level nothing binds draws the
-    index class when its group is index-keyed and the missing-star class otherwise. Each arm calls
-    this as soon as its operands resolve, because the Kernel answers the containment class ahead of
-    the scale comparison and of target self-reference
+/-- Refuse an operand that reads per row, for the atoms that are not entity lists: the product
+    aggregate and the group count. Each scope lists the repeatable levels one operand leaves for its
+    evaluation to bind, and this arm's target repeats at none, so the first nonempty scope is refused
+    with the class `UnboundOperandLevel` selects. An entity list asks the same question list-wide
+    inside its shape, ahead of its duplicate scans
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def FlatModel.requireOperandLevelsBound (model : FlatModel)
     (declaringGroup : GroupPath) (scopes : List (List RepeatableLevel)) :
     Except NumericComputationElabError Unit :=
-  match scopes.findSome? List.head? with
+  match model.firstUnboundOperandLevel? declaringGroup scopes with
   | none => pure ()
-  | some level =>
-      if (model.repeatableScopeForGroupPath declaringGroup).contains level then
-        throw (.iterationOutsideDeclaringGroup level)
-      else
-        throw (.unboundOperandLevel level (model.repeatableGroups.any fun group =>
-          group.level == level && group.indexField.isSome))
+  | some unbound => throw (.unboundOperandLevel unbound)
 
-private def FlatModel.resolveNumericComputationExpression
-    (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
+private def FlatModel.resolveNumericComputationAtoms
+    (model : FlatModel) (declaringGroup : GroupPath)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Except NumericComputationElabError
       (AuthoredNumericExpr (CheckedNumericComputationAtom model)) :=
   expression.mapM fun
     | .firstFilled source => do
         let checked ←
-          (elaborateNumberEntitySource model declaringGroup source).mapError
+          (elaborateNumberEntitySource model declaringGroup source (fixedTarget := true)).mapError
             NumericComputationElabError.aggregate
-        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
-        if checked.referencesField target then
-          throw (.targetSelfReference target)
         pure (.firstFilled checked)
     | .valueCount expected source => do
         let checked ←
-          (elaborateNumberEntitySource model declaringGroup source).mapError
+          (elaborateNumberEntitySource model declaringGroup source (fixedTarget := true)).mapError
             NumericComputationElabError.aggregate
-        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
-        if checked.referencesField target then
-          throw (.targetSelfReference target)
         pure (.valueCount expected checked)
     | .tokenValueCount expected source => do
         let checked ←
-          (elaborateTokenValueCountSource model declaringGroup expected source).mapError
+          (elaborateTokenValueCountSource model declaringGroup expected source
+              (fixedTarget := true)).mapError
             NumericComputationElabError.tokenValueCount
-        model.requireOperandLevelsBound declaringGroup checked.source.bindingScopes
-        if checked.referencesField target then
-          throw (.targetSelfReference target)
         pure (.tokenValueCount checked)
     | .booleanValueCount expected source => do
         let checked ←
-          (elaborateBooleanValueCountSource model declaringGroup expected source).mapError
+          (elaborateBooleanValueCountSource model declaringGroup expected source
+              (fixedTarget := true)).mapError
             NumericComputationElabError.booleanValueCount
-        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
         pure (.booleanValueCount checked)
     | .sumOfProducts source => do
         let checked ←
@@ -479,16 +439,11 @@ private def FlatModel.resolveNumericComputationExpression
             NumericComputationElabError.productAggregate
         model.requireOperandLevelsBound declaringGroup
           [checked.left.source.bindingScope, checked.right.source.bindingScope]
-        if checked.left.field.id == target ||
-            checked.right.field.id == target then
-          throw (.targetSelfReference target)
         pure (.sumOfProducts checked)
     | .numeric (.field reference) => do
         let declaration ←
           (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
-        if declaration.id == target then
-          throw (.targetSelfReference target)
-        else if declaration.toNumberField?.isSome then
+        if declaration.toNumberField?.isSome then
           pure (.numeric (.field declaration))
         else
           throw (.operandNotNumber declaration.path)
@@ -506,7 +461,7 @@ private def FlatModel.resolveNumericComputationExpression
         | none => throw .baseYearNotDeclared
     | .numeric (.temporalFieldPart reference part) => do
         let field ← model.resolveTemporalNumericComputationField
-          declaringGroup target reference
+          declaringGroup reference
           (fun source => part.admittedBy source model.hasBaseYear)
         pure (.numeric (.temporalFieldPart field part))
     | .numeric (.dateRangeBoundPart reference bound part) => do
@@ -522,8 +477,6 @@ private def FlatModel.resolveNumericComputationExpression
     | .numeric (.stringLength reference) => do
         let declaration ←
           (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup reference).mapError .resolve
-        if declaration.id == target then
-          throw (.targetSelfReference target)
         match declaration.toStringValueField? with
         | some field => pure (.numeric (.stringLength field))
         | none => throw (.lengthOperandNotEvaluatedString declaration.path)
@@ -534,16 +487,11 @@ private def FlatModel.resolveNumericComputationExpression
           throw (.invalidStringRange start finish)
         match declaration.toStringValueField? with
         | none => throw (.rangeOperandNotString declaration.path)
-        | some field =>
-            if declaration.id == target then
-              throw (.targetSelfReference target)
-            pure (.numeric (.stringRange field start finish))
+        | some field => pure (.numeric (.stringRange field start finish))
     | .numeric (.fieldValueAsNumber surface) => do
         let declaration ←
           (model.resolveNonrepeatableComputationOperandUnchecked
             declaringGroup surface.reference).mapError .resolve
-        if declaration.id == target then
-          throw (.targetSelfReference target)
         match declaration.resolveFieldValueAsNumberSource surface.projectionRef with
         | .ok source => pure (.numeric (.fieldValueAsNumber source))
         | .error error =>
@@ -553,7 +501,7 @@ private def FlatModel.resolveNumericComputationExpression
             Except NumericComputationElabError ResolvedDateDifferenceOperand
           | .field reference => do
               let field ← model.resolveTemporalNumericComputationField
-                declaringGroup target reference
+                declaringGroup reference
                 (fun source =>
                   unit.admittedBy model.hasBaseYear source.components)
               pure (.field field)
@@ -576,7 +524,7 @@ private def FlatModel.resolveNumericComputationExpression
           | .now => pure .nowValue
           | .field reference => do
               let field ← model.resolveTemporalNumericComputationField
-                declaringGroup target reference
+                declaringGroup reference
                 (fun source => unit.admittedBy source.components)
               pure (.fieldValue field)
         let resolvedLeft ← resolveOperand left
@@ -598,7 +546,7 @@ private def FlatModel.resolveNumericComputationExpression
             Except NumericComputationElabError ResolvedDateDifferenceOperand
           | .field reference => do
               let field ← model.resolveTemporalNumericComputationField
-                declaringGroup target reference
+                declaringGroup reference
                 (fun source =>
                   CalendarDayDifference.admittedBy source.components)
               pure (.field field)
@@ -617,11 +565,8 @@ private def FlatModel.resolveNumericComputationExpression
           throw .incompatibleDateDifference
     | .numeric (.aggregate op source) => do
         let checked ←
-          (elaborateNumberEntitySource model declaringGroup source).mapError
+          (elaborateNumberEntitySource model declaringGroup source (fixedTarget := true)).mapError
             NumericComputationElabError.aggregate
-        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
-        if checked.referencesField target then
-          throw (.targetSelfReference target)
         pure (.numeric (.aggregate op checked))
     | .numeric (.filledGroupCount operands) => do
         match SurfaceGroupCountOperand.fixedOnly? operands with
@@ -638,11 +583,7 @@ private def FlatModel.resolveNumericComputationExpression
             | none =>
                 match groups.find? ResolvedGroupReference.isRoot with
                 | some root => throw (.rootGroupInGroupCount root.path)
-                | none =>
-                    if groups.any fun group => group.referencesField model target then
-                      throw (.targetSelfReference target)
-                    else
-                      pure (.numeric (.filledGroupCount groups))
+                | none => pure (.numeric (.filledGroupCount groups))
         | none => do
             let checked ← operands.mapM fun operand =>
               match operand with
@@ -671,11 +612,21 @@ private def FlatModel.resolveNumericComputationExpression
             | none =>
                 match checked.find? CheckedGroupCountOperand.isRoot with
                 | some operand => throw (.rootGroupInGroupCount operand.groupPath)
-                | none =>
-                    if checked.any fun operand => operand.referencesField model target then
-                      throw (.targetSelfReference target)
-                    else
-                      pure (.filledGroupCountMixed checked)
+                | none => pure (.filledGroupCountMixed checked)
+
+/-- Resolve every atom, then refuse a read of the target. Self-reference is judged once the whole
+    expression has resolved, because the Kernel answers a per-row read's class ahead of it whichever
+    operand reads the target
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+private def FlatModel.resolveNumericComputationExpression
+    (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Except NumericComputationElabError
+      (AuthoredNumericExpr (CheckedNumericComputationAtom model)) := do
+  let resolved ← model.resolveNumericComputationAtoms declaringGroup expression
+  if resolved.anyAtom (CheckedNumericComputationAtom.references model target) then
+    throw (.targetSelfReference target)
+  pure resolved
 
 /-- Resolve the measured arithmetic shapes whose target reference is deferred
 until after the scale comparison.

@@ -898,6 +898,7 @@ run_cmd do
 #print axioms A12Kernel.growthOfGroupCountOperand_starredPresence_refuses_iff
 #print axioms A12Kernel.referencedFields_fixed_eq_computationDescendants
 #print axioms A12Kernel.numericComputation_groupCount_duplicateParam1_iff
+#print axioms A12Kernel.firstUnboundOperandLevel_eq_none_iff
 #print axioms A12Kernel.requireOperandLevelsBound_ok_iff
 #print axioms A12Kernel.numericComputationEvaluationContext_valueCount_delegates
 #print axioms A12Kernel.numericComputationEvaluationContext_tokenValueCount_delegates

@@ -1,0 +1,6 @@
+{
+ "computedField": "/Probe/Out/Free",
+ "alternatives": [{"operation": "[/Probe/Out/Free] + [BW]"}],
+ "messages": [{"locale": "en_US", "text": "m"}],
+ "group": "/Probe/Batches"
+}

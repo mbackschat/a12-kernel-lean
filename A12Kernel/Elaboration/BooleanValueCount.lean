@@ -320,10 +320,10 @@ end CheckedBooleanValueCountSource
 /-- Resolve the common direct/star/group entity-list shape and certify its constant-specific Boolean/Confirm family. -/
 def elaborateBooleanValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool)
-    (authored : SurfaceBooleanValueCountSource) :
+    (authored : SurfaceBooleanValueCountSource) (fixedTarget : Bool := false) :
     Except BooleanValueCountElabError
       (CheckedBooleanValueCountSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (fixedTarget := fixedTarget)
     |>.mapError .shape
   let first ←
     certifyBooleanValueCountOperand model declaringGroup expected shape.first

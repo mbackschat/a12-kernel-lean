@@ -1,0 +1,32 @@
+[
+ {
+  "id": "g1",
+  "verb": "rule",
+  "args": ["check", "--code", "g1", "--field", "/Probe/Batches/BW", "--group", "/Probe", "--condition", "FieldFilled(/Probe/Batches/BW) And NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "g2",
+  "verb": "rule",
+  "args": ["check", "--code", "g2", "--field", "/Probe/Batches/BW", "--group", "/Probe", "--condition", "FieldFilled(/Probe/Batches/BW)", "--message", "en_US=m"]
+ },
+ {
+  "id": "g3",
+  "verb": "rule",
+  "args": ["check", "--code", "g3", "--field", "/Probe/W", "--group", "/Probe/Batches", "--condition", "FieldFilled(/Probe/W) And NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "g4",
+  "verb": "rule",
+  "args": ["check", "--code", "g4", "--field", "/Probe/W", "--group", "/Probe/Batches", "--condition", "FieldFilled(/Probe/W)", "--message", "en_US=m"]
+ },
+ {
+  "id": "g5",
+  "verb": "rule",
+  "args": ["check", "--code", "g5", "--field", "/Probe/Batches/Boxes/Amt2", "--group", "/Probe/Batches/Boxes", "--condition", "FieldFilled(Amt2) And Sum(/Probe/Batches*/Boxes/Amt) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "g6",
+  "verb": "rule",
+  "args": ["check", "--code", "g6", "--field", "/Probe/Batches/Boxes/Amt2", "--group", "/Probe/Batches/Boxes", "--condition", "FieldFilled(Amt2) And Sum(/Probe/Batches*/Boxes*/Amt) > 0", "--message", "en_US=m"]
+ }
+]

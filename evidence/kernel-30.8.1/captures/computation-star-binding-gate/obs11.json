@@ -1,0 +1,46 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "a3dffb2f4cff1245c1eb5f9a3ed034640979202d4893d22ab5f40d6f2acfd10e",
+  "observations" : [ {
+    "id" : "g1",
+    "inputHash" : "a3e4091858546dc8b87b26d65ab963cf37ed190667cca5545128d510f835676f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "g2",
+    "inputHash" : "6a0c6067713a9f32d04b3596f1f0cf157044376bfcf8cd5bd464bf2c1488a834",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "g3",
+    "inputHash" : "495ec7041a43bd391494bf14685f46a7e6a4ff734512a98e6e4d25a4355bf480",
+    "ok" : false,
+    "codes" : [ "RK_ERROR_FIELD_OUTSIDE_GROUP" ]
+  }, {
+    "id" : "g4",
+    "inputHash" : "7bb0417796c828957d3676524ac9b50f21750fa7c2b07f86e21a92f6a6e4c4ba",
+    "ok" : false,
+    "codes" : [ "RK_ERROR_FIELD_OUTSIDE_GROUP" ]
+  }, {
+    "id" : "g5",
+    "inputHash" : "d0083a82b81bb40d20acac0b4442b378e4eb8c45fb243667271066a86951eecf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "g6",
+    "inputHash" : "7978a4c1a78e52200186f380e34b14d63e8970feb79d56ee68606d50cf8876bc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

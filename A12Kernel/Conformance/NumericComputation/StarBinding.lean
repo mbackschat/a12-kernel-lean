@@ -72,6 +72,9 @@ private def starField (shape : Shape) (field : String) : SurfaceStarFieldPath :=
 private def entity (shape : Shape) (field : String) : SurfaceNumberEntitySource :=
   { first := .star (starField shape field), rest := [] }
 
+private def rootW : SurfaceFieldEntityOperand :=
+  .field { base := .absolute, groups := ["Probe"], field := "W" }
+
 inductive Carrier where
   | sum | max | firstFilled | tokenCount | booleanCount | products | groupCount
   deriving Repr, DecidableEq
@@ -83,7 +86,8 @@ private def expression (shape : Shape) :
     Carrier → AuthoredNumericExpr SurfaceNumericComputationAtom
   | .sum => .atom (.numeric (.aggregate .sum (entity shape "Amt")))
   | .max => .atom (.numeric (.aggregate .maximum (entity shape "Amt")))
-  | .firstFilled => .atom (.firstFilled (entity shape "Amt"))
+  -- The measured rows read the star beside a root field.
+  | .firstFilled => .atom (.firstFilled { entity shape "Amt" with rest := [rootW] })
   | .tokenCount => .atom (.tokenValueCount "x"
       { first := .star (starField shape "Name") .stored, rest := [] })
   | .booleanCount => .atom (.booleanValueCount true (entity shape "Flag"))
@@ -153,6 +157,28 @@ example :
       admission outerKeyed out (expression .bothStarred .sum)] =
     [some (some .errorFieldNoIndex), some (some .errorFieldNoIndex), some (some .noWildcard),
       some (some .fieldNotInRuleGroup), none] := by
+  native_decide
+
+/- The per-row class answers ahead of target self-reference whichever operand reads the target, and
+   a star's unbound level answers ahead of a duplicate elsewhere in its list in either order, the
+   whole list being judged before the duplicate scan; `W` twice alone is the duplicate control. -/
+example :
+    let free : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+      .atom (.numeric (.field { base := .absolute, groups := ["Probe", "Out"], field := "Free" }))
+    let perRow := expression .relativeInner .sum
+    let sumOf (operands : List SurfaceFieldEntityOperand) :
+        AuthoredNumericExpr SurfaceNumericComputationAtom :=
+      match operands with
+      | first :: rest => .atom (.numeric (.aggregate .sum { first, rest }))
+      | [] => .literal { value := 0, authoredScale := 0 }
+    let outerStar : SurfaceFieldEntityOperand := .star (starField .outerUnstarred "Amt")
+    [admission model batches (.binary .add free perRow),
+      admission model batches (.binary .add perRow free),
+      admission model out (sumOf [outerStar, rootW, rootW]),
+      admission model out (sumOf [rootW, rootW, outerStar]),
+      admission model out (sumOf [rootW, rootW])] =
+    [some (some .fieldNotInRuleGroup), some (some .fieldNotInRuleGroup),
+      some (some .noWildcard), some (some .noWildcard), some (some .duplicateParam1)] := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.StarBinding

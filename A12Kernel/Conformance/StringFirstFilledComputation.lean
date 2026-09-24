@@ -284,4 +284,19 @@ example :
       some { changes := ["AAA"] } := by
   native_decide
 
+/- `Rows*/Details/Nested` leaves `Details` unstarred below the first star, which the Kernel refuses
+   with the missing-star class on this carrier in its two-operand form, beside a root String
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate));
+   this carrier admits only a sole star, so the lock holds the path's class and not that exact
+   authored row. -/
+example :
+    let belowStar : SurfaceStarFieldPath := {
+      base := .absolute
+      groups := [{ name := "Review" }, { name := "Rows", starred := true }, { name := "Details" }]
+      field := nestedSource.name }
+    (match checkStringFirstFilledComputation model ["Review"] target.id belowStar with
+      | .error error => error.diagnostic?
+      | .ok _ => none) = some .noWildcard := by
+  native_decide
+
 end A12Kernel.Conformance.StringFirstFilledComputation

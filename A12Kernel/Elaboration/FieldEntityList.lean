@@ -131,7 +131,48 @@ def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
       | .group _ | .starredGroup _ | .starredGroupPresence _ => false
   | none, none => false
 
+/-- The repeatable levels this operand leaves for its evaluation to bind: a direct field's own
+    scope, which resolution admitted only where the reading scope binds it; a star's levels above
+    its first star; and a fixed group's certified scope. -/
+def bindingScope : ResolvedFieldEntityOperand model → List RepeatableLevel
+  | .field declaration _ => declaration.repeatableScope
+  | .star source | .starHaving source _ => source.bindingScope
+  | .group reference => reference.boundRepeatableScope
+  | .starredGroup source => source.path.bindingScope
+  | .starredGroupPresence source => source.path.bindingScope
+
 end ResolvedFieldEntityOperand
+
+/-- A repeatable level an operand leaves for its evaluation to bind, on an arm whose target repeats
+    at no level, so nothing the target does can bind it. The Kernel classes the refusal by who binds
+    the operand list's outermost such level
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+structure UnboundOperandLevel where
+  level : RepeatableLevel
+  /-- The repeatable declaring group binds the level, which makes the operand a per-row read. -/
+  boundByDeclaringGroup : Bool
+  /-- The level's group declares an index field. -/
+  indexKeyed : Bool
+  deriving Repr, DecidableEq
+
+/-- The containment class for a per-row read, then the index class, then the missing-star class.
+    The index class is measured only where nothing binds the read's outermost level; under a bound
+    outer level a keyed deeper one draws the missing-star class, which no arm here reaches. -/
+def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStaticDiagnostic :=
+  if unbound.boundByDeclaringGroup then .fieldNotInRuleGroup
+  else if unbound.indexKeyed then .errorFieldNoIndex
+  else .noWildcard
+
+/-- The first operand's outermost unbound level, for a list of operand binding scopes read by an
+    evaluation that binds none of them. Which operand decides when two would draw different classes
+    is not measured; this takes the first in authored order. -/
+def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup : GroupPath)
+    (scopes : List (List RepeatableLevel)) : Option UnboundOperandLevel :=
+  (scopes.findSome? List.head?).map fun level =>
+    { level
+      boundByDeclaringGroup := (model.repeatableScopeForGroupPath declaringGroup).contains level
+      indexKeyed := model.repeatableGroups.any fun group =>
+        group.level == level && group.indexField.isSome }
 
 /-- The fixed and starred shapes an authored group-scope slot can take, shared by every carrier that retains one. A starred path preserves whether its terminal group is repeatable or ordinary. Every shape retains the **authored** reference: the wildcard gate reads the authored path, so a group operand and its written-out expansion are two different models and lowering one into the other can emit a model the Kernel refuses. -/
 inductive CheckedEntityGroupSource (model : FlatModel) where
@@ -275,6 +316,10 @@ inductive FieldEntityShapeElabError where
       under its root, so this arm is reached only by a root alone or beside another root's entities
       ([checkpoint](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)). -/
   | rootGroupOperand (path : GroupPath)
+  /-- On a fixed-target arm, an operand leaves a repeatable level for its evaluation to bind. The
+      whole list is judged before the duplicate scans, as the Kernel's missing-star bar is
+      ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+  | unboundOperandLevel (unbound : UnboundOperandLevel)
   deriving Repr, DecidableEq
 
 /-- The gates this shared checker owns, projected once. The **classes** do not vary by carrier, and
@@ -283,10 +328,8 @@ a row measured at one carrier fixes the code everywhere.
 **Whether a gate fires does vary, and the arity gate is measured to.** All three value-list
 quantifiers accept a *sole unstarred field* operand, where the entity-list carriers refuse one with
 `MVK_PARAMSIZE_INVALIDN`
-([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
-This checker applies the entity-list rule to both, so it over-refuses a legal value-list quantifier.
-Relaxing it is a change to `requiredMultiplicity`, a proof field of the shared shape, rather than a
-projection fix. -/
+([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)), so
+each carrier passes the `EntityListArity` it applies. -/
 def FieldEntityShapeElabError.diagnostic? :
     FieldEntityShapeElabError → Option KernelStaticDiagnostic
   | .tooFewFields => some .paramSizeInvalidN
@@ -294,6 +337,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .duplicateGroupOperand _ => some .duplicateParam1
   | .overlappingOperands _ _ => some .duplicateParam2
   | .rootGroupOperand _ => some .rootGroupReferenced
+  | .unboundOperandLevel unbound => some unbound.diagnostic
   | .resolve error => error.diagnostic?
   | .groupReference error => error.diagnostic?
   | .starredGroup error => error.diagnostic?
@@ -456,7 +500,7 @@ private def resolveFieldEntityOperands (model : FlatModel)
       pure ((← resolveFieldEntityOperandIn model declaringGroup scope operand) ::
         (← resolveFieldEntityOperands model declaringGroup scope remaining))
 
-/-- Validate the common entity-list shape: model, path resolution and its star gate, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, then the multiple-slots-or-one-already-many cardinality gate.
+/-- Validate the common entity-list shape: model, path resolution and its star gate, on a fixed-target arm the list-wide unbound-level gate, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, then the multiple-slots-or-one-already-many cardinality gate.
 
     Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair, and a root slot is already-many, so the root gate and cardinality never both fire.
 
@@ -464,7 +508,7 @@ private def resolveFieldEntityOperands (model : FlatModel)
 def elaborateFieldEntityShapeIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource)
-    (arity : EntityListArity := .manyRequired) :
+    (arity : EntityListArity := .manyRequired) (fixedTarget : Bool := false) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -472,6 +516,10 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
       let first ←
         resolveFieldEntityOperandIn model declaringGroup scope authored.first
       let rest ← resolveFieldEntityOperands model declaringGroup scope authored.rest
+      if fixedTarget then
+        if let some unbound := model.firstUnboundOperandLevel? declaringGroup
+            ((first :: rest).map ResolvedFieldEntityOperand.bindingScope) then
+          throw (.unboundOperandLevel unbound)
       match hDuplicate : firstDuplicateResolvedEntityOperand? (first :: rest) with
       | some (.field (field, _)) => throw (.duplicateOperand field)
       | some (.fixedGroup path) => throw (.duplicateGroupOperand path)
@@ -499,9 +547,9 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
 /-- The scalar instance of the shared shape gates. -/
 def elaborateFieldEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
-    (arity : EntityListArity := .manyRequired) :
+    (arity : EntityListArity := .manyRequired) (fixedTarget : Bool := false) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
-  elaborateFieldEntityShapeIn model declaringGroup [] authored arity
+  elaborateFieldEntityShapeIn model declaringGroup [] authored arity fixedTarget
 
 /-- One direct `Having` operand after origin-sensitive scope resolution. The resolved declaration,
     read form, and origin together are its exact authored identity. -/
