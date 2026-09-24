@@ -151,8 +151,18 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
       match source.resolveBase declaringGroup with
       | .error error => .error error.toElabError
       | .ok basePath =>
-          match model.lookupUniqueRepeatablePath (basePath ++ source.groups.map (·.name)) with
-          | .error error => .error (.resolve error)
+          let groupPath := basePath ++ source.groups.map (·.name)
+          match model.lookupUniqueRepeatablePath groupPath with
+          | .error error =>
+              -- A declared group below a star with no star on a nonrepeatable segment is admitted by
+              -- the filled-field carriers that read this source, so refusing it is this source's
+              -- boundary and keeps no class; every other miss answers in the Kernel's segment order
+              -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-group-value-count-classes)).
+              if model.hasGroupPath groupPath &&
+                  (firstStarOnNamedNonrepeatable? model basePath source.groups).isNone then
+                .error (.resolve error)
+              else
+                .error (starredGroupMiss model basePath source.groups groupPath)
           | .ok group =>
               if hPopulated : model.groupContributesField group.path = true then
               match elaborateStarPathPlan model basePath source.groups group.path with

@@ -694,6 +694,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+<a id="src-starred-group-value-count-classes"></a>
+- [A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted there](sources/static-admission-and-class-probes.md#src-starred-group-value-count-classes)
 <a id="src-pattern-and-key-resolver-classes"></a>
 - [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a pattern field read from the rule that iterates it is admitted](sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)
 <a id="src-group-operand-resolution-classes"></a>

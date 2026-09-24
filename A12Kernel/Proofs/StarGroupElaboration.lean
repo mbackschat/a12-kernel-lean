@@ -153,8 +153,12 @@ theorem elaborateStarredGroupSource_never_incoherentCore
     · rename_i baseError _
       cases baseError <;> simp [StarredGroupBaseError.toElabError]
     · rename_i basePath _
+      dsimp only
       split
-      · simp
+      · split
+        · simp
+        · simpa using starredGroupMiss_ne_incoherentCore model basePath source.groups
+            (basePath ++ source.groups.map (·.name))
       · rename_i group hLookup
         split
         · split
@@ -182,8 +186,12 @@ theorem elaborateStarredGroupSource_never_path_incoherentCore
     · rename_i baseError _
       cases baseError <;> simp [StarredGroupBaseError.toElabError]
     · rename_i basePath _
+      dsimp only
       split
-      · simp
+      · split
+        · simp
+        · simpa using starredGroupMiss_ne_path_incoherentCore model basePath source.groups
+            (basePath ++ source.groups.map (·.name))
       · rename_i group _
         split
         · split

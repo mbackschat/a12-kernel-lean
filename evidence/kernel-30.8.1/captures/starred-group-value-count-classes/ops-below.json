@@ -1,0 +1,54 @@
+[
+ {
+  "id": "nff-fixedbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Rows*/Detail) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-fixedbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-fixedbelow-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(/Item/Rows*/Detail) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-fixedbelow-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(/Item/Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ }
+]

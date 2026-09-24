@@ -1,0 +1,252 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "b00ed429e6fe63a399fa3f739ffa1050ba44d8bae78af7ec952bff72f1945b67",
+  "observations" : [ {
+    "id" : "nff-ctl",
+    "inputHash" : "9c2b6e96ddd5d14e38729df9de1d4f5b069f3edb64db2e6c0965e502f1b1c882",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "nff-starmiss",
+    "inputHash" : "81ae2c44f452bb4ed6a67c6b62d62249ddd13566bdfc42fe9bf695915e21401e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "nff-rootmiss",
+    "inputHash" : "b1d921bd93d9515fd8f96c89d761d00725f9508d8d05d5a998edc2f13ae7b6a3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "nff-nonrootatroot",
+    "inputHash" : "633c8db9d3c569e560a8e056b55b4dfe8386019862c3cc6915d0ab5b26c8ea62",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "nff-missbelow",
+    "inputHash" : "cf3a968dcfae0c000c867e00369f6327e7b34b5410d4dbbe5fa6ee1c63f0a60f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "nff-fixedstar",
+    "inputHash" : "cddc4b047c1ed77ca3613d8bec51d69b3c91a2d1e9349fc80062b988220a11ab",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "nff-fixedstarmiss",
+    "inputHash" : "8651ce154c3147fbfb2df651660c938db5e6d3fd38dcf3a9a516c66b34b6a524",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "nff-above",
+    "inputHash" : "aa3d62aef4ffa680a9385fe767801e2152c8c48337c17a33c6fc9d654027eaa8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "nff-missbefore",
+    "inputHash" : "b0155dfa1879e118c5a78d7bae2db67f4748b3111ee09c087c82e079b1543a02",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "nff-fieldstarmiss",
+    "inputHash" : "303d4b0a5cca2aea70310d9061249cb5f65956f88d488569b29fd9c9c6a47a9b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "alof-ctl",
+    "inputHash" : "21b0783f043584e5a8d6848d3cb488089426feef133476dcb850ef37d0de46a5",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "alof-starmiss",
+    "inputHash" : "e48390962a85a99e395f958c5b70f2bd008d132a0fcbe028a279dd88c706473f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "alof-rootmiss",
+    "inputHash" : "6105d705ce73b102a767c818bb6cac1ef091940242903fbedc53722ad22e05ec",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "alof-nonrootatroot",
+    "inputHash" : "5be5d62563e129fa4e36628fe0912b0e08332eea73971bbdf98c7c9d0ffaad54",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "alof-missbelow",
+    "inputHash" : "ae1490e5e73290e2b4d39637564ebb5937bc0b9b916ad4ed71e6e8d062437e24",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "alof-fixedstar",
+    "inputHash" : "588472c1c32fa9adbe7b668450810c83f22febfe807c4759fd9b6d582e624bd7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "alof-fixedstarmiss",
+    "inputHash" : "81376698ef03419c0adfb1c9d20aa4d87b1c8e9428eb3c816b95e80681debcef",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "alof-above",
+    "inputHash" : "8b5ecc012a5a12e9ae948c2aea9864722d4a9a3ffed2065cfaa9885cf8c220fb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "alof-missbefore",
+    "inputHash" : "631990eaefccc88f869ea2f409a29dd9ab6e78ac51b1e5281219fcf64e9b225a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "alof-fieldstarmiss",
+    "inputHash" : "26422973cd35e8d4e560480b4b9ffebbf937859d9f6187633b3aa2f74affada8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "tvc-ctl",
+    "inputHash" : "55b80095f9ebe32e97e58029cdc53dabd99e298e1281623849a947a9a596d82b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "tvc-starmiss",
+    "inputHash" : "1eac714037628bd9bf7a673f011cf26c64d1034bc4c9dcb1e2c41968c5df5538",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "tvc-rootmiss",
+    "inputHash" : "417a83e77825e14a76544c669529de7a175f509ee82f503897f10bfced6f392b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "tvc-nonrootatroot",
+    "inputHash" : "0c9c310ea7737f1241cfce55bc0265d825d353c7170f3c9e163cb4c7a4298aae",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "tvc-missbelow",
+    "inputHash" : "82095a04729812c1ae620f0ac541a9107b04453df547d274d6830fc5f84fc078",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "tvc-fixedstar",
+    "inputHash" : "bbf56c3e492fe27ccfc924e7617a8707c408113a80e33ebc41f8ac640aa9ca29",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "tvc-fixedstarmiss",
+    "inputHash" : "93dc970ea7393db78b88fa208ea7f1b6051424685058cc48c2e831785e7e33d9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "tvc-above",
+    "inputHash" : "9f9e07bc8b89c16ca3c21d5989e8b9694d232255972b10d424e23d8ee1d19b94",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "tvc-missbefore",
+    "inputHash" : "ecda6e916602ce503e6d434ad258c0b7172c444565d078be6aee9b89d1a87aa5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "tvc-fieldstarmiss",
+    "inputHash" : "80c5a80e561190e29437df857ecc17fadf7f3503e6741977b30103063605e6b8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "bvc-ctl",
+    "inputHash" : "1db01afde6786e569a1354cc7d357781995eb738ac203daa1c03b8faeed25e80",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "bvc-starmiss",
+    "inputHash" : "a40c55fb52ba4530a2dcd03ba752f7d2723aa215601a283d56a1f751c068c737",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "bvc-rootmiss",
+    "inputHash" : "230fb7c8bc37815631306b3ab33c9396f109b9d167aa6f37ce21197fe204437c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "bvc-nonrootatroot",
+    "inputHash" : "5e6304820e44b428ee47a258858c6a69555752967cac0016b04a58c80d0bf417",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "bvc-missbelow",
+    "inputHash" : "c9576f2e4e5a1f5f984404465378e2e1408ec86ecd2a80f0f48ea7fbc7a6038a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "bvc-fixedstar",
+    "inputHash" : "af68d7d72bafe3bbb6ed6da2e9da75fdf294531b37c69e489d451667a108ff44",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "bvc-fixedstarmiss",
+    "inputHash" : "c565be942712d7ccb50e35f397835f81c1293f9315676afdd8aad38b9d5f7be0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "bvc-above",
+    "inputHash" : "bd6ff60d19420ebe266e530ff5eccf5a28d9f600fd79ee03ca2e1a6767f9e116",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "bvc-missbefore",
+    "inputHash" : "57f84613df87f1c3efcc132503135c2b39cbc5c1d3a5cb65d3ec31e87e91e6c5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "bvc-fieldstarmiss",
+    "inputHash" : "6fb56084a204de442c2c10c754cd353649dff3aa0a0f5747070793fea5365f12",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  } ]
+}

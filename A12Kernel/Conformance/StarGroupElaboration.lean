@@ -170,6 +170,34 @@ private def onlyItem (row : Nat) : ValidationRelevanceScope :=
   }]
 
 /- Checked lowering retains the terminal group and the exact first-star plan. -/
+/- A starred group naming no declared group answers in the Kernel's segment order on this
+   terminal-repeatable carrier too, as on the value-count and filled-field carriers that read it. A
+   declared fixed group below a star is admitted by those carriers, so its refusal here is this
+   source's boundary and carries no class
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-group-value-count-classes)). -/
+example :
+    let detail : FlatFieldDecl :=
+      { id := 8, groupPath := ["Shop", "Catalog", "Sections", "Detail"], name := "Note"
+        policy := { kind := .string }, repeatableScope := [10] }
+    let detailModel : FlatModel := { fields := [amount, detail], repeatableGroups := [items, sections] }
+    let refusal (groups : List SurfaceStarGroupSegment) (base : PathBase := .absolute) :
+        Option (Option KernelStaticDiagnostic) :=
+      match elaborateStarredGroupSource detailModel ["Shop"] { base, groups } with
+      | .ok _ => none
+      | .error error => some error.diagnostic?
+    [refusal [segment "Shop", segment "Nope" true],
+      refusal [segment "Nope", segment "Sections" true],
+      refusal [segment "Shop", segment "Catalog" true],
+      refusal [segment "Shop", segment "Catalog", segment "Sections" true, segment "Nope"],
+      refusal [segment "Shop", segment "Catalog" true, segment "Nope"],
+      refusal [segment "Sections" true] (.relative 2),
+      refusal [segment "Shop", segment "Catalog", segment "Sections" true, segment "Detail"],
+      refusal [segment "Shop", segment "Catalog", segment "Sections" true]] =
+      [some (some .invalidEntity), some (some .invalidRootGroup), some (some .invalidWildcard),
+        some (some .invalidEntity), some (some .invalidWildcard), some (some .tooManyParentGroups),
+        some none, none] := by
+  native_decide
+
 example :
     resultOf (relativeSource false true) = some (20,
       { axes := [{ level := 10, repeatability := some 2 },
@@ -269,7 +297,7 @@ example :
       some (.path (.missingWildcard items.path)) ∧
     errorOf (absoluteSource false false true)
       { fields := [], repeatableGroups := [sections] } =
-      some (.resolve (.unknownRepeatableGroup items.path)) := by
+      some (.unknownRootGroup items.path) := by
   native_decide
 
 /- The two dead-branch theorems are not vacuous claims that lowering always succeeds: base

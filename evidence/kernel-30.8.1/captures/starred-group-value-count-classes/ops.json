@@ -1,0 +1,522 @@
+[
+ {
+  "id": "nff-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Nope*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(/Nope/Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(/Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Rows*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Info*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Info*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(../Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Nope/Rows*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "nff-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfFilledFields(Title*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Nope*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(/Nope/Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(/Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Rows*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Info*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Info*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(../Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Nope/Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "alof-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AtLeastOneFieldFilled(Title*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Texts*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Nope*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In /Nope/Texts*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In /Texts*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Texts*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Info*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Info*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In ../Texts*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Nope/Texts*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "tvc-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(\"x\" In Title*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Flags*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-starmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Nope*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In /Nope/Flags*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-nonrootatroot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In /Flags*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-missbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Flags*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-fixedstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Info*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Info*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In ../Flags*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-missbefore",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Nope/Flags*) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "bvc-fieldstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NumberOfValueInFields(True In Title*/Nope) > 0",
+   "--code",
+   "E1"
+  ]
+ }
+]
