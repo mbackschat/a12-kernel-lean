@@ -52,6 +52,13 @@ def StarredGroupElabError.diagnostic? :
   | .path error => error.diagnostic?
   | error => error.emptyGroupDiagnostic?
 
+/-- Place a starred group operand's star refusal by the written field, as
+    `StarPathElabError.placeBelowStar` places a starred field's. -/
+def StarredGroupElabError.placeBelowStar (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
+    StarredGroupElabError → StarredGroupElabError
+  | .path error => .path (error.placeBelowStar model declaringGroup writtenGroup)
+  | error => error
+
 /-- A starred group path naming no declared group answers in the Kernel's segment order: an earlier
     star landing on a nonrepeatable segment first, then the root or entity miss by its first
     segment. -/

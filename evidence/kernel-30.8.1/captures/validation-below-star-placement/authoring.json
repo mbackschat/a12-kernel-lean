@@ -1,0 +1,81 @@
+[
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "Summary"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "Ledger"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "Shipments",
+  "repeatable": 2
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment/Shipments",
+  "name": "Parcels",
+  "repeatable": 2
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment/Shipments/Parcels",
+  "name": "Seal"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Summary",
+  "name": "Result",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Ledger",
+  "name": "Total",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Shipments",
+  "name": "ShipWeight",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Shipments/Parcels",
+  "name": "Weight",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Shipments/Parcels/Seal",
+  "name": "SealCode",
+  "kind": "STRING"
+ }
+]

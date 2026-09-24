@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-24-06"></a>
+### `SPEC-2026-09-24-06` — below the first star the error field places the refusal on every validation star carrier, not only on `Sum` and the group count
+
+- `status`: pending.
+- `origin`: locally originated. It extends your [`kf466`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf466) rule rows, which carry `Sum` and `NumberOfFilledGroups`, to the rest of the rule arm.
+- `clause`: [`07` the chain bullet](../spec/07-repetition-and-iteration.md).
+- `delta`: over `/Fulfilment/Shipments*/Parcels/…`, with the error field in `Summary`, twenty-two carriers draw `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` from `Ledger` and from `Shipments` and `MVK_NO_WILDCARD` from `Summary`: the aggregates, the group count, the seven field-fill quantifiers, `NumberOfFilledFields`, the three value-list quantifiers, four group-list quantifiers, `FieldValuesNotUnique` and `NumberOfDifferentValues`. `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` draw it ahead of their own star bar.
+- `basis`: [validation below-star checkpoint](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement), three `model check` runs over hand-placed rules at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer checker whose containment family offers a below-star read only on `Sum` and the group count, and your `kf466` rule-arm row.
+- `acceptance`: confirm the placed class on any carrier beyond `Sum` and the group count, or supply a contrary row.
+- `limit`: static admission only, one two-level nesting, no Enumeration or Boolean value-list operand and no filter.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-24-05"></a>
 ### `SPEC-2026-09-24-05` — five restatements of your `-24b` and `-24d` rows claimed more than the rows measured, and the index class needs the error field's path unkeyed
 

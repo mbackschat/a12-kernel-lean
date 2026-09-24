@@ -102,9 +102,6 @@ inductive NumericValidationElabError where
   | starredGroupCountOperand (reference : SurfaceStarGroupPath)
   /-- A starred group-count operand whose star plan itself does not check. -/
   | starredGroupCountPlan (error : StarredGroupElabError)
-  /-- A starred group-count operand whose level below the first star the error field places outside
-  the rule group, so the containment gate answers ahead of the star plan's missing star. -/
-  | unboundOperandLevel (unbound : UnboundOperandLevel)
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)
   | fieldNotNumber (path : List String)
   | lengthOperandNotEvaluatedString (path : List String)
@@ -151,7 +148,6 @@ def groupCountDiagnostic? :
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | .groupReference error => error.diagnostic?
   | .starredGroupCountPlan error => error.diagnostic?
-  | .unboundOperandLevel unbound => unbound.diagnostic?
   | _ => none
 
 /-- Project the measured scope class of a repetition coordinate. `CurrentRepetition(G)` is admitted

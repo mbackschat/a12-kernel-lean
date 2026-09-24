@@ -38,9 +38,10 @@ inductive AllRowsValidationStarNumberSide where
 
 /-- Reuse general checked star-path lowering, then retain the declaration's exact Number metadata. -/
 def elaborateStarNumberSource (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceStarFieldPath) :
+    (authored : SurfaceStarFieldPath) (writtenGroup : GroupPath := declaringGroup) :
     Except StarNumberElabError (CheckedStarNumberSource model) := do
-  let source ← elaborateStarFieldPath model declaringGroup authored |>.mapError .path
+  let source ← elaborateStarFieldPath model declaringGroup authored
+    |>.mapError fun error => .path (error.placeBelowStar model declaringGroup writtenGroup)
   match hField : source.declaration.toNumberField? with
   | none => throw (.fieldNotNumber source.declaration.path)
   | some field => pure { source, field, fieldOwned := hField }

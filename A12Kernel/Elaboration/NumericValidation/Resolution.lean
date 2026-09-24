@@ -501,12 +501,9 @@ def elaborateMixedFilledGroupCountComparison
         pure (CheckedGroupCountOperand.fixed resolved)
     | .starred path =>
         match elaborateStarredGroupOperandSource model rowGroup path with
-        | .error error@(.path pathError) =>
-            match model.belowStarContainment? rowGroup writtenGroup pathError with
-            | some unbound => throw (.unboundOperandLevel unbound)
-            | none => throw (NumericValidationElabError.starredGroupCountPlan error)
         | .error error =>
-            throw (NumericValidationElabError.starredGroupCountPlan error)
+            throw (NumericValidationElabError.starredGroupCountPlan
+              (error.placeBelowStar model rowGroup writtenGroup))
         | .ok (.terminalRepeatable source) =>
             pure (CheckedGroupCountOperand.starred source)
         | .ok (.terminalPresence source) =>

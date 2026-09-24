@@ -453,9 +453,7 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   let written := fixedTargetGroup?.getD writtenGroup
   let star (path : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup path).mapError fun error =>
-      match model.belowStarContainment? declaringGroup written error with
-      | some unbound => .unboundOperandLevel unbound
-      | none => .starPath error
+      .starPath (error.placeBelowStar model declaringGroup written)
   match authored with
   | .field path form => do
       let resolved ←
@@ -479,12 +477,7 @@ def resolveFieldEntityOperandIn (model : FlatModel)
       pure (.group resolved)
   | .starredGroup reference => do
       let source ← elaborateStarredGroupOperandSource model declaringGroup reference
-        |>.mapError fun
-          | error@(.path pathError) =>
-              match model.belowStarContainment? declaringGroup written pathError with
-              | some unbound => .unboundOperandLevel unbound
-              | none => .starredGroup error
-          | error => .starredGroup error
+        |>.mapError fun error => .starredGroup (error.placeBelowStar model declaringGroup written)
       match source with
       | .terminalRepeatable source => pure (.starredGroup source)
       | .terminalPresence source => pure (.starredGroupPresence source)

@@ -396,10 +396,8 @@ private def resolveProjectedTokenEntityOperand (model : FlatModel)
 where
   star (source : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup source).mapError fun error =>
-      match model.belowStarContainment? declaringGroup (fixedTargetGroup?.getD declaringGroup)
-          error with
-      | some unbound => .shape (.unboundOperandLevel unbound)
-      | none => .shape (.starPath error)
+      .shape (.starPath
+        (error.placeBelowStar model declaringGroup (fixedTargetGroup?.getD declaringGroup)))
 
 private def firstDuplicateResolvedProjectedTokenField? :
     List (ResolvedProjectedTokenEntityOperand model) → Option FieldId

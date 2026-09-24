@@ -1,0 +1,12 @@
+{
+ "command": "dmtool model check",
+ "engineVersion": "30.8.1",
+ "model": "single.json",
+ "rules": {
+  "/Fulfilment/Ledger/Rffatlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ]
+ },
+ "valid": false,
+ "verification": "KERNEL_CONFIRMED"
+}

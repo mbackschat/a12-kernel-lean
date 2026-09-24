@@ -360,6 +360,9 @@ inductive StarPathElabError where
   | wildcardOnNonrepeatable (path : GroupPath)
   | missingWildcard (path : List String)
   | iterationBelowWildcard (path : GroupPath)
+  /-- A level left unstarred below the first star, placed outside the declaring group by the written
+  field, so the containment gate answers it; `StarPathElabError.placeBelowStar` produces it. -/
+  | containmentBelowStar (unbound : UnboundOperandLevel)
   | addressing (error : StarAddressingError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -371,7 +374,7 @@ and a star landing on anything but a repeatable group, which pre-empts every slo
 A repeatable level left unstarred **below** the first star is `noWildcard` on every carrier measured
 and both arms, whatever binds the level and whether or not its group is index-keyed, wherever the
 written field lies inside the declaring group; outside it the containment gate answers first, which
-`FlatModel.belowStarContainment?` asks for a computation's fixed target and a validation's error
+`StarPathElabError.placeBelowStar` asks for a computation's fixed target and a validation's error
 field. The Kernel judges each level while it reads the reference
 ([`kf440`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf440)), so this class also answers ahead of
 a carrier's own star bar, as `AllGroupsFilled` shows
@@ -381,23 +384,28 @@ def StarPathElabError.diagnostic? : StarPathElabError → Option KernelStaticDia
   | .resolve error => error.diagnostic?
   | .wildcardOnNonrepeatable _ => some .invalidWildcard
   | .iterationBelowWildcard _ => some .noWildcard
+  | .containmentBelowStar unbound => unbound.diagnostic?
   | _ => none
 
-/-- With the written field outside the declaring group, a level a star leaves unstarred below its
-first star meets the containment gate ahead of the missing-star class, on a fixed-target computation
-and on a validation rule alike
-([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). A written field inside the
-declaring group, the default wherever a carrier names none, leaves the missing star in place. -/
-def FlatModel.belowStarContainment? (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
-    StarPathElabError → Option UnboundOperandLevel
-  | .iterationBelowWildcard path => do
-      let group ← model.repeatableGroups.find? (·.path == path)
-      let unbound := model.unboundOperandLevel declaringGroup writtenGroup group.level
-      match unbound.placement with
-      | .outside => some unbound
-      | .contained => none
-  | .resolve _ | .wildcardOnNonrepeatable _ | .missingWildcard _ | .addressing _ | .incoherentCore =>
-      none
+/-- Place a star's refusal by the written field — a computation's fixed target or a validation's
+error field. With the written field outside the declaring group, a level the star leaves unstarred
+below its first star meets the containment gate ahead of the missing-star class, measured on every
+validation star carrier and on the computation arm
+([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment),
+[checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)).
+A written field inside the declaring group, the default wherever a carrier names none, leaves every
+refusal as it was. -/
+def StarPathElabError.placeBelowStar (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
+    StarPathElabError → StarPathElabError
+  | error@(.iterationBelowWildcard path) =>
+      match model.repeatableGroups.find? (·.path == path) with
+      | some group =>
+          let unbound := model.unboundOperandLevel declaringGroup writtenGroup group.level
+          match unbound.placement with
+          | .outside => .containmentBelowStar unbound
+          | .contained => error
+      | none => error
+  | error => error
 
 /-- One field declaration and general star plan certified against the same validated model. -/
 structure CheckedStarFieldPath (model : FlatModel) where

@@ -159,11 +159,13 @@ def elaborateFilledFieldCountFixedGroupValidationSource (model : FlatModel)
     the declared extent below a nonrepeatable terminal is the reopened rows' capacity. -/
 def elaborateFilledFieldCountStarredGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceFilledFieldCountStarredGroupValidationSource) :
+    (authored : SurfaceFilledFieldCountStarredGroupValidationSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except FilledFieldCountGroupElabError
       (CheckedFilledFieldCountGroupSource model) := do
   match ← elaborateStarredGroupOperandSource model declaringGroup authored.group
-      |>.mapError fun error => .shape (.starredGroup error) with
+      |>.mapError fun error =>
+        .shape (.starredGroup (error.placeBelowStar model declaringGroup writtenGroup)) with
   | .terminalRepeatable source => finishFilledFieldCountGroupSource model (.starred source)
   | .terminalPresence source => finishFilledFieldCountGroupSource model (.starredPresence source)
 

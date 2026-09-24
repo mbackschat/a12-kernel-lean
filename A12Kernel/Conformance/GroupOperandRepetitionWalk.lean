@@ -2,6 +2,9 @@ import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Elaboration.NumericAggregate.Entities
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.FilledFieldGroupCount
+import A12Kernel.Elaboration.FilledFieldStarCount
+import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Elaboration.StarStringValueList
 
 /-! # A group operand's repetition walk
 
@@ -422,6 +425,8 @@ private def fulfilmentModel : FlatModel :=
       { id := 3, groupPath := ["Fulfilment", "Shipments", "Parcels"], name := "Weight",
         policy := number, repeatableScope := [1, 2] },
       { id := 4, groupPath := ["Fulfilment", "Shipments", "Parcels", "Seal"], name := "SealCode",
+        policy := text, repeatableScope := [1, 2] },
+      { id := 5, groupPath := ["Fulfilment", "Shipments", "Parcels"], name := "Code",
         policy := text, repeatableScope := [1, 2] }]
     repeatableGroups := [
       { level := 1, path := ["Fulfilment", "Shipments"] },
@@ -451,6 +456,39 @@ example :
       count ["Fulfilment", "Ledger"], count ["Fulfilment", "Shipments"], count summary] =
     [some .fieldNotInRuleGroup, some .fieldNotInRuleGroup, some .noWildcard,
       some .fieldNotInRuleGroup, some .fieldNotInRuleGroup, some .noWildcard] := by
+  native_decide
+
+/- Every other validation star carrier places it the same way: the Number and String value-list
+   sources, the filled-field star behind `NumberOfFilledFields` and the field-fill quantifiers, the
+   filled-field starred group source and a starred group-list operand each draw containment from
+   `Ledger` and `Shipments` and the missing star from `Summary`
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)). -/
+example :
+    let summary := ["Fulfilment", "Summary"]
+    let belowStar : List SurfaceStarGroupSegment :=
+      [{ name := "Fulfilment" }, { name := "Shipments", starred := true }, { name := "Parcels" }]
+    let field (name : String) : SurfaceStarFieldPath := { base := .absolute, groups := belowStar, field := name }
+    let sealGroup : SurfaceStarGroupPath := { base := .absolute, groups := belowStar ++ [{ name := "Seal" }] }
+    let classes (rowGroup : GroupPath) : List (Option KernelStaticDiagnostic) :=
+      [match elaborateStarNumberSource fulfilmentModel rowGroup (field "Weight") summary with
+        | .error (.path error) => error.diagnostic?
+        | _ => none,
+       match elaborateStarStringSource fulfilmentModel rowGroup (field "Code") (writtenGroup := summary) with
+        | .error (.path error) => error.diagnostic?
+        | _ => none,
+       match elaborateFilledFieldStarValidationSource fulfilmentModel rowGroup (field "Weight") summary with
+        | .error error => error.diagnostic?
+        | _ => none,
+       match elaborateFilledFieldCountStarredGroupValidationSource fulfilmentModel rowGroup
+          { group := sealGroup } summary with
+        | .error (.shape (.starredGroup error)) => error.diagnostic?
+        | _ => none,
+       match list fulfilmentModel rowGroup .atLeastOneGroupFilled [.starredGroup sealGroup] summary with
+        | .error diagnostic => diagnostic
+        | .ok _ => none]
+    [classes ["Fulfilment", "Ledger"], classes ["Fulfilment", "Shipments"], classes summary] =
+    [List.replicate 5 (some .fieldNotInRuleGroup), List.replicate 5 (some .fieldNotInRuleGroup),
+      List.replicate 5 (some .noWildcard)] := by
   native_decide
 
 end A12Kernel.Conformance.GroupOperandRepetitionWalk

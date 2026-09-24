@@ -375,7 +375,7 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup writtenGroup :
   | .starredGroup reference => do
       let source ←
         (elaborateStarredGroupOperandSource model rowGroup reference)
-          |>.mapError .starredGroup
+          |>.mapError fun error => .starredGroup (error.placeBelowStar model rowGroup writtenGroup)
       match source with
       | .terminalRepeatable checked => pure (.starredGroup checked)
       | .terminalPresence checked => pure (.starredGroupPresence checked)

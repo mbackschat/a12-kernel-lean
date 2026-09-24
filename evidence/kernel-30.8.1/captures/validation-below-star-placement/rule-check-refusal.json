@@ -1,0 +1,37 @@
+{
+ "command": "dmtool batch rule check",
+ "source": {
+  "revision": "2304a684939621a8848e1261be9ab8e6278dc532",
+  "state": "CLEAN"
+ },
+ "observations": [
+  {
+   "id": "sumbelowledger",
+   "ok": false,
+   "codes": [
+    "RK_ERROR_FIELD_OUTSIDE_GROUP"
+   ]
+  },
+  {
+   "id": "sumbelowship",
+   "ok": false,
+   "codes": [
+    "RK_ERROR_FIELD_OUTSIDE_GROUP"
+   ]
+  },
+  {
+   "id": "sumallledger",
+   "ok": false,
+   "codes": [
+    "RK_ERROR_FIELD_OUTSIDE_GROUP"
+   ]
+  },
+  {
+   "id": "sumallship",
+   "ok": false,
+   "codes": [
+    "RK_ERROR_FIELD_OUTSIDE_GROUP"
+   ]
+  }
+ ]
+}

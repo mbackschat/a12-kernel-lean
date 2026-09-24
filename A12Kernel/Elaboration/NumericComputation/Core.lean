@@ -599,12 +599,9 @@ private def FlatModel.resolveNumericComputationAtoms
                   pure (CheckedGroupCountOperand.fixed resolved)
               | .starred path => do
                   let checked ← match elaborateStarredGroupOperandSource model declaringGroup path with
-                    | .error error@(.path pathError) =>
-                        match model.belowStarContainment? declaringGroup targetGroup pathError with
-                        | some unbound => throw (.unboundOperandLevel unbound)
-                        | none => throw (NumericComputationElabError.starredGroupCountPlan error)
                     | .error error =>
-                        throw (NumericComputationElabError.starredGroupCountPlan error)
+                        throw (NumericComputationElabError.starredGroupCountPlan
+                          (error.placeBelowStar model declaringGroup targetGroup))
                     | .ok (.terminalRepeatable source) =>
                         pure (CheckedGroupCountOperand.starred source)
                     -- Admitted alone, beside a fixed group, and twice on this arm too

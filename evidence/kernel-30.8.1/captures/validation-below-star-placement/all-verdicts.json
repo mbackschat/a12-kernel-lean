@@ -1,0 +1,271 @@
+{
+ "command": "dmtool model check",
+ "engineVersion": "30.8.1",
+ "model": "all.json",
+ "rules": {
+  "/Fulfilment/Ledger/Rffallallledger": [],
+  "/Fulfilment/Ledger/Rffallbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffatlallledger": [],
+  "/Fulfilment/Ledger/Rffatlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffcolallledger": [],
+  "/Fulfilment/Ledger/Rffcolbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffmoreallledger": [],
+  "/Fulfilment/Ledger/Rffmorebelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffnallallledger": [],
+  "/Fulfilment/Ledger/Rffnallbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffnexallledger": [],
+  "/Fulfilment/Ledger/Rffnexbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffnoallledger": [],
+  "/Fulfilment/Ledger/Rffnobelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffvallledger": [],
+  "/Fulfilment/Ledger/Rffvbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rfvnuallledger": [],
+  "/Fulfilment/Ledger/Rfvnubelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rglatlallledger": [],
+  "/Fulfilment/Ledger/Rglatlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rglcolallledger": [
+   "MVK_NO_WILDCARDS_G_ALLOWED"
+  ],
+  "/Fulfilment/Ledger/Rglcolbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rglnallallledger": [
+   "MVK_NO_WILDCARDS_G_ALLOWED"
+  ],
+  "/Fulfilment/Ledger/Rglnallbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rglnoallledger": [],
+  "/Fulfilment/Ledger/Rglnobelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rmaxallledger": [],
+  "/Fulfilment/Ledger/Rmaxbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rndvallledger": [],
+  "/Fulfilment/Ledger/Rndvbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rnffallledger": [],
+  "/Fulfilment/Ledger/Rnffbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rnfgallledger": [],
+  "/Fulfilment/Ledger/Rnfgbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rnvfallledger": [],
+  "/Fulfilment/Ledger/Rnvfbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rsumallledger": [],
+  "/Fulfilment/Ledger/Rsumbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rvlatlallledger": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "/Fulfilment/Ledger/Rvlatlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rvlnallallledger": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "/Fulfilment/Ledger/Rvlnallbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rvlnoallledger": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "/Fulfilment/Ledger/Rvlnobelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffallallship": [],
+  "/Fulfilment/Shipments/Rffallbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffatlallship": [],
+  "/Fulfilment/Shipments/Rffatlbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffcolallship": [],
+  "/Fulfilment/Shipments/Rffcolbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffmoreallship": [],
+  "/Fulfilment/Shipments/Rffmorebelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffnallallship": [],
+  "/Fulfilment/Shipments/Rffnallbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffnexallship": [],
+  "/Fulfilment/Shipments/Rffnexbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffnoallship": [],
+  "/Fulfilment/Shipments/Rffnobelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffvallship": [],
+  "/Fulfilment/Shipments/Rffvbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rfvnuallship": [],
+  "/Fulfilment/Shipments/Rfvnubelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rglatlallship": [],
+  "/Fulfilment/Shipments/Rglatlbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rglcolallship": [
+   "MVK_NO_WILDCARDS_G_ALLOWED"
+  ],
+  "/Fulfilment/Shipments/Rglcolbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rglnallallship": [
+   "MVK_NO_WILDCARDS_G_ALLOWED"
+  ],
+  "/Fulfilment/Shipments/Rglnallbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rglnoallship": [],
+  "/Fulfilment/Shipments/Rglnobelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rmaxallship": [],
+  "/Fulfilment/Shipments/Rmaxbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rndvallship": [],
+  "/Fulfilment/Shipments/Rndvbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rnffallship": [],
+  "/Fulfilment/Shipments/Rnffbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rnfgallship": [],
+  "/Fulfilment/Shipments/Rnfgbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rnvfallship": [],
+  "/Fulfilment/Shipments/Rnvfbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rsumallship": [],
+  "/Fulfilment/Shipments/Rsumbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rvlatlallship": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "/Fulfilment/Shipments/Rvlatlbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rvlnallallship": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "/Fulfilment/Shipments/Rvlnallbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rvlnoallship": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "/Fulfilment/Shipments/Rvlnobelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Summary/Rffallbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffatlbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffcolbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffmorebelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffnallbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffnexbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffnobelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffvbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rfvnubelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rglatlbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rglcolbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rglnallbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rglnobelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rmaxbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rndvbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rnffbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rnfgbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rnvfbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rsumbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rvlatlbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rvlnallbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rvlnobelowsummary": [
+   "MVK_NO_WILDCARD"
+  ]
+ },
+ "valid": false,
+ "verification": "KERNEL_CONFIRMED"
+}

@@ -1,0 +1,42 @@
+{
+ "command": "dmtool model check",
+ "engineVersion": "30.8.1",
+ "model": "vl.json",
+ "rules": {
+  "/Fulfilment/Ledger/Rvlatlallledger": [],
+  "/Fulfilment/Ledger/Rvlatlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rvlnallallledger": [],
+  "/Fulfilment/Ledger/Rvlnallbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rvlnoallledger": [],
+  "/Fulfilment/Ledger/Rvlnobelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rvlatlallship": [],
+  "/Fulfilment/Shipments/Rvlatlbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rvlnallallship": [],
+  "/Fulfilment/Shipments/Rvlnallbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rvlnoallship": [],
+  "/Fulfilment/Shipments/Rvlnobelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Summary/Rvlatlbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rvlnallbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rvlnobelowsummary": [
+   "MVK_NO_WILDCARD"
+  ]
+ },
+ "valid": false,
+ "verification": "KERNEL_CONFIRMED"
+}

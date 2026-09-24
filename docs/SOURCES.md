@@ -919,6 +919,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Field-group quantifiers retain declared slots and bound-parent capacity](sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)
 <a id="src-computation-star-binding-gate"></a>
 - [A repeatable level a star leaves unstarred must be bound: below the first star it draws the missing-star class on every carrier measured, and above it a fixed-target computation's class follows where its target lies](sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)
+<a id="src-validation-below-star-placement"></a>
+- [Below the first star the error field places the refusal on every validation star carrier: containment from a rule group it lies outside, the missing star from one it lies in](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)
 <a id="src-ancestor-starred-group-count-computation"></a>
 - [`NumberOfFilledGroups` counts a fixed group below a star on the computation arm by content per in-capacity instance, and a computation reading a malformed-only operand group emits no implicit message](sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)
 <a id="src-below-star-group-computation"></a>
