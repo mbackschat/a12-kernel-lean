@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-24-03"></a>
+### `SPEC-2026-09-24-03` — a fixed-target computation refuses a star's unstarred level by who binds it, and a star aggregate is per-row once it leaves a declaring-group level unstarred
+
+- `status`: pending
+- `origin`: locally originated. It crosses your [`kf440`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf440) per-level rule to the computation arm, and it narrows [`kf213`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf213)'s "a star aggregate is not a per-row operand", whose star aggregates bound no level.
+- `clause`: [`09` §5, the new unstarred-level bullet, and the star-aggregate sentence of the declaring-group paragraph](../spec/09-computations.md). [`02` the `NumberOfFilledGroups` gate paragraph](../spec/02-logic-and-formal-errors.md). [`07` the group-scope chain bullet](../spec/07-repetition-and-iteration.md).
+- `delta`: into a fixed target, a star's unstarred level above its first star is refused, and the outermost such level decides the class. A repeatable declaring group that binds it draws `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`; a level nothing binds draws `MVK_ERROR_FIELD_NO_INDEX` when its group declares an index field and `MVK_NO_WILDCARD` otherwise. A target inside the level admits the same operand.
+- `delta`: a plain read and a fixed group operand follow the same table, including a read whose deeper level nothing binds, which still draws containment. Containment answers ahead of arity, the scale comparison and target self-reference.
+- `delta`: an unstarred level below the first star draws `MVK_NO_WILDCARD` on the nine computation carriers measured and on the validation carriers at both error-field loci, whatever binds it, index-keyed or not on `Sum`, and ahead of `AllGroupsFilled`'s own star bar.
+- `basis`: [star-binding checkpoint](sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate), ten `batch` runs of `computation add --dry-run` and `rule check` over five models plus the retained group-count gate model, at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`. Every refusal has a same-model admitted control that differs in the binding alone.
+- `surfaces`: any peer checker that admits a star with an unbound ancestor on the computation arm, classes a per-row read from a repeatable declaring group as a missing star, or treats every star aggregate as unable to derive iteration.
+- `acceptance`: confirm the three classes and the target-bound admission on your own fixture, the partial-binding row included, or supply a contrary observation.
+- `limit`: static admission only, one two-level nesting, a star's partly bound levels inferred from the plain and fixed partial rows, and a sibling repeatable declaring group not measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-24-02"></a>
 ### `SPEC-2026-09-24-02` — `NumberOfFilledGroups` counts a fixed group below a star on the computation arm, and a computation reading a malformed-only operand group carries no implicit message
 

@@ -1,0 +1,437 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "b5a1338e774b9695293ec27bac2870b6bb2394696eee70960da13c0f9d4008d2",
+  "observations" : [ {
+    "id" : "c-sum-ctl",
+    "inputHash" : "ec89b23c3dc2bcc0b183047992ce04d038744c7a431ae6b3847d26f6693a2f96",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-max-ctl",
+    "inputHash" : "f15f98016000684a3c64e7442df6b93c569772242413032ecd91b5aa0dfcf8f5",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-ffv-ctl",
+    "inputHash" : "df15b150e0f2f0bc31f3b4736b186980b48cac8011c7ba9eb985d55f988a3294",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-nff-ctl",
+    "inputHash" : "3ef8ceeb1893d1df97842b68a9e5d2cdf0c79bd3920d58b6442f7b61fcc881fe",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-nvf-ctl",
+    "inputHash" : "ebed25ae44801df5587f9d3aee35d309705a0ad60a455a50f5f8de7e85e5789d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-nfg-ctl",
+    "inputHash" : "8deff50b0979f457f78bc9286be9669f09564b2d9abf76589e4edb97599bb0d8",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-sum-out",
+    "inputHash" : "dc7f5bc45f790895ef138a17992fcc56a404a1871af2ed82c92debd65443b884",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-max-out",
+    "inputHash" : "679478ec1a54ad6c800295fecb263847048d474ae0ae5e729784adb7f6cffde5",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-ffv-out",
+    "inputHash" : "12566dfb86c7db20edd8f6b746bef6ae6c1d70bd289287286c6e8f12c44a1bd9",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nff-out",
+    "inputHash" : "0d393262320895ea053225c9091ee42b49cf38ec37d36b28dd528b028c5cc9e2",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nvf-out",
+    "inputHash" : "9193bfe4293574a48ca8535e528fd10811d4b419da7fbebacef0bfc29815877d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nfg-out",
+    "inputHash" : "ef310bb6fcc41626c17ae568cb91a64450460f3030a24bdb6d79cba739058543",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-sum-inn",
+    "inputHash" : "d33db1615b2b2e36146932c927f458a6547e4d42c45a4249806ea27c4fa1e022",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-max-inn",
+    "inputHash" : "1b3ca2b44f355975763226b39fe12244da14fc73b97c2d0b79192206c7d7a999",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-ffv-inn",
+    "inputHash" : "f68e9e500f3787525b330ad281b95ffe570abc5856235b9c6ac5f1ca557bc1f9",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nff-inn",
+    "inputHash" : "07ed28d195d17d6f965e91ea5728815b7e42153fc055684ede5ae3315bd6275d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nvf-inn",
+    "inputHash" : "1adae14fa78b5ae61faca30349e2d36cc4b06290922fce5a1c72f73377217401",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nfg-inn",
+    "inputHash" : "35c22f0c226be89682cb814e44a2cf2177f8f25133ca03ad2b744acd6093912d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-sum-none",
+    "inputHash" : "f545685a6e2a94de6b9a9837a5a7fff52765a0153a3f93f8c98e28db72745c1a",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-max-none",
+    "inputHash" : "69e3ab1470b0995336e1babb010ed0671ecb6d052961623f107a397ab483d96f",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-ffv-none",
+    "inputHash" : "5b7a67998eabb93ce53e348507a0c0e84cc340f4af4bfd25db7a28a777a60569",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nff-none",
+    "inputHash" : "e239ae62564faf864ac064fb676d5246c8225bc394690dc3130e3ba44a6b4c8b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nvf-none",
+    "inputHash" : "3697505e70b816cc69e775fecfd5b6d1f508d546b1723fda2075392e2dae275d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-nfg-none",
+    "inputHash" : "9e0ecc6ab223f82ec58952288afd8d5aa2ac6e05200e20bacf4cebe41df2cf36",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-hb-rel",
+    "inputHash" : "8513ba97eeeff2e9f44c80bd80fc92087dca09d8e73ce1e6c42493a3753ce9c4",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "c-hb-abs",
+    "inputHash" : "303cd3499777f8e2ee46ec0cea2964ddb877b1795bac02e07cafa5ac6d906313",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "c-hb-nfg-rel",
+    "inputHash" : "1af15c579a66cbb84733bd0d3dffa17db153b568be015b7b4d2a6ec52d4c0dce",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "c-tb-sum-ctl",
+    "inputHash" : "648f7aecd03ed37857f1a19c614e9d4378b7fb3f898503d596de376961d0bda8",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-tb-nfg-ctl",
+    "inputHash" : "26b45aa1f571715085524e5f93d1ca2f6cb3020f4a0cc155d6e8ed907d712165",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-tb-ffv-ctl",
+    "inputHash" : "d97a6c577a1be25b84952a92908fb7a6bd30b67713cbc314d9d18fcc3fcc137a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-tb-sum-out",
+    "inputHash" : "bab019cb7cbd75ad0875cdd80786f65728b6e1e7081bc0081c23343092046dd6",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-tb-nfg-out",
+    "inputHash" : "17f7e918c1a7d5e6b0998dfeea4258397e6526f2c40cdf96eddb2f4f2c8cc8d9",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-tb-ffv-out",
+    "inputHash" : "7f1c64ac6d62d9cf6b67c8fa1c992be8b7872bb081d5c3a8b0a1b7e68ef1386c",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "c-tb-sum-inn",
+    "inputHash" : "07d8d524f4d3fe1b53a5283937298490b44e1045bbbf47fb26e7ea16a73bc217",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-tb-nfg-inn",
+    "inputHash" : "e9f6b14e61989e5a9286d356c821f300bf8597b47f59fbce81f2d822f8ad97be",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-tb-ffv-inn",
+    "inputHash" : "2ea0ded20b878da485f2038a24236c88b599fbec73a087d063e7ba90b2fef8dc",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "c-tb-sum-rel",
+    "inputHash" : "17d21607670b86a63596f21d9369059429177af9a8e456182b978fcab049d1bc",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-sum-ctl",
+    "inputHash" : "b41b625d90483657a5f18ff3e79262f4085a10dba25f2d6e0cd7c49851a65e67",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-bound-sum-ctl",
+    "inputHash" : "5fd2417565669af25454bf4a929193bec28f1613c68143d7a9c9e26fe716e5bd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-max-ctl",
+    "inputHash" : "0419d9d18fc641ece8461559230e4f0a2e1fbda8d1f202345714d0495e0690e1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-bound-max-ctl",
+    "inputHash" : "2f2f43c5f3e2dc8e02f20b74a519cb6c7a7773e9d11d62a21166a30d1719e4f4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-ffv-ctl",
+    "inputHash" : "34ac85ebf43b4a15dac6ced9d9ee1b6692c24df9bb22ae3e3f57a9c6efdd353c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-bound-ffv-ctl",
+    "inputHash" : "67a74e756d91118336844d119ab5252630fcdc49d58656ec008448c93283db5b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-nff-ctl",
+    "inputHash" : "f2638425d0de57d94f0f7ca6a4ad5d34c52f4a6f228b5e46f9d9a4ffb2fa5c35",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-bound-nff-ctl",
+    "inputHash" : "fb8abbdb5ac2f749517bc39a838abfd3c937f42f7611c402fcee676f1badc8be",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-nvf-ctl",
+    "inputHash" : "f44a96fa97687ebde21a5e28c0b80aa9f607860d7312e6b4cfa3ad6beeb39d23",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-bound-nvf-ctl",
+    "inputHash" : "09bdc412cead4d7affba6aeebb4be7773b97fbef1027905a11df6c39bb653240",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-nfg-ctl",
+    "inputHash" : "0c40c80c12506244e74beb523ce20cb2f37ac4c796801fe46afcdf7c83576828",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-bound-nfg-ctl",
+    "inputHash" : "524ae8d217434343fc600c8f00649a78be112c0576a684585e2f54e3f7f9267b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-sum-out",
+    "inputHash" : "153a6b1a270cc42ff60ac35a239cc6d33a4a18464499efdeef892648f4d0d045",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-sum-out",
+    "inputHash" : "31a237842c85af4cabf3281dd7e2b6a7fa491e9a87612731684b697e1e2e4441",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-max-out",
+    "inputHash" : "08b33ddea62704547c41ce30fb01dccb640d04123124bb06b554d56e0b58f9fa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-max-out",
+    "inputHash" : "7b2ec3a01cf85f8d8803ca8f94163276f5a34d36cba652aa3a2735c603b3592a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-ffv-out",
+    "inputHash" : "0101767ec05dd758a2cc7d2ce174c5ab2523645c84b6cea882ac529cbab4d359",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-ffv-out",
+    "inputHash" : "61bbd9fecfaab8a349113c20a4db3c981a208ee1bfe1cbae19829f63f1ae33f8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-nff-out",
+    "inputHash" : "0f0a94236948c601519579660cd8e4ded50fed9cb5cd51ee9d7f6d55900c65c1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-nff-out",
+    "inputHash" : "19387de74a9d39180ffb22ef4c0b305627f4e65d662793e762254c0bb144c772",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-nvf-out",
+    "inputHash" : "1735ccaa87b5abacc5e99c81d5a03c4b521829a967acb19693f30f452574ef6c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-nvf-out",
+    "inputHash" : "9414243525c2fa8a39b28a12c2235fd390cc5f6478c8822a477c25de6c5f0a53",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-nfg-out",
+    "inputHash" : "2a1f0e37e7414ed5e024922486517dce87f659f911639a793a389ed34a63be53",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-nfg-out",
+    "inputHash" : "de9a0c73a114cb3bd0e8bf8e2214bdda5dc8a71c23e2728c74d20d0569a5d4a8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v-root-sum-inn",
+    "inputHash" : "46b855a881c3863adeb992758d3b6dfc29d385a89c127ec965487a08df06b2b2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-sum-inn",
+    "inputHash" : "5cd06903ebfd59326c1c3caa53d5e8a0f24e2f8a850c4a648304339938c37bf3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-root-max-inn",
+    "inputHash" : "c05f95079d8c9c4d8c2a4c8c56b0d3a2cbd8e42af0bdf031b11cecf5a3020350",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-max-inn",
+    "inputHash" : "1592c5bb9907933ac438f7975856f521dc7cd9600a683bb145128c082e2b4850",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-root-ffv-inn",
+    "inputHash" : "1c9a8e5d802f71c43e852c3570cc908404e7aaf3f579587eb545f9cedf1c4a91",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-ffv-inn",
+    "inputHash" : "247a6efd16b8741a9ffb450cff507dc3fd7a4596df49be85886cadcb86621dce",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-root-nff-inn",
+    "inputHash" : "b380748df6b30a785fed2891066aaa0ef8dba542d146879ebdfba00d9d8650ee",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-nff-inn",
+    "inputHash" : "d1fa9df6f1aa38ccf08fc5963f9edda95230d1e9d8c449fe6bfdf03bba9d4dd5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-root-nvf-inn",
+    "inputHash" : "e8f2daa2d589c0ac4d278ae7c9decaa197eee00c3ec9ee88c564d208e7e1ed5e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-nvf-inn",
+    "inputHash" : "cb3bf1876b2125b8be776249f7086cbaa85d842b960e8d11f1100d8d6581438e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-root-nfg-inn",
+    "inputHash" : "e33ae58d46a8e0b38910fa4b8140b334b25ff964c350d56e413e380853eb71e2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "v-bound-nfg-inn",
+    "inputHash" : "2bbbe6c8fb0261699aa1b6b415e3bc22ee83938454f416cb263e381ac983b81d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  } ]
+}

@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/N",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(/Probe/Rows/Inner*, /Probe/Rows*)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

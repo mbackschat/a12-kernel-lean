@@ -145,7 +145,7 @@ private def gateModel : FlatModel :=
 private def gateCode? (operands : List SurfaceGroupCountOperand) : Option KernelStaticDiagnostic :=
   match elaborateNumericComputationOperation gateModel ["Probe"] gateTarget
       (.atom (.filledGroupCount operands)) with
-  | .error error => NumericComputationElabError.groupCountDiagnostic? error
+  | .error error => error.groupCountDiagnostic? <|> error.iterationDiagnostic?
   | .ok _ => none
 
 private def gateStar (path : GroupPath) : SurfaceGroupCountOperand :=
@@ -171,14 +171,28 @@ example :
         some .tooManyParentGroups] := by
   native_decide
 
+/-- `Rows*/Inner*`, the star strictly inside `Rows*` that an author can write from the root. -/
+private def innerStar : SurfaceGroupCountOperand :=
+  .starred { base := .absolute
+             groups := [{ name := "Probe" }, { name := "Rows", starred := true },
+               { name := "Inner", starred := true }] }
+
 /- Strict containment refuses whichever side carries the star and in whichever order. The disjoint
-   mixed pair beside it is admitted, so the refusals are the containment and not the mixing. -/
+   mixed pair beside it is admitted, so the refusals are the containment and not the mixing. The
+   inner star must star `Rows` too: `Rows/Inner*` leaves `Rows` unbound and draws the missing-star
+   class ahead of the duplicate gate, in either order
+   ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 example :
     (gateCode? [fixedOperand ["Probe", "Flat"], gateStar ["Probe", "Flat", "Nested"]],
       gateCode? [gateStar ["Probe", "Flat", "Nested"], fixedOperand ["Probe", "Flat"]],
-      gateCode? [gateStar ["Probe", "Rows"], gateStar ["Probe", "Rows", "Inner"]],
+      gateCode? [gateStar ["Probe", "Rows"], innerStar],
+      gateCode? [innerStar, gateStar ["Probe", "Rows"]],
       gateCode? [fixedOperand ["Probe", "Flat"], gateStar ["Probe", "Rows"]]) =
-    (some .duplicateParam2, some .duplicateParam2, some .duplicateParam2, none) := by
+    (some .duplicateParam2, some .duplicateParam2, some .duplicateParam2, some .duplicateParam2,
+      none) ∧
+    [gateCode? [gateStar ["Probe", "Rows"], gateStar ["Probe", "Rows", "Inner"]],
+      gateCode? [gateStar ["Probe", "Rows", "Inner"], gateStar ["Probe", "Rows"]]] =
+    [some .noWildcard, some .noWildcard] := by
   native_decide
 
 /- An empty starred group draws its own class on this arm, alone and behind a fixed operand, where

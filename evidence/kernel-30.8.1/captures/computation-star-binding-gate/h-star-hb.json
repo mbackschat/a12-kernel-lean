@@ -1,0 +1,15 @@
+{
+ "computedField": "/Probe/Out/Free",
+ "alternatives": [
+  {
+   "operation": "Sum(Boxes*/Amt)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Probe/Batches"
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "a3dffb2f4cff1245c1eb5f9a3ed034640979202d4893d22ab5f40d6f2acfd10e",
+  "observations" : [ {
+    "id" : "g-lone-hb",
+    "inputHash" : "5236556748d9d3555d20756a77451726de52263ef36fcbe20dc42a98ee8b9586",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "g-lone-tb",
+    "inputHash" : "5a0d38e6078a9853934f49038d51a506347664c856b037ea4591bd41fdaa2b05",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALIDGN" ]
+  }, {
+    "id" : "g-scale-hb",
+    "inputHash" : "710b125fb734753ce1b1872ff4c3b0fd30f1b41cc47960f2e8f6ae3bfa3b2c10",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "g-self-hb",
+    "inputHash" : "471fc1440a629de3bc65b06cb3a877ba40573ae328b7a2f6f7cdba6318389feb",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  } ]
+}

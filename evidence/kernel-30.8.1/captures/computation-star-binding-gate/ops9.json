@@ -1,0 +1,38 @@
+[
+ {
+  "id": "k-both",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k-both.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k-both-rev",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k-both-rev.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k-inner-only",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k-inner-only.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k-inner-only-rev",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k-inner-only-rev.json",
+   "--dry-run"
+  ]
+ }
+]

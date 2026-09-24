@@ -77,7 +77,7 @@ private def admissionIn (m : FlatModel) (target : FieldId)
   match elaborateNumericComputationOperation m ["Probe"] target
       (.atom (.filledGroupCount operands)) with
   | .ok _ => none
-  | .error error => some error.groupCountDiagnostic?
+  | .error error => some (error.groupCountDiagnostic? <|> error.iterationDiagnostic?)
 
 /- Admission, measured through `computation add --dry-run`: the lone form, the form beside a fixed
    group, and the same form twice are admitted, and the unstarred spelling draws `MVK_NO_WILDCARD`
@@ -232,22 +232,17 @@ private def boxSeals (outer inner : Bool) : SurfaceGroupCountOperand :=
                { name := "Boxes", starred := inner }, { name := "BSeal" }] }
 
 /- The second admission batch: the disjoint star beside the below-star form and the two-level form
-   are admitted, and unstarring `Crates` draws `MVK_NO_WILDCARD`. -/
+   are admitted, and unstarring `Crates` or either level of the two-level path draws
+   `MVK_NO_WILDCARD`. The inner level answers through the star plan and the outer one through the
+   per-row operand gate, whose carrier matrix
+   [`StarBinding`](NumericComputation/StarBinding.lean) owns. -/
 example :
     [admissionIn separatorModel 7 [crates true, seals],
       admissionIn separatorModel 7 [crates false, seals],
-      admissionIn separatorModel 7 [boxSeals true true]] =
-    [none, some (some .noWildcard), none] := by
-  native_decide
-
-/- **Not the Kernel's answer, locked as this project's boundary.** Unstarring either level of the
-   two-level path draws `MVK_NO_WILDCARD` in the Kernel. Here the unstarred inner level is refused
-   with no class projected, and the unstarred outer level is admitted and refused only when
-   evaluation finds its level unbound; the [gap](../../docs/gaps/paths-and-groups.md#gap-sg9) owns
-   the shared star-plan fix that flips both. -/
-example :
-    [admissionIn separatorModel 7 [boxSeals true false],
-      admissionIn separatorModel 7 [boxSeals false true]] = [some none, none] := by
+      admissionIn separatorModel 7 [boxSeals true true],
+      admissionIn separatorModel 7 [boxSeals true false],
+      admissionIn separatorModel 7 [boxSeals false true]] =
+    [none, some (some .noWildcard), none, some (some .noWildcard), some (some .noWildcard)] := by
   native_decide
 
 /-- `SealCnt`, `SealTwice`, `MixCnt` and `BoxCnt`, in model order. -/

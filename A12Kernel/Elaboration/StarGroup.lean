@@ -390,6 +390,15 @@ def groupPath (operand : CheckedGroupCountOperand model) : GroupPath :=
   | .starred source => source.group.path
   | .starredPresence source => source.groupPath
 
+/-- Repeatable levels the enclosing evaluation must bind, the same rule `CheckedEntityGroupSource`
+    states for its identical three shapes: a fixed group's bound scope, and for either starred shape
+    the levels above its first star. -/
+def bindingScope (operand : CheckedGroupCountOperand model) : List RepeatableLevel :=
+  match operand with
+  | .fixed reference => reference.boundRepeatableScope
+  | .starred source => source.path.bindingScope
+  | .starredPresence source => source.path.bindingScope
+
 /-- Whether the operand's group subtree contains the computed target, which is the self-reference
     gate every group-valued operand shares. -/
 def referencesField (operand : CheckedGroupCountOperand model)

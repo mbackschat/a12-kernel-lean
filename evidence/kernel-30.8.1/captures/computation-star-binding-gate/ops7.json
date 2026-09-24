@@ -1,0 +1,56 @@
+[
+ {
+  "id": "h-star-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "h-star-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "h-star-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "h-star-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "h-star-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "h-star-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "h-fld-root",
+  "verb": "computation",
+  "args": [
+   "add",
+   "h-fld-root.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "h-fx-root",
+  "verb": "computation",
+  "args": [
+   "add",
+   "h-fx-root.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "h-nfg-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "h-nfg-out.json",
+   "--dry-run"
+  ]
+ }
+]

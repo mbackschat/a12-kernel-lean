@@ -40,6 +40,11 @@ inductive KernelStaticDiagnostic where
   a repeatable declaring group, so a bare constant into a repeatable target reaches this class with
   no operand at all. -/
   | fieldNotInRuleGroup
+  /-- A computation operand reads per row at a repeatable level that neither the target nor the
+  declaring group binds, and that level's group declares an index field. The same read of an unkeyed
+  group draws `noWildcard`, so the index declaration alone moves the class
+  ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+  | errorFieldNoIndex
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
   /-- A filled-group count carries one fixed unstarred operand, including a repeatable operand whose level is bound by the error-field row. The same repeatable operand outside that row draws `noWildcard`; a single starred operand is admitted, so this is not simply an operand-count gate. -/
@@ -391,6 +396,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidCompareToYes => "MVK_INVALID_COMPARE_TO_YES"
   | .invalidCompareToYesNo => "MVK_INVALID_COMPARE_TO_YESNO"
   | .fieldNotInRuleGroup => "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  | .errorFieldNoIndex => "MVK_ERROR_FIELD_NO_INDEX"
   | .paramSizeInvalidN => "MVK_PARAMSIZE_INVALIDN"
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
@@ -583,7 +589,7 @@ def all : List KernelStaticDiagnostic :=
     .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .invalidCompareToYesNo,
-    .fieldNotInRuleGroup,
+    .fieldNotInRuleGroup, .errorFieldNoIndex,
     .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .differentGroups, .noWildcard, .wildcardOnlyAtLowestLevelAllowed,

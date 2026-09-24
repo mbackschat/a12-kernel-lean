@@ -101,6 +101,12 @@ inductive NumericComputationElabError where
   /-- A root group beside any other operand. Reached only once containment is ruled out, because
   the Kernel checks the two gates in that order on both arms. -/
   | rootGroupInGroupCount (path : GroupPath)
+  /-- An operand reads per row at a repeatable level that the declaring group binds, which derives
+  an iteration this arm's fixed target cannot lie inside. -/
+  | iterationOutsideDeclaringGroup (level : RepeatableLevel)
+  /-- An operand reads per row at a repeatable level that nothing binds. `indexKeyed` records whether
+  that level's group declares an index field, which selects the class. -/
+  | unboundOperandLevel (level : RepeatableLevel) (indexKeyed : Bool)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceAfterScale (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
@@ -135,6 +141,16 @@ def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
   | .targetSelfReferenceAfterScale _ => some .errorReferenceToCalculatedField
+  | _ => none
+
+/-- Project the per-row operand gate. The target repeats at no level on this arm, so which class a
+    per-row read draws is decided by who binds its outermost level
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+def iterationDiagnostic? :
+    NumericComputationElabError → Option KernelStaticDiagnostic
+  | .iterationOutsideDeclaringGroup _ => some .fieldNotInRuleGroup
+  | .unboundOperandLevel _ indexKeyed =>
+      some (if indexKeyed then .errorFieldNoIndex else .noWildcard)
   | _ => none
 
 end NumericComputationElabError
@@ -379,6 +395,48 @@ private def FlatModel.resolveTemporalNumericComputationField
       else throw (.incompatibleTemporalSource declaration.path)
   | none => throw (.incompatibleTemporalSource declaration.path)
 
+private def CheckedNumberEntitySource.bindingScopes
+    (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
+  (source.first :: source.rest).map fun
+    | .field _ => []
+    | .star operand => operand.source.bindingScope
+    | .starHaving operand => operand.source.source.bindingScope
+    | .group operand => operand.source.bindingScope
+
+private def CheckedTokenEntitySource.bindingScopes
+    (source : CheckedTokenEntitySource model) : List (List RepeatableLevel) :=
+  (source.first :: source.rest).map fun
+    | .field _ => []
+    | .star operand => operand.source.bindingScope
+    | .group operand => operand.source.bindingScope
+
+private def CheckedBooleanValueCountSource.bindingScopes
+    (source : CheckedBooleanValueCountSource model) : List (List RepeatableLevel) :=
+  (source.first :: source.rest).map fun
+    | .field _ => []
+    | .star operand => operand.source.bindingScope
+    | .group operand => operand.source.bindingScope
+
+/-- Refuse an operand that reads per row. Each scope lists the repeatable levels one operand leaves
+    for its evaluation to bind, and this arm's target repeats at none, so the first nonempty scope is
+    refused and its outermost level alone decides the class. A repeatable declaring group binding
+    that level derives an iteration the target cannot lie inside; a level nothing binds draws the
+    index class when its group is index-keyed and the missing-star class otherwise. Each arm calls
+    this as soon as its operands resolve, because the Kernel answers the containment class ahead of
+    the scale comparison and of target self-reference
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+def FlatModel.requireOperandLevelsBound (model : FlatModel)
+    (declaringGroup : GroupPath) (scopes : List (List RepeatableLevel)) :
+    Except NumericComputationElabError Unit :=
+  match scopes.findSome? List.head? with
+  | none => pure ()
+  | some level =>
+      if (model.repeatableScopeForGroupPath declaringGroup).contains level then
+        throw (.iterationOutsideDeclaringGroup level)
+      else
+        throw (.unboundOperandLevel level (model.repeatableGroups.any fun group =>
+          group.level == level && group.indexField.isSome))
+
 private def FlatModel.resolveNumericComputationExpression
     (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
@@ -389,6 +447,7 @@ private def FlatModel.resolveNumericComputationExpression
         let checked ←
           (elaborateNumberEntitySource model declaringGroup source).mapError
             NumericComputationElabError.aggregate
+        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
         if checked.referencesField target then
           throw (.targetSelfReference target)
         pure (.firstFilled checked)
@@ -396,6 +455,7 @@ private def FlatModel.resolveNumericComputationExpression
         let checked ←
           (elaborateNumberEntitySource model declaringGroup source).mapError
             NumericComputationElabError.aggregate
+        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
         if checked.referencesField target then
           throw (.targetSelfReference target)
         pure (.valueCount expected checked)
@@ -403,6 +463,7 @@ private def FlatModel.resolveNumericComputationExpression
         let checked ←
           (elaborateTokenValueCountSource model declaringGroup expected source).mapError
             NumericComputationElabError.tokenValueCount
+        model.requireOperandLevelsBound declaringGroup checked.source.bindingScopes
         if checked.referencesField target then
           throw (.targetSelfReference target)
         pure (.tokenValueCount checked)
@@ -410,11 +471,14 @@ private def FlatModel.resolveNumericComputationExpression
         let checked ←
           (elaborateBooleanValueCountSource model declaringGroup expected source).mapError
             NumericComputationElabError.booleanValueCount
+        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
         pure (.booleanValueCount checked)
     | .sumOfProducts source => do
         let checked ←
           (elaborateNumericProductAggregate model declaringGroup source).mapError
             NumericComputationElabError.productAggregate
+        model.requireOperandLevelsBound declaringGroup
+          [checked.left.source.bindingScope, checked.right.source.bindingScope]
         if checked.left.field.id == target ||
             checked.right.field.id == target then
           throw (.targetSelfReference target)
@@ -555,6 +619,7 @@ private def FlatModel.resolveNumericComputationExpression
         let checked ←
           (elaborateNumberEntitySource model declaringGroup source).mapError
             NumericComputationElabError.aggregate
+        model.requireOperandLevelsBound declaringGroup checked.bindingScopes
         if checked.referencesField target then
           throw (.targetSelfReference target)
         pure (.numeric (.aggregate op checked))
@@ -595,6 +660,7 @@ private def FlatModel.resolveNumericComputationExpression
                   -- ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)).
                   | .ok (.terminalPresence source) =>
                       pure (CheckedGroupCountOperand.starredPresence source)
+            model.requireOperandLevelsBound declaringGroup (checked.map (·.bindingScope))
             -- Containment reaches every member whichever side carries the star, and it runs
             -- **before** rootness: a root beside its own descendant draws the overlap class, and
             -- the root class is what remains for a root beside a disjoint operand. Both gates and

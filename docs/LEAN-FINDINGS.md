@@ -2519,3 +2519,11 @@ The [nested invalid-descendant checkpoint](sources/group-and-iteration-probes.md
 **A computation's implicit message is a validation rule, so its presence follows the validation arm even where the value follows the computation arm.** The computation counts a malformed-only group while validation leaves it undecided, and the growth model had typed that from the computation arm's content. [§6](../spec/09-computations.md#6-the-implicit-validation-rule-precisely) already implied the absence; the wrong reading had hidden it since 2026-08-30.
 
 Related: [[LF189]] on checking every channel a case locks, [[LF116]] on reusing a mechanism across a boundary.
+
+## LF191 — a checkpoint that retains a row's class but not its spelling lets a case substitute one the Kernel refuses earlier, so an over-admission can stay green inside a correct-looking lock
+
+The group-count duplicate case locked `MVK_DUPLICATE_PARAM2` for `Rows*` beside `Rows/Inner*`. The [static-gate checkpoint](sources/group-list-and-capacity-probes.md#src-group-count-static-gates-both-arms) said "a star beside a star strictly inside it" refuses with that class, and retained the model but no authored spelling. The case wrote the inner star with `Rows` unstarred, which the Kernel refuses `MVK_NO_WILDCARD` ahead of the duplicate gate. The case stayed green only because this project admitted the unbound `Rows`, so it locked a consequence of the very over-admission the [star-binding checkpoint](sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate) closed on 2026-09-24. Re-running both spellings on the retained model took one batch.
+
+**Retain the authored spelling of every static row, not only its class.** A class sentence admits several spellings, and a fixture author picks one without a signal that the others differ. When a gate changes and an old case breaks, ask first whether the case's spelling was the measured one before reading the break as a regression.
+
+Related: [[LF189]] on a case locking a channel its checkpoint never claimed, [[LF116]] on reusing a mechanism across a boundary.

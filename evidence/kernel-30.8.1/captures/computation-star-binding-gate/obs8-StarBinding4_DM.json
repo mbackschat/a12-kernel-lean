@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "76d1e6ff0f191bd742615af978eacfaf594290da34f11f74e4ead3684e7a957a",
+  "observations" : [ {
+    "id" : "i-c-inn",
+    "inputHash" : "d33db1615b2b2e36146932c927f458a6547e4d42c45a4249806ea27c4fa1e022",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "i-c-out",
+    "inputHash" : "dc7f5bc45f790895ef138a17992fcc56a404a1871af2ed82c92debd65443b884",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NO_INDEX" ]
+  }, {
+    "id" : "i-c-none",
+    "inputHash" : "f545685a6e2a94de6b9a9837a5a7fff52765a0153a3f93f8c98e28db72745c1a",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NO_INDEX" ]
+  }, {
+    "id" : "i-c-tb-inn",
+    "inputHash" : "07d8d524f4d3fe1b53a5283937298490b44e1045bbbf47fb26e7ea16a73bc217",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "i-c-tb-rel",
+    "inputHash" : "9b1a29e9cfad90e8be8960a4aa2010e04fe7724eeab991f047f2e041b449c4ad",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "i-v-root-inn",
+    "inputHash" : "46b855a881c3863adeb992758d3b6dfc29d385a89c127ec965487a08df06b2b2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "i-v-root-out",
+    "inputHash" : "153a6b1a270cc42ff60ac35a239cc6d33a4a18464499efdeef892648f4d0d045",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "i-v-bound-inn",
+    "inputHash" : "5cd06903ebfd59326c1c3caa53d5e8a0f24e2f8a850c4a648304339938c37bf3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  } ]
+}

@@ -297,7 +297,6 @@ def FieldEntityShapeElabError.diagnostic? :
   | .resolve error => error.diagnostic?
   | .groupReference error => error.diagnostic?
   | .starredGroup error => error.diagnostic?
-  | .starPath (.iterationBelowWildcard _) => some .noWildcard
   | .starPath error => error.diagnostic?
 
 def firstDuplicateOptionalIdentity? [BEq β] (identity? : α → Option β) :

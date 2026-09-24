@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Batches/BFree",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(Seal2, /Probe/Out)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

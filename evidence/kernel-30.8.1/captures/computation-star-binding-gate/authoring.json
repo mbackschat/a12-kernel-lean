@@ -1,0 +1,95 @@
+[
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Batches",
+  "repeatable": 2
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Batches",
+  "name": "Boxes",
+  "repeatable": 2
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Batches/Boxes",
+  "name": "BSeal"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Out"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe",
+  "name": "W",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "Free",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches",
+  "name": "BW",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches",
+  "name": "BFree",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Boxes",
+  "name": "Amt",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Boxes",
+  "name": "Name",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Boxes/BSeal",
+  "name": "Seal",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ }
+]

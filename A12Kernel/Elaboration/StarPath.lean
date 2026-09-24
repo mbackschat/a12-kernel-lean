@@ -318,13 +318,19 @@ inductive StarPathElabError where
   deriving Repr, DecidableEq
 
 /-- The classes a starred path owns whichever carrier reads it: the resolver's name-failure classes,
-and a star landing on anything but a repeatable group, which pre-empts every slot's own wildcard gate.
-The two missing-star arms stay with the carrier, because the class a missing star draws is the
-slot's and differs between carriers
-([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)). -/
+and a star landing on anything but a repeatable group, which pre-empts every slot's own wildcard gate
+([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)).
+
+A repeatable level left unstarred **below** the first star is `noWildcard` on every carrier and both
+arms, whatever binds the level and whether or not its group is index-keyed. The Kernel judges each
+level while it reads the reference ([`kf440`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf440)),
+so this class also answers ahead of a carrier's own star bar, as `AllGroupsFilled` shows
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
+A missing *first* star stays with the carrier, because the class it draws is the slot's. -/
 def StarPathElabError.diagnostic? : StarPathElabError → Option KernelStaticDiagnostic
   | .resolve error => error.diagnostic?
   | .wildcardOnNonrepeatable _ => some .invalidWildcard
+  | .iterationBelowWildcard _ => some .noWildcard
   | _ => none
 
 /-- One field declaration and general star plan certified against the same validated model. -/

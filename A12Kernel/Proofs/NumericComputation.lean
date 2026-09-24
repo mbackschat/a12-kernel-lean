@@ -17,6 +17,26 @@ theorem numericComputation_groupCount_duplicateParam1_iff
       some .duplicateParam1 ↔ left = right := by
   simp [NumericComputationElabError.groupCountDiagnostic?]
 
+/-- The fixed-target arm admits exactly the operands that leave no repeatable level to bind. Which
+    of the three classes a refusal draws is decided by the outermost level alone, so the law is
+    stated over admission and not over the class. -/
+theorem requireOperandLevelsBound_ok_iff (model : FlatModel) (declaringGroup : GroupPath)
+    (scopes : List (List RepeatableLevel)) :
+    model.requireOperandLevelsBound declaringGroup scopes = .ok () ↔
+      scopes.all (·.isEmpty) = true := by
+  unfold FlatModel.requireOperandLevelsBound
+  cases h : scopes.findSome? List.head? with
+  | none =>
+      simp only [List.findSome?_eq_none_iff] at h
+      simp only [List.all_eq_true, List.isEmpty_iff]
+      exact ⟨fun _ s hs => List.head?_eq_none_iff.mp (h s hs), fun _ => rfl⟩
+  | some level =>
+      obtain ⟨s, hs, hhead⟩ := List.exists_of_findSome?_eq_some h
+      simp only [List.all_eq_true, List.isEmpty_iff]
+      constructor
+      · intro hok; split at hok <;> cases hok
+      · intro hall; have := hall s hs; subst this; simp at hhead
+
 /-- A resolved computation aggregate atom consumes the same aggregate fold under computation-phase observation, then erases only validation fillability. -/
 theorem numericComputationAggregate_evaluatesThroughSharedFold
     (context : ScalarComputationContext) (op : NumericAggregateOp)

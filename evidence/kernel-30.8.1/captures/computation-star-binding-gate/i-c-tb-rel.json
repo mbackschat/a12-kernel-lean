@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Batches/BFree",
+ "alternatives": [
+  {
+   "operation": "[Boxes/Amt] + 1"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

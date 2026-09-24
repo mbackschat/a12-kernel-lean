@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/Free",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledFields(/Probe/Batches*/Boxes/Amt)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

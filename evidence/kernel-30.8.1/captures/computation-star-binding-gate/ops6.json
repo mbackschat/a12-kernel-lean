@@ -1,0 +1,38 @@
+[
+ {
+  "id": "g-lone-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g-lone-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g-lone-tb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g-lone-tb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g-scale-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g-scale-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g-self-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g-self-hb.json",
+   "--dry-run"
+  ]
+ }
+]

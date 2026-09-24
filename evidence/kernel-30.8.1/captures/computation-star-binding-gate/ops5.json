@@ -1,0 +1,65 @@
+[
+ {
+  "id": "f-fld-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "f-fld-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "f-fld-root",
+  "verb": "computation",
+  "args": [
+   "add",
+   "f-fld-root.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "f-fld-deep-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "f-fld-deep-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "f-fld-partial",
+  "verb": "computation",
+  "args": [
+   "add",
+   "f-fld-partial.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "f-star-deep-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "f-star-deep-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "f-fx-deep-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "f-fx-deep-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "f-fx-partial",
+  "verb": "computation",
+  "args": [
+   "add",
+   "f-fx-partial.json",
+   "--dry-run"
+  ]
+ }
+]

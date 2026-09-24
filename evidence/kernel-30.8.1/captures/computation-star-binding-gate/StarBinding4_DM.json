@@ -1,0 +1,231 @@
+{
+  "header" : {
+    "id" : "StarBinding4_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "StarBinding4_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Batches",
+            "name" : "Batches",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Batches/Boxes",
+                "name" : "Boxes",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Probe/Batches/Boxes/BSeal",
+                    "name" : "BSeal",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Probe/Batches/Boxes/BSeal/Seal",
+                        "name" : "Seal",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Boxes/Amt",
+                    "name" : "Amt",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Boxes/Name",
+                    "name" : "Name",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Boxes/Flag",
+                    "name" : "Flag",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Boxes/Amt2",
+                    "name" : "Amt2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/BW",
+                "name" : "BW",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/BFree",
+                "name" : "BFree",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/BFreeS",
+                "name" : "BFreeS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Batches/Seal2",
+                "name" : "Seal2",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Seal2/S2",
+                    "name" : "S2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Out",
+            "name" : "Out",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Out/Free",
+                "name" : "Free",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/FreeS",
+                "name" : "FreeS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/WS",
+            "name" : "WS",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

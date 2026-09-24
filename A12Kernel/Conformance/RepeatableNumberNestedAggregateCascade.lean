@@ -218,24 +218,26 @@ example :
             .poison .computedDependency)]) := by
   native_decide
 
-/- A root aggregate cannot leave an outer repeatable level bound by a surrounding environment that does not exist. -/
+/- A root aggregate cannot leave an outer repeatable level bound by a surrounding environment that
+   does not exist. The fixed target's operand gate refuses it with the missing-star class the Kernel
+   reports ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 example :
     (match checkRepeatableNumberAggregateCascade model
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (leafOnlyNestedStar "Helper") .maximum with
-      | .error (.aggregateBindingRequired levels) => levels == [10]
+      | .error (.aggregate error) => error == .unboundOperandLevel 10 false
       | _ => false) = true ∧
     (match checkRepeatableNumberMultiStarAggregateCascade model
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (nestedStar "Helper")
           (leafOnlyNestedStar "Price") [] .maximum with
-      | .error (.aggregateBindingRequired levels) => levels == [10]
+      | .error (.aggregate error) => error == .unboundOperandLevel 10 false
       | _ => false) = true ∧
     (match checkRepeatableNumberMixedAggregateCascade model
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (leafOnlyNestedStar "Price")
           (nestedStar "Helper") priceBelowHelper .filteredThenPlain .maximum with
-      | .error (.aggregateBindingRequired levels) => levels == [10]
+      | .error (.aggregate error) => error == .unboundOperandLevel 10 false
       | _ => false) = true := by
   native_decide
 

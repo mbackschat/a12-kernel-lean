@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Batches/BFreeS",
+ "alternatives": [
+  {
+   "operation": "FirstFilledValue(/Probe/Batches*/Boxes/Name, /Probe/WS)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

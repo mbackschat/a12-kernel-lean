@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Batches/BFree",
+ "alternatives": [
+  {
+   "operation": "SumOfProducts(/Probe/Batches*/Boxes/Amt, /Probe/Batches*/Boxes/Amt2)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

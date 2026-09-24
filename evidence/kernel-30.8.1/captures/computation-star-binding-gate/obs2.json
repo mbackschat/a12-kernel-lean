@@ -1,0 +1,139 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "935844f9f8a395b7ef432097484e96f360835505ccd302e9b61680f456870687",
+  "observations" : [ {
+    "id" : "d-bvc-ctl",
+    "inputHash" : "443bb907ba9799eaae731b0059c1af8a1d22f8bea022baa8ec270ce9c4af96ca",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d-sop-ctl",
+    "inputHash" : "8516f2826a8792a1770e75285a41d168f6de3893adcad2984f997649b4c38734",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ]
+  }, {
+    "id" : "d-ffs-ctl",
+    "inputHash" : "3af73319c6521ac199e019e3259d0014bc60997946907801f8268def85599908",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d-tb-sop-ctl",
+    "inputHash" : "c0310c876745c63329e0e9a38d6b5fab08040a38ba673553ca825798414dd91d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ]
+  }, {
+    "id" : "d-tb-ffs-ctl",
+    "inputHash" : "cb3de91fb0e4b80e68a8d733b957f8667271851653a467dbffe3b4e2fb9ed472",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d-bvc-out",
+    "inputHash" : "4fd022fc6c89ba162b942c54d30fc7f03739024b6a707cc0490717f6badf6999",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-sop-out",
+    "inputHash" : "7916a57a4accce7caec760dfc1f08258e06aaa4e406a2324a881bc45e62b4d16",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-ffs-out",
+    "inputHash" : "abd95cb1fc3aecf10bf4d09c899da3f760d711dcc701d7d2e1fdce015be340e2",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-tb-sop-out",
+    "inputHash" : "b8f79e65960e1c05f29b9175db59eb61fae1b5eb1377c9f3af616067e1bdc67a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d-tb-ffs-out",
+    "inputHash" : "049b81d892c2afe8f24170ba9424c7c762fb31a0cefb7ad1baf76ca7f71aeb1f",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d-bvc-inn",
+    "inputHash" : "ab8153f817884e9a83f17ed5ee61052bb7bf3edd77a3213740c21c905cc5912f",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-sop-inn",
+    "inputHash" : "961073800cb0adec9f1c14d867f6a6d350cc3c8968401fc37f73c9cea4bd7928",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-ffs-inn",
+    "inputHash" : "34c536b1cf10cdbc74dc790a90c581bb7fe0a150ef280e83fab22fed0e6480ef",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-tb-sop-inn",
+    "inputHash" : "046aea93e4c176b092c3eea63d77214628c90f99d268feba996345a82afe7e6b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-tb-ffs-inn",
+    "inputHash" : "4ea8fc87aad7d95c1c209761c2a4dd712654bd4e94244b35a64ba08fc429ff6f",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "d-hb-sop-rel",
+    "inputHash" : "f16be481b53f48b1ae3613f162165e473b5b48c95186bea7a9f5487879e88fe9",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "d-hb-ffs-rel",
+    "inputHash" : "3438d03487ca02d8a50088c501dff6b6d21ffcd075e5b983e5f887dbdc67e264",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "d-hb-bvc-rel",
+    "inputHash" : "fe8d7b881ea7309b2bb704ffea26b4b6a0f4edc59c528648332ffb7031829a5a",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "d-hb-nvf-rel",
+    "inputHash" : "ce6c7076b8c2e7f360ad59f47f462cc073b3be4db35d562d7a02e5cd41bc7da2",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "d-hb-ffv-rel",
+    "inputHash" : "1297b11b4a3300472a7c0670d2033ab707dbcb0969da27c1b1d3363ed344248d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "d-hb-max-rel",
+    "inputHash" : "6e3de28389742820e097773344ca2cc0d44f9bc53f71acda8b956c663f75ab7a",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "d-hb-nff-rel",
+    "inputHash" : "943e30ad18e6aceee1fc5bf4a379994acddf568b4dd92e2bd31cddcc83625f11",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  } ]
+}

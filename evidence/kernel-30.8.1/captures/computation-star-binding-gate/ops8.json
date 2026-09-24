@@ -1,0 +1,92 @@
+[
+ {
+  "id": "i-c-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "i-c-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "i-c-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "i-c-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "i-c-none",
+  "verb": "computation",
+  "args": [
+   "add",
+   "i-c-none.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "i-c-tb-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "i-c-tb-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "i-c-tb-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "i-c-tb-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "i-v-root-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And Sum(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "i-v-root-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And Sum(/Probe/Batches/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "i-v-bound-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And Sum(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ }
+]

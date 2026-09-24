@@ -1,0 +1,14 @@
+{
+ "computedField": "/Probe/Out/Free",
+ "alternatives": [
+  {
+   "operation": "NumberOfValueInFields(True In /Probe/Batches/Boxes*/Flag)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

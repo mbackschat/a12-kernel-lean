@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.NumericValidation.Resolution
 import A12Kernel.Elaboration.NumericValidation.Evaluation
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.ValidationRule
 
 /-! # A fixed group below a starred level as a `NumberOfFilledGroups` operand
 
@@ -128,6 +129,35 @@ example :
           { group := 20, path := [1, 2] }]
         [(boxCode, [1, 1]), (boxCode, [1, 2])] =
       some (2, true) := by
+  native_decide
+
+/-- `nestedModel` plus a field of `Batches` itself, the error field a rule bound to a batch row names. -/
+private def boundModel : FlatModel :=
+  { nestedModel with fields := nestedModel.fields ++ [lot] }
+
+private def outerUnstarredSeals : SurfaceGroupCountOperand :=
+  .starred { base := .absolute
+             groups := [{ name := "Item" }, { name := "Batches" },
+               { name := "Boxes", starred := true }, { name := "Seal" }] }
+
+private def iterationScopeOf (operand : SurfaceGroupCountOperand) :
+    Option (Option (List RepeatableLevel)) := do
+  let comparison ← (elaborateMixedFilledGroupCountComparison boundModel ["Item", "Batches"]
+    [operand] .greater 0).toOption
+  let condition ← (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+  condition.core.ordinaryIterationScope.toOption
+
+/- `Batches/Boxes*/Seal` reads its batch per row, so the rule iterates `Batches` exactly as every
+   other star with an unstarred level above it makes it, while starring the batch too leaves the rule
+   without an iteration. Rule assembly then admits an error field inside `Batches` and refuses one
+   outside it. The Kernel admits the first rule from a batch row and draws `MVK_NO_WILDCARD` from the
+   root ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate));
+   this project's refusal there carries no class yet. -/
+example :
+    iterationScopeOf outerUnstarredSeals = some (some [10]) ∧
+    iterationScopeOf boxSeals = some none ∧
+    ruleErrorScopeCompatible true lot (some [10]) = true ∧
+    ruleErrorScopeCompatible true title (some [10]) = false := by
   native_decide
 
 end A12Kernel.Conformance.AncestorStarredGroupCount

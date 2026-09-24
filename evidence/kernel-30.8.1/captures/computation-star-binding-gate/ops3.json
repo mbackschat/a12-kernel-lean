@@ -1,0 +1,77 @@
+[
+ {
+  "id": "g-alo-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And AtLeastOneGroupFilled(/Probe/Batches*/Boxes/BSeal)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-alo-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And AtLeastOneGroupFilled(/Probe/Batches*/Boxes*/BSeal)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-all-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And AllGroupsFilled(/Probe/Batches*/Boxes/BSeal, /Probe/Out)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-all-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And AllGroupsFilled(/Probe/Batches*/Boxes*/BSeal, /Probe/Out)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "g-none-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NoGroupFilled(/Probe/Batches*/Boxes/BSeal)",
+   "--code",
+   "E1"
+  ]
+ }
+]

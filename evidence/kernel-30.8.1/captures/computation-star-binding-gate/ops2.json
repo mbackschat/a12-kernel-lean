@@ -1,0 +1,200 @@
+[
+ {
+  "id": "d-bvc-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-bvc-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-sop-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-sop-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-ffs-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-ffs-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-tb-sop-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-tb-sop-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-tb-ffs-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-tb-ffs-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-bvc-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-bvc-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-sop-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-sop-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-ffs-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-ffs-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-tb-sop-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-tb-sop-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-tb-ffs-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-tb-ffs-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-bvc-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-bvc-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-sop-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-sop-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-ffs-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-ffs-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-tb-sop-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-tb-sop-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-tb-ffs-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-tb-ffs-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-hb-sop-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-hb-sop-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-hb-ffs-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-hb-ffs-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-hb-bvc-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-hb-bvc-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-hb-nvf-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-hb-nvf-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-hb-ffv-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-hb-ffv-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-hb-max-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-hb-max-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "d-hb-nff-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "d-hb-nff-rel.json",
+   "--dry-run"
+  ]
+ }
+]

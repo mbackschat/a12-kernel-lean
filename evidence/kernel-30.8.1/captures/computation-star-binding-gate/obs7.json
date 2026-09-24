@@ -1,0 +1,47 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "76d1e6ff0f191bd742615af978eacfaf594290da34f11f74e4ead3684e7a957a",
+  "observations" : [ {
+    "id" : "h-star-out",
+    "inputHash" : "dc7f5bc45f790895ef138a17992fcc56a404a1871af2ed82c92debd65443b884",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NO_INDEX" ]
+  }, {
+    "id" : "h-star-ctl",
+    "inputHash" : "ec89b23c3dc2bcc0b183047992ce04d038744c7a431ae6b3847d26f6693a2f96",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "h-star-hb",
+    "inputHash" : "8513ba97eeeff2e9f44c80bd80fc92087dca09d8e73ce1e6c42493a3753ce9c4",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "h-fld-root",
+    "inputHash" : "2529beb995e433d8aaafb9bebc7104cca45899467489a91280ef02929283f828",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NO_INDEX" ]
+  }, {
+    "id" : "h-fx-root",
+    "inputHash" : "5f6895e009a6c9c2584775fc6231e11f185a291ec1811a7927f5d95acdcddf8e",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NO_INDEX" ]
+  }, {
+    "id" : "h-nfg-out",
+    "inputHash" : "ef310bb6fcc41626c17ae568cb91a64450460f3030a24bdb6d79cba739058543",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NO_INDEX" ]
+  } ]
+}

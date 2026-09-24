@@ -1,0 +1,875 @@
+[
+ {
+  "id": "c-sum-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-sum-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-max-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-max-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-ffv-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-ffv-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nff-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nff-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nvf-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nvf-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nfg-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nfg-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-sum-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-sum-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-max-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-max-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-ffv-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-ffv-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nff-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nff-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nvf-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nvf-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nfg-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nfg-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-sum-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-sum-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-max-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-max-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-ffv-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-ffv-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nff-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nff-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nvf-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nvf-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nfg-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nfg-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-sum-none",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-sum-none.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-max-none",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-max-none.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-ffv-none",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-ffv-none.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nff-none",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nff-none.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nvf-none",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nvf-none.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-nfg-none",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-nfg-none.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-hb-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-hb-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-hb-abs",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-hb-abs.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-hb-nfg-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-hb-nfg-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-sum-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-sum-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-nfg-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-nfg-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-ffv-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-ffv-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-sum-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-sum-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-nfg-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-nfg-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-ffv-out",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-ffv-out.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-sum-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-sum-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-nfg-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-nfg-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-ffv-inn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-ffv-inn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c-tb-sum-rel",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c-tb-sum-rel.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "v-root-sum-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And Sum(/Probe/Batches*/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-sum-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And Sum(/Probe/Batches*/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-max-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And MaxValue(/Probe/Batches*/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-max-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And MaxValue(/Probe/Batches*/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-ffv-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And FirstFilledValue(/Probe/Batches*/Boxes*/Amt, /Probe/W) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-ffv-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And FirstFilledValue(/Probe/Batches*/Boxes*/Amt, /Probe/W) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nff-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfFilledFields(/Probe/Batches*/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nff-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledFields(/Probe/Batches*/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nvf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfValueInFields(\"x\" In /Probe/Batches*/Boxes*/Name) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nvf-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfValueInFields(\"x\" In /Probe/Batches*/Boxes*/Name) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nfg-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfFilledGroups(/Probe/Batches*/Boxes*/BSeal) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nfg-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledGroups(/Probe/Batches*/Boxes*/BSeal) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-sum-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And Sum(/Probe/Batches/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-sum-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And Sum(/Probe/Batches/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-max-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And MaxValue(/Probe/Batches/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-max-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And MaxValue(/Probe/Batches/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-ffv-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And FirstFilledValue(/Probe/Batches/Boxes*/Amt, /Probe/W) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-ffv-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And FirstFilledValue(/Probe/Batches/Boxes*/Amt, /Probe/W) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nff-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfFilledFields(/Probe/Batches/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nff-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledFields(/Probe/Batches/Boxes*/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nvf-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfValueInFields(\"x\" In /Probe/Batches/Boxes*/Name) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nvf-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfValueInFields(\"x\" In /Probe/Batches/Boxes*/Name) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nfg-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nfg-out",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-sum-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And Sum(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-sum-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And Sum(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-max-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And MaxValue(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-max-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And MaxValue(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-ffv-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And FirstFilledValue(/Probe/Batches*/Boxes/Amt, /Probe/W) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-ffv-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And FirstFilledValue(/Probe/Batches*/Boxes/Amt, /Probe/W) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nff-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfFilledFields(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nff-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledFields(/Probe/Batches*/Boxes/Amt) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nvf-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfValueInFields(\"x\" In /Probe/Batches*/Boxes/Name) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nvf-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfValueInFields(\"x\" In /Probe/Batches*/Boxes/Name) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-root-nfg-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfFilledGroups(/Probe/Batches*/Boxes/BSeal) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "v-bound-nfg-inn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledGroups(/Probe/Batches*/Boxes/BSeal) > 0",
+   "--code",
+   "E1"
+  ]
+ }
+]

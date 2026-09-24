@@ -1,0 +1,92 @@
+[
+ {
+  "id": "e-fx-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e-fx-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e-fx-tb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e-fx-tb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e-fx-root",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e-fx-root.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e-mix-hb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e-mix-hb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e-mix-tb",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e-mix-tb.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e-v-fx-bound",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledGroups(Seal2, /Probe/Out) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "e-v-mix-bound",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/Batches/BW",
+   "--group",
+   "/Probe/Batches",
+   "--condition",
+   "FieldFilled(BW) And NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal, /Probe/Out) > 0",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "e-v-mix-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe/W",
+   "--group",
+   "/Probe",
+   "--condition",
+   "FieldFilled(W) And NumberOfFilledGroups(/Probe/Batches/Boxes*/BSeal, /Probe/Out) > 0",
+   "--code",
+   "E1"
+  ]
+ }
+]
