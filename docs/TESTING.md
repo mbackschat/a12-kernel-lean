@@ -270,6 +270,8 @@ A kernel **runtime** question is checked against the maintained `:adapter:kernel
 
 Use it demand-driven, one coherent family at a time, exactly like every other evidence route: an internally closed capsule may still land `external evidence pending`. The route has been exercised from this repository; [`SOURCES.md`](SOURCES.md) owns each family checkpoint and its exact hashes. Every further use must choose a family whose observation shape the artifact plainly carries and include a negative control in the same request.
 
+**Seed every computed target and put the nearest settled form beside the new one in the first run.** A target seeded to a value no document reaches carries both its computed value and its implicit message type in one artifact, where an unseeded target carries the value alone; a settled twin in the same model, such as a fixed group beside a below-star one, decides a form-specific reading in-run instead of across two captures that also differ in model. Tabulate messages by `field` before reading a target's type ([`LF190`](LEAN-FINDINGS.md)). The below-star group-count capsule of 2026-09-24 spent three runs where one run so authored would have answered.
+
 ### Five measured throughput rules — apply all five to every sweep
 
 **The instrument is not the bottleneck and never has been.** A `rule check` row costs about 0.12 seconds,
