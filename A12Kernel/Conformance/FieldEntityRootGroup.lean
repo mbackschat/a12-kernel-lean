@@ -16,9 +16,10 @@ value-list quantifier's root rows:
 * only a model with a **second** root can hold a root beside something not under it, and there the
   root gate answers ahead of the carrier's own kind gates.
 
-The fixture therefore carries three roots: `Item` is mixed, `Extra` holds a single String, and
+The fixture therefore carries four roots: `Item` is mixed, `Extra` holds a single String, and
 `Totals` holds only Numbers, so a missing gate shows up as an **admitted** list on the last two
-rather than as some other refusal. `Item/Lapses` is an empty repeatable group, the one unreadable
+rather than as some other refusal, and `Ledger` holds only a Date, which the value list's kind gate
+refuses. `Item/Lapses` is an empty repeatable group, the one unreadable
 operand this representation can build, and the last section locks that an operand's own read
 refusal precedes every list gate here, the root gate included.
 -/
@@ -42,7 +43,9 @@ private def rootsModel : FlatModel :=
       { id := 5, groupPath := ["Totals"], name := "Net",
         policy := { kind := .number unsigned } },
       { id := 6, groupPath := ["Totals"], name := "Gross",
-        policy := { kind := .number unsigned } }]
+        policy := { kind := .number unsigned } },
+      { id := 7, groupPath := ["Ledger"], name := "Booked",
+        policy := { kind := .temporal .date TemporalComponents.fullDate } }]
     repeatableGroups := [{ level := 10, path := ["Item", "Lapses"], repeatability := some 3 }] }
 
 private def group (groups : GroupPath) : SurfaceFieldEntityOperand :=
@@ -141,12 +144,13 @@ example :
 /- The value-list quantifier reaches the same gate through the same shape, with a root alone as well
    as beside another root's field, where two direct fields from different roots are admitted
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). -/
-private def valueList (operands : List SurfaceFieldEntityOperand) : Option Decision :=
+private def valueList (operands : List SurfaceFieldEntityOperand)
+    (quantifier : ValueListQuantifier := .atLeastOne) : Option Decision :=
   match operands with
   | [] => none
   | first :: rest =>
       match elaborateTokenEntityStringLiteralValueListSource rootsModel ["Item"]
-          { quantifier := .atLeastOne, fields := { first, rest }, values := ["x"] } with
+          { quantifier, fields := { first, rest }, values := ["x"] } with
       | .ok _ => some .admitted
       | .error error =>
           some (match error.diagnostic? with
@@ -157,6 +161,49 @@ example :
     valueList [group ["Extra"]] = some (.mapped .rootGroupReferenced) ∧
     valueList [group ["Extra"], field ["Item"] "Title"] = some (.mapped .rootGroupReferenced) ∧
     valueList [field ["Extra"] "Code", field ["Item"] "Title"] = some .admitted := by
+  native_decide
+
+private def quantifiers : List ValueListQuantifier := [.atLeastOne, .no, .notAll]
+
+/- The peer's value-list rows, read at a12-dmkits `40f6d53c4`
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-dispositions)). All three quantifiers share
+   the gate and its order: the duplicate scan answers ahead of it, and it answers ahead of the kind
+   gate, where `Ledger` draws the root class and its Date alone the kind class. -/
+example :
+    quantifiers.all (fun quantifier =>
+      valueList [group ["Extra"]] quantifier == some (.mapped .rootGroupReferenced) &&
+      valueList [group ["Extra"], field ["Item"] "Title"] quantifier ==
+        some (.mapped .rootGroupReferenced) &&
+      valueList [group ["Item"], field ["Item"] "Title"] quantifier ==
+        some (.mapped .duplicateParam2) &&
+      valueList [group ["Ledger"]] quantifier == some (.mapped .rootGroupReferenced) &&
+      valueList [field ["Ledger"] "Booked"] quantifier ==
+        some (.mapped .onlyStringEnumNumberAllowed)) = true := by
+  native_decide
+
+private def entityValueList (fields values : SurfaceFieldEntityOperand) : Option Decision :=
+  match elaborateTokenEntityValueListSource rootsModel ["Item"]
+      { quantifier := .atLeastOne, fields := { first := fields, rest := [] },
+        values := { first := values, rest := [] } } with
+  | .ok _ => some .admitted
+  | .error error =>
+      some (match error.diagnostic? with
+        | some diagnostic => .mapped diagnostic
+        | none => .rejectedUnmapped)
+
+/- In the field-read spelling a root on either side draws the root class, and so does a root across
+   the `In` from its own field, which one list would report as the nested duplicate. Two fields from
+   different roots are the admitted control. -/
+example :
+    entityValueList (group ["Extra"]) (field ["Item"] "Title") =
+      some (.mapped .rootGroupReferenced) ∧
+    entityValueList (field ["Item"] "Title") (group ["Extra"]) =
+      some (.mapped .rootGroupReferenced) ∧
+    entityValueList (group ["Item"]) (field ["Item"] "Title") =
+      some (.mapped .rootGroupReferenced) ∧
+    entityValueList (field ["Item"] "Title") (group ["Item"]) =
+      some (.mapped .rootGroupReferenced) ∧
+    entityValueList (field ["Extra"] "Code") (field ["Item"] "Title") = some .admitted := by
   native_decide
 
 /- A field name that does not resolve is the shared resolver's refusal carried through the same

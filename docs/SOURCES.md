@@ -279,6 +279,21 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24b-dispositions"></a>
+### Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling
+
+a12-dmkits revision `40f6d53c4ded07502f378325c202a0ff777b8d37` on `main`, confirmed an ancestor of that checkout's `main` when read. The letter is the peer's `-2026-09-24b`, frozen as sent in the user's exchange directory with SHA-256 `b8927d0ba4ed48e6f2dabcaa95afef185ea352822816f267f96493f98652ea2f`. Every lock it names was resolved by `git ls-tree` at that revision, and the ones below were read there. Not run here. Inbound from an already committed and reviewed revision, so no outbound entry follows.
+
+**Dispositions.** [`SPEC-2026-09-23-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-23-01), [`SPEC-2026-09-24-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-24-01) and [`SPEC-2026-09-24-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-24-02) are accepted, each on the peer's own fixture; the ledger holds each receipt.
+
+**Root gate on the value list.** `EntityListRootGateCarrierLawsTest`, from the Kernel's `checkConsistency` on a rule condition and on a computation. On all three value-list quantifiers a root alone and a root beside another root's field draw `MVK_ROOT_GROUP_REFERENCED`, and a root beside its own field draws `MVK_DUPLICATE_PARAM2`. The root gate answers ahead of the kind gate: a root holding only a Date draws the root class where the Date alone draws `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED`. In the field-read spelling a root on either side of the `In` draws the root class, and so does a root across the `In` from its own field, while a fixed group on either side of a sole field is admitted. A String-target `FirstFilledValue` computation draws the same five classes as the literal list.
+
+**Rule-arm duplicates.** `GroupCountScopeOperandLawsTest.theKernelTakesAnyGroupEntityAsAnOperand`: on a rule `Batches*/Seal, Batches*/Seal` is admitted as a `NumberOfFilledGroups` operand list, beside `Grading, Grading`, which draws `MVK_DUPLICATE_PARAM1`.
+
+**Lean.** [`Conformance/FieldEntityRootGroup.lean`](../A12Kernel/Conformance/FieldEntityRootGroup.lean) replays the value-list rows on a four-root fixture. Replaying the admitted field-read controls exposed that the entity-valued elaborator still applied the entity-list arity gate to each side and refused the sole field this project's own [checkpoint](sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity) measured admitted, although the gap row had been closed on that measurement. Both sides now admit a sole slot, and a sole category projection takes that rule by assumption.
+
+The letter's §3 and §5–§7 are not adopted by this record.
+
 <a id="inbound-2026-09-24-ancestor-starred-group-count"></a>
 ### Reviewed 2026-09-24 ancestor-starred group-count handback — a fixed group below a starred level is a sole `NumberOfFilledGroups` operand, and it counts filled instances only
 

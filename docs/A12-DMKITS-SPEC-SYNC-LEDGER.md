@@ -53,7 +53,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-24-02"></a>
 ### `SPEC-2026-09-24-02` — `NumberOfFilledGroups` counts a fixed group below a star on the computation arm, and a computation reading a malformed-only operand group carries no implicit message
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `40f6d53c4ded07502f378325c202a0ff777b8d37` ([inbound](SOURCES.md#inbound-2026-09-24b-dispositions)). Confirmed on the peer's own fixture by `AncestorStarredGroupCountComputationDiffTest` on both codegen strategies, the undecided instance beside a filled one included, and for admission by `GroupCountScopeOperandLawsTest.theComputationArmTakesTheBelowStarFormsAndRefusesAnUnstarredLevel`. One fixture difference, disclosed by the peer: its over-limit malformed row uses a malformed Number in place of an unparseable String, with the same outcome. The peer's question about a sentence denying a star form for a non-repeatable terminal is answered by that sentence's removal in `ae333b2b`.
 - `origin`: locally originated. It fills the computation arm your [`kf463`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf463) lists as unmeasured for `Batches*/Seal`, and it adds a message fact neither [`kf217`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf217) nor [`kf219`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf219) carries.
 - `clause`: [`02` the below-star composition bullet, the static gate paragraph, and the compute-arm inversion paragraph](../spec/02-logic-and-formal-errors.md). [`10` the computation-message bullets](../spec/10-validation-and-polarity.md).
 - `delta`: on the computation arm `Batches*/Seal` is admitted alone, beside a fixed group and twice, and `Batches/Seal` draws `MVK_NO_WILDCARD`. It counts one per in-capacity batch whose `Seal` holds a value, a formally invalid value, or an instantiated repeatable-descendant row; an instantiated but empty `Seal` and the third batch of an over-limit document add nothing. The same form twice counts once per position, a disjoint star beside it is admitted, `Batches*/Boxes*/BSeal` counts against the product of both maxima, and unstarring either of its levels draws `MVK_NO_WILDCARD`.
@@ -68,7 +68,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-24-01"></a>
 ### `SPEC-2026-09-24-01` — a group operand and a `RepetitionNotUnique` key draw the resolver's segment classes, not only the entity class
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `40f6d53c4ded07502f378325c202a0ff777b8d37` ([inbound](SOURCES.md#inbound-2026-09-24b-dispositions)). Both deltas confirmed by `GroupOperandAndKeyResolverClassLawsTest`, fixed and starred group operands and the key rows, with further field-path rows the letter's §2 adds.
 - `origin`: locally originated. It narrows two sentences that gave the entity class to every miss. The `spec/02` one was already contradicted by the [group-operand checkpoint](sources/path-resolution-class-probes.md#src-group-operand-resolution-classes) when that landed, and its `sync` row missed the sentence. The `spec/07` one extends your [`kf186`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf186) and [`kf355`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf355) to rows they did not run.
 - `clause`: [`02` group-list quantifiers](../spec/02-logic-and-formal-errors.md): the unknown-group sentence. [`07` §9 `RepetitionNotUnique`](../spec/07-repetition-and-iteration.md): the key-admission sentence.
 - `delta`: under all five group-list quantifiers, `NumberOfFilledGroups` and `GroupFilled`, `/Nope/Info`, a lone `/Nope` and `/Rows` draw `MVK_INVALID_ROOT_GROUP`, and `../Info` draws `MVK_TOO_MANY_PARENT_GROUPS`. Only `/Item/Nope` and a bare `Nope` draw `MVK_INVALID_ENTITY`, so the root class reads an absolute path's first segment and a relative miss is never a root miss.
@@ -82,7 +82,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-23-01"></a>
 ### `SPEC-2026-09-23-01` — `Sum`'s String class reads neither position nor form, and the root gate reaches the value list and a computation
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `40f6d53c4ded07502f378325c202a0ff777b8d37` ([inbound](SOURCES.md#inbound-2026-09-24b-dispositions)). Both deltas confirmed by `FieldListOperandKindLawsTest.sumDemandsANumberDeclarationOfEveryOperand` and `EntityListRootGateCarrierLawsTest`, past this entry's limit on all three value-list quantifiers and the field-read spelling; [`spec/07`](../spec/07-repetition-and-iteration.md) now carries the widened denominator.
 - `origin`: locally originated. It extends two clauses of your [2026-09-23b letter](SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads) and [2026-09-23 letter](SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate) to carriers they did not measure. It corrects neither.
 - `clause`: [`07` §9 entity lists](../spec/07-repetition-and-iteration.md): the `Sum` String sentence and the root-group sentence.
 - `delta`: `Sum(Weight, Title)` draws `MVK_NO_NUMBER`, and so does a starred String alone, leading and following a Number. So `Sum`'s class reads neither position nor operand form, unlike the distinct count's and the extrema's.

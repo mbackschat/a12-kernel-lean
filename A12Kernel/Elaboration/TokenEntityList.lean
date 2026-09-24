@@ -420,7 +420,8 @@ private def certifyProjectedTokenEntityOperand (model : FlatModel)
 /-- Resolve paths before exact-reference duplication and cardinality, then certify kind, category, and `Having` in authored order. This is the sole projection-bearing token entity-list authoring boundary. -/
 def elaborateProjectedTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceProjectedTokenEntitySource) :
+    (authored : SurfaceProjectedTokenEntitySource)
+    (arity : EntityListArity := .manyRequired) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) :=
   match hModel : model.validate with
   | .error error => .error (.shape (.resolve error))
@@ -432,13 +433,13 @@ def elaborateProjectedTokenEntitySource (model : FlatModel)
       match firstDuplicateResolvedProjectedTokenField? (first :: rest) with
       | some field => throw (.shape (.duplicateOperand field))
       | none =>
-          if first.isStar || !rest.isEmpty then
+          if arity.allowsSole || first.isStar || !rest.isEmpty then
             let checkedFirst ←
               certifyProjectedTokenEntityOperand model declaringGroup first
             let checkedRest ← rest.mapM fun operand =>
               certifyProjectedTokenEntityOperand model declaringGroup operand
             assembleTokenEntitySource (by rw [hModel]; rfl)
-              checkedFirst checkedRest
+              checkedFirst checkedRest arity
           else
             throw (.shape .tooFewFields)
 

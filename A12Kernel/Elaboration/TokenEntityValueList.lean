@@ -309,6 +309,19 @@ def diagnostic? : TokenEntityStringLiteralValueListElabError →
 
 end TokenEntityStringLiteralValueListElabError
 
+namespace TokenEntityValueListElabError
+
+/-- Project a side's refusal through that side's own classes. Each side runs the shared shape gates
+    before the cross-side scan, so a root on either side draws the root class, beside its own field
+    across the `In` too, where a single list would report the nested duplicate
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-dispositions)). The two cross-side gates
+    stay unmapped: no class of theirs is adopted here. -/
+def diagnostic? : TokenEntityValueListElabError → Option KernelStaticDiagnostic
+  | .fields error | .values error => error.diagnostic?
+  | .mixedFamily | .duplicateOperand _ => none
+
+end TokenEntityValueListElabError
+
 /-- Join two already-checked token sides without reconstructing declarations or erasing Enumeration projection identity. -/
 def assembleTokenEntityValueListSource
     (quantifier : ValueListQuantifier)
@@ -337,29 +350,36 @@ def assembleTokenEntityValueListSource
         throw .mixedFamily
   | _, _ => throw .mixedFamily
 
-/-- Check both stored-projection entity-list sides, then apply the operation-wide family and exact-reference gates. -/
+/-- Check both stored-projection entity-list sides, then apply the operation-wide family and exact-reference gates.
+
+    Each side admits a sole field: the construct does not share the entity-list arity gate
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/
 def elaborateTokenEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceTokenEntityValueListSource) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
-  let fields ← elaborateTokenEntitySource model declaringGroup authored.fields
+  let fields ← elaborateTokenEntitySource model declaringGroup authored.fields .soleAllowed
     |>.mapError .fields
-  let values ← elaborateTokenEntitySource model declaringGroup authored.values
+  let values ← elaborateTokenEntitySource model declaringGroup authored.values .soleAllowed
     |>.mapError .values
   assembleTokenEntityValueListSource authored.quantifier fields values
 
-/-- Check both projection-bearing token sides through the sole shared entity-list authoring boundary, then apply the operation-wide family and exact-reference gates. -/
+/-- Check both projection-bearing token sides through the sole shared entity-list authoring boundary, then apply the operation-wide family and exact-reference gates.
+
+    A side admits a sole slot as the stored-projection form does. Only a sole direct field is
+    measured; a sole category projection takes the same rule on the assumption that projection does
+    not change the construct's arity, which no row tests. -/
 def elaborateProjectedTokenEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceProjectedTokenEntityValueListSource) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
   let fields ←
-    elaborateProjectedTokenEntitySource model declaringGroup authored.fields
+    elaborateProjectedTokenEntitySource model declaringGroup authored.fields .soleAllowed
       |>.mapError .fields
   let values ←
-    elaborateProjectedTokenEntitySource model declaringGroup authored.values
+    elaborateProjectedTokenEntitySource model declaringGroup authored.values .soleAllowed
       |>.mapError .values
   assembleTokenEntityValueListSource authored.quantifier fields values
 
