@@ -58,7 +58,11 @@ def groupListDiagnostic? :
   -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
   | .starredGroup error => error.diagnostic?
   | .fieldReference error => error.diagnostic?
-  | _ => none
+  -- Named rather than wildcarded, so a new refusal must be classified rather than absorbed. None of
+  -- these is measured as its own class through this projection.
+  | .invalidModel _ | .repeatableFieldRequired _ | .emptyGroupList | .rowGroupMismatch _ _
+  | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique
+  | .incoherentCore => none
 
 end ValidationConditionAssemblyError
 
