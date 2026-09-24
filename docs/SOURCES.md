@@ -279,6 +279,17 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 - [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+<a id="inbound-2026-09-24b-kf463-validation"></a>
+### Reviewed 2026-09-24b `kf463` validation handback — a below-star `Seal` counts by its decided content, a malformed-only one leaves the count unavailable, and the extent is per operand
+
+The same letter and revision as [the dispositions record](#inbound-2026-09-24b-dispositions), its §5a. `AncestorStarredGroupCountDiffTest` was read at that revision: thirteen documents over a `Batches` (4) holding a fixed `Seal` of a String `Code` and a Number `Weight`, beside fixed `Grading` and `Specs` groups and a `Crates` (2), each read by a ladder of `count == n` rules on the Kernel's dynamic Groovy and static Java routes and by the peer's interpreter; `MultiLevelStarredGroupCountDiffTest` carries `Batches` (2) holding `Boxes` (2). Not run here.
+
+**Counts.** On the validation arm `NumberOfFilledGroups(Batches*/Seal)` leaves the count unavailable when one `Seal` holds only a malformed `Weight`, alone and beside a sealed batch, and counts a `Seal` holding a `Code` beside a malformed `Weight`. `Batches*, Grading` counts every instantiated batch, a malformed-only one included, and a malformed-only `Grading` leaves every list naming it unavailable while a `Grading` holding a note beside a malformed grade counts. `Batches*, Crates*` counts a crate holding only a malformed `Tare` in its own row.
+
+**Extent.** One instance per fixed operand plus the product of the declared capacities of each starred operand's levels, two starred scopes adding: four sealed batches alone reach it, beside `Grading` they do not, and four batches with both crates reach six. `Batches*/Boxes*/Seal` reaches four only with every box sealed.
+
+**Lean.** [`Conformance/AncestorStarredGroupCount.lean`](../A12Kernel/Conformance/AncestorStarredGroupCount.lean) replays the thirteen documents on the three mixed lists, the two-scope rows and the two-level rows with no change to the theory, and locks the admission of `Batches*/Seal` twice from the rule-arm row of [the dispositions record](#inbound-2026-09-24b-dispositions). The fixed-only pair and the lone starred row count ride carriers this record does not replay.
+
 <a id="inbound-2026-09-24b-dispositions"></a>
 ### Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling
 
