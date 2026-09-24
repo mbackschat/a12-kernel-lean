@@ -1,0 +1,197 @@
+[
+ {
+  "id": "rnu-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-ctlabs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(/Item/Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(/Item/Rows/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-midmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(/Item/Nope/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(/Nope/Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(../Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Tag)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-starctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Rows*/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Info*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-starmissbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Rows*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-missstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item",
+   "--condition",
+   "RepetitionNotUnique(Nope*/Note)",
+   "--code",
+   "E1"
+  ]
+ }
+]

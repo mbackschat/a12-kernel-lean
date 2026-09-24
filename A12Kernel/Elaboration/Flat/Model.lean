@@ -549,6 +549,19 @@ def FlatFieldDecl.requireNonrepeatable (declaration : FlatFieldDecl) :
   else
     .error (.repeatableReference declaration.path)
 
+/-- Refuse a repeatable declaration for a fragment that reads nonrepeatable operands only, split by
+whether `scope`, the reading rule's iterated levels, already binds every level of it. Unbound is the
+Kernel's missing wildcard; bound is only this fragment's boundary, because the Kernel admits that
+read. -/
+def FlatFieldDecl.requireNonrepeatableAt (declaration : FlatFieldDecl)
+    (scope : List RepeatableLevel) : Except ResolveError FlatFieldDecl :=
+  if declaration.repeatableScope.isEmpty then
+    .ok declaration
+  else if declaration.repetitionBoundBy scope then
+    .error (.boundRepeatableReference declaration.path)
+  else
+    .error (.repeatableReference declaration.path)
+
 /-- Accept one operand whose repeatable levels the reading scope binds, and otherwise report the
 same repeatable-reference class the nonrepeatable resolver reports, because the Kernel reports one
 missing-wildcard class for both. -/
@@ -613,7 +626,8 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
 def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
-  (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatable
+  (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatableAt
+    (model.repeatableScopeForGroupPath declaringGroup)
 
 /-- Resolve one structured field path against a validated expanded model while preserving its repeatable scope for a later elaborator. -/
 def FlatModel.resolveFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)

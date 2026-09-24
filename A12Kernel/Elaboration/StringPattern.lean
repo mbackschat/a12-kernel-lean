@@ -306,12 +306,14 @@ inductive StringPatternConditionElabError where
 
 namespace StringPatternConditionElabError
 
-/-- Project the measured pattern-source failure and the wrong-left-kind class. The left-kind gate is
-**total** over the kinds a declaration can carry: DATE_RANGE was the one the original admission
-matrix omitted, and it draws the same class as the other seven on both operators
-([checkpoint](../../docs/SOURCES.md#src-pattern-comparison-left-kind-gate-is-total)). The surface
-makes the right operand a String constant structurally; remaining local refusals stay unmapped
-instead of guessing an external identity. -/
+/-- Project the measured pattern-source failure, the wrong-left-kind class, and the field operand's
+resolver classes. The left-kind gate is **total** over the kinds a declaration can carry: DATE_RANGE
+was the one the original admission matrix omitted, and it draws the same class as the other seven on
+both operators ([checkpoint](../../docs/SOURCES.md#src-pattern-comparison-left-kind-gate-is-total)).
+The resolver classes are the shared ones on both operators
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)).
+The surface makes the right operand a String constant structurally; remaining local refusals stay
+unmapped instead of guessing an external identity. -/
 def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnostic
   -- A String left operand is admitted, so this arm is never constructed; it is kept for totality
   -- and reports nothing rather than a refusal class for a kind the gate accepts.
@@ -327,11 +329,12 @@ def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnos
       some .invalidTypeForPatternComparison
   | .pattern .javaSyntax
   | .pattern .kernelRestriction => some .invalidPattern
+  | .fieldReference error => error.diagnostic?
   -- Named rather than wildcarded, so a new refusal must be classified instead of absorbed. The two
   -- String-value forms are this theory's own reading limits — a raw declaration and a custom one
   -- needing prepared checking both carry the admitted String kind and clear the gate above — while
-  -- the two resolution forms and `incoherentCore` are routing rather than model refusals.
-  | .model _ | .fieldReference _ | .rawStringValue _
+  -- the model form and `incoherentCore` are routing rather than rule refusals.
+  | .model _ | .rawStringValue _
   | .preparedCustomFieldRequired _ | .incoherentCore => none
 
 end StringPatternConditionElabError

@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-24-01"></a>
+### `SPEC-2026-09-24-01` — a group operand and a `RepetitionNotUnique` key draw the resolver's segment classes, not only the entity class
+
+- `status`: pending
+- `origin`: locally originated. It narrows two sentences that gave the entity class to every miss. The `spec/02` one was already contradicted by the [group-operand checkpoint](sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes) when that landed, and its `sync` row missed the sentence. The `spec/07` one extends your [`kf186`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf186) and [`kf355`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf355) to rows they did not run.
+- `clause`: [`02` group-list quantifiers](../spec/02-logic-and-formal-errors.md): the unknown-group sentence. [`07` §9 `RepetitionNotUnique`](../spec/07-repetition-and-iteration.md): the key-admission sentence.
+- `delta`: on `AtLeastOneGroupFilled`, `NumberOfFilledGroups` and `GroupFilled`, `/Nope/Info`, a lone `/Nope` and `/Rows` draw `MVK_INVALID_ROOT_GROUP`, and `../Info` draws `MVK_TOO_MANY_PARENT_GROUPS`. Only `/Item/Nope` and a bare `Nope` draw `MVK_INVALID_ENTITY`.
+- `delta`: as a key, `/Nope/Rows/Note` draws `MVK_INVALID_ROOT_GROUP`, `../Rows/Note` draws `MVK_TOO_MANY_PARENT_GROUPS` and an ambiguous bare `Tag` draws `MVK_FIELDNAME_NOT_UNIQUE`. A starred key is resolved before the key list's wildcard gate: `Rows*/Note` draws `MVK_NO_WILDCARDS_ALLOWED`, `Info*/Nope` draws `MVK_INVALID_WILDCARD`, and `Rows*/Nope` and `Nope*/Note` draw `MVK_INVALID_ENTITY`.
+- `basis`: [group-operand checkpoint](sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes) and [pattern and key checkpoint](sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes), measured at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`. Every refusal has an admitted control in the same batch.
+- `acceptance`: state the segment split on both carriers, or supply a contrary observation where an undeclared first segment or a walk above the root draws `MVK_INVALID_ENTITY` on a group operand or a key.
+- `limit`: one starred level on a key, and the rule placed at the key group's parent without `@From`. The `@From` scope operand is not measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-23-01"></a>
 ### `SPEC-2026-09-23-01` — `Sum`'s String class reads neither position nor form, and the root gate reaches the value list and a computation
 

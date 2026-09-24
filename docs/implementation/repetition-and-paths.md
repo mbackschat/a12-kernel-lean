@@ -77,6 +77,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `boundary`: Branch-independent clusters, mixed admitted key kinds, validation-domain implicit descendants, deepest-key-parent row selection independent of authored component order, and the admitted `@From` reference boundary. The sole exact-text semantic-index key surface certifies an otherwise-valid single-key source, the same selected declaration and reference group, and the same error field before returning its carrier-specific static refusal; it adds no indexed duplicate evaluator.
 - `owner`: [`RepetitionNotUnique.lean`](../../A12Kernel/Semantics/RepetitionNotUnique.lean), [`RepetitionNotUnique.lean`](../../A12Kernel/Elaboration/RepetitionNotUnique.lean)
 - `assurance`: E/P closed for admitted keys and the bounded indexed-key refusal; upstream L locked for guarded composition, implicit optional-empty duplicates, mixed-depth key order, admitted `@From`, and the exact reviewed semantic-index carrier; C none
+- `assurance`: a key that does not resolve projects the resolver's class, measured at the [pattern and key checkpoint](../SOURCES.md#src-pattern-and-key-resolver-classes) and locked in [cases](../../A12Kernel/Conformance/RepetitionNotUniqueDiagnostic.lean). The starred-key rows there have no surface form here.
 - `remains`: Remaining key/path forms: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
 <a id="cap-semantic-index"></a>

@@ -96,9 +96,25 @@ example :
     diagnostic? (key ["Probe", "A"] "AVal") = some .repeatableGroupMissing := by
   native_decide
 
-/- An unresolvable key path takes the shared unknown-entity class rather than a key-specific one. -/
+/- An unresolvable key path takes the resolver's class rather than a key-specific one, and the class
+   names the segment that missed, a walk above the root, or a bare name matching several fields
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)). -/
 example :
-    diagnostic? (key ["Probe", "Rows"] "Nope") = some .invalidEntity := by
+    let shortNameModel : FlatModel :=
+      { probeModel with
+        fields := probeModel.fields ++
+          [{ id := 6, groupPath := ["Probe", "A"], name := "RowKey2", policy := { kind := .string } }]
+        fieldRefByShortNameAllowed := true }
+    diagnostic? (key ["Probe", "Rows"] "Nope") = some .invalidEntity ∧
+    diagnostic? (key ["Probe", "Nope"] "RowVal") = some .invalidEntity ∧
+    diagnostic? (key ["Nope", "Rows"] "RowVal") = some .invalidRootGroup ∧
+    diagnostic? (relativeKey "Nope") = some .invalidEntity ∧
+    diagnostic? { base := .relative 1, groups := ["Rows"], field := "RowVal" } =
+      some .tooManyParentGroups ∧
+    (match CheckedValidationCondition.fromRepetitionNotUnique shortNameModel ["Probe"]
+        { firstKey := relativeKey "RowKey2", restKeys := [] } with
+      | .error (.repetitionNotUnique error) => error.diagnostic?
+      | _ => none) = some .fieldNameNotUnique := by
   native_decide
 
 /-! ## Accepted controls

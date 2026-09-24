@@ -319,8 +319,9 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
         if group.path.isPrefixOf declaration.groupPath then
           throw (.keyContainedInIndexedGroup declaration.path group.path)
         else
-          let checkedDeclaration ← declaration.requireNonrepeatable
-            |>.mapError .resolve
+          let checkedDeclaration ←
+            declaration.requireNonrepeatableAt (model.repeatableScopeForGroupPath declaringGroup)
+              |>.mapError .resolve
           pure (.field checkedDeclaration)
   if hGroup : model.repeatableGroups.contains group = true then
     if hDeclared : group.indexField == some indexDeclaration.id then

@@ -1,0 +1,90 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "81d1005a32a8bb9977dd8d0b910c45814f383dc8c54259ce79acba76e968c080",
+  "observations" : [ {
+    "id" : "rnu-ctl",
+    "inputHash" : "3922d2a7e42c6f0a47783edb5f37ed4c6947b18f1a552381731e4353d450cdef",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rnu-ctlabs",
+    "inputHash" : "156d7a4ede1bd9b568728edf4e4a0485a2b1b193b58103851f422fb28f7029cf",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rnu-deepmiss",
+    "inputHash" : "6d1a8591b58d6108890b046b8c100a313d900b5363ecf318cdcb50dc453f70e4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "rnu-midmiss",
+    "inputHash" : "fa066e6fc6183450ebc4fbbbfc7cbb0bd0a44c13b474d3a7c349dd99f1b995bf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "rnu-rootmiss",
+    "inputHash" : "79d4660faddf70265e084099ff504c4a675803a7e4f56259cea396b579edfc02",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "rnu-bare",
+    "inputHash" : "6e6b1d9106ac62e095dc3346ed50f3c7223f4ffdccf42b7e4f1c65074695deb3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "rnu-above",
+    "inputHash" : "155af301623e5089dde0c0d53f846e1c636f22d51af7b2e3e6cb84130a5b15b4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "rnu-dup",
+    "inputHash" : "7eee6f9454b4f88e793c10db47e8e906f8d8a8200b488f80d8e01b389a08c416",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_FIELDNAME_NOT_UNIQUE" ]
+  }, {
+    "id" : "rnu-unique",
+    "inputHash" : "16c0adbd7d6b3d4072d54bf0c0658a18813a9b6ceb49e5b8ae19843d85ede7e2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rnu-starctl",
+    "inputHash" : "642c89be8dc87a1c3b5f2e16f91d9486dc429d3ad71e2ad59308531fc5e92ea3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "rnu-fixedstarmiss",
+    "inputHash" : "2eba375c921a691144a0e174c34538d2c2d2903267b098c35875b11cc7365a1f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "rnu-starmissbelow",
+    "inputHash" : "856a9801ad10925db9635b538d20c8f6d68c0c69164a5db448a705f36a33f18d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "rnu-missstar",
+    "inputHash" : "444d2bb40a8b608bdb3ea13b866447beba7a7c61eacd8d66c82135ec9d5fef67",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  } ]
+}

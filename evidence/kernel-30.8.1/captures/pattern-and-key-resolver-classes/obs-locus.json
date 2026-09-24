@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "81d1005a32a8bb9977dd8d0b910c45814f383dc8c54259ce79acba76e968c080",
+  "observations" : [ {
+    "id" : "pm-rowlocus",
+    "inputHash" : "986bfdd38313e63f35ebfbc415924e32220291b2916f1e04dbb918a7dddc82bd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "pm-rowlocus-abs",
+    "inputHash" : "0471f0c0329c0e2f364d9db0eb0cc7f847ce13e578eef8961f8762091b64ae09",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "pm-outerlocus",
+    "inputHash" : "49b5cbff25b5cef0593dd2d2936147cd82d6364ed6504c4eeee09b58bddda530",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "pv-outerlocus",
+    "inputHash" : "feb666d7214bc9f48dee454ad7d06a3cca6c9d15a478441b5ac32d623f31f582",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  } ]
+}

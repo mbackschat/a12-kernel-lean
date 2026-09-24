@@ -1,0 +1,54 @@
+[
+ {
+  "id": "pm-rowlocus",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--condition",
+   "[Note] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-rowlocus-abs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Rows/Note",
+   "--condition",
+   "[/Item/Rows/Note] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-outerlocus",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Rows/Note] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-outerlocus",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Rows/Note] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ }
+]

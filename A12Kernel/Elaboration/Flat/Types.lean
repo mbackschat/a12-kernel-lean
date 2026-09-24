@@ -428,6 +428,10 @@ inductive ResolveError where
   | ambiguousEntity (path : List String)
   | shortNameNotUnique (name : String)
   | repeatableReference (path : List String)
+  -- `boundRepeatableReference`: a repeatable operand whose every level the reading rule already
+  -- iterates, refused by a fragment that reads nonrepeatable operands only. The Kernel admits that
+  -- read, so this is the fragment's boundary rather than `repeatableReference`'s missing wildcard.
+  | boundRepeatableReference (path : List String)
   -- `reservedRootGroupName`: A12 reserves exactly one whole name, case-insensitively, and only on
   -- the root carrier. This is a name equality rather than an alphabet rule, which is why it sits
   -- apart from every other name check; `spec/01` §3 names the carriers.
@@ -439,8 +443,9 @@ inductive ResolveError where
 
 /-- The Kernel class a resolution failure reports, projected once for every wrapping error type.
 An unstarred repeatable operand read from a rule locus that does not iterate its level is the
-shared missing-wildcard class; whether that same operand is *admitted* from an iterating locus is a
-separate question this projection does not answer.
+shared missing-wildcard class. From a locus that iterates every level of it the Kernel admits the
+read, so a fragment refusing it reports `boundRepeatableReference`, which carries no class
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)).
 
 **This is the one projection that keeps a wildcard, deliberately.** Elsewhere a `_ => none` arm is
 the anti-pattern this estate sweeps out, because it silently absorbs a form a later change adds and

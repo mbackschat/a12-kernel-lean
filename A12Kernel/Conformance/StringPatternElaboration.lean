@@ -163,7 +163,27 @@ example :
       { fields := [rawDecl] } ["Claim"] (condition)) = none := by
   native_decide
 
-/- Raw, registered-custom, and repeatable fields remain explicit separate-context boundaries; an ordinary declared-pattern field is now admitted for prepared evaluation. -/
+/- The field operand's resolution owns its classes, as on every other carrier measured: a miss by the
+   segment that missed, a walk above the root, and a bare name matching several fields
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+example :
+    let tagIn (group : String) : FlatFieldDecl :=
+      { stringDeclaration with id := if group == "Info" then 4 else 5
+                               groupPath := ["Claim", group], name := "Tag" }
+    let resolverModel : FlatModel :=
+      { fields := [stringDeclaration, tagIn "Info", tagIn "Misc"]
+        fieldRefByShortNameAllowed := true }
+    let codeAt (base : PathBase) (groups : List String) (field : String) :=
+      diagnosticOf (elaborateStringPatternCondition compilePattern resolverModel ["Claim"]
+        { condition with field := { base, groups, field } })
+    [codeAt .absolute ["Claim"] "Nope", codeAt .absolute ["Claim", "Nope"] "Code",
+      codeAt .absolute ["Nope"] "Code", codeAt .absolute [] "Nope", codeAt (.relative 0) [] "Nope",
+      codeAt (.relative 1) [] "Code", codeAt (.relative 0) [] "Tag", codeAt .absolute ["Claim"] "Code"] =
+      [some .invalidEntity, some .invalidEntity, some .invalidRootGroup, some .invalidRootGroup,
+        some .invalidEntity, some .tooManyParentGroups, some .fieldNameNotUnique, none] := by
+  native_decide
+
+/- Raw, registered-custom, and repeatable fields remain explicit separate-context boundaries; an ordinary declared-pattern field is now admitted for prepared evaluation. A repeatable field read from the rule that iterates it is only this fragment's boundary, since the Kernel admits it there; read from the enclosing group it is the Kernel's missing wildcard ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)). -/
 example :
     let rawDecl := {
       stringDeclaration with
@@ -191,6 +211,9 @@ example :
         none ∧
     errorOf (elaborateStringPatternCondition compilePattern
       repeatableModel ["Claim", "Items"] (condition)) =
+        some (.fieldReference (.boundRepeatableReference ["Claim", "Items", "Code"])) ∧
+    errorOf (elaborateStringPatternCondition compilePattern repeatableModel ["Claim"]
+      { condition with field := { base := .relative 0, groups := ["Items"], field := "Code" } }) =
         some (.fieldReference (.repeatableReference ["Claim", "Items", "Code"])) := by
   native_decide
 

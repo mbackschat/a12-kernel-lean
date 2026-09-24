@@ -694,6 +694,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
+<a id="src-pattern-and-key-resolver-classes"></a>
+- [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a pattern field read from the rule that iterates it is admitted](sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)
 <a id="src-group-operand-resolution-classes"></a>
 - [A group operand that does not resolve draws the class of the segment that missed, fixed or starred](sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)
 <a id="src-short-name-ambiguity-every-carrier"></a>

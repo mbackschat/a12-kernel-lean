@@ -1,0 +1,353 @@
+[
+ {
+  "id": "pm-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Title] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-ctlrel",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Title] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Nope] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-midmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Nope/Title] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Nope/Title] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-lone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Nope] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Nope] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [../Title] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Tag] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pm-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Label] PatternMatched \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Nope/Title] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [../Title] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [Tag] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "pv-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And [/Item/Title] PatternViolated \"A.*\"",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-ctlabs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(/Item/Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-deepmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(/Item/Rows/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-midmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(/Item/Nope/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-rootmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(/Nope/Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-bare",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-above",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(../Rows/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-dup",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Tag)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-unique",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-starctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Rows*/Note)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-fixedstarmiss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Info*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-starmissbelow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Rows*/Nope)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "rnu-missstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And RepetitionNotUnique(Nope*/Note)",
+   "--code",
+   "E1"
+  ]
+ }
+]
