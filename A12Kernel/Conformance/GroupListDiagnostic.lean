@@ -201,4 +201,95 @@ example :
       [fieldAt .absolute ["Probe", "A"] "AVal", group ["Probe", "B"]] = none := by
   native_decide
 
+/-! ## A group operand that does not resolve
+
+The Kernel reads a group path segment by segment, as it reads a field path, so the class turns on
+which segment missed. An undeclared first segment is the root class whatever follows it, a lone
+segment and a declared group read at root position included; a later miss is the entity class, and a
+parent walk above the root has its own. A starred operand answers first for an earlier star landing
+on a nonrepeatable segment, a field included
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+
+private def groupAt (base : PathBase) (groups : List String) : SurfaceGroupListOperand :=
+  .group (.path { base, groups })
+
+private def starAt (base : PathBase) (groups : List SurfaceStarGroupSegment) :
+    SurfaceGroupListOperand :=
+  .starredGroup { base, groups }
+
+example :
+    [groupAt .absolute ["Nope", "A"], groupAt .absolute ["Nope"], groupAt .absolute ["A"],
+      groupAt .absolute ["Probe", "Nope"], groupAt (.relative 0) ["Nope"],
+      groupAt (.relative 1) ["A"]].map (fun operand =>
+        diagnostic? .atLeastOneGroupFilled [operand, group ["Probe", "B"]]) =
+      [some .invalidRootGroup, some .invalidRootGroup, some .invalidRootGroup,
+        some .invalidEntity, some .invalidEntity, some .tooManyParentGroups] := by
+  native_decide
+
+example :
+    let seg (name : String) (starred := true) : SurfaceStarGroupSegment := { name, starred }
+    [starAt .absolute [seg "Probe" false, seg "Nope"],
+      starAt .absolute [seg "Nope" false, seg "Rows"],
+      starAt .absolute [seg "Probe" false, seg "A", seg "Nope" false],
+      starAt .absolute [seg "Probe" false, seg "A" false, seg "AVal", seg "Nope" false],
+      starAt .absolute [seg "Probe", seg "Rows"],
+      starAt (.relative 1) [seg "Rows"],
+      starAt .absolute [seg "Probe" false, seg "A"]].map (fun operand =>
+        diagnostic? .atLeastOneGroupFilled [operand]) =
+      [some .invalidEntity, some .invalidRootGroup, some .invalidWildcard, some .invalidWildcard,
+        some .invalidWildcard, some .tooManyParentGroups, some .invalidWildcard] ∧
+    diagnostic? .atLeastOneGroupFilled [rowsStar] = none := by
+  native_decide
+
+/- The scalar presence carrier reads its one group operand through the same split, with its
+   admitted control. -/
+example :
+    let presence (base : PathBase) (groups : List String) : Option KernelStaticDiagnostic :=
+      match CheckedValidationCondition.fromGroupPresence probeModel ["Probe"]
+          (.path { base, groups }) .filled with
+      | .ok _ => none
+      | .error error => error.groupListDiagnostic?
+    [presence .absolute ["Nope", "A"], presence .absolute ["Nope"], presence .absolute ["A"],
+      presence .absolute ["Probe", "Nope"], presence (.relative 0) ["Nope"],
+      presence (.relative 1) ["A"], presence .absolute ["Probe", "A"]] =
+      [some .invalidRootGroup, some .invalidRootGroup, some .invalidRootGroup,
+        some .invalidEntity, some .invalidEntity, some .tooManyParentGroups, none] := by
+  native_decide
+
+/- The count carrier draws the same classes. A fixed-only list is read by the comparison carrier and
+   a starred operand by the carrier that admits both forms in one list. -/
+private def countOperandsDiagnostic? (operands : List SurfaceGroupCountOperand) :
+    Option KernelStaticDiagnostic :=
+  let surface : SurfaceNumericComparison :=
+    { op := .ordinary .greater
+      left := .atom (.filledGroupCount operands)
+      right := .literal { value := 0, authoredScale := 0 } }
+  match elaborateNumericComparison probeModel ["Probe"] surface with
+  | .ok _ => none
+  | .error error => error.groupCountDiagnostic?
+
+private def starredCountDiagnostic? (operands : List SurfaceGroupCountOperand) :
+    Option KernelStaticDiagnostic :=
+  match elaborateMixedFilledGroupCountComparison probeModel ["Probe"] operands
+      NumericComparisonOp.greater 0 with
+  | .ok _ => none
+  | .error error => error.groupCountDiagnostic?
+
+example :
+    let fixedAt (base : PathBase) (groups : GroupPath) : SurfaceGroupCountOperand :=
+      .fixed (.path { base, groups })
+    let starredAt (base : PathBase) (groups : GroupPath) : SurfaceGroupCountOperand :=
+      .starred { base, groups }
+    [fixedAt .absolute ["Nope", "A"], fixedAt .absolute ["A"], fixedAt (.relative 0) ["Nope"],
+      fixedAt (.relative 1) ["A"]].map (fun operand =>
+        countOperandsDiagnostic? [operand, fixedAt .absolute ["Probe", "B"]]) =
+      [some .invalidRootGroup, some .invalidRootGroup, some .invalidEntity,
+        some .tooManyParentGroups] ∧
+    [starredAt .absolute ["Probe", "Nope"], starredAt .absolute ["Nope", "Rows"],
+      starredAt .absolute ["Probe", "A"], starredAt (.relative 1) ["Rows"]].map (fun operand =>
+        starredCountDiagnostic? [operand]) =
+      [some .invalidEntity, some .invalidRootGroup, some .invalidWildcard,
+        some .tooManyParentGroups] := by
+  native_decide
+
 end A12Kernel.Conformance.GroupListDiagnostic

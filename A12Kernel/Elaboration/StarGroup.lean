@@ -21,6 +21,8 @@ inductive StarredGroupElabError where
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceStarGroupPath)
   | unknownGroup (path : GroupPath)
+  /-- A group path whose first segment names no declared root; see `FlatModel.declaresRoot`. -/
+  | unknownRootGroup (path : GroupPath)
   /-- The named group carries no field anywhere in its subtree. The Kernel admits such a group in a
   model and then refuses every operand naming it, on a code of its own rather than the unknown-group
   one. Only a repeatable group reaches this here, which is not an assumption but a consequence:
@@ -42,7 +44,42 @@ starred root projects nothing rather than borrowing either code. -/
 def StarredGroupElabError.emptyGroupDiagnostic? :
     StarredGroupElabError → Option KernelStaticDiagnostic
   | .groupHasNoFields groupPath => if groupPath.length == 1 then none else some .groupIsEmpty
-  | .resolve _ | .invalidGroupReference _ | .unknownGroup _ | .path _ | .incoherentCore => none
+  | .resolve _ | .invalidGroupReference _ | .unknownGroup _ | .unknownRootGroup _ | .path _
+  | .incoherentCore => none
+
+/-- The classes a starred group operand owns whichever carrier reads it: the resolver's classes by
+    the segment that missed, a star landing on a nonrepeatable segment, and the empty group
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+def StarredGroupElabError.diagnostic? :
+    StarredGroupElabError → Option KernelStaticDiagnostic
+  | .resolve error => error.diagnostic?
+  | .unknownGroup _ => some .invalidEntity
+  | .unknownRootGroup _ => some .invalidRootGroup
+  | .path error => error.diagnostic?
+  | error => error.emptyGroupDiagnostic?
+
+/-- A starred group path naming no declared group answers in the Kernel's segment order: an earlier
+    star landing on a nonrepeatable segment first, then the root or entity miss by its first
+    segment. -/
+def starredGroupMiss (model : FlatModel) (basePath : GroupPath)
+    (groups : List SurfaceStarGroupSegment) (groupPath : GroupPath) : StarredGroupElabError :=
+  match firstStarOnNamedNonrepeatable? model basePath groups with
+  | some path => .path (.wildcardOnNonrepeatable path)
+  | none =>
+      if groupPath.head?.any model.declaresRoot then .unknownGroup groupPath
+      else .unknownRootGroup groupPath
+
+theorem starredGroupMiss_ne_incoherentCore (model : FlatModel) (basePath : GroupPath)
+    (groups : List SurfaceStarGroupSegment) (groupPath : GroupPath) :
+    starredGroupMiss model basePath groups groupPath ≠ .incoherentCore := by
+  unfold starredGroupMiss
+  split <;> (try split) <;> simp
+
+theorem starredGroupMiss_ne_path_incoherentCore (model : FlatModel) (basePath : GroupPath)
+    (groups : List SurfaceStarGroupSegment) (groupPath : GroupPath) :
+    starredGroupMiss model basePath groups groupPath ≠ .path .incoherentCore := by
+  unfold starredGroupMiss
+  split <;> (try split) <;> simp_all
 
 /-- One terminal repeatable group and the shared checked plan that reaches each of its concrete rows exactly once. -/
 structure CheckedStarredGroupSource (model : FlatModel) where
@@ -185,7 +222,7 @@ def elaborateStarredGroupOperandSource (model : FlatModel)
                 else
                   .error .incoherentCore
           else
-            .error (.unknownGroup groupPath)
+            .error (starredGroupMiss model basePath source.groups groupPath)
 
 /-- The only group-list predicates for which the kernel admits a starred group operand. -/
 inductive StarredGroupFillQuantifier where

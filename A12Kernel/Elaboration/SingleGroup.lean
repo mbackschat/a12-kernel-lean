@@ -231,8 +231,25 @@ end ResolvedGroupReference
 inductive FixedGroupReferenceError where
   | reference (error : SingleGroupElabError)
   | unknownGroup (path : GroupPath)
+  /-- A group path whose first segment names no declared root; see `FlatModel.declaresRoot`. -/
+  | unknownRootGroup (path : GroupPath)
   | repeatableGroupRequiresAddress (path : GroupPath)
   deriving Repr, DecidableEq
+
+/-- The miss for a resolved group path that names no declared group, split by its first segment the
+    way the Kernel splits it. -/
+def FlatModel.unknownGroupError (model : FlatModel) (path : GroupPath) :
+    FixedGroupReferenceError :=
+  if path.head?.any model.declaresRoot then .unknownGroup path else .unknownRootGroup path
+
+/-- The classes a fixed group operand's resolution owns whichever carrier reads it. -/
+def FixedGroupReferenceError.diagnostic? :
+    FixedGroupReferenceError → Option KernelStaticDiagnostic
+  | .reference (.resolve error) => error.diagnostic?
+  | .unknownGroup _ => some .invalidEntity
+  | .unknownRootGroup _ => some .invalidRootGroup
+  | .repeatableGroupRequiresAddress _ => some .noWildcard
+  | .reference _ => none
 
 /-- Resolve one fixed group operand without applying an operator-specific root, arity, duplicate,
 or overlap rule. `allowBoundScope` is reserved for carriers measured to bind an ordinary fixed child
@@ -243,7 +260,7 @@ private def FlatModel.resolveFixedGroupReferenceWithBoundScope (model : FlatMode
     Except FixedGroupReferenceError ResolvedGroupReference := do
   let resolved ← surface.resolveAgainst declaringGroup |>.mapError .reference
   if !model.hasGroupPath resolved.path then
-    throw (.unknownGroup resolved.path)
+    throw (model.unknownGroupError resolved.path)
   match resolved.origin with
   | .path =>
       let operandScope := model.repeatableScopeForGroupPath resolved.path

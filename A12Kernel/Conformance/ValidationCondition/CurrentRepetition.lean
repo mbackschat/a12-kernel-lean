@@ -171,7 +171,8 @@ example :
           ["Order"] .equalOne = some .incoherentCore := by
   native_decide
 
-/- Surface assembly fails closed for cross-root, fixed-nested, and unknown groups. -/
+/- Surface assembly fails closed for cross-root, fixed-nested, and unknown groups. `/Missing` names no
+   declared root, so it is the root-group miss rather than the entity one. -/
 example :
     surfaceError? ["Order"] (fieldPath ["Order"] "CustomerName")
         (groupPath ["Other"]) = some .incoherentCore ∧
@@ -181,7 +182,7 @@ example :
         (fieldPath ["Order", "Details"] "Detail")
         (groupPath ["Order", "Details"]) = some .incoherentCore ∧
       surfaceError? ["Order"] (fieldPath ["Order"] "CustomerName")
-        (groupPath ["Missing"]) = some (.unknownGroup ["Missing"]) := by
+        (groupPath ["Missing"]) = some (.unknownRootGroup ["Missing"]) := by
   native_decide
 
 /-! ## Same-group repeatable row index -/

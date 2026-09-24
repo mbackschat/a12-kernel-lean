@@ -12,6 +12,7 @@ inductive ValidationConditionAssemblyError where
   | starredGroupNotAllowed (operator : GroupFillQuantifier)
   | repeatableFieldRequired (path : List String)
   | unknownGroup (path : GroupPath)
+  | unknownRootGroup (path : GroupPath)
   | repeatableGroupRequiresAddress (path : GroupPath)
   | emptyGroupList
   | groupListNeedsMultipleOperands
@@ -36,6 +37,7 @@ private def ValidationConditionAssemblyError.ofFixedGroupReferenceError :
     FixedGroupReferenceError → ValidationConditionAssemblyError
   | .reference error => .groupReference error
   | .unknownGroup path => .unknownGroup path
+  | .unknownRootGroup path => .unknownRootGroup path
   | .repeatableGroupRequiresAddress path =>
       .repeatableGroupRequiresAddress path
 
@@ -59,11 +61,16 @@ def groupListDiagnostic? :
   | .rootGroupRequiresSoleOperand _ => some .rootGroupWithOtherParameters
   | .starredGroupNotAllowed _ => some .noWildcardsGAllowed
   | .repeatableGroupRequiresAddress _ => some .noWildcard
+  -- A group operand that does not resolve draws the class of the segment that missed, as a field
+  -- operand does
+  -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)).
   | .unknownGroup _ => some .invalidEntity
+  | .unknownRootGroup _ => some .invalidRootGroup
+  | .groupReference (.resolve error) => error.diagnostic?
   -- Operands are read before every list gate, so an empty starred group answers ahead of the star
   -- gate and arity under all five quantifiers
   -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
-  | .starredGroup error => error.emptyGroupDiagnostic?
+  | .starredGroup error => error.diagnostic?
   | .fieldReference error => error.diagnostic?
   | _ => none
 
@@ -132,7 +139,7 @@ def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
       let resolved ← reference.resolveAgainst rowGroup
         |>.mapError ValidationConditionAssemblyError.groupReference
       if !model.hasGroupPath resolved.path then
-        throw (.unknownGroup resolved.path)
+        throw (.ofFixedGroupReferenceError (model.unknownGroupError resolved.path))
       checkCore model rowGroup
         (ValidationCondition.groupPresence operator resolved)
         (by rw [hModel]; rfl)
@@ -331,7 +338,7 @@ def fromGuardedRootCurrentRepetition
       let resolved ← group.resolveAgainst rowGroup
         |>.mapError .groupReference
       if !model.hasGroupPath resolved then
-        throw (.unknownGroup resolved)
+        throw (.ofFixedGroupReferenceError (model.unknownGroupError resolved))
       checkCore model rowGroup
         (ValidationCondition.guardedRootCurrentRepetition
           declaration resolved comparison)

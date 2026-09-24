@@ -1,0 +1,94 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "cbf83b4a72cf0427fc35f6c2692f551055976f86a23c968f3408cf9b47a4ce4c",
+  "observations" : [ {
+    "id" : "cnfg-ctl",
+    "inputHash" : "d615415b0ec37400afcfd85be9346c2b0c649c898ff447aecffd307680c33e71",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cnfg-rootmiss",
+    "inputHash" : "f6721a74929dcf430800a421e1de7b8840e725723b31506a0e732f12e062d72f",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "cnfg-lone",
+    "inputHash" : "b856aec4cb2418d7192accaac7efc50df525e76d1bed0f2b027507bc868e22fa",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "cnfg-deepmiss",
+    "inputHash" : "50273915b64fa9aa95e55df64adc9cf219f1589149021e3e2d823359b43cca7b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "cnfg-bare",
+    "inputHash" : "9b2f3d4e01c78693c4dd67ddec79a1ab472359071c7441d77a41518a5ddca31b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "cnfg-nonrootatroot",
+    "inputHash" : "323416db8c9c39725749b878659cf94cafab30d7ddb4ca0e4b9d454851427455",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "cnfg-above",
+    "inputHash" : "552051b38bc3804ee87b09ccda6802f1c45c8b7efedb441b5c1ead5275debe7d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "cnfg-sctl",
+    "inputHash" : "048bbdc8d9206105107a5b22eaa368da1b68ad8ef9ca5b4505c1ca0ed454faf2",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cnfg-sstarmiss",
+    "inputHash" : "5176211e6d67bf72396f1456cd07c44ae27e3ad9e435d39afced931cae25e72d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "cnfg-srootmiss",
+    "inputHash" : "036a2f7701a443ac05654af79df62d12c7fba13073d3b262a58077033e4340b1",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "cnfg-sfixedstarmiss",
+    "inputHash" : "3481d0d8dbcfaa3d84e0ea45e475193cc6530f31ab572cf9d4319aeed9356985",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "cnfg-srootstar",
+    "inputHash" : "707cd334a70303aee1171b0d8da5202418d3321a533dd5d0a5533113d3a9b0cf",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "cnfg-sabove",
+    "inputHash" : "bee25cb4f368ea9835f112b6dd83ab9d2ff00e9153382e59f529382e04a77c24",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "cnfg-sfixedstar",
+    "inputHash" : "e3c93af0dd08c60e325c3b18169591a579a33eb3e4588bafc8b6fc0fb439b810",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  } ]
+}

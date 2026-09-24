@@ -398,6 +398,14 @@ def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
     (model.groupContributesField path ||
       model.repeatableGroups.any fun group => group.path == path)
 
+/-- Whether a name is a declared root group. The Kernel resolves a field or group path segment by
+    segment, so a path that misses reports the root-group class exactly when its first segment fails
+    this test, whatever follows, and the entity class for a later miss
+    ([fields](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier),
+    [groups](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+def FlatModel.declaresRoot (model : FlatModel) (name : String) : Bool :=
+  model.hasGroupPath [name]
+
 /-- Every field declared anywhere in a group's subtree, in declaration order. A group declares no kind, value, or instance of its own, so this recursive extent is the whole of what a group-scope operand contributes, and a deeper descendant group's field belongs to it exactly like a direct child's.
 
     Every group expansion in the theory routes through this one query rather than re-deriving the walk at each operand site, so no site can disagree with a sibling about how far a group reaches. -/
@@ -578,12 +586,11 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
   if !GroupPath.isValid declaringGroup then throw (.invalidRuleGroup declaringGroup)
-  -- The Kernel resolves an absolute path segment by segment, so an undeclared first segment answers
-  -- before any later segment and before a lone segment's missing field is judged
-  -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)).
+  -- An undeclared first segment answers before any later segment and before a lone segment's
+  -- missing field is judged.
   if let .absolute := reference.base then
     let root := reference.groups.headD reference.field
-    if validName root && !model.hasGroupPath [root] then throw (.unknownRootGroup reference)
+    if validName root && !model.declaresRoot root then throw (.unknownRootGroup reference)
   if !reference.hasValidShape then throw (.invalidReference reference)
   match reference.base with
   | .absolute =>

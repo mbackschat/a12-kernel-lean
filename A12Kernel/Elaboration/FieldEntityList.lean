@@ -295,12 +295,10 @@ def FieldEntityShapeElabError.diagnostic? :
   | .overlappingOperands _ _ => some .duplicateParam2
   | .rootGroupOperand _ => some .rootGroupReferenced
   | .resolve error => error.diagnostic?
-  | .groupReference (.repeatableGroupRequiresAddress _) => some .noWildcard
-  | .starredGroup (.path (.wildcardOnNonrepeatable _)) => some .invalidWildcard
-  | .starredGroup error => error.emptyGroupDiagnostic?
+  | .groupReference error => error.diagnostic?
+  | .starredGroup error => error.diagnostic?
   | .starPath (.iterationBelowWildcard _) => some .noWildcard
   | .starPath error => error.diagnostic?
-  | _ => none
 
 def firstDuplicateOptionalIdentity? [BEq β] (identity? : α → Option β) :
     List α → Option β

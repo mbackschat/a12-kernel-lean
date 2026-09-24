@@ -227,7 +227,8 @@ theorem elaborateStarredGroupOperandSource_never_incoherentCore
               elaborateStarPathPlan_ancestry model basePath source.groups
                 (basePath ++ source.groups.map (·.name)) plan hPlan
             simp [ancestry]
-        · simp
+        · simpa using starredGroupMiss_ne_incoherentCore model basePath source.groups
+            (basePath ++ source.groups.map (·.name))
 
 /-- The shared planner's dead incoherent branch also remains unreachable through the general starred-group operand elaborator. -/
 theorem elaborateStarredGroupOperandSource_never_path_incoherentCore
@@ -261,7 +262,8 @@ theorem elaborateStarredGroupOperandSource_never_path_incoherentCore
             simp only [ne_eq, Except.error.injEq] at dead
             simp [dead]
           · split <;> simp
-        · simp
+        · simpa using starredGroupMiss_ne_path_incoherentCore model basePath source.groups
+            (basePath ++ source.groups.map (·.name))
 
 /-- Runtime counting is exactly the cardinality of the canonical terminal-row environment stream. -/
 theorem checkedStarredGroupSource_rowCount_of_resolved

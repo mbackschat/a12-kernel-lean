@@ -430,8 +430,9 @@ private structure MarkedStarAxis where
 /-- The first starred segment naming a declared group or field that is not a repeatable group,
     scanned only while every segment names something, because a segment's name is read before its star
     and a segment naming nothing stops the walk. Every planner caller has resolved the path already, so
-    there it reaches every segment; a starred path's lookup miss asks it of the prefix that resolves. -/
-private def firstStarOnNamedNonrepeatable? (model : FlatModel) :
+    there it reaches every segment; a starred field or group path's lookup miss asks it of the prefix
+    that resolves. -/
+def firstStarOnNamedNonrepeatable? (model : FlatModel) :
     GroupPath → List SurfaceStarGroupSegment → Option (List String)
   | _, [] => none
   | pathPrefix, segment :: rest =>

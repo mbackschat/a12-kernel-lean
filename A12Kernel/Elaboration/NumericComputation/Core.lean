@@ -95,6 +95,7 @@ inductive NumericComputationElabError where
   | groupReference (error : SingleGroupElabError)
   | currentRepetitionSource (error : FixedGroupReferenceError)
   | unknownGroupInCount (path : GroupPath)
+  | unknownRootGroupInCount (path : GroupPath)
   | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
   /-- A starred group-count operand, which the Kernel admits and this fragment does not yet
@@ -127,9 +128,14 @@ def groupCountDiagnostic? :
   -- No diagnostic: the Kernel admits this shape, so a refusal here is this fragment's
   -- boundary rather than a Kernel class, and guessing one would misattribute it.
   | .starredGroupCountOperand _ => none
-  -- The plan's empty-group class is measured on this arm too, not borrowed from validation's
-  -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
-  | .starredGroupCountPlan error => error.emptyGroupDiagnostic?
+  -- The plan's empty-group class and the resolver classes are measured on this arm too, not
+  -- borrowed from validation's
+  -- ([empty](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers),
+  -- [resolver](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)).
+  | .starredGroupCountPlan error => error.diagnostic?
+  | .unknownGroupInCount _ => some .invalidEntity
+  | .unknownRootGroupInCount _ => some .invalidRootGroup
+  | .groupReference (.resolve error) => error.diagnostic?
   | .overlappingGroupCountOperands left right =>
       if left == right then some .duplicateParam1 else some .duplicateParam2
   | .repeatableGroupCountRequiresStar _ => some .noWildcard
@@ -391,6 +397,7 @@ private def NumericComputationElabError.ofFixedGroupReferenceError :
     FixedGroupReferenceError → NumericComputationElabError
   | .reference error => .groupReference error
   | .unknownGroup path => .unknownGroupInCount path
+  | .unknownRootGroup path => .unknownRootGroupInCount path
   | .repeatableGroupRequiresAddress path =>
       .repeatableGroupCountRequiresStar path
 

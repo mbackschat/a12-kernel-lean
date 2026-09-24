@@ -124,6 +124,7 @@ inductive NumericValidationElabError where
   | groupReference (error : SingleGroupElabError)
   | currentRepetitionSource (error : FixedGroupReferenceError)
   | unknownGroupInCount (path : GroupPath)
+  | unknownRootGroupInCount (path : GroupPath)
   | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
   | rootGroupInGroupCount (path : GroupPath)
@@ -150,7 +151,9 @@ def groupCountDiagnostic? :
       some (if left == right then .duplicateParam1 else .duplicateParam2)
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | .unknownGroupInCount _ => some .invalidEntity
-  | .starredGroupCountPlan error => error.emptyGroupDiagnostic?
+  | .unknownRootGroupInCount _ => some .invalidRootGroup
+  | .groupReference (.resolve error) => error.diagnostic?
+  | .starredGroupCountPlan error => error.diagnostic?
   | _ => none
 
 /-- Project the measured scope class of a repetition coordinate. `CurrentRepetition(G)` is admitted

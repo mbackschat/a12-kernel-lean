@@ -64,6 +64,7 @@ private def NumericValidationElabError.ofFixedGroupReferenceError :
     FixedGroupReferenceError → NumericValidationElabError
   | .reference error => .groupReference error
   | .unknownGroup path => .unknownGroupInCount path
+  | .unknownRootGroup path => .unknownRootGroupInCount path
   | .repeatableGroupRequiresAddress path =>
       .repeatableGroupCountRequiresStar path
 

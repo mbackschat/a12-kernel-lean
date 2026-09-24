@@ -412,7 +412,7 @@ def FlatModel.resolveNumericCurrentRepetition (model : FlatModel)
     (reference : SurfaceGroupPath) :
     Except FixedGroupReferenceError (ResolvedNumericAtom Field Aggregate) := do
   let path ← reference.resolveAgainst declaringGroup |>.mapError .reference
-  if !model.hasGroupPath path then throw (.unknownGroup path)
+  if !model.hasGroupPath path then throw (model.unknownGroupError path)
   let scope := model.repeatableScopeForGroupPath path
   if scope.isEmpty then
     return .fixedCurrentRepetition

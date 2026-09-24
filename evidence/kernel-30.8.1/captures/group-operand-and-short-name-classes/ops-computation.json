@@ -1,0 +1,128 @@
+[
+ {
+  "id": "cnfg-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-rootmiss",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-rootmiss.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-lone",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-lone.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-deepmiss",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-deepmiss.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-bare",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-bare.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-nonrootatroot",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-nonrootatroot.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-above",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-above.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-sctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-sctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-sstarmiss",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-sstarmiss.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-srootmiss",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-srootmiss.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-sfixedstarmiss",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-sfixedstarmiss.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-srootstar",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-srootstar.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-sabove",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-sabove.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "cnfg-sfixedstar",
+  "verb": "computation",
+  "args": [
+   "add",
+   "cnfg-sfixedstar.json",
+   "--dry-run"
+  ]
+ }
+]

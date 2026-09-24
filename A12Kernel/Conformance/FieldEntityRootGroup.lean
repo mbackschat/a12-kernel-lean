@@ -170,6 +170,21 @@ example :
       some (.mapped .invalidEntity) := by
   native_decide
 
+/- A group or starred group operand that does not resolve carries the same split through the shape.
+   No entity-list row separates a group miss from a field miss, since the Kernel reads the same
+   spelling either way; the classes are the group carriers'
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+private def missingStar : SurfaceFieldEntityOperand :=
+  .starredGroup { base := .absolute, groups := [{ name := "Item" }, { name := "Nope", starred := true }] }
+
+example :
+    firstFilled [group ["Nope", "Lapses"], field ["Item"] "Title"] =
+      some (.mapped .invalidRootGroup) ∧
+    firstFilled [group ["Item", "Nope"], field ["Item"] "Title"] =
+      some (.mapped .invalidEntity) ∧
+    firstFilled [missingStar, field ["Item"] "Title"] = some (.mapped .invalidEntity) := by
+  native_decide
+
 /-! ## An operand's own read refusal precedes every list gate
 
 The empty starred group is refused while it is resolved, and every operand is resolved before the
