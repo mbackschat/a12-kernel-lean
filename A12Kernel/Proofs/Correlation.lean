@@ -114,7 +114,7 @@ theorem correlatedHaving_and_keepsEnvironment (left right : CorrelatedHaving)
     **(3)** It is the **validation** arm. The computation arm reads left to right and aborts on the
     first reached poison, so the same swap is not result-preserving there — Kernel-measured, and
     witnessed in [`Conformance/Correlation.lean`](../Conformance/Correlation.lean)
-    ([`SPEC-2026-09-03-03`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-03-03)). -/
+    ([`SPEC-2026-09-03-03`](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-03-03)). -/
 theorem correlatedHaving_selectEnvironments_or_comm (left right : CorrelatedHaving)
     (context : CorrelationContext) (outerEnv : Env) (candidates : List Env) :
     CorrelatedHaving.selectEnvironments (.or left right) context outerEnv candidates

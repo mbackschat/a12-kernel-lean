@@ -229,7 +229,7 @@ non-repeatable, and none of the kind rows said so, so the whole set was consiste
 that never mentions scope. a12-dmkits found it in a cold review of their own slice after publishing
 the kind denominator to this project, and the repeatable rows here reproduce their grid. The
 denominator and the four-member admitted set are unchanged by it; only the scope at which they hold
-was missing ([`SPEC-2026-09-22-03`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-22-03)). -/
+was missing ([`SPEC-2026-09-22-03`](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-22-03)). -/
 example :
     (groupAdmission "RepStrG", starredGroupAdmission "RepStrG") =
       (.refused (some .noWildcard), .admitted) ∧
