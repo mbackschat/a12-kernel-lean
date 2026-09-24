@@ -279,7 +279,7 @@ example :
     let fixedAt (base : PathBase) (groups : GroupPath) : SurfaceGroupCountOperand :=
       .fixed (.path { base, groups })
     let starredAt (base : PathBase) (groups : GroupPath) : SurfaceGroupCountOperand :=
-      .starred { base, groups }
+      .starred (.terminallyStarred base groups)
     [fixedAt .absolute ["Nope", "A"], fixedAt .absolute ["A"], fixedAt (.relative 0) ["Nope"],
       fixedAt (.relative 1) ["A"]].map (fun operand =>
         countOperandsDiagnostic? [operand, fixedAt .absolute ["Probe", "B"]]) =

@@ -232,27 +232,46 @@ private def resolveAddressedOrdinary
 /-- Read every operand of a mixed filled-group count in authored order. A fixed member needs its
     resolved presence state and answers `none` — semantic unavailability — when the checked-document
     boundary omitted one. A starred member reads its in-capacity instantiated row count, whose
-    failure is structural and stays in the addressing domain rather than collapsing to UNKNOWN. -/
+    failure is structural and stays in the addressing domain rather than collapsing to UNKNOWN.
+
+    A fixed terminal below a starred ancestor reads one fixed-member state per in-capacity
+    environment, derived from the checked document as the group-list tally derives it. A legacy
+    input and a partial view supply no such derivation, so both are refused as structural rather
+    than guessed. -/
 private def readValidationGroupCountOperands
-    (groups : GroupPresenceContext) (document : Document) (outer : Env) :
+    (context : AddressedValidationEvaluationContext model) (document : Document) :
     List (CheckedGroupCountOperand model) →
       Except CheckedAddressingError (Option (List ValidationGroupCountOperand))
   | [] => pure (some [])
   | operand :: rest => do
-      let head : Option ValidationGroupCountOperand ←
+      let head : Option (List ValidationGroupCountOperand) ←
         match operand with
         | .fixed reference =>
-            pure ((groups reference.path).map ValidationGroupCountOperand.fixed)
+            pure ((context.scalar.groups reference.path).map ([.fixed ·]))
         | .starred source =>
-            let rows ← (source.inCapacityRowCount document outer).mapError
+            let rows ← (source.inCapacityRowCount document context.outer).mapError
               CheckedAddressingError.addressing
-            pure (some (.starredRows rows))
+            pure (some [.starredRows rows])
+        | .starredPresence source =>
+            match context.input with
+            | .checked checked => do
+                let environments ←
+                  (source.inCapacityEnvironments document context.outer).mapError
+                    CheckedAddressingError.addressing
+                let states ← environments.mapM fun environment => do
+                  let input ←
+                    (checked.groupPresenceInput source.groupPath environment
+                      .fullyRelevant false).mapError .group
+                  pure (ValidationGroupCountOperand.fixed input.derive)
+                pure (some states)
+            | .legacy _ _ | .partialView _ _ =>
+                .error (.checkedDocumentRequired source.groupPath)
       match head with
       | none => pure none
-      | some reading =>
-          match ← readValidationGroupCountOperands groups document outer rest with
+      | some readings =>
+          match ← readValidationGroupCountOperands context document rest with
           | none => pure none
-          | some tail => pure (some (reading :: tail))
+          | some tail => pure (some (readings ++ tail))
 
 /-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
 def resolveAddressed (atom : OrderedNumericValidationAtom model)
@@ -337,8 +356,9 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             .validation document context.outer).map
               NumericOperand.toValidationArithmetic
   | .filledGroupCountMixed operands =>
-      -- The extent is the sum of each member's own capacity, one per fixed group and the declared
-      -- row maximum per star, so a below-capacity count still types OMISSION
+      -- The extent is the sum of each member's own capacity, one per fixed group, the declared row
+      -- maximum per star, and the product of the reopened levels' maxima per fixed group below a
+      -- star, so a below-capacity count still types OMISSION
       -- ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)). An unretained maximum
       -- leaves no finite extent to reach and yields unavailability rather than an invented rule.
       match (operands.mapM CheckedGroupCountOperand.declaredExtent?).map List.sum with
@@ -348,8 +368,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             | .legacy document _ => document
             | .checked document | .partialView document _ =>
                 DocumentData.toDocument document.source
-          match ← readValidationGroupCountOperands context.scalar.groups document
-              context.outer operands with
+          match ← readValidationGroupCountOperands context document operands with
           | none => pure (.error .groupState)
           | some readings =>
               match (numberOfFilledGroupsForValidationOperands

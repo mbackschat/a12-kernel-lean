@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Context
+import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Iteration
 
 /-! # Shared checked group-reference and one-group Number boundaries -/
@@ -23,12 +24,12 @@ inductive SurfaceGroupReference where
 
     The two are kept apart at the surface rather than by a flag on `SurfaceGroupReference`, because
     every other group-valued carrier admits exactly one of them and would gain an unreachable arm.
-    A `starred` operand names a **terminal** group carrying the wildcard, as
-    `NumberOfFilledGroups(Rows*)` spells it; a star on an intermediate axis is a different admitted
-    subset and is not represented here. -/
+    A `starred` operand keeps each segment's own marker, so it spells both a starred repeatable
+    terminal, `NumberOfFilledGroups(Rows*)`, and a fixed terminal below a starred ancestor,
+    `NumberOfFilledGroups(Batches*/Seal)`; the two count different quantities. -/
 inductive SurfaceGroupCountOperand where
   | fixed (reference : SurfaceGroupReference)
-  | starred (reference : SurfaceGroupPath)
+  | starred (reference : SurfaceStarGroupPath)
   deriving Repr, DecidableEq
 
 /-- Recover the fixed-only operand payload exactly when no operand carries a star. Carriers that
@@ -42,7 +43,7 @@ def SurfaceGroupCountOperand.fixedOnly? :
 
 /-- The first starred operand, which is what a carrier refusing the form reports. -/
 def SurfaceGroupCountOperand.firstStarred? :
-    List SurfaceGroupCountOperand → Option SurfaceGroupPath
+    List SurfaceGroupCountOperand → Option SurfaceStarGroupPath
   | [] => none
   | .starred reference :: _ => some reference
   | .fixed _ :: rest => firstStarred? rest

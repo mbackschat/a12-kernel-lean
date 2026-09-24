@@ -50,6 +50,9 @@ def referencePointers (operand : CheckedGroupCountOperand model) (environment : 
   | .starred source =>
       CheckedEntityGroupSource.referencePointers (model := model)
         (.starred source) environment
+  | .starredPresence source =>
+      CheckedEntityGroupSource.referencePointers (model := model)
+        (.starredPresence source) environment
 
 end CheckedGroupCountOperand
 

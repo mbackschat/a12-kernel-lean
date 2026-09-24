@@ -69,19 +69,19 @@ private def fixedOperand : SurfaceGroupCountOperand :=
   .fixed (.path { base := .absolute, groups := ["Probe", "G1"] })
 
 private def starredOperand : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "Rows"] }
+  .starred (.terminallyStarred .absolute ["Probe", "Rows"])
 
 /-- A star strictly inside the fixed member's group, for the containment pair. -/
 private def nestedStar : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "G1", "Nested"] }
+  .starred (.terminallyStarred .absolute ["Probe", "G1", "Nested"])
 
 /-- A second, disjoint star, for the two-star sum. -/
 private def otherStar : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "Other"] }
+  .starred (.terminallyStarred .absolute ["Probe", "Other"])
 
 /-- A star strictly inside another star's group, for the star-versus-star containment pair. -/
 private def innerStar : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "Rows", "Inner"] }
+  .starred (.terminallyStarred .absolute ["Probe", "Rows", "Inner"])
 
 private def kernelCode? (operands : List SurfaceGroupCountOperand) : Option String :=
   match elaborateMixedFilledGroupCountComparison model ["Probe"] operands
@@ -278,7 +278,7 @@ example : ((comparison? [fixedOperand, starredOperand, otherStar]).isSome,
 Kernel's `NumberOfFilledGroups(/Probe/EmptyRows*)` row
 ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)). -/
 example :
-    kernelCode? [.starred { base := .absolute, groups := ["Probe", "Hollow"] }] =
+    kernelCode? [.starred (.terminallyStarred .absolute ["Probe", "Hollow"])] =
       some "MVK_GROUP_IS_EMPTY" := by
   native_decide
 

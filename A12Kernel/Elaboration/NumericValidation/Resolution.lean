@@ -506,19 +506,17 @@ def elaborateMixedFilledGroupCountComparison
           |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
         pure (CheckedGroupCountOperand.fixed resolved)
     | .starred path =>
-        match SurfaceGroupPath.toTerminalStarred path with
-        | none => throw (NumericValidationElabError.starredGroupCountOperand path)
-        | some plan =>
-            match elaborateStarredGroupOperandSource model rowGroup plan with
-            | .error error =>
-                throw (NumericValidationElabError.starredGroupCountPlan error)
-            | .ok (.terminalRepeatable source) =>
-                pure (CheckedGroupCountOperand.starred source)
-            | .ok (.terminalPresence _) =>
-                throw (NumericValidationElabError.starredGroupCountOperand path)
-  -- Some member is starred, so a short list is a lone star. The Kernel admits that as a complete
-  -- list and the sole-star carrier owns it; the arity class belongs to a lone *fixed* operand.
-  if checked.length < 2 then
+        match elaborateStarredGroupOperandSource model rowGroup path with
+        | .error error =>
+            throw (NumericValidationElabError.starredGroupCountPlan error)
+        | .ok (.terminalRepeatable source) =>
+            pure (CheckedGroupCountOperand.starred source)
+        | .ok (.terminalPresence source) =>
+            pure (CheckedGroupCountOperand.starredPresence source)
+  -- Some member is starred, so a short list is a lone star, which the Kernel admits as a complete
+  -- list: the arity class belongs to a lone *fixed* operand. A lone starred repeatable terminal keeps
+  -- its sole-star carrier; a lone fixed terminal below a starred ancestor has no other carrier.
+  if !CheckedGroupCountOperand.admittedArity checked then
     throw .unsupportedExpression
   -- Containment runs **before** rootness, and the order is measured: a root beside its own
   -- descendant draws the overlap class in either operand order, while the root class is reserved for
@@ -528,19 +526,15 @@ def elaborateMixedFilledGroupCountComparison
   | some (left, right) => throw (.overlappingGroupCountOperands left right)
   | none =>
       match checked.find? CheckedGroupCountOperand.isRoot with
-      | some (.fixed reference) => throw (.rootGroupInGroupCount reference.path)
-      | some (.starred source) => throw (.rootGroupInGroupCount source.group.path)
+      | some operand => throw (.rootGroupInGroupCount operand.groupPath)
       | none =>
           -- The list is not fixed-only, so some member is a star and its own certificate carries
           -- the model proof. Searching for it rather than requiring one from the caller keeps the
           -- entry point free of a hypothesis the surface cannot supply.
-          match checked.find? fun operand =>
-              match operand with
-              | .starred _ => true
-              | .fixed _ => false with
-          | none | some (.fixed _) =>
+          match CheckedGroupCountOperand.modelWellFormed? checked with
+          | none =>
               throw NumericValidationElabError.unsupportedExpression
-          | some (.starred witness) =>
+          | some ⟨modelWellFormed⟩ =>
               let core : OrderedNumericComparison model := {
                 op := .ordinary op
                 left := .atom (.filledGroupCountMixed checked)
@@ -551,7 +545,7 @@ def elaborateMixedFilledGroupCountComparison
                   rowGroup
                   operandScope := .sameGroupAddressed
                   core
-                  modelWellFormed := witness.modelWellFormed
+                  modelWellFormed
                   wellFormed := hCore }
               else
                 throw NumericValidationElabError.incoherentCore

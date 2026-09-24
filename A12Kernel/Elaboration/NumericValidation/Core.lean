@@ -96,10 +96,10 @@ abbrev NumericValidationExpression :=
 inductive NumericValidationElabError where
   | resolve (error : ResolveError)
   /-- A starred group-count operand reaching the **scalar** numeric atom, which carries no document
-  and so cannot read a star's row count. The mixed carrier admits the same operand on the ordered
-  route; this arm stays a fail-closed refusal for the scalar one, and also refuses a starred
-  terminal that is nonrepeatable, a shape with its own Kernel class and no measurement here. -/
-  | starredGroupCountOperand (reference : SurfaceGroupPath)
+  and so can read neither a star's row count nor the environments a fixed group below a star is
+  counted in. The mixed carrier admits both forms on the ordered route; this arm stays a
+  fail-closed refusal for the scalar one. -/
+  | starredGroupCountOperand (reference : SurfaceStarGroupPath)
   /-- A starred group-count operand whose star plan itself does not check. -/
   | starredGroupCountPlan (error : StarredGroupElabError)
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)

@@ -24,6 +24,19 @@ structure SurfaceStarFieldPath where
   field : String
   deriving Repr, DecidableEq
 
+/-- A parser-independent group path retaining every authored wildcard marker. -/
+structure SurfaceStarGroupPath where
+  base : PathBase
+  groups : List SurfaceStarGroupSegment
+  deriving Repr, DecidableEq
+
+/-- `groups` with only its last segment starred, the shape a plain `Rows*` operand authors. -/
+def SurfaceStarGroupPath.terminallyStarred (base : PathBase) (groups : GroupPath) :
+    SurfaceStarGroupPath :=
+  { base
+    groups := groups.dropLast.map ({ name := · }) ++
+      groups.getLast?.toList.map ({ name := ·, starred := true }) }
+
 /-- One path-segment selector from the partial-validation relevant-entity set. `all` is the public wildcard; a concrete selector cannot establish all-rows knowledge at a repeatable level. -/
 inductive RelevanceIndex where
   | all

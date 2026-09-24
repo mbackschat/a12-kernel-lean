@@ -57,11 +57,11 @@ private def fixedOperand (path : GroupPath) : SurfaceGroupCountOperand :=
 
 /-- A second repeatable group, so a list can carry two independent cardinalities. -/
 private def starredOthers : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "Others"] }
+  .starred (.terminallyStarred .absolute ["Probe", "Others"])
 
 /-- `Rows*` — the wildcard sits on the terminal group. -/
 private def starredOperand : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "Rows"] }
+  .starred (.terminallyStarred .absolute ["Probe", "Rows"])
 
 /-- `Rows` without its star, which the Kernel refuses. -/
 private def unstarredRepeatable : SurfaceGroupCountOperand :=
@@ -149,7 +149,7 @@ private def gateCode? (operands : List SurfaceGroupCountOperand) : Option Kernel
   | .ok _ => none
 
 private def gateStar (path : GroupPath) : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := path }
+  .starred (.terminallyStarred .absolute path)
 
 /- A group operand that does not resolve draws the class of the segment that missed on the
    computation arm as in validation: an undeclared first segment, alone or naming a declared group at
@@ -165,7 +165,7 @@ example :
       [some .invalidRootGroup, some .invalidRootGroup, some .invalidRootGroup,
         some .invalidEntity, some .tooManyParentGroups] ∧
     [gateStar ["Probe", "Nope"], gateStar ["Nope", "Rows"], gateStar ["Probe", "Flat"],
-      .starred { base := .relative 1, groups := ["Rows"] }].map (fun operand =>
+      .starred (.terminallyStarred (.relative 1) ["Rows"])].map (fun operand =>
         gateCode? [operand]) =
       [some .invalidEntity, some .invalidRootGroup, some .invalidWildcard,
         some .tooManyParentGroups] := by
@@ -397,7 +397,7 @@ private def twoLevelModel : FlatModel :=
           repeatability := some 5 } ] }
 
 private def midStar : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "ShellDeep", "Mid"] }
+  .starred (.terminallyStarred .absolute ["Probe", "ShellDeep", "Mid"])
 
 private def twoLevelCount (rows : List RowAddr) : Option NumericComputationResult :=
   match elaborateNumericComputationOperation twoLevelModel ["Probe"] targetId

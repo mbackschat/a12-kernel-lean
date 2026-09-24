@@ -11,12 +11,6 @@ This capsule resolves a starred group path through the shared model-derived topo
 
 namespace A12Kernel
 
-/-- A parser-independent group path retaining every authored wildcard marker. -/
-structure SurfaceStarGroupPath where
-  base : PathBase
-  groups : List SurfaceStarGroupSegment
-  deriving Repr, DecidableEq
-
 inductive StarredGroupElabError where
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceStarGroupPath)
@@ -357,20 +351,6 @@ def inCapacityEnvironments (checked : CheckedStarredGroupPresenceSource model)
 
 end CheckedStarredGroupPresenceSource
 
-/-- Re-spell an ordinary group path as a star plan whose **terminal** group carries the wildcard,
-    which is the only starred group-operand shape measured for this operator. A path navigating by
-    parent count has no representation as a star plan, so it is refused rather than approximated. -/
-def SurfaceGroupPath.toTerminalStarred (path : SurfaceGroupPath) :
-    Option SurfaceStarGroupPath :=
-  if path.turningPoint.isSome then none
-  else
-    match path.groups.reverse with
-    | [] => none
-    | terminal :: reversedPrefix =>
-        some { base := path.base
-               groups := reversedPrefix.reverse.map (fun name => { name }) ++
-                 [{ name := terminal, starred := true }] }
-
 /-- One checked operand of a filled-group count, in the carrier that admits both forms in one list.
 
     The two contribute unlike quantities into the **same** result domain — an indicator for a fixed
@@ -380,12 +360,25 @@ def SurfaceGroupPath.toTerminalStarred (path : SurfaceGroupPath) :
 
     A starred operand keeps its full `CheckedStarredGroupSource` rather than a resolved path, because
     the quantity it contributes is the in-capacity instantiated row count and that needs the star
-    plan's topology. It is the same certificate the starred validation carriers already consume. -/
+    plan's topology. It is the same certificate the starred validation carriers already consume.
+
+    A fixed group below a starred ancestor is the third form. It contributes neither a row count nor
+    one indicator: each in-capacity environment of its starred ancestry holds one instance of the
+    group, and each instance is read as a fixed operand is, so an instantiated but empty instance adds
+    nothing ([inbound](../../docs/SOURCES.md#inbound-2026-09-24-ancestor-starred-group-count)). -/
 inductive CheckedGroupCountOperand (model : FlatModel) where
   | fixed (reference : ResolvedGroupReference)
   | starred (source : CheckedStarredGroupSource model)
+  | starredPresence (source : CheckedStarredGroupPresenceSource model)
 
 namespace CheckedGroupCountOperand
+
+/-- The group this operand counts over, whichever form it takes. -/
+def groupPath (operand : CheckedGroupCountOperand model) : GroupPath :=
+  match operand with
+  | .fixed reference => reference.path
+  | .starred source => source.group.path
+  | .starredPresence source => source.groupPath
 
 /-- Whether the operand's group subtree contains the computed target, which is the self-reference
     gate every group-valued operand shares. -/
@@ -393,34 +386,46 @@ def referencesField (operand : CheckedGroupCountOperand model)
     (model' : FlatModel) (field : FieldId) : Bool :=
   match operand with
   | .fixed reference => reference.referencesField model' field
-  | .starred source =>
+  | .starred _ | .starredPresence _ =>
       match model'.lookupUniqueId field with
-      | .ok declaration => source.group.path.isPrefixOf declaration.groupPath
+      | .ok declaration => operand.groupPath.isPrefixOf declaration.groupPath
       | .error _ => false
-
 
 /-- Whether the operand names a root group, which every group-count carrier refuses. A starred
     operand's own group path carries the same rule as a fixed reference's. -/
 def isRoot (operand : CheckedGroupCountOperand model) : Bool :=
   match operand with
   | .fixed reference => reference.isRoot
-  | .starred source => source.group.path.length == 1
+  | .starred _ | .starredPresence _ => operand.groupPath.length == 1
 
-/-- The operand's contribution to the count's declared extent: one slot for a fixed group, and the
-    declared row maximum for a starred one. `none` leaves the whole count without a finite extent to
-    reach rather than acquiring an unmeasured movement rule; `RepeatableGroupDecl.repeatability`
-    owns why no authorable model selects that branch. -/
+/-- The operand's contribution to the count's declared extent: one slot for a fixed group, the
+    declared row maximum for a starred one, and for a fixed group below a star one slot per
+    environment the star reopens, the product of the reopened levels' maxima
+    ([`kf463`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf463)). `none` leaves the whole count
+    without a finite extent to reach rather than acquiring an unmeasured movement rule;
+    `RepeatableGroupDecl.repeatability` owns why no authorable model selects that branch. -/
 def declaredExtent? (operand : CheckedGroupCountOperand model) : Option Nat :=
   match operand with
   | .fixed _ => some 1
   | .starred source => source.group.repeatability
+  | .starredPresence source =>
+      (source.path.axes.drop source.path.firstStar).foldl (init := some 1)
+        fun product axis => product.bind fun total => axis.repeatability.map (· * total)
 
+/-- Whether a list's length passes the count's arity law in this carrier. A lone operand is
+    admitted when it carries a star, and the lone starred repeatable terminal is routed to its own
+    sole-star carrier instead, so only a lone fixed terminal below a starred ancestor stays here. -/
+def admittedArity : List (CheckedGroupCountOperand model) → Bool
+  | [.starredPresence _] => true
+  | operands => 1 < operands.length
 
-/-- The group this operand counts over, whichever form it takes. -/
-def groupPath (operand : CheckedGroupCountOperand model) : GroupPath :=
-  match operand with
-  | .fixed reference => reference.path
-  | .starred source => source.group.path
+/-- The model certificate a starred member already carries. -/
+def modelWellFormed? : List (CheckedGroupCountOperand model) →
+    Option (PLift (model.validate.isOk = true))
+  | [] => none
+  | .starred source :: _ => some ⟨source.modelWellFormed⟩
+  | .starredPresence source :: _ => some ⟨source.modelWellFormed⟩
+  | .fixed _ :: rest => modelWellFormed? rest
 
 /-- Whether two operands duplicate one another. Containment either way is a duplicate however each
     side is spelled, and equal paths are a duplicate too — except when **both** are starred, which
@@ -430,9 +435,11 @@ def groupPath (operand : CheckedGroupCountOperand model) : GroupPath :=
     from the fixed-only carrier it generalizes. -/
 def duplicates (left right : CheckedGroupCountOperand model) : Bool :=
   if left.groupPath == right.groupPath then
+    -- A fixed terminal below a starred ancestor shares the exception on the account that the gate
+    -- reads a reference's form, a star anywhere on it (peer `kf258`); no row measures that pair here.
     match left, right with
-    | .starred _, .starred _ => false
-    | _, _ => true
+    | .fixed _, _ | _, .fixed _ => true
+    | _, _ => false
   else
     left.groupPath.isPrefixOf right.groupPath ||
       right.groupPath.isPrefixOf left.groupPath

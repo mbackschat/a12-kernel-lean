@@ -296,6 +296,8 @@ def readGroupCountOperand
       match source.inCapacityRowCount context.document context.outer with
       | .error error => .error (NumericComputationFault.repeatableAddressing error)
       | .ok rows => .ok (GroupCountOperandReading.starredRows rows)
+  -- The computation elaborator never builds this operand; the fault pass below refuses it first.
+  | .starredPresence source => .error (NumericComputationFault.unsupportedGroupCount source.groupPath)
 
 /-- Count an all-fixed group-count operand list on the route that carries the document.
 
@@ -338,6 +340,7 @@ def growthOfGroupCountOperand
           match source.inCapacityRowCount context.document context.outer with
           | .error error => .error (NumericComputationFault.repeatableAddressing error)
           | .ok rows => .ok (some (.starredGroupCount rows capacity))
+  | .starredPresence source => .error (NumericComputationFault.unsupportedGroupCount source.groupPath)
 
 /-- The whole operand list's growth, refusing as soon as one operand has no retained extent.
 
@@ -509,6 +512,9 @@ def CheckedNumericComputationAtom.numericComputationFault? :
         match operand with
         | .fixed reference => fixedGroupCountOperandFault? model reference
         | .starred _ => none
+        -- A fixed group below a starred level is measured on the rule arm only
+        -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24-ancestor-starred-group-count)).
+        | .starredPresence source => some (.unsupportedGroupCount source.groupPath)
 
 namespace LoweredNumericExpr
 

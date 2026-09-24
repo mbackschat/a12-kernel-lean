@@ -98,11 +98,12 @@ inductive NumericComputationElabError where
   | unknownRootGroupInCount (path : GroupPath)
   | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
-  /-- A starred group-count operand, which the Kernel admits and this fragment does not yet
-  lower. Held apart from `groupCountNeedsMultipleOperands` because the two gates are
-  complementary rather than alternatives: the arity minimum governs the unstarred form only,
-  and a single starred operand is a complete list. -/
-  | starredGroupCountOperand (reference : SurfaceGroupPath)
+  /-- A fixed group below a starred ancestor as a group-count operand, which the Kernel admits on
+  the rule arm and this arm refuses because no computation row measures it. Held apart from
+  `groupCountNeedsMultipleOperands` because the two gates are complementary rather than
+  alternatives: the arity minimum governs the unstarred form only, and a starred operand alone is
+  a complete list. -/
+  | starredGroupCountOperand (reference : SurfaceStarGroupPath)
   /-- The starred group plan itself refused; the underlying error carries the class. -/
   | starredGroupCountPlan (error : StarredGroupElabError)
   | overlappingGroupCountOperands (left right : GroupPath)
@@ -608,18 +609,16 @@ private def FlatModel.resolveNumericComputationExpression
                     |>.mapError NumericComputationElabError.ofFixedGroupReferenceError
                   pure (CheckedGroupCountOperand.fixed resolved)
               | .starred path =>
-                  match SurfaceGroupPath.toTerminalStarred path with
-                  | none => throw (NumericComputationElabError.starredGroupCountOperand path)
-                  | some plan =>
-                      match elaborateStarredGroupOperandSource model declaringGroup plan with
-                      | .error error =>
-                          throw (NumericComputationElabError.starredGroupCountPlan error)
-                      | .ok (.terminalRepeatable source) =>
-                          pure (CheckedGroupCountOperand.starred source)
-                      -- A starred **nonrepeatable** terminal is a different shape with its own
-                      -- Kernel class, and it is not measured on this carrier.
-                      | .ok (.terminalPresence _) =>
-                          throw (NumericComputationElabError.starredGroupCountOperand path)
+                  match elaborateStarredGroupOperandSource model declaringGroup path with
+                  | .error error =>
+                      throw (NumericComputationElabError.starredGroupCountPlan error)
+                  | .ok (.terminalRepeatable source) =>
+                      pure (CheckedGroupCountOperand.starred source)
+                  -- A fixed terminal below a starred ancestor is measured on the rule arm only
+                  -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24-ancestor-starred-group-count)),
+                  -- so this arm keeps it as the fragment's boundary rather than borrowing the count.
+                  | .ok (.terminalPresence _) =>
+                      throw (NumericComputationElabError.starredGroupCountOperand path)
             -- Containment reaches every member whichever side carries the star, and it runs
             -- **before** rootness: a root beside its own descendant draws the overlap class, and
             -- the root class is what remains for a root beside a disjoint operand. Both gates and

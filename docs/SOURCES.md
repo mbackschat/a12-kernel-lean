@@ -288,7 +288,9 @@ a12-dmkits revision `0c61dcadd57bfd5346876baaba1b4955d9af23b2` on `main`, confir
 
 **Counts.** Over six documents, `NumberOfFilledGroups(Batches*/Seal)` is `0` with no batch, `2` with two filled Seals, `1` when the second batch holds only its own field, `0` when both Seals are instantiated and empty, `2` when the first and third of three are filled, and `1` beside a filled `Grading`, where the pair counts `2`. The pair otherwise equals the sole form. The mechanism the letter source-reads is not adopted.
 
-**Lean.** Not modelled. A count operand's star lands on its terminal, so `Batches*/Seal` has no surface form, and [SG13](gaps/paths-and-groups.md#gap-sg13) owns the capsule. A field operand has no surface form in a group count either, so its class is parser-layer here.
+**Lean.** Modelled on the validation arm as the [ancestor-starred count operand](implementation/cross-clause.md#cap-mixed-validation-filled-group-count), and the computation arm refuses it. A field operand has no surface form in a group count, so its class is parser-layer here.
+
+**Extent.** The operand's extent rows replay two rows of the peer's `kf463`, read at a12-dmkits `9c211788230050342b0805284d944d6c582ae6ea`, confirmed an ancestor of `main`, ahead of that finding's letter. Four sealed batches of four are full alone and can still grow beside an empty fixed group. Under `Batches` (2) holding `Boxes` (2), one batch with both boxes sealed can still grow. Nothing else of `kf463` is adopted here; the letter owns its record.
 
 <a id="inbound-2026-09-23d-grandparent-fill-and-malformed-key"></a>
 ### Reviewed 2026-09-23 grandparent-fill and malformed-key handback — the cascade fill reaches depth two, and a malformed field-valued key is unknown or poison on every keyed consumer

@@ -141,7 +141,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
   | .filledGroupCountMixed operands =>
       (scope == .modelWideCheckedComputation ||
         scope == .sameGroupAddressed) &&
-        1 < operands.length &&
+        CheckedGroupCountOperand.admittedArity operands &&
         !operands.any CheckedGroupCountOperand.isRoot
 
 def referencesField (atom : OrderedNumericValidationAtom model)
