@@ -228,9 +228,10 @@ def GroupFillQuantifier.evalValidation (operator : GroupFillQuantifier)
     (states : List GroupPresenceState) : ValidationFillOutcome :=
   operator.evalPresence (states.map GroupPresenceState.asGroupListPresence)
 
-/-- The plain multi-group numeric count in the **validation** arm is unavailable unless every
-    operand group is fully relevant and error-free; unlike group-list predicates it cannot
-    skip unknowns. The computation arm has no such state and is counted separately below. -/
+/-- The **validation** arm's multi-group numeric count: a value, or `unknown` when any operand is
+    undecided, since unlike the group-list predicates it cannot skip one. Which states decide an
+    operand differs by pass, as `numberOfFilledGroups` and `numberOfFilledGroupsPartial` state. The
+    computation arm has no such state and is counted separately below. -/
 inductive FilledGroupCount where
   | value (count : Nat)
   | unknown

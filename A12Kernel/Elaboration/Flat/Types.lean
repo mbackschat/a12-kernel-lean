@@ -413,19 +413,16 @@ def UnboundOperandLevel.diagnostic (unbound : UnboundOperandLevel) : KernelStati
 inductive GroupFieldSlotRefusal where
   /-- The group crosses a repeatable level the reading rule does not bind. -/
   | unboundLevel
-  /-- The repeatable root the reading rule sits in. -/
-  | boundRoot
-  /-- A root with no repeatable level. No row measures its class. -/
-  | fixedRoot
+  /-- A root the walk passes: a fixed root, or a repeatable one the reading rule sits in. -/
+  | root
   /-- Any other group, which the walk passes and the kind gate refuses. -/
   | group
   deriving Repr, DecidableEq
 
-def GroupFieldSlotRefusal.diagnostic? : GroupFieldSlotRefusal → Option KernelStaticDiagnostic
-  | .unboundLevel => some .noWildcard
-  | .boundRoot => some .rootGroupReferenced
-  | .fixedRoot => none
-  | .group => some .noGroupsAllowed
+def GroupFieldSlotRefusal.diagnostic : GroupFieldSlotRefusal → KernelStaticDiagnostic
+  | .unboundLevel => .noWildcard
+  | .root => .rootGroupReferenced
+  | .group => .noGroupsAllowed
 
 inductive ResolveError where
   | invalidModelPath (path : List String)
@@ -534,7 +531,7 @@ def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .aboveRoot _ => some .tooManyParentGroups
   | .shortNameNotUnique _ => some .fieldNameNotUnique
   | .numericMinimumFractionalDigitsExceedMaximum _ _ _ => some .fractDigitsInvalid
-  | .groupInFieldSlot _ refusal _ => refusal.diagnostic?
+  | .groupInFieldSlot _ refusal _ => some refusal.diagnostic
   | _ => none
 
 inductive AuthoredFieldPathError where

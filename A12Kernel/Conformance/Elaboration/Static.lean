@@ -429,14 +429,17 @@ example :
       | .error error => error.diagnostic?) = some .fieldNameNotUnique := by
   native_decide
 
-/-- `Remark` is declared in `Insured` and in `Claims`, `Age` only in `Insured`, and `/Policy` declares
-neither, as in the peer's `policy` model. -/
+/-- `Remark` is declared in `Insured` and in `Claims`, `Age` only in `Insured`, `ClaimRef` only in
+`Claims`, and `/Policy` declares neither, as in the peer's `policy` model. -/
 private def policyModel (shortNames : Bool := true) : FlatModel :=
   { fields := [
       { id := 0, groupPath := ["Policy"], name := "Holder", policy := { kind := .string } },
       { id := 1, groupPath := ["Policy", "Insured"], name := "Remark", policy := { kind := .string } },
       { id := 2, groupPath := ["Policy", "Insured"], name := "Age", policy := { kind := .string } },
-      { id := 3, groupPath := ["Policy", "Claims"], name := "Remark", policy := { kind := .string } }]
+      { id := 3, groupPath := ["Policy", "Claims"], name := "Remark", policy := { kind := .string } },
+      { id := 4, groupPath := ["Policy", "Claims"], name := "ClaimRef", policy := { kind := .string } },
+      { id := 5, groupPath := ["Policy", "Broker"], name := "BrokerName",
+        policy := { kind := .string } }]
     fieldRefByShortNameAllowed := shortNames }
 
 /- The short-name fallback answers a relative path's **first** segment whatever follows it: an
@@ -454,6 +457,8 @@ example :
       key? (policyModel false) (relative 0 ["Remark"] "Nope") = some .invalidEntity ∧
       key? (policyModel false) (relative 0 ["Age"] "Nope") = some .invalidEntity ∧
       key? (policyModel) (relative 0 ["Insured"] "Holder") = some .invalidEntity ∧
+      key? (policyModel) (relative 0 ["Broker"] "Age") = some .invalidEntity ∧
+      key? (policyModel) (relative 0 ["Insured"] "ClaimRef") = some .invalidEntity ∧
       resolvedIdOf ((policyModel).resolveField ["Policy"] (relative 0 ["Insured"] "Remark")) =
         some 1 := by
   native_decide

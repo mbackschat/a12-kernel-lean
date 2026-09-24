@@ -105,7 +105,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 #### Presence and row content
 
 - `boundary`: Direct presence for admitted scalar kinds plus the structural content-row gate
-- `boundary`: a field operand whose path names a group is refused in the Kernel's gate order, the walk's missing star, then the repeatable root the rule sits in, then the kind gate, on the flat and the addressed route; a fixed root keeps no class
+- `boundary`: a field operand whose path names a group is refused in the Kernel's gate order, the walk's missing star, then a root's class, then the kind gate, on the flat and the addressed route; only a miss on the reference is displaced, so an invalid rule group answers first
 - `owner`: [`FlatValidation.lean`](../../A12Kernel/Semantics/FlatValidation.lean), [`GroupPresence.lean`](../../A12Kernel/Semantics/GroupPresence.lean), [field-slot resolver](../../A12Kernel/Elaboration/Flat/Model.lean), [field-slot cases](../../A12Kernel/Conformance/GroupOperandRepetitionWalk.lean)
 - `assurance`: E/P closed for admitted slice; selected C/X
 - `remains`: Repeatable/group breadth: [SG13](../SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion)

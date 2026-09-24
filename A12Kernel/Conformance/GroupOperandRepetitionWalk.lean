@@ -178,8 +178,11 @@ example :
       atStorefront (list storefrontModel ["Storefront"] .atLeastOneGroupFilled
         [.group batches, .group (rel ["Billing"])]),
       atStorefront (presence storefrontModel ["Storefront"] batches .filled),
-      atStorefront (count storefrontModel ["Storefront"] [batches])] =
-      List.replicate 5 noWildcard ∧
+      atStorefront (count storefrontModel ["Storefront"] [batches]),
+      atStorefront (list storefrontModel ["Storefront"] .noGroupFilled [.group batches]),
+      atStorefront (presence storefrontModel ["Storefront"] batches .notFilled),
+      atStorefront (count storefrontModel ["Storefront"] [batches, rel ["Billing"]])] =
+      List.replicate 8 noWildcard ∧
     [atBatches (list storefrontModel ["Batches"] .allGroupsFilled [.group batches]),
       atBatches (list storefrontModel ["Batches"] .atLeastOneGroupFilled [.group batches]),
       atBatches (list storefrontModel ["Batches"] .atLeastOneGroupFilled
@@ -211,9 +214,8 @@ example :
   native_decide
 
 /- The entity-list carriers read the same operand through the shared resolver, so their own gates
-   never answer first: `Sum` over the pair and the sole unstarred group that `NumberOfValueInFields`
-   and `FirstFilledValue` would refuse as unstarred, the filled-field group source behind the field-fill
-   quantifiers, and `CurrentRepetition`, whose group is its only operand. -/
+   never answer first: `Sum` over the pair and over the sole group, the filled-field group source
+   behind the field-fill quantifiers, and `CurrentRepetition`, whose group is its only operand. -/
 example :
     (match elaborateNumberEntitySource policyModel ["Policy"]
         { first := .group claims, rest := [.group insured] } with
@@ -309,7 +311,9 @@ private def named (base : PathBase) (groups : List String) (field : String) : Su
 
 /- The unbound repeatable group and a field inside it draw the missing star, from the rule's own
    group and by an up-step, and so does the other root; a fixed group meets the kind gate; and the
-   repeatable root a rule sits in passes the walk and draws its root class. -/
+   repeatable root a rule sits in passes the walk and draws its root class, as a fixed root does.
+   The Kernel's fixed-root row spells the root `..` from `/Policy/Insured`, which no flat path
+   spells, so this lock reads the same group by its absolute name. -/
 example :
     [atPolicy (fieldSlot policyModel ["Policy"] true (named (.relative 0) [] "Claims")),
       atPolicy (fieldSlot policyModel ["Policy"] false (named (.relative 0) [] "Claims")),
@@ -322,7 +326,17 @@ example :
     atPolicy (fieldSlot policyModel ["Policy"] true (named (.relative 0) [] "Insured")) =
       some (some .noGroupsAllowed) ∧
     atBatches (fieldSlot storefrontModel ["Batches"] true (named .absolute [] "Batches")) =
+      some (some .rootGroupReferenced) ∧
+    atInsured (fieldSlot policyModel ["Policy", "Insured"] true (named .absolute [] "Policy")) =
       some (some .rootGroupReferenced) := by
+  native_decide
+
+/- Only a miss on the reference is displaced by the group it names: an invalid rule group still
+   answers first. -/
+example :
+    (match elaborate policyModel [] (.fieldFilled (named .absolute ["Policy"] "Claims")) with
+      | .error (.resolve (.invalidRuleGroup [])) => true
+      | _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.GroupOperandRepetitionWalk

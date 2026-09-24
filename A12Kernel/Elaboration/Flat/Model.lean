@@ -688,22 +688,25 @@ def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup : Group
   if !model.hasGroupPath group then none
   let scope := model.repeatableScopeForGroupPath group
   if !scope.all readingScope.contains then some (group, .unboundLevel)
-  else if group.length == 1 then
-    some (group, if scope.isEmpty then .fixedRoot else .boundRoot)
+  else if group.length == 1 then some (group, .root)
   else some (group, .group)
 
 /-- Resolve a presence predicate's field operand with `resolve`, classing a path that names a group
-    by `groupFieldSlotRefusal?` instead of as the field miss `resolve` reports. -/
+    by `groupFieldSlotRefusal?` instead of as the field miss `resolve` reports. Only a failure about
+    the reference is displaced: an invalid rule group answers ahead of any operand. -/
 def FlatModel.resolvePresenceOperand (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) (resolve : Except ResolveError FlatFieldDecl) :
     Except ResolveError FlatFieldDecl :=
+  let displace (error : ResolveError) : Except ResolveError FlatFieldDecl :=
+    match model.groupFieldSlotRefusal? declaringGroup
+        (model.repeatableScopeForGroupPath declaringGroup) reference with
+    | some (group, refusal) => .error (.groupInFieldSlot group refusal error)
+    | none => .error error
   match resolve with
   | .ok declaration => .ok declaration
-  | .error error =>
-      match model.groupFieldSlotRefusal? declaringGroup
-          (model.repeatableScopeForGroupPath declaringGroup) reference with
-      | some (group, refusal) => .error (.groupInFieldSlot group refusal error)
-      | none => .error error
+  | .error error@(.invalidEntity _) | .error error@(.invalidReference _)
+  | .error error@(.shortNameNotUnique _) => displace error
+  | .error error => .error error
 
 /-- Resolve a nonrepeatable operand of a condition after a caller has validated the model.
 `declaringGroup` is the reading rule's group, so an operand that group already iterates is refused
