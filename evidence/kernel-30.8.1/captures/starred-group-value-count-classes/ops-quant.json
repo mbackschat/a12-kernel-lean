@@ -1,0 +1,158 @@
+[
+ {
+  "id": "AllFieldsFilled-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllFieldsFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "AllFieldsFilled-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And AllFieldsFilled(Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "NoFieldFilled-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoFieldFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "NoFieldFilled-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NoFieldFilled(Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "NotAllFieldsFilled-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllFieldsFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "NotAllFieldsFilled-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotAllFieldsFilled(Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "MoreThanOneFieldFilled-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MoreThanOneFieldFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "MoreThanOneFieldFilled-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And MoreThanOneFieldFilled(Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "NotExactlyOneFieldFilled-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotExactlyOneFieldFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "NotExactlyOneFieldFilled-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And NotExactlyOneFieldFilled(Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "FieldsNotCollectivelyFilled-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldsNotCollectivelyFilled(Rows*)",
+   "--code",
+   "E1"
+  ]
+ },
+ {
+  "id": "FieldsNotCollectivelyFilled-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Item/Weight",
+   "--condition",
+   "FieldFilled(Weight) And FieldsNotCollectivelyFilled(Rows*/Detail)",
+   "--code",
+   "E1"
+  ]
+ }
+]

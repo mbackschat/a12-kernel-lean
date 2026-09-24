@@ -6,7 +6,7 @@ import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked group-scope filled-field counts
 
-This boundary admits two whole-operand group forms for the count and seven field-fill quantifiers: one fixed nonrepeatable ordinary path group or one terminal repeatable starred group. Declared slots supplement the instantiated extent only for predicates that read the missing tail. Computation, mixed lists, filters, partial validation, and raw-document execution remain outside.
+This boundary admits two whole-operand group forms for the count and seven field-fill quantifiers: one fixed nonrepeatable ordinary path group or one starred group, whose terminal is repeatable or a nonrepeatable group below a starred level. Declared slots supplement the instantiated extent only for predicates that read the missing tail. Computation, mixed lists, filters, partial validation, and raw-document execution remain outside.
 -/
 
 namespace A12Kernel
@@ -145,14 +145,19 @@ def elaborateFilledFieldCountFixedGroupValidationSource (model : FlatModel)
         (.path authored.group) |>.mapError fun error => .shape (.groupReference error)
       finishFilledFieldCountGroupSource model (.fixed reference)
 
-/-- Admit one measured terminal repeatable starred group without admitting the separate starred-ancestor/nonrepeatable-terminal shape. -/
+/-- Admit one starred group: a repeatable terminal, or a nonrepeatable group below a starred level,
+    which the Kernel admits on the count and on all seven field-fill quantifiers
+    ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)).
+    Either way the operand expands to every field below its terminal with the star carried down, so
+    the declared extent below a nonrepeatable terminal is the reopened rows' capacity. -/
 def elaborateFilledFieldCountStarredGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceFilledFieldCountStarredGroupValidationSource) :
     Except FilledFieldCountGroupElabError
       (CheckedFilledFieldCountGroupSource model) := do
-  let starred ← elaborateStarredGroupSource model declaringGroup authored.group
-    |>.mapError fun error => .shape (.starredGroup error)
-  finishFilledFieldCountGroupSource model (.starred starred)
+  match ← elaborateStarredGroupOperandSource model declaringGroup authored.group
+      |>.mapError fun error => .shape (.starredGroup error) with
+  | .terminalRepeatable source => finishFilledFieldCountGroupSource model (.starred source)
+  | .terminalPresence source => finishFilledFieldCountGroupSource model (.starredPresence source)
 
 end A12Kernel

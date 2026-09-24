@@ -1,0 +1,84 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "b00ed429e6fe63a399fa3f739ffa1050ba44d8bae78af7ec952bff72f1945b67",
+  "observations" : [ {
+    "id" : "AllFieldsFilled-ctl",
+    "inputHash" : "817386f9506e94a4ffbfe507734745ad050b2286834a60f48bafcd7c6ffe6eb8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "AllFieldsFilled-below",
+    "inputHash" : "72d41200ea4ae56b6de15f42ddf5a961273b1824835eb734370aceae105380ad",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "NoFieldFilled-ctl",
+    "inputHash" : "728999d8247c7b2c577dd967e824fdd24b9333019fc0c1feb9c095991a0a7c55",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "NoFieldFilled-below",
+    "inputHash" : "420bdea69c559eca051f6e04239bc32aac341f29b047021a8ec76b577fb21c4e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "NotAllFieldsFilled-ctl",
+    "inputHash" : "2695552647daf221bf220fe956b2f4d5e47c12e67c7f3efb4ecff7e7e6855d93",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "NotAllFieldsFilled-below",
+    "inputHash" : "c4ed7d4c94780a023d197ab8c015fbd0ca4ae22cf77a99f80d986885566b62cf",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "MoreThanOneFieldFilled-ctl",
+    "inputHash" : "135218e400ad8fbbe2419bb547cbd6274b93edae088036acc87de7aa9b17d714",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "MoreThanOneFieldFilled-below",
+    "inputHash" : "849868c164d6d5923b60268d00362d0a0d523f086282d180f6b1cb67995f772d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "NotExactlyOneFieldFilled-ctl",
+    "inputHash" : "60587aae409a2b4f5df3b55598918b423eab7c172d543fb0db59a64d7577b130",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "NotExactlyOneFieldFilled-below",
+    "inputHash" : "4cd128ce6da30e624cfc2be4d6ff984adf3569fa5bc3760392cc1c9dc0d152b7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FieldsNotCollectivelyFilled-ctl",
+    "inputHash" : "c8cf994f6a014a61f62f23436f69c2e2d94322d5b43c1ce85970befcf5cf62de",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FieldsNotCollectivelyFilled-below",
+    "inputHash" : "5572eb29ec5dcc7eb341609ae5600c2a0e0c2af5683058b15e4b560dea1d9d4d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

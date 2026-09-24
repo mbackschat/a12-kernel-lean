@@ -125,6 +125,47 @@ example :
     starredCount twoRows [cell 10 [2] "a2"] = some (.value 1) := by
   native_decide
 
+/-- A fixed `Detail` inside the repeatable `Lines`, beside a field of `Lines` itself, so a count of
+    `Lines*/Detail` separates Detail's fields from the whole row. -/
+private def belowStarModel : FlatModel :=
+  { fields := [
+      { id := 12, groupPath := ["Order", "Lines"], name := "A",
+        policy := { kind := .string }, repeatableScope := [10] },
+      { id := 13, groupPath := ["Order", "Lines", "Detail"], name := "D",
+        policy := { kind := .string }, repeatableScope := [10] }]
+    repeatableGroups := [{
+      level := 10, path := ["Order", "Lines"], repeatability := some 3 }] }
+
+private def belowStarReading (operator : Option FieldFillQuantifier) (rows : List Nat)
+    (cells : List ClassifiedCellInput) : Option (FilledFieldCount ⊕ Option ValidationFillOutcome) := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler belowStarModel).toOption
+  let checked ← (elaborateFilledFieldCountStarredGroupValidationSource belowStarModel ["Order"]
+    { group := { base := .absolute, groups := [{ name := "Order" },
+      { name := "Lines", starred := true }, { name := "Detail" }] } }).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := rows.map fun row => { group := 10, path := [row] }
+    cells }).toOption
+  match operator with
+  | none => .inl <$> (checked.evaluateCheckedDocumentValidation document []).toOption
+  | some operator =>
+      .inr <$> (checked.evaluateCheckedDocumentValidationFill? operator document []).toOption
+
+/- The Kernel admits a fixed group below a star on every field-fill carrier
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)),
+   and the operand means every field inside it with the star carried down
+   ([`spec/02`](../../spec/02-logic-and-formal-errors.md)). So only `D` counts, and the declared range
+   is one slot per `Lines` row the capacity allows. The values are this account's, external evidence
+   pending. -/
+example :
+    belowStarReading none [1, 2] [cell 12 [1] "a", cell 13 [2] "d"] = some (.inl (.value 1)) ∧
+    belowStarReading (some .allFieldsFilled) [1, 2, 3]
+        [cell 13 [1] "d", cell 13 [2] "d", cell 13 [3] "d"] =
+      some (.inr (some (.fired .value))) ∧
+    belowStarReading (some .allFieldsFilled) [1, 2] [cell 13 [1] "d", cell 13 [2] "d"] =
+      some (.inr (some .falseOrUnknown)) := by
+  native_decide
+
 private def nestedModel : FlatModel :=
   { fields := [
       { id := 20, groupPath := ["Probe", "Flat"], name := "FlatA",
