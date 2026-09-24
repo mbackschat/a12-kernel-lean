@@ -2527,3 +2527,11 @@ The group-count duplicate case locked `MVK_DUPLICATE_PARAM2` for `Rows*` beside 
 **Retain the authored spelling of every static row, not only its class.** A class sentence admits several spellings, and a fixture author picks one without a signal that the others differ. When a gate changes and an old case breaks, ask first whether the case's spelling was the measured one before reading the break as a regression.
 
 Related: [[LF189]] on a case locking a channel its checkpoint never claimed, [[LF116]] on reusing a mechanism across a boundary.
+
+## LF192 — a replica trimmed of what no selection names can refute the true mechanism while the wrong one stays green
+
+`KF209`'s fixture holds `Items` (50) of a `Tag` and a `Qty`, and its nine selections name `Qty`, the group, and its first two rows, never `Tag` and never a third row. The local replica kept `Qty` alone at capacity two, because no selection mentioned either. On that replica a gate asked at the group path reproduced every row it locked. The peer's second `kf464` table later showed the count walking the group's own declared instances, where an uncovered sibling field leaves an instance only partly relevant and every declared row the document lacks must be covered. That walk fits `KF209` on the real fixture and fails rows 1, 3, 5 and 6 on the replica: restoring `Tag` repairs rows 1 and 3, rows 5 and 6 also need the capacity of fifty, and restoring the capacity alone repairs none (piped probe, 2026-09-24). The unfaithful fixture would have refuted the right account and confirmed the wrong one ([record](sources/inbound-group-operand-batches.md#src-count-partial-extent), [second table](SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)).
+
+**Replicate a peer's fixture declaration whole, including every field and capacity the selections never name.** Whatever is uncovered on every row is a constant of the matrix, and [`LF136`](LEAN-FINDINGS.md) already warns that an unnamed constant hides the variable a mechanism reads. The replica-specific trap is that trimming the constant looks like simplification, because no expected value mentions it. Before trimming a replicated model, ask what the selections leave uncovered on every row, and keep it.
+
+Related: [[LF136]] on a constant shared by every row, [[LF191]] on retaining the authored spelling rather than its class.

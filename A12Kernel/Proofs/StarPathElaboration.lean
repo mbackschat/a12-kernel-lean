@@ -42,7 +42,8 @@ theorem checkedStarFieldPath_allRowsRelevant_partialSet_iff
       retained ≠ [] ∧ ∀ entity ∈ retained,
         entity.wildcardsLevels model checked.reopenedScope = true := by
   simp [CheckedStarFieldPath.allRowsRelevant,
-    ValidationRelevanceScope.coversAggregateExtent]
+    ValidationRelevanceScope.coversAggregateExtent,
+    ValidationRelevanceScope.reducedUniversalCovers]
 
 /-- Partial value-list extent relevance is existential: one covering identifier suffices even when concrete siblings are also selected. -/
 theorem checkedStarFieldPath_valueListExtentRelevant_partialSet_iff

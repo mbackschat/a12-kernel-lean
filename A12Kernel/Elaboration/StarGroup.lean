@@ -89,12 +89,6 @@ structure CheckedStarredGroupSource (model : FlatModel) where
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
 
-/-- Partial starred-group counting distinguishes an unavailable group extent from the exact in-capacity structural row count. -/
-inductive PartialValidationFilledGroupCountResult where
-  | nonRelevant
-  | evaluated (count : FilledGroupCount)
-  deriving Repr, DecidableEq
-
 /-- One nonrepeatable terminal group reached through a shared checked star plan. Its concrete presence remains the existing descendant-derived group product, not structural row count. -/
 structure CheckedStarredGroupPresenceSource (model : FlatModel) where
   declaringGroup : GroupPath
@@ -339,16 +333,6 @@ def numberOfFilledGroupsOperand? (checked : CheckedStarredGroupSource model)
   pure (checked.group.repeatability.bind fun extent =>
     (count.availableWithFillability? extent).map fun available =>
       .value available.1 available.2)
-
-/-- Count the starred group in partial validation only after its group-path extent is known. The gate precedes topology resolution. -/
-def evaluatePartialNumberOfFilledGroups
-    (checked : CheckedStarredGroupSource model)
-    (document : Document) (outer : Env) (scope : ValidationRelevanceScope) :
-    Except StarAddressingError PartialValidationFilledGroupCountResult :=
-  if checked.allRowsRelevant scope outer then do
-    pure (.evaluated (← checked.numberOfFilledGroups document outer))
-  else
-    pure .nonRelevant
 
 end CheckedStarredGroupSource
 

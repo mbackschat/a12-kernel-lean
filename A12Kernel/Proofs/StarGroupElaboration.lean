@@ -61,7 +61,8 @@ theorem checkedStarredGroupSource_allRowsRelevant_partialSet_iff
       retained ≠ [] ∧ ∀ entity ∈ retained,
         entity.wildcardsLevels model checked.path.reopenedScope = true := by
   simp [CheckedStarredGroupSource.allRowsRelevant,
-    ValidationRelevanceScope.coversAggregateExtent]
+    ValidationRelevanceScope.coversAggregateExtent,
+    ValidationRelevanceScope.reducedUniversalCovers]
 
 /-- Checked nonrepeatable-terminal lowering retains the model-derived outer-to-inner repeatable ancestry. -/
 @[simp] theorem checkedStarredGroupPresenceSource_ancestry

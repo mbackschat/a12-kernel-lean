@@ -160,14 +160,6 @@ private def partialValueCountFor? (selectedRows : List RowAddr)
   let document ← partialDocumentFor? selectedRows cells
   (source.evaluateCheckedDocumentPartialValueCount 10 document [] scope).toOption
 
-private def partialFilledGroupCountFor? (selectedRows : List RowAddr)
-    (scope : ValidationRelevanceScope) :
-    Option PartialValidationFilledGroupCountResult := do
-  let source ← filledGroupSource?
-  (source.evaluatePartialNumberOfFilledGroups {
-    instantiatedRows := selectedRows
-    rawCells := fun _ => none } [] scope).toOption
-
 private def partialFilledCountWith? (scope : ValidationRelevanceScope)
     (cells : List ClassifiedCellInput) :
     Option PartialValidationFilledFieldCountResult :=
@@ -177,10 +169,6 @@ private def partialValueCountWith? (scope : ValidationRelevanceScope)
     (cells : List ClassifiedCellInput) :
     Option PartialValidationNumberAggregateResult :=
   partialValueCountFor? (rows.take 2) scope cells
-
-private def partialFilledGroupCount? (scope : ValidationRelevanceScope) :
-    Option PartialValidationFilledGroupCountResult :=
-  partialFilledGroupCountFor? (rows.take 2) scope
 
 private def fieldWildcard : RelevantEntityPattern :=
   relevance premium.path [.concrete 1, .all, .concrete 1]
@@ -333,24 +321,6 @@ example :
         some .nonRelevant := by
   native_decide
 
-/- The starred group count applies the same reduced-universal predicate to the group operand path. Field identifiers do not project upward to that path, so only the explicit group wildcard admits this matrix. -/
-example :
-    partialFilledGroupCount? (.partialSet [fieldWildcard]) =
-        some .nonRelevant ∧
-      partialFilledGroupCount? (.partialSet [fieldWildcard,
-        concreteGroup 1, concreteGroup 2]) = some .nonRelevant ∧
-      partialFilledGroupCount? (.partialSet [fieldWildcard,
-        concreteField 1]) = some .nonRelevant ∧
-      partialFilledGroupCount? (.partialSet [concreteField 1,
-        groupWildcard]) = some (.evaluated (.value 2)) ∧
-      partialFilledGroupCount? (.partialSet [allSemanticFieldWildcard,
-        concreteGroup 1, concreteGroup 2]) = some .nonRelevant ∧
-      partialFilledGroupCount? (.partialSet [concreteGroup 1,
-        concreteGroup 2]) = some .nonRelevant ∧
-      partialFilledGroupCount? (.partialSet [concreteGroup 2]) =
-        some .nonRelevant := by
-  native_decide
-
 /- The numeric value count keeps the existential value-list extent. One field or ancestor-group wildcard suffices even beside concrete group siblings, while concrete rows alone cannot close the extent. -/
 example :
     let cells := [cell 1 10, cell 2 10]
@@ -367,25 +337,19 @@ example :
         some .nonRelevant := by
   native_decide
 
-/- The three inert-fixture controls keep all operators relevant while separating filled fields, structural groups, and matching values. -/
+/- The inert-fixture controls keep both field operators relevant while separating filled fields from matching values; `PartialGroupCount` owns the structural-group control. -/
 example :
     let selectedRows := rows.take 2
     let scope := ValidationRelevanceScope.partialSet [fieldWildcard, groupWildcard]
     partialFilledCountFor? selectedRows scope [cell 1 11, cell 2 11] =
         some (.evaluated (.value 2)) ∧
-      partialFilledGroupCountFor? selectedRows scope =
-        some (.evaluated (.value 2)) ∧
       partialValueCountFor? selectedRows scope [cell 1 11, cell 2 11] =
         some (.evaluated (.value 0 .fixed)) ∧
       partialFilledCountFor? selectedRows scope [] =
         some (.evaluated (.value 0)) ∧
-      partialFilledGroupCountFor? selectedRows scope =
-        some (.evaluated (.value 2)) ∧
       partialValueCountFor? selectedRows scope [] =
         some (.evaluated (.value 0 .growOnly)) ∧
       partialFilledCountFor? [] scope [] =
-        some (.evaluated (.value 0)) ∧
-      partialFilledGroupCountFor? [] scope =
         some (.evaluated (.value 0)) ∧
       partialValueCountFor? [] scope [] =
         some (.evaluated (.value 0 .growOnly)) := by
