@@ -775,7 +775,7 @@ private def rowsModel : FlatModel :=
         policy := { kind := .number unsigned }, repeatableScope := [20] },
       { id := 3, groupPath := ["Form", "Box", "Lines"], name := "Right",
         policy := { kind := .number unsigned }, repeatableScope := [20] }]
-    repeatableGroups := [{ level := 20, path := ["Form", "Box", "Lines"] }] }
+    repeatableGroups := [{ level := 20, path := ["Form", "Box", "Lines"], repeatability := some 2 }] }
 
 private def rowsPrepared :
     PreparedFlatStringContext rowsModel builtinStringPatternCompiler :=

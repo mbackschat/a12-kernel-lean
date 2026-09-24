@@ -120,6 +120,14 @@ def resolveCheckedValidationCells (group : CheckedTokenEntityGroup model)
     group.source.boundLevelCount
     (group.slots.map fun slot => (slot.declaration, slot.operand))
 
+/-- Whether the slot's reopened rows leave declared capacity open, asked of the same declarations
+    and depth as its cell walk; the walk enumerates instantiated rows only and cannot see it. -/
+def resolveCheckedUninstantiatedTail (group : CheckedTokenEntityGroup model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError Bool :=
+  document.resolveCheckedGroupUninstantiatedTail outer
+    group.source.boundLevelCount (group.slots.map (·.declaration))
+
 /-- A token group has complete partial value-list extent only when every declaration in its certified expansion has one covering relevant identifier across the levels the group operand reopens. -/
 def partialExtentRelevant (group : CheckedTokenEntityGroup model)
     (scope : ValidationRelevanceScope) (outer : Env) : Bool :=

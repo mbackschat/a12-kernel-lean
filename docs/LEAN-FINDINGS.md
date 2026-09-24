@@ -2499,3 +2499,13 @@ Two `spec/` sentences narrowed at `aa93edab` gave `MVK_INVALID_ROOT_GROUP` to "a
 **The tell:** a rule stated over "the first segment", "the last level" or any positional property of a path, when the rows include a relative spelling. A relative path's positions are not the resolved path's positions, so every such sentence owes one relative row checked against it.
 
 Related: [[LF121]] on searching for the literal values a settling observation would carry, [[LF187]] on a scoped claim delivering its own overclaim.
+
+## LF189 — a retained artifact carries every channel it observed, so a case that locks one its checkpoint never claimed can contradict the measurement unseen
+
+The shared group walk set `hasUninstantiatedTail := false`, and its own docstring said the value was false "by construction rather than by fact". Two consumers, the Boolean value count and the temporal extrema, asked for the real tail separately; the Number and String value counts, the aggregates and the temporal distinct count inherited the false one. The retained [distinct-count artifact](sources/temporal-runtime-fold-probes.md#src-distinct-count-group-expansion-fold) had typed `NumberOfDifferentValues(Rows*) == 1` `OMISSION` on two of three rows since 2026-09-06, while the case beside it locked `.value 1 .fixed`, which types `VALUE`. The checkpoint claimed only the counts, so nobody compared the fire type, and an eight-document runtime matrix over a fixed group below a star finally showed the Number and String counts typing `VALUE` where the Kernel typed `OMISSION` ([checkpoint](sources/group-list-and-capacity-probes.md#src-below-star-group-runtime)).
+
+**When a case locks a whole result, check every channel of it against the artifact, not only the channel the checkpoint claims.** A `NumericOperand` carries a value and a fillability, and the artifact carries a code and a type; the checkpoint's claim picks a subset, but the case locks everything. The unclaimed channel then sits in a green build contradicting a retained measurement.
+
+**A value false by construction is a representation shortcut, and every consumer that patches around it is evidence that it is wrong at the root.** Fix the flag where it is produced and delete the patches in the same change. Here it closed contradictions with three retained artifacts that nobody had compared on type, and it made the partial token group type a firing as its explicit star expansion does, where the peer measures that equivalence on codes only.
+
+Related: [[LF116]] on reusing a mechanism across a carrier boundary, [[LF124]] on narrower accounts falling to measurement.

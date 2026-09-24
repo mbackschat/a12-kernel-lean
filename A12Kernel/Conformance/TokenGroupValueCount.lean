@@ -108,12 +108,13 @@ example :
           some (.value 1 .fixed) := by
   native_decide
 
-/- Instantiated empty cells retain growth, while an absent group extent has the exact identity. -/
+/- An empty extent counts zero whether its rows are instantiated empty or absent, and both leave the
+   count growable below `Lines`' declared maximum. -/
 example :
     computation? [row 1, row 2] [
       emptyCell 30 1, emptyCell 31 1, emptyCell 30 2, emptyCell 31 2] =
         some (.value 0 .growOnly) ∧
-      computation? [] [] = some (.value 0 .fixed) := by
+      computation? [] [] = some (.value 0 .growOnly) := by
   native_decide
 
 /- A malformed reached cell poisons the count after an earlier match. -/

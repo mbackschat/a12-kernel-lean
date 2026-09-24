@@ -50,6 +50,7 @@ import A12Kernel.Conformance.TemporalExtractorEntry
 import A12Kernel.Conformance.RoundingArgument
 import A12Kernel.Conformance.FixedGroupRepeatableAncestorCarriers
 import A12Kernel.Conformance.AncestorStarredGroupCount
+import A12Kernel.Conformance.BelowStarGroupRuntime
 import A12Kernel.Conformance.MixedFilledGroupCount
 import A12Kernel.Conformance.RepeatableDateConstantComputation
 import A12Kernel.Conformance.RepeatableDateTimeConstantComputation

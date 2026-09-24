@@ -218,37 +218,15 @@ def resolveCheckedGroupEntityOperandPairs
     pure (cells.map fun cell => (payload, cell))
   pure perDeclaration.flatten
 
-/-- The `(row × field)` extent a group-scope operand reaches: every declaration in the group's subtree, at every instantiated row of that declaration's repeatable scope **below the operand's own depth**.
-
-    **The enumeration comes from the model's repeatability and never from a star plan.** `spec/07` marks the scope rule as an observed contract rather than a derived one and warns that an implementation reusing its star machinery, or reading the extent off the rule's own iterating group or binding depth, gets it wrong. The environment is consulted only to fix the levels *above* the operand, never to choose the depth: a rule authored on a repeatable group whose operand names an ancestor still reaches that ancestor's whole extent.
-
-    Cells are emitted declaration-major in stable model declaration order, with each declaration's canonical row order inside it. Fixed-group token `FirstFilledValue` observes declaration order; its terminal single-level starred-group fragment observes that every row of one declaration precedes every row of the next. Set-valued consumers remain insensitive to the order. A filter cannot attach to a group operand, so every cell is unfiltered.
-
-    `hasUninstantiatedTail` is `false` because only instantiated rows are enumerated. A consumer that needs declared-tail fillability must determine it separately: checked Boolean validation does so from every selected declaration's scope, while the measured checked-computation group carriers restrict their admitted shapes and consume only this concrete projection. -/
-def resolveCheckedGroupEntityOperandCore
-    (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
-    (declarations : List FlatFieldDecl) :
-    Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
-  let paired ← checked.resolveCheckedGroupEntityOperandPairs outer boundCount
-    (declarations.map fun declaration => (declaration, ()))
-  pure {
-    topology := none
-    addressedCells := paired.map Prod.snd
-    hasUninstantiatedTail := false
-    hasHaving := false
-    hasNonRelevant := false
-  }
-
 /-- Whether any repeatable declaration this group operand reopens retains **declared but
 uninstantiated** capacity, at the operand's own depth.
 
-    The companion of `resolveCheckedGroupEntityOperandCore`, and separate from it on purpose: that
-    walk enumerates only instantiated rows, so its `hasUninstantiatedTail` is `false` by
-    construction rather than by fact. A consumer whose result carries missing provenance for a
-    declared-but-absent row needs this query as well, and there are now two — Boolean value-count
-    fillability, and the temporal extrema, whose `given` flag `spec/05` ties to an omitted tail. The
-    two parameters are the same pair the walk takes, so a caller cannot ask the two questions about
-    different operands.
+    The walk below enumerates only instantiated rows, so it cannot see this capacity itself and asks
+    here. The tail is a fact about the operand, not about one consumer: kernel 30.8.1 keeps a
+    `NumberOfValueInFields` over a group growable while a reopened row is still missing, on the
+    Number and String arms as on the Boolean one
+    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-runtime)), and the temporal extrema's
+    `given` flag reads the same omitted tail.
 
     A scope no deeper than the operand's own depth contributes nothing: every one of its levels is
     fixed by `outer`, so there is no reopened tail to be open. -/
@@ -269,6 +247,31 @@ def resolveCheckedGroupUninstantiatedTail
           checked.source.toDocument outer).mapError .addressing
       pure topology.domain.hasOpenTail
   pure (tails.any id)
+
+/-- The `(row × field)` extent a group-scope operand reaches: every declaration in the group's subtree, at every instantiated row of that declaration's repeatable scope **below the operand's own depth**.
+
+    **The enumeration comes from the model's repeatability and never from a star plan.** `spec/07` marks the scope rule as an observed contract rather than a derived one and warns that an implementation reusing its star machinery, or reading the extent off the rule's own iterating group or binding depth, gets it wrong. The environment is consulted only to fix the levels *above* the operand, never to choose the depth: a rule authored on a repeatable group whose operand names an ancestor still reaches that ancestor's whole extent.
+
+    Cells are emitted declaration-major in stable model declaration order, with each declaration's canonical row order inside it. Fixed-group token `FirstFilledValue` observes declaration order; its terminal single-level starred-group fragment observes that every row of one declaration precedes every row of the next. Set-valued consumers remain insensitive to the order. A filter cannot attach to a group operand, so every cell is unfiltered.
+
+    Only instantiated rows are enumerated, so `hasUninstantiatedTail` comes from the declared
+    capacity those rows leave open rather than from the walk. -/
+def resolveCheckedGroupEntityOperandCore
+    (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
+    (declarations : List FlatFieldDecl) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
+  let paired ← checked.resolveCheckedGroupEntityOperandPairs outer boundCount
+    (declarations.map fun declaration => (declaration, ()))
+  let hasUninstantiatedTail ←
+    checked.resolveCheckedGroupUninstantiatedTail outer boundCount declarations
+  pure {
+    topology := none
+    addressedCells := paired.map Prod.snd
+    hasUninstantiatedTail
+    hasHaving := false
+    hasNonRelevant := false
+  }
+
 
 end CheckedDocument
 

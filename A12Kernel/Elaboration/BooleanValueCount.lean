@@ -87,16 +87,6 @@ def referencesField (group : CheckedBooleanValueCountGroup model expected)
     (field : FieldId) : Bool :=
   group.fields.any (·.id == field)
 
-/-- Whether any repeatable declaration reopened by this group retains declared-but-uninstantiated
-    capacity. The query itself is the shared group owner's, beside the walk that produces this
-    operand's concrete extent; what stays here is which declarations and which depth to ask about. -/
-def resolveCheckedUninstantiatedTail
-    (group : CheckedBooleanValueCountGroup model expected)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError Bool :=
-  document.resolveCheckedGroupUninstantiatedTail outer
-    group.source.boundLevelCount group.fields
-
 end CheckedBooleanValueCountGroup
 
 /-- One checked Boolean/Confirm entity-list operand. -/
@@ -647,20 +637,15 @@ def resolvedCheckedValidationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
-  let (core, hasUninstantiatedTail) ← match checked with
+  let core ← match checked with
     | .field source =>
-        (document.resolveCheckedDirectEntityOperandCore source.declaration.id)
-          |>.map fun core => (core, core.hasUninstantiatedTail)
+        document.resolveCheckedDirectEntityOperandCore source.declaration.id
     | .star source =>
-        (source.source.resolveCheckedValidationEntityOperandCore document outer
-          (source.filter.map (·.condition)))
-          |>.map fun core => (core, core.hasUninstantiatedTail)
-    | .group source => do
-        let core ← document.resolveCheckedGroupEntityOperandCore outer
+        source.source.resolveCheckedValidationEntityOperandCore document outer
+          (source.filter.map (·.condition))
+    | .group source =>
+        document.resolveCheckedGroupEntityOperandCore outer
           source.source.boundLevelCount source.fields
-        let hasUninstantiatedTail ←
-          source.resolveCheckedUninstantiatedTail document outer
-        pure (core, hasUninstantiatedTail)
   let addressed := match checked with
     | .group _ => core.inCapacityAddressedCells
     | .star _ => core.inCapacityAddressedCells
@@ -668,7 +653,7 @@ def resolvedCheckedValidationSide
   pure {
     cells := addressed.map fun cell =>
       booleanValueCountCellAt .validation cell.cell
-    hasUninstantiatedTail
+    hasUninstantiatedTail := core.hasUninstantiatedTail
     hasHaving := core.hasHaving
     hasNonRelevant := core.hasNonRelevant }
 

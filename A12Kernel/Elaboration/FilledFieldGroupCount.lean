@@ -59,24 +59,29 @@ def evaluateCheckedDocumentValidation
     (resolved.inCapacityAddressedCells.map fun addressed =>
       observeCell .validation addressed.cell))
 
-/-- Lift the measured fixed-group validation count against its subtree's declared **slot capacity**.
-    A subtree owning a repeatable descendant admits more cells than it declares fields, and the count
-    stays grow-only until every one of those slots is filled; the declaration count would freeze it
-    early ([checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). An
-    unretained descendant maximum yields no operand at all rather than an unmeasured movement rule,
-    matching the starred carrier and reachable in no authorable model. The starred carrier returns
-    `none` here because its movement depends on a separate declared row extent. -/
-def evaluateCheckedDocumentFixedValidationOperand?
+/-- Lift the validation count against the operand's declared **slot capacity**, so the count stays
+    grow-only until every slot the operand can reach is filled.
+
+    A fixed group's capacity is its subtree's: a repeatable descendant admits more cells than the
+    subtree declares fields, and the declaration count would freeze the count early
+    ([checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). A fixed group below
+    a starred level also multiplies in every level the star reopens, since kernel 30.8.1 types
+    `Rows*/Detail` `VALUE` only once both of Detail's fields are filled in both rows `Rows` admits
+    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-runtime)).
+    A terminal repeatable star has no movement measurement on this carrier and returns `none`, as
+    does an unretained maximum, which no authorable model reaches. -/
+def evaluateCheckedDocumentValidationOperand?
     (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option NumericOperand) := do
   let count ← checked.evaluateCheckedDocumentValidation document outer
-  match checked.source with
-  | .fixed _ =>
-      pure ((model.groupSubtreeSlotCapacity? checked.source.groupPath).bind
-        fun capacity => (count.availableWithFillability? capacity).map
-          fun available => .value available.1 available.2)
-  | .starred _ | .starredPresence _ => pure none
+  let capacity? := match checked.source with
+    | .fixed _ => model.groupSubtreeSlotCapacity? checked.source.groupPath
+    | .starredPresence _ =>
+        model.declarationsSlotCapacity? checked.source.boundLevelCount checked.declarations
+    | .starred _ => none
+  pure (capacity?.bind fun capacity => (count.availableWithFillability? capacity).map
+    fun available => .value available.1 available.2)
 
 /-- The extensional validation tally of the group operand's in-capacity extent.
 

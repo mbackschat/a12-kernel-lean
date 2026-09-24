@@ -695,7 +695,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
 <a id="src-starred-group-value-count-classes"></a>
-- [A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted there](sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)
+- [A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted on every one of them](sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)
 <a id="src-pattern-and-key-resolver-classes"></a>
 - [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a field read from the rule that iterates it is admitted on the pattern and group-list carriers](sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)
 <a id="src-group-operand-resolution-classes"></a>
@@ -864,6 +864,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
 <a id="src-group-field-fill-declared-slots"></a>
 - [Field-group quantifiers retain declared slots and bound-parent capacity](sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)
+<a id="src-below-star-group-runtime"></a>
+- [A fixed group below a star counts its own fields in every reopened in-capacity row, moves until every declared slot below the star is filled, and a group operand's value count stays growable while a reopened row is missing](sources/group-list-and-capacity-probes.md#src-below-star-group-runtime)
 <a id="src-group-count-list-extent"></a>
 - [A group-count list's extent is its operand list, and a starred member breaks that](sources/group-list-and-capacity-probes.md#src-group-count-list-extent)
 

@@ -308,7 +308,7 @@ example :
       emptyComputationCell 50 1, emptyComputationCell 51 1,
       emptyComputationCell 50 2, emptyComputationCell 51 2] =
         some (.value 0 .growOnly) ∧
-    checkedComputationResult? [] [] = some (.value 0 .fixed) := by
+    checkedComputationResult? [] [] = some (.value 0 .growOnly) := by
   native_decide
 
 example :
@@ -418,7 +418,7 @@ example :
       emptyComputationCell 50 1, emptyComputationCell 51 1,
       emptyComputationCell 50 2, emptyComputationCell 51 2] =
         some (.value 0 .growOnly) ∧
-    checkedFalseComputationResult? [] [] = some (.value 0 .fixed) := by
+    checkedFalseComputationResult? [] [] = some (.value 0 .growOnly) := by
   native_decide
 
 example :

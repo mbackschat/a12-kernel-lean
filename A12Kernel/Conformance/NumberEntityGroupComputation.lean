@@ -95,20 +95,23 @@ private def lineRows : List RowAddr :=
 private def lineCells : List ClassifiedCellInput :=
   [cell 1 [1] 10, cell 1 [2] 20, cell 1 [3] 10]
 
-/- The computation route preserves the common aggregate results over one starred group expansion. -/
+/- The computation route preserves the common aggregate results over one starred group expansion.
+   Three of `Lines`' ten rows leave its declared tail open, which is what each fillability records.
+   `toComputationResult` keeps only the value, and a computation's own message type reads a separate
+   growth channel, so these fillabilities are internal to the operand. -/
 example :
-    aggregate? linesSource? .sum lineRows lineCells = some (.value 40 .fixed) ∧
+    aggregate? linesSource? .sum lineRows lineCells = some (.value 40 .growOnly) ∧
       aggregate? linesSource? .minimum lineRows lineCells =
-        some (.value 10 .fixed) ∧
+        some (.value 10 { canGrow := false, canShrink := true }) ∧
       aggregate? linesSource? .maximum lineRows lineCells =
-        some (.value 20 .fixed) ∧
+        some (.value 20 .growOnly) ∧
       aggregate? linesSource? .distinctCount lineRows lineCells =
-        some (.value 2 .fixed) := by
+        some (.value 2 .growOnly) := by
   native_decide
 
 /- The measured computation route counts every matching declaration-row pair. -/
 example :
-    valueCount? linesSource? 10 lineRows lineCells = some (.value 2 .fixed) := by
+    valueCount? linesSource? 10 lineRows lineCells = some (.value 2 .growOnly) := by
   native_decide
 
 private def limitedRows : List RowAddr :=
@@ -128,13 +131,14 @@ example :
       cell 5 [2] 12, cell 6 [2] 13] = some (.value 1 .fixed) := by
   native_decide
 
-/- Empty cells retain growth internally, while an absent extent supplies the exact identity. -/
+/- An empty extent counts zero whether its rows are instantiated empty or absent, and both leave the
+   count growable below `Limited`'s declared maximum. -/
 example :
     valueCount? limitedSource? 10 limitedRows [] = some (.value 0 .growOnly) := by
   native_decide
 
 example :
-    valueCount? limitedSource? 10 [] [] = some (.value 0 .fixed) := by
+    valueCount? limitedSource? 10 [] [] = some (.value 0 .growOnly) := by
   native_decide
 
 /- A malformed reached cell poisons the count. -/
@@ -236,7 +240,8 @@ example :
 
 /- An empty group computes the aggregate identity instead of refusing or manufacturing a row. -/
 example :
-    aggregate? linesSource? .sum [] [] = some (.value 0 .fixed) := by
+    aggregate? linesSource? .sum [] [] =
+      some (.value 0 { canGrow := true, canShrink := true }) := by
   native_decide
 
 end A12Kernel.Conformance.NumberEntityGroupComputation

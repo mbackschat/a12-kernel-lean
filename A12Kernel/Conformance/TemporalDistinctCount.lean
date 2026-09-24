@@ -558,13 +558,15 @@ example :
    The count moves 1 → 2 across two rows exactly as the Kernel's does
    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-group-expansion-fold)), and the pair is
    what makes this an extent measurement rather than one document that happens to answer: an
-   implementation reading row one alone answers 1 for both. -/
+   implementation reading row one alone answers 1 for both. The third declared row keeps both counts
+   growable, and the same retained artifact types both firings `OMISSION` on both strategies; this
+   case locked them fixed while the group walk reported no tail. -/
 example :
     (countStarredGroup? "RepBox" [repRow 1, repRow 2]
         [repCell 1 2024 3 5 "2024-03-05", repCell 2 2024 3 5 "2024-03-05"],
       countStarredGroup? "RepBox" [repRow 1, repRow 2]
         [repCell 1 2024 3 5 "2024-03-05", repCell 2 2024 4 6 "2024-04-06"]) =
-      (some (.value 1 .fixed), some (.value 2 .fixed)) := by
+      (some (.value 1 .growOnly), some (.value 2 .growOnly)) := by
   native_decide
 
 /- The fixed group beside it still folds, so widening to the starred shape did not trade one

@@ -635,13 +635,11 @@ example : addressedFoldOf [presenceOperand] .maximum
 
 /-! ### A fixed group, and the tail bit that decides which ones it may fold
 
-A group operand asks the shared owner **two** questions, and neither implies the other. The walk
-gives its concrete `(row x field)` extent and enumerates only **instantiated** rows, so its own tail
-bit is `false` by construction; the tail query gives whether any reopened declaration retains
-declared-but-uninstantiated capacity. `spec/05` ties this fold's `given` flag to the second, so asking
-only the first folded a subtree with spare capacity to a **given** value where the Kernel's is not
-given — a wrong flag on a right value, which no case would have caught. The three rows below vary
-exactly the document against one declaration. -/
+The shared walk gives a group operand's concrete `(row x field)` extent from its **instantiated**
+rows, and asks the declared capacity whether any reopened declaration still has room. `spec/05` ties
+this fold's `given` flag to that tail, so a walk reporting no tail folded a subtree with spare
+capacity to a **given** value where the Kernel's is not given — a wrong flag on a right value, which
+no case would have caught. The three rows below vary exactly the document against one declaration. -/
 
 private def fixedGroupOperand (groups : GroupPath) : SurfaceFieldEntityOperand :=
   .group (.path { base := .absolute, groups })
@@ -657,7 +655,7 @@ private def groupFoldValue? (groups : GroupPath) (rows : List RowAddr)
     .validation).toOption
 
 /- Two scalar Dates in their own group: folded, and **given** — no declared row exists anywhere under
-   the expansion, so the walk's `false` tail is the fact rather than an artefact. -/
+   the expansion, so the tail is closed by fact. -/
 example : groupFoldValue? ["Probe", "Pair"] []
     [{ address := { field := 13, path := [] }, stored := "s",
        raw := dateCell 2024 3 5 },
@@ -668,8 +666,8 @@ example : groupFoldValue? ["Probe", "Pair"] []
 
 /- The same shape one repeatable descendant deeper — declared capacity 3, one row instantiated, and
    the later date inside it. It folds, and the result is **not given**: the two uninstantiated rows
-   are the provenance, and they come from the tail query rather than from the walk. Asking only the
-   walk answered `given` here, which is the divergence this row guards. -/
+   are the provenance. A walk reporting no tail answered `given` here, which is the divergence this
+   row guards. -/
 example : groupFoldValue? ["Probe", "Box"] [{ group := 40, path := [1] }]
     [{ address := { field := 15, path := [] }, stored := "s",
        raw := dateCell 2024 1 1 },
@@ -694,7 +692,7 @@ example : groupFoldValue? ["Probe", "Box"]
     ((ymd 2024 7 1).map fun date => .value date true) := by
   native_decide
 
-/- A **starred group** takes the same two questions at its own depth, which is its star plan's
+/- A **starred group** reads the same walk at its own depth, which is its star plan's
    `firstStar` rather than its path's scope. That is `boundLevelCount`'s own account rather than a
    reading of the star machinery for the extent — the walk still enumerates from the model's
    repeatability — and the Boolean value-count carrier already resolves its starred groups through

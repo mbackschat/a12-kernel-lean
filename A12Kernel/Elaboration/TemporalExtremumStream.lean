@@ -253,55 +253,29 @@ inductive TemporalExtremumStreamFault where
   | addressing (cause : CheckedAddressingError)
   deriving Repr, DecidableEq, BEq
 
-/-- The resolved extent one operand contributes, through the sole checked owner of its shape, paired
-    with **that operand's** uninstantiated-tail bit.
-
-    The bit is returned beside the core rather than inside it because the two come from different
-    queries for a group operand, and the core's constructor is the owner's to hold. -/
+/-- The resolved extent one operand contributes, through the sole checked owner of its shape. Each
+    core carries its own uninstantiated-tail bit, a group's included, which `spec/05` turns into
+    missing provenance on a selected value: a subtree with spare capacity is not given. -/
 private def operandExtent (document : CheckedDocument model) (outer : Env)
     (filter : Option CorrelatedHaving) :
     ResolvedFieldEntityOperand model →
-      Except TemporalExtremumStreamFault
-        (ResolvedCheckedEntityOperandCore × Bool)
+      Except TemporalExtremumStreamFault ResolvedCheckedEntityOperandCore
   | .field declaration _ =>
-      (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError
-        .addressing |>.map fun core => (core, core.hasUninstantiatedTail)
+      (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError .addressing
   | .star source =>
-      (source.resolveCheckedValidationEntityOperandCore document outer
-        none).mapError .addressing
-        |>.map fun core => (core, core.hasUninstantiatedTail)
-  -- A fixed group asks the shared owner **two** questions about one operand: the walk for its
-  -- concrete extent, and the tail query for its declared-but-uninstantiated capacity. Both are
-  -- needed and neither implies the other — the walk enumerates instantiated rows only, so its own
-  -- tail bit is `false` by construction, while `spec/05` gives an omitted tail symmetric missing
-  -- provenance on a selected value. Asking only the walk folded a subtree with spare capacity to a
-  -- **given** result where the Kernel's is not given: a wrong flag on a right value.
+      (source.resolveCheckedValidationEntityOperandCore document outer none).mapError .addressing
   | .group reference =>
-      let declarations := model.groupSubtreeFields reference.path
-      let boundCount :=
+      (document.resolveCheckedGroupEntityOperandCore outer
         (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
-      (do
-        let core ← document.resolveCheckedGroupEntityOperandCore outer
-          boundCount declarations
-        let tail ← document.resolveCheckedGroupUninstantiatedTail outer
-          boundCount declarations
-        pure (core, tail)).mapError .addressing
-  -- A **starred group** takes the same two questions at its own depth. The depth is the star plan's
-  -- `firstStar` rather than the path's scope, which is `boundLevelCount`'s own account and not a
-  -- reading of the star machinery for the *extent*: the walk still enumerates from the model's
-  -- repeatability, and `spec/07`'s warning is about the extent. The Boolean value-count carrier
-  -- already resolves its starred groups through exactly this path, which is what makes the depth a
-  -- settled correspondence rather than this module's guess.
+        (model.groupSubtreeFields reference.path)).mapError .addressing
+  -- A starred group reads at its star plan's `firstStar` rather than the path's scope, which is
+  -- `boundLevelCount`'s own account and not a reading of the star machinery for the *extent*: the
+  -- walk still enumerates from the model's repeatability, and `spec/07`'s warning is about the
+  -- extent. The Boolean value-count carrier resolves its starred groups through exactly this path.
   | .starredGroup source =>
-      let declarations := model.groupSubtreeFields source.group.path
-      let boundCount :=
+      (document.resolveCheckedGroupEntityOperandCore outer
         (CheckedEntityGroupSource.starred source).boundLevelCount
-      (do
-        let core ← document.resolveCheckedGroupEntityOperandCore outer
-          boundCount declarations
-        let tail ← document.resolveCheckedGroupUninstantiatedTail outer
-          boundCount declarations
-        pure (core, tail)).mapError .addressing
+        (model.groupSubtreeFields source.group.path)).mapError .addressing
   -- A filtered star folds its **selected** rows, through the same core resolver the plain star uses
   -- — the filter is that resolver's own parameter, so nothing here interprets it. The operand is
   -- declined only when admission could not certify the filter, which is not a refusal of the shape:
@@ -312,24 +286,12 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
       | some condition =>
           (source.resolveCheckedValidationEntityOperandCore document outer
             (some condition)).mapError .addressing
-            |>.map fun core => (core, core.hasUninstantiatedTail)
       | none =>
           throw (.declined (.operandNeedsAddressing source.declaration.path))
-  -- The **presence** terminal takes the same two questions at the same depth. `boundLevelCount`
-  -- gives both starred shapes their star plan's `firstStar`, and the Boolean value-count carrier
-  -- already resolves its presence operands through this exact owner — a completed second consumer
-  -- with the same meaning and result domain, which is what makes the depth a settled reuse here
-  -- rather than a reading of the star machinery.
   | .starredGroupPresence source =>
-      let declarations := model.groupSubtreeFields source.groupPath
-      let boundCount :=
+      (document.resolveCheckedGroupEntityOperandCore outer
         (CheckedEntityGroupSource.starredPresence source).boundLevelCount
-      (do
-        let core ← document.resolveCheckedGroupEntityOperandCore outer
-          boundCount declarations
-        let tail ← document.resolveCheckedGroupUninstantiatedTail outer
-          boundCount declarations
-        pure (core, tail)).mapError .addressing
+        (model.groupSubtreeFields source.groupPath)).mapError .addressing
 
 /-- Read one admitted operand list against an immutable checked document.
 
@@ -353,11 +315,11 @@ def readAddressedSideWith (expected : TemporalComponents)
         admitted.filters).mapM fun (operand, filter) =>
           operandExtent document outer filter operand
     pure {
-      operands := extents.flatMap fun (core, _) =>
+      operands := extents.flatMap fun core =>
         core.inCapacityAddressedCells.map fun addressed =>
           project (observeCell phase addressed.cell)
-      hasUninstantiatedTail := extents.any (·.2)
-      hasHaving := extents.any (·.1.hasHaving) }
+      hasUninstantiatedTail := extents.any (·.hasUninstantiatedTail)
+      hasHaving := extents.any (·.hasHaving) }
 
 /-- Evaluate one admitted complete-Date extremum against an immutable checked document. -/
 def evalAddressedDate (admitted : CheckedTemporalExtremumOperands model)

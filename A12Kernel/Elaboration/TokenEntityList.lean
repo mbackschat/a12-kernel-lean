@@ -468,15 +468,15 @@ private def ofCore (source : CheckedTokenEntityOperand model)
     hasHaving := core.hasHaving
     hasNonRelevant := core.hasNonRelevant }
 
-/-- A group slot reaches only instantiated rows through the model's own repeatability, so it has no star topology, no filter, and no omitted tail. -/
+/-- A group slot reaches only instantiated rows through the model's own repeatability, so it has no star topology and no filter; its omitted tail is the declared capacity those rows leave open. -/
 private def ofGroupCells (source : CheckedTokenEntityOperand model)
     (cells : List (FlatTextFieldOperand × CheckedAddressedCell))
-    (hasNonRelevant : Bool := false) :
+    (hasUninstantiatedTail : Bool) (hasNonRelevant : Bool := false) :
     ResolvedCheckedTokenEntityOperand model :=
   { source
     projectedCells := cells
     topology := none
-    hasUninstantiatedTail := false
+    hasUninstantiatedTail
     hasHaving := false
     hasNonRelevant }
 
@@ -603,7 +603,8 @@ def resolveCheckedValidationOperand
       pure (.ofCore source starSource.operand core)
   | .group slot => do
       pure (.ofGroupCells source
-        (← slot.resolveCheckedValidationCells document outer))
+        (← slot.resolveCheckedValidationCells document outer)
+        (← slot.resolveCheckedUninstantiatedTail document outer))
 
 /-- Resolve one partial-validation token operand without collapsing nonrelevance into a semantic cell. Filtered rules remain suppressed by the owning whole-source gate.
 
@@ -633,7 +634,8 @@ def resolveCheckedPartialValidationOperand
   | .group slot => do
       let (cells, hasNonRelevant) ←
         slot.resolveCheckedPartialValidationCells document outer scope
-      pure (.ofGroupCells source cells hasNonRelevant)
+      pure (.ofGroupCells source cells
+        (← slot.resolveCheckedUninstantiatedTail document outer) hasNonRelevant)
 
 /-- Resolve one direct or starred token slot for full validation through the shared declaration-owned classifier.
 

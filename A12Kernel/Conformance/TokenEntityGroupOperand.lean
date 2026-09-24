@@ -470,13 +470,38 @@ private def partialGroupSnapshot (scope : ValidationRelevanceScope) :
     | none
   pure (resolved.addressedCells.length, resolved.hasNonRelevant, verdict)
 
+/-- The same rule over the group's explicit `StarRows*/First, StarRows*/Second` expansion. -/
+private def partialExplicitVerdict (scope : ValidationRelevanceScope) : Option Verdict := do
+  let star (name : String) : SurfaceFieldEntityOperand := .star {
+    base := .absolute, groups := [{ name := "Form" }, { name := "StarRows", starred := true }],
+    field := name }
+  let checked ← (elaborateTokenEntityValueListSource probeModel ["Form"] {
+    quantifier := .no
+    fields := { first := star "First", rest := [star "Second"] }
+    values := { first := field "Loose", rest := [field "Other"] } }).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 40, path := [1] }, { group := 40, path := [2] }]
+    cells := [str 22 [1] "A", str 23 [1] "B",
+      str 22 [2] "C", str 23 [2] "D",
+      str 9 [] "X", str 10 [] "Y"] }).toOption
+  let .evaluated verdict ← (checked.evaluatePartial document [] scope).toOption
+    | none
+  pure verdict
+
 /- Both relevance shapes select the same instantiated cells, but only the wildcard covers the
-   complete starred extent. -/
+   complete starred extent. The group answers exactly as its explicit expansion in each shape; the
+   Kernel measures that equivalence on codes only
+   ([checkpoint](../../docs/SOURCES.md#src-token-group-partial-runtime)), so the firing's type is
+   this account's. The third declared row leaves both operands open, and the group now types the
+   firing `OMISSION` as its expansion does, where it fired `VALUE` while its walk reported no tail. -/
 example :
     partialGroupSnapshot (starRowsScope true) =
-        some (4, false, .fired .value) ∧
+        some (4, false, .fired .omission) ∧
       partialGroupSnapshot (starRowsScope false) =
-        some (4, true, .unknown) := by
+        some (4, true, .unknown) ∧
+      partialExplicitVerdict (starRowsScope true) = some (.fired .omission) ∧
+      partialExplicitVerdict (starRowsScope false) = some .unknown := by
   native_decide
 
 /-- Every raw-`Document` arm the token slot reaches, in one list so the claim covers the class
