@@ -402,7 +402,7 @@ example : errorOf (model.resolveField ["Order"]
    an undeclared first segment reports it whatever follows, alone, and when it names a declared group
    that is not a root, while a miss below a declared root is the entity class. A lone declared root is a
    group in a field slot, whose class each carrier chooses, so the resolver projects none
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
 example :
     let key? (group : GroupPath) (reference : SurfaceFieldPath) : Option KernelStaticDiagnostic :=
       match model.resolveField group reference with
@@ -422,7 +422,7 @@ example :
 
 /- A bare name that misses its declaring group and then matches several fields model-wide is a class
    of its own, not a miss, and one class on every carrier measured, a computation included
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
+   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
 example :
     (match model.resolveField ["Order", "Details", "Deep"] (bare "Limit") with
       | .ok _ => none

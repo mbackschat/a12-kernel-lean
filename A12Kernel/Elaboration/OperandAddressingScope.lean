@@ -22,7 +22,7 @@ group" read informally.
 **What an unresolvable name reports is not decided here.** Its class belongs to the shared field
 resolver's projection `ResolveError.diagnostic?`, which chooses it by the segment that missed rather than
 by the path's depth
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)).
+([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)).
 
 **Evidence.** The star-on-rule-context, star-required, `@From` repeatability and group-membership
 classes are measured

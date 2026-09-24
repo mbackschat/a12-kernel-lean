@@ -401,8 +401,8 @@ def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
 /-- Whether a name is a declared root group. The Kernel resolves a field or group path segment by
     segment, so a path that misses reports the root-group class exactly when its first segment fails
     this test, whatever follows, and the entity class for a later miss
-    ([fields](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier),
-    [groups](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+    ([fields](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier),
+    [groups](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
 def FlatModel.declaresRoot (model : FlatModel) (name : String) : Bool :=
   model.hasGroupPath [name]
 

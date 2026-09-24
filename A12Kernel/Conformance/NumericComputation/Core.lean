@@ -507,7 +507,7 @@ example :
    computation projection is scoped to group counts, which is why this reads the class off the
    carried resolver error: an unknown root segment, an unknown name below a known root, an unknown
    bare name, and a parent walk above the root
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
 example :
     let key? (operand : SurfaceFieldPath) : Option KernelStaticDiagnostic :=
       match checkedErrorOf (.binary .add (.atom (.field operand))

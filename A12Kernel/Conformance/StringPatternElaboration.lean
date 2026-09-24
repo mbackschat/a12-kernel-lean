@@ -165,7 +165,7 @@ example :
 
 /- The field operand's resolution owns its classes, as on every other carrier measured: a miss by the
    segment that missed, a walk above the root, and a bare name matching several fields
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
 example :
     let tagIn (group : String) : FlatFieldDecl :=
       { stringDeclaration with id := if group == "Info" then 4 else 5
@@ -183,7 +183,7 @@ example :
         some .invalidEntity, some .tooManyParentGroups, some .fieldNameNotUnique, none] := by
   native_decide
 
-/- Raw, registered-custom, and repeatable fields remain explicit separate-context boundaries; an ordinary declared-pattern field is now admitted for prepared evaluation. A repeatable field read from the rule that iterates it is only this fragment's boundary, since the Kernel admits it there; read from the enclosing group it is the Kernel's missing wildcard ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+/- Raw, registered-custom, and repeatable fields remain explicit separate-context boundaries; an ordinary declared-pattern field is now admitted for prepared evaluation. A repeatable field read from the rule that iterates it is only this fragment's boundary, since the Kernel admits it there; read from the enclosing group it is the Kernel's missing wildcard ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
 example :
     let rawDecl := {
       stringDeclaration with

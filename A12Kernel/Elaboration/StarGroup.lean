@@ -43,7 +43,7 @@ def StarredGroupElabError.emptyGroupDiagnostic? :
 
 /-- The classes a starred group operand owns whichever carrier reads it: the resolver's classes by
     the segment that missed, a star landing on a nonrepeatable segment, and the empty group
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+    ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
 def StarredGroupElabError.diagnostic? :
     StarredGroupElabError → Option KernelStaticDiagnostic
   | .resolve error => error.diagnostic?
@@ -157,7 +157,7 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
               -- A declared group below a star with no star on a nonrepeatable segment is admitted by
               -- the filled-field carriers that read this source, so refusing it is this source's
               -- boundary and keeps no class; every other miss answers in the Kernel's segment order
-              -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-group-value-count-classes)).
+              -- ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)).
               if model.hasGroupPath groupPath &&
                   (firstStarOnNamedNonrepeatable? model basePath source.groups).isNone then
                 .error (.resolve error)

@@ -445,7 +445,7 @@ inductive ResolveError where
 An unstarred repeatable operand read from a rule locus that does not iterate its level is the
 shared missing-wildcard class. From a locus that iterates every level of it the Kernel admits the
 read, so a fragment refusing it reports `boundRepeatableReference`, which carries no class
-([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)).
+([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
 
 **This is the one projection that keeps a wildcard, deliberately.** Elsewhere a `_ => none` arm is
 the anti-pattern this estate sweeps out, because it silently absorbs a form a later change adds and
@@ -460,10 +460,10 @@ failure is measured to report an `MVK_` class.
 The three name-resolution arms were measured together on 2026-09-23 across eight condition carriers
 and two computation carriers, each reporting the same class for the same failure, which is what makes
 them the resolver's rather than any carrier's
-([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)).
+([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)).
 The short-name ambiguity arm was measured the same way on 2026-09-24, on five condition carriers and
 a computation
-([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
+([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
   | .invalidEntity _ => some .invalidEntity

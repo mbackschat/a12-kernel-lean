@@ -93,7 +93,7 @@ example :
 /- The gates run segment by segment, a segment's name before its star, so the earlier defective segment
    answers: a star on a fixed group, on the root, or on a field read as a group outranks a later miss,
    while a missing segment outranks its own star and every later one
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)).
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)).
    The mismatched turning point is not a measured row; it is the order's consequence for the one
    segment read before the groups. -/
 example :

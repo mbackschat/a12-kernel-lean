@@ -129,7 +129,7 @@ def groupCountDiagnostic? :
   -- The plan's empty-group class and the resolver classes are measured on this arm too, not
   -- borrowed from validation's
   -- ([empty](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers),
-  -- [resolver](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)).
+  -- [resolver](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)).
   | .starredGroupCountPlan error => error.diagnostic?
   | .groupReference error => error.diagnostic?
   | .overlappingGroupCountOperands left right =>

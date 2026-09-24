@@ -695,17 +695,17 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
 <a id="src-starred-group-value-count-classes"></a>
-- [A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted there](sources/static-admission-and-class-probes.md#src-starred-group-value-count-classes)
+- [A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted there](sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)
 <a id="src-pattern-and-key-resolver-classes"></a>
-- [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a field read from the rule that iterates it is admitted on the pattern and group-list carriers](sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)
+- [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a field read from the rule that iterates it is admitted on the pattern and group-list carriers](sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)
 <a id="src-group-operand-resolution-classes"></a>
-- [A group operand that does not resolve draws the class of the segment that missed, fixed or starred](sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)
+- [A group operand that does not resolve draws the class of the segment that missed, fixed or starred](sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)
 <a id="src-short-name-ambiguity-every-carrier"></a>
-- [A bare name that matches several fields model-wide draws `MVK_FIELDNAME_NOT_UNIQUE` on every carrier asked, a computation included](sources/static-admission-and-class-probes.md#src-short-name-ambiguity-every-carrier)
+- [A bare name that matches several fields model-wide draws `MVK_FIELDNAME_NOT_UNIQUE` on every carrier asked, a computation included](sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)
 <a id="src-starred-path-segment-order"></a>
-- [A starred path is judged segment by segment, so a star on a nonrepeatable segment outranks a later miss and a miss outranks its own star](sources/static-admission-and-class-probes.md#src-starred-path-segment-order)
+- [A starred path is judged segment by segment, so a star on a nonrepeatable segment outranks a later miss and a miss outranks its own star](sources/path-resolution-class-probes.md#src-starred-path-segment-order)
 <a id="src-resolver-failure-classes-every-carrier"></a>
-- [A field name that does not resolve draws one of three classes on every carrier asked, and the root class turns on the first segment](sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)
+- [A field name that does not resolve draws one of three classes on every carrier asked, and the root class turns on the first segment](sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)
 <a id="src-entity-list-kind-empty-and-root-carriers"></a>
 - [`Sum` refuses a String in every position and form, an empty starred group answers ahead of the group-list star gate, and the root gate reaches the value list and a computation](sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)
 <a id="src-value-list-slot-kind-set"></a>

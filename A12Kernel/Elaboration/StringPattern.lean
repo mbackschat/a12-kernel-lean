@@ -311,7 +311,7 @@ resolver classes. The left-kind gate is **total** over the kinds a declaration c
 was the one the original admission matrix omitted, and it draws the same class as the other seven on
 both operators ([checkpoint](../../docs/SOURCES.md#src-pattern-comparison-left-kind-gate-is-total)).
 The resolver classes are the shared ones on both operators
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)).
+([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
 The surface makes the right operand a String constant structurally; remaining local refusals stay
 unmapped instead of guessing an external identity. -/
 def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnostic

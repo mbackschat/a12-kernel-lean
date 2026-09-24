@@ -639,7 +639,7 @@ example : entityDiagnostic .minimum (starOperand "Amount") = none := by
 /-- A starred path's own refusals reach the aggregate through the shared shape: the resolver's three
     name classes, and a star on a nonrepeatable segment, which answers ahead of a later miss. `Sum`,
     `MaxValue`, `FirstFilledValue` and `FieldValuesNotUnique` gave one answer per row
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)). -/
+    ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)). -/
 example :
     let star (groups : List SurfaceStarGroupSegment) (field : String) (base := PathBase.absolute) :
         SurfaceFieldEntityOperand := .star { base, groups, field }

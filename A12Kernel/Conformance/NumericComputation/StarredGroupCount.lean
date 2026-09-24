@@ -155,7 +155,7 @@ private def gateStar (path : GroupPath) : SurfaceGroupCountOperand :=
    computation arm as in validation: an undeclared first segment, alone or naming a declared group at
    root position, is the root class and a later miss the entity class. A parent walk above the root
    and a terminal star on a fixed group draw their own
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
 example :
     let fixedAt (base : PathBase) (groups : GroupPath) : SurfaceGroupCountOperand :=
       .fixed (.path { base, groups })

@@ -174,7 +174,7 @@ private def onlyItem (row : Nat) : ValidationRelevanceScope :=
    terminal-repeatable carrier too, as on the value-count and filled-field carriers that read it. A
    declared fixed group below a star is admitted by those carriers, so its refusal here is this
    source's boundary and carries no class
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-group-value-count-classes)). -/
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)). -/
 example :
     let detail : FlatFieldDecl :=
       { id := 8, groupPath := ["Shop", "Catalog", "Sections", "Detail"], name := "Note"

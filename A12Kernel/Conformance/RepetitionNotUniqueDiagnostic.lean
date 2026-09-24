@@ -98,7 +98,7 @@ example :
 
 /- An unresolvable key path takes the resolver's class rather than a key-specific one, and the class
    names the segment that missed, a walk above the root, or a bare name matching several fields
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
 example :
     let shortNameModel : FlatModel :=
       { probeModel with

@@ -162,7 +162,7 @@ example :
 /- A field name that does not resolve is the shared resolver's refusal carried through the same
    shape, so an unknown root segment and an unknown name below a known root keep their two classes
    on every entity-list carrier; `FirstFilledValue` is the one measured with the resolver batch
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
 example :
     firstFilled [field ["Nope"] "Title", field ["Item"] "Title"] =
       some (.mapped .invalidRootGroup) ∧
@@ -173,7 +173,7 @@ example :
 /- A group or starred group operand that does not resolve carries the same split through the shape.
    No entity-list row separates a group miss from a field miss, since the Kernel reads the same
    spelling either way; the classes are the group carriers'
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
 private def missingStar : SurfaceFieldEntityOperand :=
   .starredGroup { base := .absolute, groups := [{ name := "Item" }, { name := "Nope", starred := true }] }
 

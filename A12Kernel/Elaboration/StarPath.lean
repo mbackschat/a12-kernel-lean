@@ -321,7 +321,7 @@ inductive StarPathElabError where
 and a star landing on anything but a repeatable group, which pre-empts every slot's own wildcard gate.
 The two missing-star arms stay with the carrier, because the class a missing star draws is the
 slot's and differs between carriers
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)). -/
+([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)). -/
 def StarPathElabError.diagnostic? : StarPathElabError → Option KernelStaticDiagnostic
   | .resolve error => error.diagnostic?
   | .wildcardOnNonrepeatable _ => some .invalidWildcard
@@ -641,7 +641,7 @@ theorem elaborateStarPathPlan_never_incoherentCore (model : FlatModel)
     judged before any group segment, an unknown root is the first segment missing, and model
     validation refuses the duplicate declaration behind an ambiguous one. So a miss is re-read for an
     earlier star landing on a nonrepeatable segment, which answers first
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-starred-path-segment-order)). -/
+    ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)). -/
 private def starredMissError (model : FlatModel) (declaringGroup : GroupPath)
     (source : SurfaceStarFieldPath) (reference : SurfaceFieldPath) : StarPathElabError :=
   let base? := match source.base with

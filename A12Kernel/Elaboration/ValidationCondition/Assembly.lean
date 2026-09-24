@@ -51,7 +51,7 @@ def groupListDiagnostic? :
   | .starredGroupNotAllowed _ => some .noWildcardsGAllowed
   -- The operand's own resolution owns these classes: a miss draws the class of the segment that
   -- missed, as a field operand does
-  -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)).
+  -- ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)).
   | .groupReference error => error.diagnostic?
   -- Operands are read before every list gate, so an empty starred group answers ahead of the star
   -- gate and arity under all five quantifiers

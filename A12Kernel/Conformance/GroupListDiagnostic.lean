@@ -186,7 +186,7 @@ example :
 
 /- A field operand's resolver failure reaches the group-list projection with the resolver's own class,
    beside a group operand that is admitted with a resolving field
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
 private def fieldAt (base : PathBase) (groups : List String) (name : String) :
     SurfaceGroupListOperand :=
   .field { base, groups, field := name }
@@ -208,7 +208,7 @@ which segment missed. An undeclared first segment is the root class whatever fol
 segment and a declared group read at root position included; a later miss is the entity class, and a
 parent walk above the root has its own. A starred operand answers first for an earlier star landing
 on a nonrepeatable segment, a field included
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)). -/
+([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
 
 private def groupAt (base : PathBase) (groups : List String) : SurfaceGroupListOperand :=
   .group (.path { base, groups })
