@@ -60,14 +60,6 @@ private def FlatModel.ensureNumericAggregateRowGroup (model : FlatModel)
             throw (.fieldOutsideRowGroup declaration.path rowGroup)
           model.ensureNumericAggregateRowGroup rowGroup remaining
 
-private def NumericValidationElabError.ofFixedGroupReferenceError :
-    FixedGroupReferenceError → NumericValidationElabError
-  | .reference error => .groupReference error
-  | .unknownGroup path => .unknownGroupInCount path
-  | .unknownRootGroup path => .unknownRootGroupInCount path
-  | .repeatableGroupRequiresAddress path =>
-      .repeatableGroupCountRequiresStar path
-
 private def resolveFieldValueAsNumberAtom
     (declaration : FlatFieldDecl) (projectionRef : EnumerationProjectionRef) :
     Except NumericValidationElabError NumericValidationAtom :=
@@ -199,7 +191,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
               ((SurfaceGroupCountOperand.firstStarred? operands).getD
                 { base := .absolute, groups := [] }))
       let groups ← model.resolveRuleBoundFixedGroupReferences rowGroup surfaces
-        |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
+        |>.mapError NumericValidationElabError.groupReference
       if groups.length < 2 then
         throw .groupCountNeedsMultipleOperands
       match ResolvedGroupReferences.firstOverlap? groups with
@@ -503,7 +495,7 @@ def elaborateMixedFilledGroupCountComparison
     match operand with
     | .fixed reference => do
         let resolved ← model.resolveFixedGroupReference rowGroup reference
-          |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
+          |>.mapError NumericValidationElabError.groupReference
         pure (CheckedGroupCountOperand.fixed resolved)
     | .starred path =>
         match elaborateStarredGroupOperandSource model rowGroup path with

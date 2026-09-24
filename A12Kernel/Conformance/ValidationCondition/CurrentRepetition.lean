@@ -182,7 +182,7 @@ example :
         (fieldPath ["Order", "Details"] "Detail")
         (groupPath ["Order", "Details"]) = some .incoherentCore ∧
       surfaceError? ["Order"] (fieldPath ["Order"] "CustomerName")
-        (groupPath ["Missing"]) = some (.unknownRootGroup ["Missing"]) := by
+        (groupPath ["Missing"]) = some (.groupReference (.unknownRootGroup ["Missing"])) := by
   native_decide
 
 /-! ## Same-group repeatable row index -/
@@ -357,8 +357,8 @@ example :
     repeatableSurfaceError?
         (fieldPath ["Order", "Sections"] "OuterAmount")
         (groupPath ["Order", "Sections", "Details"]) =
-      some (.groupReference (.resolve
-        (.unknownRepeatableGroup ["Order", "Sections", "Details"]))) ∧
+      some (.groupReference (.reference (.resolve
+        (.unknownRepeatableGroup ["Order", "Sections", "Details"])))) ∧
     repeatableSurfaceError?
         (fieldPath ["Order", "Sections", "Details"] "SectionDetail")
         (groupPath ["Order", "Sections"]) =

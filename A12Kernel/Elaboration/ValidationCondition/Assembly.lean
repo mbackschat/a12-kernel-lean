@@ -6,14 +6,11 @@ namespace A12Kernel
 
 inductive ValidationConditionAssemblyError where
   | invalidModel (error : ResolveError)
-  | groupReference (error : SingleGroupElabError)
+  | groupReference (error : FixedGroupReferenceError)
   | fieldReference (error : ResolveError)
   | starredGroup (error : StarredGroupElabError)
   | starredGroupNotAllowed (operator : GroupFillQuantifier)
   | repeatableFieldRequired (path : List String)
-  | unknownGroup (path : GroupPath)
-  | unknownRootGroup (path : GroupPath)
-  | repeatableGroupRequiresAddress (path : GroupPath)
   | emptyGroupList
   | groupListNeedsMultipleOperands
   | rootGroupInGroupList (path : GroupPath)
@@ -33,19 +30,11 @@ structure CheckedValidationCondition (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.wellFormedBool rowGroup = true
 
-private def ValidationConditionAssemblyError.ofFixedGroupReferenceError :
-    FixedGroupReferenceError → ValidationConditionAssemblyError
-  | .reference error => .groupReference error
-  | .unknownGroup path => .unknownGroup path
-  | .unknownRootGroup path => .unknownRootGroup path
-  | .repeatableGroupRequiresAddress path =>
-      .repeatableGroupRequiresAddress path
-
 private def ValidationConditionAssemblyError.ofCurrentRepetitionSourceError :
     CurrentRepetitionSourceElabError → ValidationConditionAssemblyError
   | .model error => .invalidModel error
-  | .reference error => .groupReference error
-  | .group error => .groupReference (.resolve error)
+  | .reference error => .groupReference (.reference error)
+  | .group error => .groupReference (.reference (.resolve error))
 
 namespace ValidationConditionAssemblyError
 
@@ -60,13 +49,10 @@ def groupListDiagnostic? :
   | .rootGroupInGroupList _ => some .rootGroupReferenced
   | .rootGroupRequiresSoleOperand _ => some .rootGroupWithOtherParameters
   | .starredGroupNotAllowed _ => some .noWildcardsGAllowed
-  | .repeatableGroupRequiresAddress _ => some .noWildcard
-  -- A group operand that does not resolve draws the class of the segment that missed, as a field
-  -- operand does
+  -- The operand's own resolution owns these classes: a miss draws the class of the segment that
+  -- missed, as a field operand does
   -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)).
-  | .unknownGroup _ => some .invalidEntity
-  | .unknownRootGroup _ => some .invalidRootGroup
-  | .groupReference (.resolve error) => error.diagnostic?
+  | .groupReference error => error.diagnostic?
   -- Operands are read before every list gate, so an empty starred group answers ahead of the star
   -- gate and arity under all five quantifiers
   -- ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
@@ -137,9 +123,9 @@ def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
   | .error error => .error (.invalidModel error)
   | .ok () => do
       let resolved ← reference.resolveAgainst rowGroup
-        |>.mapError ValidationConditionAssemblyError.groupReference
+        |>.mapError (.groupReference ∘ .reference)
       if !model.hasGroupPath resolved.path then
-        throw (.ofFixedGroupReferenceError (model.unknownGroupError resolved.path))
+        throw (.groupReference (model.unknownGroupError resolved.path))
       checkCore model rowGroup
         (ValidationCondition.groupPresence operator resolved)
         (by rw [hModel]; rfl)
@@ -336,9 +322,9 @@ def fromGuardedRootCurrentRepetition
         (model.resolveNonrepeatableFieldUnchecked rowGroup guard)
           |>.mapError .fieldReference
       let resolved ← group.resolveAgainst rowGroup
-        |>.mapError .groupReference
+        |>.mapError (.groupReference ∘ .reference)
       if !model.hasGroupPath resolved then
-        throw (.ofFixedGroupReferenceError (model.unknownGroupError resolved))
+        throw (.groupReference (model.unknownGroupError resolved))
       checkCore model rowGroup
         (ValidationCondition.guardedRootCurrentRepetition
           declaration resolved comparison)
@@ -378,7 +364,7 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
   | .group reference => do
       let resolved ←
         model.resolveRuleBoundFixedGroupReference rowGroup reference
-        |>.mapError ValidationConditionAssemblyError.ofFixedGroupReferenceError
+        |>.mapError ValidationConditionAssemblyError.groupReference
       pure (.group resolved)
   | .starredGroup reference => do
       let source ←

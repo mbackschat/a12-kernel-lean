@@ -429,7 +429,7 @@ example : checkedOtherGroup?.map (fun checked =>
 
 /- The reserved keyword's wildcard is rejected at checked elaboration before it can be erased into an ordinary path. -/
 example : wildcardRuleGroupError? =
-    some (.groupReference .wildcardOnRuleGroup) := by
+    some (.groupReference (.reference .wildcardOnRuleGroup)) := by
   native_decide
 
 /- An ordinary group path beneath a repeatable level retains that exact resolved entity and declares its need for the addressed rule route. Fixed group-list construction remains the separate owner that rejects the same path without a row environment. -/
@@ -540,7 +540,7 @@ example :
     groupListError? .atLeastOneGroupFilled [
       groupOperand ["Order", "Items"],
       groupOperand ["Order", "Details"]] =
-      some (.repeatableGroupRequiresAddress ["Order", "Items"]) := by
+      some (.groupReference (.repeatableGroupRequiresAddress ["Order", "Items"])) := by
   native_decide
 
 /- Fixed child groups whose repeatable ancestry is already bound by the declaring rule iterate at
@@ -687,10 +687,10 @@ example :
           ["Order", "Details"] ["Order", "Details"]) ∧
     groupCountError? (groupCountComparison
       [["Order", "Items"], ["Order", "Details"]]) =
-        some (.repeatableGroupCountRequiresStar ["Order", "Items"]) ∧
+        some (.groupReference (.repeatableGroupRequiresAddress ["Order", "Items"])) ∧
     groupCountError? (groupCountComparison
       [["Order", "Missing"], ["Order", "Details"]]) =
-        some (.unknownGroupInCount ["Order", "Missing"]) ∧
+        some (.groupReference (.unknownGroup ["Order", "Missing"])) ∧
     checkedGroupCount?.map (fun checked =>
       checked.core.referencesField d.id &&
         checked.core.referencesField p.id &&

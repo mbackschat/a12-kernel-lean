@@ -92,11 +92,8 @@ inductive NumericComputationElabError where
   | tokenValueCount (error : TokenValueCountElabError)
   | booleanValueCount (error : BooleanValueCountElabError)
   | productAggregate (error : NumericProductAggregateElabError)
-  | groupReference (error : SingleGroupElabError)
+  | groupReference (error : FixedGroupReferenceError)
   | currentRepetitionSource (error : FixedGroupReferenceError)
-  | unknownGroupInCount (path : GroupPath)
-  | unknownRootGroupInCount (path : GroupPath)
-  | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
   /-- A fixed group below a starred ancestor as a group-count operand, which the Kernel admits on
   the rule arm and this arm refuses because no computation row measures it. Held apart from
@@ -134,12 +131,9 @@ def groupCountDiagnostic? :
   -- ([empty](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers),
   -- [resolver](../../../docs/sources/static-admission-and-class-probes.md#src-group-operand-resolution-classes)).
   | .starredGroupCountPlan error => error.diagnostic?
-  | .unknownGroupInCount _ => some .invalidEntity
-  | .unknownRootGroupInCount _ => some .invalidRootGroup
-  | .groupReference (.resolve error) => error.diagnostic?
+  | .groupReference error => error.diagnostic?
   | .overlappingGroupCountOperands left right =>
       if left == right then some .duplicateParam1 else some .duplicateParam2
-  | .repeatableGroupCountRequiresStar _ => some .noWildcard
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | _ => none
 
@@ -394,14 +388,6 @@ private def FlatModel.resolveTemporalNumericComputationField
       else throw (.incompatibleTemporalSource declaration.path)
   | none => throw (.incompatibleTemporalSource declaration.path)
 
-private def NumericComputationElabError.ofFixedGroupReferenceError :
-    FixedGroupReferenceError → NumericComputationElabError
-  | .reference error => .groupReference error
-  | .unknownGroup path => .unknownGroupInCount path
-  | .unknownRootGroup path => .unknownRootGroupInCount path
-  | .repeatableGroupRequiresAddress path =>
-      .repeatableGroupCountRequiresStar path
-
 private def FlatModel.resolveNumericComputationExpression
     (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
@@ -585,7 +571,7 @@ private def FlatModel.resolveNumericComputationExpression
         match SurfaceGroupCountOperand.fixedOnly? operands with
         | some surfaces => do
             let groups ← model.resolveFixedGroupReferences declaringGroup surfaces
-              |>.mapError NumericComputationElabError.ofFixedGroupReferenceError
+              |>.mapError NumericComputationElabError.groupReference
             -- The arity minimum governs the unstarred form only. A list carrying a star takes the
             -- branch below, where one operand is a complete list; both halves are measured.
             if groups.length < 2 then
@@ -606,7 +592,7 @@ private def FlatModel.resolveNumericComputationExpression
               match operand with
               | .fixed reference => do
                   let resolved ← model.resolveFixedGroupReference declaringGroup reference
-                    |>.mapError NumericComputationElabError.ofFixedGroupReferenceError
+                    |>.mapError NumericComputationElabError.groupReference
                   pure (CheckedGroupCountOperand.fixed resolved)
               | .starred path =>
                   match elaborateStarredGroupOperandSource model declaringGroup path with

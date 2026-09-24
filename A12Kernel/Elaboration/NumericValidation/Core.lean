@@ -121,11 +121,8 @@ inductive NumericValidationElabError where
   | unsupportedCalendarProfile (zoneId : String)
   | baseYearNotDeclared
   | aggregate (error : NumericAggregateElabError)
-  | groupReference (error : SingleGroupElabError)
+  | groupReference (error : FixedGroupReferenceError)
   | currentRepetitionSource (error : FixedGroupReferenceError)
-  | unknownGroupInCount (path : GroupPath)
-  | unknownRootGroupInCount (path : GroupPath)
-  | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
   | rootGroupInGroupCount (path : GroupPath)
   | overlappingGroupCountOperands (left right : GroupPath)
@@ -146,13 +143,10 @@ namespace NumericValidationElabError
 def groupCountDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
   | .groupCountNeedsMultipleOperands => some .paramSizeInvalidGN
-  | .repeatableGroupCountRequiresStar _ => some .noWildcard
   | .overlappingGroupCountOperands left right =>
       some (if left == right then .duplicateParam1 else .duplicateParam2)
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
-  | .unknownGroupInCount _ => some .invalidEntity
-  | .unknownRootGroupInCount _ => some .invalidRootGroup
-  | .groupReference (.resolve error) => error.diagnostic?
+  | .groupReference error => error.diagnostic?
   | .starredGroupCountPlan error => error.diagnostic?
   | _ => none
 
