@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-# Emit a `dmtool batch` ops.json for `rule check` rows from a declarative spec, so a probe matrix is
-# generated rather than hand-typed.
+# Emit a `dmtool batch` ops.json for `rule check` and `computation add --dry-run` rows from a
+# declarative spec, so a probe matrix is generated rather than hand-typed.
 #
 # Why this exists, measured: a 140-row session was typed row by row, 11 of those rows were lost to
 # typos in a repeated condition, and every literal control character or emoji in a message had to be
 # smuggled past the shell. All three are authoring costs, not instrument costs — the kernel answers a
 # row in about 0.12 seconds.
 #
-# Scope is `rule check` only, because it is the verb whose whole probe varies in argv. `computation
-# add --dry-run` batches just as well but takes a spec *file* per row, so its matrix is a directory of
-# specs rather than the argv template this generator emits.
+# A `computation add --dry-run` row takes a spec *file*, so each `comp` row also writes `<id>.json`
+# beside the ops file and names it by bare file name: run the batch from that directory. Added after
+# the 2026-09-24 star-binding sweep hand-wrote a Python generator for each of eight computation
+# batches, the same boilerplate every time.
 #
 #   ./scripts/make-probe-ops.sh <spec> <out.json>
 #
@@ -21,6 +22,9 @@
 #   group <alias> <absolute group path>
 #   row   <id> <field alias> <cond alias> <msg alias> [group alias]
 #   cross <id prefix> <field aliases> <cond aliases> <msg aliases>    (comma-separated, no spaces)
+#   op    <alias> <computation operation text>
+#   comp  <id> <target field alias> <op alias> [declaring group alias]
+#   ccross <id prefix> <target field aliases> <op aliases> [declaring group alias]
 #
 # A `row`'s optional fifth token names a rule group, which is what lets the error field sit INSIDE a
 # repeatable group. Without it every reference into a repeatable group needs an explicit star, and the
@@ -54,6 +58,8 @@ if [[ ! -f "$spec" ]]; then
 fi
 
 awk -v out="$out" '
+BEGIN { outDir = out; if (!sub(/\/[^\/]*$/, "", outDir)) outDir = "."; outBase = out; sub(/.*\//, "", outBase) }
+
 function fail(message) { printf("%s:%d: %s\n", FILENAME, FNR, message) > "/dev/stderr"; failed = 1 }
 
 function hexval(s,   i, c, n, digits) {
@@ -103,19 +109,40 @@ function expand(s,   result, rest, brace, hex, cp, high, low) {
   return result
 }
 
+# Reserve the next row slot for a fresh id. The id doubles as a rule code, which the Kernel rejects
+# unless it is letters and digits, and as the spec file name of a computation row.
+function claim(id) {
+  if (id in seen) { fail("duplicate row id: " id); return 0 }
+  seen[id] = 1
+  if (id ~ /[^A-Za-z0-9]/) { fail("row id must be alphanumeric: " id); return 0 }
+  rows++
+  return 1
+}
+
 function emit(id, fieldAlias, condAlias, msgAlias, groupAlias,   groupArgs) {
   if (!(fieldAlias in field)) { fail("unknown field alias: " fieldAlias); return }
   if (!(condAlias in cond)) { fail("unknown cond alias: " condAlias); return }
   if (!(msgAlias in msg)) { fail("unknown msg alias: " msgAlias); return }
   if (groupAlias != "" && !(groupAlias in grp)) { fail("unknown group alias: " groupAlias); return }
-  if (id in seen) { fail("duplicate row id: " id); return }
-  seen[id] = 1
-  # The Kernel rejects a rule code carrying anything but letters and digits.
-  if (id ~ /[^A-Za-z0-9]/) { fail("row id must be alphanumeric: " id); return }
-  rows++
+  if (!claim(id)) return
   groupArgs = (groupAlias == "") ? "" : sprintf(", \"--group\", \"%s\"", expand(grp[groupAlias]))
   body[rows] = sprintf(" {\n  \"id\": \"%s\",\n  \"verb\": \"rule\",\n  \"args\": [\"check\", \"--code\", \"%s\", \"--field\", \"%s\"%s, \"--condition\", \"%s\", \"--message\", \"en_US=%s\"]\n }",
     id, id, expand(field[fieldAlias]), groupArgs, expand(cond[condAlias]), expand(msg[msgAlias]))
+}
+
+# A computation row: the spec file carries one alternative and a placeholder message, which is all
+# a static preflight reads; the declaring group is the optional spec key `group`.
+function emit_comp(id, fieldAlias, opAlias, groupAlias,   groupKey) {
+  if (!(fieldAlias in field)) { fail("unknown field alias: " fieldAlias); return }
+  if (!(opAlias in operation)) { fail("unknown op alias: " opAlias); return }
+  if (groupAlias != "" && !(groupAlias in grp)) { fail("unknown group alias: " groupAlias); return }
+  if (id ".json" == outBase) { fail("row id would overwrite the ops file: " id); return }
+  if (!claim(id)) return
+  groupKey = (groupAlias == "") ? "" : sprintf(",\n \"group\": \"%s\"", expand(grp[groupAlias]))
+  specs[rows] = id
+  specBody[rows] = sprintf("{\n \"computedField\": \"%s\",\n \"alternatives\": [{\"operation\": \"%s\"}],\n \"messages\": [{\"locale\": \"en_US\", \"text\": \"m\"}]%s\n}\n",
+    expand(field[fieldAlias]), expand(operation[opAlias]), groupKey)
+  body[rows] = sprintf(" {\n  \"id\": \"%s\",\n  \"verb\": \"computation\",\n  \"args\": [\"add\", \"%s.json\", \"--dry-run\"]\n }", id, id)
 }
 
 function split_list(text, target,   n, i, parts) {
@@ -128,7 +155,8 @@ function split_list(text, target,   n, i, parts) {
 
 {
   directive = $1
-  if (directive == "field" || directive == "cond" || directive == "msg" || directive == "group") {
+  if (directive == "field" || directive == "cond" || directive == "msg" || directive == "group" ||
+      directive == "op") {
     if (NF < 3) { fail(directive " needs an alias and a value"); next }
     alias = $2
     # Strip the directive and the alias POSITIONALLY. Searching for the alias with index() is the
@@ -141,6 +169,7 @@ function split_list(text, target,   n, i, parts) {
     if (directive == "field") field[alias] = value
     else if (directive == "cond") cond[alias] = value
     else if (directive == "group") grp[alias] = value
+    else if (directive == "op") operation[alias] = value
     else msg[alias] = value
     next
   }
@@ -162,12 +191,35 @@ function split_list(text, target,   n, i, parts) {
         }
     next
   }
+  if (directive == "comp") {
+    if (NF != 4 && NF != 5) { fail("comp needs: comp <id> <target> <op> [group]"); next }
+    emit_comp($2, $3, $4, (NF == 5) ? $5 : "")
+    next
+  }
+  if (directive == "ccross") {
+    if (NF != 4 && NF != 5) { fail("ccross needs: ccross <prefix> <targets> <ops> [group]"); next }
+    prefix = $2
+    fn = split_list($3, fs); on = split_list($4, os)
+    counter = 0
+    for (fi = 1; fi <= fn; fi++)
+      for (oi = 1; oi <= on; oi++) {
+        emit_comp(sprintf("%s%02d", prefix, counter), fs[fi], os[oi], (NF == 5) ? $5 : "")
+        counter++
+      }
+    next
+  }
   fail("unknown directive: " directive)
 }
 
 END {
   if (failed) { print "no ops written" > "/dev/stderr"; exit 1 }
   if (rows == 0) { print "spec produced no rows" > "/dev/stderr"; exit 1 }
+  for (i = 1; i <= rows; i++) {
+    if (!(i in specs)) continue
+    specPath = outDir "/" specs[i] ".json"
+    printf("%s", specBody[i]) > specPath
+    close(specPath)
+  }
   printf("[\n") > out
   for (i = 1; i <= rows; i++) printf("%s%s\n", body[i], (i < rows ? "," : "")) > out
   printf("]\n") > out

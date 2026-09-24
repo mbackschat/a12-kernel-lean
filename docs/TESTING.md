@@ -286,7 +286,7 @@ advice; a sweep that skips one is slower for a reason already paid for.
    the rule with the largest effect on yield per row and it costs nothing.
 2. **Generate the rows; never type a matrix by hand.** [`make-probe-ops.sh`](../scripts/make-probe-ops.sh)
    emits `ops.json` from a declarative spec with field/condition/message aliases and a `cross` product,
-   so the same authoring effort produces hundreds of rows instead of dozens. It also expands `\n`, `\t`
+   plus one spec file per `comp`/`ccross` row for `computation add --dry-run`, so the same authoring effort produces hundreds of rows instead of dozens. It also expands `\n`, `\t`
    and `\u{XXXX}`, which is how a control character or a supplementary-plane scalar reaches the Kernel
    without being smuggled past the shell. Eleven rows were lost to hand-typed repetition in one session
    before this existed.
