@@ -349,6 +349,31 @@ example :
     (insuredCarriers policyModel).map (atInsured) = List.replicate 4 noWildcard := by
   native_decide
 
+/- The operand-level sources place the same refusal, told the error field's group: `Sum` over the
+   pair, whose checked source `FirstFilledValue` and `NumberOfValueInFields` share, the filled-field
+   group source behind the field-fill quantifiers and `NumberOfFilledFields`, and `CurrentRepetition`.
+   These are source reads rather than whole rules, so no carrier's own gate is exercised. -/
+example :
+    let sources (model : FlatModel) (writtenGroup : GroupPath) : List (Option KernelStaticDiagnostic) :=
+      [match elaborateNumberEntitySource model ["Policy"]
+            { first := .group claims, rest := [.group insured] } (writtenGroup := writtenGroup) with
+          | .ok _ => none
+          | .error error => NumberEntityElabError.aggregateDiagnostic? .sum error,
+        match elaborateFilledFieldCountFixedGroupValidationSource model ["Policy"]
+            { group := { base := .relative 0, groups := ["Claims"] } } writtenGroup with
+          | .error (.shape error) => error.diagnostic?
+          | _ => none,
+        match elaborateNumericComparison model ["Policy"]
+            { op := .ordinary .greater
+              left := .atom (.currentRepetition { base := .relative 0, groups := ["Claims"] })
+              right := .literal { value := 1, authoredScale := 0 } } writtenGroup with
+          | .ok _ => none
+          | .error error => error.repetitionScopeDiagnostic?]
+    sources keyedPolicyModel ["Policy", "Insured"] = List.replicate 3 (some .errorFieldNoIndex) ∧
+      sources policyModel ["Policy", "Insured"] = List.replicate 3 (some .noWildcard) ∧
+      sources keyedPolicyModel ["Policy"] = List.replicate 3 (some .noWildcard) := by
+  native_decide
+
 /- A rule in the repeatable `Claims` reporting on the root `Holder`, outside its group, reads
    `Amount` per row and draws containment, index-keyed or not
    ([`kf212`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf212)). -/

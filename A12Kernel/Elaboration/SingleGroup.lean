@@ -264,9 +264,8 @@ private inductive FixedGroupScopePolicy where
   | ruleBound
   /-- As `ruleBound`, and a repeatable **root** the rule sits in is admitted too, so its carriers
   reach the root classes the walk leaves them. A non-root repeatable group stays refused here: its
-  error-locus matrix is `OneLevelUnstarredGroupUse`'s, which builds no executable condition. A level
-  the rule group leaves unbound is classed by the error field's group, `writtenGroup`. -/
-  | validationBound (writtenGroup : GroupPath)
+  error-locus matrix is `OneLevelUnstarredGroupUse`'s, which builds no executable condition. -/
+  | validationBound
   /-- Refused with the class `UnboundOperandLevel` selects, for a computation whose target repeats
   at no level; the group's own level counts when it is repeatable. -/
   | fixedTarget (targetGroup : GroupPath)
@@ -275,10 +274,11 @@ private inductive FixedGroupScopePolicy where
   | fixedTargetList
 
 /-- Resolve one fixed group operand without applying an operator-specific root, arity, duplicate,
-or overlap rule. -/
+or overlap rule. A validation carrier passes its error field's group as `writtenGroup?`, which
+places a level the rule group leaves unbound; without one the refusal keeps no placement. -/
 private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
     (policy : FixedGroupScopePolicy) (declaringGroup : GroupPath)
-    (surface : SurfaceGroupReference) :
+    (surface : SurfaceGroupReference) (writtenGroup? : Option GroupPath := none) :
     Except FixedGroupReferenceError ResolvedGroupReference := do
   let resolved ← surface.resolveAgainst declaringGroup |>.mapError .reference
   if !model.hasGroupPath resolved.path then
@@ -294,20 +294,16 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           | none => pure resolved
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
       | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }
-      | .scalar | .ruleBound | .validationBound _ =>
+      | .scalar | .ruleBound | .validationBound =>
           let refuse : Except FixedGroupReferenceError ResolvedGroupReference :=
-            match policy with
-            | .validationBound writtenGroup =>
-                match model.unboundReadLevel? declaringGroup writtenGroup operandScope with
-                | some unbound => throw (.unboundOperandLevel resolved.path unbound)
-                | none => throw (.repeatableGroupRequiresAddress resolved.path)
-            | .scalar | .ruleBound | .fixedTarget _ | .fixedTargetList =>
-                throw (.repeatableGroupRequiresAddress resolved.path)
+            match writtenGroup?.bind (model.unboundReadLevel? declaringGroup · operandScope) with
+            | some unbound => throw (.unboundOperandLevel resolved.path unbound)
+            | none => throw (.repeatableGroupRequiresAddress resolved.path)
           -- Every list pairing a root with another operand meets a root gate before its core is
           -- checked, so admitting a bound repeatable root reaches no executable list the core
           -- predicate refuses.
           if model.repeatableGroups.any (fun group => group.path == resolved.path) &&
-              !(policy matches .validationBound _ && resolved.path.length == 1) then
+              !(policy matches .validationBound && resolved.path.length == 1) then
             refuse
           else if operandScope.isEmpty then
             pure resolved
@@ -324,16 +320,18 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
 /-- Resolve the established scalar fixed-group boundary. A group below repeatable ancestry still
 requires a carrier that explicitly opts into rule-bound scope. -/
 def FlatModel.resolveFixedGroupReference (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
+    (declaringGroup : GroupPath) (surface : SurfaceGroupReference)
+    (writtenGroup? : Option GroupPath := none) :
     Except FixedGroupReferenceError ResolvedGroupReference :=
-  model.resolveFixedGroupReferenceWith .scalar declaringGroup surface
+  model.resolveFixedGroupReferenceWith .scalar declaringGroup surface writtenGroup?
 
 /-- Resolve a fixed child for a carrier measured to consume the declaring rule's exact repeatable
 scope. The retained scope is the certificate those addressed consumers must preserve. -/
 def FlatModel.resolveRuleBoundFixedGroupReference (model : FlatModel)
-    (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
+    (declaringGroup : GroupPath) (surface : SurfaceGroupReference)
+    (writtenGroup? : Option GroupPath := none) :
     Except FixedGroupReferenceError ResolvedGroupReference :=
-  model.resolveFixedGroupReferenceWith .ruleBound declaringGroup surface
+  model.resolveFixedGroupReferenceWith .ruleBound declaringGroup surface writtenGroup?
 
 /-- Resolve a fixed group operand of a validation carrier whose measured admission covers the
 repeatable group its rule sits in as well as a fixed child of it
@@ -342,7 +340,7 @@ def FlatModel.resolveValidationBoundFixedGroupReference (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceGroupReference)
     (writtenGroup : GroupPath := declaringGroup) :
     Except FixedGroupReferenceError ResolvedGroupReference :=
-  model.resolveFixedGroupReferenceWith (.validationBound writtenGroup) declaringGroup surface
+  model.resolveFixedGroupReferenceWith .validationBound declaringGroup surface (some writtenGroup)
 
 /-- Resolve a fixed group operand of a computation whose target repeats at no level. -/
 def FlatModel.resolveFixedTargetGroupReference (model : FlatModel)
@@ -500,8 +498,10 @@ def FlatModel.checkSingleGroupContext (model : FlatModel)
     guard it: an ordinary path walks from it, and the `RuleGroup` keyword *is* it. -/
 private theorem FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid
     {model : FlatModel} {policy : FixedGroupScopePolicy} {declaringGroup : GroupPath}
-    {surface : SurfaceGroupReference} {resolved : ResolvedGroupReference}
-    (ok : model.resolveFixedGroupReferenceWith policy declaringGroup surface = .ok resolved) :
+    {surface : SurfaceGroupReference} {writtenGroup? : Option GroupPath}
+    {resolved : ResolvedGroupReference}
+    (ok : model.resolveFixedGroupReferenceWith policy declaringGroup surface writtenGroup? =
+      .ok resolved) :
     GroupPath.isValid declaringGroup = true := by
   cases hValid : GroupPath.isValid declaringGroup with
   | true => rfl
@@ -521,8 +521,8 @@ private theorem FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid
 
 theorem FlatModel.resolveFixedGroupReference_declaringGroupValid
     {model : FlatModel} {declaringGroup : GroupPath} {surface : SurfaceGroupReference}
-    {resolved : ResolvedGroupReference}
-    (ok : model.resolveFixedGroupReference declaringGroup surface = .ok resolved) :
+    {writtenGroup? : Option GroupPath} {resolved : ResolvedGroupReference}
+    (ok : model.resolveFixedGroupReference declaringGroup surface writtenGroup? = .ok resolved) :
     GroupPath.isValid declaringGroup = true :=
   FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid ok
 

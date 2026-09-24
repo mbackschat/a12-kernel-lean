@@ -300,7 +300,7 @@ example :
       overlap? ["Form", "Rows"] bareRow [rowsStar "RowRange"]].all (·.isOk) =
       true ∧
     (match overlap? ["Form"] bareRow [scalarExisting] with
-      | .error (.fieldReference (.repeatableReference path)) =>
+      | .error (.fieldReference (.unboundOperandLevel path _)) =>
           path == rowRange.path
       | _ => false) = true := by
   native_decide
@@ -513,11 +513,11 @@ example :
     (plural? ["Form", "Rows"] bareRow scalarExisting).isOk = true ∧
       (plural? ["Form", "Rows"] scalarExisting bareRow).isOk = true ∧
       (match plural? ["Form"] bareRow scalarExisting with
-        | .error (.fieldReference (.repeatableReference path)) =>
+        | .error (.fieldReference (.unboundOperandLevel path _)) =>
             path == rowRange.path
         | _ => false) = true ∧
       (match plural? ["Form"] scalarExisting bareRow with
-        | .error (.fieldReference (.repeatableReference path)) =>
+        | .error (.fieldReference (.unboundOperandLevel path _)) =>
             path == rowRange.path
         | _ => false) = true ∧
       (plural? ["Form", "Rows"] scalarExisting (rowsStar "RowRange")).isOk =

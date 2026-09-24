@@ -159,6 +159,7 @@ arms stay unmapped — no measurement separates their classes at this carrier. -
 def repetitionScopeDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
   | .currentRepetitionSource (.repeatableGroupRequiresAddress _) => some .noWildcard
+  | .currentRepetitionSource (.unboundOperandLevel _ unbound) => some unbound.diagnostic
   | _ => none
 
 /-- Project the measured DateRange-endpoint component class. The general temporal-source refusal

@@ -140,14 +140,16 @@ rule-bound scope directly; the shared entity-list resolver stays scalar for its 
 Boolean, temporal, and aggregate consumers. -/
 def elaborateFilledFieldCountFixedGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceFilledFieldCountFixedGroupValidationSource) :
+    (authored : SurfaceFilledFieldCountFixedGroupValidationSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except FilledFieldCountGroupElabError
       (CheckedFilledFieldCountGroupSource model) := do
   match model.validate with
   | .error error => throw (.shape (.resolve error))
   | .ok () =>
       let reference ← model.resolveRuleBoundFixedGroupReference declaringGroup
-        (.path authored.group) |>.mapError fun error => .shape (.groupReference error)
+        (.path authored.group) (some writtenGroup)
+        |>.mapError fun error => .shape (.groupReference error)
       finishFilledFieldCountGroupSource model (.fixed reference)
 
 /-- Admit one starred group: a repeatable terminal, or a nonrepeatable group below a starred level,

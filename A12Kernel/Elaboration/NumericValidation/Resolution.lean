@@ -82,7 +82,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       | some year => pure (.baseYear year)
       | none => throw .baseYearNotDeclared
   | .currentRepetition path => do
-      let reference ← model.resolveFixedGroupReference rowGroup (.path path)
+      let reference ← model.resolveFixedGroupReference rowGroup (.path path) (some writtenGroup)
         |>.mapError .currentRepetitionSource
       pure (.fixedCurrentRepetition reference)
   | .baseYearDatePart source part =>

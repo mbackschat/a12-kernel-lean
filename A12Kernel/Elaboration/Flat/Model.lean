@@ -252,12 +252,13 @@ def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writ
   (scopes.findSome? List.head?).map (model.unboundOperandLevel declaringGroup writtenGroup)
 
 /-- A validation read's outermost level its rule group does not bind, placed by the written field,
-    or `none` when the rule group binds every level of it. The rule group decides the binding, and
-    the written field only the class
+    or `none` when the rule group binds every level of it; `bound` is what the rule group binds. The
+    rule group decides the binding, and the written field only the class
     ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
 def FlatModel.unboundReadLevel? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
-    (scope : List RepeatableLevel) : Option UnboundOperandLevel :=
-  let bound := model.repeatableScopeForGroupPath declaringGroup
+    (scope : List RepeatableLevel)
+    (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
+    Option UnboundOperandLevel :=
   model.firstUnboundOperandLevel? declaringGroup writtenGroup [scope.filter (!bound.contains ·)]
 
 private def repeatableScopeMismatch? (model : FlatModel) :

@@ -139,7 +139,7 @@ example :
       (yearlessOverlap? ["Form", "Rows"] scalarMonthsOperand [bareMonths]).isOk =
         true ∧
       (match yearlessOverlap? ["Form"] bareMonths [scalarMonthsOperand] with
-        | .error (.fieldReference (.repeatableReference path)) =>
+        | .error (.fieldReference (.unboundOperandLevel path _)) =>
             path == rowMonths.path
         | _ => false) = true ∧
       (yearlessOverlap? ["Form", "Rows"] bareMonths []).isOk = false ∧
@@ -202,7 +202,7 @@ example :
       (yearlessPlural? ["Form"] scalarMonthsOperand
         (yearlessOperand ["Form"] "OtherMonths")).isOk = true ∧
       (match yearlessPlural? ["Form"] bareMonths scalarMonthsOperand with
-        | .error (.fieldReference (.repeatableReference path)) =>
+        | .error (.fieldReference (.unboundOperandLevel path _)) =>
             path == rowMonths.path
         | _ => false) = true := by
   native_decide
