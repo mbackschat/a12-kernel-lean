@@ -352,6 +352,59 @@ The same letter and revision, its §7. Beside an error field keyed by an index o
 
 **Lean.** Neither scalar slot has a class for a text operand on any route, so the rows join the over-refusal [SG9](gaps/paths-and-groups.md#gap-sg9) records for a legal parallel iteration.
 
+<a id="inbound-2026-09-25c-gate-raise-points"></a>
+### Reviewed 2026-09-25c gate-order handback — a gate is raised where the production that owns it ends
+
+a12-dmkits revision `0e4fe9f92bb5f48746cc143d3862e525c6b1d62a` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-25. The letter is the peer's `-2026-09-25c`, frozen as sent in the user's exchange directory with SHA-256 `eae5c88a1320bedd0928f66a3b745b46a16de3a4bd1aa87fb9f3cc3b5bf5c361`. Its follow-up `-2026-09-25d`, SHA-256 `ff459c473780e74bf68beaa28d75ac1ea51dbe08460fe0d8dec5c0466b9894ec`, corrects three of its fixture descriptions against the lock sources and changes no row, so the records below describe each fixture as its lock declares it.
+
+Every lock it names was resolved at that revision: `ConditionClassWithholdingLawsTest`, `TableEnumConditionLawsTest`, `HModelFormConditionReachabilityLawsTest`, `FilteredOperandGateOrderLawsTest`, `FilterBodyComparisonLawsTest` and `CalculationMemberWithholdingLawsTest`. `ComputationRoundingModeLawsTest` and [`kf297`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf297) were read there for the rounding mode.
+
+Not run here. Inbound from an already committed and reviewed revision that answers no ledger entry, [`SPEC-2026-09-25-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-02) staying pending for the peer's next letter. No outbound entry follows, and the records below share this provenance.
+
+**Claim.** Its §1, on a claims policy with the error field `Reference` named in each text. `DifferenceInDays(Reference, NoSuchField) > 0` draws `MVK_NO_DATE`, while `FieldFilled(Reference, NoSuchField)`, `[Reference] > [NoSuchField]` and `[Reference] * [NoSuchField] > 0` draw `MVK_INVALID_ENTITY`, and `[Reference] * [Score] > [NoSuchField]` draws `MVK_NO_NUMBER_FOR_CALC`. `Abs(RoundUpValue(Reference, 2) > 1) > 0` draws `MVK_NO_NUMBER`.
+
+After `FieldFilled(Reference) And FieldFilled(Score) Or`, a bad name in the next part draws `MVK_INVALID_ENTITY` and one in a later part `MVK_BRACKET_MISSING`. A star in a `Sum`'s filter body draws `MVK_NO_WILDCARDS_ALLOWED` with and without a bad name after it in the body. A per-row read beside an uncontained error field draws `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` alone and ahead of a later bad name, and yields to an earlier one. A year-less date construction and the base-year constant each answer when written first. On the order fixture, `ValueNotConsistent(/Order/Items To "HIGH")` over an unstarred repeatable group draws `MVK_NO_WILDCARD`.
+
+**Lean.** No condition parser is modelled, so the rows are spec-only.
+
+<a id="inbound-2026-09-25c-form-keyword"></a>
+### Reviewed 2026-09-25c form-keyword handback — a form construct's class is raised on its keyword wherever a condition opens
+
+The same letter and revision, its §2, on a German A12 model with the rule on `../Code`, each row naming its complete class set. `VordruckAngegeben` with no argument list, with `(`, with `(Order` and with `(Oder)` draws `MVK_INVALID_ROOT_GROUP_CONSTR` alone, and so does `VordruckAngegeben(Order Oder)` after `Und`. The construct inside one or two grouping parentheses draws the same, at the text's start and after a connective. A leading `Oder`, the construct after a completed condition, and the construct as a field operand draw `MVK_UNEXPECTED_TOKEN` alone.
+
+**Lean.** [`RootGroupConditionLegality`](../A12Kernel/Elaboration/RootGroupConditionLegality.lean) now states that its refusal takes the keyword to stand where a condition opens and does not model the other positions.
+
+<a id="inbound-2026-09-25c-key-filter"></a>
+### Reviewed 2026-09-25c key-filter handback — a `Having` after a field-valued index key is the key's filter
+
+The same letter and revision, its §3, on a policy whose `Claims` repeats keyed by `ClaimRef`, with `Reference` at the root and a non-repeating `Insured`, the rule `FieldFilled(Reference) And …` reporting on `../Reference`. With `For Reference Having …`, a starred and an unstarred `Claims/Amount` and a starred `Claims` group operand draw `MVK_WILDCARDS_REQUIRED`, where `Sum(Claims*/Amount For Reference) > 0` draws `MVK_SEMANTIC_INDEX_AND_WILDCARD`. A group key draws `MVK_NO_GROUPS_ALLOWED`, and a starred key `MVK_SEMANTIC_INDEX_WITH_WILDCARD` with and without the filter.
+
+After a string key, a starred operand draws `MVK_SEMANTIC_INDEX_AND_WILDCARD`, with a bad name in the body too, and an unstarred one `MVK_WILDCARDS_REQUIRED`, which draws `MVK_PARAMSIZE_INVALIDN` unfiltered. An unstarred group operand draws `MVK_NO_GROUPS_ALLOWED`. The peer withdraws its earlier reading that the index spelling consumes the operand's star. No record here carried it.
+
+**Lean.** [`SemanticIndexAdmission`](../A12Kernel/Elaboration/SemanticIndexAdmission.lean) takes no filter on its key and now says so.
+
+<a id="inbound-2026-09-25c-filter-body"></a>
+### Reviewed 2026-09-25c filter-body handback — a body's comparison draws its outside class, and the filter's chain is raised at two points around the body
+
+The same letter and revision, its §4, on a claims policy whose repeatable `Claims` declares String, Number, Enumeration, Boolean, Confirm, Date and DateRange fields, beside a repeatable `Parties`, a non-repeating `Insured` and a keyed `Orders` with a repeatable `Lines`. Inside `Sum(Claims*/Paid Having …) > 0`, eighteen comparisons over fields of the filtered row each draw their family's class, with `[Claims/Units] == 1` admitted. Among them, `[Claims/Notes] == [Claims/Units]` draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` and the same pair under `<` `MVK_INVALID_TYPE_FOR_COMPARISON`. Two Dates of formats `dd.MM.yyyy` and `MM-dd` draw `MVK_INVALID_COMPARE_TO_DATE`, and Numbers of zero and two fraction digits `MVK_INVALID_COMPARE_DEC_PLACES`.
+
+A refused body comparison answers ahead of an unstarred operand's `MVK_NO_WILDCARD`, a nested filter's `MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION` and the nested operand unstarred. A star on the filtered field draws `MVK_INVALID_WILDCARD` with either body. A group operand or a group key draws `MVK_NO_GROUPS_ALLOWED` ahead of a refused comparison, a name resolving to nothing and a broken token in its body.
+
+A body reading the non-iterated `Parties` draws `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` when sound, and the comparison's class when refused, `MVK_INVALID_COMPARE_DEC_PLACES` for `[Parties/Count] == [Claims/Paid]` included. Over `Orders*/Units`, a `For Parties*/Name` and a `For Reference` key draw `MVK_SEMANTIC_INDEX_WITH_WILDCARD` and `MVK_WILDCARDS_REQUIRED` with a sound body, and a refused comparison answers ahead of both. On the starred key, a body reading `Orders` draws the iteration class ahead of the key's star. Two nested filters over two levels draw `MVK_INVALID_TYPE_FOR_COMPARISON` each way round, and an aggregate with no filter of its own in a body draws `MVK_NO_ITERATION_FOR_WILDCARD`.
+
+**Lean.** The star route's filter now asks each unmarked reference's candidate environment once the whole body has passed its kind and scale gates. [`StarNumberElaboration`](../A12Kernel/Conformance/StarNumberElaboration.lean) locks this on a sibling `Other` and a scale-2 `Paid` that mirror the `Parties` row. An equality whose side is not a Number is now `equalityFieldNotNumber`, which claims no class, while `<` keeps the ordering column. Nested filters, filtered keys and comparison families beyond the Number and String-literal leaves have no Lean surface, and [SG17](gaps/paths-and-groups.md#gap-sg17) carries the two orders no row places.
+
+<a id="inbound-2026-09-25c-calculation-stages"></a>
+### Reviewed 2026-09-25c calculation handback — the calculation module asks its stages in order, its rounding mode judges each alternative, and a variant-filtered computation is no cycle node
+
+The same letter and revision, its §5, on an online checkout, each verdict naming its complete class set. A text defect in a computation's own texts draws its class alone beside the rounding, index-target and mixed-alternatives shapes and the cycle. The defects are an arity gate or a name resolving to nothing in the precondition, and a rounding gate or such a name in the operation. An arity or bad-name defect in another computation stands beside each of the three member classes. That defect, another computation's rounding or mixed class, a rule's arity gate or bad name, and a structural `MVK_PATH_INVALID` each withhold the cycle. A rule's arity gate and the path class stand beside the rounding class.
+
+On one computation, the language feature withholds the rounding and mixed classes, and the index target withholds the language feature, an enumeration source and a read of the computed field. The enumeration source and the self-read withhold the rounding class, the self-read on a text and on a Number target alike, and the mixed class stands beside either. With the message removed, every member class stands beside `MVK_ERROR_MESSAGE_MISSING` and `RULE_HAS_NO_ERRORTEXT`, and the rounding class stands beside `INVALID_CHARACTERS` for a control character. The parser's `MVK_PARAMSIZE_INVALID1` withholds `RULE_HAS_NO_ERRORTEXT`, and the cycle is withheld by both error-text classes. With `variantFilter` `ONLY` another variant on either computation of the cycle pair, the model is admitted.
+
+The rounding class is [`kf297`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf297)'s. `roundingMode` takes `Exact`, `RoundUp` and `RoundDown`, an absent mode meaning `Exact`, and any other spelling leaves the model unbuildable with no class. `RoundUp` against an alternative with no `toleranceRangeOp` is refused and against a band admitted, `Exact` is admitted against either, and `RoundDown` against a band is admitted. One band-less alternative among banded ones refuses a `RoundUp` computation in either position.
+
+**Lean.** [`ComputationNormalForm`](../A12Kernel/Elaboration/ComputationNormalForm.lean) now takes the declared mode, where it had derived one from the tolerance range and proved the class unreachable. It refuses exactly when the mode is not exact and some alternative declares no range, locked on the grid. `RoundDown` without a range is refused on the peer's reading of the gate, an assumption the [coverage record](implementation/cross-clause.md#cap-computation-normal-form-generation) names. The stage order, the error-text interplay and the variant filter have no composed Lean check, so those rows are spec-only.
+
 ### Inbound 2026-09-24c through 2026-09-25 handbacks
 
 Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.

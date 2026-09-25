@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-09-25; HEAD was `a126a594`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-09-25; HEAD was `c18815fa`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -37,7 +37,7 @@ An occurrence can be a definition, fixture, comment, request, or list of exclusi
 | | classes | share |
 |---|---|---|
 | Distinct identifiers in the selected diagnostic catalogs and runtime formal-code constants | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 303 | 61% |
+| Named in `spec/` or `docs/` prose | 304 | 61% |
 | Named in Lean source under `A12Kernel/` | 459 | 92% |
 | Named in JSON under `evidence/` | 213 | 43% |
 | Touched by any of the three | 489 | 98% |
@@ -74,7 +74,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 23 |
-| `remaining` rows across those gaps | 245 |
+| `remaining` rows across those gaps | 246 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 1 |
 | Ledger entries `handed-off` | 0 |
@@ -87,7 +87,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 216134 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 216244 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8735 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 

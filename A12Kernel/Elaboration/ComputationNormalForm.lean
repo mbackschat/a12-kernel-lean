@@ -200,7 +200,11 @@ def normalizedFormRefusal (computedField : String) (condition : NormalizedCondit
       if field != computedField then some .invalidFieldGate
       else condition.members.findSome? (memberRefusal computedField)
 
-/-- The rounding-mode check on one alternative: `!=` beside anything but exact rounding. -/
+/-- The rounding-mode check on one alternative: `!=` beside anything but exact rounding.
+
+`RoundUp` beside `!=` and the modes measured beside a range are measured cells. `RoundDown` beside
+`!=` is refused here on the peer's reading of the gate, which asks only whether the mode is exact;
+no row measures it. -/
 def roundingRefusal (spelling : ComparisonSpelling) (mode : ComputationRoundingMode) :
     Option CalculationRefusal :=
   match spelling, mode with
