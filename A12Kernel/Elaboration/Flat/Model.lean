@@ -234,16 +234,26 @@ def FlatModel.repeatableScopeForGroupPath (model : FlatModel) (groupPath : Group
 def WrittenFieldPlacement.of (declaringGroup writtenGroup : GroupPath) : WrittenFieldPlacement :=
   if GroupPath.isPrefixOf declaringGroup writtenGroup then .contained else .outside
 
-/-- The index-kind pairs a Kernel row separates: a String key on either side of a Number key, and a
-    String written key against an Enumeration, Boolean or Date operand key
-    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
-    Any other pair of differing kinds claims no class, since the peer reads the Kernel's base-type
-    match as coarser than the declared kind
-    ([`kf404`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf404)). -/
-def SurfaceScalarKind.measuredIndexTypeSplit : SurfaceScalarKind → SurfaceScalarKind → Bool
-  | .string, .number | .number, .string => true
-  | .string, .enumeration | .string, .boolean | .string, .temporal .date => true
-  | _, _ => false
+/-- The type step of the index gates, for two index fields of one name, the written path's first:
+    the pairs a Kernel row measures, in the direction it measures them. The Kernel iterates the two
+    jointly when their kinds agree, when two Numbers differ in scale only, and when a Date key meets
+    a DateTime, Time or date-fragment key or a DateTime key meets a Time one. It draws the type class
+    for a String key beside any other kind, a Number key beside a String, Enumeration or Date one, an
+    Enumeration beside a Boolean, a Boolean beside a Confirm, and a Date beside a date range
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope),
+    [inbound](../../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). A date fragment is a
+    `.date` here, as the Kernel's model mapper builds it. Every other pair, the reverse of a measured
+    one included, is `unmeasured`: the rows fit a pairing by base type that joins the temporal kinds,
+    but no pair beyond them is adopted. -/
+def FieldKind.indexTypeGate (written operand : FieldKind) : ParallelIndexGate :=
+  if written == operand then .legal
+  else match written, operand with
+    | .string, _ => .differentType
+    | .number _, .number _ => .legal
+    | .number _, .string | .number _, .enumeration | .number _, .temporal .date _ => .differentType
+    | .enumeration, .boolean | .boolean, .confirm | .temporal .date _, .dateRange => .differentType
+    | .temporal .date _, .temporal _ _ | .temporal .dateTime _, .temporal .time _ => .legal
+    | _, _ => .unmeasured
 
 /-- The index gates `group` meets beside the written field's group, for a group and a written path
     that each declare an index field. Each chain must carry exactly one keyed group of its own: the
@@ -263,12 +273,7 @@ def FlatModel.parallelIndexGate (model : FlatModel) (writtenGroup : GroupPath)
     match indexDeclaration? group, writtenKeys.head?.bind indexDeclaration? with
     | some operandIndex, some writtenIndex =>
         if operandIndex.name != writtenIndex.name then .differentName
-        else if operandIndex.policy.kind.surfaceKind != writtenIndex.policy.kind.surfaceKind then
-          if writtenIndex.policy.kind.surfaceKind.measuredIndexTypeSplit
-              operandIndex.policy.kind.surfaceKind then .differentType
-          else .unmeasured
-        else if operandIndex.policy.kind == writtenIndex.policy.kind then .legal
-        else .unmeasured
+        else writtenIndex.policy.kind.indexTypeGate operandIndex.policy.kind
     | _, _ => .unmeasured
 
 /-- The class facts of one level a read leaves unbound, for a construct declared in `declaringGroup`

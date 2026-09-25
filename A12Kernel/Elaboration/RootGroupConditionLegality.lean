@@ -12,6 +12,11 @@ checker, and draw the construct's own class. So the identical authored text prod
 diagnostics on two models differing only in that one setting, and only one of them says what is
 actually wrong ([checkpoint](../../docs/SOURCES.md#src-form-condition-constructs)).
 
+**The six are not the whole family.** The peer measures a seventh form-level construct, a count of
+the forms specified, drawing the same class on a German model, and two numbering functions that
+do not lex there; none of the three is modelled here
+([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-condition-class-order)).
+
 **The construct's own class shadows the two that follow it.** The checker that names the construct
 runs before the one that inspects its argument, so an A12 model never reaches the wildcard checks:
 neither the star-forbidden class nor the star-required one can fire. That is measured rather than
@@ -53,7 +58,7 @@ inductive FormConditionKeyword where
 
 namespace FormConditionKeyword
 
-/-- Every keyword of the family. -/
+/-- The six keywords this module models. -/
 def all : List FormConditionKeyword :=
   [.rootGroupSpecified, .rootGroupNotSpecified, .atLeastOneRootGroupSpecified,
    .noRootGroupSpecified, .rootGroupNotConsecutive, .subScopeNotConsecutive]

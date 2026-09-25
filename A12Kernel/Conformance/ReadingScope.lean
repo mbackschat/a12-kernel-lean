@@ -255,7 +255,8 @@ example :
 
 /-- The grid's route sheet: a keyed `Invoices` under a String `ShipmentKey`; an unkeyed `Ret`
     holding a keyed `Sub`; a keyed `Ref` under another name holding a keyed `Sub2`; and five groups
-    keyed by a `ShipmentKey` of five kinds. -/
+    keyed by a `ShipmentKey` of five kinds. The peer's type-table fixture adds five more kinds and a
+    second Number scale, two of them holding an unkeyed group so a legal pair's walk shows. -/
 private def routeModel : FlatModel :=
   let row (id : FieldId) (groups : List String) (name : String) (policy : FieldPolicy)
       (scope : List RepeatableLevel) : FlatFieldDecl :=
@@ -277,15 +278,31 @@ private def routeModel : FlatModel :=
       row 16 ["TagsB"] "ShipmentKey" { kind := .boolean } [9], row 17 ["TagsB"] "TAmount" number [9],
       { row 18 ["TagsD"] "ShipmentKey" { kind := .temporal .date TemporalComponents.fullDate } [10]
         with temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
-      row 19 ["TagsD"] "TAmount" number [10]]
+      row 19 ["TagsD"] "TAmount" number [10],
+      row 20 ["TagsC"] "ShipmentKey" { kind := .confirm } [11], row 21 ["TagsC"] "TAmount" number [11],
+      { row 22 ["TagsM"] "ShipmentKey" { kind := .temporal .dateTime TemporalComponents.now } [12]
+        with temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+      row 23 ["TagsM"] "TAmount" number [12], row 24 ["TagsM", "Parts"] "PAmount" number [12, 13],
+      { row 25 ["TagsT"] "ShipmentKey" { kind := .temporal .time TemporalComponents.time } [14]
+        with temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      row 26 ["TagsT"] "TAmount" number [14],
+      { row 27 ["TagsR"] "ShipmentKey" { kind := .dateRange } [15]
+        with dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } },
+      row 28 ["TagsR"] "TAmount" number [15],
+      row 29 ["TagsN2"] "ShipmentKey" { kind := .number { scale := 2, signed := false } } [16],
+      row 30 ["TagsN2"] "TAmount" number [16], row 31 ["TagsN2", "Parts2"] "PAmount" number [16, 17]]
     repeatableGroups := [
       keyed 1 ["Invoices"] 2, { level := 2, path := ["Fulfilment", "Ret"], repeatability := some 2 },
       keyed 3 ["Ret", "Sub"] 5, keyed 4 ["Ref"] 7, keyed 5 ["Ref", "Sub2"] 8,
       keyed 6 ["TagsS"] 10, keyed 7 ["TagsN"] 12, keyed 8 ["TagsE"] 14, keyed 9 ["TagsB"] 16,
-      keyed 10 ["TagsD"] 18] }
+      keyed 10 ["TagsD"] 18, keyed 11 ["TagsC"] 20, keyed 12 ["TagsM"] 22,
+      { level := 13, path := ["Fulfilment", "TagsM", "Parts"], repeatability := some 2 },
+      keyed 14 ["TagsT"] 25, keyed 15 ["TagsR"] 27, keyed 16 ["TagsN2"] 29,
+      { level := 17, path := ["Fulfilment", "TagsN2", "Parts2"], repeatability := some 2 }] }
 
-private def routeRead (groups : List String) (field : String) (model := routeModel) : Verdict :=
-  verdict (elaborateNumericComparison model ["Fulfilment", "Invoices"]
+private def routeRead (groups : List String) (field : String) (model := routeModel)
+    (rule : List String := ["Invoices"]) : Verdict :=
+  verdict (elaborateNumericComparison model ("Fulfilment" :: rule)
       (gtZero (.field { base := .absolute, groups := "Fulfilment" :: groups, field })))
     numericClass
 
@@ -303,16 +320,42 @@ example :
   native_decide
 
 /- Keyed by a Number instead, the error field's path meets the String key at the measured type gate
-   (the group rows of the index-gate record), while no row measures a Number key against an
-   Enumeration, Boolean or Date one, so those claim no class: the peer reads the Kernel's base-type
-   match as coarser than the declared kind
-   ([`kf404`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf404)). -/
+   (the group rows of the index-gate record) and the Enumeration and Date keys too, while no row
+   measures a Number key against a Boolean one, so that claims no class
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). -/
 example :
     let numberKeyed : FlatModel :=
       { routeModel with fields := routeModel.fields.map fun field =>
           if field.id == 2 then { field with policy := number } else field }
     [["TagsS"], ["TagsN"], ["TagsE"], ["TagsB"], ["TagsD"]].map (routeRead · "TAmount" numberKeyed) =
-    [some (some .errorFieldInvalidIndexType), unclassed, unclassed, unclassed, unclassed] := by
+    [some (some .errorFieldInvalidIndexType), unclassed, some (some .errorFieldInvalidIndexType),
+      unclassed, some (some .errorFieldInvalidIndexType)] := by
+  native_decide
+
+/- The peer's type table, the rule's key first
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). A String key splits from a
+   Confirm, DateTime, Time and date-range key; a Date from a date range, a Boolean from a Confirm, a
+   Number from an Enumeration and an Enumeration from a Boolean. -/
+example :
+    [routeRead ["TagsC"] "TAmount", routeRead ["TagsM"] "TAmount", routeRead ["TagsT"] "TAmount",
+      routeRead ["TagsR"] "TAmount", routeRead ["TagsR"] "TAmount" (rule := ["TagsD"]),
+      routeRead ["TagsC"] "TAmount" (rule := ["TagsB"]), routeRead ["TagsE"] "TAmount" (rule := ["TagsN"]),
+      routeRead ["TagsB"] "TAmount" (rule := ["TagsE"])] =
+    List.replicate 8 (some (some .errorFieldInvalidIndexType)) := by
+  native_decide
+
+/- The pairs the table admits are legal parallel iterations: a Date key beside a DateTime or Time
+   one, a DateTime beside a Time, and two Numbers of different scale, each refused here claiming no
+   class. Below a legal pair the walk asks the unkeyed level next, as `kf371` measures for one kind;
+   that the walk goes on past a pair of two kinds is this project's assumption, which the same read
+   from a Time key separates, the reverse pair no row measures stopping the walk. -/
+example :
+    [routeRead ["TagsM"] "TAmount" (rule := ["TagsD"]), routeRead ["TagsT"] "TAmount" (rule := ["TagsD"]),
+      routeRead ["TagsT"] "TAmount" (rule := ["TagsM"]), routeRead ["TagsN2"] "TAmount" (rule := ["TagsN"]),
+      routeRead ["TagsM", "Parts"] "PAmount" (rule := ["TagsD"]),
+      routeRead ["TagsN2", "Parts2"] "PAmount" (rule := ["TagsN"]),
+      routeRead ["TagsM", "Parts"] "PAmount" (rule := ["TagsT"])] =
+    List.replicate 4 unclassed ++ [noWildcard, noWildcard, unclassed] := by
   native_decide
 
 /-! ## A computation's target places the class -/
