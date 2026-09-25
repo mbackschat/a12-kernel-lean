@@ -1,0 +1,47 @@
+[
+ {
+  "id": "w1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "w1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "w2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "w2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "w3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "w3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "w4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "w4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "w5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "w5.json",
+   "--dry-run"
+  ]
+ }
+]

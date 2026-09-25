@@ -1,0 +1,1 @@
+{"computedField": "/Grid/Items/Qty", "alternatives": [{"operation": "Length(/Grid/Ledger) + CurrentRepetition(/Grid/Items)"}], "messages": [{"locale": "en_US", "text": "m"}], "group": "/Grid"}
