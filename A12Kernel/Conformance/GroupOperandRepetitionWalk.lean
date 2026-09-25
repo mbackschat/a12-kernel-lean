@@ -847,7 +847,7 @@ example :
       [fieldSlot fulfilmentModel rowGroup true (named .absolute ["Fulfilment"] "Shipments") summary,
         list fulfilmentModel rowGroup .atLeastOneGroupFilled [.group shipments] summary,
         list fulfilmentModel rowGroup .allGroupsFilled [.group shipments, .group summaryRef] summary,
-        count fulfilmentModel rowGroup [shipments, summaryRef] summary].map
+        count fulfilmentModel rowGroup [shipments] summary].map
           fun | .ok _ => none | .error class? => some class?) =
     [List.replicate 4 containment, List.replicate 4 containment, List.replicate 4 noWildcard] := by
   native_decide

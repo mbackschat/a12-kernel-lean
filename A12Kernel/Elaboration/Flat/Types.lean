@@ -395,12 +395,13 @@ inductive ParallelIndexGate where
   | multipleIndexFields
   /-- The two index fields differ in name. -/
   | differentName
-  /-- They share a name and differ in base type. -/
+  /-- They share a name and differ in a pair of kinds a row separates,
+      `SurfaceScalarKind.measuredIndexTypeSplit`. -/
   | differentType
   /-- They share a name and a kind: a legal parallel iteration, which the Kernel admits. -/
   | legal
   /-- A shape no row measures: a keyed group both chains share, a second keyed group on the written
-      path, or one base type under two different kinds. -/
+      path, one base type under two different kinds, or any other pair of differing kinds. -/
   | unmeasured
   deriving Repr, DecidableEq
 

@@ -234,6 +234,17 @@ def FlatModel.repeatableScopeForGroupPath (model : FlatModel) (groupPath : Group
 def WrittenFieldPlacement.of (declaringGroup writtenGroup : GroupPath) : WrittenFieldPlacement :=
   if GroupPath.isPrefixOf declaringGroup writtenGroup then .contained else .outside
 
+/-- The index-kind pairs a Kernel row separates: a String key on either side of a Number key, and a
+    String written key against an Enumeration, Boolean or Date operand key
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
+    Any other pair of differing kinds claims no class, since the peer reads the Kernel's base-type
+    match as coarser than the declared kind
+    ([`kf404`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf404)). -/
+def SurfaceScalarKind.measuredIndexTypeSplit : SurfaceScalarKind → SurfaceScalarKind → Bool
+  | .string, .number | .number, .string => true
+  | .string, .enumeration | .string, .boolean | .string, .temporal .date => true
+  | _, _ => false
+
 /-- The index gates `group` meets beside the written field's group, for a group and a written path
     that each declare an index field. Each chain must carry exactly one keyed group of its own: the
     measured multiple-index row keys a second group above the level on the operand's side only
@@ -253,7 +264,9 @@ def FlatModel.parallelIndexGate (model : FlatModel) (writtenGroup : GroupPath)
     | some operandIndex, some writtenIndex =>
         if operandIndex.name != writtenIndex.name then .differentName
         else if operandIndex.policy.kind.surfaceKind != writtenIndex.policy.kind.surfaceKind then
-          .differentType
+          if writtenIndex.policy.kind.surfaceKind.measuredIndexTypeSplit
+              operandIndex.policy.kind.surfaceKind then .differentType
+          else .unmeasured
         else if operandIndex.policy.kind == writtenIndex.policy.kind then .legal
         else .unmeasured
     | _, _ => .unmeasured
@@ -783,10 +796,11 @@ def FlatModel.resolvePresenceOperand (model : FlatModel) (declaringGroup written
   | .error error => .error error
 
 /-- Resolve a nonrepeatable operand of a condition after a caller has validated the model.
-`declaringGroup` is the reading rule's group, so an operand that group already iterates is refused
-as this fragment's boundary rather than as the missing wildcard, and a level it leaves unbound is
-classed by `writtenGroup`, the error field's group, which the rule group stands in for when a caller
-has none. -/
+`declaringGroup` is the reading rule's group. With the error field at or below it, an operand that
+group already iterates is refused as this fragment's boundary rather than as the missing wildcard;
+with the error field outside it nothing binds a level, so that operand draws containment. Either way
+a level left unbound is classed by `writtenGroup`, the error field's group, which the rule group
+stands in for when a caller has none. -/
 def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath)
     (writtenGroup : GroupPath := declaringGroup) :

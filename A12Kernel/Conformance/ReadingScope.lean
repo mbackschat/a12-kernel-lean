@@ -157,20 +157,32 @@ private def groupAndBase (group : String) : SurfaceNumberEntitySource :=
   let sub : SurfaceGroupReference := .path { base := .relative 0, groups := [group] }
   { first := .group sub, rest := [.field (p [] "Base")] }
 
+private def presence (rowGroup : GroupPath) (path : SurfaceFieldPath) :=
+  (CheckedValidationCondition.fromRepeatableFieldPresence policyModel rowGroup .filled path).toOption
+
+private def assembled (condition : CheckedValidationCondition policyModel) (errorField : FieldId) :
+    Verdict :=
+  verdict (assembleResolvedValidationRule policyModel condition errorField "R" .error { parts := [] })
+    FlatRuleAssemblyError.diagnostic?
+
 /-- `FieldFilled(guard) And FieldFilled(other)` read by the repeatable presence carrier and
     assembled with `errorField`. -/
 private def presenceRule (rowGroup : GroupPath) (guard other : SurfaceFieldPath)
     (errorField : FieldId) : Verdict :=
-  let presence (path : SurfaceFieldPath) :=
-    (CheckedValidationCondition.fromRepeatableFieldPresence policyModel rowGroup .filled path).toOption
-  match presence guard, presence other with
+  match presence rowGroup guard, presence rowGroup other with
   | some left, some right =>
       match left.and right with
-      | .ok whole =>
-          verdict (assembleResolvedValidationRule policyModel whole errorField "R" .error
-            { parts := [] }) FlatRuleAssemblyError.diagnostic?
+      | .ok whole => assembled whole errorField
       | .error _ => unclassed
   | _, _ => unclassed
+
+/- The repeatable presence carrier derives the rule's iteration from the read, so it admits the error
+   field's own presence as a whole rule, which the Kernel admits too (`Rf16kalone`, `Rf16palone`). -/
+example :
+    [(presence (g []) (p ["Claims", "Sub"] "SubAmount")).map (assembled · 8),
+      (presence (g []) (p ["Plain", "PSub"] "PSubAmount")).map (assembled · 13)] =
+    [some none, some none] := by
+  native_decide
 
 /- A rule in a repeatable group reporting on the root draws containment for its own row's field and
    for a fixed child of it, in the field slot and the group slot alike (`Rf17kfield`, `Rf17kgroup`,
@@ -272,8 +284,8 @@ private def routeModel : FlatModel :=
       keyed 6 ["TagsS"] 10, keyed 7 ["TagsN"] 12, keyed 8 ["TagsE"] 14, keyed 9 ["TagsB"] 16,
       keyed 10 ["TagsD"] 18] }
 
-private def routeRead (groups : List String) (field : String) : Verdict :=
-  verdict (elaborateNumericComparison routeModel ["Fulfilment", "Invoices"]
+private def routeRead (groups : List String) (field : String) (model := routeModel) : Verdict :=
+  verdict (elaborateNumericComparison model ["Fulfilment", "Invoices"]
       (gtZero (.field { base := .absolute, groups := "Fulfilment" :: groups, field })))
     numericClass
 
@@ -288,6 +300,19 @@ example :
       routeRead ["TagsB"] "TAmount", routeRead ["TagsD"] "TAmount"] =
     [noWildcard, some (some .errorFieldInvalidIndex), unclassed] ++
       List.replicate 4 (some (some .errorFieldInvalidIndexType)) := by
+  native_decide
+
+/- Keyed by a Number instead, the error field's path meets the String key at the measured type gate
+   (the group rows of the index-gate record), while no row measures a Number key against an
+   Enumeration, Boolean or Date one, so those claim no class: the peer reads the Kernel's base-type
+   match as coarser than the declared kind
+   ([`kf404`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf404)). -/
+example :
+    let numberKeyed : FlatModel :=
+      { routeModel with fields := routeModel.fields.map fun field =>
+          if field.id == 2 then { field with policy := number } else field }
+    [["TagsS"], ["TagsN"], ["TagsE"], ["TagsB"], ["TagsD"]].map (routeRead · "TAmount" numberKeyed) =
+    [some (some .errorFieldInvalidIndexType), unclassed, unclassed, unclassed, unclassed] := by
   native_decide
 
 /-! ## A computation's target places the class -/
@@ -369,9 +394,9 @@ private def computationRow (keyed : Bool) (declaringGroup : List String) : List 
       fun | .shape error => error.diagnostic? | _ => none]
 
 /- Declared in `Ledger` or in `Batches`, each target lies outside, and every carrier that leaves a
-   level unbound draws containment, keyed or not (`L00`–`L07`, `B00`–`B07`, `LR00`, `BR00`, `LE00`,
-   `BE00`); the starred controls are admitted, except `SumOfProducts`, whose own bar refuses a star
-   above the lowest level (`L05`, `B05`). Declared in `Out`, the target's own group, the unbound
+   level unbound draws containment, keyed or not (`L00`, `L02`, `L04`, `L06`, `LR00`, `LE00` and
+   their `B` twins); the starred controls are admitted (`L01`, `L07`), except `SumOfProducts`, whose
+   own bar refuses a star above the lowest level (`L05`, `B05`). Declared in `Out`, the target's own group, the unbound
    `Batches` draws the missing star, or the index class once keyed, while a level below the first
    star stays the missing star (`O00`–`O07`, `OR00`, `OE00`). -/
 example :
@@ -384,6 +409,23 @@ example :
       [noWildcard, none, noWildcard, noWildcard, bar, noWildcard, none, noWildcard, noWildcard] ∧
     computationRow true ["Out"] =
       [noIndex, none, noIndex, noWildcard, bar, noWildcard, none, noIndex, noIndex] := by
+  native_decide
+
+/- The fully starred Boolean group count and Enumeration `FirstFilledValue` are admitted from all
+   three groups, keyed or not (`L03`, `B03`, `O03`, `LE01`, `BE01`, `OE01`). -/
+example :
+    let flagsStar : SurfaceStarGroupPath :=
+      { base := .absolute, groups := [{ name := "Probe" }, { name := "Batches", starred := true }, { name := "Flags" }] }
+    let enumStar : SurfaceStarFieldPath :=
+      { base := .absolute, field := "BEnum", groups := [{ name := "Probe" }, { name := "Batches", starred := true }] }
+    [false, true].flatMap (fun keyed => [["Ledger"], ["Batches"], ["Out"]].map fun declaring =>
+      let decl := "Probe" :: declaring
+      [verdict (elaborateCompleteNumericComputationOperation (probeModel keyed) decl 1
+          (.atom (.booleanValueCount true { first := .starredGroup flagsStar, rest := [] }))) computationClass,
+        verdict (elaborateEnumerationFirstFilledComputation (probeModel keyed) decl 3
+          { first := .star enumStar, rest := [.field (.direct (pp [] "RootEnum"))] })
+          fun | .shape error => error.diagnostic? | _ => none]) =
+    List.replicate 6 [none, none] := by
   native_decide
 
 end A12Kernel.Conformance.ReadingScope

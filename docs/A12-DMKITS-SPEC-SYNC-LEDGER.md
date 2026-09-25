@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-25-04"></a>
+### `SPEC-2026-09-25-04` — two lines of the accepted `SPEC-2026-09-24-05` stated more than their rows: the field-slot order delta and the `kf371` limit
+
+- `status`: pending.
+- `supersedes`: [`SPEC-2026-09-24-05`](#spec-2026-09-24-05)'s field-slot `delta` and its `limit`, the rest of that receipt standing.
+- `origin`: locally originated from a cold review of this project's records; neither delta changes a measured outcome.
+- `clause`: [`02` the `FieldFilled` slot bullet](../spec/02-logic-and-formal-errors.md), whose text already states only what the rows measured.
+- `delta`: `Claims.*` carries its defect on the unbound segment itself, so it contradicts an order that runs the walk first but not one that asks each segment's own gates before that segment's walk step; only `Claims/Amount*/..` contradicts that second order ([inbound](SOURCES.md#inbound-2026-09-24c-path-walk)).
+- `delta`: `kf371`'s route table is measured on rule verdicts, `ParallelIterationRouteLawsTest` building each as a rule at a12-dmkits `de84b2637220788026d1389fcb451fee54874849`, and only `kf255`'s sibling pair is measured on the computation arm, the reverse of what that `limit` said.
+- `basis`: the cited inbound record and the peer test read at that revision on 2026-09-25.
+- `surfaces`: any peer record that took either line of the superseded receipt as stated.
+- `acceptance`: confirm both narrowings, or supply a row where `Claims.*` separates the two orders.
+- `limit`: record wording only; no new measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-25-03"></a>
 ### `SPEC-2026-09-25-03` — the index type gate answers between a String key and Enumeration, Boolean and Date keys, and a marked filter reference with no enclosing iteration draws the walk's class, the index class included
 
@@ -76,7 +91,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `limit`: static admission only.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 - `reviewed a12-dmkits revision`: `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`, the peer's `-2026-09-25` letter, read 2026-09-25.
-- `disposition`: **accepted at a12-dmkits `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`.** Both scopes are answered with the rows beyond them. A fixed group's star draws `MVK_INVALID_WILDCARD` alone at every other listed position and against an unreferenced error field, and of two defects the one read first answers. Twelve further member classes withhold the message, and the withheld set narrows to the error-text checker's classes while the presence classes stand. `spec/08` and `spec/11` carry both ([inbound](SOURCES.md#inbound-2026-09-25-fixed-group-star), [inbound](SOURCES.md#inbound-2026-09-25-message-withheld)).
+- `disposition`: **accepted at a12-dmkits `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`.** Both scopes are answered with the rows beyond them. A fixed group's star draws `MVK_INVALID_WILDCARD` alone at every other listed position and against an unreferenced error field, and of two defects the one read first answers. Twelve further refused conditions withhold the message, eleven of them drawing nine classes the measured set lacked, and the withheld set narrows to the error-text checker's classes while the presence classes stand. `spec/08` and `spec/11` carry both ([inbound](SOURCES.md#inbound-2026-09-25-fixed-group-star), [inbound](SOURCES.md#inbound-2026-09-25-message-withheld)).
 
 <a id="spec-2026-09-24-06"></a>
 ### `SPEC-2026-09-24-06` — below the first star the error field places the refusal on twenty-two measured validation carriers, not only on `Sum` and the group count
@@ -112,7 +127,6 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 - `reviewed a12-dmkits revision`: `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`, the peer's `-2026-09-25` letter, read 2026-09-25.
 - `disposition`: **accepted at a12-dmkits `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`.** The three requested rows are supplied: a bare repeatable group operand places its refusal as a field read does, a keyed group operand's walk stops at the first filled cell and a String index decides as a Number index does, and a comment admits every character but CR and LF. The index delta is extended past its limit with rule-arm rows over group operands, the legal pair then meeting each carrier's own gates. The field-slot and per-row-source deltas drew no contrary row and stand as scoped. `spec/07`, `spec/10` and `spec/12` carry the rows ([inbound](SOURCES.md#inbound-2026-09-25-bare-group-placement), [inbound](SOURCES.md#inbound-2026-09-25-keyed-group-walk), [inbound](SOURCES.md#inbound-2026-09-25-comment-terminators), [inbound](SOURCES.md#inbound-2026-09-25-parallel-index-gates)).
-- `correction`: appended 2026-09-25 rather than rewriting the receipt. The `limit` misread `kf371`: its route table is measured on rule verdicts, `ParallelIterationRouteLawsTest` building each as a rule, and only `kf255`'s sibling pair is measured on the computation arm. The `basis` lock now holds the index gates' classes, the withholding surviving only for a keyed group both chains share. The field-slot delta overstated its reach: only `Claims/Amount*/..` contradicts a segment-by-segment order, since `Claims.*` carries its defect on the unbound segment itself.
 
 <a id="spec-2026-09-24-04"></a>
 ### `SPEC-2026-09-24-04` — no `kf464` row isolates the group-count walk's reach check, and its list rule is measured on single operands and the fixed-only pair

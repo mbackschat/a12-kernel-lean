@@ -128,8 +128,9 @@ the only agreement.
 The scope classes separate cleanly: a filter with no unmarked reference into a reopened level
 reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference
 reports `invalidIterationInFilterCondition`, and a star written *inside* the filter reports
-`noWildcardsAllowed`. An unavailable marked reference instead reports `noWildcard`, because it
-requires a captured host binding ([fixed-reference checkpoint](../../docs/sources/having-filter-probes.md#src-fixed-repetition-having)
+`noWildcardsAllowed`. A marked reference to a level no host iteration binds meets the repetition
+walk instead, `SurfaceCorrelatedHaving.unboundOuterReference?`, because it requires a captured host
+binding ([fixed-reference checkpoint](../../docs/sources/having-filter-probes.md#src-fixed-repetition-having)
 and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-filter-reference-two-levels-above)).
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
@@ -191,7 +192,8 @@ where
       (model.repeatableScopeForGroupPath resolved.path)
     pure (resolved.path, unbound)
 
-/-- Refuse a filter whose marked reference the walk refuses, ahead of the filter's own checks. -/
+/-- Refuse a filter whose marked reference the walk refuses. Callers ask it before the filter's own
+    checks; no row measures a filter failing both, so that order is this project's choice. -/
 def SurfaceCorrelatedHaving.requireOuterReferencesBound (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (having : SurfaceCorrelatedHaving) :
     Except CorrelationElabError Unit :=
