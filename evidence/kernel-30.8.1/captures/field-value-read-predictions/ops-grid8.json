@@ -1,0 +1,77 @@
+[
+ {
+  "id": "d1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And DateRangesOverlap(/Grid/Span -> Band, /Grid/Span2)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneDateRangeOverlaps(/Grid/Span -> Band IN /Grid/Span2)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValuesNotUnique(/Grid/Due -> Band, /Grid/DueCopy)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValuesNotUnique(/Grid/Grade -> Band, /Grid/GradeCopy)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d5",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And DateRangesOverlap(/Grid/Span, /Grid/Span2)",
+   "--message",
+   "en_US=message"
+  ]
+ }
+]

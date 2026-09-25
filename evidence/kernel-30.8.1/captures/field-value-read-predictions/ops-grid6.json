@@ -1,0 +1,90 @@
+[
+ {
+  "id": "y1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(/Grid/Items*/Label -> Band In \"a\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "y2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "y3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y3.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "y4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y4.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "y5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "y6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "y7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "r4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r4",
+   "--field",
+   "/Grid/Items/Label",
+   "--condition",
+   "FieldFilled(/Grid/Items/Label) And [/Grid/Items/Qty] == Length(/Grid/Ledger)",
+   "--message",
+   "en_US=message"
+  ]
+ }
+]

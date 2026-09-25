@@ -1,0 +1,59 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "observations" : [ {
+    "id" : "y1",
+    "inputHash" : "dd34f744747dbd7d8ab3bbaf1747918cb739992a58f55b57c3efd1da7aba236b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ENUMERATION" ]
+  }, {
+    "id" : "y2",
+    "inputHash" : "2edc2c7bb5d1724e60ba0974fae4e52401811778fa43492db18797308fd41b44",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_TYPE" ]
+  }, {
+    "id" : "y3",
+    "inputHash" : "666c4236867b5577c60be3292d605a2e7f00fd41528a2ac09a78ca9641cdd715",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_TYPE" ]
+  }, {
+    "id" : "y4",
+    "inputHash" : "87d9f2b63bd326fc41c01dae52e4723db2f9189c3a29121ca5e4b721611d2f6c",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  }, {
+    "id" : "y5",
+    "inputHash" : "93bfd6d690f447dc16c884d47fdbd4df40ccf3bd7b4980f0cad57629ff685fcb",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  }, {
+    "id" : "y6",
+    "inputHash" : "1e59771184bb811acc0d60f9f2c139abc23af8a13bb69de506fc7c792a45bf07",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  }, {
+    "id" : "y7",
+    "inputHash" : "58060aa7636835e94b6b27bdec9570c7c10ab4a95255c43ee3f22bcc2583242b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  }, {
+    "id" : "r4",
+    "inputHash" : "8b61ad62ab43c6af1baa6b1f054e74ea07885cbed96d01c41d09a49c31e62a0e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  } ]
+}

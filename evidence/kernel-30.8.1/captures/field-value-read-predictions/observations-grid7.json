@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state" : "CLEAN"
+  },
+  "model" : "cbd8238ce5d64050a9e19056d2a5ba70ef06d050677828408720988ea8c69e25",
+  "observations" : [ {
+    "id" : "z1",
+    "inputHash" : "146fcfa376b0e31414e02c49206a7441df740344e9348ffe66cea4b0691e33fc",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ENUMERATION" ]
+  }, {
+    "id" : "z2",
+    "inputHash" : "e5c936038f621c7641e6214a3ce45aee546346d94741fa7425a026ff099531f2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ENUMERATION" ]
+  }, {
+    "id" : "z3",
+    "inputHash" : "37f0221d77e32dd9195ea4e18bf44688a48231f670875f3a168f2c607006ff92",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "z4",
+    "inputHash" : "088d719ea99b301b2800d63f70c455f1b7546d6a0e7319deb57c129288727739",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_CATEGORY_NOT_ALLOWED" ]
+  } ]
+}

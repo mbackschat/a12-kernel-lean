@@ -1,0 +1,62 @@
+[
+ {
+  "id": "z1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And NumberOfFilledFields(/Grid/Other -> Band, /Grid/Note) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "z2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Sum(/Grid/Amount -> Band, /Grid/Ledger/Total) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "z3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Items/Label -> Band] == \"Hi\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "z4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And NumberOfFilledFields(/Grid/Grade -> Band, /Grid/Other) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ }
+]
