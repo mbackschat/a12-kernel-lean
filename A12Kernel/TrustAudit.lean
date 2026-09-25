@@ -2686,8 +2686,8 @@ run_cmd do
 #print axioms A12Kernel.branchRefusal_emitBranch
 #print axioms A12Kernel.joinAlternatives_passes_shape_checks
 #print axioms A12Kernel.joinAlternatives_empty
-#print axioms A12Kernel.emittedSpelling_notEqual_iff_exact
-#print axioms A12Kernel.roundingRefusal_emitted
+#print axioms A12Kernel.roundingRefusal_emitted_isSome_iff
+#print axioms A12Kernel.roundingModeRefusal_isSome_iff
 #print axioms A12Kernel.normalizedFormRefusal_ungated
 #print axioms A12Kernel.rowFieldRefusal_roles_agree_off_tableEnum
 #print axioms A12Kernel.rowFieldRefusal_names_its_role

@@ -2,11 +2,11 @@
 
 The Kernel checks a calculation rule by parsing one **normalized condition**: a gate naming the computed field, then an optional common precondition, then one comparison per alternative between that field and the alternative's operation, joined by `And` inside and `Or` across. Twelve catalog classes report the ways that condition can be wrong.
 
-**An A12 document model never writes that condition.** It declares a computation *structurally* — a computed field, an optional common precondition, and a list of alternatives each carrying an operation, an optional precondition, and an optional tolerance range — and the model layer joins those into the normalized condition itself. The gate template, the conjunction and disjunction, the parenthesisation, and the comparison operator are all emitted by the joiner from the structure.
+**An A12 document model never writes that condition.** It declares a computation *structurally* — a computed field, an optional common precondition, a rounding mode, and a list of alternatives each carrying an operation, an optional precondition, and an optional tolerance range — and the model layer joins those into the normalized condition itself. The gate template, the conjunction and disjunction, the parenthesisation, and the comparison operator are all emitted by the joiner from the structure.
 
 So the shape half of the checker tests properties the generator guarantees, and this module states that as a theorem rather than as a remark: **every condition the joiner emits passes the shape checks.** A reimplementer who accepts a structured computation and produces its own condition needs exactly this property, and it is the reason those classes never reach an A12 consumer while remaining live for a model that authors its condition directly.
 
-**What the generator does *not* settle** is as important, and splits three ways.
+**What the generator does *not* settle** is as important, and splits four ways.
 
 *Content, not shape.* The enumeration-compatibility arm reads the operation's own text against the computed field's declared value set, which the joiner copies through untouched. It is live.
 
@@ -14,7 +14,7 @@ So the shape half of the checker tests properties the generator guarantees, and 
 
 *Model kind.* The unchecked-iteration arm is guarded by an H-model test, with the Kernel's own comment recording why: for an A12 model the iteration-check precondition is supplied implicitly.
 
-**The rounding-mode arm is the subtlest and is worth stating separately**, because it looks live and is not. It fires when the comparison is `!=` while the rounding mode is anything but exact. The joiner emits `!=` exactly when the alternative declares no tolerance range, and an alternative with no tolerance range is exactly one whose rounding is exact — so the two conditions are complementary by construction and the conjunction is empty. That is a property of the generator, not of the checker, and it is the one a reimplementer that derives rounding from somewhere else would break silently.
+*A declared member beside the structure.* **The rounding-mode arm is live, and it judges a pair.** A computation declares its rounding mode once — `Exact`, which an absent mode means, `RoundUp` or `RoundDown` — while each alternative declares its own tolerance range. The check fires when an alternative's emitted comparison is `!=`, which is exactly when that alternative declares no range, while the mode is anything but exact. So the class is owed per alternative: one alternative without a range refuses a rounding computation whatever the others declare, and the same mode against ranges only is admitted. Deriving the mode from the range instead makes the two conditions complementary and the class unreachable, which is the tempting wrong account ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages)).
 
 **Evidence.** The admissions are measured: eighteen structured computations, including an `Or` common precondition, an `Or` alternative precondition, a tolerance range, a repeatable-row target, a starred aggregate operation, and a starred gate, are all accepted ([checkpoint](../../docs/SOURCES.md#src-computation-normal-form-generation)). The dotted and colon'd field names are measured refused at declaration. The remaining unreachability statements are mechanism claims resting on the joiner being the sole generator, discharged by reading it, and are marked as such in the coverage record.
 
@@ -76,8 +76,8 @@ def all : List CalculationRefusal :=
 
 end CalculationRefusal
 
-/-- The tolerance ranges an alternative may declare. Declaring one changes the emitted comparison
-and is the only thing that makes the rounding mode inexact. -/
+/-- The tolerance ranges an alternative may declare. Declaring one changes the emitted comparison,
+which is what the rounding-mode check reads beside the computation's declared mode. -/
 inductive ToleranceRange where
   | one | two | five | ten
   deriving Repr, DecidableEq
@@ -90,9 +90,10 @@ inductive ComparisonSpelling where
   | differsWithTolerance (range : ToleranceRange)
   deriving Repr, DecidableEq
 
-/-- The rounding mode the checker reads. -/
-inductive RoundingMode where
-  | exact | inexact (range : ToleranceRange)
+/-- The rounding mode a computation declares, once for all its alternatives. An absent mode is
+`exact`. -/
+inductive ComputationRoundingMode where
+  | exact | roundUp | roundDown
   deriving Repr, DecidableEq
 
 /-- One declared alternative of a structured computation.
@@ -112,6 +113,7 @@ structure DeclaredComputationAlternative where
 structure StructuredComputation where
   computedField : String
   commonPrecondition : Option String := none
+  roundingMode : ComputationRoundingMode := .exact
   alternatives : List DeclaredComputationAlternative
   deriving Repr, DecidableEq
 
@@ -152,14 +154,6 @@ def emittedSpelling (alternative : DeclaredComputationAlternative) : ComparisonS
   match alternative.toleranceRange with
   | none => .notEqual
   | some range => .differsWithTolerance range
-
-/-- The rounding mode that accompanies an alternative. Exact exactly when no tolerance range is
-declared, which is exactly when the emitted comparison is `!=` — the complementarity the
-rounding-mode check depends on. -/
-def alternativeRounding (alternative : DeclaredComputationAlternative) : RoundingMode :=
-  match alternative.toleranceRange with
-  | none => .exact
-  | some range => .inexact range
 
 /-- One alternative as the joiner emits it. -/
 def emitBranch (computedField : String) (alternative : DeclaredComputationAlternative) : NormalizedBranch :=
@@ -206,12 +200,18 @@ def normalizedFormRefusal (computedField : String) (condition : NormalizedCondit
       if field != computedField then some .invalidFieldGate
       else condition.members.findSome? (memberRefusal computedField)
 
-/-- The rounding-mode check: `!=` beside anything but exact rounding. -/
-def roundingRefusal (spelling : ComparisonSpelling) (rounding : RoundingMode) :
+/-- The rounding-mode check on one alternative: `!=` beside anything but exact rounding. -/
+def roundingRefusal (spelling : ComparisonSpelling) (mode : ComputationRoundingMode) :
     Option CalculationRefusal :=
-  match spelling, rounding with
+  match spelling, mode with
   | .notEqual, .exact => none
-  | .notEqual, .inexact _ => some .wrongRoundingMode
+  | .notEqual, .roundUp | .notEqual, .roundDown => some .wrongRoundingMode
   | .differsWithTolerance _, _ => none
+
+/-- The rounding-mode check on a computation: its one declared mode against every alternative's
+emitted comparison, so a single alternative without a tolerance range is enough. -/
+def roundingModeRefusal (computation : StructuredComputation) : Option CalculationRefusal :=
+  computation.alternatives.findSome? fun alternative =>
+    roundingRefusal (emittedSpelling alternative) computation.roundingMode
 
 end A12Kernel

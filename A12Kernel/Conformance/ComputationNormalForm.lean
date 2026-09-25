@@ -54,23 +54,31 @@ example :
   native_decide
 
 /- A tolerance range changes the emitted comparison and nothing else, and it is the only thing that
-   does. This is the pair the rounding-mode law rests on. -/
+   does: the joiner emits `!=` exactly for an alternative declaring none. -/
 example :
     emittedSpelling { operation := "x" } = .notEqual ∧
       emittedSpelling { operation := "x", toleranceRange := some .five } =
-        .differsWithTolerance .five ∧
-      alternativeRounding { operation := "x" } = .exact ∧
-      alternativeRounding { operation := "x", toleranceRange := some .five } = .inexact .five := by
+        .differsWithTolerance .five := by
   native_decide
 
-/- The rounding check is not vacuous: the combination it exists to catch is expressible and caught,
-   it is simply never emitted. Without this case the law proving it never fires would be satisfied
-   by a check that never fires at all. -/
+/- **The rounding mode is declared, not derived, and every alternative owes the gate.** The peer's
+   grid, row for row: `RoundUp` against a band-less alternative is the one refused cell, the same mode
+   against a band is admitted, `Exact` is admitted against either, and on two alternatives one
+   band-less alternative refuses the computation in either position
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages)). A mode derived from the
+   band would admit the second row. -/
 example :
-    roundingRefusal .notEqual (.inexact .one) = some .wrongRoundingMode ∧
-      roundingRefusal .notEqual .exact = none ∧
-      roundingRefusal (.differsWithTolerance .one) (.inexact .one) = none ∧
-      roundingRefusal (.differsWithTolerance .one) .exact = none := by
+    let plain : DeclaredComputationAlternative := { operation := "42.00" }
+    let banded : DeclaredComputationAlternative := { plain with toleranceRange := some .one }
+    let computation (mode : ComputationRoundingMode) (alternatives) : StructuredComputation :=
+      { computedField := "/C/N", roundingMode := mode, alternatives }
+    [(ComputationRoundingMode.exact, [plain]), (.roundUp, [plain]), (.exact, [banded]),
+      (.roundUp, [banded]), (.roundDown, [{ plain with toleranceRange := some .ten }]),
+      (.roundUp, [banded, { plain with toleranceRange := some .two }]), (.roundUp, [banded, plain]),
+      (.roundUp, [plain, banded]), (.exact, [banded, plain])].map
+        (fun (mode, alternatives) => roundingModeRefusal (computation mode alternatives)) =
+      [none, some .wrongRoundingMode, none, none, none, none, some .wrongRoundingMode,
+        some .wrongRoundingMode, none] := by
   native_decide
 
 /- The checker rejects, and rejects the right things: an ungated condition, a gate on the wrong

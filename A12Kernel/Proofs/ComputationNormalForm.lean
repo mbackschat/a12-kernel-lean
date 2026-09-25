@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.ComputationNormalForm
 
 The one theorem this module exists for is a semantic-preservation bridge: every normalized condition the joiner emits from a structured computation passes the shape half of the calculation checker. It is what makes the shape classes unreachable from a model that declares its computations structurally, and it is the obligation a reimplementer that emits its own condition inherits.
 
-The rounding-mode result is the same argument on a second axis: the emitted comparison and the accompanying rounding mode are two readings of one field, so the check's two conditions are complementary and its conjunction is empty.
+The rounding-mode results characterize the one arm the generator does not settle, because the mode is declared beside the structure rather than emitted from it: the class fires exactly when the declared mode is not exact and some alternative declares no tolerance range.
 -/
 
 namespace A12Kernel
@@ -49,20 +49,28 @@ theorem joinAlternatives_empty (computation : StructuredComputation)
     (h : computation.alternatives = []) : joinAlternatives computation = none := by
   simp [joinAlternatives, h]
 
-/-- The emitted comparison and the accompanying rounding mode are two readings of one declared
-field, so `!=` arrives exactly with exact rounding. -/
-theorem emittedSpelling_notEqual_iff_exact (alternative : DeclaredComputationAlternative) :
-    emittedSpelling alternative = .notEqual ↔ alternativeRounding alternative = .exact := by
-  cases h : alternative.toleranceRange <;> simp [emittedSpelling, alternativeRounding, h]
+/-- One alternative's rounding check fires exactly when it declares no tolerance range and the mode
+is not exact. -/
+theorem roundingRefusal_emitted_isSome_iff (alternative : DeclaredComputationAlternative)
+    (mode : ComputationRoundingMode) :
+    (roundingRefusal (emittedSpelling alternative) mode).isSome ↔
+      mode ≠ .exact ∧ alternative.toleranceRange = none := by
+  cases h : alternative.toleranceRange <;> cases mode <;>
+    simp [roundingRefusal, emittedSpelling, h]
 
-/-- **The rounding-mode check never fires on an emitted alternative.** Its two conditions are
-complementary by construction, which is a property of the generator rather than of the checker — so
-a reimplementer deriving the rounding mode from anywhere but the tolerance range breaks it
-silently, and the checker is where that would surface. -/
-theorem roundingRefusal_emitted (alternative : DeclaredComputationAlternative) :
-    roundingRefusal (emittedSpelling alternative) (alternativeRounding alternative) = none := by
-  cases h : alternative.toleranceRange <;> simp [roundingRefusal, emittedSpelling,
-    alternativeRounding, h]
+/-- **The rounding-mode class is a judgement about a pair, owed by every alternative.** A
+computation draws it exactly when its declared mode is not exact and at least one alternative
+declares no tolerance range, so neither the mode alone nor any single alternative decides it. -/
+theorem roundingModeRefusal_isSome_iff (computation : StructuredComputation) :
+    (roundingModeRefusal computation).isSome ↔
+      computation.roundingMode ≠ .exact ∧
+        ∃ alternative ∈ computation.alternatives, alternative.toleranceRange = none := by
+  simp only [roundingModeRefusal, List.findSome?_isSome_iff, roundingRefusal_emitted_isSome_iff]
+  constructor
+  · rintro ⟨alternative, hMember, hMode, hRange⟩
+    exact ⟨hMode, alternative, hMember, hRange⟩
+  · rintro ⟨hMode, alternative, hMember, hRange⟩
+    exact ⟨alternative, hMember, hMode, hRange⟩
 
 /-- The checker is not vacuous: a condition with no gate is refused, which is what makes the bridge
 a statement about the generator rather than about a check that accepts everything. -/
