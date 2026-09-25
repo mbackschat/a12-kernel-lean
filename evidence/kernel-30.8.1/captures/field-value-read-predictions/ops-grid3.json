@@ -1,0 +1,227 @@
+[
+ {
+  "id": "t1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Partial, \"a\", \"b\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Partial, [/Grid/Other])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Note, [/Grid/Other])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Note, 1, 2)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t5",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(Other -> Band, [/Grid/Note])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t6",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Due, [/Grid/Other])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t7",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And RangeAsNumber(/Grid/Ledger, 1, 2) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t8",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Length(/Grid/Ledger) + 1 > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t9",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueAsNumber(/Grid/Ledger) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t10",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And RangeAsNumber(/Grid/Note, 1, 2) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t11",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And YearFromDate(StartOfDateRange(/Grid/Ledger)) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "t12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t12",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Length(/Grid/Note) + 1 > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "u1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "u1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "u2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "u2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "u3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "u3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "u4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "u4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "u5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "u5.json",
+   "--dry-run"
+  ]
+ }
+]

@@ -1,0 +1,1 @@
+{"computedField": "/Grid/Amount", "alternatives": [{"operation": "YearFromDate(StartOfDateRange(/Grid/Ledger))"}], "messages": [{"locale": "en_US", "text": "m"}], "group": "/Grid"}
