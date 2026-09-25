@@ -348,8 +348,9 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
 namespace TokenEntityStringLiteralValueListElabError
 
 /-- Project the String-literal form's refusals in its gate order: the shared shape classes, the
-    base-type class, the kind set's class, the literal comparison's class for a Number slot, and the
-    Enumeration literal's domain class. The two arms named at the end claim none. -/
+    base-type class, the kind set's class, the literal comparison's class for a Number slot, the
+    field side's own classes, and the Enumeration literal's domain class. `unsupportedFieldsFamily`
+    and `emptyValues` claim none. -/
 def diagnostic? : TokenEntityStringLiteralValueListElabError →
     Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?

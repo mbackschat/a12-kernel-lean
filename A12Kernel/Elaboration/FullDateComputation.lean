@@ -69,7 +69,8 @@ def elaborateFullDateFieldComputation
     model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
   -- The copied field is a field-value read, so its value gates refuse a partially known Date
   -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid), row `c1`).
-  -- This refusal projects no class, so its order against the component gate is unobservable here.
+  -- A partial mode is legal only on a complete-date format (`TemporalTargetPolicy.errorFor?`), so a
+  -- partially known source always passes the component gate and the two never compete.
   if let some refusal := declaration.fieldValueReadRefusal? then
     throw (.source refusal)
   let source ← match declaration.toTemporalField? with

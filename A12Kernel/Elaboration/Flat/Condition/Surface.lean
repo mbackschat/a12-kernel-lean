@@ -257,20 +257,36 @@ private def elaborateNumberFieldValueSides (model : FlatModel)
   rejectDuplicateNumberValueListOperands (fields ++ values)
   pure (fields.map (·.2), values.map (·.2))
 
+/-- A scalar membership's field-valued members are field-value reads, whose gates the Kernel asks as
+    each bracket closes, during the parse and so ahead of the subject's kind gate and the member
+    list's duplicate and base-type gates
+    ([inbound](../../../../docs/SOURCES.md#inbound-2026-09-25f-field-value-read)). The subject is
+    resolved first, on the assumption that the reader resolves it as it is written, before the
+    members' brackets close. A category member is left to its own resolver. -/
+private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (subject : SurfaceFieldPath) (members : List SurfaceFieldPath) : Except ElabError Unit := do
+  discard <| (model.resolveNonrepeatableFieldUnchecked declaringGroup subject writtenGroup).mapError .resolve
+  for member in members do
+    discard <| (model.resolveFieldValueRead declaringGroup member writtenGroup).mapError .resolve
+
+private def SurfaceTextFieldOperand.field : SurfaceTextFieldOperand → SurfaceFieldPath
+  | .direct field | .category field _ => field
+
+private def SurfaceTextFieldOperand.directField? : SurfaceTextFieldOperand → Option SurfaceFieldPath
+  | .direct field => some field
+  | .category _ _ => none
+
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) : SurfaceTextFieldOperand →
       Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
   | .direct reference => do
-      let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+      -- A raw String is refused by the read's gate, so no raw declaration reaches the kind arm.
+      let declaration ← (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       match declaration.toTextFieldComparison? with
       | some (operand, profile) => pure (declaration.path, operand, profile)
       | none =>
-          if declaration.isRawString then
-            throw (.rawStringValue declaration.path)
-          else
-            throw (.textFieldOperandKindMismatch declaration.path
-              declaration.policy.kind.surfaceKind)
+          throw (.textFieldOperandKindMismatch declaration.path
+            declaration.policy.kind.surfaceKind)
   | surface@(.category _ _) => do
       let (path, _, operand) ←
         elaborateEnumerationFieldOperand model declaringGroup surface writtenGroup
@@ -314,6 +330,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       let operand ← elaborateStringLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [operand] (.literals values))
   | .stringFieldValueMembership op surface valueSurfaces => do
+      checkScalarMemberReads model declaringGroup writtenGroup surface valueSurfaces
       let (fields, values) ←
         elaborateStringFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier fields (.fields values))
@@ -322,6 +339,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         elaborateNumberLiteralMembership model declaringGroup writtenGroup surface values
       pure (.numberValueList op.quantifier [operand] (.literals values))
   | .numberFieldValueMembership op surface valueSurfaces => do
+      checkScalarMemberReads model declaringGroup writtenGroup surface valueSurfaces
       let (fields, values) ←
         elaborateNumberFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.numberValueList op.quantifier fields (.fields values))
@@ -334,6 +352,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         elaborateEnumerationLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values))
   | .enumerationFieldValueMembership op surface valueSurfaces => do
+      checkScalarMemberReads model declaringGroup writtenGroup surface.field
+        (valueSurfaces.filterMap (·.directField?))
       let (fields, values) ←
         elaborateEnumerationFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier (fields.map .enumeration)
@@ -492,8 +512,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
               throw (.temporalOperandKindMismatch declaration.path ["<Now>"]
                 kind.surfaceKind (.temporal .dateTime))
   | .compareEnumeration op reference projectionRef expected => do
-      let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+      let declaration ← (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       elaborateEnumerationCore declaration op projectionRef expected
   | .compare op reference literal => do
       let declaration ← (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve

@@ -597,9 +597,9 @@ them the resolver's rather than any carrier's
 The short-name ambiguity arm was measured the same way on 2026-09-24, on five condition carriers and
 a computation
 ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)).
-The field-value read's three arms were measured on 2026-09-25, a root group drawing the group class
-as any other group does, on rule comparisons, a scalar value-list member, a filter body and a
-computation operation
+The field-value read's group arm was measured on 2026-09-25 on rule comparisons, a scalar value-list
+member, a filter body and a computation operation, a root group drawing the group class as any other
+group does, and its raw and partial-Date arms on those carriers but a filter body
 ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
@@ -615,6 +615,14 @@ def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .rawFieldValueRead _ => some .rawTypeOperandInvalid
   | .partialDateFieldValueRead _ => some .invalidDateType
   | _ => none
+
+/-- The misses a field resolver reports for a path naming a group, which a group-reading site
+    displaces into its group class: a name resolving to nothing, and an ambiguous short name, which a
+    bare name meets when its declaring group declares only a group by that name
+    ([`spec/08`](../../../spec/08-paths-and-references.md#2-bare-name-resolution-order-)). -/
+def ResolveError.isGroupDisplaceableMiss : ResolveError → Bool
+  | .invalidEntity _ | .invalidReference _ | .shortNameNotUnique _ => true
+  | _ => false
 
 inductive AuthoredFieldPathError where
   | syntax (error : PathSyntaxError)

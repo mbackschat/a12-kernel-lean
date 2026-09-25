@@ -811,9 +811,7 @@ def FlatModel.resolvePresenceOperand (model : FlatModel) (declaringGroup written
     | none => .error error
   match resolve with
   | .ok declaration => .ok declaration
-  | .error error@(.invalidEntity _) | .error error@(.invalidReference _)
-  | .error error@(.shortNameNotUnique _) => displace error
-  | .error error => .error error
+  | .error error => if error.isGroupDisplaceableMiss then displace error else .error error
 
 /-- Resolve a nonrepeatable operand of a condition after a caller has validated the model.
 `declaringGroup` is the reading rule's group. With the error field at or below it, an operand that

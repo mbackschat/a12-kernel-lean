@@ -5,8 +5,8 @@ import A12Kernel.Elaboration.Flat.Model
 The field-value read `[…]` is one grammar production, and the Kernel asks its gates as the bracket
 closes, whatever construct stands around it
 ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
-This module owns them once, so each bracket site asks the same gates after its own resolution
-instead of carrying a copy. A starred bracket is not spelled by `SurfaceFieldPath`, so the star gate
+This module owns them once, so a bracket site asks them after its own resolution instead of carrying
+a copy. A starred bracket is not spelled by `SurfaceFieldPath`, so the star gate
 has no surface here.
 -/
 
@@ -27,10 +27,13 @@ def displaceGroupRead (resolved : Except ResolveError FlatFieldDecl)
     (groupRead : Unit → Option (GroupPath × Option UnboundOperandLevel)) :
     Except ResolveError FlatFieldDecl :=
   match resolved with
-  | .error miss@(.invalidEntity _) | .error miss@(.invalidReference _) =>
-      match groupRead () with
-      | some (group, unbound) => .error (.groupInFieldValueRead group unbound miss)
-      | none => .error miss
+  | .error miss =>
+      if miss.isGroupDisplaceableMiss then
+        match groupRead () with
+        | some (group, unbound) => .error (.groupInFieldValueRead group unbound miss)
+        | none => .error miss
+      else
+        .error miss
   | other => other
 
 /-- The gates the field-value read `[…]` asks of the entity it names once its bracket closes, after

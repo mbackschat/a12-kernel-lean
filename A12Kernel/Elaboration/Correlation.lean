@@ -296,9 +296,9 @@ private structure HavingLeafResolvers where
   presence : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError HavingPresenceRef
 
-/-- Both sides of an ordering comparison, a kind refusal carrying its partner's kind. Left before
-    right as every other filter refusal is, so a left side failing for another cause is raised
-    unchanged. -/
+/-- Both sides of an ordering comparison, a kind refusal carrying its partner's kind. A side whose
+    read fails answers ahead of both kind gates, the left one first, so a left kind refusal meeting a
+    right read failure raises the right's error. -/
 private def orderingSides (left right : Except CorrelationElabError ResolvedNumberRef) :
     Except CorrelationElabError (ResolvedNumberRef × ResolvedNumberRef) :=
   match left, right with
@@ -388,8 +388,8 @@ private def requireOuterFieldAvailable (origin : HavingOrigin) (outerLevels : Li
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
     A group the filter does not iterate is read the same way on that account, and the value gates on
     the same production's account; no row reads either in a body. A marked reference's captured
-    environment is asked before the value gates on the assumption that it is the reader's class, as
-    an unstarred repeatable level is; no row pairs the two. -/
+    environment is asked before the value gates and the leaf's kind gate on the assumption that it
+    is the reader's class, as an unstarred repeatable level is; no row pairs it with either. -/
 private def FlatModel.resolveHavingFieldValueRead (model : FlatModel) (declaringGroup : GroupPath)
     (outerLevels : List RepeatableLevel) (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError FlatFieldDecl := do

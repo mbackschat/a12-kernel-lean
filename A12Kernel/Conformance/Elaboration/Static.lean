@@ -633,18 +633,22 @@ private def ledgerTotalDecl : FlatFieldDecl :=
   { quantityDecl with id := 22, groupPath := ["Order", "Ledger"], name := "Total" }
 
 private def readModel : FlatModel :=
-  { model with fields := model.fields ++ [partialDispatchDecl, rawNoteDecl, ledgerTotalDecl] }
+  { model with
+    fields := model.fields ++ [partialDispatchDecl, rawNoteDecl, ledgerTotalDecl]
+    baseYear := some 2020 }
 
 private inductive ReadView where
   | admitted
   | refused (diagnostic : Option KernelStaticDiagnostic)
   deriving Repr, DecidableEq
 
-private def readView (condition : SurfaceCondition) : ReadView :=
+private def readViewIn (readModel : FlatModel) (condition : SurfaceCondition) : ReadView :=
   match elaborate readModel ["Order"] condition with
   | .ok _ => .admitted
   | .error (.resolve error) => .refused error.diagnostic?
   | .error _ => .refused none
+
+private def readView : SurfaceCondition → ReadView := readViewIn readModel
 
 /- **A partially known Date is refused a value read**, on either side of a comparison between two
    fields and against `Today`, where the same read of a Date of full precision is admitted. A gate
@@ -677,6 +681,70 @@ example :
       readView (compare .greater (absolute ["Order"] "Items") (.number 0))] =
       [.refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed),
         .refused (some .noWildcard)] := by
+  native_decide
+
+/- **Every flat bracket comparison asks the read's gates**, the text-field, Enumeration, clock and
+   Base-Year forms as well as the field pair: a group draws the group class on each, a raw String
+   and a partially known Date the value classes, and a name resolving to nothing its own class. A
+   surface resolving its field without the gates reports a group as a name resolving to nothing and
+   a raw or partial read without a class. -/
+example :
+    let ledger := absolute ["Order"] "Ledger"
+    let note := absolute ["Order"] "Note"
+    [readView (.compareTextFields .equal (.direct ledger) (.direct note)),
+      readView (.compareTextFields .equal (.direct (absolute ["Order"] "RawNote")) (.direct note)),
+      readView (.compareTextFields .equal (.direct (absolute ["Order"] "PartialDispatch"))
+        (.direct note)),
+      readView (.compareEnumeration .equal ledger .stored "x"),
+      readView (.compareNow .less .right ledger),
+      readView (.compareBaseYear .less .right ledger),
+      readView (.compareBaseYearRange .less .right .start ledger),
+      readView (compare .equal (absolute ["Order"] "PartialDispatch")
+        (dateLiteral dispatchDateComponents 0)),
+      readView (.compareFields .less note (absolute ["Order"] "NoSuch"))] =
+      [.refused (some .noGroupsAllowed), .refused (some .rawTypeOperandInvalid),
+        .refused (some .invalidDateType), .refused (some .noGroupsAllowed),
+        .refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed),
+        .refused (some .noGroupsAllowed), .refused (some .invalidDateType),
+        .refused (some .invalidEntity)] := by
+  native_decide
+
+/- **A scalar membership's members are field-value reads, whose gates answer ahead of the subject's
+   kind gate and the list's own gates** ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25f-field-value-read)).
+   A group member draws the group class against a String and a Number subject, and a raw member the
+   raw class against a Boolean subject, beside a Number member and after a repeated member. A
+   membership asking its subject's kind, the list's base type or its duplicates first reports
+   those, which draw no class here. -/
+example :
+    let ledger := absolute ["Order"] "Ledger"
+    let note := absolute ["Order"] "Note"
+    let quantity := absolute ["Order"] "Quantity"
+    let rawNote := absolute ["Order"] "RawNote"
+    [readView (.stringFieldValueMembership .included note [ledger]),
+      readView (.numberFieldValueMembership .included quantity [ledger]),
+      readView (.enumerationFieldValueMembership .included (.direct note) [.direct ledger]),
+      readView (.stringFieldValueMembership .included (absolute ["Order"] "ExpressShipping") [rawNote]),
+      readView (.stringFieldValueMembership .included note [quantity, rawNote]),
+      readView (.stringFieldValueMembership .included note [quantity, quantity, rawNote])] =
+      [.refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed),
+        .refused (some .noGroupsAllowed), .refused (some .rawTypeOperandInvalid),
+        .refused (some .rawTypeOperandInvalid), .refused (some .rawTypeOperandInvalid)] := by
+  native_decide
+
+/- **A bare name naming a group of the declaring group is a group read, even where two fields
+   elsewhere share the name.** The reader takes no short-name fallback for a name its declaring
+   group declares ([`spec/08`](../../../spec/08-paths-and-references.md#2-bare-name-resolution-order-)),
+   measured there on a longer path's first segment, so the bracket read and the presence operand
+   both draw the group class. Displacing only a name resolving to nothing leaves the bracket read on
+   the ambiguity class. -/
+example :
+    let ambiguous : FlatModel := { readModel with
+      fields := readModel.fields ++
+        [{ noteDecl with id := 30, groupPath := ["Reference"], name := "Ledger" },
+          { noteDecl with id := 31, groupPath := ["Order", "Details"], name := "Ledger" }] }
+    [readViewIn ambiguous (compare .greater (bare "Ledger") (.number 0)),
+      readViewIn ambiguous (.fieldFilled (bare "Ledger"))] =
+      [.refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed)] := by
   native_decide
 
 end A12Kernel.Conformance.Elaboration.Static

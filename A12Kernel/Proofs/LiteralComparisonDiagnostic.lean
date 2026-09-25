@@ -50,7 +50,8 @@ theorem numericComparisonDiagnostic_total_on_refusals
       | (rename_i temporalKind; cases temporalKind <;> decide)
       | decide
 
-/-- **An ordering's class does not depend on which side is which.** Both gates read the pair, so a
+/-- **An ordering's class does not depend on which side is which.** Both gates read the pair
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)), so a
 consumer that swaps the operands of an ordering keeps its class, and one reading the refused side
 alone breaks this law on a Date against a String. -/
 theorem orderingComparisonDiagnostic_comm (left right : SurfaceScalarKind) :

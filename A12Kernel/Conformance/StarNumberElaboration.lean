@@ -546,7 +546,9 @@ example :
    side alone it would draw the date class. Two Dates clear both kind gates, so this Number fragment
    refuses them without a class. A Date against a Number field draws the date class in either order,
    as it does outside a filter
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)). -/
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)),
+   on the account that a body's comparison draws its outside class
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), which measures no Date there. -/
 example :
     let date := surfaceNumber .inner amount.groupPath "Due"
     let text := surfaceNumber .inner amount.groupPath "Note"
@@ -563,14 +565,26 @@ example :
   native_decide
 
 /- **A body's field-value read of a group draws the group class**, measured on the level the filter
-   iterates ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+   iterates and on a fixed group
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
    A field resolver reports the group as a name resolving to nothing, and the reader's missing-star
-   class that the same read draws outside a filter would name the level. -/
+   class that the same read draws outside a filter would name the level. A group gate asking only
+   repeatable groups leaves the fixed one to the field miss. -/
 example :
+    let ledgerTotal : FlatFieldDecl :=
+      { id := 21, groupPath := ["Shop", "Ledger"], name := "Total"
+        policy := { kind := .number { scale := 0, signed := false } } }
+    let withLedger : FlatModel := { model with fields := model.fields ++ [ledgerTotal] }
     bodyDiagnostic? (.compareNumbers .less (surfaceNumber .inner ["Shop", "Sections"] "Items")
         (surfaceNumber .inner amount.groupPath "Amount")) = some .noGroupsAllowed ∧
       bodyDiagnostic? (.compareNumbers .equal (surfaceNumber .inner amount.groupPath "Amount")
-        (surfaceNumber .inner ["Shop", "Sections"] "Items")) = some .noGroupsAllowed := by
+        (surfaceNumber .inner ["Shop", "Sections"] "Items")) = some .noGroupsAllowed ∧
+      (match elaborateStarNumberHavingSource withLedger amount.groupPath
+          (writtenGroup := amount.groupPath) (source)
+          (.compareNumbers .less (surfaceNumber .inner ["Shop"] "Ledger")
+            (surfaceNumber .inner amount.groupPath "Amount")) with
+        | .error (.having error) => error.diagnostic?
+        | _ => none) = some .noGroupsAllowed := by
   native_decide
 
 /- **A partner whose own read fails answers ahead of the ordering gate**, which is raised where the
