@@ -144,6 +144,12 @@ structure CheckedTokenEntityStringLiteralValueListSource (model : FlatModel) whe
 inductive TokenEntityValueListElabError where
   | fields (error : TokenEntityElabError)
   | values (error : TokenEntityElabError)
+  /-- A field-list declaration whose base type differs from the one before it. -/
+  | fieldsVaryingBaseType (path : List String)
+  /-- A homogeneous field list outside the admitted `{String, Enumeration, Number}` kind set. -/
+  | fieldsKindNotStringEnumNumber (path : List String)
+  /-- A value-list declaration whose base type differs from the first field's. -/
+  | valuesVaryingBaseType (path : List String)
   | mixedFamily
   | duplicateOperand (field : FieldId)
   deriving Repr, DecidableEq
@@ -151,6 +157,8 @@ inductive TokenEntityValueListElabError where
 inductive TokenEntityStringLiteralValueListElabError where
   | shape (error : FieldEntityShapeElabError)
   | fields (error : TokenEntityElabError)
+  /-- A field-list declaration whose base type differs from the one before it. -/
+  | varyingBaseType (path : List String)
   /-- Every slot lies outside the admitted `{String, Enumeration, Number}` kind set. The payload
   is the first slot's path; the class does not depend on which slot it is. -/
   | slotKindNotStringEnumNumber (path : List String)
@@ -166,6 +174,48 @@ inductive TokenEntityStringLiteralValueListElabError where
   | literalOutsideSelectedDomain (literals : List String)
   | emptyValues
   deriving Repr, DecidableEq
+
+/-- Whether two declared kinds share the base type the value-list quantifiers compare before any
+    kind gate.
+
+    The four temporal kinds share one base type, and every other kind is its own. A custom
+    declaration shares String's, because it carries the String kind (`customTypeRequiresString`).
+    Measured: a Date beside a date fragment, a Time beside a DateTime and a String beside a custom
+    declaration share one ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
+    Every cross pair measured differs, in either order and on either side: String beside Number,
+    Date, Time and Enumeration, Boolean beside Confirm and Date, Number beside Date, and a date
+    range beside String ([checkpoint](../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)).
+    The pairs no row reaches follow the Kernel's per-type base-type match, read rather than
+    measured. -/
+def SurfaceScalarKind.sharesValueListBaseType :
+    SurfaceScalarKind → SurfaceScalarKind → Bool
+  | .temporal _, .temporal _ => true
+  | left, right => left == right
+
+/-- The path of the first declaration whose base type differs from `expected`'s. The Kernel compares
+    each declaration with the one before it, which finds the same first declaration here because
+    sharing a base type is an equivalence. -/
+private def firstBaseTypeMismatch? (expected : SurfaceScalarKind) :
+    List FlatFieldDecl → Option (List String)
+  | [] => none
+  | declaration :: remaining =>
+      if expected.sharesValueListBaseType declaration.policy.kind.surfaceKind then
+        firstBaseTypeMismatch? expected remaining
+      else
+        some declaration.path
+
+/-- Every declaration the slots expand to, in authored order. A group slot contributes its
+    subtree, so the base-type gate reads a group by the fields it reaches. -/
+private def expandedDeclarations (operands : List (ResolvedFieldEntityOperand model)) :
+    List FlatFieldDecl :=
+  operands.flatMap ResolvedFieldEntityOperand.expansionDeclarations
+
+/-- The path of the first field-list declaration whose base type differs from the first one's. -/
+private def fieldListBaseTypeMismatch? (operands : List (ResolvedFieldEntityOperand model)) :
+    Option (List String) :=
+  match expandedDeclarations operands with
+  | [] => none
+  | first :: remaining => firstBaseTypeMismatch? first.policy.kind.surfaceKind remaining
 
 /-- The kinds this carrier's field slot admits. The partition is exhaustive over `FieldKind` and
     every refusing constructor is measured: DATE, TIME, DATETIME and DATEFRAGMENT on the temporal
@@ -205,10 +255,9 @@ private def ResolvedFieldEntityOperand.refusedKindSlot :
 /-- The path of the first slot when **every** slot is refused-kind, so the list is homogeneous in a
     kind outside this carrier's admitted set.
 
-    Requiring every slot rather than the first is deliberate and claims less. A list mixing an
-    admitted slot with a refused one is a different gate — the Kernel's own homogeneity refusal —
-    and no retained row here covers it, so such a list stays unmapped rather than being assigned
-    this class. -/
+    Both callers ask the base-type gate first, and the admitted set is a union of whole base types,
+    so on a list reaching this gate every slot and the first slot agree. Requiring every slot keeps
+    the helper from claiming the class for a mixed list if a caller ever asks it first. -/
 private def refusedKindListPath? :
     List (ResolvedFieldEntityOperand model) → Option (List String)
   | [] => none
@@ -242,9 +291,9 @@ private def numberListPath? :
       else
         none
 
-/-- Check the measured plural String-literal form in operator order. The kind-set class is projected
-    before token certification erases the rejected expansion's kind; no shared group error is
-    reclassified. -/
+/-- Check the measured plural String-literal form in operator order: the base-type gate, then the
+    kind-set gate, then the literal comparison. Both gates are projected before token certification
+    erases the rejected expansion's kind; no shared group error is reclassified. -/
 def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceTokenEntityStringLiteralValueListSource) (writtenGroup : GroupPath := declaringGroup) :
@@ -262,6 +311,9 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     match authored.values with
     | [] => throw .emptyValues
     | firstValue :: restValues => pure (firstValue, restValues)
+  match fieldListBaseTypeMismatch? shape.operands with
+  | some path => throw (.varyingBaseType path)
+  | none => pure ()
   match refusedKindListPath? shape.operands with
   | some path => throw (.slotKindNotStringEnumNumber path)
   | none => pure ()
@@ -295,6 +347,7 @@ namespace TokenEntityStringLiteralValueListElabError
 def diagnostic? : TokenEntityStringLiteralValueListElabError →
     Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
+  | .varyingBaseType _ => some .varyingTypesNotAllowed
   | .slotKindNotStringEnumNumber _ => some .onlyStringEnumNumberAllowed
   | .slotNumberAgainstStringLiterals _ => some .invalidTypesForComparison
   -- Delegated rather than dropped: the field side's own projection now carries the three-way kind
@@ -302,9 +355,8 @@ def diagnostic? : TokenEntityStringLiteralValueListElabError →
   | .fields error => error.diagnostic?
   | .literalOutsideSelectedDomain _ =>
       some .invalidStringConstantForEnumComparison
-  -- A mixed-family list is refused here with no class: the Kernel's own mixing refusal is measured
-  -- at the shape checker, and this arm is reached only when the two families disagree *within* one
-  -- side, which no row covers. `emptyValues` is a surface impossibility rather than a gate.
+  -- A String beside an Enumeration differs in base type, so the gate above answers first and the
+  -- elaborator never reaches this arm. `emptyValues` is a surface impossibility rather than a gate.
   | .unsupportedFieldsFamily _ | .emptyValues => none
 
 end TokenEntityStringLiteralValueListElabError
@@ -314,11 +366,24 @@ namespace TokenEntityValueListElabError
 /-- Project a side's refusal through that side's own classes. Each side runs the shared shape gates
     before the cross-side scan, so a root on either side draws the root class, beside its own field
     across the `In` too, where a single list would report the nested duplicate
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-dispositions)). The two cross-side gates
-    stay unmapped: no class of theirs is adopted here. -/
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-dispositions)).
+
+    A side's kind refusal is not the String-literal form's. The field list's own gates answer ahead
+    of certification on the stored form, so a field-side kind refusal there is a Number list whose
+    value side shares its base type, which no literal opposes. On the projected form it is a list
+    certified before it could be gated. Either way it claims no class. A value-side one is always the base-type class, since the fields
+    certified as String or Enumeration and the value is neither
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). The cross-side
+    duplicate is measured drawing `MVK_DUPLICATE_PARAM1`, and a mixed family is a base-type mismatch
+    reached only by assembling two checked sides directly. -/
 def diagnostic? : TokenEntityValueListElabError → Option KernelStaticDiagnostic
+  | .fields (.fieldKindMismatch _ _) => none
+  | .values (.fieldKindMismatch _ _) => some .varyingTypesNotAllowed
   | .fields error | .values error => error.diagnostic?
-  | .mixedFamily | .duplicateOperand _ => none
+  | .fieldsVaryingBaseType _ | .valuesVaryingBaseType _ | .mixedFamily =>
+      some .varyingTypesNotAllowed
+  | .fieldsKindNotStringEnumNumber _ => some .onlyStringEnumNumberAllowed
+  | .duplicateOperand _ => some .duplicateParam1
 
 end TokenEntityValueListElabError
 
@@ -350,7 +415,9 @@ def assembleTokenEntityValueListSource
         throw .mixedFamily
   | _, _ => throw .mixedFamily
 
-/-- Check both stored-projection entity-list sides, then apply the operation-wide family and exact-reference gates.
+/-- Check both stored-projection entity-list sides in operator order, then apply the operation-wide
+    family and exact-reference gates. The field list meets the base-type and kind-set gates, and the
+    value list the first field's base type, each ahead of its token certification.
 
     Each side admits a sole field: the construct does not share the entity-list arity gate
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/
@@ -359,19 +426,42 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
     (authored : SurfaceTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
-  let fields ← elaborateTokenEntitySource model declaringGroup authored.fields .soleAllowed
-      writtenGroup
-    |>.mapError .fields
-  let values ← elaborateTokenEntitySource model declaringGroup authored.values .soleAllowed
-      writtenGroup
-    |>.mapError .values
+  let fieldsShape ← elaborateFieldEntityShape model declaringGroup authored.fields .soleAllowed
+      (writtenGroup := writtenGroup)
+    |>.mapError (.fields ∘ .shape)
+  match fieldListBaseTypeMismatch? fieldsShape.operands with
+  | some path => throw (.fieldsVaryingBaseType path)
+  | none => pure ()
+  match refusedKindListPath? fieldsShape.operands with
+  | some path => throw (.fieldsKindNotStringEnumNumber path)
+  | none => pure ()
+  let fields := certifyTokenEntityShape model declaringGroup fieldsShape
+  -- Number fields leave this token fragment but are inside the Kernel's kind set, so the Kernel
+  -- reads the value side next and a String value there draws the base-type class (measured). Only
+  -- a different certification refusal is raised ahead of the value side.
+  match fields with
+  | .error (.fieldKindMismatch _ .number) | .ok _ => pure ()
+  | .error error => throw (.fields error)
+  let valuesShape ← elaborateFieldEntityShape model declaringGroup authored.values .soleAllowed
+      (writtenGroup := writtenGroup)
+    |>.mapError (.values ∘ .shape)
+  if let some first := (expandedDeclarations fieldsShape.operands).head? then
+    match firstBaseTypeMismatch? first.policy.kind.surfaceKind
+        (expandedDeclarations valuesShape.operands) with
+    | some path => throw (.valuesVaryingBaseType path)
+    | none => pure ()
+  let fields ← fields.mapError .fields
+  let values ← certifyTokenEntityShape model declaringGroup valuesShape |>.mapError .values
   assembleTokenEntityValueListSource authored.quantifier fields values
 
 /-- Check both projection-bearing token sides through the sole shared entity-list authoring boundary, then apply the operation-wide family and exact-reference gates.
 
     A side admits a sole slot as the stored-projection form does. Only a sole direct field is
     measured; a sole category projection takes the same rule on the assumption that projection does
-    not change the construct's arity, which no row tests. -/
+    not change the construct's arity, which no row tests.
+
+    Unlike the stored form, this one certifies each side before any base-type or kind-set gate could
+    read it, so a field-side kind refusal claims no class here. -/
 def elaborateProjectedTokenEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceProjectedTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup) :

@@ -372,9 +372,13 @@ example :
       .refused (some .invalidTypesForComparison) := by
   native_decide
 
-/- A heterogeneous group is not the measured homogeneous Date-group discriminator. -/
+/- A group expanding to a String and a Date draws the base-type class, which that pair draws as two
+   field slots. That the gate reads a group by its expansion is the Kernel's reading of the list, and
+   no row measures it on a group
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). -/
 example :
-    stringLiteralListAdmission (group ["Probe", "Mixed"]) = .refused none := by
+    stringLiteralListAdmission (group ["Probe", "Mixed"]) =
+      .refused (some .varyingTypesNotAllowed) := by
   native_decide
 
 /-! ## The checked list retains the authored slot rather than its expansion

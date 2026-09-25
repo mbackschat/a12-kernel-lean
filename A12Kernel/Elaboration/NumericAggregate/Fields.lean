@@ -89,46 +89,93 @@ private def NumericProductOperandShape.groupPath :
   | .fixed declaration => declaration.groupPath
   | .starred checked => checked.source.source.declaration.groupPath
 
-/-- Resolve one Number field while retaining the pair carrier's three measured wildcard states: no repeatable level, exactly the lowest unbound level starred, or a refusal with its exact class. Generic star lowering remains carrier-neutral because other consumers may legitimately receive the outer binding from their own context. -/
-private def elaborateNumericProductOperand (model : FlatModel)
+/-- One operand as the reference reader leaves it: a field on no repeatable level, or a star path
+the declaring scope binds above its first star. The reader answers as each operand is read — a name
+resolving to nothing, containment below a star, a repeatable level left unstarred — so its classes
+come before the operator's own gates, which ask the pair. -/
+private inductive NumericProductOperandRead (model : FlatModel) (declaringGroup : GroupPath) where
+  | fixed (declaration : FlatFieldDecl)
+  | starred (source : CheckedStarFieldPath model)
+      (bindingScopeBound :
+        source.bindingScope.isPrefixOf (model.repeatableScopeForGroupPath declaringGroup) = true)
+
+private def NumericProductOperandRead.declaration :
+    NumericProductOperandRead model declaringGroup → FlatFieldDecl
+  | .fixed declaration => declaration
+  | .starred source _ => source.declaration
+
+private def readNumericProductOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (authored : SurfaceStarFieldPath) :
-    Except NumericProductAggregateElabError
-      (NumericProductOperandShape model declaringGroup) := do
+    Except NumericProductAggregateElabError (NumericProductOperandRead model declaringGroup) := do
   let declaration ← model.resolveFieldDeclaration declaringGroup authored.toFieldPath
     |>.mapError fun error => .source (.path (.resolve error))
-  match declaration.toNumberField? with
-  | none => throw (.source (.fieldNotNumber declaration.path))
-  | some _ =>
-      match elaborateStarNumberSource model declaringGroup authored writtenGroup with
-      | .error (.path (.missingWildcard _)) =>
-          if declaration.repeatableScope.isEmpty then
-            pure (.fixed declaration)
-          else
-            throw (.noWildcard declaration.path)
-      | .error (.path (.iterationBelowWildcard path)) =>
-          throw (.noWildcard path)
-      | .error error => throw (.source error)
-      | .ok source =>
-          if hBound : source.source.bindingScope.isPrefixOf
-              (model.repeatableScopeForGroupPath declaringGroup) = true then
-            if hLowest : source.source.path.firstStar + 1 =
-                source.source.path.axes.length then
-              pure (.starred {
-                source := source
-                lowestStar := hLowest
-                bindingScopeBound := hBound })
-            else
-              throw (.wildcardOnlyAtLowestLevel source.source.declaration.path)
-          else
-            throw (.noWildcard source.source.declaration.path)
+  let read : Except StarPathElabError (CheckedStarFieldPath model) :=
+    (elaborateStarFieldPath model declaringGroup authored).mapError
+      (·.placeBelowStar model declaringGroup writtenGroup)
+  match read with
+  | .error (.missingWildcard _) =>
+      if declaration.repeatableScope.isEmpty then pure (.fixed declaration)
+      else throw (.noWildcard declaration.path)
+  | .error (.iterationBelowWildcard path) => throw (.noWildcard path)
+  | .error error => throw (.source (.path error))
+  | .ok source =>
+      if hBound : source.bindingScope.isPrefixOf
+          (model.repeatableScopeForGroupPath declaringGroup) = true then
+        pure (.starred source hBound)
+      else
+        throw (.noWildcard source.declaration.path)
 
-/-- Check two Number fields through the established star owner, then require the Kernel's same-owning-group and exact lowest-star pair shape. -/
-private def elaborateNumericProductAggregateCore (model : FlatModel)
-    (declaringGroup writtenGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
+/-- The operator's star gate: only the path's lowest repeatable level may be starred, a level the
+declaring scope binds counted too. -/
+private def NumericProductOperandRead.requireLowestStar :
+    NumericProductOperandRead model declaringGroup → Except NumericProductAggregateElabError Unit
+  | .fixed _ => pure ()
+  | .starred source _ =>
+      if source.path.firstStar + 1 = source.path.axes.length then pure ()
+      else throw (.wildcardOnlyAtLowestLevel source.declaration.path)
+
+/-- The Number question, asked of an operand only once the stars have passed. -/
+private def NumericProductOperandRead.toShape :
+    NumericProductOperandRead model declaringGroup →
+      Except NumericProductAggregateElabError (NumericProductOperandShape model declaringGroup)
+  | .fixed declaration =>
+      match declaration.toNumberField? with
+      | some _ => pure (.fixed declaration)
+      | none => throw (.source (.fieldNotNumber declaration.path))
+  | .starred source hBound =>
+      match hField : source.declaration.toNumberField? with
+      | none => throw (.source (.fieldNotNumber source.declaration.path))
+      | some field =>
+          if hLowest : source.path.firstStar + 1 = source.path.axes.length then
+            pure (.starred {
+              source := { source, field, fieldOwned := hField }
+              lowestStar := hLowest
+              bindingScopeBound := hBound })
+          else
+            throw (.wildcardOnlyAtLowestLevel source.declaration.path)
+
+/-- Read both operands, then ask the operator's chain in the Kernel's order: the owning groups, the
+filter, the stars, the Number question, and last whether any repeatable level is crossed. The first
+three are measured against each other on a pair read from outside its fields' groups
+([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)), and the owning group
+against the repeatable level ([inbound](../../../docs/SOURCES.md#inbound-2026-09-21-corrections)).
+Where the filter stands against the repeatable-level gate is not measured, since only a filtered
+operand on no repeatable level would separate them. -/
+def elaborateNumericProductAggregate (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except NumericProductAggregateElabError
       (CheckedNumericProductAggregate model) := do
-  let left ← elaborateNumericProductOperand model declaringGroup writtenGroup authored.left
-  let right ← elaborateNumericProductOperand model declaringGroup writtenGroup authored.right
+  let leftRead ← readNumericProductOperand model declaringGroup writtenGroup authored.left
+  let rightRead ← readNumericProductOperand model declaringGroup writtenGroup authored.right
+  if leftRead.declaration.groupPath != rightRead.declaration.groupPath then
+    throw (.differentGroups leftRead.declaration.groupPath rightRead.declaration.groupPath)
+  if authored.leftHaving.isSome || authored.rightHaving.isSome then
+    throw .wildcardAtLowestLevelRequired
+  leftRead.requireLowestStar
+  rightRead.requireLowestStar
+  let left ← leftRead.toShape
+  let right ← rightRead.toShape
   if hGroup : left.groupPath = right.groupPath then
     match left, right with
     | .fixed _, .fixed _ => throw .repeatableLevelRequired
@@ -148,17 +195,6 @@ private def elaborateNumericProductAggregateCore (model : FlatModel)
     | _, _ => throw .incompatibleTopology
   else
     throw (.differentGroups left.groupPath right.groupPath)
-
-/-- Admit the executable pair only after its underlying unfiltered declarations pass every shape gate. `Having` is rejected at this carrier boundary without interpreting the filter. -/
-def elaborateNumericProductAggregate (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate)
-    (writtenGroup : GroupPath := declaringGroup) :
-    Except NumericProductAggregateElabError
-      (CheckedNumericProductAggregate model) := do
-  let checked ← elaborateNumericProductAggregateCore model declaringGroup writtenGroup authored
-  match authored.leftHaving, authored.rightHaving with
-  | none, none => pure checked
-  | _, _ => throw .wildcardAtLowestLevelRequired
 
 namespace CheckedNumericProductAggregate
 

@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-25-05"></a>
+### `SPEC-2026-09-25-05` — the value-list quantifier's homogeneity gate keeps the two token families and the two boolean kinds apart, in either order and on either side
+
+- `status`: pending.
+- `origin`: locally originated; it extends the base-type rows of your `-2026-09-25e` letter's §3 ([inbound](SOURCES.md#inbound-2026-09-25e-value-list-base-type)) to the pairs that letter left unmeasured.
+- `clause`: [`06` the multi-field value-list bullet](../spec/06-strings-and-enumerations.md).
+- `delta`: `AtLeastOneFieldValueIncludedInValueList` draws `MVK_VARYING_TYPES_NOT_ALLOWED` against a literal on an Enumeration beside a String and a Boolean beside a Confirm, each in both orders, and on a Number beside a Date or before a String, a date range beside a String and a Boolean beside a Date. Against a field value list it draws the same on a String opposite an Enumeration and the reverse, an Enumeration opposite a Number, and a Number opposite a String.
+- `basis`: [cross-pair checkpoint](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs), one `dmtool batch --observations` run at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer checker that merges the two token families or the two boolean kinds at this gate, or asks the kind gate first.
+- `acceptance`: confirm the class on any pair above, or supply a contrary row.
+- `limit`: static admission only, one model, `AtLeastOne…` only, and no group operand.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-25-04"></a>
 ### `SPEC-2026-09-25-04` — two lines of the accepted `SPEC-2026-09-24-05` stated more than their rows: the field-slot order delta and the `kf371` limit
 
@@ -71,7 +84,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-25-02"></a>
 ### `SPEC-2026-09-25-02` — the below-star placement reaches every other kind, both value-list sides, a group under a filled-field carrier, a filtered star and `SumOfProducts`
 
-- `status`: pending.
+- `status`: accepted.
 - `origin`: locally originated; it extends [`SPEC-2026-09-24-06`](#spec-2026-09-24-06) beyond the carriers that entry reports.
 - `clause`: [`07` the chain bullet](../spec/07-repetition-and-iteration.md).
 - `delta`: over `/Fulfilment/Shipments*/Parcels/…`, with the error field in `Summary`, these draw `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` from `Ledger` and from `Shipments` and `MVK_NO_WILDCARD` from `Summary`: `FirstFilledValue` over a String; `FieldValuesNotUnique` and `NumberOfDifferentValues` over a String and a Date; `MaxValue` and `MinValue` over a Date; `NumberOfValueInFields` over a Boolean and a String; `AtLeastOneFieldValueIncludedInValueList` over an Enumeration against a literal, two String fields against a literal, and against a field, whether a starred String on either side, a starred Number against a Number field or an Enumeration field against a starred Enumeration; `DateRangesOverlap` and `AtLeastOneDateRangeOverlaps` with and without a year; `NumberOfFilledFields` and `AtLeastOneFieldFilled` over the group `Seal`; `Sum` and `NumberOfFilledFields` over a star filtered by a two-field comparison; and `SumOfProducts`, whose fully starred control draws its own `MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED`, so the placement answers ahead of that bar.
@@ -80,6 +93,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: confirm the placed class on any carrier above, or supply a contrary row.
 - `limit`: static admission only, one two-level nesting; no filtered star on a value list, no value count or value list over a group, and no category projection.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `08f3148fe3e166aef6333c76e3fcc35beff4c1ef`, the peer's `-2026-09-25e` letter, read 2026-09-25.
+- `disposition`: **accepted at a12-dmkits `08f3148fe3e166aef6333c76e3fcc35beff4c1ef`.** `BelowStarPlacementKindsLawsTest` confirms the placed class on all 22 carriers, from `Shipments`, `Ledger` and `Summary`, with the String arm of `FieldValuesNotUnique` and `NumberOfDifferentValues` held by `PartialStarContainmentLawsTest`, and the peer supplies no contrary row ([inbound](SOURCES.md#inbound-2026-09-25e-below-star-placement)).
 
 <a id="spec-2026-09-25-01"></a>
 ### `SPEC-2026-09-25-01` — two `-24e` generalizations reach past their rows: a star on a fixed group answers alone at containment only, and a member's class withholds the message on the classes measured

@@ -99,9 +99,10 @@ private inductive Admission where
 private def field (name : String) : SurfaceFieldEntityOperand :=
   .field { base := .absolute, groups := ["Probe"], field := name }
 
-private def pairAdmission (a b : String) : Admission :=
+private def pairAdmission (a b : String) (quantifier : ValueListQuantifier := .atLeastOne) :
+    Admission :=
   match elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
-      { quantifier := .atLeastOne
+      { quantifier
         fields := { first := field a, rest := [field b] }
         values := ["x", "y"] } with
   | .ok _ => .admitted
@@ -356,6 +357,81 @@ example :
    comparison exactly as the pair does, so widening the arity did not widen anything else. -/
 example : soleAdmission .atLeastOne "AVal" =
     .refused (some .invalidTypesForComparison) := by
+  native_decide
+
+/-! ### The base-type gate ahead of the kind gate
+
+The quantifiers ask whether every field shares one base type before they ask whether each is a
+kind they admit, so a list mixing base types draws `MVK_VARYING_TYPES_NOT_ALLOWED` whatever its
+kinds. The four temporal kinds share one base type and a custom declaration shares String's
+([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
+-/
+
+/- **A mixed list draws the base-type class ahead of the kind gate.** A String beside a Number, on
+   two quantifiers, and a String beside a Date. Read by the kind gate, the first draws the literal
+   comparison's class, and the last the kind gate's. -/
+example :
+    [pairAdmission "Email" "AVal", pairAdmission "Email" "AVal" .no,
+      pairAdmission "Email" "ReportedOn"] =
+      List.replicate 3 (.refused (some .varyingTypesNotAllowed)) := by
+  native_decide
+
+/- **Two temporal kinds share one base type**, so a Date beside a date fragment and a Time beside a
+   DateTime pass that gate and meet the kind gate, as two Dates do. A partition keyed on the declared
+   temporal kind draws the base-type class for both. -/
+example :
+    [pairAdmission "ReportedOn" "AnniversaryA", pairAdmission "StartsAt" "SeenAt"] =
+      List.replicate 2 (.refused (some .onlyStringEnumNumberAllowed)) := by
+  native_decide
+
+/- **Every cross pair differs, whichever kind comes first**
+   ([checkpoint](../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)). An Enumeration beside a
+   String in both orders, a Boolean beside a Confirm in both orders, a Number beside a Date or before
+   a String, a date range beside a String and a Boolean beside a Date. The Boolean pairs are what
+   separate this gate from the kind gate, which refuses both kinds with one class, and the
+   Enumeration pair from a gate merging the two token families. -/
+example :
+    [pairAdmission "Choice" "Email", pairAdmission "Email" "Choice", pairAdmission "Flag" "Agreed",
+      pairAdmission "Agreed" "Flag", pairAdmission "AVal" "ReportedOn", pairAdmission "Span" "Email",
+      pairAdmission "AVal" "Email", pairAdmission "Flag" "ReportedOn"] =
+      List.replicate 8 (.refused (some .varyingTypesNotAllowed)) := by
+  native_decide
+
+private def entityAdmission (fields : List String) (values : List String) : Admission :=
+  match fields, values with
+  | fieldFirst :: fieldRest, valueFirst :: valueRest =>
+      match elaborateTokenEntityValueListSource probeModel ["Probe"]
+          { quantifier := .atLeastOne
+            fields := { first := field fieldFirst, rest := fieldRest.map field }
+            values := { first := field valueFirst, rest := valueRest.map field } } with
+      | .ok _ => .admitted
+      | .error error => .refused error.diagnostic?
+  | _, _ => .refused none
+
+/- **The value list is matched against the first field's base type.** A String value list is
+   admitted opposite a String field. A Number or an Enumeration value draws the base-type class, so
+   does a String value opposite an Enumeration field, and so does a Time value after a sound String
+   one. The same declaration on both sides draws the duplicate class. -/
+example :
+    [entityAdmission ["Email"] ["Phone"], entityAdmission ["Email"] ["AVal"],
+      entityAdmission ["Email"] ["Choice"], entityAdmission ["Choice"] ["Email"],
+      entityAdmission ["Choice"] ["AVal"], entityAdmission ["Email"] ["Phone", "StartsAt"],
+      entityAdmission ["Email"] ["Email"]] =
+      [.admitted, .refused (some .varyingTypesNotAllowed), .refused (some .varyingTypesNotAllowed),
+        .refused (some .varyingTypesNotAllowed), .refused (some .varyingTypesNotAllowed),
+        .refused (some .varyingTypesNotAllowed), .refused (some .duplicateParam1)] := by
+  native_decide
+
+/- The field list of the entity form meets the same two gates first. A mixed field list draws the
+   base-type class, and two Dates the kind gate's. A Number field is inside the kind set, so its value
+   side is read next and a String value there draws the base-type class. Number values opposite it
+   claim no class: this token fragment refuses them, and no literal stands opposite for the
+   comparison class to read. -/
+example :
+    [entityAdmission ["Email", "AVal"] ["Phone"], entityAdmission ["ReportedOn", "SettledOn"] ["Phone"],
+      entityAdmission ["AVal"] ["Email"], entityAdmission ["AVal"] ["BVal"]] =
+      [.refused (some .varyingTypesNotAllowed), .refused (some .onlyStringEnumNumberAllowed),
+        .refused (some .varyingTypesNotAllowed), .refused none] := by
   native_decide
 
 end A12Kernel.Conformance.ValueListQuantifierKindGate

@@ -1,0 +1,171 @@
+[
+ {
+  "id": "01-control-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(SkuText In \"x\")",
+   "--code",
+   "B01"
+  ]
+ },
+ {
+  "id": "02-enum-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice, SkuText In \"A\")",
+   "--code",
+   "B02"
+  ]
+ },
+ {
+  "id": "03-string-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(SkuText, Choice In \"A\")",
+   "--code",
+   "B03"
+  ]
+ },
+ {
+  "id": "04-boolean-confirm",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Flag, Agreed In \"x\")",
+   "--code",
+   "B04"
+  ]
+ },
+ {
+  "id": "05-confirm-boolean",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Agreed, Flag In \"x\")",
+   "--code",
+   "B05"
+  ]
+ },
+ {
+  "id": "06-number-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Amount, FiledOn In \"x\")",
+   "--code",
+   "B06"
+  ]
+ },
+ {
+  "id": "07-daterange-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Span, SkuText In \"x\")",
+   "--code",
+   "B07"
+  ]
+ },
+ {
+  "id": "08-number-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Amount, SkuText In \"x\")",
+   "--code",
+   "B08"
+  ]
+ },
+ {
+  "id": "09-boolean-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Flag, FiledOn In \"x\")",
+   "--code",
+   "B09"
+  ]
+ },
+ {
+  "id": "10-string-in-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(SkuText In Choice)",
+   "--code",
+   "B10"
+  ]
+ },
+ {
+  "id": "11-enum-in-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice In SkuText)",
+   "--code",
+   "B11"
+  ]
+ },
+ {
+  "id": "12-enum-in-number",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Choice In Amount)",
+   "--code",
+   "B12"
+  ]
+ },
+ {
+  "id": "13-number-in-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneFieldValueIncludedInValueList(Amount In SkuText)",
+   "--code",
+   "B13"
+  ]
+ }
+]

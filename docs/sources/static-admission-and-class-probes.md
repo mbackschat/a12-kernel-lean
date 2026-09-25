@@ -257,6 +257,20 @@ Static admission, operand kind gates, and diagnostic-class probes. Evaluation an
 - `limit`: static preflight only, one model, `en_US`, one unconditional alternative per spec, every target repeatable, one registered custom type name. Nothing here runs a computation. The literal-value gates that sit **below** the kind ladder are out of scope except where a cell exposes one: the Enumeration target's stored-token membership and the Number target's decimal scale are named where measured and not otherwise characterised. Extensible-enumeration Strings are untouched, as is whether a custom type's own value check would refuse an admitted literal at runtime.
 - `sync`: **behavioral** — [`SPEC-2026-09-06-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md).
 
+<a id="src-value-list-base-type-cross-pairs"></a>
+#### Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, in either order and on either side, measured 2026-09-25
+
+- `revision`: one `dmtool batch --observations` run of thirteen `rule check` children at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. The checkout read clean before and after.
+- `question`: a12-dmkits measured the gate on String beside Number, Date and Time, and on the temporal and custom merges ([inbound](../SOURCES.md#inbound-2026-09-25e-value-list-base-type)). Do the token families, the two boolean kinds and the remaining kinds each stand alone, as the Kernel's per-type base-type match reads?
+- `model`: the retained `Probe4_DM.json` of the [pattern-slot capture](../../evidence/kernel-30.8.1/captures/pattern-comparison-left-kind-gate/), SHA-256 `6f85d83977facea4511f04cb5e04d3149d5f129e294ad5c6150a07f1ec0bbd2e`, whose root declares the String `SkuText`, the Number `Amount`, the Boolean `Flag`, the Date `FiledOn`, the Enumeration `Choice` {`A`, `B`}, the Confirm `Agreed` and the DateRange `Span`. Each rule reports on `SkuText` with `FieldFilled(SkuText) And` before the quantifier.
+- `claim`: `AtLeastOneFieldValueIncludedInValueList` against a literal draws `MVK_VARYING_TYPES_NOT_ALLOWED` on `Choice, SkuText` and `SkuText, Choice`, `Flag, Agreed` and `Agreed, Flag`, `Amount, FiledOn`, `Span, SkuText`, `Amount, SkuText` and `Flag, FiledOn`.
+- `claim-entity`: against a field value list it draws the same on `SkuText In Choice`, `Choice In SkuText`, `Choice In Amount` and `Amount In SkuText`, so a Number field list reaches the value side's gate.
+- `control`: `SkuText In "x"` is admitted in the same run.
+- `limit`: static admission only, one model, `AtLeastOne…` only, and no group operand.
+- `bytes`: in the [capture directory](../../evidence/kernel-30.8.1/captures/value-list-base-type-cross-pairs/), `ops-basetype.json` `e291664f77ee8b552dd640cdcfeffc1cde8222c86ac40a54cbfe8fe3b7d5881e` and the observation artifact `observations-basetype.json` `4068d70399047748faa69648996063a28d401fda9f520a4fa708fdef70bd34b4`, each row keyed by its op id.
+- `local-consequence`: [`TokenEntityValueList`](../../A12Kernel/Elaboration/TokenEntityValueList.lean)'s base-type relation, read off the Kernel's per-type match before this run, predicted every row. [`ValueListQuantifierKindGate`](../../A12Kernel/Conformance/ValueListQuantifierKindGate.lean) locks them, and the stored entity form now defers a Number field list's token certification past the value side's gate.
+- `sync`: **behavioral** — [`SPEC-2026-09-25-05`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-05).
+
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
 #### The value-list quantifiers' kind gate partitions **three** ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens, measured 2026-09-06
 

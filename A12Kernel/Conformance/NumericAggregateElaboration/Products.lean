@@ -134,6 +134,23 @@ example :
           ["Form", "Rows"] = none := by
   native_decide
 
+/- **The operator's chain asks owning groups, then the filter, then the stars**, the peer's rows
+mirrored with `Rows*/Details*` for its two starred levels
+([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)). A two-star operand
+beside a fixed field of another group draws the group class and, filtered, the filter class, where
+asking each operand's stars as it is read names the star class for both. A star on a level the
+declaring group binds is still counted, from a fixed sibling and from that level itself. -/
+example :
+    productDiagnosticCode? (nestedProductStar true)
+        (plainProductPath ["Form", "Totals"] "Carried") = some "MVK_DIFFERENT_GROUPS" ∧
+      productDiagnosticCode? (nestedProductStar true) (nestedProductStar true)
+          (leftHaving := some productHaving) = some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Totals"] =
+        some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
+      productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Rows"] =
+        some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" := by
+  native_decide
+
 /- The five external classes remain independently enumerable rather than collapsing static
 refusals into one generic authoring failure. -/
 example :
