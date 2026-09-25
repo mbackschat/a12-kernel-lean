@@ -1,0 +1,38 @@
+[
+ {
+  "id": "x1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x4.json",
+   "--dry-run"
+  ]
+ }
+]
