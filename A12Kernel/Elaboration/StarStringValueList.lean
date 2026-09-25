@@ -68,7 +68,9 @@ def elaborateStarStringSource (model : FlatModel) (declaringGroup : GroupPath)
   | some field =>
       let filter ← match having with
         | none => pure none
-        | some authoredFilter =>
+        | some authoredFilter => do
+            authoredFilter.requireOuterReferencesBound model declaringGroup writtenGroup
+              |>.mapError .having
             pure (some (← elaborateStarHavingCore model declaringGroup source
               authoredFilter |>.mapError .having))
       pure {

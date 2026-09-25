@@ -63,8 +63,9 @@ private def error? (declaringGroup : GroupPath) (having : SurfaceCorrelatedHavin
   | .error (.having error) => some error
   | _ => none
 
-example : error? ["Rep"] (condition .outer fixedPath) =
-    some (.repetitionOutsideEnvironment .outer fixedPath [] 10) := by native_decide
+example : (match error? ["Rep"] (condition .outer fixedPath) with
+    | some (.outerLevelUnbound path unbound) => path == fixedPath && unbound.level == 10
+    | _ => false) = true := by native_decide
 
 example : (error? ["Rep"] (condition .outer fixedPath)).bind
     CorrelationElabError.diagnostic? = some .noWildcard := by native_decide

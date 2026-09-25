@@ -294,16 +294,15 @@ private def certifyEnumerationFirstFilledOperands
         (← certifyEnumerationFirstFilledOperands declaringGroup scope resolvedRest authoredRest))
   | _, _ => throw .incoherentCore
 
+/-- `targetGroup` is the group of the field the computation writes, which places a refusal. -/
 def elaborateEnumerationFirstFilledSource
     (model : FlatModel) (declaringGroup : GroupPath)
     (scope : List RepeatableLevel)
-    (authored : SurfaceEnumerationFirstFilledSource) :
+    (authored : SurfaceEnumerationFirstFilledSource) (targetGroup : GroupPath) :
     Except EnumerationFirstFilledComputationElabError
       (CheckedEnumerationFirstFilledSource model scope) := do
-  -- The declaring group places a refusal here, since this computation names no target to the
-  -- shape; no row measures this carrier's placement ([SG9](../../docs/gaps/paths-and-groups.md)).
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope
-      authored.toFieldEntitySource (writtenGroup := declaringGroup)
+      authored.toFieldEntitySource (writtenGroup := targetGroup)
     |>.mapError .shape
   let first ← certifyEnumerationFirstFilledOperand declaringGroup scope shape.first authored.first
   let rest ← certifyEnumerationFirstFilledOperands declaringGroup scope shape.rest authored.rest
@@ -338,7 +337,10 @@ def elaborateEnumerationFirstFilledComputation
       (CheckedEnumerationFirstFilledComputationOperation model) := do
   let target ← elaborateEnumerationComputationTarget model targetField
     |>.mapError .target
+  -- The target's group places a refusal, as on every measured computation carrier
+  -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
   let source ← elaborateEnumerationFirstFilledSource model declaringGroup [] authored
+    target.path.dropLast
   if hReference : source.referencesField target.field = true then
     match source.measuredTargetReadMode? target.field target.projection with
     | some .plain => throw (.targetSelfReferenceAtPlainRead target.field)

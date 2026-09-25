@@ -410,19 +410,29 @@ inductive ParallelIndexGate where
 structure UnboundOperandLevel where
   level : RepeatableLevel
   placement : WrittenFieldPlacement
-  /-- The level's group lies beside the written field's group rather than below it. -/
+  /-- The level's group lies beside the written field's group, neither below it nor holding it. -/
   parallel : Bool
   /-- The level's group declares an index field. -/
   indexKeyed : Bool
   /-- A repeatable group on the written field's own path declares an index field. -/
   writtenPathKeyed : Bool := false
   parallelGate : ParallelIndexGate := .notReached
+  /-- Inside the declaring group, the level's group holds the written field, so the written field
+      binds the level and the Kernel admits the read
+      ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
+      A caller that evaluates at a narrower scope still cannot bind it. -/
+  writtenBound : Bool := false
   deriving Repr, DecidableEq
 
 /-- Whether the Kernel admits this level as one side of a legal parallel iteration. The walk then
     asks the next level of the same read ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
 def UnboundOperandLevel.parallelIterable (unbound : UnboundOperandLevel) : Bool :=
   unbound.parallelGate == .legal
+
+/-- Whether the walk asks the next level of the read after this one: a legal parallel iteration, or
+    a level the written field binds. -/
+def UnboundOperandLevel.passesWalk (unbound : UnboundOperandLevel) : Bool :=
+  unbound.parallelIterable || unbound.writtenBound
 
 /-- Containment when the written field lies outside the declaring group, whatever the level. Inside
     it, a level parallel to the written field's group draws the index class when it declares an index
@@ -431,14 +441,15 @@ def UnboundOperandLevel.parallelIterable (unbound : UnboundOperandLevel) : Bool 
     ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). With both chains
     keyed the level meets its index gates
     ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). A legal parallel iteration,
-    and a shape no row measures, claim no class: the Kernel admits the first, and a route refusing it
-    refuses a shape it does not represent. -/
+    a level the written field binds, and a shape no row measures claim no class: the Kernel admits
+    the first two, and a route refusing them refuses a read it does not evaluate. -/
 def UnboundOperandLevel.diagnostic? (unbound : UnboundOperandLevel) :
     Option KernelStaticDiagnostic :=
   match unbound.placement with
   | .outside => some .fieldNotInRuleGroup
   | .contained =>
-      if unbound.parallel && unbound.indexKeyed then
+      if unbound.writtenBound then none
+      else if unbound.parallel && unbound.indexKeyed then
         if unbound.writtenPathKeyed then
           match unbound.parallelGate with
           | .multipleIndexFields => some .multipleIndexFields

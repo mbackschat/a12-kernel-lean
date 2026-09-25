@@ -319,9 +319,9 @@ def allRelevant (source : ResolvedNumericAggregateFields)
 end ResolvedNumericAggregateFields
 
 private def FlatModel.resolveNumericAggregateDeclaration (model : FlatModel)
-    (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
+    (declaringGroup writtenGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except NumericAggregateElabError FlatFieldDecl :=
-  (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+  (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
 
 private def numericAggregateField (declaration : FlatFieldDecl) :
     Except NumericAggregateElabError FlatNumberField :=
@@ -331,12 +331,12 @@ private def numericAggregateField (declaration : FlatFieldDecl) :
       throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
 
 private def FlatModel.resolveNumericAggregateDeclarations (model : FlatModel)
-    (declaringGroup : GroupPath) :
+    (declaringGroup writtenGroup : GroupPath) :
     List SurfaceFieldPath → Except NumericAggregateElabError (List FlatFieldDecl)
   | [] => pure []
   | reference :: remaining => do
-      pure ((← model.resolveNumericAggregateDeclaration declaringGroup reference) ::
-        (← model.resolveNumericAggregateDeclarations declaringGroup remaining))
+      pure ((← model.resolveNumericAggregateDeclaration declaringGroup writtenGroup reference) ::
+        (← model.resolveNumericAggregateDeclarations declaringGroup writtenGroup remaining))
 
 private def numericAggregateFields :
     List FlatFieldDecl → Except NumericAggregateElabError (List FlatNumberField)
@@ -347,7 +347,7 @@ private def numericAggregateFields :
 
 /-- Validate the model once, require at least two direct fields, resolve every source in authored order, and certify the complete Number list. -/
 def elaborateNumericAggregateFields (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceNumericAggregateFields) :
+    (authored : SurfaceNumericAggregateFields) (writtenGroup : GroupPath) :
     Except NumericAggregateElabError (CheckedNumericAggregateFields model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -356,11 +356,11 @@ def elaborateNumericAggregateFields (model : FlatModel) (declaringGroup : GroupP
       | [] => .error .tooFewFields
       | secondReference :: remainingReferences => do
           let firstDeclaration ←
-            model.resolveNumericAggregateDeclaration declaringGroup authored.first
+            model.resolveNumericAggregateDeclaration declaringGroup writtenGroup authored.first
           let secondDeclaration ←
-            model.resolveNumericAggregateDeclaration declaringGroup secondReference
+            model.resolveNumericAggregateDeclaration declaringGroup writtenGroup secondReference
           let remainingDeclarations ← model.resolveNumericAggregateDeclarations declaringGroup
-            remainingReferences
+            writtenGroup remainingReferences
           let restDeclarations := secondDeclaration :: remainingDeclarations
           match ResolvedNumericAggregateFields.firstDuplicateFieldId?
               ((firstDeclaration :: restDeclarations).map (·.id)) with

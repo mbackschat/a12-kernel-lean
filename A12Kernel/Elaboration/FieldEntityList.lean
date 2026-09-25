@@ -460,15 +460,21 @@ def resolveFieldEntityOperandIn (model : FlatModel)
         model.resolveFieldDeclarationUnchecked declaringGroup path
           |>.mapError .resolve
       if fixedTargetGroup?.isSome then return .field resolved form
-      let declaration ← resolved.requireRepetitionBoundBy scope |>.mapError fun error =>
-        match model.unboundReadLevel? declaringGroup writtenGroup resolved.repeatableScope scope with
-        | some unbound => .resolve (.unboundOperandLevel resolved.path unbound)
-        | none => .resolve error
+      -- The walk answers first: with the error field outside the rule group it refuses a level
+      -- `scope` binds.
+      if let some unbound :=
+          model.unboundReadLevel? declaringGroup writtenGroup resolved.repeatableScope scope then
+        throw (.resolve (.unboundOperandLevel resolved.path unbound))
+      let declaration ← resolved.requireRepetitionBoundBy scope |>.mapError .resolve
       pure (.field declaration form)
   | .star path => do
       pure (.star (← star path))
   | .starHaving path having => do
-      pure (.starHaving (← star path) having)
+      let source ← star path
+      if fixedTargetGroup?.isNone then
+        if let some (path, unbound) := having.unboundOuterReference? model declaringGroup writtenGroup then
+          throw (.resolve (.unboundOperandLevel path unbound))
+      pure (.starHaving source having)
   | .group reference => do
       let resolved ← (if fixedTargetGroup?.isSome then
           model.resolveFixedTargetListGroupReference declaringGroup reference

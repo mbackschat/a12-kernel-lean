@@ -36,11 +36,13 @@ structure SurfaceFilledGroupCountSemanticIndexUse where
 
 namespace OneLevelGroupErrorLocus
 
-/-- Preserve the unmeasured inside-error-field locus while projecting the exact outside refusal. -/
+/-- The carrier's own refusal, whichever locus the error field takes: measured with the error field
+    outside the group, beside it, and inside it below a fixed child
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
+    The walk's class does not answer first here, containment included. -/
 def filledGroupCountSemanticIndexAdmission :
     OneLevelGroupErrorLocus → RuleGroupOperandStaticAdmission
-  | .outside _ => .rejected .semanticIndexNotAllowed
-  | .inside => .unmapped
+  | .outside _ | .inside => .rejected .semanticIndexNotAllowed
 
 end OneLevelGroupErrorLocus
 

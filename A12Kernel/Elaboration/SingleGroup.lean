@@ -295,10 +295,12 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
       | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }
       | .scalar | .ruleBound | .validationBound =>
+          -- The walk answers ahead of every admission below: with the error field outside the rule
+          -- group it refuses a level the rule group binds.
+          if let some unbound := writtenGroup?.bind (model.unboundReadLevel? declaringGroup · operandScope) then
+            throw (.unboundOperandLevel resolved.path unbound)
           let refuse : Except FixedGroupReferenceError ResolvedGroupReference :=
-            match writtenGroup?.bind (model.unboundReadLevel? declaringGroup · operandScope) with
-            | some unbound => throw (.unboundOperandLevel resolved.path unbound)
-            | none => throw (.repeatableGroupRequiresAddress resolved.path)
+            throw (.repeatableGroupRequiresAddress resolved.path)
           -- Every list pairing a root with another operand meets a root gate before its core is
           -- checked, so admitting a bound repeatable root reaches no executable list the core
           -- predicate refuses.

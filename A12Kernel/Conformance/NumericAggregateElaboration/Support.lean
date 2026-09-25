@@ -109,18 +109,18 @@ def raw (a b c : RawCell) : RawFlatContext where
 
 def operandOf (authored : SurfaceNumericAggregateFields)
     (input : RawFlatContext) : Option NumericOperand :=
-  match elaborateNumericAggregateFields model ["Form"] authored with
+  match elaborateNumericAggregateFields model ["Form"] authored ["Form"] with
   | .error _ => none
   | .ok checked => some (checked.evaluateSum input)
 
 def extremumOperandOf (op : NumericExtremumOp)
     (authored : SurfaceNumericAggregateFields) (input : RawFlatContext) : Option NumericOperand :=
-  match elaborateNumericAggregateFields model ["Form"] authored with
+  match elaborateNumericAggregateFields model ["Form"] authored ["Form"] with
   | .error _ => none
   | .ok checked => some (checked.evaluateExtremum op input)
 
 def errorOf (authored : SurfaceNumericAggregateFields) : Option NumericAggregateElabError :=
-  match elaborateNumericAggregateFields model ["Form"] authored with
+  match elaborateNumericAggregateFields model ["Form"] authored ["Form"] with
   | .ok _ => none
   | .error error => some error
 

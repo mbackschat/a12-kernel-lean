@@ -386,14 +386,21 @@ private def resolveProjectedTokenEntityOperand (model : FlatModel)
       let projectionRef := match source with
         | .direct _ => EnumerationProjectionRef.stored
         | .category _ name => .category name
-      let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError
-          (fun error => .shape (.resolve error))
+      -- On a fixed-target list the field keeps its levels for the list-wide gate below, as the
+      -- shared shape's field does, so the target places its refusal.
+      let declaration ← (match fixedTargetGroup? with
+          | some _ => model.resolveFieldDeclarationUnchecked declaringGroup reference
+          | none => model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
+        |>.mapError (fun error => .shape (.resolve error))
       pure (.field declaration projectionRef)
   | .star source projectionRef => do
       pure (.star (← star source) projectionRef none)
   | .starHaving source projectionRef having => do
-      pure (.star (← star source) projectionRef (some having))
+      let checked ← star source
+      if fixedTargetGroup?.isNone then
+        if let some (path, unbound) := having.unboundOuterReference? model declaringGroup writtenGroup then
+          throw (.shape (.resolve (.unboundOperandLevel path unbound)))
+      pure (.star checked projectionRef (some having))
 where
   star (source : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup source).mapError fun error =>

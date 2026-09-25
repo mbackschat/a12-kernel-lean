@@ -439,7 +439,7 @@ private def FlatModel.resolveNumericComputationAtoms
         pure (.booleanValueCount checked)
     | .sumOfProducts source => do
         let checked ←
-          (elaborateNumericProductAggregate model declaringGroup source).mapError
+          (elaborateNumericProductAggregate model declaringGroup source targetGroup).mapError
             NumericComputationElabError.productAggregate
         model.requireOperandLevelsBound declaringGroup targetGroup
           [checked.left.source.bindingScope, checked.right.source.bindingScope]

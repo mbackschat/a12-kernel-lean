@@ -264,11 +264,13 @@ def FlatModel.unboundOperandLevel (model : FlatModel) (declaringGroup writtenGro
     (level : RepeatableLevel) : UnboundOperandLevel :=
   let group? := model.repeatableGroups.find? (·.level == level)
   let placement := WrittenFieldPlacement.of declaringGroup writtenGroup
-  let parallel := !(group?.any fun group => GroupPath.isPrefixOf writtenGroup group.path)
+  let holdsWritten := group?.any fun group => GroupPath.isPrefixOf group.path writtenGroup
+  let parallel := !holdsWritten && !(group?.any fun group => GroupPath.isPrefixOf writtenGroup group.path)
   let indexKeyed := group?.any (·.indexField.isSome)
   let writtenPathKeyed := model.repeatableGroups.any fun group =>
     GroupPath.isPrefixOf group.path writtenGroup && group.indexField.isSome
   { level, placement, parallel, indexKeyed, writtenPathKeyed
+    writtenBound := placement == .contained && holdsWritten
     parallelGate :=
       match placement, group? with
       | .contained, some group =>
@@ -277,17 +279,18 @@ def FlatModel.unboundOperandLevel (model : FlatModel) (declaringGroup writtenGro
           else .notReached
       | _, _ => .notReached }
 
-/-- The first of these levels, outermost first, that is not a legal parallel iteration, or the
-    outermost when every one is. -/
+/-- The first of these levels, outermost first, that the walk does not pass, or the outermost when
+    it passes every one. -/
 def UnboundOperandLevel.walkRefusal? (levels : List UnboundOperandLevel) :
     Option UnboundOperandLevel :=
-  (levels.find? (!·.parallelIterable)).orElse fun _ => levels.head?
+  (levels.find? (!·.passesWalk)).orElse fun _ => levels.head?
 
 /-- The unbound level a list of operand binding scopes is refused at, for an evaluation that binds
     none of them. The walk asks every level of a read outermost first and passes a legal parallel
-    iteration to the next ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)), so a
-    read refuses at its first other level; one that passes every level still returns its outermost,
-    whose class is `none`, because no route evaluating these scopes joins a parallel iteration. Which
+    iteration ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)), or a level the
+    written field binds, to the next, so a read refuses at its first other level; one that passes
+    every level still returns its outermost, whose class is `none`, because no route evaluating these
+    scopes binds those levels. Which
     refusing operand decides when two would draw different classes is not measured; this takes the
     first in authored order. -/
 def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
@@ -295,15 +298,21 @@ def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writ
   UnboundOperandLevel.walkRefusal? <| scopes.filterMap fun scope =>
     UnboundOperandLevel.walkRefusal? (scope.map (model.unboundOperandLevel declaringGroup writtenGroup))
 
-/-- A validation read's outermost level its rule group does not bind, placed by the written field,
+/-- A validation read's outermost level this evaluation does not bind, placed by the written field,
     or `none` when `bound` covers every level of it. `bound` defaults to what the rule group binds; a
-    caller with a narrower reading scope passes that. The binding scope decides which levels are
-    unbound, and the written field only the class
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+    caller with a narrower reading scope passes that. With the written field outside the rule group
+    nothing binds a level, the rule group's own included, so every level draws containment
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). Inside it the
+    written field also binds the levels holding it: the Kernel admits those reads, and the walk passes
+    them claiming no class, because an evaluation at `bound` cannot bind them
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)). -/
 def FlatModel.unboundReadLevel? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (scope : List RepeatableLevel)
     (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
     Option UnboundOperandLevel :=
+  let bound := match WrittenFieldPlacement.of declaringGroup writtenGroup with
+    | .contained => bound
+    | .outside => []
   model.firstUnboundOperandLevel? declaringGroup writtenGroup [scope.filter (!bound.contains ·)]
 
 private def repeatableScopeMismatch? (model : FlatModel) :

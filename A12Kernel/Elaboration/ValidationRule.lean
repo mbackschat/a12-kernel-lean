@@ -26,27 +26,34 @@ inductive FlatRuleAssemblyError where
 
 namespace FlatRuleAssemblyError
 
-/-- The walk's refusal hidden in a scope mismatch: the error field's scope is a strict prefix of the
-    condition's iteration, so the condition reads a level past it, and the first such level is the
-    outermost one refused. Its class is the computation arm's
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)): containment when the error
-    field lies outside the rule group, the index class for a keyed level parallel to the error field's
-    group, and the missing star otherwise.
+/-- The walk's refusal hidden in a scope mismatch. With the error field outside the rule group
+    nothing binds a level, so the condition's outermost iterated level is refused with containment.
+    Inside it the error field's scope must be a strict prefix of the condition's iteration: the
+    condition then reads a level past it, and the first such level is the outermost one refused,
+    with the index class for a keyed level parallel to the error field's group and the missing star
+    otherwise ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)).
 
-    The level is not attributed to the operand that derived it, so a level from a repetition key, a
-    DateRange operand or a filter's outer reference takes the class unmeasured, and so does an error
-    field with repeatable levels of its own
-    ([SG9](../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)). An error
-    field in a sibling repeatable scope is not a prefix and does not count. -/
+    The level is not attributed to the operand that derived it. The DateRange and marked-filter
+    readers are measured to follow the walk
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)); a
+    repetition key's level, and an error field with repeatable levels of its own, take the class
+    unmeasured ([SG9](../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)).
+    An error field in a sibling repeatable scope inside the rule group is not a prefix and does not
+    count. -/
 def unboundLevel? (model : FlatModel) (ruleGroup : GroupPath) :
     FlatRuleAssemblyError → Option (FieldId × UnboundOperandLevel)
   | .iterationScopeMismatch field derived errorScope =>
-      if errorScope.isPrefixOf derived && errorScope != derived then
-        match derived.drop errorScope.length, model.lookupUniqueId field with
-        | level :: _, .ok declaration =>
-            some (field, model.unboundOperandLevel ruleGroup declaration.groupPath level)
-        | _, _ => none
-      else none
+      match model.lookupUniqueId field with
+      | .ok declaration =>
+          let refused? := match WrittenFieldPlacement.of ruleGroup declaration.groupPath with
+            | .outside => derived.head?
+            | .contained =>
+                if errorScope.isPrefixOf derived && errorScope != derived then
+                  (derived.drop errorScope.length).head?
+                else none
+          refused?.map fun level =>
+            (field, model.unboundOperandLevel ruleGroup declaration.groupPath level)
+      | .error _ => none
   | .errorField _ | .repeatableErrorField _ | .iterationScope _ | .errorFieldNotReferenced _
   | .negativeConditionInIteration _ | .unboundOperandLevel _ _ => none
 
@@ -712,8 +719,16 @@ def assembleResolvedValidationRule (model : FlatModel)
           | .ok (.invalid level) => .error (.negativeConditionInIteration level)
           | .ok .legal | .ok (.insufficient _) | .error _ => .error error
   | .ok rule =>
-      match condition.core.iterationLegality with
-      | .ok (.invalid level) => .error (.negativeConditionInIteration level)
-      | .ok .legal | .ok (.insufficient _) | .error _ => .ok rule
+      let errorGroup := rule.errorDeclaration.groupPath
+      -- With the error field outside the rule group nothing binds a level, the rule group's own
+      -- included, so an iterating rule whose error scope matches is refused all the same.
+      match rule.iterationScope, WrittenFieldPlacement.of condition.rowGroup errorGroup with
+      | some (level :: _), .outside =>
+          .error (.unboundOperandLevel errorField
+            (model.unboundOperandLevel condition.rowGroup errorGroup level))
+      | _, _ =>
+          match condition.core.iterationLegality with
+          | .ok (.invalid level) => .error (.negativeConditionInIteration level)
+          | .ok .legal | .ok (.insufficient _) | .error _ => .ok rule
 
 end A12Kernel

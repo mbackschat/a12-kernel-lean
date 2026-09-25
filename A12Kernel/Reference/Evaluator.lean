@@ -331,7 +331,8 @@ private def correlationElaborationResult : CorrelationElabError →
       pure (.make .fieldScopeMismatch "$.rule"
         (Json.mkObj [("fieldPath", toJson fieldPath), ("expected", toJson expected),
           ("actual", toJson actual)]))
-  | .fieldOutsideEnvironment _ _ _ _ => throw .incoherentCore
+  -- Only the star route's sources ask the walk of a marked reference; this one-group route never does.
+  | .fieldOutsideEnvironment _ _ _ _ | .outerLevelUnbound _ _ => throw .incoherentCore
   | .repetitionGroupMismatch expected actual =>
       pure (.make .repetitionGroupMismatch "$.rule.having"
         (Json.mkObj [("expected", toJson expected), ("actual", toJson actual)]))

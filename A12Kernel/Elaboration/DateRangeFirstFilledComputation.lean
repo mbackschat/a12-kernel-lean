@@ -221,10 +221,13 @@ def checkDateRangeFirstFilledDirectComputation
       (CheckedDateRangeFirstFilledDirectComputation model) :=
   -- Matched rather than bound, so the shape's own group guard is available as the certificate's
   -- validity field instead of being re-tested on a path this resolution already walked.
-  -- The declaring group places a refusal here, since this computation names no target to the
-  -- shape; no row measures this carrier's placement ([SG9](../../docs/gaps/paths-and-groups.md)).
+  -- The target's group places a refusal, as on every measured computation carrier
+  -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
+  -- The target resolves after the shape, so an unresolvable one leaves the declaring group to
+  -- place it until its own gate refuses.
+  let targetGroup := ((model.lookupUniqueId targetField).toOption.map (·.groupPath)).getD declaringGroup
   match hShape : elaborateFieldEntityShape model declaringGroup authored
-      (writtenGroup := declaringGroup) with
+      (writtenGroup := targetGroup) with
   | .error error => .error (.sourceShape error)
   | .ok shape => do
   let sourceDeclarations ← directStoredDeclarations model shape.operands

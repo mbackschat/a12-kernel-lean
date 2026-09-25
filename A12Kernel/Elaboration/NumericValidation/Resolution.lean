@@ -178,7 +178,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       else
         throw .incompatibleDateDifference
   | .aggregate op source => do
-      let checked ← (elaborateNumericAggregateFields model rowGroup source).mapError
+      let checked ← (elaborateNumericAggregateFields model rowGroup source writtenGroup).mapError
         NumericValidationElabError.aggregate
       model.ensureNumericAggregateRowGroup rowGroup checked.fields
       pure (.aggregate op checked.resolvedFields)

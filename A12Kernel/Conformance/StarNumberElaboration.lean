@@ -428,7 +428,8 @@ example :
         (surfaceNumber .outer ["Shop", "Sections"] "Limit"))).isOk = true := by
   native_decide
 
-/- `$`-only/bound-only filters and references requiring unavailable candidate or captured bindings fail before runtime. -/
+/- `$`-only/bound-only filters and references requiring unavailable candidate or captured bindings
+   fail before runtime; a marked one is refused by the walk, ahead of the filter's own checks. -/
 example :
     havingErrorOf amount.groupPath (source (outerStar := false))
         (.compareNumbers .equal
@@ -441,18 +442,19 @@ example :
           (surfaceNumber .outer ["Shop", "Sections", "Items"] "Amount")) =
         some (.having (.fieldOutsideEnvironment .inner otherAmount.path
           [10, 20] [30])) ∧
-      havingErrorOf ["Shop", "Sections"] (source)
-        (.compareNumbers .equal
-          (surfaceNumber .inner ["Shop", "Sections", "Items"] "Amount")
-          (surfaceNumber .outer ["Shop", "Sections", "Items"] "Amount")) =
-        some (.having (.fieldOutsideEnvironment .outer amount.path
-          [10] [10, 20])) ∧
-      havingErrorOf amount.groupPath (source)
-        (.compareRepetitions .equal
-          (surfaceRepetition .inner ["Shop", "Sections", "Items"])
-          (surfaceRepetition .outer ["Shop", "Other"])) =
-        some (.having (.repetitionOutsideEnvironment .outer ["Shop", "Other"]
-          [10, 20] 30)) := by
+      (match havingErrorOf ["Shop", "Sections"] (source)
+          (.compareNumbers .equal
+            (surfaceNumber .inner ["Shop", "Sections", "Items"] "Amount")
+            (surfaceNumber .outer ["Shop", "Sections", "Items"] "Amount")) with
+        | some (.having (.outerLevelUnbound path unbound)) => path == amount.path && unbound.level == 20
+        | _ => false) = true ∧
+      (match havingErrorOf amount.groupPath (source)
+          (.compareRepetitions .equal
+            (surfaceRepetition .inner ["Shop", "Sections", "Items"])
+            (surfaceRepetition .outer ["Shop", "Other"])) with
+        | some (.having (.outerLevelUnbound path unbound)) =>
+            path == ["Shop", "Other"] && unbound.level == 30
+        | _ => false) = true := by
   native_decide
 
 private def offPathDiagnostic? (origin : HavingOrigin) : Option KernelStaticDiagnostic :=

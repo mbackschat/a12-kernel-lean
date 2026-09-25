@@ -143,13 +143,14 @@ example : alternateGroupSelection?.map (fun checked => checked.selection.key) =
     some (.literal (.text "SKU-2")) := by
   native_decide
 
-/- An unindexed group and the unmeasured inside-error-field locus stay unmapped on this indexed
-projector; neither is silently assigned the outside-locus carrier code. -/
+/- An unindexed group stays unmapped on this indexed projector, while the inside-error-field locus
+draws the carrier's own refusal as the outside one does
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)). -/
 example :
     projectFilledGroupCountSemanticIndexRuleAdmission model ["Shipment"] 1
         indexedGroupCountUse = .unmapped ∧
       projectFilledGroupCountSemanticIndexRuleAdmission semanticIndexModel ["Shipment"] 3
-        indexedGroupCountUse = .unmapped := by
+        indexedGroupCountUse = .rejected .semanticIndexNotAllowed := by
   native_decide
 
 /- The exact positive quantifier shapes follow the same locus rule. -/

@@ -110,6 +110,8 @@ def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPa
       (CheckedStarEnumerationSource model) := do
   let source ← elaborateStarFieldPath model declaringGroup authored
     |>.mapError fun error => .path (error.placeBelowStar model declaringGroup writtenGroup)
+  if let some authoredFilter := having then
+    authoredFilter.requireOuterReferencesBound model declaringGroup writtenGroup |>.mapError .having
   certifyStarEnumerationSource declaringGroup source projectionRef having
 
 /-- Check projection-specific literal admission after the exact starred Enumeration operand has been resolved. -/

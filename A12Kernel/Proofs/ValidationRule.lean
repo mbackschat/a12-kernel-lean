@@ -214,8 +214,8 @@ theorem checkedValidationRule_once_plan_exact
     noScope, repeatable]
 
 /-- Checked rule assembly never admits a condition with an unguarded repeatable level: it refuses at
-    that level, or earlier as the walk's missing star when the error field does not bind a level the
-    condition reads. -/
+    that level, or earlier with the walk's class when the error field lies outside the rule group or
+    does not bind a level the condition reads. -/
 theorem assembleResolvedValidationRule_rejects_negativeIteration
     (model : FlatModel) (condition : CheckedValidationCondition model)
     (errorField : FieldId) (errorCode : String)
@@ -234,7 +234,9 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
     cases hWalk : error.unboundLevel? model condition.rowGroup with
     | some refusal => exact ⟨_, rfl, Or.inr ⟨refusal.1, refusal.2, rfl⟩⟩
     | none => exact ⟨_, rfl, Or.inl rfl⟩
-  · exact ⟨_, rfl, Or.inl rfl⟩
+  · split
+    · exact ⟨_, rfl, Or.inr ⟨_, _, rfl⟩⟩
+    · exact ⟨_, rfl, Or.inl rfl⟩
 
 /-- The already-derived negative-iteration assembly error projects to the exact measured Kernel diagnostic class. -/
 theorem flatRuleAssemblyError_negativeIteration_diagnostic

@@ -52,6 +52,7 @@ def elaborateStarNumberHavingSource (model : FlatModel)
     (having : SurfaceCorrelatedHaving) (writtenGroup : GroupPath) :
     Except StarNumberElabError (CheckedStarNumberHavingSource model) := do
   let source ← elaborateStarNumberSource model declaringGroup authored writtenGroup
+  having.requireOuterReferencesBound model declaringGroup writtenGroup |>.mapError .having
   let filter ← elaborateStarHavingCore model declaringGroup source.source having
     |>.mapError .having
   pure { source, declaringGroup, filter }

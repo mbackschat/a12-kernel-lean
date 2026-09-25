@@ -706,9 +706,8 @@ example : hostedError? (.and (siblingFeeLeaf .outer) (filledAt ["Form", "Rows"] 
     environment is empty and the Kernel reports `MVK_NO_WILDCARD` rather than the filter code. -/
 example :
     (match elaborateFilledFieldStarSource siblingModel ["Form"] starPath (some (siblingFeeLeaf .outer)) with
-     | .ok _ => none
-     | .error error => some error) =
-      some (.having (.fieldOutsideEnvironment .outer ["Form", "Other", "Fee"] [] [20])) := by
+     | .error (.having error@(.outerLevelUnbound ["Form", "Other", "Fee"] _)) => error.diagnostic?
+     | _ => none) = some .noWildcard := by
   native_decide
 
 end A12Kernel

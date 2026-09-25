@@ -100,6 +100,9 @@ inductive CorrelationElabError where
   | missingInner
   | missingOuter
   | errorGuardMismatch (errorPath guardPath : List String)
+  /-- A marked reference crossing a level the reading rule does not bind, with the level the walk
+      refuses. -/
+  | outerLevelUnbound (path : List String) (unbound : UnboundOperandLevel)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -142,6 +145,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .wildcardOnRuleGroup | .wildcardWithParentNavigation _ =>
       some .noWildcardsAllowed
   | .equalityScaleMismatch _ _ _ _ => some .invalidCompareDecimalPlaces
+  | .outerLevelUnbound _ unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
   -- Named rather than wildcarded. `stringLeafOutsideStarRoute` and `disjunctionOutsideStarRoute`
   -- are the legacy one-group route's own narrowness — the Kernel accepts both — and the rest are
@@ -153,6 +157,47 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .incoherentCore => none
 
 end CorrelationElabError
+
+/-- The first marked reference of an authored filter, in authored order, crossing a level the
+    reading rule does not bind, with the level the walk refuses. A marked reference reads the rule's
+    own environment, so it meets the walk like any read and its class is placed by the error field:
+    measured on a keyed and an unkeyed level beside the error field's group
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
+    A reference that does not resolve is left to the filter's own resolution. -/
+def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
+    (declaringGroup writtenGroup : GroupPath) :
+    SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
+  | .compareNumbers _ left right =>
+      (field left.origin left.field).orElse fun _ => field right.origin right.field
+  | .compareRepetitions _ left right =>
+      (group left.origin left.group).orElse fun _ => group right.origin right.group
+  | .compareStrings _ reference _ => field reference.origin reference.field
+  | .presence _ reference => field reference.origin reference.field
+  | .and left right | .or left right =>
+      (left.unboundOuterReference? model declaringGroup writtenGroup).orElse fun _ =>
+        right.unboundOuterReference? model declaringGroup writtenGroup
+where
+  field (origin : HavingOrigin) (reference : SurfaceFieldPath) :
+      Option (List String × UnboundOperandLevel) := do
+    guard (origin == .outer)
+    let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).toOption
+    let unbound ← model.unboundReadLevel? declaringGroup writtenGroup declaration.repeatableScope
+    pure (declaration.path, unbound)
+  group (origin : HavingOrigin) (reference : SurfaceGroupReference) :
+      Option (List String × UnboundOperandLevel) := do
+    guard (origin == .outer)
+    let resolved ← (reference.resolveAgainst declaringGroup).toOption
+    let unbound ← model.unboundReadLevel? declaringGroup writtenGroup
+      (model.repeatableScopeForGroupPath resolved.path)
+    pure (resolved.path, unbound)
+
+/-- Refuse a filter whose marked reference the walk refuses, ahead of the filter's own checks. -/
+def SurfaceCorrelatedHaving.requireOuterReferencesBound (model : FlatModel)
+    (declaringGroup writtenGroup : GroupPath) (having : SurfaceCorrelatedHaving) :
+    Except CorrelationElabError Unit :=
+  match having.unboundOuterReference? model declaringGroup writtenGroup with
+  | some (path, unbound) => throw (.outerLevelUnbound path unbound)
+  | none => pure ()
 
 private def SurfaceComparisonOp.toCorrelation? : SurfaceComparisonOp →
     Option CorrelationComparisonOp

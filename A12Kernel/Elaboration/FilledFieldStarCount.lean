@@ -97,6 +97,8 @@ def elaborate (model : FlatModel) (declaringGroup : GroupPath)
   match having with
   | none => pure { declaringGroup, source, filter := none }
   | some authoredHaving =>
+      authoredHaving.requireOuterReferencesBound model declaringGroup writtenGroup
+        |>.mapError .having
       let filter ←
         (elaborateStarHavingCore model declaringGroup source authoredHaving).mapError .having
       pure { declaringGroup, source, filter := some filter }
