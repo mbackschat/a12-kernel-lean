@@ -1,0 +1,27 @@
+{
+ "command": "dmtool model check",
+ "engineVersion": "30.8.1",
+ "model": "route-rules.json",
+ "rules": {
+  "/Fulfilment/Invoices/Rn1a": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Invoices/Rn1b": [
+   "MVK_ERROR_FIELD_INVALID_INDEX"
+  ],
+  "/Fulfilment/Invoices/Rn3b": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3d": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3e": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3n": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3s": []
+ },
+ "valid": false
+}

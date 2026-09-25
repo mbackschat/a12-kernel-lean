@@ -1,0 +1,258 @@
+{
+  "header" : {
+    "id" : "WalkCompK_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "WalkCompK_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Out",
+            "name" : "Out",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Out/Free",
+                "name" : "Free",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/RangeOut",
+                "name" : "RangeOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "dd.MM.yyyy",
+                      "rangeSeparator" : "-"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Out/EnumOut",
+                "name" : "EnumOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Ledger",
+            "name" : "Ledger",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Ledger/LNote",
+                "name" : "LNote",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/RootS",
+            "name" : "RootS",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/RootRange",
+            "name" : "RootRange",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "dd.MM.yyyy",
+                  "rangeSeparator" : "-"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/RootEnum",
+            "name" : "RootEnum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A"
+                  }, {
+                    "value" : "B"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Batches",
+            "name" : "Batches",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Batches/BKey",
+                "name" : "BKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/BText",
+                "name" : "BText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/BRange",
+                "name" : "BRange",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "dd.MM.yyyy",
+                      "rangeSeparator" : "-"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Batches/BEnum",
+                "name" : "BEnum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Batches/Flags",
+                "name" : "Flags",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Flags/F1",
+                    "name" : "F1",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Flags/F2",
+                    "name" : "F2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Batches/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Items/W",
+                    "name" : "W",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Batches/Items/Q",
+                    "name" : "Q",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "BKey"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

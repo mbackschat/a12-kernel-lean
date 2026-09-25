@@ -1,0 +1,196 @@
+[
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Out"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "Free",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "RangeOut",
+  "kind": "DATERANGE",
+  "dateRange": {
+   "format": "dd.MM.yyyy",
+   "separator": "-"
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Out",
+  "name": "EnumOut",
+  "kind": "ENUM",
+  "enum": {
+   "values": [
+    {
+     "value": "A"
+    },
+    {
+     "value": "B"
+    }
+   ]
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Ledger"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Ledger",
+  "name": "LNote",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe",
+  "name": "RootS",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe",
+  "name": "RootRange",
+  "kind": "DATERANGE",
+  "dateRange": {
+   "format": "dd.MM.yyyy",
+   "separator": "-"
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe",
+  "name": "RootEnum",
+  "kind": "ENUM",
+  "enum": {
+   "values": [
+    {
+     "value": "A"
+    },
+    {
+     "value": "B"
+    }
+   ]
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe",
+  "name": "Batches",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches",
+  "name": "BKey",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches",
+  "name": "BText",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches",
+  "name": "BRange",
+  "kind": "DATERANGE",
+  "dateRange": {
+   "format": "dd.MM.yyyy",
+   "separator": "-"
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches",
+  "name": "BEnum",
+  "kind": "ENUM",
+  "enum": {
+   "values": [
+    {
+     "value": "A"
+    },
+    {
+     "value": "B"
+    }
+   ]
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Batches",
+  "name": "Flags"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Flags",
+  "name": "F1",
+  "kind": "BOOLEAN"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Flags",
+  "name": "F2",
+  "kind": "BOOLEAN"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Probe/Batches",
+  "name": "Items",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Items",
+  "name": "W",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Probe/Batches/Items",
+  "name": "Q",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Probe/Batches",
+  "index-field": "BKey"
+ }
+]

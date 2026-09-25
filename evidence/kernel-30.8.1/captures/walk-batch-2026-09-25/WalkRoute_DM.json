@@ -1,0 +1,337 @@
+{
+  "header" : {
+    "id" : "WalkRoute_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "WalkRoute_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Fulfilment",
+        "name" : "Fulfilment",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Fulfilment/OrderTotal",
+            "name" : "OrderTotal",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/Invoices",
+            "name" : "Invoices",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/Invoices/ShipmentKey",
+                "name" : "ShipmentKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Fulfilment/Invoices/InvoiceNote",
+                "name" : "InvoiceNote",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "ShipmentKey"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/Ret",
+            "name" : "Ret",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/Ret/RetNote",
+                "name" : "RetNote",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Fulfilment/Ret/Sub",
+                "name" : "Sub",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Fulfilment/Ret/Sub/SubKey",
+                    "name" : "SubKey",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Fulfilment/Ret/Sub/SubAmount",
+                    "name" : "SubAmount",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ],
+                  "indexFieldName" : "SubKey"
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/Ref",
+            "name" : "Ref",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/Ref/RefKey",
+                "name" : "RefKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Fulfilment/Ref/Sub2",
+                "name" : "Sub2",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Fulfilment/Ref/Sub2/Sub2Key",
+                    "name" : "Sub2Key",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Fulfilment/Ref/Sub2/Sub2Amount",
+                    "name" : "Sub2Amount",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ],
+                  "indexFieldName" : "Sub2Key"
+                }
+              } ],
+              "indexFieldName" : "RefKey"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/TagsS",
+            "name" : "TagsS",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsS/ShipmentKey",
+                "name" : "ShipmentKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsS/TAmount",
+                "name" : "TAmount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "ShipmentKey"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/TagsN",
+            "name" : "TagsN",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsN/ShipmentKey",
+                "name" : "ShipmentKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsN/TAmount",
+                "name" : "TAmount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "ShipmentKey"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/TagsE",
+            "name" : "TagsE",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsE/ShipmentKey",
+                "name" : "ShipmentKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsE/TAmount",
+                "name" : "TAmount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "ShipmentKey"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/TagsB",
+            "name" : "TagsB",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsB/ShipmentKey",
+                "name" : "ShipmentKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsB/TAmount",
+                "name" : "TAmount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "ShipmentKey"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fulfilment/TagsD",
+            "name" : "TagsD",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsD/ShipmentKey",
+                "name" : "ShipmentKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Fulfilment/TagsD/TAmount",
+                "name" : "TAmount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "ShipmentKey"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# N1 walk order and N3 index types, beside the keyed Invoices (String ShipmentKey)
+Rn1a|/Fulfilment/Invoices|../InvoiceNote|FieldFilled(/Fulfilment/Invoices/InvoiceNote) And [/Fulfilment/Ret/Sub/SubAmount] > 0
+Rn1b|/Fulfilment/Invoices|../InvoiceNote|FieldFilled(/Fulfilment/Invoices/InvoiceNote) And [/Fulfilment/Ref/Sub2/Sub2Amount] > 0
+Rn3s|/Fulfilment/Invoices|../InvoiceNote|FieldFilled(/Fulfilment/Invoices/InvoiceNote) And [/Fulfilment/TagsS/TAmount] > 0
+Rn3n|/Fulfilment/Invoices|../InvoiceNote|FieldFilled(/Fulfilment/Invoices/InvoiceNote) And [/Fulfilment/TagsN/TAmount] > 0
+Rn3e|/Fulfilment/Invoices|../InvoiceNote|FieldFilled(/Fulfilment/Invoices/InvoiceNote) And [/Fulfilment/TagsE/TAmount] > 0
+Rn3b|/Fulfilment/Invoices|../InvoiceNote|FieldFilled(/Fulfilment/Invoices/InvoiceNote) And [/Fulfilment/TagsB/TAmount] > 0
+Rn3d|/Fulfilment/Invoices|../InvoiceNote|FieldFilled(/Fulfilment/Invoices/InvoiceNote) And [/Fulfilment/TagsD/TAmount] > 0

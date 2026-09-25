@@ -1,0 +1,296 @@
+[
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment",
+  "name": "OrderTotal",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "Invoices",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Invoices",
+  "name": "ShipmentKey",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Invoices",
+  "name": "InvoiceNote",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/Invoices",
+  "index-field": "ShipmentKey"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "Ret",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Ret",
+  "name": "RetNote",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment/Ret",
+  "name": "Sub",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Ret/Sub",
+  "name": "SubKey",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Ret/Sub",
+  "name": "SubAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/Ret/Sub",
+  "index-field": "SubKey"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "Ref",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Ref",
+  "name": "RefKey",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/Ref",
+  "index-field": "RefKey"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment/Ref",
+  "name": "Sub2",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Ref/Sub2",
+  "name": "Sub2Key",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/Ref/Sub2",
+  "name": "Sub2Amount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/Ref/Sub2",
+  "index-field": "Sub2Key"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "TagsS",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsS",
+  "name": "ShipmentKey",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsS",
+  "name": "TAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/TagsS",
+  "index-field": "ShipmentKey"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "TagsN",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsN",
+  "name": "ShipmentKey",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsN",
+  "name": "TAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/TagsN",
+  "index-field": "ShipmentKey"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "TagsE",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsE",
+  "name": "ShipmentKey",
+  "kind": "ENUM",
+  "enum": {
+   "values": [
+    {
+     "value": "A"
+    },
+    {
+     "value": "B"
+    }
+   ]
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsE",
+  "name": "TAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/TagsE",
+  "index-field": "ShipmentKey"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "TagsB",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsB",
+  "name": "ShipmentKey",
+  "kind": "BOOLEAN"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsB",
+  "name": "TAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/TagsB",
+  "index-field": "ShipmentKey"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Fulfilment",
+  "name": "TagsD",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsD",
+  "name": "ShipmentKey",
+  "kind": "DATE"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Fulfilment/TagsD",
+  "name": "TAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Fulfilment/TagsD",
+  "index-field": "ShipmentKey"
+ }
+]

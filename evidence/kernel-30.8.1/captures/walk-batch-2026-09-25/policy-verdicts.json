@@ -1,0 +1,95 @@
+{
+ "command": "dmtool model check",
+ "engineVersion": "30.8.1",
+ "model": "policy-rules.json",
+ "rules": {
+  "/Policy/Claims/Rf17kfield": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Claims/Rf17kgroup": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Claims/Seal2/Rl33k": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Claims/Seal2/Rl33kin": [],
+  "/Policy/Insured/Rf15out": [
+   "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+  ],
+  "/Policy/Insured/Rf16kins": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Insured/Rf4outk": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Insured/Rf4outp": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Insured/Rl20dk": [
+   "MVK_ERROR_FIELD_NO_INDEX"
+  ],
+  "/Policy/Insured/Rl20dp": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Policy/Insured/Rl20fk": [
+   "MVK_ERROR_FIELD_NO_INDEX"
+  ],
+  "/Policy/Insured/Rl20fp": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Policy/Plain/PSeal2/Rl33p": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Plain/Rf17pfield": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Plain/Rf17pgroup": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Policy/Rf15beside": [
+   "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+  ],
+  "/Policy/Rf15in": [
+   "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+  ],
+  "/Policy/Rf15inside": [
+   "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+  ],
+  "/Policy/Rf16k": [],
+  "/Policy/Rf16kagf": [],
+  "/Policy/Rf16kalone": [],
+  "/Policy/Rf16kgf": [],
+  "/Policy/Rf16kown": [],
+  "/Policy/Rf16krev": [],
+  "/Policy/Rf16ksib": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Policy/Rf16kstar": [],
+  "/Policy/Rf16ksum": [],
+  "/Policy/Rf16p": [],
+  "/Policy/Rf16palone": [],
+  "/Policy/Rf16prev": [],
+  "/Policy/Rf4ctlk": [
+   "MVK_ERROR_FIELD_NO_INDEX"
+  ],
+  "/Policy/Rf4ctlp": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Policy/Rf4maxk": [
+   "MVK_ERROR_FIELD_NO_INDEX"
+  ],
+  "/Policy/Rf4rootk": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Policy/Rf4sumk": [
+   "MVK_ERROR_FIELD_NO_INDEX"
+  ],
+  "/Policy/Rf4sump": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Policy/Rl20droot": [
+   "MVK_NO_WILDCARD"
+  ]
+ },
+ "valid": false
+}

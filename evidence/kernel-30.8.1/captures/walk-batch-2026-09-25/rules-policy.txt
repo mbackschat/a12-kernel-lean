@@ -1,0 +1,44 @@
+# F4: the numeric comparison's aggregate operand list, error field in Insured beside keyed Claims / unkeyed Plain
+Rf4sumk|/Policy|../Insured/Remark|FieldFilled(/Policy/Insured/Remark) And Sum(/Policy/Base, /Policy/Claims/Amount) > 0
+Rf4sump|/Policy|../Insured/Remark|FieldFilled(/Policy/Insured/Remark) And Sum(/Policy/Base, /Policy/Plain/PAmount) > 0
+Rf4maxk|/Policy|../Insured/Remark|FieldFilled(/Policy/Insured/Remark) And MaxValue(/Policy/Base, /Policy/Claims/Amount) > 0
+Rf4ctlk|/Policy|../Insured/Remark|FieldFilled(/Policy/Insured/Remark) And [/Policy/Claims/Amount] > 0
+Rf4ctlp|/Policy|../Insured/Remark|FieldFilled(/Policy/Insured/Remark) And [/Policy/Plain/PAmount] > 0
+Rf4outk|/Policy/Insured|../../Holder|FieldFilled(/Policy/Holder) And Sum(/Policy/Base, /Policy/Claims/Amount) > 0
+Rf4outp|/Policy/Insured|../../Holder|FieldFilled(/Policy/Holder) And Sum(/Policy/Base, /Policy/Plain/PAmount) > 0
+Rf4rootk|/Policy|../Holder|FieldFilled(/Policy/Holder) And Sum(/Policy/Base, /Policy/Claims/Amount) > 0
+# F16: error field inside the repeatable group, rule in the root
+Rf16kalone|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount)
+Rf16k|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And [/Policy/Claims/Amount] > 0
+Rf16krev|/Policy|../Claims/Sub/SubAmount|[/Policy/Claims/Amount] > 0 And FieldFilled(/Policy/Claims/Sub/SubAmount)
+Rf16palone|/Policy|../Plain/PSub/PSubAmount|FieldFilled(/Policy/Plain/PSub/PSubAmount)
+Rf16p|/Policy|../Plain/PSub/PSubAmount|FieldFilled(/Policy/Plain/PSub/PSubAmount) And [/Policy/Plain/PAmount] > 0
+Rf16prev|/Policy|../Plain/PSub/PSubAmount|[/Policy/Plain/PAmount] > 0 And FieldFilled(/Policy/Plain/PSub/PSubAmount)
+# F17: entity-list field slot vs group slot, rule in the repeatable group reporting on the root
+Rf17kfield|/Policy/Claims|../../Holder|FieldFilled(/Policy/Holder) And Sum(Amount, /Policy/Base) > 0
+Rf17kgroup|/Policy/Claims|../../Holder|FieldFilled(/Policy/Holder) And Sum(Sub, /Policy/Base) > 0
+Rf17pfield|/Policy/Plain|../../Holder|FieldFilled(/Policy/Holder) And Sum(PAmount, /Policy/Base) > 0
+Rf17pgroup|/Policy/Plain|../../Holder|FieldFilled(/Policy/Holder) And Sum(PSub, /Policy/Base) > 0
+# L33: a level the rule group binds, error field outside the rule group
+Rl33k|/Policy/Claims/Seal2|../../Amount|FieldFilled(../Amount) And FieldFilled(../ClaimRef)
+Rl33p|/Policy/Plain/PSeal2|../../PAmount|FieldFilled(../PAmount) And FieldFilled(../PR1)
+Rl33kin|/Policy/Claims/Seal2|../S2Note|FieldFilled(S2Note) And FieldFilled(../ClaimRef)
+# F15: a semantic-index group count, error field inside and outside the rule group
+Rf15in|/Policy|../Holder|FieldFilled(/Policy/Holder) And NumberOfFilledGroups(/Policy/Claims For "x") > 0
+Rf15out|/Policy/Insured|../../Holder|FieldFilled(/Policy/Holder) And NumberOfFilledGroups(/Policy/Claims For "x") > 0
+Rf15beside|/Policy|../Insured/Remark|FieldFilled(/Policy/Insured/Remark) And NumberOfFilledGroups(/Policy/Claims For "x") > 0
+# L20: unattributed sources, read from a host outside the level they derive
+Rl20dk|/Policy/Insured|../Remark|FieldFilled(/Policy/Insured/Remark) And DateRangesOverlap(/Policy/Claims/R1, /Policy/Claims/R2)
+Rl20dp|/Policy/Insured|../Remark|FieldFilled(/Policy/Insured/Remark) And DateRangesOverlap(/Policy/Plain/PR1, /Policy/Plain/PR2)
+Rl20droot|/Policy|../Holder|FieldFilled(/Policy/Holder) And DateRangesOverlap(/Policy/Claims/R1, /Policy/Claims/R2)
+Rl20fk|/Policy/Insured|../Remark|FieldFilled(/Policy/Insured/Remark) And Sum(/Policy/Plain*/PAmount Having ([$/Policy/Claims/Amount] == [/Policy/Plain/PAmount])) > 0
+Rl20fp|/Policy/Insured|../Remark|FieldFilled(/Policy/Insured/Remark) And Sum(/Policy/Claims*/Amount Having ([$/Policy/Plain/PAmount] == [/Policy/Claims/Amount])) > 0
+# F16 follow-ups: what an error field inside a repeatable group binds for a rule in the root
+Rf16kown|/Policy|../Claims/Amount|FieldFilled(/Policy/Claims/Amount) And [/Policy/Claims/Amount] > 0
+Rf16ksib|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And [/Policy/Plain/PAmount] > 0
+Rf16kgf|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And GroupFilled(/Policy/Claims)
+Rf16kagf|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And AllGroupsFilled(/Policy/Claims, /Policy/Insured)
+Rf16ksum|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And Sum(/Policy/Claims/Amount, /Policy/Base) > 0
+Rf16kstar|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And Sum(/Policy/Claims*/Amount) > 0
+Rf16kins|/Policy/Insured|../../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And [/Policy/Claims/Amount] > 0
+Rf15inside|/Policy|../Claims/Sub/SubAmount|FieldFilled(/Policy/Claims/Sub/SubAmount) And NumberOfFilledGroups(/Policy/Claims For "x") > 0

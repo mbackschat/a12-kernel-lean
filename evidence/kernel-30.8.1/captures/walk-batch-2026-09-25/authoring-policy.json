@@ -1,0 +1,181 @@
+[
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy",
+  "name": "Holder",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy",
+  "name": "Base",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Policy",
+  "name": "Insured"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Insured",
+  "name": "Remark",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Policy",
+  "name": "Claims",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Claims",
+  "name": "ClaimRef",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Claims",
+  "name": "Amount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Claims",
+  "name": "R1",
+  "kind": "DATERANGE",
+  "dateRange": {
+   "format": "dd.MM.yyyy",
+   "separator": "-"
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Claims",
+  "name": "R2",
+  "kind": "DATERANGE",
+  "dateRange": {
+   "format": "dd.MM.yyyy",
+   "separator": "-"
+  }
+ },
+ {
+  "target": "group",
+  "op": "modify",
+  "groupPathInModel": "/Policy/Claims",
+  "index-field": "ClaimRef"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Policy/Claims",
+  "name": "Sub"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Claims/Sub",
+  "name": "SubAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Policy/Claims",
+  "name": "Seal2"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Claims/Seal2",
+  "name": "S2Note",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Policy",
+  "name": "Plain",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Plain",
+  "name": "PAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Plain",
+  "name": "PR1",
+  "kind": "DATERANGE",
+  "dateRange": {
+   "format": "dd.MM.yyyy",
+   "separator": "-"
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Plain",
+  "name": "PR2",
+  "kind": "DATERANGE",
+  "dateRange": {
+   "format": "dd.MM.yyyy",
+   "separator": "-"
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Policy/Plain",
+  "name": "PSub"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Plain/PSub",
+  "name": "PSubAmount",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Policy/Plain",
+  "name": "PSeal2"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Policy/Plain/PSeal2",
+  "name": "PS2Note",
+  "kind": "STRING"
+ }
+]
