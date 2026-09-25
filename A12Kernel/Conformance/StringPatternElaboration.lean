@@ -184,7 +184,7 @@ example :
         some .invalidEntity, some .tooManyParentGroups, some .fieldNameNotUnique, none] := by
   native_decide
 
-/- Raw, registered-custom, and repeatable fields remain explicit separate-context boundaries; an ordinary declared-pattern field is now admitted for prepared evaluation. A repeatable field read from the rule that iterates it is only this fragment's boundary, since the Kernel admits it there; read from the enclosing group it is the Kernel's missing wildcard ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+/- A raw field is refused by the field-value read's raw gate, registered-custom and repeatable fields remain explicit separate-context boundaries, and an ordinary declared-pattern field is admitted for prepared evaluation. A repeatable field read from the rule that iterates it is only this fragment's boundary, since the Kernel admits it there; read from the enclosing group it is the Kernel's missing wildcard ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
 example :
     let rawDecl := {
       stringDeclaration with

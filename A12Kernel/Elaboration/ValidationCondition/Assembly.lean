@@ -202,8 +202,10 @@ private def resolveIteratedOperand (model : FlatModel) (rowGroup : GroupPath)
     |>.mapError .fieldReference
 
 /-- Resolve a stored DateRange comparison side, a field-value read whose gates answer ahead of the
-    comparison's own ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
-    A constructed range's endpoints are entity arguments and keep `resolveIteratedOperand`. -/
+    comparison's own, measured on the stored-against-stored equality
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites))
+    and carried to a constructed range's stored partner by assumption. A constructed range's
+    endpoints are entity arguments and keep `resolveIteratedOperand`. -/
 private def resolveIteratedFieldValueRead (model : FlatModel) (rowGroup : GroupPath)
     (reference : SurfaceFieldPath) :
     Except ValidationConditionAssemblyError FlatFieldDecl :=

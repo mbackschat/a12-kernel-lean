@@ -12,9 +12,10 @@ import A12Kernel.Elaboration.ValidationCondition.Assembly
 The Kernel asks the field-value read's gates as its bracket closes, ahead of the class of the
 operator standing around it, on an arithmetic operand, on a computation's operand writing a String,
 an Enumeration, a Time or a Number, and on a category read
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)), and on a pattern comparison's field, a DateRange
-comparison's sides and a scalar membership's subject
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). The fixture mirrors those grids' model. A carrier that projects no Kernel class of its own is read
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)), and on a pattern comparison's field and a DateRange
+comparison's sides, while a scalar membership's group subject, an entity, waits for its members'
+reads ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+The fixture mirrors those grids' model. A carrier that projects no Kernel class of its own is read
 through its resolution failure's class, and a refusal of the carrier's own is kept apart from one
 that projects no class.
 -/
@@ -73,9 +74,12 @@ private def spanDecl : FlatFieldDecl :=
 
 private def span2Decl : FlatFieldDecl := { spanDecl with id := 13, name := "Span2" }
 
+private def priceDecl : FlatFieldDecl :=
+  { qtyDecl with id := 14, name := "Price", policy := { kind := .number { scale := 2, signed := false } } }
+
 private def model : FlatModel :=
   { fields := [refDecl, otherDecl, copyDecl, noteDecl, amountDecl, dueDecl, partialDecl, gradeDecl,
-      gradeCopyDecl, totalDecl, qtyDecl, labelDecl, spanDecl, span2Decl],
+      gradeCopyDecl, totalDecl, qtyDecl, labelDecl, spanDecl, span2Decl, priceDecl],
     repeatableGroups := [items] }
 
 private def grid (field : String) : SurfaceFieldPath := absolute ["Grid"] field
@@ -223,14 +227,20 @@ example :
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
    A group subject beside a raw member draws the raw class, beside a clean one the group class, and a
    category read of a group as the subject draws the group class ahead of a raw member. A subject
-   resolved ahead of the members reports the group as a name resolving to nothing on all three. -/
+   resolved ahead of the members reports the group as a name resolving to nothing on all three.
+   The last three rows lock an unmeasured account, stated at `checkScalarMemberReads`: a root subject
+   waits for the members and takes the group class, and an unstarred repeatable one answers first. -/
 example :
     [conditionView (.stringFieldValueMembership .included (grid "Ledger") [grid "Note"]),
       conditionView (.stringFieldValueMembership .included (grid "Ledger") [grid "Other"]),
       conditionView (.enumerationFieldValueMembership .included (.category (grid "Ledger") "Band")
-        [.direct (grid "Note")])] =
+        [.direct (grid "Note")]),
+      conditionView (.stringFieldValueMembership .included (absolute [] "Grid") [grid "Note"]),
+      conditionView (.stringFieldValueMembership .included (absolute [] "Grid") [grid "Other"]),
+      conditionView (.stringFieldValueMembership .included (grid "Items") [grid "Note"])] =
       [.read (some .rawTypeOperandInvalid), .read (some .noGroupsAllowed),
-        .read (some .noGroupsAllowed)] := by
+        .read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid),
+        .read (some .noGroupsAllowed), .read (some .noWildcard)] := by
   native_decide
 
 private def patternDiagnostic? (name : String) : Option (Option KernelStaticDiagnostic) :=
@@ -265,6 +275,20 @@ example :
         .read (some .rawTypeOperandInvalid), .admitted] := by
   native_decide
 
+private def constructionView (stored : String) : ReadView :=
+  viewOf (fun | ValidationConditionAssemblyError.fieldReference error => some error | _ => none)
+    (CheckedValidationCondition.fromIteratedDateRangeConstructionAgainstStored model ["Grid"]
+      (grid "Due") (grid "Due") (grid stored) .right .equal)
+
+/- **A constructed range's stored partner is read the same way**, on the assumption that the
+   stored-against-stored rows carry to it: no row measures this comparison. A group partner draws the
+   group class and a raw String the raw class, where resolving the partner without the gates reports
+   the group as a name resolving to nothing, while a DateRange passes the read and meets this
+   fixture's own construction refusal. -/
+example : ["Ledger", "Note", "Span"].map constructionView =
+    [.read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid), .carrier] := by
+  native_decide
+
 private def itemsQty : SurfaceFieldPath := absolute items.path "Qty"
 
 /-- A single-group filter rule over `Items` whose body compares `leftField`, read on the candidate
@@ -288,8 +312,8 @@ example :
         some (some .rawTypeOperandInvalid), some (some .noIterationForWildcard), none] := by
   native_decide
 
-/- **Every body read's gates answer ahead of any leaf's placement requirement**, since each bracket
-   closes as the body is read and the filter's own chain is asked around the whole body
+/- **Each leaf's reads and comparison class answer as the leaf closes, and the route's placement
+   requirement only after the whole body**, as the filter's own chain is asked around it
    ([`spec/07`](../../spec/07-repetition-and-iteration.md)). A first leaf reading a field outside the
    filtered group beside a group or a raw String draws that read's class, where asking each leaf's
    placement as it is read draws the iteration class. -/
@@ -304,6 +328,30 @@ example :
       (errorOf (elaborateSingleCorrelatedRule model ["Grid"] (twoLeaves partner))).map
         CorrelationElabError.diagnostic?) =
       [some (some .noGroupsAllowed), some (some .rawTypeOperandInvalid)] := by
+  native_decide
+
+/- **A later leaf's read does not answer ahead of an earlier leaf's comparison class.** An ordering of
+   a String against a Number, or an equality across scales, ahead of a leaf reading a group or a raw
+   String draws its own class, where asking every read of the body first draws the later read's.
+   A String leaf, which this route does not represent, still asks its read's gates ahead of an
+   earlier leaf's placement. -/
+example :
+    let inner (field : SurfaceFieldPath) : SurfaceHavingNumberRef := { origin := .inner, field }
+    let correlated : SurfaceCorrelatedHaving :=
+      .compareNumbers .equal (inner itemsQty) { origin := .outer, field := itemsQty }
+    let body (having : SurfaceCorrelatedHaving) : Option (Option KernelStaticDiagnostic) :=
+      (errorOf (elaborateSingleCorrelatedRule model ["Grid"] { filterRule itemsQty with having })).map
+        CorrelationElabError.diagnostic?
+    let stringLeaf (field : String) : SurfaceCorrelatedHaving :=
+      .compareStrings .equal { origin := .inner, field := grid field } "x"
+    [body (.and (.compareNumbers .less (inner (absolute items.path "Label")) (inner itemsQty))
+        (.and (.compareNumbers .equal (inner itemsQty) (inner (grid "Ledger"))) correlated)),
+      body (.and (.compareNumbers .equal (inner itemsQty) (inner (absolute items.path "Price")))
+        (.and (.compareNumbers .equal (inner itemsQty) (inner (grid "Note"))) correlated)),
+      body (.and (.compareNumbers .equal (inner (grid "Amount")) (inner itemsQty)) (stringLeaf "Note")),
+      body (.and (.compareNumbers .equal (inner (grid "Amount")) (inner itemsQty)) (stringLeaf "Ledger"))] =
+      [some (some .invalidTypeForComparison), some (some .invalidCompareDecimalPlaces),
+        some (some .rawTypeOperandInvalid), some (some .noGroupsAllowed)] := by
   native_decide
 
 end A12Kernel.Conformance.FieldValueReadCarriers

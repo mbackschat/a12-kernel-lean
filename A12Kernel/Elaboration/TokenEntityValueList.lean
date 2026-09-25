@@ -436,6 +436,11 @@ def assembleTokenEntityValueListSource
         throw .mixedFamily
   | _, _ => throw .mixedFamily
 
+/-- A shape refusal raised as one operand is read, rather than by a check over the whole list. -/
+private def FieldEntityShapeElabError.isOperandRead : FieldEntityShapeElabError → Bool
+  | .resolve _ | .starPath _ | .groupReference _ | .starredGroup _ => true
+  | _ => false
+
 /-- The repeat asked across a value list's two lists, as the shared shape asks it within one list. -/
 private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)) :
     Option FieldEntityShapeElabError :=
@@ -449,7 +454,10 @@ private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)
     family and exact-reference gates. The field list meets the base-type and kind-set gates and its
     value validation, and the value list the first field's base type. A repeat across the lists comes
     next, and the value list's value validation last
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)).
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)). Every operand of both
+    lists is read before those gates, so a name resolving to nothing in the value list answers ahead
+    of the field list's gates, on the account that the Kernel reads each entity as the text is parsed;
+    no row places a value-side reader class beside a field-list gate.
 
     Each side admits a sole field: the construct does not share the entity-list arity gate
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/
@@ -458,9 +466,15 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
     (authored : SurfaceTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
-  let fieldsShape ← elaborateFieldEntityShape model declaringGroup authored.fields .soleAllowed
-      (writtenGroup := writtenGroup)
-    |>.mapError (.fields ∘ .shape)
+  let fieldsShape? := elaborateFieldEntityShape model declaringGroup authored.fields .soleAllowed
+    (writtenGroup := writtenGroup)
+  let valuesShape? := elaborateFieldEntityShape model declaringGroup authored.values .soleAllowed
+    (writtenGroup := writtenGroup)
+  if let .error error := fieldsShape? then
+    if error.isOperandRead then throw (.fields (.shape error))
+  if let .error error := valuesShape? then
+    if error.isOperandRead then throw (.values (.shape error))
+  let fieldsShape ← fieldsShape? |>.mapError (.fields ∘ .shape)
   match fieldListBaseTypeMismatch? fieldsShape.operands with
   | some path => throw (.fieldsVaryingBaseType path)
   | none => pure ()
@@ -475,9 +489,7 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
   | .error (.fieldKindMismatch _ .number) | .ok _ => pure ()
   | .error (.rawStringValue path) => throw (.rawValue path)
   | .error error => throw (.fields error)
-  let valuesShape ← elaborateFieldEntityShape model declaringGroup authored.values .soleAllowed
-      (writtenGroup := writtenGroup)
-    |>.mapError (.values ∘ .shape)
+  let valuesShape ← valuesShape? |>.mapError (.values ∘ .shape)
   if let some first := (expandedDeclarations fieldsShape.operands).head? then
     match firstBaseTypeMismatch? first.policy.kind.surfaceKind
         (expandedDeclarations valuesShape.operands) with

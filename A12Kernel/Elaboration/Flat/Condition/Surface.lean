@@ -260,21 +260,25 @@ private def elaborateNumberFieldValueSides (model : FlatModel)
     asks the group gate alone.
 
     The subject is an entity, not a bracket. A category subject's chain answers as it is read, ahead
-    of the members, while a plain subject naming a group is refused only after them
-    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)),
-    classed as a presence operand's group is. A subject that resolves to nothing answers ahead of the
-    members, on the assumption that the reader resolves it as it is written. -/
+    of the members, while a plain subject naming a fixed group is refused `MVK_NO_GROUPS_ALLOWED` only
+    after them
+    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+    A root takes that group class after the members too, and an unstarred repeatable group the
+    reader's missing-star class ahead of them, on the account that the construct's field check runs
+    after the members while the reader's level check runs as the subject is read; no row measures
+    either. A subject that resolves to nothing answers ahead of the members on the same account. -/
 private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (subject : SurfaceTextFieldOperand) (members : List SurfaceTextFieldOperand) :
     Except ElabError Unit := do
   let subjectRead := match subject with
     | .category reference _ => model.resolveCategoryRead declaringGroup reference writtenGroup
-    | .direct reference => model.resolvePresenceOperand declaringGroup writtenGroup reference
+    | .direct reference => displaceGroupRead
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
-  let groupSubject ← match subjectRead with
-    | .error error@(.groupInFieldSlot _ _ _) => pure (some error)
-    | .error error => throw (.resolve error)
-    | .ok _ => pure none
+        (model.ruleGroupRead declaringGroup writtenGroup reference)
+  let groupSubject ← match subject, subjectRead with
+    | .direct _, .error error@(.groupInFieldValueRead _ none _) => pure (some error)
+    | _, .error error => throw (.resolve error)
+    | _, .ok _ => pure none
   for member in members do
     discard <| (model.resolveProjectedFieldValueRead declaringGroup member.reference member.projectionRef
       writtenGroup).mapError .resolve

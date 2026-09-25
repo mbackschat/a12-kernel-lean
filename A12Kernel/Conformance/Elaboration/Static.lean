@@ -735,8 +735,10 @@ example :
    shares the name or two do.** The reader takes no short-name fallback for a name its declaring group
    declares ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)),
    so the bracket read and the presence operand both draw the group class. Falling back binds the one
-   field and admits both reads, and displacing only a name resolving to nothing leaves two fields on
-   the ambiguity class. -/
+   String field, which the presence operand admits, and displacing only a name resolving to nothing
+   leaves two fields on the ambiguity class. A carrier that displaces no group miss, `Length`, draws
+   the miss's entity class, as it does for an absolute path naming a group; that last row locks an
+   unmeasured account which [SG9](../../../docs/gaps/paths-and-groups.md#gap-sg9) records. -/
 example :
     let unique : FlatModel := { readModel with
       fields := readModel.fields ++ [{ noteDecl with id := 30, groupPath := ["Reference"], name := "Ledger" }] }
@@ -745,8 +747,9 @@ example :
     [readViewIn unique (compare .greater (bare "Ledger") (.number 0)),
       readViewIn unique (.fieldFilled (bare "Ledger")),
       readViewIn ambiguous (compare .greater (bare "Ledger") (.number 0)),
-      readViewIn ambiguous (.fieldFilled (bare "Ledger"))] =
-      List.replicate 4 (.refused (some .noGroupsAllowed)) := by
+      readViewIn ambiguous (.fieldFilled (bare "Ledger")),
+      readViewIn unique (.lengthCompare .greater (bare "Ledger") { value := 2, authoredScale := 0 })] =
+      List.replicate 4 (.refused (some .noGroupsAllowed)) ++ [.refused (some .invalidEntity)] := by
   native_decide
 
 end A12Kernel.Conformance.Elaboration.Static

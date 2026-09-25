@@ -35,16 +35,29 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-25-10"></a>
+### `SPEC-2026-09-25-10` — a bare name naming a group of the declaring group takes no short-name fallback
+
+- `status`: pending.
+- `origin`: locally originated; it corrects this project's own resolver, which fell back to a model-wide field, and extends `08`'s first-segment rule to a bare name.
+- `clause`: [`08` bare-name resolution order](../spec/08-paths-and-references.md#2-bare-name-resolution-order-).
+- `delta`: from `/Grid`, which declares a fixed group `Ledger`, with short names allowed, `[Ledger] > 0` and `FieldFilled(Ledger)` draw `MVK_NO_GROUPS_ALLOWED` both when one Number field elsewhere is named `Ledger` and when two are. A fallback would admit the first model's rows, and an ambiguous one would draw `MVK_FIELDNAME_NOT_UNIQUE` in the second.
+- `basis`: [remaining-sites checkpoint](sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites), rows `b1` through `b4`, one `dmtool batch --observations` run at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer resolver whose short-name tier answers a bare name its declaring group declares as a group.
+- `acceptance`: confirm the class on any of the four rows, or supply a bare name that falls back past a local group.
+- `limit`: static admission only, rules declared at the root, and only a bracket read and `FieldFilled` as carriers.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-25-09"></a>
-### `SPEC-2026-09-25-09` — the field-value read's gates reach arithmetic and computation operands, category reads, pattern and DateRange comparisons and a membership's subject, and a bare name naming a local group takes no short-name fallback
+### `SPEC-2026-09-25-09` — the field-value read's gates reach arithmetic and computation operands, category reads and pattern and DateRange comparisons, and a membership's group subject waits for its members
 
 - `status`: pending.
 - `origin`: locally originated; it extends your `kf473`, your `kf359` and [`SPEC-2026-09-25-06`](#spec-2026-09-25-06) to the carriers they leave out.
-- `clause`: [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-) and [`08` short-name resolution](../spec/08-paths-and-references.md).
-- `delta`: `{[Ledger] + 1}`, `Abs([Ledger])` and `Min([Ledger], [Amount])` draw `MVK_NO_GROUPS_ALLOWED`, `{[Note] + 1}` `MVK_INVALID_RAW_TYPE` and `{[Partial] - 1}` `MVK_INVALID_DATE_TYPE`, where `{[Due] - 1}` draws `MVK_NO_NUMBER_FOR_CALC`. Computations copying `[Ledger]` into a String, an Enumeration or a Time draw `MVK_NO_GROUPS_ALLOWED`, a raw String into the last two `MVK_INVALID_RAW_TYPE`, `[Items]` `MVK_NO_WILDCARD` and `[Ledger -> Band]` `MVK_NO_GROUPS_ALLOWED`. `FieldValueIncludedInValueList(Other, [Ledger -> Band])` draws `MVK_NO_GROUPS_ALLOWED`.
-- `delta`: `[Ledger] PatternMatched "a"` draws `MVK_NO_GROUPS_ALLOWED`, over `Partial` `MVK_INVALID_DATE_TYPE` and over `Note` `MVK_INVALID_RAW_TYPE`. `[Span] == [Ledger]` over a DateRange draws `MVK_NO_GROUPS_ALLOWED` and `[Span] == [Note]` `MVK_INVALID_RAW_TYPE`. `FieldValueIncludedInValueList(Ledger, [Note])` draws `MVK_INVALID_RAW_TYPE`, a plain group subject waiting for its members, while `(Ledger -> Band, [Note])` draws `MVK_NO_GROUPS_ALLOWED`. From `/Grid`, `[Ledger] > 0` and `FieldFilled(Ledger)` draw `MVK_NO_GROUPS_ALLOWED` with one and with two fields named `Ledger` elsewhere and short names allowed.
+- `clause`: [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-) and [`06` the scalar member paragraph](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-).
+- `delta`: `{[Ledger] + 1}`, `Abs([Ledger])` and `Min([Ledger], [Amount])` draw `MVK_NO_GROUPS_ALLOWED`, `{[Note] + 1}` `MVK_INVALID_RAW_TYPE` and `{[Partial] - 1}` `MVK_INVALID_DATE_TYPE`, where `{[Due] - 1}` draws `MVK_NO_NUMBER_FOR_CALC`. Computations copying `[Ledger]` into a String, an Enumeration or a Time draw `MVK_NO_GROUPS_ALLOWED`, and a raw String into the last two `MVK_INVALID_RAW_TYPE`. A computation copying `[Items]` into a String or writing `[Items] + 1` into a Number draws `MVK_NO_WILDCARD`, and one copying `[Ledger -> Band]` into an Enumeration `MVK_NO_GROUPS_ALLOWED`. `FieldValueIncludedInValueList(Other, [Ledger -> Band])` draws `MVK_NO_GROUPS_ALLOWED`.
+- `delta`: `[Ledger] PatternMatched "a"` draws `MVK_NO_GROUPS_ALLOWED`, over `Partial` `MVK_INVALID_DATE_TYPE` and over `Note` `MVK_INVALID_RAW_TYPE`. `[Span] == [Ledger]` over a DateRange draws `MVK_NO_GROUPS_ALLOWED` and `[Span] == [Note]` `MVK_INVALID_RAW_TYPE`. `FieldValueIncludedInValueList(Ledger, [Note])` draws `MVK_INVALID_RAW_TYPE`, a plain group subject waiting for its members, while `(Ledger -> Band, [Note])` draws `MVK_NO_GROUPS_ALLOWED`.
 - `basis`: [carriers checkpoint](sources/static-admission-and-class-probes.md#src-field-value-read-carriers) and [remaining-sites checkpoint](sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites), two `dmtool batch --observations` runs at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
-- `surfaces`: any peer checker whose arithmetic operator, computation target, category reader, pattern or DateRange comparison or membership subject asks its own class ahead of the bracket's gates, or whose bare-name resolver falls back past a local group.
+- `surfaces`: any peer checker whose arithmetic operator, computation target, category reader, pattern or DateRange comparison or membership subject asks its own class ahead of the bracket's gates.
 - `acceptance`: confirm the class on any refused row above, or supply a contrary row.
 - `limit`: static admission only, rules and computations declared at the root. No category read of a raw String or a partially known Date, no rule declared in a repeatable group and no Time target reading a repeatable group is measured.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.

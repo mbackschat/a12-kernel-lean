@@ -495,4 +495,15 @@ example :
       | .error error => error.diagnostic?) = some .rawTypeOperandInvalid := by
   native_decide
 
+/- A Number field list is inside the kind set, so a Number repeated across the lists reaches the
+   cross-list repeat and draws the duplicate class. A value-side name resolving to nothing answers ahead
+   of the field list's value validation; that row locks the unmeasured account stated at
+   `elaborateTokenEntityValueListSource`, where asking the field list's gates first draws the raw
+   class. -/
+example :
+    [entityAdmissionIn validationModel [field "AVal"] [field "AVal"],
+      entityAdmissionIn validationModel [field "Memo"] [field "NoSuch"]] =
+      [.refused (some .duplicateParam1), .refused (some .invalidEntity)] := by
+  native_decide
+
 end A12Kernel.Conformance.ValueListQuantifierKindGate

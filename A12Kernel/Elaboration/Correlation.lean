@@ -272,8 +272,9 @@ private def FlatModel.havingGroupRead (model : FlatModel) (declaringGroup : Grou
     (reference : SurfaceFieldPath) : Unit → Option (GroupPath × Option UnboundOperandLevel) :=
   fun _ => (model.groupNamedBy? declaringGroup reference).map (·, none)
 
-/-- The single-group route's body read, which requires the field to sit directly in the filtered
-    group. Its bracket gates are asked by `checkHavingNumberReads` before any leaf is resolved. -/
+/-- The single-group route's body read with its placement requirement, that the field sit directly
+    in the filtered group. The read's gates and the comparison's own classes were already asked of
+    the whole body by `resolveHavingNumberRead`. -/
 private def FlatModel.resolveHavingNumberInGroup (model : FlatModel)
     (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
@@ -363,28 +364,35 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       pure (.or (← elaborateHavingCoreWith resolvers left)
         (← elaborateHavingCoreWith resolvers right))
 
-/-- The Number references of a filter body, in authored order. -/
-private def SurfaceCorrelatedHaving.numberReferences : SurfaceCorrelatedHaving → List SurfaceFieldPath
-  | .compareNumbers _ left right => [left.field, right.field]
-  | .and left right | .or left right => left.numberReferences ++ right.numberReferences
-  | .compareRepetitions _ _ _ | .compareStrings _ _ _ | .presence _ _ => []
+/-- A filter body's bracketed read on the single-group route, without the route's placement
+    requirement: the read's gates, then the Number kind the leaf needs. -/
+private def FlatModel.resolveHavingNumberRead (model : FlatModel) (declaringGroup : GroupPath)
+    (origin : HavingOrigin) (reference : SurfaceFieldPath) :
+    Except CorrelationElabError ResolvedNumberRef := do
+  let declaration ← (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
+    (model.havingGroupRead declaringGroup reference)).mapError .resolve
+  match declaration.toNumberField? with
+  | some field => pure { declaration, core := { origin, field } }
+  | none => throw (.fieldNotNumber declaration.path declaration.policy.kind.surfaceKind)
 
-/-- Ask every body Number read's field-value gates, in authored order, ahead of the single-group
-    route's per-leaf requirement that a field sit in the filtered group. Each bracket closes as the
-    body is read, while the filter's own chain is asked around the whole body
+/-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
+    body in authored order, so each leaf's reads and comparison class answer as it closes; the
+    second asks the route's placement requirement, as the star route asks its candidate environment
+    only after the whole body
     ([`spec/07`](../../spec/07-repetition-and-iteration.md),
-    [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)),
-    so a later leaf's refused read answers ahead of an earlier leaf's placement. -/
-private def FlatModel.checkHavingNumberReads (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceCorrelatedHaving) : Except CorrelationElabError Unit :=
-  authored.numberReferences.forM fun reference =>
-    discard <| (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
-      (model.havingGroupRead declaringGroup reference)).mapError .resolve
-
+    [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+    A String leaf, which this route does not represent, still asks its read's gates first. -/
 private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
-  model.checkHavingNumberReads declaringGroup authored
+  discard <| elaborateHavingCoreWith {
+    number := model.resolveHavingNumberRead declaringGroup
+    repetition := resolveHavingRepetitionInGroup declaringGroup group
+    string := fun _ reference => do
+      discard <| (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
+        (model.havingGroupRead declaringGroup reference)).mapError .resolve
+      throw .stringLeafOutsideStarRoute
+    presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let condition ← elaborateHavingCoreWith {
     number := model.resolveHavingNumberInGroup declaringGroup group
     repetition := resolveHavingRepetitionInGroup declaringGroup group

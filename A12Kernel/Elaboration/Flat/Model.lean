@@ -702,9 +702,11 @@ def FlatModel.resolveNonrepeatableDeclarationById
 
 /- Resolve a bare single-segment reference exactly as the kernel parser does: try the declaring
    group, then (when enabled) require one model-wide short-name match. A name the declaring group
-   declares as a group takes no fallback, so a field resolver reports it as a miss for a group-reading
-   site to class, however many fields elsewhere share the name
+   declares as a group takes no fallback, so every field resolver reports it as a miss, however many
+   fields elsewhere share the name
    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+   A site that displaces a group miss classes it as the group; any other carrier keeps the miss's
+   entity class, which no row measures on a bare name.
    There is deliberately no implicit ancestor walk; parent lookup requires `..`. -/
 private def FlatModel.resolveBareDeclaration (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
