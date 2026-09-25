@@ -1,0 +1,1 @@
+{"computedField": "/Grid/Items/Label", "alternatives": [{"operation": "FieldValueAsString(/Grid/Amount)"}], "messages": [{"locale": "en_US", "text": "m"}], "group": "/Grid"}

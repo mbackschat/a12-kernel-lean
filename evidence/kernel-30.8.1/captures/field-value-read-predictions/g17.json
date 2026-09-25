@@ -1,0 +1,1 @@
+{"computedField": "/Grid/Items/Qty", "alternatives": [{"operation": "Abs([/Grid/Note])"}], "messages": [{"locale": "en_US", "text": "m"}], "group": "/Grid"}
