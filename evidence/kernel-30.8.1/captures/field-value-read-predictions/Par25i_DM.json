@@ -1,0 +1,164 @@
+{
+  "header": {
+    "id": "Par25i_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Par25i_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Plan",
+          "name": "Plan",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Plan/Target",
+                "name": "Target",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Plan/Target/Key",
+                      "name": "Key",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Plan/Target/Result",
+                      "name": "Result",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "indexFieldName": "Key"
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Plan/Operand",
+                "name": "Operand",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Plan/Operand/Key",
+                      "name": "Key",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Plan/Operand/Input",
+                      "name": "Input",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Plan/Operand/Memo",
+                      "name": "Memo",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "lineBreaksPermitted": true,
+                            "noValueValidation": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Plan/Operand/Part",
+                      "name": "Part",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd",
+                            "datePrecision": "DAY_OPTIONAL"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Group",
+                      "id": "/Plan/Operand/Sub",
+                      "name": "Sub",
+                      "Group": {
+                        "repeatability": 1,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Plan/Operand/Sub/Total",
+                            "name": "Total",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "indexFieldName": "Key"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

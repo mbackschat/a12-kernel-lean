@@ -1,0 +1,880 @@
+[
+ {
+  "id": "s1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Items, [/Grid/Note])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Items, [/Grid/Other])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid, [/Grid/Other])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid, [/Grid/Note])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/NoSuch, [/Grid/Note])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Ledger, \"a\", \"b\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Other, \"a\", \"b\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Items, \"a\", \"b\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid, \"a\", \"b\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "s10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Note, \"a\", \"b\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Note In NoSuch)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(NoSuch In Note)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Ref In /Grid/Mix)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v5",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(/Grid/Mix In Ref)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v6",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Ref In /Grid/Ledger)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v7",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Grade -> Band In Note)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v8",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Note In Grade -> Band)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v9",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Grade -> Band In Other)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v10",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Other, Other In \"a\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v11",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Note, Other In \"a\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v12",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Amount, Other In \"a\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "v13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v13",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Other, Ref In \"a\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b5",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Length(Ledger) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b6",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Length(/Grid/Ledger) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b7",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(Ledger, \"a\", \"b\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b8",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Ledger, Other In \"a\")",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b9",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Length(/Grid/Note) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b10",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Length(/Grid/Other) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "k1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Note -> Band] == \"Hi\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "k2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Other -> Band] == \"Hi\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "k3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Partial -> Band] == \"Hi\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "k4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Due -> Band] == \"Hi\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "r1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r1",
+   "--field",
+   "/Grid/Items/Label",
+   "--condition",
+   "FieldFilled(/Grid/Items/Label) And [/Grid/Amount] == {[/Grid/Ledger] + 1}",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "r2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r2",
+   "--field",
+   "/Grid/Items/Label",
+   "--condition",
+   "FieldFilled(/Grid/Items/Label) And [/Grid/Amount] == {[/Grid/Note] + 1}",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "r3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r3",
+   "--field",
+   "/Grid/Items/Label",
+   "--condition",
+   "FieldFilled(/Grid/Items/Label) And [/Grid/Amount] == {[/Grid/Amount] + 1}",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "h1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Sum(Items*/Qty Having [Note] == \"a\") > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "h2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Sum(Items*/Qty Having [Items/Qty] > 0 And [Note] == \"a\") > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "h3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Sum(Items*/Qty Having [Partial] > [Due]) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "h4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Sum(Items*/Qty Having [Items/Qty] > [Amount]) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "h5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h5",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And Sum(Items*/Qty Having [Amount] > 0) > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "c1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e1.json",
+   "--dry-run",
+   "-m",
+   "Grid25i2_DM.json"
+  ]
+ },
+ {
+  "id": "e2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e2.json",
+   "--dry-run",
+   "-m",
+   "Grid25i2_DM.json"
+  ]
+ },
+ {
+  "id": "e3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e3.json",
+   "--dry-run",
+   "-m",
+   "Grid25i2_DM.json"
+  ]
+ },
+ {
+  "id": "e4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e4.json",
+   "--dry-run",
+   "-m",
+   "Grid25i2_DM.json"
+  ]
+ },
+ {
+  "id": "e5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e5.json",
+   "--dry-run",
+   "-m",
+   "Grid25i2_DM.json"
+  ]
+ },
+ {
+  "id": "e6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e6.json",
+   "--dry-run",
+   "-m",
+   "Grid25i2_DM.json"
+  ]
+ },
+ {
+  "id": "q1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "q1.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "q2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "q2.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "q3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "q3.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "q4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "q4.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "q5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "q5.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "q6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "q6.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ },
+ {
+  "id": "q7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "q7.json",
+   "--dry-run",
+   "-m",
+   "Par25i_DM.json"
+  ]
+ }
+]

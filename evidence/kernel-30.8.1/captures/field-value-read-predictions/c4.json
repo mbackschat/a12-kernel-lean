@@ -1,0 +1,1 @@
+{"computedField": "/Grid/Items/Qty", "alternatives": [{"operation": "[/Grid/Ledger] + 1"}], "messages": [{"locale": "en_US", "text": "m"}], "group": "/Grid"}
