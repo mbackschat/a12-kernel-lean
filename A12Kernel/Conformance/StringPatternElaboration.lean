@@ -134,8 +134,9 @@ example :
         some (.pattern .kernelRestriction) := by
   native_decide
 
-/- Pattern-source stages share one exact Kernel class, the measured wrong-left-kind
-class stays distinct, and unmeasured local refusals remain explicitly unmapped. -/
+/- Pattern-source stages share one exact Kernel class, the measured wrong-left-kind class stays
+distinct, and a raw field is the field-value read's raw refusal
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). -/
 example :
     diagnosticOf (elaborateStringPatternCondition compilePattern model ["Claim"]
       (condition)) = none ∧
@@ -160,7 +161,7 @@ example :
       stringValueMode := .raw
       stringPolicy := { lineBreaksPermitted := true } }
     diagnosticOf (elaborateStringPatternCondition compilePattern
-      { fields := [rawDecl] } ["Claim"] (condition)) = none := by
+      { fields := [rawDecl] } ["Claim"] (condition)) = some .rawTypeOperandInvalid := by
   native_decide
 
 /- The field operand's resolution owns its classes, as on every other carrier measured: a miss by the
@@ -202,7 +203,7 @@ example :
       repeatableGroups := [{ level := 10, path := ["Claim", "Items"] }] }
     errorOf (elaborateStringPatternCondition compilePattern
       { fields := [rawDecl] } ["Claim"] (condition)) =
-        some (.rawStringValue ["Claim", "Code"]) ∧
+        some (.fieldReference (.rawFieldValueRead ["Claim", "Code"])) ∧
     errorOf (elaborateStringPatternCondition compilePattern
       { fields := [customDecl] } ["Claim"] (condition)) =
         some (.preparedCustomFieldRequired ["Claim", "Code"]) ∧

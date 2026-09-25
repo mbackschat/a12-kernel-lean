@@ -700,15 +700,20 @@ def FlatModel.resolveNonrepeatableDeclarationById
     Except ResolveError FlatFieldDecl := do
   (← model.lookupUniqueId field).requireNonrepeatable
 
-/-- Resolve a bare single-segment reference exactly as the kernel parser does: try the
-    declaring group, then (when enabled) require one model-wide short-name match. There
-    is deliberately no implicit ancestor walk; parent lookup requires `..`. -/
+/- Resolve a bare single-segment reference exactly as the kernel parser does: try the declaring
+   group, then (when enabled) require one model-wide short-name match. A name the declaring group
+   declares as a group takes no fallback, so a field resolver reports it as a miss for a group-reading
+   site to class, however many fields elsewhere share the name
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+   There is deliberately no implicit ancestor walk; parent lookup requires `..`. -/
 private def FlatModel.resolveBareDeclaration (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
   match ← model.lookupPath? (declaringGroup ++ [reference.field]) with
   | some declaration => pure declaration
   | none =>
-      if model.fieldRefByShortNameAllowed then
+      if model.hasGroupPath (declaringGroup ++ [reference.field]) then
+        throw (.invalidEntity reference)
+      else if model.fieldRefByShortNameAllowed then
         match model.fields.filter (fun declaration => declaration.name == reference.field) with
         | [] => throw (.invalidEntity reference)
         | [declaration] => pure declaration

@@ -731,20 +731,22 @@ example :
         .refused (some .rawTypeOperandInvalid), .refused (some .rawTypeOperandInvalid)] := by
   native_decide
 
-/- **A bare name naming a group of the declaring group is a group read, even where two fields
-   elsewhere share the name.** The reader takes no short-name fallback for a name its declaring
-   group declares ([`spec/08`](../../../spec/08-paths-and-references.md#2-bare-name-resolution-order-)),
-   measured there on a longer path's first segment, so the bracket read and the presence operand
-   both draw the group class. Displacing only a name resolving to nothing leaves the bracket read on
+/- **A bare name naming a group of the declaring group is a group read, whether one field elsewhere
+   shares the name or two do.** The reader takes no short-name fallback for a name its declaring group
+   declares ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)),
+   so the bracket read and the presence operand both draw the group class. Falling back binds the one
+   field and admits both reads, and displacing only a name resolving to nothing leaves two fields on
    the ambiguity class. -/
 example :
-    let ambiguous : FlatModel := { readModel with
-      fields := readModel.fields ++
-        [{ noteDecl with id := 30, groupPath := ["Reference"], name := "Ledger" },
-          { noteDecl with id := 31, groupPath := ["Order", "Details"], name := "Ledger" }] }
-    [readViewIn ambiguous (compare .greater (bare "Ledger") (.number 0)),
+    let unique : FlatModel := { readModel with
+      fields := readModel.fields ++ [{ noteDecl with id := 30, groupPath := ["Reference"], name := "Ledger" }] }
+    let ambiguous : FlatModel := { unique with
+      fields := unique.fields ++ [{ noteDecl with id := 31, groupPath := ["Order", "Details"], name := "Ledger" }] }
+    [readViewIn unique (compare .greater (bare "Ledger") (.number 0)),
+      readViewIn unique (.fieldFilled (bare "Ledger")),
+      readViewIn ambiguous (compare .greater (bare "Ledger") (.number 0)),
       readViewIn ambiguous (.fieldFilled (bare "Ledger"))] =
-      [.refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed)] := by
+      List.replicate 4 (.refused (some .noGroupsAllowed)) := by
   native_decide
 
 end A12Kernel.Conformance.Elaboration.Static

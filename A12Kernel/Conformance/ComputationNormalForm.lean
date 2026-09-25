@@ -62,10 +62,11 @@ example :
   native_decide
 
 /- **The rounding mode is declared, not derived, and every alternative owes the gate.** The peer's
-   grid, row for row: `RoundUp` against a band-less alternative is the one refused cell, the same mode
-   against a band is admitted, `Exact` is admitted against either, and on two alternatives one
-   band-less alternative refuses the computation in either position
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages)). A mode derived from the
+   grid, row for row: `RoundUp` and `RoundDown` against a band-less alternative are the refused cells,
+   the same modes against a band are admitted, `Exact` is admitted against either, and on two
+   alternatives one band-less alternative refuses the computation in either position
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages),
+   [`RoundDown`](../../docs/SOURCES.md#inbound-2026-09-25g-rounding-mode)). A mode derived from the
    band would admit the second row. The peer's two-alternative rows condition each alternative, and
    the preconditions are dropped here because this check reads none. -/
 example :
@@ -73,13 +74,13 @@ example :
     let banded : DeclaredComputationAlternative := { plain with toleranceRange := some .one }
     let computation (mode : ComputationRoundingMode) (alternatives) : StructuredComputation :=
       { computedField := "/C/N", roundingMode := mode, alternatives }
-    [(ComputationRoundingMode.exact, [plain]), (.roundUp, [plain]), (.exact, [banded]),
+    [(ComputationRoundingMode.exact, [plain]), (.roundUp, [plain]), (.roundDown, [plain]), (.exact, [banded]),
       (.roundUp, [banded]), (.roundDown, [{ plain with toleranceRange := some .ten }]),
       (.roundUp, [banded, { plain with toleranceRange := some .two }]), (.roundUp, [banded, plain]),
       (.roundUp, [plain, banded]), (.exact, [banded, plain])].map
         (fun (mode, alternatives) => roundingModeRefusal (computation mode alternatives)) =
-      [none, some .wrongRoundingMode, none, none, none, none, some .wrongRoundingMode,
-        some .wrongRoundingMode, none] := by
+      [none, some .wrongRoundingMode, some .wrongRoundingMode, none, none, none, none,
+        some .wrongRoundingMode, some .wrongRoundingMode, none] := by
   native_decide
 
 /- The checker rejects, and rejects the right things: an ungated condition, a gate on the wrong

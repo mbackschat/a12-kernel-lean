@@ -150,6 +150,10 @@ inductive TokenEntityValueListElabError where
   | fieldsKindNotStringEnumNumber (path : List String)
   /-- A value-list declaration whose base type differs from the first field's. -/
   | valuesVaryingBaseType (path : List String)
+  /-- A repeat across the two lists: an exact repeat, or a group beside its own member. -/
+  | crossListRepeat (error : FieldEntityShapeElabError)
+  /-- A raw String refused by either list's value validation, where the stored form asks it. -/
+  | rawValue (path : List String)
   | mixedFamily
   | duplicateOperand (field : FieldId)
   deriving Repr, DecidableEq
@@ -357,6 +361,9 @@ def diagnostic? : TokenEntityStringLiteralValueListElabError →
   | .varyingBaseType _ => some .varyingTypesNotAllowed
   | .slotKindNotStringEnumNumber _ => some .onlyStringEnumNumberAllowed
   | .slotNumberAgainstStringLiterals _ => some .invalidTypesForComparison
+  -- The field list's value validation, measured on this form against a literal
+  -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)).
+  | .fields (.rawStringValue _) => some .rawTypeOperandInvalid
   -- Delegated rather than dropped: the field side's own projection now carries the three-way kind
   -- partition this carrier's message vocabulary draws.
   | .fields error => error.diagnostic?
@@ -380,12 +387,19 @@ namespace TokenEntityValueListElabError
     value side shares its base type, which no literal opposes. On the projected form it is a list
     certified before it could be gated. Either way it claims no class. A value-side one is always the base-type class, since the fields
     certified as String or Enumeration and the value is neither
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). The cross-side
-    duplicate is measured drawing `MVK_DUPLICATE_PARAM1`, and a mixed family is a base-type mismatch
-    reached only by assembling two checked sides directly. -/
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). The stored form
+    refuses either side's raw String by the construct's value validation
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)). The projected form
+    certifies the value side before the repeat across the lists that the Kernel asks first, so its
+    raw refusal claims no class. A cross-list repeat
+    takes the shape's duplicate and containment classes, the exact repeat measured drawing
+    `MVK_DUPLICATE_PARAM1` and a group beside its own member `MVK_DUPLICATE_PARAM2`, and a mixed
+    family is a base-type mismatch reached only by assembling two checked sides directly. -/
 def diagnostic? : TokenEntityValueListElabError → Option KernelStaticDiagnostic
   | .fields (.fieldKindMismatch _ _) => none
   | .values (.fieldKindMismatch _ _) => some .varyingTypesNotAllowed
+  | .rawValue _ => some .rawTypeOperandInvalid
+  | .crossListRepeat error => error.diagnostic?
   | .fields error | .values error => error.diagnostic?
   | .fieldsVaryingBaseType _ | .valuesVaryingBaseType _ | .mixedFamily =>
       some .varyingTypesNotAllowed
@@ -422,9 +436,20 @@ def assembleTokenEntityValueListSource
         throw .mixedFamily
   | _, _ => throw .mixedFamily
 
+/-- The repeat asked across a value list's two lists, as the shared shape asks it within one list. -/
+private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)) :
+    Option FieldEntityShapeElabError :=
+  match firstDuplicateResolvedEntityOperand? operands with
+  | some (.field (field, _)) => some (.duplicateOperand field)
+  | some (.fixedGroup path) => some (.duplicateGroupOperand path)
+  | none => (firstResolvedOperandOverlap? operands).map fun (ancestor, descendant) =>
+      .overlappingOperands ancestor descendant
+
 /-- Check both stored-projection entity-list sides in operator order, then apply the operation-wide
-    family and exact-reference gates. The field list meets the base-type and kind-set gates, and the
-    value list the first field's base type, each ahead of its token certification.
+    family and exact-reference gates. The field list meets the base-type and kind-set gates and its
+    value validation, and the value list the first field's base type. A repeat across the lists comes
+    next, and the value list's value validation last
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)).
 
     Each side admits a sole field: the construct does not share the entity-list arity gate
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/
@@ -448,6 +473,7 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
   -- a different certification refusal is raised ahead of the value side.
   match fields with
   | .error (.fieldKindMismatch _ .number) | .ok _ => pure ()
+  | .error (.rawStringValue path) => throw (.rawValue path)
   | .error error => throw (.fields error)
   let valuesShape ← elaborateFieldEntityShape model declaringGroup authored.values .soleAllowed
       (writtenGroup := writtenGroup)
@@ -457,8 +483,12 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
         (expandedDeclarations valuesShape.operands) with
     | some path => throw (.valuesVaryingBaseType path)
     | none => pure ()
+  if let some error := crossListRepeat? (fieldsShape.operands ++ valuesShape.operands) then
+    throw (.crossListRepeat error)
   let fields ← fields.mapError .fields
-  let values ← certifyTokenEntityShape model declaringGroup valuesShape |>.mapError .values
+  let values ← certifyTokenEntityShape model declaringGroup valuesShape |>.mapError fun
+    | .rawStringValue path => .rawValue path
+    | error => .values error
   assembleTokenEntityValueListSource authored.quantifier fields values
 
 /-- Check both projection-bearing token sides through the sole shared entity-list authoring boundary, then apply the operation-wide family and exact-reference gates.

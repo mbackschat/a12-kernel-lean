@@ -14,7 +14,7 @@ So the shape half of the checker tests properties the generator guarantees, and 
 
 *Model kind.* The unchecked-iteration arm is guarded by an H-model test, with the Kernel's own comment recording why: for an A12 model the iteration-check precondition is supplied implicitly.
 
-*A declared member beside the structure.* **The rounding-mode arm is live, and it judges a pair.** A computation declares its rounding mode once — `Exact`, which an absent mode means, `RoundUp` or `RoundDown` — while each alternative declares its own tolerance range. The check fires when an alternative's emitted comparison is `!=`, which is exactly when that alternative declares no range, while the mode is anything but exact; `RoundDown` counts as not exact on the peer's reading of the gate, which no row measures. So the class is owed per alternative: one alternative without a range refuses a rounding computation whatever the others declare, and the same mode against ranges only is admitted. Deriving the mode from the range instead makes the two conditions complementary and the class unreachable, which is the tempting wrong account ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages)).
+*A declared member beside the structure.* **The rounding-mode arm is live, and it judges a pair.** A computation declares its rounding mode once — `Exact`, which an absent mode means, `RoundUp` or `RoundDown` — while each alternative declares its own tolerance range. The check fires when an alternative's emitted comparison is `!=`, which is exactly when that alternative declares no range, while the mode is anything but exact; `RoundDown` counts as not exact, as measured ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-rounding-mode)). So the class is owed per alternative: one alternative without a range refuses a rounding computation whatever the others declare, and the same mode against ranges only is admitted. Deriving the mode from the range instead makes the two conditions complementary and the class unreachable, which is the tempting wrong account ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages)).
 
 **Evidence.** The admissions are measured: eighteen structured computations, including an `Or` common precondition, an `Or` alternative precondition, a tolerance range, a repeatable-row target, a starred aggregate operation, and a starred gate, are all accepted ([checkpoint](../../docs/SOURCES.md#src-computation-normal-form-generation)). The dotted and colon'd field names are measured refused at declaration. The remaining unreachability statements are mechanism claims resting on the joiner being the sole generator, discharged by reading it, and are marked as such in the coverage record.
 
@@ -202,9 +202,8 @@ def normalizedFormRefusal (computedField : String) (condition : NormalizedCondit
 
 /-- The rounding-mode check on one alternative: `!=` beside anything but exact rounding.
 
-`RoundUp` beside `!=` and the modes measured beside a range are measured cells. `RoundDown` beside
-`!=` is refused here on the peer's reading of the gate, which asks only whether the mode is exact;
-no row measures it. -/
+Each cell is measured: `RoundUp` and `RoundDown` beside `!=` are refused, and every mode beside a
+range is admitted ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-rounding-mode)). -/
 def roundingRefusal (spelling : ComparisonSpelling) (mode : ComputationRoundingMode) :
     Option CalculationRefusal :=
   match spelling, mode with

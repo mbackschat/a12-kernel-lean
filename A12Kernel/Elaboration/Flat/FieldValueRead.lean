@@ -85,11 +85,12 @@ def FlatModel.resolveProjectedFieldValueRead (model : FlatModel) (declaringGroup
   | .stored => model.resolveFieldValueRead declaringGroup reference writtenGroup
   | .category _ => model.resolveCategoryRead declaringGroup reference writtenGroup
 
-/-- A computation's nonrepeatable field-value read, which asks the gates on every target kind
+/-- A computation's nonrepeatable field-value read, whose gates are measured on a String, an
+    Enumeration, a Time and a Number target
     ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)).
     Its target's scope binds its reads, so a group read meets the walk from there before the group
-    class. The grid reads a fixed group only; a repeatable one is walked on the account the rule's
-    read measures, where an unstarred repeatable group draws the missing-star class first. -/
+    class: an unstarred repeatable group draws the missing-star class on a Number and a String target
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). -/
 def FlatModel.resolveComputationFieldValueRead (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl :=

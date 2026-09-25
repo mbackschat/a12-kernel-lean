@@ -201,13 +201,22 @@ private def resolveIteratedOperand (model : FlatModel) (rowGroup : GroupPath)
   (model.resolveFieldDeclarationUnchecked rowGroup reference)
     |>.mapError .fieldReference
 
+/-- Resolve a stored DateRange comparison side, a field-value read whose gates answer ahead of the
+    comparison's own ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+    A constructed range's endpoints are entity arguments and keep `resolveIteratedOperand`. -/
+private def resolveIteratedFieldValueRead (model : FlatModel) (rowGroup : GroupPath)
+    (reference : SurfaceFieldPath) :
+    Except ValidationConditionAssemblyError FlatFieldDecl :=
+  (checkFieldValueRead (model.resolveFieldDeclarationUnchecked rowGroup reference)
+    (model.ruleGroupRead rowGroup rowGroup reference)).mapError .fieldReference
+
 /-- One stored-versus-stored DateRange equality read at the rule's own row. -/
 def fromIteratedDateRangeEquality (model : FlatModel) (rowGroup : GroupPath)
     (comparison : EqualityOp) (left right : SurfaceFieldPath) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) := do
-  let leftDeclaration ← resolveIteratedOperand model rowGroup left
-  let rightDeclaration ← resolveIteratedOperand model rowGroup right
+  let leftDeclaration ← resolveIteratedFieldValueRead model rowGroup left
+  let rightDeclaration ← resolveIteratedFieldValueRead model rowGroup right
   fromIteratedDateRange model rowGroup fun scope =>
     elaborateIteratedStoredEquality model scope leftDeclaration.id
       rightDeclaration.id comparison
@@ -287,7 +296,7 @@ def fromIteratedDateRangeConstructionAgainstStored (model : FlatModel)
       (CheckedValidationCondition model) := do
   let startDeclaration ← resolveIteratedOperand model rowGroup start
   let finishDeclaration ← resolveIteratedOperand model rowGroup finish
-  let storedDeclaration ← resolveIteratedOperand model rowGroup stored
+  let storedDeclaration ← resolveIteratedFieldValueRead model rowGroup stored
   fromIteratedDateRange model rowGroup fun scope =>
     elaborateIteratedConstructionStoredComparison model scope
       startDeclaration.id finishDeclaration.id storedDeclaration.id position

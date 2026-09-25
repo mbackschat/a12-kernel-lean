@@ -400,16 +400,20 @@ example :
       List.replicate 8 (.refused (some .varyingTypesNotAllowed)) := by
   native_decide
 
-private def entityAdmission (fields : List String) (values : List String) : Admission :=
+private def entityAdmissionIn (model : FlatModel) (fields values : List SurfaceFieldEntityOperand) :
+    Admission :=
   match fields, values with
   | fieldFirst :: fieldRest, valueFirst :: valueRest =>
-      match elaborateTokenEntityValueListSource probeModel ["Probe"]
+      match elaborateTokenEntityValueListSource model ["Probe"]
           { quantifier := .atLeastOne
-            fields := { first := field fieldFirst, rest := fieldRest.map field }
-            values := { first := field valueFirst, rest := valueRest.map field } } with
+            fields := { first := fieldFirst, rest := fieldRest }
+            values := { first := valueFirst, rest := valueRest } } with
       | .ok _ => .admitted
       | .error error => .refused error.diagnostic?
   | _, _ => .refused none
+
+private def entityAdmission (fields values : List String) : Admission :=
+  entityAdmissionIn probeModel (fields.map field) (values.map field)
 
 /- **The value list is matched against the first field's base type.** A String value list is
    admitted opposite a String field. A Number or an Enumeration value draws the base-type class, so
@@ -454,6 +458,41 @@ example :
           values := ["x"] } with
       | .ok _ => none
       | .error error => error.diagnostic?) = some .duplicateParam1 := by
+  native_decide
+
+/-- The probe model plus a String waiving value validation and a fixed group holding one String. -/
+private def validationModel : FlatModel :=
+  { probeModel with
+    fields := probeModel.fields ++ [
+      { id := 24, groupPath := ["Probe"], name := "Memo", policy := { kind := .string },
+        stringValueMode := .raw, stringPolicy := { lineBreaksPermitted := true } },
+      { id := 25, groupPath := ["Probe", "Recipient"], name := "RecipientName",
+        policy := { kind := .string } }] }
+
+/- **Value validation is the value-list construct's fourth gate, and a repeat across the two lists
+   comes between its two askings** ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)).
+   The field list's value validation follows its kind gate, ahead of a value list's own repeat or
+   base type; the cross-list repeat follows both lists' type gates; the value list's value validation
+   comes last. So a raw String repeated across the lists, one opposite a Number, one among the values
+   and one against a literal draw the raw class, a value list's own repeat draws the duplicate class
+   ahead of its base type, a cross-list repeat beside a raw value draws the duplicate class, and a
+   group opposite its own field draws the containment class. -/
+example :
+    let group : SurfaceFieldEntityOperand := .group (.path { base := .absolute, groups := ["Probe", "Recipient"] })
+    let recipientName : SurfaceFieldEntityOperand :=
+      .field { base := .absolute, groups := ["Probe", "Recipient"], field := "RecipientName" }
+    let admission (fields values : List String) :=
+      entityAdmissionIn validationModel (fields.map field) (values.map field)
+    [admission ["Memo"] ["Memo"], admission ["Memo"] ["AVal"], admission ["Email"] ["Memo"],
+      admission ["Email"] ["Email", "Memo"], admission ["Email"] ["AVal", "AVal"],
+      entityAdmissionIn validationModel [group] [recipientName]] =
+      [.refused (some .rawTypeOperandInvalid), .refused (some .rawTypeOperandInvalid),
+        .refused (some .rawTypeOperandInvalid), .refused (some .duplicateParam1),
+        .refused (some .duplicateParam1), .refused (some .duplicateParam2)] ∧
+    (match elaborateTokenEntityStringLiteralValueListSource validationModel ["Probe"]
+        { quantifier := .atLeastOne, fields := { first := field "Memo", rest := [] }, values := ["x"] } with
+      | .ok _ => none
+      | .error error => error.diagnostic?) = some .rawTypeOperandInvalid := by
   native_decide
 
 end A12Kernel.Conformance.ValueListQuantifierKindGate

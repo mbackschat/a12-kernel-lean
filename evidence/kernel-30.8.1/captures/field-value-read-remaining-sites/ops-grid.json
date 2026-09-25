@@ -1,0 +1,273 @@
+[
+ {
+  "id": "p1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Ledger] PatternMatched \"a\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "p2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Partial] PatternMatched \"a\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "p3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Note] PatternMatched \"a\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "p4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Due] PatternMatched \"a\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "p5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p5",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Other] PatternMatched \"a\"",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Ledger] == [/Grid/Span]",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Span] == [/Grid/Ledger]",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Span] == [/Grid/Note]",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "d4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [/Grid/Span] == [/Grid/Span2]",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "f1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Ledger, [/Grid/Note])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "f2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Ledger, [/Grid/Other])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "f3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldValueIncludedInValueList(/Grid/Ledger -> Band, [/Grid/Note])",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b1",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [Ledger] > 0",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b2",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldFilled(Ledger)",
+   "--message",
+   "en_US=message"
+  ]
+ },
+ {
+  "id": "b3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b3",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And [Ledger] > 0",
+   "--message",
+   "en_US=message",
+   "-m",
+   "Grid25h2_DM.json"
+  ]
+ },
+ {
+  "id": "b4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b4",
+   "--field",
+   "/Grid/Ref",
+   "--condition",
+   "FieldFilled(Ref) And FieldFilled(Ledger)",
+   "--message",
+   "en_US=message",
+   "-m",
+   "Grid25h2_DM.json"
+  ]
+ },
+ {
+  "id": "m13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "m13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "m14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "m14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "m15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "m15.json",
+   "--dry-run"
+  ]
+ }
+]

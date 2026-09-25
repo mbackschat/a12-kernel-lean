@@ -298,7 +298,6 @@ inductive StringPatternConditionElabError where
   | model (error : ResolveError)
   | fieldReference (error : ResolveError)
   | fieldKind (path : List String) (kind : SurfaceScalarKind)
-  | rawStringValue (path : List String)
   | preparedCustomFieldRequired (path : List String)
   | pattern (error : PatternAdmissionError)
   | incoherentCore
@@ -330,12 +329,11 @@ def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnos
   | .pattern .javaSyntax
   | .pattern .kernelRestriction => some .invalidPattern
   | .fieldReference error => error.diagnostic?
-  -- Named rather than wildcarded, so a new refusal must be classified instead of absorbed. The two
-  -- String-value forms are this theory's own reading limits — a raw declaration and a custom one
-  -- needing prepared checking both carry the admitted String kind and clear the gate above — while
-  -- the model form and `incoherentCore` are routing rather than rule refusals.
-  | .model _ | .rawStringValue _
-  | .preparedCustomFieldRequired _ | .incoherentCore => none
+  -- Named rather than wildcarded, so a new refusal must be classified instead of absorbed. A custom
+  -- declaration needing prepared checking is this theory's own reading limit, since it carries the
+  -- admitted String kind and clears the gate above, while the model form and `incoherentCore` are
+  -- routing rather than rule refusals.
+  | .model _ | .preparedCustomFieldRequired _ | .incoherentCore => none
 
 end StringPatternConditionElabError
 
@@ -372,13 +370,13 @@ def elaborateStringPatternCondition (compilePattern : StringPatternCompiler)
   match hModel : model.validate with
   | .error error => .error (.model error)
   | .ok () => do
+      -- The pattern's field is a field-value read, whose gates answer ahead of the kind gate below
+      -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked rowGroup surface.field)
+        (model.resolveFieldValueRead rowGroup surface.field)
           |>.mapError .fieldReference
       if declaration.customType.isSome then
         throw (.preparedCustomFieldRequired declaration.path)
-      if declaration.isRawString then
-        throw (.rawStringValue declaration.path)
       let field ←
         match declaration.policy.kind with
         | .string => pure { id := declaration.id }

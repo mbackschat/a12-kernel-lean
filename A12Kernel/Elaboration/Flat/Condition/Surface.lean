@@ -256,15 +256,30 @@ private def elaborateNumberFieldValueSides (model : FlatModel)
 /-- A scalar membership's field-valued members are field-value reads, whose gates the Kernel asks as
     each bracket closes, during the parse and so ahead of the subject's kind gate and the member
     list's duplicate and base-type gates
-    ([inbound](../../../../docs/SOURCES.md#inbound-2026-09-25f-field-value-read)). The subject is
-    resolved first, on the assumption that the reader resolves it as it is written, before the
-    members' brackets close. A category member asks the group gate alone. -/
+    ([inbound](../../../../docs/SOURCES.md#inbound-2026-09-25f-field-value-read)). A category member
+    asks the group gate alone.
+
+    The subject is an entity, not a bracket. A category subject's chain answers as it is read, ahead
+    of the members, while a plain subject naming a group is refused only after them
+    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)),
+    classed as a presence operand's group is. A subject that resolves to nothing answers ahead of the
+    members, on the assumption that the reader resolves it as it is written. -/
 private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
-    (subject : SurfaceFieldPath) (members : List SurfaceTextFieldOperand) : Except ElabError Unit := do
-  discard <| (model.resolveNonrepeatableFieldUnchecked declaringGroup subject writtenGroup).mapError .resolve
+    (subject : SurfaceTextFieldOperand) (members : List SurfaceTextFieldOperand) :
+    Except ElabError Unit := do
+  let subjectRead := match subject with
+    | .category reference _ => model.resolveCategoryRead declaringGroup reference writtenGroup
+    | .direct reference => model.resolvePresenceOperand declaringGroup writtenGroup reference
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
+  let groupSubject ← match subjectRead with
+    | .error error@(.groupInFieldSlot _ _ _) => pure (some error)
+    | .error error => throw (.resolve error)
+    | .ok _ => pure none
   for member in members do
     discard <| (model.resolveProjectedFieldValueRead declaringGroup member.reference member.projectionRef
       writtenGroup).mapError .resolve
+  if let some error := groupSubject then
+    throw (.resolve error)
 
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) : SurfaceTextFieldOperand →
@@ -321,7 +336,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       let operand ← elaborateStringLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [operand] (.literals values))
   | .stringFieldValueMembership op surface valueSurfaces => do
-      checkScalarMemberReads model declaringGroup writtenGroup surface (valueSurfaces.map .direct)
+      checkScalarMemberReads model declaringGroup writtenGroup (.direct surface) (valueSurfaces.map .direct)
       let (fields, values) ←
         elaborateStringFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier fields (.fields values))
@@ -330,7 +345,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         elaborateNumberLiteralMembership model declaringGroup writtenGroup surface values
       pure (.numberValueList op.quantifier [operand] (.literals values))
   | .numberFieldValueMembership op surface valueSurfaces => do
-      checkScalarMemberReads model declaringGroup writtenGroup surface (valueSurfaces.map .direct)
+      checkScalarMemberReads model declaringGroup writtenGroup (.direct surface) (valueSurfaces.map .direct)
       let (fields, values) ←
         elaborateNumberFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.numberValueList op.quantifier fields (.fields values))
@@ -343,7 +358,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         elaborateEnumerationLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values))
   | .enumerationFieldValueMembership op surface valueSurfaces => do
-      checkScalarMemberReads model declaringGroup writtenGroup surface.reference valueSurfaces
+      checkScalarMemberReads model declaringGroup writtenGroup surface valueSurfaces
       let (fields, values) ←
         elaborateEnumerationFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier (fields.map .enumeration)

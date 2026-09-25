@@ -272,15 +272,12 @@ private def FlatModel.havingGroupRead (model : FlatModel) (declaringGroup : Grou
     (reference : SurfaceFieldPath) : Unit → Option (GroupPath × Option UnboundOperandLevel) :=
   fun _ => (model.groupNamedBy? declaringGroup reference).map (·, none)
 
-/-- The single-group route's body read. It asks the field-value read's gates as the star route's
-    body does, ahead of this route's requirement that the field sit directly in the filtered group,
-    whose iteration class the star route likewise asks only after its body's reads. -/
+/-- The single-group route's body read, which requires the field to sit directly in the filtered
+    group. Its bracket gates are asked by `checkHavingNumberReads` before any leaf is resolved. -/
 private def FlatModel.resolveHavingNumberInGroup (model : FlatModel)
     (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError ResolvedNumberRef := do
-  discard <| (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
-    (model.havingGroupRead declaringGroup reference)).mapError .resolve
   let (declaration, field) ← model.resolveNumberInGroup declaringGroup group reference
     |>.mapError (.ofSingleGroup origin)
   pure { declaration, core := { origin, field } }
@@ -366,9 +363,28 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       pure (.or (← elaborateHavingCoreWith resolvers left)
         (← elaborateHavingCoreWith resolvers right))
 
+/-- The Number references of a filter body, in authored order. -/
+private def SurfaceCorrelatedHaving.numberReferences : SurfaceCorrelatedHaving → List SurfaceFieldPath
+  | .compareNumbers _ left right => [left.field, right.field]
+  | .and left right | .or left right => left.numberReferences ++ right.numberReferences
+  | .compareRepetitions _ _ _ | .compareStrings _ _ _ | .presence _ _ => []
+
+/-- Ask every body Number read's field-value gates, in authored order, ahead of the single-group
+    route's per-leaf requirement that a field sit in the filtered group. Each bracket closes as the
+    body is read, while the filter's own chain is asked around the whole body
+    ([`spec/07`](../../spec/07-repetition-and-iteration.md),
+    [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)),
+    so a later leaf's refused read answers ahead of an earlier leaf's placement. -/
+private def FlatModel.checkHavingNumberReads (model : FlatModel) (declaringGroup : GroupPath)
+    (authored : SurfaceCorrelatedHaving) : Except CorrelationElabError Unit :=
+  authored.numberReferences.forM fun reference =>
+    discard <| (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
+      (model.havingGroupRead declaringGroup reference)).mapError .resolve
+
 private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
+  model.checkHavingNumberReads declaringGroup authored
   let condition ← elaborateHavingCoreWith {
     number := model.resolveHavingNumberInGroup declaringGroup group
     repetition := resolveHavingRepetitionInGroup declaringGroup group
@@ -394,10 +410,11 @@ private def requireOuterFieldAvailable (origin : HavingOrigin) (outerLevels : Li
     pure ()
 
 /-- A filter body's field-value read, with the gates its bracket asks as it closes. A path naming a
-    group draws the group class, measured on the level the filter iterates and on a fixed group
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
-    A group the filter does not iterate is read the same way on that account, and the value gates on
-    the same production's account; no row reads either in a body. A marked reference's captured
+    group draws the group class, measured on the level the filter iterates, on a fixed group
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid))
+    and on a repeatable group the filter does not iterate
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-field-value-read)). The value gates are asked
+    on the same production's account; no row reads a raw String or a partial Date in a body. A marked reference's captured
     environment is asked before the value gates and the leaf's kind gate on the assumption that it
     is the reader's class, as an unstarred repeatable level is; no row pairs it with either. -/
 private def FlatModel.resolveHavingFieldValueRead (model : FlatModel) (declaringGroup : GroupPath)

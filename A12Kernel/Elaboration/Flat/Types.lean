@@ -628,11 +628,9 @@ def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | _ => none
 
 /-- The misses a field resolver reports for a path naming a group, which a group-reading site
-    displaces into its group class: a name resolving to nothing, and an ambiguous short name, which a
-    bare name meets when its declaring group declares only a group by that name
-    ([`spec/08`](../../../spec/08-paths-and-references.md#2-bare-name-resolution-order-)). -/
+    displaces into its group class. -/
 def ResolveError.isGroupDisplaceableMiss : ResolveError → Bool
-  | .invalidEntity _ | .invalidReference _ | .shortNameNotUnique _ => true
+  | .invalidEntity _ | .invalidReference _ => true
   | _ => false
 
 inductive AuthoredFieldPathError where

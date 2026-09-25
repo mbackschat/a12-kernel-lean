@@ -565,11 +565,13 @@ example :
   native_decide
 
 /- **A body's field-value read of a group draws the group class**, measured on the level the filter
-   iterates and on a fixed group
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
-   A field resolver reports the group as a name resolving to nothing, and the reader's missing-star
-   class that the same read draws outside a filter would name the level. A group gate asking only
-   repeatable groups leaves the fixed one to the field miss. -/
+   iterates, on a fixed group
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid))
+   and on a repeatable group the filter does not iterate
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-field-value-read)). A field resolver reports
+   the group as a name resolving to nothing, and the reader's missing-star class that the same read
+   draws outside a filter would name the level. A group gate asking only repeatable groups leaves the
+   fixed one to the field miss. -/
 example :
     let ledgerTotal : FlatFieldDecl :=
       { id := 21, groupPath := ["Shop", "Ledger"], name := "Total"
@@ -579,6 +581,8 @@ example :
         (surfaceNumber .inner amount.groupPath "Amount")) = some .noGroupsAllowed ∧
       bodyDiagnostic? (.compareNumbers .equal (surfaceNumber .inner amount.groupPath "Amount")
         (surfaceNumber .inner ["Shop", "Sections"] "Items")) = some .noGroupsAllowed ∧
+      bodyDiagnostic? (.compareNumbers .less (surfaceNumber .inner ["Shop"] "Other")
+        (surfaceNumber .inner amount.groupPath "Amount")) = some .noGroupsAllowed ∧
       (match elaborateStarNumberHavingSource withLedger amount.groupPath
           (writtenGroup := amount.groupPath) (source)
           (.compareNumbers .less (surfaceNumber .inner ["Shop"] "Ledger")
