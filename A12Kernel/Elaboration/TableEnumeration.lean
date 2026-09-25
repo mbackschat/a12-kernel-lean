@@ -8,7 +8,7 @@ A **table enumeration** is an enumeration whose values live in an external data 
 
 That single constant decides the whole family, so the classes below split into one a consumer will meet and four it will not:
 
-1. **The operand must be a field, carry no wildcard, and be a table enumeration**, asked in that order. The first two answer in the shared operand classes rather than in this family's: a non-repeating group draws `MVK_NO_GROUPS_ALLOWED` and a starred selector `MVK_NO_WILDCARDS_ALLOWED`. A field clearing them meets the third arm, measured on an Enumeration, a String and a Number field. All three arms are measured.
+1. **The operand must be a field, carry no wildcard, and be a table enumeration.** The first two answer in the shared operand classes rather than in this family's, each ahead of the third: a non-repeating group draws `MVK_NO_GROUPS_ALLOWED` and a starred selector `MVK_NO_WILDCARDS_ALLOWED`. A field clearing them meets the third arm, measured on an Enumeration, a String and a Number field. All three arms are measured, each against the table check only; no starred group places the first two against each other, and this module asks the field arm first.
 2. **The parameter count must equal the declared dependent-column count.** Unreachable behind arm 1; and the declared count is itself always zero here.
 3. **Each parameter must be an enumeration.** Unreachable behind arm 1.
 4. **Each parameter's value must appear in its dependent column** — one class for a string literal, another for an enumeration whose value set is not contained in the column's. Unreachable behind arm 1, and additionally behind a second constant: the check runs only when the declaration carries *table data*, which no A12 declaration does either.

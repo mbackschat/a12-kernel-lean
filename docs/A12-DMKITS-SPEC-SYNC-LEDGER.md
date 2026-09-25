@@ -35,10 +35,49 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-<a id="spec-2026-09-25-05"></a>
-### `SPEC-2026-09-25-05` — the value-list quantifier's homogeneity gate keeps the two token families and the two boolean kinds apart, in either order and on either side
+<a id="spec-2026-09-25-08"></a>
+### `SPEC-2026-09-25-08` — a reference repeated across a value-list quantifier's two lists is asked after its base-type and kind gates, contradicting `kf380`'s pre-emption
 
 - `status`: pending.
+- `origin`: locally originated from a cold review's question about this project's gate order; it contradicts the cross-list half of your `kf380`, whose within-list half it confirms.
+- `clause`: [`06` the field-valued value-list bullet](../spec/06-strings-and-enumerations.md).
+- `delta`: over a String `Ref`, a Number `Amount` and a Date `Due`, `AtLeastOneFieldValueIncludedInValueList(Ref, Amount In Ref)` and `(Ref In Ref, Amount)` draw `MVK_VARYING_TYPES_NOT_ALLOWED` and `(Due In Due)` draws `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED`, where a repeat pre-empting the type gates draws `MVK_DUPLICATE_PARAM1`. `(Ref, Ref, Amount In "x")` draws `MVK_DUPLICATE_PARAM1`.
+- `basis`: [repeat-order checkpoint](sources/static-admission-and-class-probes.md#src-value-list-cross-list-repeat-order), one `dmtool batch --observations` run at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: `kf380`'s pre-emption sentence and any peer checker that asks the duplicate walk over both lists first.
+- `acceptance`: confirm the class on any refused row above, or supply a row where a cross-list repeat answers ahead of a type gate.
+- `limit`: static admission only, one model, `AtLeastOne…` only.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+<a id="spec-2026-09-25-07"></a>
+### `SPEC-2026-09-25-07` — an ordering's date-kind class reads the pair, and only its constant gate is directional
+
+- `status`: pending.
+- `origin`: locally originated; it corrects this project's own [`05`](../spec/05-dates-and-time.md) clause, which read the class off the left operand.
+- `clause`: [`05` the comparison entry gates](../spec/05-dates-and-time.md).
+- `delta`: `1 < [Due]`, `[Amount] < [Due]`, `[Due] < [Amount]` and `[Due] < 1` over a Date `Due` and a Number `Amount` each draw `MVK_INVALID_COMPARE_TO_DATE`.
+- `basis`: [ordering checkpoint](sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair), one `dmtool batch --observations` run at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer checker or record that reads the date-kind class off the left operand alone.
+- `acceptance`: confirm the class on the two rows with the Date on the right, or supply a contrary row.
+- `limit`: static admission only, one model, `<` only, one Date format and a Number partner only.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+<a id="spec-2026-09-25-06"></a>
+### `SPEC-2026-09-25-06` — the field-value read's gates reach a root group, a filter body's iterated level, a partially known value-list member, a copied computation operand and a `Today` comparison
+
+- `status`: pending.
+- `origin`: locally originated; it extends the rows of your `-2026-09-25f` letter's §2 ([inbound](SOURCES.md#inbound-2026-09-25f-field-value-read)) to carriers that letter left out.
+- `clause`: [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-) and [`06` the scalar member paragraph](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-).
+- `delta`: `[/Grid] > 0` over the root, `[Ledger] > 0`, and in a filter's body `Having [Items] > 0` over the iterated level and `Having [Ledger] > 0` draw `MVK_NO_GROUPS_ALLOWED`. `[Partial] < Today` and `FieldValueIncludedInValueList(Other, [Partial])` over a `DAY_OPTIONAL` Date draw `MVK_INVALID_DATE_TYPE`. Computations copying that Date, a raw String and a fixed group draw `MVK_INVALID_DATE_TYPE`, `MVK_INVALID_RAW_TYPE` and `MVK_NO_GROUPS_ALLOWED`.
+- `basis`: [field-value read checkpoint](sources/static-admission-and-class-probes.md#src-field-value-read-grid), two `dmtool batch --observations` runs at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer checker whose field-value read gates stop at the carriers your §2 names.
+- `acceptance`: confirm the class on any row above, or supply a contrary row.
+- `limit`: static admission only, one model. No raw or partial read in a filter's body is measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+<a id="spec-2026-09-25-05"></a>
+### `SPEC-2026-09-25-05` — the value-list quantifier's homogeneity gate keeps the two token families and the two boolean kinds apart, each measured in both orders
+
+- `status`: accepted.
 - `origin`: locally originated; it extends the base-type rows of your `-2026-09-25e` letter's §3 ([inbound](SOURCES.md#inbound-2026-09-25e-value-list-base-type)) to the pairs that letter left unmeasured.
 - `clause`: [`06` the multi-field value-list bullet](../spec/06-strings-and-enumerations.md).
 - `delta`: `AtLeastOneFieldValueIncludedInValueList` draws `MVK_VARYING_TYPES_NOT_ALLOWED` against a literal on an Enumeration beside a String and a Boolean beside a Confirm, each in both orders, and on a Number beside a Date or before a String, a date range beside a String and a Boolean beside a Date. Against a field value list it draws the same on a String opposite an Enumeration and the reverse, an Enumeration opposite a Number, and a Number opposite a String.
@@ -47,6 +86,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: confirm the class on any pair above, or supply a contrary row.
 - `limit`: static admission only, one model, `AtLeastOne…` only, and no group operand.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `ef1481389c4abdd3cff2409e563007e6db7a4c70`, the peer's `-2026-09-25f` letter, read 2026-09-25.
+- `disposition`: **accepted at a12-dmkits `ef1481389c4abdd3cff2409e563007e6db7a4c70`.** `TemporalAndCustomBaseTypeLawsTest` measures all eight literal pairs and all four field pairs of the delta, with two admitted String controls, and no row contradicts it ([inbound](SOURCES.md#inbound-2026-09-25f-value-list-base-type)).
 
 <a id="spec-2026-09-25-04"></a>
 ### `SPEC-2026-09-25-04` — two lines of the accepted `SPEC-2026-09-24-05` stated more than their rows: the field-slot order delta and the `kf371` limit

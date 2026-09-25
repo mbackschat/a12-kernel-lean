@@ -26,12 +26,22 @@ private def productHaving : SurfaceCorrelatedHaving :=
     { origin := .inner, field := absolute ["Form", "Rows"] "FilterLeft" }
     { origin := .inner, field := absolute ["Form", "Rows"] "FilterRight" }
 
+/-- A String beside `Details/Amount`, so a two-star pair can carry a non-Number operand. -/
+private def detailLabel : FlatFieldDecl :=
+  { id := 13, groupPath := ["Form", "Rows", "Details"], name := "Label",
+    policy := { kind := .string }, repeatableScope := [10, 30] }
+
+private def labelledProductModel : FlatModel :=
+  { productModel with fields := productModel.fields ++ [detailLabel] }
+
 private def productDiagnosticCode? (left right : SurfaceStarFieldPath)
     (declaringGroup : GroupPath := ["Form"])
     (leftHaving : Option SurfaceCorrelatedHaving := none)
-    (rightHaving : Option SurfaceCorrelatedHaving := none) : Option String :=
-  match elaborateNumericProductAggregate productModel declaringGroup {
-      left, right, leftHaving, rightHaving } with
+    (rightHaving : Option SurfaceCorrelatedHaving := none)
+    (writtenGroup : GroupPath := declaringGroup) (model : FlatModel := productModel) :
+    Option String :=
+  match elaborateNumericProductAggregate model declaringGroup {
+      left, right, leftHaving, rightHaving } writtenGroup with
   | .ok _ => none
   | .error error => error.diagnostic?.map KernelStaticDiagnostic.kernelCode
 
@@ -149,6 +159,41 @@ example :
         some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
       productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Rows"] =
         some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" := by
+  native_decide
+
+/- **A pair that reads a row meets that read first, and outside the error field's group that read is
+containment's** ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)). The
+peer's rows 7, 8 and 12 write into a fixed group beside the declaring one, mirrored by `Totals` and
+the root here, and its row 9 is the contained control. The declaring group binding `Rows` does not
+bind it for a rule whose error field lies outside that group, so asking only the declaring group
+admits the first pair and names the missing star or the star gate for the others. -/
+example :
+    productDiagnosticCode? (nestedProductStar false) (nestedProductStar false) ["Form", "Rows"]
+        (writtenGroup := ["Form", "Totals"]) = some "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ∧
+      productDiagnosticCode? (nestedProductStar false) (nestedProductStar false) ["Form", "Totals"]
+          (writtenGroup := ["Form"]) = some "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" ∧
+      productDiagnosticCode? (nestedProductStar false) (nestedProductStar false)
+          ["Form", "Totals"] = some "MVK_NO_WILDCARD" ∧
+      productDiagnosticCode? (nestedProductStar false) (nestedProductStar true) ["Form", "Rows"]
+          (writtenGroup := ["Form", "Totals"]) = some "MVK_ERROR_FIELD_NOT_IN_RULEGROUP" := by
+  native_decide
+
+/- The peer's rows 1 to 4 as it wrote them, the error field outside the declaring group, where the
+starred pair reads no level above its first star and so meets the operator's chain. **The stars come
+before the Number question**: a String `Details/Label` paired with a two-star Number draws the star
+class, where asking each operand's kind as it is read names none. -/
+example :
+    let label : SurfaceStarFieldPath := { nestedProductStar true with field := "Label" }
+    productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Totals"]
+        (writtenGroup := ["Form"]) = some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
+      productDiagnosticCode? (nestedProductStar true) label ["Form", "Totals"]
+          (writtenGroup := ["Form"]) (model := labelledProductModel) =
+        some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
+      productDiagnosticCode? (nestedProductStar true) (plainProductPath ["Form", "Totals"] "Carried")
+          ["Form", "Totals"] (writtenGroup := ["Form"]) = some "MVK_DIFFERENT_GROUPS" ∧
+      productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Totals"]
+          (leftHaving := some productHaving) (writtenGroup := ["Form"]) =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" := by
   native_decide
 
 /- The five external classes remain independently enumerable rather than collapsing static

@@ -472,6 +472,36 @@ private def projectedPartialSnapshot
           | .ok .skippedHaving => .elaboration
           | .error cause => .structural cause
 
+/-- A Number beside the token fields, so the projected form has a value it cannot certify. -/
+private def projectedAmount : FlatFieldDecl :=
+  { id := 12, groupPath := ["Form"], name := "Amount"
+    policy := { kind := .number { scale := 0, signed := false } } }
+
+private def projectedDiagnostic? (surface : SurfaceProjectedTokenEntityValueListSource) :
+    Option KernelStaticDiagnostic :=
+  match elaborateProjectedTokenEntityValueListSource
+      { model with fields := model.fields ++ [projectedAmount] } ["Form"] surface with
+  | .ok _ => none
+  | .error error => error.diagnostic?
+
+/- **The projected form reaches the base-type class through its own two arms**, since it certifies
+each side before any gate reads it. A String opposite an Enumeration certifies both sides and fails
+the family match, and a String opposite a Number fails the value side's certification. Both texts
+draw `MVK_VARYING_TYPES_NOT_ALLOWED`, measured on the stored form's spelling
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs),
+[inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)); dropping either arm to
+no class would pass every other lock. -/
+example :
+    projectedDiagnostic? (projectedAuthored .atLeastOne
+        (projectedSource (projectedDirect "Match" .stored) [])
+        (projectedSource (projectedDirect "Choice" .stored) [])) =
+      some .varyingTypesNotAllowed ∧
+    projectedDiagnostic? (projectedAuthored .atLeastOne
+        (projectedSource (projectedDirect "Match" .stored) [])
+        (projectedSource (projectedDirect "Amount" .stored) [])) =
+      some .varyingTypesNotAllowed := by
+  native_decide
+
 private def projectedDirectOnlyScope : ValidationRelevanceScope :=
   .partialSet [
     relevance enumField.path [.concrete 1, .concrete 1],

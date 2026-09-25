@@ -258,10 +258,10 @@ Static admission, operand kind gates, and diagnostic-class probes. Evaluation an
 - `sync`: **behavioral** — [`SPEC-2026-09-06-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md).
 
 <a id="src-value-list-base-type-cross-pairs"></a>
-#### Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, in either order and on either side, measured 2026-09-25
+#### Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, the token families in both orders on both sides and the boolean kinds in both orders against a literal, measured 2026-09-25
 
 - `revision`: one `dmtool batch --observations` run of thirteen `rule check` children at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. The checkout read clean before and after.
-- `question`: a12-dmkits measured the gate on String beside Number, Date and Time, and on the temporal and custom merges ([inbound](../SOURCES.md#inbound-2026-09-25e-value-list-base-type)). Do the token families, the two boolean kinds and the remaining kinds each stand alone, as the Kernel's per-type base-type match reads?
+- `question`: a12-dmkits measured the gate on a String beside a Number and opposite a Time, and on the temporal and custom merges ([inbound](../SOURCES.md#inbound-2026-09-25e-value-list-base-type)). Do the token families, the two boolean kinds and the remaining kinds each stand alone, as the Kernel's per-type base-type match reads?
 - `model`: the retained `Probe4_DM.json` of the [pattern-slot capture](../../evidence/kernel-30.8.1/captures/pattern-comparison-left-kind-gate/), SHA-256 `6f85d83977facea4511f04cb5e04d3149d5f129e294ad5c6150a07f1ec0bbd2e`, whose root declares the String `SkuText`, the Number `Amount`, the Boolean `Flag`, the Date `FiledOn`, the Enumeration `Choice` {`A`, `B`}, the Confirm `Agreed` and the DateRange `Span`. Each rule reports on `SkuText` with `FieldFilled(SkuText) And` before the quantifier.
 - `claim`: `AtLeastOneFieldValueIncludedInValueList` against a literal draws `MVK_VARYING_TYPES_NOT_ALLOWED` on `Choice, SkuText` and `SkuText, Choice`, `Flag, Agreed` and `Agreed, Flag`, `Amount, FiledOn`, `Span, SkuText`, `Amount, SkuText` and `Flag, FiledOn`.
 - `claim-entity`: against a field value list it draws the same on `SkuText In Choice`, `Choice In SkuText`, `Choice In Amount` and `Amount In SkuText`, so a Number field list reaches the value side's gate.
@@ -270,6 +270,44 @@ Static admission, operand kind gates, and diagnostic-class probes. Evaluation an
 - `bytes`: in the [capture directory](../../evidence/kernel-30.8.1/captures/value-list-base-type-cross-pairs/), `ops-basetype.json` `e291664f77ee8b552dd640cdcfeffc1cde8222c86ac40a54cbfe8fe3b7d5881e` and the observation artifact `observations-basetype.json` `4068d70399047748faa69648996063a28d401fda9f520a4fa708fdef70bd34b4`, each row keyed by its op id.
 - `local-consequence`: [`TokenEntityValueList`](../../A12Kernel/Elaboration/TokenEntityValueList.lean)'s base-type relation, read off the Kernel's per-type match before this run, predicted every row. [`ValueListQuantifierKindGate`](../../A12Kernel/Conformance/ValueListQuantifierKindGate.lean) locks them, and the stored entity form now defers a Number field list's token certification past the value side's gate.
 - `sync`: **behavioral** — [`SPEC-2026-09-25-05`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-05).
+
+<a id="src-field-value-read-grid"></a>
+#### The field-value read's gates reach a root group, a filter body's iterated level, a value-list member, a copied computation operand and a `Today` comparison, and a partner whose read fails answers ahead of an ordering's kind class, measured 2026-09-25
+
+- `revision`: two `dmtool batch --observations` runs at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. The first dispatched 20 `rule check` and three `computation add --dry-run` children, the second six and two. The checkout read clean before and after.
+- `question`: a12-dmkits measured the gates on flat comparisons, a scalar value list's members, a starred computation operand and a fixed group in a filter's body ([inbound](../SOURCES.md#inbound-2026-09-25f-field-value-read)). Do they answer on the carriers that letter left out, and does a partner's failing read answer ahead of an ordering's kind class?
+- `model`: `Grid25f_DM.json`, whose root `Grid` declares the Strings `Ref`, `Other` and `Copy`, a String `Note` with `noValueValidation`, a Number `Amount`, the Dates `Due` and `DueCopy` in `yyyy-MM-dd`, a Date `Partial` of `DAY_OPTIONAL` precision, a fixed `Ledger` {`Total`} and a repeatable `Items` {`Qty`, `Label`}. Each rule reports on `Ref` with `FieldFilled(Ref) And` before the condition, and each computation is declared in `/Grid`.
+- `claim-group`: `[/Grid] > 0` over the root group draws `MVK_NO_GROUPS_ALLOWED`, as `[Ledger] > 0` does. In a filter's body, `Sum(Items*/Qty Having [Items] > 0) > 0` over the level the filter iterates and `Sum(Items*/Qty Having [Ledger] > 0) > 0` draw it too. `[Items] > 0` outside a filter draws `MVK_NO_WILDCARD`.
+- `claim-value`: `[Note] == [NoSuch]` draws `MVK_INVALID_RAW_TYPE` and `[NoSuch] == [Note]` `MVK_INVALID_ENTITY`, so the left read is checked before the right is resolved. `[Partial] > [Due]`, `[Due] == [Partial]`, `[Partial] < Today` and `FieldValueIncludedInValueList(Other, [Partial])` draw `MVK_INVALID_DATE_TYPE`.
+- `claim-computation`: a computation writing `DueCopy` from `[Partial]` draws `MVK_INVALID_DATE_TYPE`, one writing `Copy` from `[Note]` `MVK_INVALID_RAW_TYPE`, and one writing `Amount` from `[Ledger]` `MVK_NO_GROUPS_ALLOWED`.
+- `claim-ordering`: in a filter's body `[Items/Label] < [Items/NoSuch]` and `[Items/NoSuch] < [Items/Label]` draw `MVK_INVALID_ENTITY`, and `[Other] < [NoSuch]` outside one does too, while `[Items/Label] < [Items/Qty]` draws `MVK_INVALID_TYPE_FOR_COMPARISON`. A kind class raised where the comparison ends meets only partners that were read.
+- `control`: `[Due] == [Due]` and `[Due] < Today` are admitted, and so are computations writing `DueCopy` from `[Due]` and `Amount` from `[Ledger/Total]`.
+- `limit`: static admission only, one model. No raw or partial read and no group the filter does not iterate is measured in a body, and no row pairs a marked reference's captured environment with a value gate.
+- `bytes`: in the [capture directory](../../evidence/kernel-30.8.1/captures/field-value-read-grid/), the model `Grid25f_DM.json` `f777e7d0b4f6f2cfc7178c6b588bb4449f5a8167c62955951a488f857e3bd9b6`, `ops-grid.json` `3d4e056eebe55e8ba61680fce17a1ba600ea6727c511a18fce5f0f4be8f94d3c` with `observations-grid.json` `c63e26aeacf94e26802ea1708d66b9466380f070a2656133679cb2208cca47ad`, and `ops-grid2.json` `031faa80ef4459c715f3d7f63153a0f6f969d03e1d4b464859f6e756dae06403` with `observations-grid2.json` `bd0c5b5de23e810a8a73cdc4caaae48377f39ae2252a275fa5c89e78f81219e9`. The computation drafts `c1.json` through `c3.json`, `g1.json` and `g2.json` sit beside them, each row keyed by its op id.
+- `local-consequence`: `checkFieldValueRead` in [`Flat/FieldValueRead`](../../A12Kernel/Elaboration/Flat/FieldValueRead.lean) owns the group and value gates. The flat bracket comparisons, the star route's filter body and the full-Date copy ask them, locked in [`Elaboration/Static`](../../A12Kernel/Conformance/Elaboration/Static.lean), [`StarNumberElaboration`](../../A12Kernel/Conformance/StarNumberElaboration.lean) and [`FullDateComputation`](../../A12Kernel/Conformance/FullDateComputation.lean).
+- `sync`: **behavioral** — [`SPEC-2026-09-25-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-06).
+
+<a id="src-value-list-cross-list-repeat-order"></a>
+#### A reference repeated across a value-list quantifier's two lists is asked after its base-type and kind gates, and one repeated within the field list before them, measured 2026-09-25
+
+- `revision`: the first run of the [field-value read grid](#src-field-value-read-grid), rows `d1` through `d5`.
+- `question`: a12-dmkits' `kf380` at `ef1481389c4abdd3cff2409e563007e6db7a4c70` states that a repeated entity pre-empts the quantifier's three type gates and that the duplicate walk spans both lists. Does a repeat across the lists answer ahead of those gates?
+- `claim`: `AtLeastOneFieldValueIncludedInValueList(Ref, Amount In Ref)` and `(Ref In Ref, Amount)` draw `MVK_VARYING_TYPES_NOT_ALLOWED`, and `(Due In Due)` draws `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED`. A repeat asked first would draw `MVK_DUPLICATE_PARAM1` on all three. `(Ref, Ref, Amount In "x")` draws `MVK_DUPLICATE_PARAM1` ahead of the base-type class its list fails.
+- `control`: `(Ref In Other)` over two distinct Strings is admitted.
+- `contradicts`: `kf380`'s pre-emption for a repeat across the lists. Its within-list half agrees.
+- `limit`: static admission only, one model, `AtLeastOne…` only.
+- `local-consequence`: [`TokenEntityValueList`](../../A12Kernel/Elaboration/TokenEntityValueList.lean) already asked the gates in this order, and [`ValueListQuantifierKindGate`](../../A12Kernel/Conformance/ValueListQuantifierKindGate.lean) locks all four refused rows.
+- `sync`: **behavioral** — [`SPEC-2026-09-25-08`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-08).
+
+<a id="src-ordering-date-class-reads-the-pair"></a>
+#### An ordering's date-kind class reads the pair: a Date on either side of a Number, constant or field, draws `MVK_INVALID_COMPARE_TO_DATE`, measured 2026-09-25
+
+- `revision`: the second run of the [field-value read grid](#src-field-value-read-grid), rows `s1` through `s4`.
+- `question`: [`05`](../../spec/05-dates-and-time.md) said the date-kind gate reads the left operand's declared kind. Does a Date on the right draw the class too?
+- `claim`: `1 < [Due]`, `[Amount] < [Due]`, `[Due] < [Amount]` and `[Due] < 1` each draw `MVK_INVALID_COMPARE_TO_DATE`. Only the constant gate is directional.
+- `limit`: static admission only, one model, `<` only, one Date format, and a Number partner only.
+- `local-consequence`: `orderingComparisonDiagnostic?` in [`LiteralComparisonDiagnostic`](../../A12Kernel/Elaboration/LiteralComparisonDiagnostic.lean) already read the pair. [`StarNumberElaboration`](../../A12Kernel/Conformance/StarNumberElaboration.lean) locks the class against a right-hand partner.
+- `sync`: **behavioral** — [`SPEC-2026-09-25-07`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-07).
 
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
 #### The value-list quantifiers' kind gate partitions **three** ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens, measured 2026-09-06

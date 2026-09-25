@@ -182,11 +182,16 @@ inductive TokenEntityStringLiteralValueListElabError where
     declaration shares String's, because it carries the String kind (`customTypeRequiresString`).
     Measured: a Date beside a date fragment, a Time beside a DateTime and a String beside a custom
     declaration share one ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
-    Every cross pair measured differs, in either order and on either side: String beside Number,
-    Date, Time and Enumeration, Boolean beside Confirm and Date, Number beside Date, and a date
-    range beside String ([checkpoint](../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)).
-    The pairs no row reaches follow the Kernel's per-type base-type match, read rather than
-    measured. -/
+    Every cross pair measured differs. On the field list, an Enumeration beside a String and a
+    Boolean beside a Confirm in both orders, and a Number beside a Date, a Number before a String, a
+    date range beside a String and a Boolean beside a Date in the order measured
+    ([checkpoint](../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)); a String beside a
+    Number (the inbound above) and beside a Date
+    ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+    Opposite a field value list, a String and an Enumeration in either direction, an Enumeration
+    opposite a Number and a Number opposite a String (the cross-pair checkpoint), and a String
+    opposite a Number or a Time (the inbound). The pairs no row reaches follow the Kernel's per-type
+    base-type match, read rather than measured. -/
 def SurfaceScalarKind.sharesValueListBaseType :
     SurfaceScalarKind → SurfaceScalarKind → Bool
   | .temporal _, .temporal _ => true
@@ -342,8 +347,9 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
 
 namespace TokenEntityStringLiteralValueListElabError
 
-/-- Project only the established operator-specific Date-group class. Shape failures keep the
-    shared checker's established classes; every other local refusal remains unmapped. -/
+/-- Project the String-literal form's refusals in its gate order: the shared shape classes, the
+    base-type class, the kind set's class, the literal comparison's class for a Number slot, and the
+    Enumeration literal's domain class. The two arms named at the end claim none. -/
 def diagnostic? : TokenEntityStringLiteralValueListElabError →
     Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?

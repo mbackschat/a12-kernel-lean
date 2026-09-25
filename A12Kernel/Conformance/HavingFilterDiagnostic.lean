@@ -103,8 +103,9 @@ example : (TokenDistinctCountElabError.source
     some .noWildcardsAllowed := by
   native_decide
 
+/- The pair form the filter raises for an ordering, a String side against a Number partner. -/
 example : (NumberValuesNotUniqueElabError.source
-      (.star (.having (.fieldNotNumber ["Probe", "Rows", "RowText"] .string)))).diagnostic? =
+      (.star (.having (.orderingFieldNotNumber ["Probe", "Rows", "RowText"] .string .number)))).diagnostic? =
     some .invalidTypeForComparison := by
   native_decide
 

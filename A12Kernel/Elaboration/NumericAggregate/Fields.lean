@@ -42,6 +42,9 @@ inductive NumericProductAggregateElabError where
   | source (error : StarNumberElabError)
   | differentGroups (left right : GroupPath)
   | noWildcard (path : List String)
+  /-- A repeatable level the operand reads per row, from a rule whose error field lies outside the
+  declaring group, so the declaring group binds none of it. -/
+  | levelOutsideRuleGroup (path : List String) (unbound : UnboundOperandLevel)
   | wildcardOnlyAtLowestLevel (path : List String)
   | wildcardAtLowestLevelRequired
   | repeatableLevelRequired
@@ -53,6 +56,7 @@ def NumericProductAggregateElabError.diagnostic? :
     NumericProductAggregateElabError → Option KernelStaticDiagnostic
   | .differentGroups _ _ => some .differentGroups
   | .noWildcard _ => some .noWildcard
+  | .levelOutsideRuleGroup _ unbound => unbound.diagnostic?
   | .wildcardOnlyAtLowestLevel _ => some .wildcardOnlyAtLowestLevelAllowed
   | .wildcardAtLowestLevelRequired => some .wildcardAtLowestLevelRequired
   | .repeatableLevelRequired => some .repeatableLevelRequired
@@ -91,8 +95,8 @@ private def NumericProductOperandShape.groupPath :
 
 /-- One operand as the reference reader leaves it: a field on no repeatable level, or a star path
 the declaring scope binds above its first star. The reader answers as each operand is read — a name
-resolving to nothing, containment below a star, a repeatable level left unstarred — so its classes
-come before the operator's own gates, which ask the pair. -/
+resolving to nothing, containment below a star or outside the rule group, a repeatable level left
+unstarred — so its classes come before the operator's own gates, which ask the pair. -/
 private inductive NumericProductOperandRead (model : FlatModel) (declaringGroup : GroupPath) where
   | fixed (declaration : FlatFieldDecl)
   | starred (source : CheckedStarFieldPath model)
@@ -103,6 +107,19 @@ private def NumericProductOperandRead.declaration :
     NumericProductOperandRead model declaringGroup → FlatFieldDecl
   | .fixed declaration => declaration
   | .starred source _ => source.declaration
+
+/-- Refuse a per-row read by containment when the rule's error field lies outside the declaring
+group: the walk then binds none of the declaring group's levels
+([`unboundReadLevel?`](../Flat/Model.lean)), measured on this operator's pairs
+([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)). Inside it the
+declaring group's binding is asked as before. -/
+private def requireReadInsideRuleGroup (model : FlatModel)
+    (declaringGroup writtenGroup : GroupPath) (path : List String) (scope : List RepeatableLevel) :
+    Except NumericProductAggregateElabError Unit :=
+  match WrittenFieldPlacement.of declaringGroup writtenGroup,
+      model.unboundReadLevel? declaringGroup writtenGroup scope with
+  | .outside, some unbound => throw (.levelOutsideRuleGroup path unbound)
+  | _, _ => pure ()
 
 private def readNumericProductOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (authored : SurfaceStarFieldPath) :
@@ -115,10 +132,15 @@ private def readNumericProductOperand (model : FlatModel)
   match read with
   | .error (.missingWildcard _) =>
       if declaration.repeatableScope.isEmpty then pure (.fixed declaration)
-      else throw (.noWildcard declaration.path)
+      else
+        requireReadInsideRuleGroup model declaringGroup writtenGroup declaration.path
+          declaration.repeatableScope
+        throw (.noWildcard declaration.path)
   | .error (.iterationBelowWildcard path) => throw (.noWildcard path)
   | .error error => throw (.source (.path error))
   | .ok source =>
+      requireReadInsideRuleGroup model declaringGroup writtenGroup source.declaration.path
+        source.bindingScope
       if hBound : source.bindingScope.isPrefixOf
           (model.repeatableScopeForGroupPath declaringGroup) = true then
         pure (.starred source hBound)
@@ -155,12 +177,14 @@ private def NumericProductOperandRead.toShape :
             throw (.wildcardOnlyAtLowestLevel source.declaration.path)
 
 /-- Read both operands, then ask the operator's chain in the Kernel's order: the owning groups, the
-filter, the stars, the Number question, and last whether any repeatable level is crossed. The first
-three are measured against each other on a pair read from outside its fields' groups
-([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)), and the owning group
-against the repeatable level ([inbound](../../../docs/SOURCES.md#inbound-2026-09-21-corrections)).
-Where the filter stands against the repeatable-level gate is not measured, since only a filtered
-operand on no repeatable level would separate them. -/
+filter, the stars, the Number question, and last whether any repeatable level is crossed. Owning
+groups before the stars, the filter before the stars and the stars before the Number question are
+measured on a pair read from outside its fields' groups
+([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)); owning groups before
+the filter and before the repeatable level are measured separately
+([inbound](../../../docs/SOURCES.md#inbound-2026-09-21-corrections)). Where the filter stands against
+the repeatable-level gate is not measured, since only a filtered operand on no repeatable level would
+separate them. -/
 def elaborateNumericProductAggregate (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate)
     (writtenGroup : GroupPath := declaringGroup) :

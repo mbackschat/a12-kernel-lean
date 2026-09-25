@@ -2553,3 +2553,11 @@ The walk's class depends on where the error field lies, and a validation conditi
 **Before moving a refusal to the stage that holds its classifying input, check which gates the move puts ahead of it.** If any are measured to follow it, bring the input to the refusal instead.
 
 Related: [[LF89]] on the shared walk table, [[LF116]] on reusing a mechanism across a boundary.
+
+## LF195 — a gate the Kernel raises at a grammar production belongs to the resolver that production maps to, because per-consumer copies drift and a missing one over-admits silently
+
+The field-value read `[…]` asks its group, star, raw and partial-Date gates as its bracket closes, whatever stands around it ([record](SOURCES.md#inbound-2026-09-25f-field-value-read)). This project had placed the raw gate at each consumer, with nineteen `isRawString` uses counted on 2026-09-25, had no partial-Date gate on the flat comparisons, and displaced a group-named field miss only for presence operands. So a flat comparison of a partially known Date was admitted and a filter body's group read drew the resolver's miss class, and no single site looked wrong. The fix is one owner, `checkFieldValueRead`, which each bracket site asks once its name resolves.
+
+**When one predicate is copied at many consumers, ask whether the Kernel raises it at a production rather than an operator.** If it does, move it to that production's resolver and let the consumers stop checking it.
+
+Related: [[LF116]] on reusing a mechanism across a boundary, [[LF194]] on placing a refusal where its classifying input is.

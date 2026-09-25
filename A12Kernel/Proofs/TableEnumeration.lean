@@ -61,9 +61,10 @@ theorem fieldValueOperand_invalidTableEnum_iff (declaration : TableEnumerationDe
   unfold fieldValueOperandRefusal
   cases h : isTableEnumeration declaration <;> simp_all
 
-/-- And `ValueNotConsistent` refuses on exactly the declarations it rejects. The two together make
-the pair a partition of the enumeration declarations rather than two independent checks: whichever
-way the one predicate falls, exactly one of the two classes is live. -/
+/-- And `ValueNotConsistent`'s declaration chain refuses every declaration the field-value operator
+admits. The two together make the pair a partition of the enumeration declarations rather
+than two independent checks: whichever way the one predicate falls, exactly one of the two classes is
+live. A group or a starred operand is refused before this chain is reached. -/
 theorem valueNotConsistent_tableEnumExpected_of_nonTable
     (declaration : TableEnumerationDeclaration) (parameters : List TableConsistencyParameter)
     (h : isTableEnumeration declaration = false) :

@@ -1,0 +1,6 @@
+{
+ "computedField": "/Grid/DueCopy",
+ "alternatives": [{"operation": "[Due]"}],
+ "messages": [{"locale": "en_US", "text": "m"}],
+ "group": "/Grid"
+}

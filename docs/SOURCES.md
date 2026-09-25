@@ -218,6 +218,7 @@ The cascade half is jointly held and needs nothing further: the peer's [`§11 cl
 
 Inbound provenance from committed reviewed revisions, so no outbound entry. What the computations rows still owe is **family-specific** rather than mechanistic — a DateRange-specific result claim, the fixed-String first-filled target-policy composition, structural-failure scheduling — and each stays pending because a general mechanism does not discharge a claim about a carrier it was not measured on.
 
+<a id="src-2026-09-07-extremum-and-orderability-handback"></a>
 ### Reviewed 2026-09-07 handback — the extremum leader set and the power's derived scale
 
 a12-dmkits `4178ef6d11ec7d31f5f2cfb956d12b1fb3f925ea` disposes all thirteen actionable ledger entries, every row re-measured on the peer's own fixtures against Kernel 30.8.1 rather than carried from this project's evidence. Nine reproduce as reported. Four carry corrections, and **two of those correct clauses this project had already published**.
@@ -280,6 +281,40 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+<a id="inbound-2026-09-25f-value-list-base-type"></a>
+### Reviewed 2026-09-25f base-type handback — `SPEC-2026-09-25-05` confirmed on every pair it names
+
+a12-dmkits revision `ef1481389c4abdd3cff2409e563007e6db7a4c70` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-25. The letter is the peer's `-2026-09-25f`, frozen as sent in the user's exchange directory with SHA-256 `b665a5ea84e29f8b32344d247382777cb85fcac89b61b2113ba7b7555b440b4f`.
+
+Every lock it names was read at that revision: `TemporalAndCustomBaseTypeLawsTest`, `FieldValueReadOperandLawsTest`, `ScalarValueListGateLawsTest`, `ComputationGeneratedTextLawsTest` and `BareEntityOperandLawsTest`, with `kf471`, `kf472` and `kf473` in its findings. Not run here. Inbound from an already committed and reviewed revision that answers [`SPEC-2026-09-25-05`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-05), whose entry records the disposition. The inbound facts create no outbound entry, and the records below share this provenance.
+
+**Claim.** Its §1, on a parcel-shipment sheet. Against a literal, an Enumeration beside a String and a Boolean beside a Confirm in both orders, a Number beside a Date or before a String, a date range beside a String and a Boolean beside a Date each draw `MVK_VARYING_TYPES_NOT_ALLOWED`. Against a field list, so do a String opposite an Enumeration and the reverse, an Enumeration opposite a Number and a Number opposite a String. Two Strings are admitted in both shapes.
+
+**Lean.** No change: the rows confirm this project's own [measurement](#src-value-list-base-type-cross-pairs).
+
+<a id="inbound-2026-09-25f-field-value-read"></a>
+### Reviewed 2026-09-25f field-value read handback — the bracket asks its gates as it closes, wherever it stands, and a scalar value list's members ask theirs during the parse
+
+The same letter and revision, its §2, whose gate order the peer also read from the Kernel's parser action. On a basket, a starred read draws `MVK_NO_WILDCARDS_ALLOWED` as a comparison side, inside braces and `Abs`, against `"x"`, as a computation's operation and from inside the level it stars. A group, a starred one included, draws `MVK_NO_GROUPS_ALLOWED`, an unstarred repeatable group `MVK_NO_WILDCARD`, and `Sum(Lines*/Qty)` beside a bracket is admitted. On a fulfilment sheet, a raw String draws `MVK_INVALID_RAW_TYPE` and a `DAY_OPTIONAL` Date `MVK_INVALID_DATE_TYPE`, while an unresolved name, a misplaced star and containment draw the reader's classes first. Of two reads the left one's class is named, and in a filter's body a starred read and a fixed group draw their bracket classes.
+
+On a policy sheet, `FieldValueIncludedInValueList` draws a raw member's class beside a Number member, after a repeated member and against a Boolean subject. It draws a group member's class against a String and a Boolean subject, and a starred member's against a String subject.
+
+**Lean.** `checkFieldValueRead` in [`Flat/FieldValueRead`](../A12Kernel/Elaboration/Flat/FieldValueRead.lean) now owns the group gate and the two value gates. The flat bracket comparisons, the star route's filter body and the full-Date copy ask them. A body's group read had drawn the resolver's `MVK_INVALID_ENTITY`, and a flat comparison or copy of a partially known Date had been admitted. A marked body reference's captured environment is asked before the value gates, an assumption no row covers. The flat scalar value list projects no class, so its member-first order is spec-only, and `SurfaceFieldPath` spells no starred bracket. [This project's grid](#src-field-value-read-grid) extends the rows to the carriers the letter left out.
+
+<a id="inbound-2026-09-25f-generated-text"></a>
+### Reviewed 2026-09-25f generated-text handback — a computation's members are parsed inside the one condition generated from them
+
+The same letter and revision, its §3, on a subscription sheet. The generated text wraps each precondition in parentheses closed on a new line, and each of two or more alternatives in a further pair, so every member but a lone alternative's operation is followed by an added `)`. The shape was read here too, read-only, from the Kernel's computation-alternatives joiner. A blank operation draws `MVK_INCOMPLETE_INPUT` on a lone alternative and `MVK_UNEXPECTED_TOKEN` beside a sibling in any position. A member stopping short on `+`, `{`, `[`, `And`, `Or` or a comma draws the token class wherever an added `)` follows it, and a lone precondition with `(` open `MVK_EXPECTED_TOKEN_NOT_FOUND`. The codeless empty-operation key accompanies an empty or `null` operation and not a whitespace one.
+
+**Lean.** No change. [`ComputationNormalForm`](../A12Kernel/Elaboration/ComputationNormalForm.lean) models the joined condition as structure over opaque member texts, and no Lean surface parses a member inside it.
+
+<a id="inbound-2026-09-25f-bare-entity"></a>
+### Reviewed 2026-09-25f bare-entity handback — a bare entity stands only where an operator's argument is typed as one
+
+The same letter and revision, its §4, on the basket. A bare name draws `MVK_UNEXPECTED_TOKEN` as a comparison side, an arithmetic term, inside braces or parentheses, in a filter's body, as a rounding operator's digit count, before `(` and as a computation's operation. That includes the names resolving to nothing, where a reader of bare references would draw `MVK_INVALID_ENTITY`. `RoundUpValue(Total, 0) > 0`, `Sum(Lines*/Qty)`, a filter body's bracketed read and a computation's `[Fees/Handling]` are admitted.
+
+**Lean.** No change: every Lean surface is an abstract syntax tree whose field read is a resolved path.
+
 <a id="inbound-2026-09-25e-below-star-placement"></a>
 ### Reviewed 2026-09-25e placement handback — the below-star placement holds on every carrier `SPEC-2026-09-25-02` names
 
@@ -300,7 +335,7 @@ The same letter and revision, its §2, on a fulfilment sheet with a fixed `Summa
 
 From `Summary` and from `Shipments` the fully starred pair draws `MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED`. A pair reading a row draws `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` from `Shipments` and `Ledger` and `MVK_NO_WILDCARD` from `Summary`. From `Shipments`, a `Parcels*` operand beside a fully starred one draws containment.
 
-**Lean.** [`NumericAggregate/Fields`](../A12Kernel/Elaboration/NumericAggregate/Fields.lean) now reads both operands first and asks the owning groups, the filter, the stars and the Number question in that order. It had asked the Number question as each operand was read, and the filter after the whole chain. The filter's position against the repeatable-level gate stays unmeasured, and [`NumericAggregateElaboration/Products`](../A12Kernel/Conformance/NumericAggregateElaboration/Products.lean) locks the groups, filter and star rows, the last from a bound level too.
+**Lean.** [`NumericAggregate/Fields`](../A12Kernel/Elaboration/NumericAggregate/Fields.lean) now reads both operands first and asks the owning groups, the filter, the stars and the Number question in that order. It had asked the Number question as each operand was read, and the filter after the whole chain. The filter's position against the repeatable-level gate stays unmeasured. A written field outside the declaring group now meets the reader's containment, so the control rows draw `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` or `MVK_NO_WILDCARD` as measured. [`NumericAggregateElaboration/Products`](../A12Kernel/Conformance/NumericAggregateElaboration/Products.lean) locks the groups, filter, star and control rows, the star from a bound level and beside a String operand too.
 
 <a id="inbound-2026-09-25e-value-list-base-type"></a>
 ### Reviewed 2026-09-25e base-type handback — the value-list quantifiers ask one base type ahead of their kind gate, the temporal kinds sharing one and a custom declaration String's
@@ -310,6 +345,8 @@ The same letter and revision, its §3, on a shipment sheet with Strings, a two-f
 In `AtLeastOneFieldValueIncludedInValueList` a Date beside a fragment and a Time beside a DateTime draw `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` against a literal, while a String beside `Tracking` is admitted. A String opposite a String and a Time draws `MVK_VARYING_TYPES_NOT_ALLOWED`, as does `FieldValueIncludedInValueList(Carrier, [PickupTime])`. `ValueListQuantifierOperandKindLawsTest` adds a String beside a Number against a literal, on two quantifiers, and a String opposite a Number field, each `MVK_VARYING_TYPES_NOT_ALLOWED`. Two Numbers draw `MVK_INVALID_TYPES_FOR_COMPARISON`, two Booleans or two Dates `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED`, and one declaration on both sides `MVK_DUPLICATE_PARAM1`.
 
 **Lean.** [`TokenEntityValueList`](../A12Kernel/Elaboration/TokenEntityValueList.lean) now asks the base type ahead of the kind set, on the String-literal form and on both sides of the stored entity form, where the kind gate or the literal comparison had answered a mixed list. Its seven base types are the Kernel's per-type base-type match, read here and in the peer's §5, and this project's [cross-pair run](#src-value-list-base-type-cross-pairs) measures the token families and the two boolean kinds apart. [`ValueListQuantifierKindGate`](../A12Kernel/Conformance/ValueListQuantifierKindGate.lean) locks both sets of rows. A group expanding to a String and a Date now draws the base-type class too, no row measuring a group. A Number field list reaches the value side's gate, and Number values opposite it claim no class. The projected form certifies before it could gate and claims no class for a field-side kind refusal. The singular `FieldValueIncludedInValueList` has no Lean surface.
+
+The ordering and tolerance rows land on [`ComparisonEntry`](../A12Kernel/Elaboration/ComparisonEntry.lean), whose orderable set is now the only copy, locked for each temporal kind in [`Conformance/ComparisonEntry`](../A12Kernel/Conformance/ComparisonEntry.lean).
 
 <a id="inbound-2026-09-25e-comparison-arm-order"></a>
 ### Reviewed 2026-09-25e arm-order handback — a comparison between two fields answers its kind arms in a fixed order, and only the first draws a class
@@ -748,7 +785,13 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`index(...)` **is** admissible — a bare index-field short name plus the mandatory lowercase `.value` suffix, with the index field on the error field's own path — refuting the earlier no-witness row](sources/message-and-pointer-probes.md#src-index-terminal-admitting-spelling)
 
 <a id="src-value-list-base-type-cross-pairs"></a>
-- [Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, in either order and on either side](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)
+- [Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, the token families in both orders on both sides and the boolean kinds in both orders against a literal](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)
+<a id="src-field-value-read-grid"></a>
+- [The field-value read's gates reach a root group, a filter body's iterated level, a value-list member, a copied computation operand and a `Today` comparison, and a partner whose read fails answers ahead of an ordering's kind class](sources/static-admission-and-class-probes.md#src-field-value-read-grid)
+<a id="src-value-list-cross-list-repeat-order"></a>
+- [A reference repeated across a value-list quantifier's two lists is asked after its base-type and kind gates, and one repeated within the field list before them](sources/static-admission-and-class-probes.md#src-value-list-cross-list-repeat-order)
+<a id="src-ordering-date-class-reads-the-pair"></a>
+- [An ordering's date-kind class reads the pair: a Date on either side of a Number, constant or field, draws `MVK_INVALID_COMPARE_TO_DATE`](sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
 - [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
 <a id="src-partial-date-precision-operand-gate"></a>

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Elaboration.Flat.FieldValueRead
 
 /-! # Checked nonrepeatable full-Date computations
 
@@ -66,6 +67,11 @@ def elaborateFullDateFieldComputation
   let target ← elaborateFullDateTarget model targetField |>.mapError .target
   let declaration ←
     model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
+  -- The copied field is a field-value read, so its value gates refuse a partially known Date
+  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid), row `c1`).
+  -- This refusal projects no class, so its order against the component gate is unobservable here.
+  if let some refusal := declaration.fieldValueReadRefusal? then
+    throw (.source refusal)
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.sourceNotTemporal sourceField)

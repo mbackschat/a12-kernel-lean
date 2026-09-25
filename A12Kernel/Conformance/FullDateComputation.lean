@@ -372,4 +372,23 @@ example : (do
     some (some (.baseYearRangeUnavailable "UTC" 2020 .finish)) := by
   native_decide
 
+/- A copied field is a field-value read, so a partially known Date is refused although its complete
+   format passes the component gate
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid),
+   row `c1`). -/
+example :
+    let partialSource : FlatFieldDecl := {
+      id := 6
+      groupPath := ["Order"]
+      name := "PartialDate"
+      policy := { kind := .temporal .date fullDate }
+      temporalTargetPolicy := some {
+        format := "dd.MM.yyyy"
+        partialMode := .dayOptional } }
+    let partialModel : FlatModel := {
+      modelFor "UTC" with fields := (modelFor "UTC").fields ++ [partialSource] }
+    errorOf (elaborateFullDateFieldComputation partialModel partialSource.id target.id) =
+      some (.source (.partialDateFieldValueRead ["Order", "PartialDate"])) := by
+  native_decide
+
 end A12Kernel.Conformance.FullDateComputation

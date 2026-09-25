@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
+import A12Kernel.Elaboration.Flat.FieldValueRead
 
 /-! # Flat-condition surface lowering -/
 
@@ -338,13 +339,11 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       pure (.tokenValueList op.quantifier (fields.map .enumeration)
         (.fields (values.map .enumeration)))
   | .compareFields op leftReference rightReference => do
-      let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference writtenGroup).mapError .resolve
-      let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference writtenGroup).mapError .resolve
-      if left.isRawString then
-        throw (.rawStringValue left.path)
-      else if right.isRawString then
-        throw (.rawStringValue right.path)
-      else match left.policy.kind, right.policy.kind with
+      -- Each read's gates are asked before the next read resolves, as the Kernel checks each bracket
+      -- as it closes; a raw String therefore never reaches the kind match below.
+      let left ← (model.resolveFieldValueRead declaringGroup leftReference writtenGroup).mapError .resolve
+      let right ← (model.resolveFieldValueRead declaringGroup rightReference writtenGroup).mapError .resolve
+      match left.policy.kind, right.policy.kind with
       | .temporal leftKind leftComponents, .temporal rightKind rightComponents =>
           let comparison := op.toTemporal
           if comparison.admitsFormats model.hasBaseYear leftComponents rightComponents then
@@ -363,7 +362,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
                 leftKind.surfaceKind rightKind.surfaceKind)
   | .compareToday op position reference => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+        (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .temporal kind components =>
           let comparison := op.toTemporal
@@ -394,7 +393,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         | some year => pure year
         | none => throw .baseYearNotDeclared
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+        (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .number info =>
           let fieldOp := match position with
@@ -437,7 +436,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         | some year => pure year
         | none => throw .baseYearNotDeclared
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+        (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       let sourcePath := endpoint.surfacePath
       match declaration.policy.kind with
       | .temporal kind components =>
@@ -465,7 +464,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
                 kind.surfaceKind (.temporal .date))
   | .compareNow op position reference => do
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+        (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .temporal kind components =>
           let comparison := op.toTemporal
@@ -497,7 +496,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
       elaborateEnumerationCore declaration op projectionRef expected
   | .compare op reference literal => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+      let declaration ← (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       match declaration.policy.kind with
       | .number info => do
           let numeric ← match op.toNumeric? with

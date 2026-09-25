@@ -545,7 +545,8 @@ example :
    A Date against a String draws the orderability class whichever side is first. Read off the Date
    side alone it would draw the date class. Two Dates clear both kind gates, so this Number fragment
    refuses them without a class. A Date against a Number field draws the date class in either order,
-   on the assumption that a Number field stands where the measured numeric literal does. -/
+   as it does outside a filter
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)). -/
 example :
     let date := surfaceNumber .inner amount.groupPath "Due"
     let text := surfaceNumber .inner amount.groupPath "Note"
@@ -558,7 +559,32 @@ example :
         some .invalidCompareToDate, some .invalidCompareToDate] ∧
     havingErrorOf amount.groupPath (source)
         (.compareNumbers .less date (surfaceNumber .inner amount.groupPath "Due2")) =
-      some (.having (.orderingFieldNotNumber due.path (.temporal .date) (some (.temporal .date)))) := by
+      some (.having (.orderingFieldNotNumber due.path (.temporal .date) (.temporal .date))) := by
+  native_decide
+
+/- **A body's field-value read of a group draws the group class**, measured on the level the filter
+   iterates ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+   A field resolver reports the group as a name resolving to nothing, and the reader's missing-star
+   class that the same read draws outside a filter would name the level. -/
+example :
+    bodyDiagnostic? (.compareNumbers .less (surfaceNumber .inner ["Shop", "Sections"] "Items")
+        (surfaceNumber .inner amount.groupPath "Amount")) = some .noGroupsAllowed ∧
+      bodyDiagnostic? (.compareNumbers .equal (surfaceNumber .inner amount.groupPath "Amount")
+        (surfaceNumber .inner ["Shop", "Sections"] "Items")) = some .noGroupsAllowed := by
+  native_decide
+
+/- **A partner whose own read fails answers ahead of the ordering gate**, which is raised where the
+   comparison ends ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+   A String side against a name resolving to nothing draws the name's class in a filter body, from
+   either side, as it does outside one. Asking the refused side's kind before its partner's read would
+   name the orderability class for the first. -/
+example :
+    let text := surfaceNumber .inner amount.groupPath "Note"
+    let missing := surfaceNumber .inner amount.groupPath "NoSuch"
+    bodyDiagnostic? (.compareNumbers .less text missing) = some .invalidEntity ∧
+      bodyDiagnostic? (.compareNumbers .less missing text) = some .invalidEntity ∧
+      bodyDiagnostic? (.compareNumbers .less text (surfaceNumber .inner amount.groupPath "Amount")) =
+        some .invalidTypeForComparison := by
   native_decide
 
 /- Either an inner or outer over-capacity coordinate makes the selected Number cell formally unavailable. -/

@@ -236,6 +236,13 @@ def toStringValueField? (declaration : FlatFieldDecl) : Option FlatStringField :
 def isRawString (declaration : FlatFieldDecl) : Bool :=
   declaration.policy.kind == .string && declaration.stringValueMode == .raw
 
+/-- A Date declaring a partial precision. Only a Date carries one, since the declaration layer
+    refuses a partial mode on a Time or a DateTime (`TemporalTargetPolicy.errorFor?`). -/
+def isPartiallyKnownDate (declaration : FlatFieldDecl) : Bool :=
+  match declaration.policy.kind, declaration.temporalTargetPolicy with
+  | .temporal .date _, some policy => policy.partialMode != .full
+  | _, _ => false
+
 /-- Convert one expanded declaration to the shared resolved Number-field representation. -/
 def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   match declaration.policy.kind with
@@ -553,6 +560,15 @@ inductive ResolveError where
   -- `groupInFieldSlot`: a presence predicate's field operand whose path names a declared group. It
   -- keeps the field miss it displaces, which the versioned public protocol still reports.
   | groupInFieldSlot (path : GroupPath) (refusal : GroupFieldSlotRefusal) (fieldMiss : ResolveError)
+  -- `groupInFieldValueRead`: a field-value read `[…]` whose path names a declared group, with the
+  -- level the read leaves unbound when the reader's own class answers first. Like the presence slot
+  -- it keeps the field miss it displaces, which the versioned public protocol still reports.
+  | groupInFieldValueRead (path : GroupPath) (unbound : Option UnboundOperandLevel)
+      (fieldMiss : ResolveError)
+  -- `rawFieldValueRead` and `partialDateFieldValueRead`: the read's two value gates, asked of the
+  -- declaration it resolved to.
+  | rawFieldValueRead (path : List String)
+  | partialDateFieldValueRead (path : List String)
   deriving Repr, DecidableEq
 
 /-- The Kernel class a resolution failure reports, projected once for every wrapping error type.
@@ -580,7 +596,11 @@ them the resolver's rather than any carrier's
 ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)).
 The short-name ambiguity arm was measured the same way on 2026-09-24, on five condition carriers and
 a computation
-([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)). -/
+([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)).
+The field-value read's three arms were measured on 2026-09-25, a root group drawing the group class
+as any other group does, on rule comparisons, a scalar value-list member, a filter body and a
+computation operation
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
   | .unboundOperandLevel _ unbound => unbound.diagnostic?
@@ -590,6 +610,10 @@ def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .shortNameNotUnique _ => some .fieldNameNotUnique
   | .numericMinimumFractionalDigitsExceedMaximum _ _ _ => some .fractDigitsInvalid
   | .groupInFieldSlot _ refusal _ => refusal.diagnostic?
+  | .groupInFieldValueRead _ (some unbound) _ => unbound.diagnostic?
+  | .groupInFieldValueRead _ none _ => some .noGroupsAllowed
+  | .rawFieldValueRead _ => some .rawTypeOperandInvalid
+  | .partialDateFieldValueRead _ => some .invalidDateType
   | _ => none
 
 inductive AuthoredFieldPathError where

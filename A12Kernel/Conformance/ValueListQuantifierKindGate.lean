@@ -368,8 +368,10 @@ kinds. The four temporal kinds share one base type and a custom declaration shar
 -/
 
 /- **A mixed list draws the base-type class ahead of the kind gate.** A String beside a Number, on
-   two quantifiers, and a String beside a Date. Read by the kind gate, the first draws the literal
-   comparison's class, and the last the kind gate's. -/
+   two quantifiers (the inbound above), and a String beside a Date
+   ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+   Read by the kind gate, the first draws the literal comparison's class, and the last the kind
+   gate's. -/
 example :
     [pairAdmission "Email" "AVal", pairAdmission "Email" "AVal" .no,
       pairAdmission "Email" "ReportedOn"] =
@@ -377,8 +379,9 @@ example :
   native_decide
 
 /- **Two temporal kinds share one base type**, so a Date beside a date fragment and a Time beside a
-   DateTime pass that gate and meet the kind gate, as two Dates do. A partition keyed on the declared
-   temporal kind draws the base-type class for both. -/
+   DateTime pass that gate and meet the kind gate, as two Dates do. A partition keyed on the temporal
+   family draws the base-type class for the Time beside the DateTime. The fragment carries the Date's
+   family here, so only that second pair separates such a partition. -/
 example :
     [pairAdmission "ReportedOn" "AnniversaryA", pairAdmission "StartsAt" "SeenAt"] =
       List.replicate 2 (.refused (some .onlyStringEnumNumberAllowed)) := by
@@ -432,6 +435,25 @@ example :
       entityAdmission ["AVal"] ["Email"], entityAdmission ["AVal"] ["BVal"]] =
       [.refused (some .varyingTypesNotAllowed), .refused (some .onlyStringEnumNumberAllowed),
         .refused (some .varyingTypesNotAllowed), .refused none] := by
+  native_decide
+
+/- **A repeat across the two lists is asked after the base-type and kind gates, and a repeat within
+   the field list before them** ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-cross-list-repeat-order)).
+   A field named again among the values draws the field list's base-type class, the kind gate's
+   class, or the value side's base-type class, whichever of them its lists fail. A field named twice
+   among the fields draws the duplicate class ahead of the base-type class the same list fails. A
+   repeat that pre-empted every gate would draw the duplicate class for all four. -/
+example :
+    [entityAdmission ["Email", "AVal"] ["Email"], entityAdmission ["ReportedOn"] ["ReportedOn"],
+      entityAdmission ["Email"] ["Email", "AVal"]] =
+      [.refused (some .varyingTypesNotAllowed), .refused (some .onlyStringEnumNumberAllowed),
+        .refused (some .varyingTypesNotAllowed)] ∧
+    (match elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
+        { quantifier := .atLeastOne
+          fields := { first := field "Email", rest := [field "Email", field "AVal"] }
+          values := ["x"] } with
+      | .ok _ => none
+      | .error error => error.diagnostic?) = some .duplicateParam1 := by
   native_decide
 
 end A12Kernel.Conformance.ValueListQuantifierKindGate

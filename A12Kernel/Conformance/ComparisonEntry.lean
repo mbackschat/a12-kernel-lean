@@ -70,4 +70,27 @@ example :
      "MVK_INVALID_TYPE_FOR_TOLERANCE_OP", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP",
      "complete", "MVK_INVALID_TYPE_FOR_COMPARISON", "ordinary", "ordinary"] := by native_decide
 
+/- **Every temporal kind is orderable, and nothing a String field carries is**, each kind measured on
+itself ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). Two date
+fragments, two Times and two DateTimes reach their next checker, while a fragment or a Time against a
+String field, a CUSTOM field against a Number, and a Date, Time or fragment against a String literal
+are refused at entry. A DateTime against a Number field, and a CUSTOM field against a Number literal,
+fail the tolerance entry. A fragment is a Date here, since its kind is the declared temporal family.
+An ordering entry that admitted only Dates and DateTimes would refuse the Time pair. -/
+example :
+    let fragment : ComparisonEntryOperand := .field (.temporal .date)
+    let time : ComparisonEntryOperand := .field (.temporal .time)
+    let stamp : ComparisonEntryOperand := .field (.temporal .dateTime)
+    let custom : ComparisonEntryOperand := .field .string
+    [result .ordering fragment fragment, result .ordering time time, result .ordering stamp stamp,
+     result .ordering fragment field, result .ordering time field, result .ordering custom number,
+     result .ordering (.field (.temporal .date)) text, result .ordering time text,
+     result .ordering fragment text,
+     result .tolerance stamp (.field .number), result .tolerance custom number] =
+    ["ordinary", "ordinary", "ordinary",
+     "MVK_INVALID_TYPE_FOR_COMPARISON", "MVK_INVALID_TYPE_FOR_COMPARISON",
+     "MVK_INVALID_TYPE_FOR_COMPARISON", "MVK_INVALID_TYPE_FOR_COMPARISON",
+     "MVK_INVALID_TYPE_FOR_COMPARISON", "MVK_INVALID_TYPE_FOR_COMPARISON",
+     "MVK_INVALID_TYPE_FOR_TOLERANCE_OP", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"] := by native_decide
+
 end A12Kernel.Conformance.ComparisonEntry

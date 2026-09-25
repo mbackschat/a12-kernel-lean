@@ -612,4 +612,71 @@ example : errorOf (elaborate model ["Order"]
   native_decide
 
 
+/-! ### The field-value read's gates
+
+A bracketed field read asks the entity it names four gates once its bracket closes, after the
+reader's own classes ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+This carrier has no Kernel projection of its own, so the locks read the resolution failure's class.
+-/
+
+private def partialDispatchDecl : FlatFieldDecl :=
+  { dispatchDateDecl with
+    id := 20, name := "PartialDispatch"
+    temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .dayOptional } }
+
+private def rawNoteDecl : FlatFieldDecl :=
+  { noteDecl with
+    id := 21, name := "RawNote", stringValueMode := .raw
+    stringPolicy := { lineBreaksPermitted := true } }
+
+private def ledgerTotalDecl : FlatFieldDecl :=
+  { quantityDecl with id := 22, groupPath := ["Order", "Ledger"], name := "Total" }
+
+private def readModel : FlatModel :=
+  { model with fields := model.fields ++ [partialDispatchDecl, rawNoteDecl, ledgerTotalDecl] }
+
+private inductive ReadView where
+  | admitted
+  | refused (diagnostic : Option KernelStaticDiagnostic)
+  deriving Repr, DecidableEq
+
+private def readView (condition : SurfaceCondition) : ReadView :=
+  match elaborate readModel ["Order"] condition with
+  | .ok _ => .admitted
+  | .error (.resolve error) => .refused error.diagnostic?
+  | .error _ => .refused none
+
+/- **A partially known Date is refused a value read**, on either side of a comparison between two
+   fields and against `Today`, where the same read of a Date of full precision is admitted. A gate
+   reading only the declared components admits all three. -/
+example :
+    [readView (compareFields .greater "PartialDispatch" "DispatchDate"),
+      readView (compareFields .equal "DispatchDate" "PartialDispatch"),
+      readView (compareToday .less .right "PartialDispatch"),
+      readView (compareFields .equal "DispatchDate" "DispatchDate"),
+      readView (compareToday .less .right "DispatchDate")] =
+      [.refused (some .invalidDateType), .refused (some .invalidDateType),
+        .refused (some .invalidDateType), .admitted, .admitted] := by
+  native_decide
+
+/- **Each bracket is checked as it closes.** A raw String read ahead of a name resolving to nothing
+   draws the raw class, and the name answers when it stands first. Resolving both sides before
+   either read's gates names the missing name for both. -/
+example :
+    [readView (.compareFields .equal (absolute ["Order"] "RawNote") (absolute ["Order"] "NoSuch")),
+      readView (.compareFields .equal (absolute ["Order"] "NoSuch") (absolute ["Order"] "RawNote"))] =
+      [.refused (some .rawTypeOperandInvalid), .refused (some .invalidEntity)] := by
+  native_decide
+
+/- **A path naming a group draws the group class, a root included**, while an unstarred repeatable
+   group meets the reader's missing-star class first. A field resolver reports all three as a name
+   resolving to nothing. -/
+example :
+    [readView (compare .greater (absolute ["Order"] "Ledger") (.number 0)),
+      readView (compare .greater (absolute [] "Order") (.number 0)),
+      readView (compare .greater (absolute ["Order"] "Items") (.number 0))] =
+      [.refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed),
+        .refused (some .noWildcard)] := by
+  native_decide
+
 end A12Kernel.Conformance.Elaboration.Static

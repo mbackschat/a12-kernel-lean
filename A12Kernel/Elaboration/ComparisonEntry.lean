@@ -43,6 +43,14 @@ inductive ComparisonConstantForm where
   | bareClock
   deriving Repr, DecidableEq
 
+/-- Whether an ordering comparison can order a kind at all: Number and the temporal families, and
+nothing else ([KF270](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)). A CUSTOM declaration
+carries the String kind here, and is not orderable either. The ordering entry gate asks it of both
+operands, and the pair's diagnostic reuses it. -/
+def SurfaceScalarKind.orderable : SurfaceScalarKind → Bool
+  | .number | .temporal _ => true
+  | .string | .enumeration | .boolean | .confirm | .dateRange => false
+
 namespace ComparisonEntryOperand
 
 def kind : ComparisonEntryOperand → SurfaceScalarKind
@@ -62,9 +70,7 @@ def constantForm : ComparisonEntryOperand → ComparisonConstantForm
       | .fixed | .bareClock => .fixed
 
 def isSortable (operand : ComparisonEntryOperand) : Bool :=
-  match operand.kind with
-  | .number | .temporal _ => true
-  | .string | .enumeration | .boolean | .confirm | .dateRange => false
+  operand.kind.orderable
 
 end ComparisonEntryOperand
 

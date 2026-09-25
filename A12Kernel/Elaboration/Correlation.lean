@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
+import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
@@ -72,11 +73,10 @@ inductive CorrelationElabError where
   | wildcardOnRuleGroup
   | wildcardWithParentNavigation (parents : Nat)
   | fieldNotNumber (path : List String) (actual : SurfaceScalarKind)
-  /-- A side of an ordering comparison that is not a Number, with its partner's kind, or `none` when
-      the partner failed for another cause. The Kernel's ordering class reads the pair, so a refused
-      side cannot name it alone. -/
+  /-- A side of an ordering comparison that is not a Number, with the kind of its partner, which was
+      read. The Kernel's ordering class reads the pair, so a refused side cannot name it alone. -/
   | orderingFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
-      (partner : Option SurfaceScalarKind)
+      (partner : SurfaceScalarKind)
   /-- A side of an equality or inequality that is not a Number, which this Number fragment refuses
       while the Kernel judges the pair: it draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a
       String against a Number ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), a
@@ -134,9 +134,9 @@ literal-comparison ladder's `stringLike` row cell for cell — one Kernel compar
 plain rule comparison reaches too, whatever route an assignment takes to it. Reading either column
 off the other is wrong for six kinds of eight; the two temporal families are the only agreement.
 
-A refused ordering side whose partner failed for another cause keeps the class a non-orderable kind
-draws whatever its partner is, and claims none for a temporal kind, whose class needs the partner.
-Reporting that side ahead of its partner's own failure is an unmeasured order.
+A partner whose own read fails answers ahead of both kind gates, which are raised where the
+comparison ends, so an ordering side is judged only against a partner that was read
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
 
 The scope classes separate cleanly: a filter with no unmarked reference into a reopened level
 reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference
@@ -149,9 +149,7 @@ The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
-  | .orderingFieldNotNumber _ actual (some partner) => orderingComparisonDiagnostic? actual partner
-  | .orderingFieldNotNumber _ actual none =>
-      if actual.orderable then none else some .invalidTypeForComparison
+  | .orderingFieldNotNumber _ actual partner => orderingComparisonDiagnostic? actual partner
   | .fieldNotStringValue _ actual =>
       literalComparisonDiagnostic? .stringLike actual
   | .fieldOutsideGroup _ _ _ | .missingInner => some .noIterationForWildcard
@@ -303,17 +301,16 @@ private structure HavingLeafResolvers where
     unchanged. -/
 private def orderingSides (left right : Except CorrelationElabError ResolvedNumberRef) :
     Except CorrelationElabError (ResolvedNumberRef × ResolvedNumberRef) :=
-  let partnerKind : Except CorrelationElabError ResolvedNumberRef → Option SurfaceScalarKind
-    | .ok _ => some .number
-    | .error (.fieldNotNumber _ actual) => some actual
-    | .error _ => none
   match left, right with
   | .ok leftResolved, .ok rightResolved => pure (leftResolved, rightResolved)
-  | .error (.fieldNotNumber path actual), _ =>
-      throw (.orderingFieldNotNumber path actual (partnerKind right))
+  | .error (.fieldNotNumber path actual), .ok _ =>
+      throw (.orderingFieldNotNumber path actual .number)
+  | .error (.fieldNotNumber path actual), .error (.fieldNotNumber _ partner) =>
+      throw (.orderingFieldNotNumber path actual partner)
+  | .error (.fieldNotNumber _ _), .error error => throw error
   | .error error, _ => throw error
   | .ok _, .error (.fieldNotNumber path actual) =>
-      throw (.orderingFieldNotNumber path actual (some .number))
+      throw (.orderingFieldNotNumber path actual .number)
   | .ok _, .error error => throw error
 
 private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
@@ -385,35 +382,49 @@ private def requireOuterFieldAvailable (origin : HavingOrigin) (outerLevels : Li
   else
     pure ()
 
+/-- A filter body's field-value read, with the gates its bracket asks as it closes. The body's reader
+    asks no environment as it resolves an unmarked reference, so a path naming a group meets the group
+    gate directly: measured on the level the filter iterates and on a fixed group
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+    A group the filter does not iterate is read the same way on that account, and the value gates on
+    the same production's account; no row reads either in a body. A marked reference's captured
+    environment is asked before the value gates on the assumption that it is the reader's class, as
+    an unstarred repeatable level is; no row pairs the two. -/
+private def FlatModel.resolveHavingFieldValueRead (model : FlatModel) (declaringGroup : GroupPath)
+    (outerLevels : List RepeatableLevel) (origin : HavingOrigin) (reference : SurfaceFieldPath) :
+    Except CorrelationElabError FlatFieldDecl := do
+  let declaration ← (displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
+    fun _ => (model.groupNamedBy? declaringGroup reference).map (·, none)).mapError .resolve
+  requireOuterFieldAvailable origin outerLevels declaration
+  match declaration.fieldValueReadRefusal? with
+  | some refusal => throw (.resolve refusal)
+  | none => pure declaration
+
 private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError ResolvedNumberRef := do
-  let declaration ←
-    (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
+  let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels origin reference
   let field ← match declaration.toNumberField? with
     | some field => pure field
     | none =>
         throw (.fieldNotNumber declaration.path
           declaration.policy.kind.surfaceKind)
-  requireOuterFieldAvailable origin outerLevels declaration
   pure { declaration, core := { origin, field } }
 
 /-- Resolve one String filter reference, asking a marked one's captured environment. It mirrors
     the numeric resolver exactly apart from the declaration projection, which is the model-owned
-    String **value** capability, so a raw-mode String is refused here. -/
+    String **value** capability; a raw-mode String has already been refused by the read's gate. -/
 private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError HavingStringRef := do
-  let declaration ←
-    (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
+  let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels origin reference
   let field ← match declaration.toStringValueField? with
     | some field => pure field
     | none =>
         throw (.fieldNotStringValue declaration.path
           declaration.policy.kind.surfaceKind)
-  requireOuterFieldAvailable origin outerLevels declaration
   pure { origin, field }
 
 /-- Resolve one presence filter reference. Presence accepts any declared field, so this checks the

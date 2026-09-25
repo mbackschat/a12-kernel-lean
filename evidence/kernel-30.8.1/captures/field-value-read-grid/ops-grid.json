@@ -1,0 +1,117 @@
+[
+ {
+  "id": "d1",
+  "verb": "rule",
+  "args": ["check", "--code", "d1", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Ref, Amount In Ref)", "--message", "en_US=message"]
+ },
+ {
+  "id": "d2",
+  "verb": "rule",
+  "args": ["check", "--code", "d2", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Due In Due)", "--message", "en_US=message"]
+ },
+ {
+  "id": "d3",
+  "verb": "rule",
+  "args": ["check", "--code", "d3", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Ref In Ref, Amount)", "--message", "en_US=message"]
+ },
+ {
+  "id": "d4",
+  "verb": "rule",
+  "args": ["check", "--code", "d4", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Ref, Ref, Amount In \"x\")", "--message", "en_US=message"]
+ },
+ {
+  "id": "d5",
+  "verb": "rule",
+  "args": ["check", "--code", "d5", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And AtLeastOneFieldValueIncludedInValueList(Ref In Other)", "--message", "en_US=message"]
+ },
+ {
+  "id": "o1",
+  "verb": "rule",
+  "args": ["check", "--code", "o1", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And Sum(Items*/Qty Having [Items/Label] < [Items/NoSuch]) > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "o2",
+  "verb": "rule",
+  "args": ["check", "--code", "o2", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Other] < [NoSuch]", "--message", "en_US=message"]
+ },
+ {
+  "id": "o3",
+  "verb": "rule",
+  "args": ["check", "--code", "o3", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And Sum(Items*/Qty Having [Items/NoSuch] < [Items/Label]) > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "o4",
+  "verb": "rule",
+  "args": ["check", "--code", "o4", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And Sum(Items*/Qty Having [Items/Label] < [Items/Qty]) > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "b01",
+  "verb": "rule",
+  "args": ["check", "--code", "b01", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [/Grid] > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "b02",
+  "verb": "rule",
+  "args": ["check", "--code", "b02", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Note] == [NoSuch]", "--message", "en_US=message"]
+ },
+ {
+  "id": "b03",
+  "verb": "rule",
+  "args": ["check", "--code", "b03", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [NoSuch] == [Note]", "--message", "en_US=message"]
+ },
+ {
+  "id": "b04",
+  "verb": "rule",
+  "args": ["check", "--code", "b04", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Partial] > [Due]", "--message", "en_US=message"]
+ },
+ {
+  "id": "b05",
+  "verb": "rule",
+  "args": ["check", "--code", "b05", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Due] == [Partial]", "--message", "en_US=message"]
+ },
+ {
+  "id": "b06",
+  "verb": "rule",
+  "args": ["check", "--code", "b06", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And Sum(Items*/Qty Having [Items] > 0) > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "b07",
+  "verb": "rule",
+  "args": ["check", "--code", "b07", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And Sum(Items*/Qty Having [Ledger] > 0) > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "b08",
+  "verb": "rule",
+  "args": ["check", "--code", "b08", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Ledger] > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "b09",
+  "verb": "rule",
+  "args": ["check", "--code", "b09", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Items] > 0", "--message", "en_US=message"]
+ },
+ {
+  "id": "b10",
+  "verb": "rule",
+  "args": ["check", "--code", "b10", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And FieldValueIncludedInValueList(Other, [Partial])", "--message", "en_US=message"]
+ },
+ {
+  "id": "b11",
+  "verb": "rule",
+  "args": ["check", "--code", "b11", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Due] == [Due]", "--message", "en_US=message"]
+ },
+ {
+  "id": "c1",
+  "verb": "computation",
+  "args": ["add", "c1.json", "--dry-run"]
+ },
+ {
+  "id": "c2",
+  "verb": "computation",
+  "args": ["add", "c2.json", "--dry-run"]
+ },
+ {
+  "id": "c3",
+  "verb": "computation",
+  "args": ["add", "c3.json", "--dry-run"]
+ }
+]

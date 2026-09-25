@@ -198,6 +198,14 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
       .make .repeatableReference referenceLocation (pathDetails path)
   -- Split from the field miss for the Kernel projection only; the public code stays the miss's.
   | .groupInFieldSlot _ _ fieldMiss => resolveDiagnosticAt referenceLocation fieldMiss
+  | .groupInFieldValueRead _ _ fieldMiss => resolveDiagnosticAt referenceLocation fieldMiss
+  -- A raw read keeps the public detail it had when the condition layer refused it after resolving.
+  | .rawFieldValueRead path =>
+      .make .fieldKindMismatch referenceLocation
+        (Json.mkObj [("operation", toJson "rawStringValue"), ("path", toJson path)])
+  | .partialDateFieldValueRead path =>
+      .make .fieldKindMismatch referenceLocation
+        (Json.mkObj [("operation", toJson "partiallyKnownDateValue"), ("path", toJson path)])
 
 private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .resolve error => pure (resolveDiagnosticAt "$.condition" error)

@@ -1,0 +1,42 @@
+[
+ {
+  "id": "s1",
+  "verb": "rule",
+  "args": ["check", "--code", "s1", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And 1 < [Due]", "--message", "en_US=message"]
+ },
+ {
+  "id": "s2",
+  "verb": "rule",
+  "args": ["check", "--code", "s2", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Amount] < [Due]", "--message", "en_US=message"]
+ },
+ {
+  "id": "s3",
+  "verb": "rule",
+  "args": ["check", "--code", "s3", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Due] < [Amount]", "--message", "en_US=message"]
+ },
+ {
+  "id": "s4",
+  "verb": "rule",
+  "args": ["check", "--code", "s4", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Due] < 1", "--message", "en_US=message"]
+ },
+ {
+  "id": "p1",
+  "verb": "rule",
+  "args": ["check", "--code", "p1", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Partial] < Today", "--message", "en_US=message"]
+ },
+ {
+  "id": "p2",
+  "verb": "rule",
+  "args": ["check", "--code", "p2", "--field", "/Grid/Ref", "--condition", "FieldFilled(Ref) And [Due] < Today", "--message", "en_US=message"]
+ },
+ {
+  "id": "g1",
+  "verb": "computation",
+  "args": ["add", "g1.json", "--dry-run"]
+ },
+ {
+  "id": "g2",
+  "verb": "computation",
+  "args": ["add", "g2.json", "--dry-run"]
+ }
+]

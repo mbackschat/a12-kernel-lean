@@ -79,10 +79,12 @@ example : errorOf ({ model with fields := [{ rawNote with
     some (.rawValueModeRequiresString ["Claim", "IncidentNote"]) := by
   native_decide
 
-/- The declaration-owned gate closes both a reported direct comparison and the independent list route. -/
+/- The declaration-owned gate closes both a reported direct comparison and the independent list
+   route. The comparison's bracketed read refuses it as the read's own value gate, while the list's
+   subject is a bare entity whose route refuses it after resolving. -/
 example : errorOf (elaborate model ["Claim"]
     (.compare .equal (directPath "IncidentNote") (.string "x"))) =
-      some (.rawStringValue ["Claim", "IncidentNote"]) := by
+      some (.resolve (.rawFieldValueRead ["Claim", "IncidentNote"])) := by
   native_decide
 
 example : errorOf (elaborate model ["Claim"]

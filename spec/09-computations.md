@@ -187,13 +187,16 @@ For an ordinary closed **ENUMERATION** target, the authoring gates below refuse 
 
 ## 6. The implicit validation rule, precisely
 
-The "also acts as a validation rule" ground rule has an exact generated shape:
+The "also acts as a validation rule" ground rule has one exact generated shape, shown with every optional member present, `⏎` marking a line break and spacing insignificant:
 
 ```
-FieldFilled(F) And <optional commonPrecondition> And
-  ( (precond₁ And mismatch₁([F], operation₁)) Or
-    (precond₂ And mismatch₂([F], operation₂)) Or … )
+one alternative:  FieldFilled(F) And (commonPrecondition⏎) And (precond₁⏎) And mismatch₁([F], operation₁)
+two or more:      FieldFilled(F) And (commonPrecondition⏎) And (⏎
+                    ((precond₁⏎) And mismatch₁([F], operation₁)⏎) Or⏎
+                    ((precond₂⏎) And mismatch₂([F], operation₂)⏎) Or … ⏎)
 ```
+
+**Every member is parsed inside that one text, so each is followed by a `)` it did not write, except a lone alternative's operation, which ends the text** ([inbound](../docs/SOURCES.md#inbound-2026-09-25f-generated-text)). A member that stops short therefore draws `MVK_UNEXPECTED_TOKEN` wherever an added `)` follows it: a blank, `null` or whitespace operation beside a sibling, an operation ending on `+` or with `{` or `[` open beside a sibling, a precondition ending on `And`, `Or` or a comma or with `[` open, and a common precondition ending on `And` or with `[` open. Only where it ends the text does it keep its own class: a lone blank operation or one ending on `+` draws `MVK_INCOMPLETE_INPUT`, and a lone operation with `{` open `MVK_EXPECTED_TOKEN_NOT_FOUND`. A lone alternative's precondition with `(` open draws `MVK_EXPECTED_TOKEN_NOT_FOUND` too, because the added `)` closes its call and leaves its own group open. The codeless `problem.document.basic.computationOperationEmpty` line accompanies an empty or `null` operation and not a whitespace one.
 
 - It fires **only when the field is *filled*** and at least one alternative whose precondition holds **disagrees** with the stored value — with the **computation's own name** as the fired error code.
 - Each alternative's mismatch is ordinary strict `!=` unless that alternative declares a `toleranceRangeOp`; in that case the generated rule preserves the named fixed `DiffersWithToleranceRange1 / 2 / 5 / 10` operator. Stored and computed values inside or exactly on that normalized tolerance band do not produce a mismatch firing.

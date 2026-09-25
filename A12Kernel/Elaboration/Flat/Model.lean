@@ -774,13 +774,9 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
           | some declaration => pure declaration
           | none => throw (.invalidEntity reference)
 
-/-- Class a presence predicate's field operand whose path names a declared group rather than a
-    field, or `none` when it names none. The rule group binds and the written field places an
-    unbound level, as for any read, and a level the walk passes leaves the root and kind gates to
-    answer: a legal parallel iteration draws the kind class
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25-parallel-index-gates)). -/
-def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
-    (reference : SurfaceFieldPath) : Option (GroupPath × GroupFieldSlotRefusal) := do
+/-- The declared group a field reference's path names, or `none` when it names none. -/
+def FlatModel.groupNamedBy? (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Option GroupPath := do
   let base ← match reference.base with
     -- A turning point on an absolute path is a spelling defect, whatever group the path names.
     | .absolute => if reference.turningPoint.isSome then none else some []
@@ -789,7 +785,16 @@ def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup written
         | .ok base => if base.matchesTurningPoint reference.turningPoint then some base else none
         | .error _ => none
   let group := base ++ reference.groups ++ [reference.field]
-  if !model.hasGroupPath group then none
+  if model.hasGroupPath group then some group else none
+
+/-- Class a presence predicate's or a field-value read's field operand whose path names a declared
+    group rather than a field, or `none` when it names none. The rule group binds and the written field places an
+    unbound level, as for any read, and a level the walk passes leaves the root and kind gates to
+    answer: a legal parallel iteration draws the kind class
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25-parallel-index-gates)). -/
+def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Option (GroupPath × GroupFieldSlotRefusal) := do
+  let group ← model.groupNamedBy? declaringGroup reference
   match model.refusedReadLevel? declaringGroup writtenGroup (model.repeatableScopeForGroupPath group) with
   | some unbound => some (group, .unboundLevel unbound)
   | none => if group.length == 1 then some (group, .root) else some (group, .group)

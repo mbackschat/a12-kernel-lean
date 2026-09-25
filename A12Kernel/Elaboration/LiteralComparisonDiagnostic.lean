@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat.Types
+import A12Kernel.Elaboration.ComparisonEntry
 
 /-! # The literal-comparison diagnostic ladder
 
@@ -92,13 +92,6 @@ def literalComparisonDiagnostic? :
   | .booleanLike, .string | .booleanLike, .enumeration =>
       some .invalidCompareToEnumOrString
 
-/-- Whether an ordering comparison can order a kind at all: Number and the three temporal families,
-and nothing else ([KF270](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)). A CUSTOM declaration
-carries the String kind here, and is not orderable either. -/
-def SurfaceScalarKind.orderable : SurfaceScalarKind → Bool
-  | .number | .temporal _ => true
-  | .string | .enumeration | .boolean | .confirm | .dateRange => false
-
 /-- The class an **ordering** comparison between operands of the two kinds reports, or `none` where
 neither kind gate refuses the pair.
 
@@ -107,15 +100,14 @@ It first asks whether both operands can be ordered, and draws `MVK_INVALID_TYPE_
 matches the kinds of two orderable operands, where a temporal operand against a Number draws
 `MVK_INVALID_COMPARE_TO_DATE`. So the class is never one side's alone: a Date against a String draws
 the first gate's class, which a reading of the Date side draws as the second's. The function is
-symmetric for that reason.
+symmetric because both gates are: the first is measured with the refused kind on either side
+([KF270](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)), and the second with a Date field
+against a Number field in both orders and against a numeric literal on either side
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)).
 
 Two temporal operands clear both gates here. Whether their pair is admitted then reads the two
 declared formats ([`spec/05`](../../spec/05-dates-and-time.md)), which this function is not given.
-
-The second gate is measured against a numeric **literal**. A Number **field** in the literal's place
-is assumed to draw the same class. The equality grid measures a literal and a cross-kind field
-comparand drawing one class ([KF265](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf265)), but no
-ordering row measures the field. -/
+ -/
 def orderingComparisonDiagnostic? (left right : SurfaceScalarKind) :
     Option KernelStaticDiagnostic :=
   if !(left.orderable && right.orderable) then some .invalidTypeForComparison

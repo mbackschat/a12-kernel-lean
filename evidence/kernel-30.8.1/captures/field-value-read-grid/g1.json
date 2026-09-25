@@ -1,0 +1,6 @@
+{
+ "computedField": "/Grid/Amount",
+ "alternatives": [{"operation": "[Ledger]"}],
+ "messages": [{"locale": "en_US", "text": "m"}],
+ "group": "/Grid"
+}
