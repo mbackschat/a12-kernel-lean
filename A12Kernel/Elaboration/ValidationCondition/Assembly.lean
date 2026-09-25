@@ -376,6 +376,13 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup writtenGroup :
       let source ←
         (elaborateStarredGroupOperandSource model rowGroup reference)
           |>.mapError fun error => .starredGroup (error.placeBelowStar model rowGroup writtenGroup)
+      let (groupPath, bindingScope) := match source with
+        | .terminalRepeatable checked => (checked.group.path, checked.path.bindingScope)
+        | .terminalPresence checked => (checked.groupPath, checked.path.bindingScope)
+      -- A level above the first star is read per row, so the walk answers ahead of every list gate
+      -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25-operator-gates-wait)).
+      if let some unbound := model.refusedReadLevel? rowGroup writtenGroup bindingScope then
+        throw (.groupReference (.unboundOperandLevel groupPath unbound))
       match source with
       | .terminalRepeatable checked => pure (.starredGroup checked)
       | .terminalPresence checked => pure (.starredGroupPresence checked)

@@ -37,8 +37,9 @@ def boundStarGroupListCondition?
       [.field (ordinaryPath ["Order"] "BaseAmount"), deeperItemsGroupStar]
     else
       [deeperItemsGroupStar]
+  -- The rule reports on `outerAmount`, whose `Sections` row binds the level above the star.
   (CheckedValidationCondition.fromGroupList ordinaryIterationModel
-    ["Order"] operator operands).toOption
+    ["Order"] operator operands outerAmount.groupPath).toOption
 
 def boundStarGroupListLegality?
     (operator : GroupFillQuantifier) (withFixedBase : Bool := false) :

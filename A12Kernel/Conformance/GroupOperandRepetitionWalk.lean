@@ -530,17 +530,17 @@ example :
       List.replicate 5 none, List.replicate 5 none] := by
   native_decide
 
-/- `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` forbid a star, yet below it they draw the
-   placed class alone: the placement answers ahead of their star bar, which the fully starred
-   operand meets ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)). -/
+/- `AllGroupsFilled`, `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` forbid a star, yet below
+   it they draw the placed class alone, ahead of the bar the fully starred operand meets
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement), [inbound](../../docs/SOURCES.md#inbound-2026-09-25-bare-group-placement)). -/
 example :
-    [GroupFillQuantifier.notAllGroupsFilled, .groupsNotCollectivelyFilled].flatMap (fun operator =>
+    [GroupFillQuantifier.allGroupsFilled, .notAllGroupsFilled, .groupsNotCollectivelyFilled].flatMap (fun operator =>
       [false, true].map fun starLast =>
         match list fulfilmentModel ["Fulfilment", "Ledger"] operator
             [.starredGroup (fulfilmentSeal starLast)] ["Fulfilment", "Summary"] with
         | .error diagnostic => some diagnostic
         | .ok _ => none) =
-    [containment, some (some .noWildcardsGAllowed), containment, some (some .noWildcardsGAllowed)] := by
+    (List.replicate 3 [containment, some (some .noWildcardsGAllowed)]).flatten := by
   native_decide
 
 /- The Number value list read against a field, `Weight In /Fulfilment/Ledger/Total`, is placed the
@@ -804,6 +804,71 @@ example :
     [routeGate ["Invoices"] ["Shipments"] "ShipmentCost", routeGate ["Invoices"] ["Refunds"] "RefundAmount"] =
       [some .legal, some .differentName] ∧
     routeRead ["Invoices"] ["Shipments"] "ShipmentCost" = some none := by
+  native_decide
+
+/-- The policy model with a repeatable `Recoveries` whose `Note` is the error field, declaring `key`
+    as its index field when given. -/
+private def recoveriesModel (key : Option (String × FieldPolicy)) : FlatModel :=
+  let row (id : FieldId) (name : String) (policy : FieldPolicy) : FlatFieldDecl :=
+    { id, groupPath := ["Policy", "Recoveries"], name, policy, repeatableScope := [30] }
+  let recoveries : RepeatableGroupDecl :=
+    { level := 30, path := ["Policy", "Recoveries"], indexField := key.map fun _ => 20 }
+  { keyedPolicyModel with
+    fields := keyedPolicyModel.fields ++ (key.map fun (name, policy) => row 20 name policy).toList ++
+      [row 21 "Note" text]
+    repeatableGroups := keyedPolicyModel.repeatableGroups ++ [recoveries] }
+
+/- A keyed group operand beside a keyed error field meets the whole index table on every carrier
+   that takes the error field's group at its entry, the presence pair aside: no index field, another
+   name, and the same name under another type draw their three classes. The same name and type is a
+   legal parallel iteration, where the field slot meets its kind gate and the other carriers, which
+   join no parallel iteration, refuse claiming no class
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25-parallel-index-gates)). -/
+example :
+    let entryCarriers (key : Option (String × FieldPolicy)) :=
+      let carriers := claimsCarriers (recoveriesModel key) ["Policy", "Recoveries"]
+      (carriers.take 2 ++ carriers.drop 4).map fun | .ok _ => none | .error class? => some class?
+    [entryCarriers none, entryCarriers (some ("RecoveryRef", text)),
+      entryCarriers (some ("ClaimRef", number)), entryCarriers (some ("ClaimRef", text))] =
+    [List.replicate 9 noIndex, List.replicate 9 (some (some .errorFieldInvalidIndex)),
+      List.replicate 9 (some (some .errorFieldInvalidIndexType)),
+      List.replicate 2 (some (some .noGroupsAllowed)) ++ List.replicate 7 (some none)] := by
+  native_decide
+
+/- A bare repeatable group operand places its refusal as a field read does: `Shipments` draws
+   containment from `Ledger` and from `Shipments` and the missing star from `Summary`, in the field
+   slot, the sole and paired quantifiers and the group count
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25-bare-group-placement)). -/
+example :
+    let summary := ["Fulfilment", "Summary"]
+    let shipments : SurfaceGroupReference := .path { base := .absolute, groups := ["Fulfilment", "Shipments"] }
+    let summaryRef : SurfaceGroupReference := .path { base := .absolute, groups := summary }
+    [["Fulfilment", "Ledger"], ["Fulfilment", "Shipments"], summary].map (fun rowGroup =>
+      [fieldSlot fulfilmentModel rowGroup true (named .absolute ["Fulfilment"] "Shipments") summary,
+        list fulfilmentModel rowGroup .atLeastOneGroupFilled [.group shipments] summary,
+        list fulfilmentModel rowGroup .allGroupsFilled [.group shipments, .group summaryRef] summary,
+        count fulfilmentModel rowGroup [shipments, summaryRef] summary].map
+          fun | .ok _ => none | .error class? => some class?) =
+    [List.replicate 4 containment, List.replicate 4 containment, List.replicate 4 noWildcard] := by
+  native_decide
+
+/- A list's own gates wait for its operands to be read: the star bar under `AllGroupsFilled` with
+   `Shipments` unstarred above the star, the root gate, and the exact and nested duplicate each give
+   way to the read's placed class ([inbound](../../docs/SOURCES.md#inbound-2026-09-25-operator-gates-wait)). -/
+example :
+    let summary := ["Fulfilment", "Summary"]
+    let sealPath (shipments parcels : Bool) : SurfaceStarGroupPath :=
+      { base := .absolute, groups := [{ name := "Fulfilment" }, { name := "Shipments", starred := shipments },
+          { name := "Parcels", starred := parcels }, { name := "Seal" }] }
+    let sealRef : SurfaceGroupReference := .path { base := .absolute, groups := sealPath false false |>.groups.map (·.name) }
+    let root : SurfaceGroupReference := .path { base := .absolute, groups := ["Fulfilment"] }
+    [["Fulfilment", "Ledger"], summary].map (fun rowGroup =>
+      [list fulfilmentModel rowGroup .allGroupsFilled [.starredGroup (sealPath false true)] summary,
+        list fulfilmentModel rowGroup .allGroupsFilled [.starredGroup (sealPath true false), .group root] summary,
+        list fulfilmentModel rowGroup .allGroupsFilled [.group sealRef, .group sealRef] summary,
+        list fulfilmentModel rowGroup .atLeastOneGroupFilled [.group root, .group sealRef] summary].map
+          fun | .ok _ => none | .error class? => some class?) =
+    [List.replicate 4 containment, List.replicate 4 noWildcard] := by
   native_decide
 
 end A12Kernel.Conformance.GroupOperandRepetitionWalk

@@ -315,6 +315,15 @@ def FlatModel.unboundReadLevel? (model : FlatModel) (declaringGroup writtenGroup
     | .outside => []
   model.firstUnboundOperandLevel? declaringGroup writtenGroup [scope.filter (!bound.contains ·)]
 
+/-- The level the walk refuses outright among a starred operand's levels above its first star, which
+    are read per row. A level the walk passes is left to the rule's own iteration, which may bind it
+    from the error field's scope; it is not refused here. -/
+def FlatModel.refusedReadLevel? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (scope : List RepeatableLevel)
+    (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
+    Option UnboundOperandLevel :=
+  (model.unboundReadLevel? declaringGroup writtenGroup scope bound).filter (!·.passesWalk)
+
 private def repeatableScopeMismatch? (model : FlatModel) :
     List FlatFieldDecl →
       Option (List String × List RepeatableLevel × List RepeatableLevel)
@@ -739,7 +748,9 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
 
 /-- Class a presence predicate's field operand whose path names a declared group rather than a
     field, or `none` when it names none. The rule group binds and the written field places an
-    unbound level, as for any read. -/
+    unbound level, as for any read, and a level the walk passes leaves the root and kind gates to
+    answer: a legal parallel iteration draws the kind class
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25-parallel-index-gates)). -/
 def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (reference : SurfaceFieldPath) : Option (GroupPath × GroupFieldSlotRefusal) := do
   let base ← match reference.base with
@@ -751,7 +762,7 @@ def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup written
         | .error _ => none
   let group := base ++ reference.groups ++ [reference.field]
   if !model.hasGroupPath group then none
-  match model.unboundReadLevel? declaringGroup writtenGroup (model.repeatableScopeForGroupPath group) with
+  match model.refusedReadLevel? declaringGroup writtenGroup (model.repeatableScopeForGroupPath group) with
   | some unbound => some (group, .unboundLevel unbound)
   | none => if group.length == 1 then some (group, .root) else some (group, .group)
 

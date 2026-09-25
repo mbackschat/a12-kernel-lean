@@ -51,7 +51,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-25-01"></a>
 ### `SPEC-2026-09-25-01` — two `-24e` generalizations reach past their rows: a star on a fixed group answers alone at containment only, and a member's class withholds the message on the classes measured
 
-- `status`: pending.
+- `status`: accepted.
 - `origin`: locally originated from a cold review of this project's replay of your `-24e` letter. Both deltas narrow a claim's measured scope, and neither changes a measured outcome.
 - `clause`: [`08` the "A star may land only on a repeatable group" bullet](../spec/08-paths-and-references.md), [`11` the "A message is judged only beside a sound DSL member" bullet](../spec/11-messages-and-custom.md).
 - `delta`: a misplaced star answering alone is measured with the star on the field at every position your §1 table lists, and with the star on a fixed group at containment only ([inbound](SOURCES.md#inbound-2026-09-24e-misplaced-star)).
@@ -61,11 +61,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: confirm each scope, or supply the rows beyond it: a starred fixed group at a non-containment position, and a member class outside the measured set beside a message defect.
 - `limit`: static admission only.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`, the peer's `-2026-09-25` letter, read 2026-09-25.
+- `disposition`: **accepted at a12-dmkits `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`.** Both scopes are answered with the rows beyond them. A fixed group's star draws `MVK_INVALID_WILDCARD` alone at every other listed position and against an unreferenced error field, and of two defects the one read first answers. Twelve further member classes withhold the message, and the withheld set narrows to the error-text checker's classes while the presence classes stand. `spec/08` and `spec/11` carry both ([inbound](SOURCES.md#inbound-2026-09-25-fixed-group-star), [inbound](SOURCES.md#inbound-2026-09-25-message-withheld)).
 
 <a id="spec-2026-09-24-06"></a>
 ### `SPEC-2026-09-24-06` — below the first star the error field places the refusal on twenty-two measured validation carriers, not only on `Sum` and the group count
 
-- `status`: pending.
+- `status`: accepted.
 - `origin`: locally originated. It extends your [`kf466`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf466) rule rows, which carry `Sum` and `NumberOfFilledGroups`, to the rest of the rule arm.
 - `clause`: [`07` the chain bullet](../spec/07-repetition-and-iteration.md).
 - `delta`: over `/Fulfilment/Shipments*/Parcels/…`, with the error field in `Summary`, twenty-two carriers draw `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` from `Ledger` and from `Shipments` and `MVK_NO_WILDCARD` from `Summary`: `Sum`, `FirstFilledValue`, `NumberOfValueInFields`, `MaxValue`, the group count, the seven field-fill quantifiers, `NumberOfFilledFields`, the three value-list quantifiers over a String field, every group-list quantifier but `AllGroupsFilled`, and `FieldValuesNotUnique` and `NumberOfDifferentValues` over a Number field. `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` draw it ahead of their own star bar.
@@ -74,11 +76,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: confirm the placed class on any carrier beyond `Sum` and the group count, or supply a contrary row.
 - `limit`: static admission only, one two-level nesting, no Enumeration or Boolean value-list operand and no filter.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`, the peer's `-2026-09-25` letter, read 2026-09-25.
+- `disposition`: **accepted at a12-dmkits `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`.** Confirmed on the peer's own sheet on twenty-three carriers, `AllGroupsFilled` included, which also draws the placed class ahead of its own star bar; `spec/07`'s chain bullet drops that exception ([inbound](SOURCES.md#inbound-2026-09-25-bare-group-placement)).
 
 <a id="spec-2026-09-24-05"></a>
 ### `SPEC-2026-09-24-05` — six restatements of your `-24b`, `-24c` and `-24d` rows claimed more than the rows measured, and the index class needs the error field's path unkeyed
 
-- `status`: pending.
+- `status`: accepted.
 - `origin`: locally originated from two cold reviews of this project's replay of your `-24b`, `-24c` and `-24d` letters. Every delta narrows a claim's measured scope or joins your [`kf371`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371) to a measured row, and none changes a measured outcome.
 - `clause`: [`02` the `FieldFilled` slot bullet](../spec/02-logic-and-formal-errors.md), [`07` the bare group-operand bullet](../spec/07-repetition-and-iteration.md), [`09` §5, the unstarred-level bullet and the declaring-group paragraph](../spec/09-computations.md), [`10` the keyed-read bullet](../spec/10-validation-and-polarity.md), [`12` the whitespace bullet](../spec/12-concrete-syntax.md).
 - `delta`: beside the error field's group, an index-keyed operand draws `MVK_ERROR_FIELD_NO_INDEX` only when the error field's own path declares no index field, by `kf371`'s parallel-iteration table; with both chains keyed, that table's own index gates decide.
@@ -92,6 +96,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: confirm each scope, or supply the rows that reach beyond it: a bare group operand with the error field outside the rule group, a keyed read over a group operand's fields or a String index, and a comment holding a no-break space.
 - `limit`: `kf371` is measured on the computation arm; on the rule arm the keyed-chain rows are your [`kf255`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf255) sibling triple.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`, the peer's `-2026-09-25` letter, read 2026-09-25.
+- `disposition`: **accepted at a12-dmkits `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`.** The three requested rows are supplied: a bare repeatable group operand places its refusal as a field read does, a keyed group operand's walk stops at the first filled cell and a String index decides as a Number index does, and a comment admits every character but CR and LF. The index delta is extended past its limit with rule-arm rows over group operands, the legal pair then meeting each carrier's own gates. The field-slot and per-row-source deltas drew no contrary row and stand as scoped. `spec/07`, `spec/10` and `spec/12` carry the rows ([inbound](SOURCES.md#inbound-2026-09-25-bare-group-placement), [inbound](SOURCES.md#inbound-2026-09-25-keyed-group-walk), [inbound](SOURCES.md#inbound-2026-09-25-comment-terminators), [inbound](SOURCES.md#inbound-2026-09-25-parallel-index-gates)).
 
 <a id="spec-2026-09-24-04"></a>
 ### `SPEC-2026-09-24-04` — no `kf464` row isolates the group-count walk's reach check, and its list rule is measured on single operands and the fixed-only pair

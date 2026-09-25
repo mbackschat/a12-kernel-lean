@@ -137,8 +137,9 @@ private def detailsGroupStar : SurfaceGroupListOperand :=
 private def groupListCondition? (operator : GroupFillQuantifier)
     (operands : List SurfaceGroupListOperand) :
     Option (CheckedValidationCondition ordinaryIterationModel) :=
+  -- An error field in `Sections`, as `outerAmount`, binds the level above each star.
   (CheckedValidationCondition.fromGroupList ordinaryIterationModel ["Order"]
-    operator operands).toOption
+    operator operands outerAmount.groupPath).toOption
 
 example :
     conditionReferences? (groupListCondition? .atLeastOneGroupFilled [notesGroupStar])
