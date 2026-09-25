@@ -14,7 +14,7 @@ actually wrong ([checkpoint](../../docs/SOURCES.md#src-form-condition-constructs
 
 **The six are not the whole family.** The peer measures a seventh form-level construct, a count of
 the forms specified, drawing the same class on a German model, and two numbering functions that
-do not lex there; none of the three is modelled here
+draw `MVK_UNEXPECTED_TOKEN` there; none of the three is modelled here
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-condition-class-order)).
 
 **The construct's own class shadows the two that follow it.** The checker that names the construct

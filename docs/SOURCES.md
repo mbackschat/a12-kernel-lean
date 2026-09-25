@@ -289,15 +289,17 @@ Every lock it names was resolved at that revision: `IndexFieldBaseTypeLawsTest`,
 
 Not run here. Inbound from an already committed and reviewed revision that answers [`SPEC-2026-09-25-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-03) and [`SPEC-2026-09-25-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-04), whose entries record the dispositions. No outbound entry follows, and the records below share this provenance.
 
-**Claim.** Its §1 and §2. One model keys sibling groups by a `ShipmentKey` differing only in declared type, a rule in one group reporting on its own `Note` and reading another's `Weight`. The rule's key first, a String key admits a String and a custom-typed key and draws `MVK_ERROR_FIELD_INVALID_INDEX_TYPE` beside Number, Enumeration, Boolean, Confirm, Date, DateTime, Time, date-fragment and date-range keys.
+**Claim.** Its §1: `kf371` now scopes its route table to rule verdicts, the computation arm measuring only `kf255`'s sibling pair, and the peer holds no row where `Claims.*` separates a walk-first order from one asking each segment's own gates first.
+
+Its §2. One model keys sibling groups by a `ShipmentKey` differing only in declared type, a rule in one group reporting on its own `Note` and reading another's `Weight`. The rule's key first, a String key admits a String and a custom-typed key and draws `MVK_ERROR_FIELD_INVALID_INDEX_TYPE` beside Number, Enumeration, Boolean, Confirm, Date, DateTime, Time, date-fragment and date-range keys.
 
 Among the rest, two Numbers of different scale, two Enumerations of different values, a Date beside a DateTime, Time or date fragment, and a DateTime beside a Time are admitted. A Date beside a date range, a Boolean beside a Confirm, a Number beside an Enumeration or a Date, and an Enumeration beside a Boolean draw the type class. Only those directions are measured.
 
-A semantic index's field-valued key meets the same pairs as `MVK_INDEX_TYPE_INCONSISTENT`: a Date index admits a Date and a DateTime key and refuses a date-range key, and a date-range index admits a date-range key and refuses a Date one.
+A semantic index's field-valued key meets its index field on five measured pairs, drawing `MVK_INDEX_TYPE_INCONSISTENT` where they split: a Date index admits a Date and a DateTime key and refuses a date-range key, and a date-range index admits a date-range key and refuses a Date one.
 
 From the fixed `Summary`, a marked filter reference into the keyed `Invoices` draws `MVK_ERROR_FIELD_NO_INDEX` and into the unkeyed filtered group `MVK_NO_WILDCARD`, each the class the same read draws outside any filter. A marked read of a `Summary` field is admitted, and the keyed body unmarked draws `MVK_INVALID_ITERATION_IN_FILTER_CONDITION`.
 
-**Lean.** [`ReadingScope`](../A12Kernel/Conformance/ReadingScope.lean) locks the table through `FieldKind.indexTypeGate` on the route model, the reverse pairs claiming no class. The walk continuing past a legal pair of two kinds is locked as this project's assumption, which [SG9](gaps/paths-and-groups.md#gap-sg9) carries. The semantic-index key gate takes its base-type match as an input, so its rows are spec-only.
+**Lean.** [`ReadingScope`](../A12Kernel/Conformance/ReadingScope.lean) locks `FieldKind.indexTypeGate` on every measured row and on the reverse of each, which claims no class, and on the route model. Two assumptions beyond the rows are locked as such and carried by [SG9](gaps/paths-and-groups.md#gap-sg9): a key's configuration within its kind does not split a pair, and past a legal pair of two kinds the walk and the carrier gates behave as past one of a single kind. The semantic-index key gate takes its base-type match as an input, so its rows are spec-only.
 
 <a id="inbound-2026-09-25b-condition-class-order"></a>
 ### Reviewed 2026-09-25b class-order handback — a refused condition text draws the class raised first, an operator's gate as soon as its call is read
@@ -315,24 +317,24 @@ On a German model a form-level construct answers ahead of a later unresolved nam
 <a id="inbound-2026-09-25b-condition-positions"></a>
 ### Reviewed 2026-09-25b position handback — parentheses group conditions only, and a sign stands on a number literal alone
 
-The same letter and revision, its §4. A connective, a comparison or a predicate call as a field operand, an operation argument or a comparison side draws `MVK_UNEXPECTED_TOKEN`, as do a parenthesised argument, a parenthesised side, a parenthesised operation leading a comparison, a comparison in braces, and a computation's parenthesised operation, predicate call or comparison. Braced operations and a parenthesised condition are admitted.
+The same letter and revision, its §4. A connective, a comparison or a predicate call as a field operand, a comparison or a predicate call as an operation argument, and a predicate call as a comparison side draw `MVK_UNEXPECTED_TOKEN`, as do a parenthesised argument, a parenthesised side, a parenthesised operation leading a comparison, a comparison in braces, and a computation's parenthesised operation, predicate call or comparison. Braced operations and a parenthesised condition are admitted.
 
 A filter body that is a comparison, a parenthesised comparison or a predicate call is admitted, and one that is an operand alone draws `MVK_UNEXPECTED_TOKEN`, as does a comparison in a semantic index's key or a `@From` scope. Inside a filter body a text ordered against a number draws `MVK_INVALID_TYPE_FOR_COMPARISON`, over a field the filter does not iterate too, whose sound twin draws `MVK_NO_ITERATION_FOR_WILDCARD`.
 
-On a rule and in a computation a sign on a number literal is admitted, `[BaseFee] - -1` and `[BaseFee] * -1` included. A sign on a reference, a braced operation or a call, or a second sign, draws `MVK_UNEXPECTED_TOKEN`.
+On a rule, a sign on a number literal is admitted, `[BaseFee] - -1` included, and a sign on a reference, a braced operation or a call, or a second sign, draws `MVK_UNEXPECTED_TOKEN`. In a computation `-5` and `[BaseFee] * -1` are admitted, and a sign on a reference draws that class alone, as a factor, in braces and as a rounding argument.
 
 **Lean.** No surface spells a parenthesis or a sign, so the rows are spec-only.
 
 <a id="inbound-2026-09-25b-computation-texts"></a>
 ### Reviewed 2026-09-25b computation-text handback — the suppression member's class answers first, a parse-time class erases the calculation module's, and a filter's gate answers for its own predicates
 
-The same letter and revision, its §5. Into `Weight` on a courier depot, an unsupported suppression name draws `MVK_INVALID_SUPPRESSED_WARNING` beside an operation or precondition naming nothing, a text in a rounding slot, a read of the computed field and a TAB in the message. The supported name listed twice draws `MVK_UNEXPECTED_TOKEN` beside the sound texts, the unresolved operation, the rounding slot and the TAB.
+The same letter and revision, its §5. On a courier depot, into `Weight` except for the self-read, which computes into `Note`, an unsupported suppression name draws `MVK_INVALID_SUPPRESSED_WARNING` beside an operation or precondition naming nothing, a text in a rounding slot, a read of the computed field and a TAB in the message. The supported name listed twice draws `MVK_UNEXPECTED_TOKEN` beside the sound texts, the unresolved operation, the rounding slot and the TAB.
 
 Beside `[Note] + "x"` into `Note`, a rounding gate in the operation draws `MVK_NO_NUMBER`, an argument too many in the precondition `MVK_PARAMSIZE_INVALID1`, and an unresolved name `MVK_INVALID_ENTITY`, each alone. `MVK_ERROR_INVALID_ENUM_CALCULATION` yields the same way to a precondition's arity gate or unresolved name, and the projected self-read class to a precondition's `MVK_NO_NUMBER` or `MVK_INVALID_ENTITY`.
 
 `RepetitionNotUnique` or `CustomCondition` in a `Sum`'s filter body draws `MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION` in a precondition, an operation and a rule, where [`kf333`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf333) measures the language-feature class for the same predicates in a precondition outside any filter.
 
-**Lean.** Suppression is a flag with no member text, and every computation elaborator resolves its operands before its self-read gate, so no Lean change follows.
+**Lean.** Suppression is a flag with no member text. Each computation elaborator checked resolves its operation's operands before its self-read gate, and the tables take their preconditions already checked, so no Lean change follows.
 
 <a id="inbound-2026-09-25b-message"></a>
 ### Reviewed 2026-09-25b message handback — the unreferenced-target class withholds the error-text checker's classes, and an answered locale leaves `RULE_HAS_NO_ERRORTEXT` to the other
@@ -346,7 +348,7 @@ With `en_US` and `de_DE` declared and `en_US` answered, on a rule and on a compu
 <a id="inbound-2026-09-25b-joint-level-slots"></a>
 ### Reviewed 2026-09-25b joint-level handback — a field read on a jointly iterated level meets its scalar slot's own gate
 
-The same letter and revision, its §7. Beside an error field keyed by an index of the same name and type as a sibling's, a text field of that sibling in `RoundUpValue` draws `MVK_NO_NUMBER`, as a text field of the fixed `Insured` does, and two in `DifferenceInDays` draw `MVK_NO_DATE`. The group itself in `FieldValueIncludedInValueList` draws `MVK_NO_GROUPS_ALLOWED`, and the typed controls are admitted.
+The same letter and revision, its §7. Beside an error field keyed by an index of the same name and type as a sibling's, a text field of that sibling in `RoundUpValue` draws `MVK_NO_NUMBER`, as a text field of the fixed `Insured` does, and one in `DifferenceInDays` beside the `Insured` text field draws `MVK_NO_DATE`. The group itself in `FieldValueIncludedInValueList` draws `MVK_NO_GROUPS_ALLOWED`, and the typed controls are admitted.
 
 **Lean.** Neither scalar slot has a class for a text operand on any route, so the rows join the over-refusal [SG9](gaps/paths-and-groups.md#gap-sg9) records for a legal parallel iteration.
 

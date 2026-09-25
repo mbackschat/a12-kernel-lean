@@ -395,10 +395,11 @@ inductive ParallelIndexGate where
   | multipleIndexFields
   /-- The two index fields differ in name. -/
   | differentName
-  /-- They share a name and differ in a pair of kinds a row separates, `FieldKind.indexTypeGate`. -/
+  /-- They share a name and differ in a pair of kinds the type step splits,
+      `FieldKind.indexTypeGate`. -/
   | differentType
-  /-- They share a name and a pair of kinds the Kernel iterates jointly: a legal parallel iteration,
-      which it admits. -/
+  /-- They share a name and a pair of kinds the type step pairs: a legal parallel iteration, which
+      the Kernel admits. -/
   | legal
   /-- A shape no row measures: a keyed group both chains share, a second keyed group on the written
       path, or a pair of kinds `FieldKind.indexTypeGate` leaves unmeasured. -/

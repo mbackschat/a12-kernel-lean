@@ -257,8 +257,10 @@ example :
 
 /-- The grid's route sheet: a keyed `Invoices` under a String `ShipmentKey`; an unkeyed `Ret`
     holding a keyed `Sub`; a keyed `Ref` under another name holding a keyed `Sub2`; and five groups
-    keyed by a `ShipmentKey` of five kinds. The peer's type-table fixture adds five more kinds and a
-    second Number scale, two of them holding an unkeyed group so a legal pair's walk shows. -/
+    keyed by a `ShipmentKey` of five kinds. The peer's type-table fixture adds four more kinds and a
+    second Number scale, a DateTime and a Number key holding an unkeyed group so a legal pair's walk
+    shows. Its Numbers are unsigned where the peer's are signed, which the type step's within-kind
+    assumption covers. -/
 private def routeModel : FlatModel :=
   let row (id : FieldId) (groups : List String) (name : String) (policy : FieldPolicy)
       (scope : List RepeatableLevel) : FlatFieldDecl :=
@@ -358,6 +360,46 @@ example :
       routeRead ["TagsN2", "Parts2"] "PAmount" (rule := ["TagsN"]),
       routeRead ["TagsM", "Parts"] "PAmount" (rule := ["TagsT"])] =
     List.replicate 4 unclassed ++ [noWildcard, noWildcard, unclassed] := by
+  native_decide
+
+/- The type step's table itself, which separates a legal pair from an unmeasured one where a
+   single read cannot. Each measured row, the error field's key first, then the reverse of each
+   measured split and legal pair, which claims nothing
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). A custom type is not a
+   `FieldKind`, so the String rows stand for the custom-typed key too. -/
+example :
+    let text : FieldKind := .string
+    let n0 : FieldKind := .number { scale := 0, signed := false }
+    let n2 : FieldKind := .number { scale := 2, signed := false }
+    let enum : FieldKind := .enumeration
+    let flag : FieldKind := .boolean
+    let confirm : FieldKind := .confirm
+    let date : FieldKind := .temporal .date TemporalComponents.fullDate
+    let moment : FieldKind := .temporal .dateTime TemporalComponents.now
+    let clock : FieldKind := .temporal .time TemporalComponents.time
+    let month : FieldKind :=
+      .temporal .date { TemporalComponents.fullDate with year := false, day := false }
+    let range : FieldKind := .dateRange
+    let gate (pair : FieldKind × FieldKind) := pair.1.indexTypeGate pair.2
+    ([(text, text), (n0, n2), (enum, enum), (date, moment), (date, clock), (date, month),
+        (moment, clock)].map gate,
+      ([n0, enum, flag, confirm, date, moment, clock, month, range].map (text, ·) ++
+        [(n0, text), (n0, enum), (n0, date), (enum, flag), (flag, confirm), (date, range)]).map gate,
+      [(confirm, flag), (flag, enum), (enum, n0), (range, date), (date, n0), (enum, text),
+        (clock, date), (clock, moment), (moment, date), (n0, flag)].map gate) =
+    (List.replicate 7 .legal, List.replicate 15 .differentType, List.replicate 10 .unmeasured) := by
+  native_decide
+
+/- Within a kind the type step assumes a key's configuration does not split the pair, so a date
+   fragment keying the error field pairs with a Date, and a signed Number with an unsigned one; no
+   row varies either. -/
+example :
+    let date : FieldKind := .temporal .date TemporalComponents.fullDate
+    let month : FieldKind :=
+      .temporal .date { TemporalComponents.fullDate with year := false, day := false }
+    [month.indexTypeGate date,
+      (FieldKind.number { scale := 0, signed := true }).indexTypeGate
+        (.number { scale := 0, signed := false })] = [.legal, .legal] := by
   native_decide
 
 /-! ## A computation's target places the class -/

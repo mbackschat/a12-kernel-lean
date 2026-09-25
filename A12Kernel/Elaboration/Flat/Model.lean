@@ -234,17 +234,27 @@ def FlatModel.repeatableScopeForGroupPath (model : FlatModel) (groupPath : Group
 def WrittenFieldPlacement.of (declaringGroup writtenGroup : GroupPath) : WrittenFieldPlacement :=
   if GroupPath.isPrefixOf declaringGroup writtenGroup then .contained else .outside
 
-/-- The type step of the index gates, for two index fields of one name, the written path's first:
-    the pairs a Kernel row measures, in the direction it measures them. The Kernel iterates the two
-    jointly when their kinds agree, when two Numbers differ in scale only, and when a Date key meets
-    a DateTime, Time or date-fragment key or a DateTime key meets a Time one. It draws the type class
-    for a String key beside any other kind, a Number key beside a String, Enumeration or Date one, an
-    Enumeration beside a Boolean, a Boolean beside a Confirm, and a Date beside a date range
+/-- The type step of the index gates, for two index fields of one name, the written path's first,
+    decided on the two keys' kinds. The Kernel iterates the two jointly when their kinds agree, which
+    its BA documentation requires
+    ([Parallel Iteration](../../../../a12-kernel/documentation/_merged/kernel-ba.md)) and the rows
+    measure for String, Number, Enumeration and Date keys. It also iterates them when a Date key
+    meets a DateTime or Time key or a DateTime key meets a Time one, which that requirement wrongly
+    excludes. It draws the type class for a String key beside any other kind, a Number key beside a
+    String, Enumeration or Date one, an Enumeration beside a Boolean, a Boolean beside a Confirm, and
+    a Date beside a date range
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope),
-    [inbound](../../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). A date fragment is a
-    `.date` here, as the Kernel's model mapper builds it. Every other pair, the reverse of a measured
-    one included, is `unmeasured`: the rows fit a pairing by base type that joins the temporal kinds,
-    but no pair beyond them is adopted. -/
+    [inbound](../../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)).
+
+    **Across kinds only the measured direction is claimed**: every other pair of differing kinds, the
+    reverse of a measured one included, is `unmeasured`, although the rows fit a pairing by base type
+    that joins the temporal kinds. **Within a kind, a key's configuration is assumed not to split a
+    pair**: the rows vary a Number's scale, an Enumeration's values, a Date's components, a date
+    fragment included, and a custom type on the read key, and pair each, while a Number's sign, a
+    temporal format, and a custom type on the written key are not varied. A date fragment is a
+    `.date` carrying its components here, as [`TemporalFormat`](../../Semantics/TemporalFormat.lean)
+    records, and a custom type lies outside `FieldKind`, so the Date and String arms reach both on
+    either side; [SG9](../../../docs/gaps/paths-and-groups.md#gap-sg9) owns the assumption. -/
 def FieldKind.indexTypeGate (written operand : FieldKind) : ParallelIndexGate :=
   if written == operand then .legal
   else match written, operand with
