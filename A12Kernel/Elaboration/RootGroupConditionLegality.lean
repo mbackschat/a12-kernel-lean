@@ -121,7 +121,14 @@ end RootGroupConditionRefusal
 
 /-- **The A12 refusal for a form-level construct.** The star is an argument precisely so the law below
 can state that it makes no difference: the construct's own class is decided before anything reads the
-argument. -/
+argument.
+
+The keyword is taken to stand where a condition opens: at the text's start, after a connective, or
+inside a grouping parenthesis at either place. There the German class is raised on the keyword
+itself, with no argument list or a broken one alike. Where no condition opens, as a field operand or
+after a completed condition, the German parser refuses the keyword as an unexpected token, and this
+function, taking no position, does not model that
+([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-form-keyword)). -/
 def a12FormConditionRefusal (language : ConditionLanguage) (_keyword : FormConditionKeyword)
     (_starred : Bool) : RootGroupConditionRefusal :=
   match language with

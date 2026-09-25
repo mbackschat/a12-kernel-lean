@@ -28,6 +28,13 @@ through it, so a key type that would accept the empty string still refuses it he
 **One gate is silenced by a lenient parse** — the no-value-validation refusal — so a lenient reader
 sees twelve positions where a strict one sees thirteen.
 
+**A key written with its own filter is outside this cascade.** An entity key takes a `Having` of its
+own, while a string key takes none, so a `Having` after it is the operand's. On the key's filter a
+group key draws the kind class, a refused comparison or an iteration the filter does not cover in its
+body answers ahead of stage A even on a starred key, and an unstarred key draws the filter's star
+class ahead of the last stage. The peer measures these, and no input here carries a filter
+([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-key-filter)).
+
 This capsule owns the **order**. Resolution of the index group itself belongs to
 [`IndexGroupResolution`](IndexGroupResolution.lean) and is consumed whole rather than restated; the
 value *lookup* a semantic index performs once admitted belongs to
