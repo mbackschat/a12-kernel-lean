@@ -41,7 +41,7 @@ operators tested ([checkpoint](../../docs/SOURCES.md#src-having-filter-compariso
 A **plain rule comparison** carrying neither construct draws the same class, so the vocabulary is the
 comparison's and not either carrier's. *Why* an assignment reaches it is a separate, undischarged
 question: the natural account is the generated equality rule, which would also explain the `COMPARE_TO`
-naming, but no witness separates that from a classifier both routes call, so it stays a hypothesis. A **numeric** comparison is a different column and gets its own
+naming, but no witness separates that from a classifier both routes call, so it stays a hypothesis. A numeric **ordering** comparison is a different column and gets its own
 function below rather than being forced through this one — measured, its non-Number kinds collapse to
 a single class where the literal column spreads them across five.
 -/
@@ -92,16 +92,21 @@ def literalComparisonDiagnostic? :
   | .booleanLike, .string | .booleanLike, .enumeration =>
       some .invalidCompareToEnumOrString
 
-/-- The class a **numeric** comparison reports for a field side of the given kind, or `none` where
-the kind is admitted.
+/-- The class a numeric **ordering** comparison reports for a field side of the given kind, or `none`
+where the kind is admitted.
 
 This is deliberately not the ladder above at a `number` family, and the measurement is what forces
-the separation: a numeric comparison collapses String, Enumeration, Boolean, Confirm and DATE_RANGE
+the separation: a numeric ordering comparison collapses String, Enumeration, Boolean, Confirm and DATE_RANGE
 into one class, where the same kinds against a String *literal* spread across four
 ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)). Only the
 temporal row agrees. Reading one column off the other would report the literal column's spread at a
-numeric comparison, which is wrong for six kinds out of eight — the two temporal families are the
-only ones the two columns agree on. -/
+numeric ordering comparison, which is wrong for six kinds out of eight — the two temporal families are the
+only ones the two columns agree on.
+
+The column is measured against a numeric literal with `>`, and its String row again on two fields of
+a filtered row with `<`. An equality is not this column: the Kernel judges its pair, drawing
+`MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a String against a Number and admitting two Strings
+([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)). -/
 def numericComparisonDiagnostic? :
     SurfaceScalarKind → Option KernelStaticDiagnostic
   | .number => none

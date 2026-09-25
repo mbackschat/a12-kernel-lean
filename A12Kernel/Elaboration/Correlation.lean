@@ -72,6 +72,12 @@ inductive CorrelationElabError where
   | wildcardOnRuleGroup
   | wildcardWithParentNavigation (parents : Nat)
   | fieldNotNumber (path : List String) (actual : SurfaceScalarKind)
+  /-- A side of an equality or inequality that is not a Number, which this Number fragment refuses
+      while the Kernel judges the pair: it admits two Strings and draws
+      `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a String against a Number
+      ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)). The ordering comparison
+      keeps `fieldNotNumber`, whose column is measured. -/
+  | equalityFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   /-- The reference does not name a String field carrying evaluated values. A raw-mode String
       declaration reaches this arm too, matching every other checked String consumer. -/
   | fieldNotStringValue (path : List String) (actual : SurfaceScalarKind)
@@ -118,7 +124,7 @@ One shared projection is therefore right, where a per-carrier table would have b
 one fact.
 
 The two comparison arms carry the field's kind because **one arm reports several classes**. A
-numeric comparison collapses every non-Number, non-temporal kind into one class; a String-literal
+numeric ordering comparison collapses every non-Number, non-temporal kind into one class; a String-literal
 comparison spreads the same kinds across four, and that column is the shared literal-comparison ladder's
 `stringLike` row cell for cell — one Kernel comparison vocabulary that a plain rule comparison
 reaches too, whatever route an assignment takes to it.
@@ -149,9 +155,10 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .outerLevelUnbound _ unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
   -- Named rather than wildcarded. `stringLeafOutsideStarRoute` and `disjunctionOutsideStarRoute`
-  -- are the legacy one-group route's own narrowness — the Kernel accepts both — and the rest are
+  -- are the legacy one-group route's own narrowness — the Kernel accepts both — and so is
+  -- `equalityFieldNotNumber`, whose class depends on a pair it does not carry; the rest are
   -- routing, an unmeasured operator gate, or unreachable by construction.
-  | .invalidGroupReference _ | .fieldScopeMismatch _ _ _
+  | .invalidGroupReference _ | .fieldScopeMismatch _ _ _ | .equalityFieldNotNumber _ _
   | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .unsupportedOperator _
   | .missingOuter | .errorGuardMismatch _ _
@@ -287,8 +294,15 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      let leftResolved ← resolvers.number left.origin left.field
-      let rightResolved ← resolvers.number right.origin right.field
+      let side (reference : SurfaceHavingNumberRef) :=
+        (resolvers.number reference.origin reference.field).mapError fun
+          | .fieldNotNumber path actual =>
+              match coreOp with
+              | .lessThan => .fieldNotNumber path actual
+              | .equal | .notEqual => .equalityFieldNotNumber path actual
+          | error => error
+      let leftResolved ← side left
+      let rightResolved ← side right
       if !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
         throw (.equalityScaleMismatch
           leftResolved.declaration.path leftResolved.core.field.info.scale
@@ -331,8 +345,18 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   else
     throw .disjunctionOutsideStarRoute
 
+/-- A marked reference's level must lie in the captured environment, asked as the reference is
+    resolved. An unmarked one's candidate environment is asked only after the whole body,
+    `SurfaceCorrelatedHaving.candidateEnvironmentRefusal?`. -/
+private def requireOuterFieldAvailable (origin : HavingOrigin) (outerLevels : List RepeatableLevel)
+    (declaration : FlatFieldDecl) : Except CorrelationElabError Unit :=
+  if origin == .outer && !repeatableScopeAvailable declaration.repeatableScope outerLevels then
+    throw (.fieldOutsideEnvironment origin declaration.path outerLevels declaration.repeatableScope)
+  else
+    pure ()
+
 private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError ResolvedNumberRef := do
   let declaration ←
@@ -342,17 +366,14 @@ private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
     | none =>
         throw (.fieldNotNumber declaration.path
           declaration.policy.kind.surfaceKind)
-  let available := origin.availableLevels candidateLevels outerLevels
-  if !repeatableScopeAvailable declaration.repeatableScope available then
-    throw (.fieldOutsideEnvironment origin declaration.path available
-      declaration.repeatableScope)
+  requireOuterFieldAvailable origin outerLevels declaration
   pure { declaration, core := { origin, field } }
 
-/-- Resolve one String filter reference against the candidate and captured environments. It mirrors
+/-- Resolve one String filter reference, asking a marked one's captured environment. It mirrors
     the numeric resolver exactly apart from the declaration projection, which is the model-owned
     String **value** capability, so a raw-mode String is refused here. -/
 private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError HavingStringRef := do
   let declaration ←
@@ -362,37 +383,31 @@ private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
     | none =>
         throw (.fieldNotStringValue declaration.path
           declaration.policy.kind.surfaceKind)
-  let available := origin.availableLevels candidateLevels outerLevels
-  if !repeatableScopeAvailable declaration.repeatableScope available then
-    throw (.fieldOutsideEnvironment origin declaration.path available
-      declaration.repeatableScope)
+  requireOuterFieldAvailable origin outerLevels declaration
   pure { origin, field }
 
 /-- Resolve one presence filter reference. Presence accepts any declared field, so this checks the
-    declaration's existence and its availability in the chosen environment, with no kind gate. -/
+    declaration's existence and a marked one's captured environment, with no kind gate. -/
 private def FlatModel.resolveHavingPresenceInEnvironment (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError HavingPresenceRef := do
   let declaration ←
     (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
-  let available := origin.availableLevels candidateLevels outerLevels
-  if !repeatableScopeAvailable declaration.repeatableScope available then
-    throw (.fieldOutsideEnvironment origin declaration.path available
-      declaration.repeatableScope)
+  requireOuterFieldAvailable origin outerLevels declaration
   pure { origin, field := declaration.id }
 
 private def FlatModel.resolveHavingRepetitionInEnvironment (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceGroupReference) :
     Except CorrelationElabError HavingRepetitionRef := do
   let resolved ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
   if !model.hasGroupPath resolved.path then
     throw (.unknownRepetitionGroup resolved.path)
-  let available := origin.availableLevels candidateLevels outerLevels
-  let scope := model.repeatableScopeForGroupPath resolved.path
-  if let some missing := scope.find? fun level => !available.contains level then
-    throw (.repetitionOutsideEnvironment origin resolved.path available missing)
+  if origin == .outer then
+    let scope := model.repeatableScopeForGroupPath resolved.path
+    if let some missing := scope.find? fun level => !outerLevels.contains level then
+      throw (.repetitionOutsideEnvironment origin resolved.path outerLevels missing)
   let source := match model.repeatableGroups.find? (fun group => group.path == resolved.path) with
     | some group => HavingRepetitionSource.repeatable group.level
     | none => .fixed resolved.path
@@ -545,6 +560,38 @@ def CheckedStarHaving.condition
     CorrelatedHaving :=
   checked.authored
 
+/-- The first **unmarked** reference of an authored filter, in authored order, whose level its
+    candidate environment does not hold. The star route asks it once every leaf has resolved and
+    passed its comparison's kind and scale gates, because the Kernel names a body's refused
+    comparison ahead of the filter's iteration class, on a repetition the filter does not iterate
+    too ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)). -/
+def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
+    (declaringGroup : GroupPath) (candidateLevels : List RepeatableLevel) :
+    SurfaceCorrelatedHaving → Option CorrelationElabError
+  | .compareNumbers _ left right =>
+      (field left.origin left.field).orElse fun _ => field right.origin right.field
+  | .compareRepetitions _ left right =>
+      (group left.origin left.group).orElse fun _ => group right.origin right.group
+  | .compareStrings _ reference _ => field reference.origin reference.field
+  | .presence _ reference => field reference.origin reference.field
+  | .and left right | .or left right =>
+      (left.candidateEnvironmentRefusal? model declaringGroup candidateLevels).orElse fun _ =>
+        right.candidateEnvironmentRefusal? model declaringGroup candidateLevels
+where
+  field (origin : HavingOrigin) (reference : SurfaceFieldPath) : Option CorrelationElabError := do
+    guard (origin == .inner)
+    let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).toOption
+    guard !(repeatableScopeAvailable declaration.repeatableScope candidateLevels)
+    pure (.fieldOutsideEnvironment .inner declaration.path candidateLevels
+      declaration.repeatableScope)
+  group (origin : HavingOrigin) (reference : SurfaceGroupReference) :
+      Option CorrelationElabError := do
+    guard (origin == .inner)
+    let resolved ← (reference.resolveAgainst declaringGroup).toOption
+    let missing ← (model.repeatableScopeForGroupPath resolved.path).find? fun level =>
+      !candidateLevels.contains level
+    pure (.repetitionOutsideEnvironment .inner resolved.path candidateLevels missing)
+
 /-- Lower the source-closed Number/repetition-comparison filter fragment against one validated star plan. The result retains the shared filter tree and exact candidate/captured environment split; wider filter leaves remain outside this fragment. -/
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving) :
@@ -553,15 +600,12 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath declaringGroup
   let condition ← elaborateHavingCoreWith {
-    number :=
-      model.resolveHavingNumberInEnvironment declaringGroup candidateLevels outerLevels
-    repetition :=
-      model.resolveHavingRepetitionInEnvironment declaringGroup candidateLevels outerLevels
-    string :=
-      model.resolveHavingStringInEnvironment declaringGroup candidateLevels outerLevels
-    presence :=
-      model.resolveHavingPresenceInEnvironment declaringGroup candidateLevels
-        outerLevels } authored
+    number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
+    repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels
+    string := model.resolveHavingStringInEnvironment declaringGroup outerLevels
+    presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels } authored
+  if let some refusal := authored.candidateEnvironmentRefusal? model declaringGroup candidateLevels then
+    throw refusal
   if hReopened : condition.reachesReopenedLevel model reopenedLevels = true then
     if hWellFormed :
         condition.wellFormedForEnvironments model candidateLevels outerLevels = true then

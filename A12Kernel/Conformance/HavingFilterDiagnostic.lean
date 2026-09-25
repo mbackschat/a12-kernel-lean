@@ -12,8 +12,8 @@ count — produced the identical class in every cell
 ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)). One shared
 projection is therefore right, and a per-carrier table would have been three copies of one fact.
 
-The comparison rows are the reason the two arms carry the field's kind. A **numeric** comparison
-collapses every non-Number, non-temporal kind into one class; a **String-literal** comparison spreads
+The comparison rows are the reason the two arms carry the field's kind. A numeric **ordering**
+comparison collapses every non-Number, non-temporal kind into one class; a **String-literal** comparison spreads
 the same kinds across four, and that column is the shared literal-comparison ladder's `stringLike` row cell
 for cell — the same Kernel vocabulary reached through a generated equality. Either column read off
 the other is wrong for six kinds of eight, which is what these rows lock.

@@ -49,6 +49,10 @@ private def due : FlatFieldDecl :=
     policy := { kind := .temporal .date TemporalComponents.fullDate },
     temporalTargetPolicy := some { format := "dd.MM.yyyy" } }
 
+/-- A scale-2 Number beside the scale-0 `Amount` on the candidate row, for the equality scale gate. -/
+private def paid : FlatFieldDecl :=
+  { amount with id := 18, name := "Paid", policy := { kind := .number { scale := 2, signed := false } } }
+
 private def sectionLimit : FlatFieldDecl :=
   { id := 9
     groupPath := ["Shop", "Sections"]
@@ -73,7 +77,7 @@ private def extraValue : FlatFieldDecl :=
     repeatableScope := [10, 40] }
 
 private def model : FlatModel :=
-  { fields := [amount, note, token, flag, signed, span, due, custom, sectionLimit,
+  { fields := [amount, note, token, flag, signed, span, due, custom, paid, sectionLimit,
       otherAmount, extraValue]
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
@@ -467,6 +471,39 @@ private def offPathDiagnostic? (origin : HavingOrigin) : Option KernelStaticDiag
 
 example : offPathDiagnostic? .outer = some .noWildcard ∧
     offPathDiagnostic? .inner = some .invalidIterationInFilterCondition := by native_decide
+
+private def bodyDiagnostic? (having : SurfaceCorrelatedHaving) : Option KernelStaticDiagnostic :=
+  match havingErrorOf amount.groupPath (source) having with
+  | some (.having error) => error.diagnostic?
+  | _ => none
+
+/- **A body's comparison is raised ahead of the filter's iteration class.** The peer measures it on a
+   sibling repetition the filter does not iterate, the rows mirrored here
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)): the sibling `Other/Amount`
+   against the scale-2 candidate `Paid` draws the scale gate's class, while its sound twin against
+   `Amount` draws the iteration class. Checking each side's environment as it is read names the
+   iteration class for both. -/
+example :
+    bodyDiagnostic? (.compareNumbers .equal (surfaceNumber .inner otherAmount.groupPath "Amount")
+        (surfaceNumber .inner amount.groupPath "Paid")) = some .invalidCompareDecimalPlaces ∧
+      bodyDiagnostic? (.compareNumbers .equal (surfaceNumber .inner otherAmount.groupPath "Amount")
+        (surfaceNumber .inner amount.groupPath "Amount")) =
+        some .invalidIterationInFilterCondition := by
+  native_decide
+
+/- **An equality with a non-Number side leaves this Number fragment and claims no class.** The
+   ordering column holds for `<` on two fields of the filtered row, while the Kernel judges an
+   equality by its pair, drawing `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for this one and admitting two
+   Strings ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), so projecting the
+   ordering column onto `==` names a class the Kernel does not draw. -/
+example :
+    let text := surfaceNumber .inner amount.groupPath "Note"
+    let number := surfaceNumber .inner amount.groupPath "Amount"
+    bodyDiagnostic? (.compareNumbers .less text number) = some .invalidTypeForComparison ∧
+      havingErrorOf amount.groupPath (source) (.compareNumbers .equal text number) =
+        some (.having (.equalityFieldNotNumber note.path .string)) ∧
+      bodyDiagnostic? (.compareNumbers .equal text number) = none := by
+  native_decide
 
 /- Either an inner or outer over-capacity coordinate makes the selected Number cell formally unavailable. -/
 example :
