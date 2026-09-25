@@ -41,7 +41,7 @@ private def numberSource? : Option (CheckedNumberEntitySource model) :=
     rest := [] }).toOption
 
 private def filledSource? : Option (CheckedStarFieldPath model) :=
-  (elaborateFilledFieldStarValidationSource model ["Policy"] starPath).toOption
+  (elaborateFilledFieldStarValidationSource model ["Policy"] (writtenGroup := ["Policy"]) starPath).toOption
 
 private def filledGroupSource? : Option (CheckedStarredGroupSource model) :=
   (elaborateStarredGroupSource model ["Policy"] starredGroupPath).toOption

@@ -447,7 +447,7 @@ end CheckedFieldEntityShape
     index-keyed level draws its index class ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def resolveFieldEntityOperandIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (authored : SurfaceFieldEntityOperand)
-    (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath := declaringGroup) :
+    (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath) :
     Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model) :=
   -- A computation's fixed target is the field it writes; a validation's error field otherwise.
   let written := fixedTargetGroup?.getD writtenGroup
@@ -482,11 +482,12 @@ def resolveFieldEntityOperandIn (model : FlatModel)
       | .terminalRepeatable source => pure (.starredGroup source)
       | .terminalPresence source => pure (.starredGroupPresence source)
 
-/-- The scalar instance: an operand read where no repeatable level is bound. -/
+/-- The scalar instance: an operand read where no repeatable level is bound, beside an error field
+    in the rule's own group. -/
 def resolveFieldEntityOperandUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntityOperand) :
     Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model) :=
-  resolveFieldEntityOperandIn model declaringGroup [] authored
+  resolveFieldEntityOperandIn model declaringGroup [] authored (writtenGroup := declaringGroup)
 
 private def resolveFieldEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (fixedTargetGroup? : Option GroupPath)
@@ -510,7 +511,7 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource)
     (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -553,7 +554,7 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
 def elaborateFieldEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
     (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   elaborateFieldEntityShapeIn model declaringGroup [] authored arity fixedTargetGroup? writtenGroup
 
@@ -739,8 +740,11 @@ theorem elaborateFieldEntityShapeIn_declaringGroupValid
 /-- The scalar specialization inherits it unchanged. -/
 theorem elaborateFieldEntityShape_declaringGroupValid
     {model : FlatModel} {declaringGroup : GroupPath}
-    {authored : SurfaceFieldEntitySource} {checked : CheckedFieldEntityShape model}
-    (ok : elaborateFieldEntityShape model declaringGroup authored = .ok checked) :
+    {authored : SurfaceFieldEntitySource} {arity : EntityListArity}
+    {fixedTargetGroup? : Option GroupPath} {writtenGroup : GroupPath}
+    {checked : CheckedFieldEntityShape model}
+    (ok : elaborateFieldEntityShape model declaringGroup authored arity fixedTargetGroup?
+      writtenGroup = .ok checked) :
     GroupPath.isValid declaringGroup = true :=
   elaborateFieldEntityShapeIn_declaringGroupValid ok
 

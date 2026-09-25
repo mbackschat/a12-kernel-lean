@@ -289,10 +289,11 @@ def firstKindGateRefusal? :
 
 /-- Admit one temporal operand list in the Kernel's gate order: the shared entity shape, then the kind gate over every operand, then the single-declared-format rule that shares the kind gate's code, and only then the category-mixing gate that certification reports. -/
 def elaborateTemporalValuesNotUniqueSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except TemporalValuesNotUniqueElabError
       (CheckedTemporalValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
     |>.mapError .shape
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw refusal

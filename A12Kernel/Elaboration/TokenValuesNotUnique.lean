@@ -47,10 +47,11 @@ structure CheckedTokenValuesNotUniqueSource (model : FlatModel) where
 /-- Admit one token operand list in Kernel order: common shape, whole-list kind refusal, one String
     or Enumeration category, then the existing token certificate. -/
 def elaborateTokenValuesNotUniqueSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceTokenValuesNotUniqueSource) :
+    (declaringGroup : GroupPath) (authored : SurfaceTokenValuesNotUniqueSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except TokenValuesNotUniqueElabError
       (CheckedTokenValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
     |>.mapError fun error => .source (.shape error)
   match firstFieldListKindRefusal? shape.operands with
   | some refusal => throw (.inadmissibleKind refusal.path refusal.actual)

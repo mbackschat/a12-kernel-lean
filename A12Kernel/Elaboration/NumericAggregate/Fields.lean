@@ -56,6 +56,7 @@ def NumericProductAggregateElabError.diagnostic? :
   | .wildcardOnlyAtLowestLevel _ => some .wildcardOnlyAtLowestLevelAllowed
   | .wildcardAtLowestLevelRequired => some .wildcardAtLowestLevelRequired
   | .repeatableLevelRequired => some .repeatableLevelRequired
+  | .source (.path (.containmentBelowStar unbound)) => unbound.diagnostic?
   | .source _ | .incompatibleTopology => none
 
 /-- Two Number-star declarations certified against one model, one immediate owning group, one declaring scope that binds every unstarred repeatable ancestor, and one identical lowest-repeatable-star plan. Runtime row alignment follows from this shared plan rather than from zipping independently expanded lists. -/
@@ -90,7 +91,7 @@ private def NumericProductOperandShape.groupPath :
 
 /-- Resolve one Number field while retaining the pair carrier's three measured wildcard states: no repeatable level, exactly the lowest unbound level starred, or a refusal with its exact class. Generic star lowering remains carrier-neutral because other consumers may legitimately receive the outer binding from their own context. -/
 private def elaborateNumericProductOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceStarFieldPath) :
+    (declaringGroup writtenGroup : GroupPath) (authored : SurfaceStarFieldPath) :
     Except NumericProductAggregateElabError
       (NumericProductOperandShape model declaringGroup) := do
   let declaration ← model.resolveFieldDeclaration declaringGroup authored.toFieldPath
@@ -98,7 +99,7 @@ private def elaborateNumericProductOperand (model : FlatModel)
   match declaration.toNumberField? with
   | none => throw (.source (.fieldNotNumber declaration.path))
   | some _ =>
-      match elaborateStarNumberSource model declaringGroup authored with
+      match elaborateStarNumberSource model declaringGroup authored writtenGroup with
       | .error (.path (.missingWildcard _)) =>
           if declaration.repeatableScope.isEmpty then
             pure (.fixed declaration)
@@ -123,11 +124,11 @@ private def elaborateNumericProductOperand (model : FlatModel)
 
 /-- Check two Number fields through the established star owner, then require the Kernel's same-owning-group and exact lowest-star pair shape. -/
 private def elaborateNumericProductAggregateCore (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
+    (declaringGroup writtenGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
     Except NumericProductAggregateElabError
       (CheckedNumericProductAggregate model) := do
-  let left ← elaborateNumericProductOperand model declaringGroup authored.left
-  let right ← elaborateNumericProductOperand model declaringGroup authored.right
+  let left ← elaborateNumericProductOperand model declaringGroup writtenGroup authored.left
+  let right ← elaborateNumericProductOperand model declaringGroup writtenGroup authored.right
   if hGroup : left.groupPath = right.groupPath then
     match left, right with
     | .fixed _, .fixed _ => throw .repeatableLevelRequired
@@ -150,10 +151,11 @@ private def elaborateNumericProductAggregateCore (model : FlatModel)
 
 /-- Admit the executable pair only after its underlying unfiltered declarations pass every shape gate. `Having` is rejected at this carrier boundary without interpreting the filter. -/
 def elaborateNumericProductAggregate (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
+    (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except NumericProductAggregateElabError
       (CheckedNumericProductAggregate model) := do
-  let checked ← elaborateNumericProductAggregateCore model declaringGroup authored
+  let checked ← elaborateNumericProductAggregateCore model declaringGroup writtenGroup authored
   match authored.leftHaving, authored.rightHaving with
   | none, none => pure checked
   | _, _ => throw .wildcardAtLowestLevelRequired

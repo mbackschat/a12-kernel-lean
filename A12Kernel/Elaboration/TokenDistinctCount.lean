@@ -83,9 +83,10 @@ private def distinctPositionalError? (operands : List (ResolvedFieldEntityOperan
 /-- Resolve the shared shape, class this operator's positional refusals from the authored order, and
     otherwise certify through the common token list unchanged. -/
 def elaborateTokenDistinctCountSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceTokenDistinctCountSource) :
+    (declaringGroup : GroupPath) (authored : SurfaceTokenDistinctCountSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except TokenDistinctCountElabError (CheckedTokenEntitySource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
     |>.mapError fun error => .source (.shape error)
   match distinctPositionalError? shape.operands with
   | some error => throw error

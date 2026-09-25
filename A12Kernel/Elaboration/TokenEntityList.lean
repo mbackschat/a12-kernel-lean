@@ -339,9 +339,10 @@ def certifyTokenEntityShape (model : FlatModel)
 /-- Resolve duplicate/cardinality shape before certifying the complete list as String/ordinary stored-Enumeration. -/
 def elaborateTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource)
-    (arity : EntityListArity := .manyRequired) :
+    (arity : EntityListArity := .manyRequired) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored arity
+      (writtenGroup := writtenGroup)
     |>.mapError .shape
   certifyTokenEntityShape model declaringGroup shape
 
@@ -375,7 +376,7 @@ private def bindingScope :
 end ResolvedProjectedTokenEntityOperand
 
 private def resolveProjectedTokenEntityOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (fixedTargetGroup? : Option GroupPath) :
+    (declaringGroup : GroupPath) (fixedTargetGroup? : Option GroupPath) (writtenGroup : GroupPath) :
     SurfaceProjectedTokenEntityOperand →
       Except TokenEntityElabError
         (ResolvedProjectedTokenEntityOperand model)
@@ -386,7 +387,7 @@ private def resolveProjectedTokenEntityOperand (model : FlatModel)
         | .direct _ => EnumerationProjectionRef.stored
         | .category _ name => .category name
       let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError
           (fun error => .shape (.resolve error))
       pure (.field declaration projectionRef)
   | .star source projectionRef => do
@@ -397,7 +398,7 @@ where
   star (source : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup source).mapError fun error =>
       .shape (.starPath
-        (error.placeBelowStar model declaringGroup (fixedTargetGroup?.getD declaringGroup)))
+        (error.placeBelowStar model declaringGroup (fixedTargetGroup?.getD writtenGroup)))
 
 private def firstDuplicateResolvedProjectedTokenField? :
     List (ResolvedProjectedTokenEntityOperand model) → Option FieldId
@@ -427,15 +428,18 @@ private def certifyProjectedTokenEntityOperand (model : FlatModel)
 def elaborateProjectedTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceProjectedTokenEntitySource)
-    (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none) :
+    (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) :=
   match hModel : model.validate with
   | .error error => .error (.shape (.resolve error))
   | .ok () => do
       let first ←
-        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? authored.first
+        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? writtenGroup
+          authored.first
       let rest ← authored.rest.mapM fun operand =>
-        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? operand
+        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? writtenGroup
+          operand
       -- The shared shape's list-wide gate, asked of this boundary's own resolved slots.
       if let some targetGroup := fixedTargetGroup? then
         if let some unbound := model.firstUnboundOperandLevel? declaringGroup targetGroup

@@ -251,7 +251,7 @@ private def certifyAtLeastOneDateRangeOverlapsListOperands (model : FlatModel)
 /-- Resolve and gate the scalar shape before reading the list, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Finally certify the supported DateRange policies. -/
 def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
     Except AtLeastOneDateRangeOverlapsElabError
       (CheckedAtLeastOneDateRangeOverlapsSource model) :=
   match model.validate with
@@ -259,12 +259,13 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
   | .ok () => do
       let scalarDeclaration ←
         resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
+            (writtenGroup := writtenGroup)
           |>.mapError .shape
           |>.bind certifyAtLeastOneDateRangeOverlapScalarShape
       let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
           first := authored.scalar
           rest := authored.list.first :: authored.list.rest
-        } |>.mapError .shape
+        } (writtenGroup := writtenGroup) |>.mapError .shape
       match shape.rest with
       | [] => throw .incoherentCore
       | listFirst :: listRest => do
@@ -320,11 +321,12 @@ yearless. `scope` is the reading rule's iteration scope, so an unstarred operand
 sit inside a level the rule iterates. -/
 def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
     Except YearlessDateRangesOverlapElabError
       (CheckedYearlessAtLeastOneDateRangeOverlapsSource model) := do
   let scalarOperand ←
     resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
+        (writtenGroup := writtenGroup)
       |>.mapError fun error => .source (.shape error)
   let scalarDeclaration ←
     match scalarOperand with
@@ -340,7 +342,7 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
       first := authored.scalar
       rest := authored.list.first :: authored.list.rest
-    } |>.mapError fun error => .source (.shape error)
+    } (writtenGroup := writtenGroup) |>.mapError fun error => .source (.shape error)
   match shape.rest with
   | [] => throw (.source .incoherentCore)
   | listFirst :: listRest => do

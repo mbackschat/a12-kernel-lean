@@ -247,7 +247,7 @@ private def numberListPath? :
     reclassified. -/
 def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceTokenEntityStringLiteralValueListSource) :
+    (authored : SurfaceTokenEntityStringLiteralValueListSource) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenEntityStringLiteralValueListElabError
       (CheckedTokenEntityStringLiteralValueListSource model) := do
   -- **A sole unstarred field is legal here**, on all three quantifiers, where the entity-list
@@ -256,7 +256,7 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
   -- The rule is the carrier's, not the shared checker's: comparing fields against *literals* is a
   -- complete question with one field, where comparing them against each other is not.
   let shape ← elaborateFieldEntityShape model declaringGroup authored.fields
-      .soleAllowed
+      .soleAllowed (writtenGroup := writtenGroup)
     |>.mapError .shape
   let (firstValue, restValues) ←
     match authored.values with
@@ -356,12 +356,14 @@ def assembleTokenEntityValueListSource
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/
 def elaborateTokenEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceTokenEntityValueListSource) :
+    (authored : SurfaceTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
   let fields ← elaborateTokenEntitySource model declaringGroup authored.fields .soleAllowed
+      writtenGroup
     |>.mapError .fields
   let values ← elaborateTokenEntitySource model declaringGroup authored.values .soleAllowed
+      writtenGroup
     |>.mapError .values
   assembleTokenEntityValueListSource authored.quantifier fields values
 
@@ -372,14 +374,16 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
     not change the construct's arity, which no row tests. -/
 def elaborateProjectedTokenEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceProjectedTokenEntityValueListSource) :
+    (authored : SurfaceProjectedTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
   let fields ←
     elaborateProjectedTokenEntitySource model declaringGroup authored.fields .soleAllowed
+        (writtenGroup := writtenGroup)
       |>.mapError .fields
   let values ←
     elaborateProjectedTokenEntitySource model declaringGroup authored.values .soleAllowed
+        (writtenGroup := writtenGroup)
       |>.mapError .values
   assembleTokenEntityValueListSource authored.quantifier fields values
 

@@ -220,11 +220,12 @@ private def certifyAgainst (model : FlatModel) (expected : TemporalComponents) :
 
     The **first** contributed declaration fixes the expected set. That is a reporting choice rather than a semantic one: every later declaration must equal it, so the admitted lists are the same whichever member is read first, and only the path named in a refusal depends on the order. -/
 def elaborate (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceFieldEntitySource) :
+    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
     Except TemporalExtremumOperandElabError
       (CheckedTemporalExtremumOperands model) := do
   let shape ←
-    (elaborateFieldEntityShape model declaringGroup authored).mapError .shape
+    (elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)).mapError
+      .shape
   let declarations ←
     (shape.first :: shape.rest).foldlM
       (fun accumulated operand => do

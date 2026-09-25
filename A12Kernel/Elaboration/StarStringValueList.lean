@@ -60,7 +60,7 @@ inductive StarStringValueListElabError where
 /-- Reuse the general checked star path, then retain its exact String declaration. -/
 def elaborateStarStringSource (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceStarFieldPath)
-    (having : Option SurfaceCorrelatedHaving := none) (writtenGroup : GroupPath := declaringGroup) :
+    (having : Option SurfaceCorrelatedHaving) (writtenGroup : GroupPath) :
     Except StarStringValueListElabError (CheckedStarStringSource model) := do
   let source ← elaborateStarFieldPath model declaringGroup authored
     |>.mapError fun error => .path (error.placeBelowStar model declaringGroup writtenGroup)

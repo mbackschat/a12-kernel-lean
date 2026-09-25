@@ -415,24 +415,24 @@ def elaborateIteratedConstructionPair (model : FlatModel)
 rule's own iteration crosses, and every gate is the yearless owner's. -/
 def elaborateIteratedYearlessPluralOverlap (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) :=
   (.yearlessPluralOverlap <$>
     elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model declaringGroup
-      scope authored) |>.mapError .yearlessOverlap
+      scope authored writtenGroup) |>.mapError .yearlessOverlap
 
 /-- Resolve one unconfigured yearless overlap predicate whose unstarred operands the rule's own
 iteration may cross. Every gate is the yearless owner's, including its per-operand yearless
 certification and the shared shape rules; only the operand locus widens. -/
 def elaborateIteratedYearlessOverlap (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceFieldEntitySource) :
+    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) :=
   (.yearlessOverlap <$>
     elaborateYearlessDateRangesOverlapSourceIn model declaringGroup scope
-      authored) |>.mapError .yearlessOverlap
+      authored writtenGroup) |>.mapError .yearlessOverlap
 
 /-- Resolve one plural overlap predicate whose unstarred operands the rule's own iteration may
 cross, on either side. The distinguished scalar and the list share the reading scope, and every other
@@ -440,12 +440,12 @@ gate — the scalar's own shape rule, the cross-side duplicate and overlap check
 rule, and the measured Number-pair refusal — is the scalar operator's, unchanged. -/
 def elaborateIteratedPluralOverlap (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) :=
   (.pluralOverlap <$>
     elaborateAtLeastOneDateRangeOverlapsSourceIn model declaringGroup scope
-      authored) |>.mapError .pluralOverlap
+      authored writtenGroup) |>.mapError .pluralOverlap
 
 /-- Resolve one singular overlap predicate whose unstarred operands the rule's own iteration may
 cross. Every gate is the scalar operator's, including the group refusal and the uniform-year rule;
@@ -453,11 +453,11 @@ only the operand-locus admission widens. A starred operand keeps its own topolog
 a starred and an unstarred occurrence of one field is admitted here exactly as the Kernel admits it,
 with the star reopening the level the bare operand reads at the current row. -/
 def elaborateIteratedOverlap (model : FlatModel) (declaringGroup : GroupPath)
-    (scope : List RepeatableLevel) (authored : SurfaceFieldEntitySource) :
+    (scope : List RepeatableLevel) (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) :=
   (.overlap <$>
-    elaborateDateRangesOverlapSourceIn model declaringGroup scope authored)
+    elaborateDateRangesOverlapSourceIn model declaringGroup scope authored writtenGroup)
     |>.mapError .overlap
 
 end A12Kernel

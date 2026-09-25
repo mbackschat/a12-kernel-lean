@@ -281,10 +281,11 @@ uniform-year gate is not applied here, because a source reaching this route is u
 construction — a mixed list is refused by the exact owner before the fallback. -/
 def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceFieldEntitySource) :
+    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
     Except YearlessDateRangesOverlapElabError
       (CheckedYearlessDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
+      (writtenGroup := writtenGroup)
     |>.mapError fun error => .source (.shape error)
   let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
     shape.first

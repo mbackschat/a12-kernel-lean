@@ -132,7 +132,7 @@ private def shapeError? (operands : List SurfaceFieldEntityOperand) :
   match operands with
   | [] => none
   | first :: rest =>
-      match elaborateFieldEntityShape rootsModel ["Item"] { first, rest } with
+      match elaborateFieldEntityShape rootsModel ["Item"] (writtenGroup := ["Item"]) { first, rest } with
       | .error error => some error
       | .ok _ => none
 
@@ -289,7 +289,7 @@ example :
    no row measures it: the measurement instrument refuses a rule declared there before the Kernel
    sees it ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)). -/
 example :
-    (elaborateFieldEntityShape rootsModel ["Item", "Lapses"]
+    (elaborateFieldEntityShape rootsModel ["Item", "Lapses"] (writtenGroup := ["Item", "Lapses"])
       { first := .group (.ruleGroup false), rest := [] }).toOption.isSome = true := by
   native_decide
 

@@ -38,7 +38,7 @@ inductive AllRowsValidationStarNumberSide where
 
 /-- Reuse general checked star-path lowering, then retain the declaration's exact Number metadata. -/
 def elaborateStarNumberSource (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceStarFieldPath) (writtenGroup : GroupPath := declaringGroup) :
+    (authored : SurfaceStarFieldPath) (writtenGroup : GroupPath) :
     Except StarNumberElabError (CheckedStarNumberSource model) := do
   let source ← elaborateStarFieldPath model declaringGroup authored
     |>.mapError fun error => .path (error.placeBelowStar model declaringGroup writtenGroup)
@@ -49,7 +49,7 @@ def elaborateStarNumberSource (model : FlatModel) (declaringGroup : GroupPath)
 /-- Resolve one general Number star and the narrow source-closed filter fragment against the same model-owned candidate/captured environment split. -/
 def elaborateStarNumberHavingSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceStarFieldPath)
-    (having : SurfaceCorrelatedHaving) (writtenGroup : GroupPath := declaringGroup) :
+    (having : SurfaceCorrelatedHaving) (writtenGroup : GroupPath) :
     Except StarNumberElabError (CheckedStarNumberHavingSource model) := do
   let source ← elaborateStarNumberSource model declaringGroup authored writtenGroup
   let filter ← elaborateStarHavingCore model declaringGroup source.source having

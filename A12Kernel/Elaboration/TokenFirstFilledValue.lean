@@ -93,9 +93,10 @@ private def firstFilledMeasuredKindError? (model : FlatModel)
 /-- Resolve the common entity-list shape first, then project the measured `FirstFilledValue` kind
     classes before token certification would collapse them into a local kind mismatch. -/
 def elaborateFirstFilledTokenSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceFirstFilledTokenSource) :
+    (declaringGroup : GroupPath) (authored : SurfaceFirstFilledTokenSource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except FirstFilledTokenElabError (CheckedFirstFilledTokenSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
     |>.mapError fun error => .source (.shape error)
   match firstFilledMeasuredKindError? model shape.operands with
   | some error => throw error

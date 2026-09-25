@@ -221,7 +221,10 @@ def checkDateRangeFirstFilledDirectComputation
       (CheckedDateRangeFirstFilledDirectComputation model) :=
   -- Matched rather than bound, so the shape's own group guard is available as the certificate's
   -- validity field instead of being re-tested on a path this resolution already walked.
-  match hShape : elaborateFieldEntityShape model declaringGroup authored with
+  -- The declaring group places a refusal here, since this computation names no target to the
+  -- shape; no row measures this carrier's placement ([SG9](../../docs/gaps/paths-and-groups.md)).
+  match hShape : elaborateFieldEntityShape model declaringGroup authored
+      (writtenGroup := declaringGroup) with
   | .error error => .error (.sourceShape error)
   | .ok shape => do
   let sourceDeclarations ← directStoredDeclarations model shape.operands

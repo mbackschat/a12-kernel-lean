@@ -1,0 +1,133 @@
+{
+ "command": "dmtool model check",
+ "engineVersion": "30.8.1",
+ "model": "all3.json",
+ "rules": {
+  "/Fulfilment/Ledger/Rbvcallledger": [],
+  "/Fulfilment/Ledger/Rbvcbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rdfvnuallledger": [],
+  "/Fulfilment/Ledger/Rdfvnubelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rdmaxallledger": [],
+  "/Fulfilment/Ledger/Rdmaxbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rdndvallledger": [],
+  "/Fulfilment/Ledger/Rdndvbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rdrovallledger": [],
+  "/Fulfilment/Ledger/Rdrovbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rdrsovallledger": [],
+  "/Fulfilment/Ledger/Rdrsovbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Revlallledger": [],
+  "/Fulfilment/Ledger/Revlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rsopallledger": [
+   "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED"
+  ],
+  "/Fulfilment/Ledger/Rsopbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rtffvallledger": [],
+  "/Fulfilment/Ledger/Rtffvbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rtfvnuallledger": [],
+  "/Fulfilment/Ledger/Rtfvnubelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rtndvallledger": [],
+  "/Fulfilment/Ledger/Rtndvbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rbvcallship": [],
+  "/Fulfilment/Shipments/Rbvcbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rdfvnuallship": [],
+  "/Fulfilment/Shipments/Rdfvnubelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rdmaxallship": [],
+  "/Fulfilment/Shipments/Rdmaxbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rdndvallship": [],
+  "/Fulfilment/Shipments/Rdndvbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rdrovallship": [],
+  "/Fulfilment/Shipments/Rdrovbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rdrsovallship": [],
+  "/Fulfilment/Shipments/Rdrsovbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Revlallship": [],
+  "/Fulfilment/Shipments/Revlbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rsopallship": [
+   "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED"
+  ],
+  "/Fulfilment/Shipments/Rsopbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rtffvallship": [],
+  "/Fulfilment/Shipments/Rtffvbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rtfvnuallship": [],
+  "/Fulfilment/Shipments/Rtfvnubelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rtndvallship": [],
+  "/Fulfilment/Shipments/Rtndvbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Summary/Rbvcbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rdfvnubelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rdmaxbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rdndvbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rdrovbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rdrsovbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Revlbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rsopbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rtffvbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rtfvnubelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rtndvbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ]
+ },
+ "valid": false
+}

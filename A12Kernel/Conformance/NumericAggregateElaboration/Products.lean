@@ -49,7 +49,7 @@ private def productAuthoringView (left right : SurfaceStarFieldPath) :
 
 /- The `Having` refusal controls use an independently admissible same-scale row filter. -/
 example :
-    (elaborateStarNumberHavingSource productModel ["Form"] aggregateStar
+    (elaborateStarNumberHavingSource productModel ["Form"] (writtenGroup := ["Form"]) aggregateStar
       productHaving).isOk = true := by
   native_decide
 

@@ -326,10 +326,11 @@ def firstPartialTemporalOperand? :
     written and a conformance case locking the admitted expansion sat beside it, which is the shape
     a stale comment takes: nothing executes prose, so only a reader loses. -/
 def elaborateTemporalDistinctCountSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except TemporalDistinctCountElabError
       (CheckedTemporalDistinctCountSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
     |>.mapError fun error => .slot (.shape error)
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw (.slot refusal)

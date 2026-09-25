@@ -6,6 +6,17 @@ import A12Kernel.Elaboration.FilledFieldStarCount
 import A12Kernel.Elaboration.StarNumberValueList
 import A12Kernel.Elaboration.NumberValuesNotUnique
 import A12Kernel.Elaboration.StarStringValueList
+import A12Kernel.Elaboration.StarEnumerationValueList
+import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
+import A12Kernel.Elaboration.TemporalExtremumOperands
+import A12Kernel.Elaboration.TemporalDistinctCount
+import A12Kernel.Elaboration.TemporalValuesNotUnique
+import A12Kernel.Elaboration.TokenFirstFilledValue
+import A12Kernel.Elaboration.TokenDistinctCount
+import A12Kernel.Elaboration.TokenValuesNotUnique
+import A12Kernel.Elaboration.TokenValueCount
+import A12Kernel.Elaboration.TokenEntityValueList
+import A12Kernel.Elaboration.NumericAggregate.Fields
 
 /-! # A group operand's repetition walk
 
@@ -508,7 +519,9 @@ private def fulfilmentCarriers (starLast : Bool) (rowGroup : GroupPath) :
    quantifiers, the filled-field starred group source and a starred group-list operand each draw
    containment from `Ledger` and `Shipments` and the missing star from `Summary`, and each is
    admitted with both levels starred
-   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)). -/
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)).
+   The starred group source's rows, `NumberOfFilledFields` and `AtLeastOneFieldFilled` over `Seal`,
+   are the later grid's ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds)). -/
 example :
     [fulfilmentCarriers false ["Fulfilment", "Ledger"], fulfilmentCarriers false ["Fulfilment", "Shipments"],
       fulfilmentCarriers false ["Fulfilment", "Summary"], fulfilmentCarriers true ["Fulfilment", "Ledger"],
@@ -530,20 +543,176 @@ example :
     [containment, some (some .noWildcardsGAllowed), containment, some (some .noWildcardsGAllowed)] := by
   native_decide
 
-/- Extrapolated, not measured: Lean's Number value list takes field values, and the retained Number
-   rows read a Number literal, whose fully starred controls the Kernel refuses on the literal. Their
-   below-star rows still drew the placed class ahead of that refusal, and the String rows carry the
-   family, so the starred side is placed the same way. -/
+/- The Number value list read against a field, `Weight In /Fulfilment/Ledger/Total`, is placed the
+   same way and admitted with both levels starred ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds)). -/
 example :
-    [["Fulfilment", "Ledger"], ["Fulfilment", "Shipments"], ["Fulfilment", "Summary"]].map (fun rowGroup =>
+    [(false, ["Fulfilment", "Ledger"]), (false, ["Fulfilment", "Shipments"]),
+      (false, ["Fulfilment", "Summary"]), (true, ["Fulfilment", "Ledger"]),
+      (true, ["Fulfilment", "Shipments"])].map (fun (starLast, rowGroup) =>
       match elaborateStarNumberValueListSource fulfilmentModel rowGroup
-          { quantifier := .atLeastOne, fields := .star (fulfilmentField false "Weight"),
+          { quantifier := .atLeastOne, fields := .star (fulfilmentField starLast "Weight"),
             firstValue := { base := .absolute, groups := ["Fulfilment", "Ledger"], field := "Total" },
             restValues := [] } (writtenGroup := ["Fulfilment", "Summary"]) with
       | .error (.fields (.path error)) => some error.diagnostic?
       | .error _ => some none
       | .ok _ => none) =
-    [containment, containment, noWildcard] := by
+    [containment, containment, noWildcard, none, none] := by
+  native_decide
+
+/-- The fulfilment sheet with the other kinds the later grids read: in `Ledger` a Date, a DateRange
+    with a year and one without, a String and an Enumeration; in `Parcels` a second Number, a Date,
+    both DateRanges, a Boolean and an Enumeration. -/
+private def fulfilmentKindsModel : FlatModel :=
+  let ledger := ["Fulfilment", "Ledger"]
+  let parcels := ["Fulfilment", "Shipments", "Parcels"]
+  let date : FieldPolicy := { kind := .temporal .date TemporalComponents.fullDate }
+  let dateFormat := some { format := "yyyy-MM-dd" }
+  let range (format : String) : Option DateRangeDeclarationPolicy :=
+    some { format, separator := "-" }
+  { fulfilmentModel with
+    fields := fulfilmentModel.fields ++ [
+      { id := 6, groupPath := ledger, name := "LedgerDate", policy := date,
+        temporalTargetPolicy := dateFormat },
+      { id := 7, groupPath := ledger, name := "Window", policy := { kind := .dateRange },
+        dateRangePolicy := range "dd.MM.yyyy" },
+      { id := 8, groupPath := ledger, name := "LCode", policy := text },
+      { id := 9, groupPath := ledger, name := "LSeason", policy := { kind := .dateRange },
+        dateRangePolicy := range "dd.MM" },
+      { id := 10, groupPath := parcels, name := "Qty", policy := number, repeatableScope := [1, 2] },
+      { id := 11, groupPath := parcels, name := "ShipDate", policy := date,
+        temporalTargetPolicy := dateFormat, repeatableScope := [1, 2] },
+      { id := 12, groupPath := parcels, name := "Cover", policy := { kind := .dateRange },
+        dateRangePolicy := range "dd.MM.yyyy", repeatableScope := [1, 2] },
+      { id := 13, groupPath := parcels, name := "Flag", policy := { kind := .boolean },
+        repeatableScope := [1, 2] },
+      { id := 14, groupPath := parcels, name := "Tier", policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["A", "B"] }, repeatableScope := [1, 2] },
+      { id := 15, groupPath := parcels, name := "Season", policy := { kind := .dateRange },
+        dateRangePolicy := range "dd.MM", repeatableScope := [1, 2] },
+      { id := 16, groupPath := ledger, name := "LTier", policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["A", "B"] } }] }
+
+/-- A carrier's verdict: `none` when it is admitted, otherwise the class its refusal projects. -/
+private def verdict (result : Except ε α) (class? : ε → Option KernelStaticDiagnostic) :
+    Option (Option KernelStaticDiagnostic) :=
+  match result with
+  | .ok _ => none
+  | .error error => some (class? error)
+
+/-- Each further grid carrier at its own entry, beside the error field in `Summary`. A DateRange
+    carrier reads at the rule group's own scope, the one its rule assembly supplies. `MinValue`
+    shares `MaxValue`'s entry, so one row stands for both. -/
+private def fulfilmentKindCarriers (starLast : Bool) (rowGroup : GroupPath) :
+    List (Option (Option KernelStaticDiagnostic)) :=
+  let summary := ["Fulfilment", "Summary"]
+  let model := fulfilmentKindsModel
+  let scope := model.repeatableScopeForGroupPath rowGroup
+  let starred (name : String) := fulfilmentField starLast name
+  let list (name : String) : SurfaceFieldEntitySource := { first := .star (starred name), rest := [] }
+  let ledger (name : String) : SurfaceFieldPath :=
+    { base := .absolute, groups := ["Fulfilment", "Ledger"], field := name }
+  let shape := FieldEntityShapeElabError.diagnostic?
+  [verdict (elaborateFirstFilledTokenSource model rowGroup (list "Code") summary)
+      fun | .source (.shape error) => shape error | _ => none,
+   verdict (elaborateTokenDistinctCountSource model rowGroup (list "Code") summary)
+      fun | .source (.shape error) => shape error | _ => none,
+   verdict (elaborateTokenValuesNotUniqueSource model rowGroup (list "Code") summary)
+      fun | .source (.shape error) => shape error | _ => none,
+   verdict (TemporalExtremumOperands.elaborate model rowGroup (list "ShipDate") summary)
+      fun | .shape error => shape error | _ => none,
+   verdict (elaborateTemporalDistinctCountSource model rowGroup (list "ShipDate") summary)
+      fun | .slot (.shape error) => shape error | _ => none,
+   verdict (elaborateTemporalValuesNotUniqueSource model rowGroup (list "ShipDate") summary)
+      fun | .shape error => shape error | _ => none,
+   verdict (elaborateAtLeastOneDateRangeOverlapsSourceIn model rowGroup scope
+        { scalar := .field (ledger "Window"), list := list "Cover" } summary)
+      fun | .shape error => shape error | _ => none,
+   verdict (elaborateDateRangesOverlapSourceIn model rowGroup scope
+        { first := .field (ledger "Window"), rest := [.star (starred "Cover")] } summary)
+      fun | .shape error => shape error | _ => none,
+   verdict (elaborateBooleanValueCountSource model rowGroup true (list "Flag")
+        (writtenGroup := summary))
+      fun | .shape error => shape error | _ => none,
+   verdict (elaborateStarEnumerationValueListSource model rowGroup
+        { quantifier := .atLeastOne, fields := starred "Tier", values := ["A"] } summary)
+      fun | .path error => error.diagnostic? | _ => none,
+   verdict (elaborateNumericProductAggregate model rowGroup
+        { left := starred "Weight", right := starred "Qty" } summary)
+      NumericProductAggregateElabError.diagnostic?,
+   verdict (elaborateTokenValueCountSource model rowGroup "x"
+        { first := .star (starred "Code") .stored, rest := [] } (writtenGroup := summary))
+      fun | .source (.shape error) => shape error | _ => none,
+   verdict (elaborateTokenEntityStringLiteralValueListSource model rowGroup
+        { quantifier := .atLeastOne, values := ["x"],
+          fields := { first := .star (starred "Code"), rest := [.field (ledger "LCode")] } } summary)
+      fun | .shape error => shape error | _ => none,
+   verdict (elaborateTokenEntityValueListSource model rowGroup
+        { quantifier := .atLeastOne, fields := list "Code",
+          values := { first := .field (ledger "LCode"), rest := [] } } summary)
+      fun | .fields (.shape error) => shape error | _ => none,
+   verdict (elaborateYearlessDateRangesOverlapSourceIn model rowGroup scope
+        { first := .field (ledger "LSeason"), rest := [.star (starred "Season")] } summary)
+      fun | .source (.shape error) => shape error | _ => none,
+   verdict (elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model rowGroup scope
+        { scalar := .field (ledger "LSeason"), list := list "Season" } summary)
+      fun | .source (.shape error) => shape error | _ => none]
+
+/- The placement reaches the token, temporal, DateRange and yearless DateRange entity lists, the
+   Boolean and String value counts, the Enumeration and both String value lists, and
+   `SumOfProducts`: each draws containment from `Ledger` and `Shipments` and the missing star from
+   `Summary`, and each is admitted with both levels starred, except `SumOfProducts`, whose own bar
+   refuses a star above the lowest level ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds)). -/
+example :
+    [fulfilmentKindCarriers false ["Fulfilment", "Ledger"],
+      fulfilmentKindCarriers false ["Fulfilment", "Shipments"],
+      fulfilmentKindCarriers false ["Fulfilment", "Summary"],
+      fulfilmentKindCarriers true ["Fulfilment", "Ledger"],
+      fulfilmentKindCarriers true ["Fulfilment", "Shipments"]] =
+    let starBar := [some (some KernelStaticDiagnostic.wildcardOnlyAtLowestLevelAllowed)]
+    [List.replicate 16 containment, List.replicate 16 containment, List.replicate 16 noWildcard,
+      List.replicate 10 none ++ starBar ++ List.replicate 5 none,
+      List.replicate 10 none ++ starBar ++ List.replicate 5 none] := by
+  native_decide
+
+/-- The star on a value list's values side, and a filtered star, each at its own entry beside the
+    error field in `Summary`. The filter compares two fields of the candidate row, the only
+    comparison the correlated filter surface holds. -/
+private def fulfilmentValuesAndFilterCarriers (starLast : Bool) (rowGroup : GroupPath) :
+    List (Option (Option KernelStaticDiagnostic)) :=
+  let summary := ["Fulfilment", "Summary"]
+  let model := fulfilmentKindsModel
+  let starred (name : String) := fulfilmentField starLast name
+  let ledger (name : String) : SurfaceFieldPath :=
+    { base := .absolute, groups := ["Fulfilment", "Ledger"], field := name }
+  let parcels := ["Fulfilment", "Shipments", "Parcels"]
+  let parcel (name : String) : SurfaceHavingNumberRef :=
+    { origin := .inner, field := { base := .absolute, groups := parcels, field := name } }
+  let having : SurfaceCorrelatedHaving := .compareNumbers .equal (parcel "Qty") (parcel "Weight")
+  [verdict (elaborateStringValueListStarValuesSource model rowGroup
+        { quantifier := .atLeastOne, field := ledger "LCode", values := starred "Code" } summary)
+      fun | .path error => error.diagnostic? | _ => none,
+   verdict (elaborateEnumerationValueListStarValuesSource model rowGroup
+        { quantifier := .atLeastOne, field := .direct (ledger "LTier"), values := starred "Tier" }
+        summary)
+      fun | .path error => error.diagnostic? | _ => none,
+   verdict (elaborateNumberEntitySource model rowGroup
+        { first := .starHaving (starred "Weight") having, rest := [] } (writtenGroup := summary))
+      (NumberEntityElabError.aggregateDiagnostic? .sum),
+   verdict (elaborateFilledFieldStarSource model rowGroup (starred "Weight") (some having)
+        (writtenGroup := summary))
+      fun | .path error => error.diagnostic? | _ => none]
+
+/- It reaches the star on the values side of the String and Enumeration value lists, and a
+   filtered star under `Sum` and `NumberOfFilledFields`: the same placed classes, and each admitted
+   with both levels starred ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds)). -/
+example :
+    [fulfilmentValuesAndFilterCarriers false ["Fulfilment", "Ledger"],
+      fulfilmentValuesAndFilterCarriers false ["Fulfilment", "Shipments"],
+      fulfilmentValuesAndFilterCarriers false ["Fulfilment", "Summary"],
+      fulfilmentValuesAndFilterCarriers true ["Fulfilment", "Ledger"],
+      fulfilmentValuesAndFilterCarriers true ["Fulfilment", "Shipments"]] =
+    [List.replicate 4 containment, List.replicate 4 containment, List.replicate 4 noWildcard,
+      List.replicate 4 none, List.replicate 4 none] := by
   native_decide
 
 /-! ## A level beside the error field's group, keyed on both chains

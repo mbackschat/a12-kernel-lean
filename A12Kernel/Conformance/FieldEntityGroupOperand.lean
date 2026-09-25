@@ -172,14 +172,14 @@ private def shapeAdmitted (operands : List SurfaceFieldEntityOperand) : Bool :=
   match operands with
   | [] => false
   | first :: rest =>
-      (elaborateFieldEntityShape probeModel ["Probe"] { first, rest }).toOption.isSome
+      (elaborateFieldEntityShape probeModel ["Probe"] (writtenGroup := ["Probe"]) { first, rest }).toOption.isSome
 
 private def shapeError? (operands : List SurfaceFieldEntityOperand) :
     Option FieldEntityShapeElabError :=
   match operands with
   | [] => none
   | first :: rest =>
-      match elaborateFieldEntityShape probeModel ["Probe"] { first, rest } with
+      match elaborateFieldEntityShape probeModel ["Probe"] (writtenGroup := ["Probe"]) { first, rest } with
       | .ok _ => none
       | .error error => some error
 

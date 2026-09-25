@@ -264,7 +264,7 @@ private def checkedIndexedGroupFill?
     (indexedGroupFillSurface operator)).toOption
 
 private def unindexedGroupFillDiagnosticCode? : Option String :=
-  match elaborateFieldEntityShape indexedGroupFillModel ["Order"] {
+  match elaborateFieldEntityShape indexedGroupFillModel ["Order"] (writtenGroup := ["Order"]) {
       first := .group (.path {
         base := .absolute
         groups := ["Order", "Items"] })

@@ -180,10 +180,11 @@ private def finishTokenValueCountSource (expected : String)
 /-- Resolve the projection-bearing entity-list shape, certify String/Enumeration membership, and reject the first selected-domain mismatch in authored order. -/
 def elaborateTokenValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
-    (authored : SurfaceTokenValueCountSource) (fixedTargetGroup? : Option GroupPath := none) :
+    (authored : SurfaceTokenValueCountSource) (fixedTargetGroup? : Option GroupPath := none)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
   let source ← elaborateProjectedTokenEntitySource model declaringGroup authored
-      (fixedTargetGroup? := fixedTargetGroup?)
+      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
     |>.mapError .source
   finishTokenValueCountSource expected source
 
@@ -219,22 +220,22 @@ def elaborateTokenValueCountStarredGroupSource (model : FlatModel)
     as the computation carrier above does. -/
 def elaborateTokenValueCountStarredGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
-    (authored : SurfaceTokenValueCountStarredGroupValidationSource) :
+    (authored : SurfaceTokenValueCountStarredGroupValidationSource) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
   let source ← elaborateTokenEntitySource model declaringGroup {
     first := .starredGroup authored.group
-    rest := [] }
+    rest := [] } (writtenGroup := writtenGroup)
     |>.mapError .source
   finishTokenValueCountSource expected source
 
 /-- Resolve the measured full-validation-only form with one fixed nonrepeatable path group through the common token entity-list gates. -/
 def elaborateTokenValueCountFixedGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
-    (authored : SurfaceTokenValueCountFixedGroupValidationSource) :
+    (authored : SurfaceTokenValueCountFixedGroupValidationSource) (writtenGroup : GroupPath := declaringGroup) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
   let source ← elaborateTokenEntitySource model declaringGroup {
     first := .group (.path authored.group)
-    rest := [] }
+    rest := [] } (writtenGroup := writtenGroup)
     |>.mapError .source
   finishTokenValueCountSource expected source
 

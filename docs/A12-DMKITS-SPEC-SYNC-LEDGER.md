@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-25-02"></a>
+### `SPEC-2026-09-25-02` — the below-star placement reaches every other kind, both value-list sides, a group under a filled-field carrier, a filtered star and `SumOfProducts`
+
+- `status`: pending.
+- `origin`: locally originated; it extends [`SPEC-2026-09-24-06`](#spec-2026-09-24-06) beyond the carriers that entry reports.
+- `clause`: [`07` the chain bullet](../spec/07-repetition-and-iteration.md).
+- `delta`: over `/Fulfilment/Shipments*/Parcels/…`, with the error field in `Summary`, these draw `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` from `Ledger` and from `Shipments` and `MVK_NO_WILDCARD` from `Summary`: `FirstFilledValue` over a String; `FieldValuesNotUnique` and `NumberOfDifferentValues` over a String and a Date; `MaxValue` and `MinValue` over a Date; `NumberOfValueInFields` over a Boolean and a String; `AtLeastOneFieldValueIncludedInValueList` over an Enumeration against a literal, two String fields against a literal, and against a field, whether a starred String on either side, a starred Number against a Number field or an Enumeration field against a starred Enumeration; `DateRangesOverlap` and `AtLeastOneDateRangeOverlaps` with and without a year; `NumberOfFilledFields` and `AtLeastOneFieldFilled` over the group `Seal`; `Sum` and `NumberOfFilledFields` over a star filtered by a two-field comparison; and `SumOfProducts`, whose fully starred control draws its own `MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED`, so the placement answers ahead of that bar.
+- `basis`: [kinds checkpoint](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds), three `model check` runs over hand-placed rules at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer checker whose below-star containment covers fewer kinds or only the fields side of a value list, and your `kf466` extension.
+- `acceptance`: confirm the placed class on any carrier above, or supply a contrary row.
+- `limit`: static admission only, one two-level nesting; no filtered star on a value list, no value count or value list over a group, and no category projection.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-25-01"></a>
 ### `SPEC-2026-09-25-01` — two `-24e` generalizations reach past their rows: a star on a fixed group answers alone at containment only, and a member's class withholds the message on the classes measured
 

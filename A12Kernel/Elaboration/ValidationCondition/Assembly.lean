@@ -240,28 +240,28 @@ def fromIteratedDateRangeBoundPair (model : FlatModel) (rowGroup : GroupPath)
 /-- One unconfigured yearless plural DateRange overlap predicate read at the rule's own row. -/
 def fromIteratedYearlessDateRangePluralOverlap (model : FlatModel)
     (rowGroup : GroupPath)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) :=
   fromIteratedDateRange model rowGroup fun scope =>
-    elaborateIteratedYearlessPluralOverlap model rowGroup scope authored
+    elaborateIteratedYearlessPluralOverlap model rowGroup scope authored writtenGroup
 
 /-- One unconfigured yearless DateRange overlap predicate read at the rule's own row. -/
 def fromIteratedYearlessDateRangeOverlap (model : FlatModel)
-    (rowGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    (rowGroup : GroupPath) (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) :=
   fromIteratedDateRange model rowGroup fun scope =>
-    elaborateIteratedYearlessOverlap model rowGroup scope authored
+    elaborateIteratedYearlessOverlap model rowGroup scope authored writtenGroup
 
 /-- One plural DateRange overlap predicate read at the rule's own row. -/
 def fromIteratedDateRangePluralOverlap (model : FlatModel)
     (rowGroup : GroupPath)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) :=
   fromIteratedDateRange model rowGroup fun scope =>
-    elaborateIteratedPluralOverlap model rowGroup scope authored
+    elaborateIteratedPluralOverlap model rowGroup scope authored writtenGroup
 
 /-- One constructed range compared with another at the rule's own row. -/
 def fromIteratedDateRangeConstructionPair (model : FlatModel)
@@ -295,11 +295,11 @@ def fromIteratedDateRangeConstructionAgainstStored (model : FlatModel)
 
 /-- One singular DateRange overlap predicate read at the rule's own row. -/
 def fromIteratedDateRangeOverlap (model : FlatModel) (rowGroup : GroupPath)
-    (authored : SurfaceFieldEntitySource) :
+    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) :=
   fromIteratedDateRange model rowGroup fun scope =>
-    elaborateIteratedOverlap model rowGroup scope authored
+    elaborateIteratedOverlap model rowGroup scope authored writtenGroup
 
 /-- Resolve one checked RNU source and retain it as an ordinary leaf in the shared condition tree. -/
 def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)

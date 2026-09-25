@@ -486,7 +486,8 @@ direct-field resolution reuse their existing checked owners, while this carrier 
 prevents the direct operand from collapsing into the selected group's expansion. Runtime truth and
 polarity remain outside the certificate. -/
 def elaborateIndexedGroupFieldFillPair (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceIndexedGroupFieldFillPair) :
+    (declaringGroup : GroupPath) (authored : SurfaceIndexedGroupFieldFillPair)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except IndexedGroupFieldFillPairElabError
       (CheckedIndexedGroupFieldFillPair model) :=
   match hModel : model.validate with
@@ -498,7 +499,7 @@ def elaborateIndexedGroupFieldFillPair (model : FlatModel)
         declaringGroup groupPath authored.token hModel
         |>.mapError .semanticIndex
       let resolvedField ← resolveFieldEntityOperandIn model declaringGroup []
-        (.field authored.field .stored) |>.mapError .fieldEntity
+        (.field authored.field .stored) (writtenGroup := writtenGroup) |>.mapError .fieldEntity
       let field ← match resolvedField with
         | .field declaration .stored => pure declaration
         | _ => throw .incoherentCore

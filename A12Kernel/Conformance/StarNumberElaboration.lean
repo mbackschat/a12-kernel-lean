@@ -117,7 +117,7 @@ private def snapshotCell : ValueListCell .number → NumberCellSnapshot
 
 private def cellsOf (authored : SurfaceStarFieldPath) (rows : List RowAddr)
     (outer : Env := []) (read : Env → FieldId → RawCell := readAmount) :=
-  match elaborateStarNumberSource model amount.groupPath authored with
+  match elaborateStarNumberSource model amount.groupPath (writtenGroup := amount.groupPath) authored with
   | .error _ => none
   | .ok checked => match checked.resolvedValueSide (document rows) outer read with
       | .error _ => none
@@ -200,7 +200,7 @@ private def readSelectedOnly (environment : Env) (_ : FieldId) : RawCell :=
   | _ => .rejected .malformed
 
 private def havingCellsOf (outer : Env) :=
-  match elaborateStarNumberSource model amount.groupPath (source) with
+  match elaborateStarNumberSource model amount.groupPath (writtenGroup := amount.groupPath) (source) with
   | .error _ => none
   | .ok checked =>
       match checked.resolvedValidationHavingValueSide (document standardRows) outer
@@ -210,7 +210,7 @@ private def havingCellsOf (outer : Env) :=
           side.hasUninstantiatedTail, side.hasHaving)
 
 private def authoredHavingCellsOf (outer : Env) :=
-  match elaborateStarNumberHavingSource model amount.groupPath (source)
+  match elaborateStarNumberHavingSource model amount.groupPath (writtenGroup := amount.groupPath) (source)
       surfaceSameParentEarlierChild with
   | .error _ => none
   | .ok checked =>
@@ -221,7 +221,7 @@ private def authoredHavingCellsOf (outer : Env) :=
           side.hasUninstantiatedTail, side.hasHaving)
 
 private def authoredNumberHavingCellsOf (outer : Env) :=
-  match elaborateStarNumberHavingSource model amount.groupPath (source)
+  match elaborateStarNumberHavingSource model amount.groupPath (writtenGroup := amount.groupPath) (source)
       surfaceEarlierThanCapturedLimit with
   | .error _ => none
   | .ok checked =>
@@ -232,7 +232,7 @@ private def authoredNumberHavingCellsOf (outer : Env) :=
           side.hasUninstantiatedTail, side.hasHaving)
 
 private def checkedCrossLevelSelectionsOf (outer : Env) : Option (List Env) :=
-  match elaborateStarNumberHavingSource model amount.groupPath (source)
+  match elaborateStarNumberHavingSource model amount.groupPath (writtenGroup := amount.groupPath) (source)
       surfaceParentEqualsCapturedParentAndChild with
   | .error _ => none
   | .ok checked =>
@@ -244,7 +244,7 @@ private def checkedCrossLevelSelectionsOf (outer : Env) : Option (List Env) :=
 
 private def havingErrorOf (declaringGroup : GroupPath)
     (authoredSource : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving) :=
-  match elaborateStarNumberHavingSource model declaringGroup authoredSource having with
+  match elaborateStarNumberHavingSource model declaringGroup (writtenGroup := declaringGroup) authoredSource having with
   | .ok _ => none
   | .error error => some error
 
@@ -259,7 +259,7 @@ private inductive PartialSideSnapshot where
 
 private def partialCellsOf (scope : ValidationRelevanceScope)
     (authoredSource : SurfaceStarFieldPath := source) (outer : Env := []) :=
-  match elaborateStarNumberSource model amount.groupPath authoredSource with
+  match elaborateStarNumberSource model amount.groupPath (writtenGroup := amount.groupPath) authoredSource with
   | .error _ => none
   | .ok checked =>
       match checked.resolvedPartialAllRowsValueSide
@@ -273,7 +273,7 @@ private def partialCellsOf (scope : ValidationRelevanceScope)
 
 private def partialFirstFilledOf (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell := readAmount) :=
-  match elaborateStarNumberSource model amount.groupPath (source) with
+  match elaborateStarNumberSource model amount.groupPath (writtenGroup := amount.groupPath) (source) with
   | .error _ => none
   | .ok checked =>
       match checked.resolvedPartialValidationFirstFilled
@@ -414,7 +414,7 @@ example :
 
 /- An uncorrelated filter is legal when an inner reference reaches a reopened level. -/
 example :
-    (elaborateStarNumberHavingSource model amount.groupPath (source)
+    (elaborateStarNumberHavingSource model amount.groupPath (writtenGroup := amount.groupPath) (source)
       (.compareRepetitions .less
         (surfaceRepetition .inner ["Shop", "Sections", "Items"])
         (surfaceRepetition .inner ["Shop", "Sections", "Items"]))).isOk = true := by
@@ -422,7 +422,7 @@ example :
 
 /- The same general lowering admits a reopened candidate Number against an ancestor value available from the complete captured environment. -/
 example :
-    (elaborateStarNumberHavingSource model amount.groupPath (source)
+    (elaborateStarNumberHavingSource model amount.groupPath (writtenGroup := amount.groupPath) (source)
       (.compareNumbers .less
         (surfaceNumber .inner ["Shop", "Sections", "Items"] "Amount")
         (surfaceNumber .outer ["Shop", "Sections"] "Limit"))).isOk = true := by
@@ -481,7 +481,7 @@ example :
 
 /- General checked path admission remains kind-safe for the concrete Number consumer. -/
 example :
-    (match elaborateStarNumberSource model amount.groupPath (source "Note") with
+    (match elaborateStarNumberSource model amount.groupPath (writtenGroup := amount.groupPath) (source "Note") with
     | .error (.fieldNotNumber path) => path == note.path
     | _ => false) = true := by
   native_decide

@@ -22,8 +22,7 @@ inductive PartialValidationFilledFieldCountResult where
 
 /-- Reuse the established star-path gates without introducing another checked representation. -/
 def elaborateFilledFieldStarValidationSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceStarFieldPath)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (declaringGroup : GroupPath) (authored : SurfaceStarFieldPath) (writtenGroup : GroupPath) :
     Except StarPathElabError (CheckedStarFieldPath model) :=
   (elaborateStarFieldPath model declaringGroup authored).mapError
     (·.placeBelowStar model declaringGroup writtenGroup)

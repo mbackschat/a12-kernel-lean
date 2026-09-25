@@ -300,8 +300,10 @@ def elaborateEnumerationFirstFilledSource
     (authored : SurfaceEnumerationFirstFilledSource) :
     Except EnumerationFirstFilledComputationElabError
       (CheckedEnumerationFirstFilledSource model scope) := do
+  -- The declaring group places a refusal here, since this computation names no target to the
+  -- shape; no row measures this carrier's placement ([SG9](../../docs/gaps/paths-and-groups.md)).
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope
-      authored.toFieldEntitySource
+      authored.toFieldEntitySource (writtenGroup := declaringGroup)
     |>.mapError .shape
   let first ← certifyEnumerationFirstFilledOperand declaringGroup scope shape.first authored.first
   let rest ← certifyEnumerationFirstFilledOperands declaringGroup scope shape.rest authored.rest

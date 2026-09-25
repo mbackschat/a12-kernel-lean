@@ -136,7 +136,9 @@ private def checkAddressedNumberFirstFilledOperand
     (authored : SurfaceStarFieldPath) :
     Except AddressedNumberFirstFilledComputationElabError
       (CheckedAddressedNumberFirstFilledOperand model target) := do
-  let source ← elaborateStarNumberSource model declaringGroup authored
+  -- The declaring group, not the target, places a below-star refusal; no row measures this
+  -- carrier's placement ([SG9](../../docs/gaps/paths-and-groups.md)).
+  let source ← elaborateStarNumberSource model declaringGroup authored declaringGroup
     |>.mapError fun cause => .operand index (.source cause)
   let placement ← checkFirstFilledStarPlacement target.targetField
       target.targetDeclaration target.targetOwned target.targetRepeatable

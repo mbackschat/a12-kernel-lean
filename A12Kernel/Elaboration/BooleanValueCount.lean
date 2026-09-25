@@ -320,11 +320,13 @@ end CheckedBooleanValueCountSource
 /-- Resolve the common direct/star/group entity-list shape and certify its constant-specific Boolean/Confirm family. -/
 def elaborateBooleanValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool)
-    (authored : SurfaceBooleanValueCountSource) (fixedTargetGroup? : Option GroupPath := none) :
+    (authored : SurfaceBooleanValueCountSource) (fixedTargetGroup? : Option GroupPath := none)
+    (writtenGroup : GroupPath := declaringGroup) :
     Except BooleanValueCountElabError
       (CheckedBooleanValueCountSource model) := do
   let shape ←
     elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := fixedTargetGroup?)
+      (writtenGroup := writtenGroup)
     |>.mapError .shape
   let first ←
     certifyBooleanValueCountOperand model declaringGroup expected shape.first
@@ -351,9 +353,11 @@ def elaborateBooleanValueCountFixedGroupSource (model : FlatModel)
     (authored : SurfaceGroupReference) :
     Except BooleanValueCountElabError
       (CheckedBooleanValueCountFixedGroupSource model expected) := do
+  -- The declaring group, not the target, places a refusal here; no row measures this carrier's
+  -- placement ([SG9](../../docs/gaps/paths-and-groups.md)).
   let shape ← elaborateFieldEntityShape model declaringGroup {
     first := .group authored
-    rest := [] } |>.mapError .shape
+    rest := [] } (writtenGroup := declaringGroup) |>.mapError .shape
   match shape.first, shape.rest with
   | .group reference, [] =>
       let operand ←

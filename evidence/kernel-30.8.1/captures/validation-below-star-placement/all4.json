@@ -1,0 +1,864 @@
+{
+ "header": {
+  "id": "BelowStarPlace4_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "BelowStarPlace4_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Fulfilment",
+     "name": "Fulfilment",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Fulfilment/Summary",
+        "name": "Summary",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Fulfilment/Summary/Result",
+           "name": "Result",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Summary/Rtvcbelowsummary",
+           "name": "Rtvcbelowsummary",
+           "Rule": {
+            "errorEntityRelPath": "../Result",
+            "errorCode": "Rtvcbelowsummary",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And NumberOfValueInFields(\"x\" In /Fulfilment/Shipments*/Parcels/Code) > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Summary/Rtevlbelowsummary",
+           "name": "Rtevlbelowsummary",
+           "Rule": {
+            "errorEntityRelPath": "../Result",
+            "errorCode": "Rtevlbelowsummary",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Code, /Fulfilment/Ledger/LCode In \"x\")",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Summary/Rtevvbelowsummary",
+           "name": "Rtevvbelowsummary",
+           "Rule": {
+            "errorEntityRelPath": "../Result",
+            "errorCode": "Rtevvbelowsummary",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Code In /Fulfilment/Ledger/LCode)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Summary/Rnevlbelowsummary",
+           "name": "Rnevlbelowsummary",
+           "Rule": {
+            "errorEntityRelPath": "../Result",
+            "errorCode": "Rnevlbelowsummary",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Weight In /Fulfilment/Ledger/Total)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Summary/Rdminbelowsummary",
+           "name": "Rdminbelowsummary",
+           "Rule": {
+            "errorEntityRelPath": "../Result",
+            "errorCode": "Rdminbelowsummary",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And MinValue(/Fulfilment/Shipments*/Parcels/ShipDate) < [/Fulfilment/Ledger/LedgerDate]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Summary/Ryovbelowsummary",
+           "name": "Ryovbelowsummary",
+           "Rule": {
+            "errorEntityRelPath": "../Result",
+            "errorCode": "Ryovbelowsummary",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And DateRangesOverlap(/Fulfilment/Ledger/LSeason, /Fulfilment/Shipments*/Parcels/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Summary/Ryaovbelowsummary",
+           "name": "Ryaovbelowsummary",
+           "Rule": {
+            "errorEntityRelPath": "../Result",
+            "errorCode": "Ryaovbelowsummary",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneDateRangeOverlaps(/Fulfilment/Ledger/LSeason IN /Fulfilment/Shipments*/Parcels/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Fulfilment/Ledger",
+        "name": "Ledger",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Fulfilment/Ledger/Total",
+           "name": "Total",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Fulfilment/Ledger/LedgerDate",
+           "name": "LedgerDate",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Fulfilment/Ledger/Window",
+           "name": "Window",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "dd.MM.yyyy",
+              "rangeSeparator": "-"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Fulfilment/Ledger/LCode",
+           "name": "LCode",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Fulfilment/Ledger/LSeason",
+           "name": "LSeason",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "dd.MM",
+              "rangeSeparator": "-"
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rtvcbelowledger",
+           "name": "Rtvcbelowledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtvcbelowledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And NumberOfValueInFields(\"x\" In /Fulfilment/Shipments*/Parcels/Code) > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rtvcallledger",
+           "name": "Rtvcallledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtvcallledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And NumberOfValueInFields(\"x\" In /Fulfilment/Shipments*/Parcels*/Code) > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rtevlbelowledger",
+           "name": "Rtevlbelowledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevlbelowledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Code, /Fulfilment/Ledger/LCode In \"x\")",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rtevlallledger",
+           "name": "Rtevlallledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevlallledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels*/Code, /Fulfilment/Ledger/LCode In \"x\")",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rtevvbelowledger",
+           "name": "Rtevvbelowledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevvbelowledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Code In /Fulfilment/Ledger/LCode)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rtevvallledger",
+           "name": "Rtevvallledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevvallledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels*/Code In /Fulfilment/Ledger/LCode)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rnevlbelowledger",
+           "name": "Rnevlbelowledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rnevlbelowledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Weight In /Fulfilment/Ledger/Total)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rnevlallledger",
+           "name": "Rnevlallledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rnevlallledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels*/Weight In /Fulfilment/Ledger/Total)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rdminbelowledger",
+           "name": "Rdminbelowledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rdminbelowledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And MinValue(/Fulfilment/Shipments*/Parcels/ShipDate) < [/Fulfilment/Ledger/LedgerDate]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Rdminallledger",
+           "name": "Rdminallledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rdminallledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And MinValue(/Fulfilment/Shipments*/Parcels*/ShipDate) < [/Fulfilment/Ledger/LedgerDate]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Ryovbelowledger",
+           "name": "Ryovbelowledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryovbelowledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And DateRangesOverlap(/Fulfilment/Ledger/LSeason, /Fulfilment/Shipments*/Parcels/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Ryovallledger",
+           "name": "Ryovallledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryovallledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And DateRangesOverlap(/Fulfilment/Ledger/LSeason, /Fulfilment/Shipments*/Parcels*/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Ryaovbelowledger",
+           "name": "Ryaovbelowledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryaovbelowledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneDateRangeOverlaps(/Fulfilment/Ledger/LSeason IN /Fulfilment/Shipments*/Parcels/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Ledger/Ryaovallledger",
+           "name": "Ryaovallledger",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryaovallledger",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneDateRangeOverlaps(/Fulfilment/Ledger/LSeason IN /Fulfilment/Shipments*/Parcels*/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Fulfilment/Shipments",
+        "name": "Shipments",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Fulfilment/Shipments/Parcels",
+           "name": "Parcels",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/Weight",
+              "name": "Weight",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/Qty",
+              "name": "Qty",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/Code",
+              "name": "Code",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/ShipDate",
+              "name": "ShipDate",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/Cover",
+              "name": "Cover",
+              "Field": {
+               "fieldType": {
+                "type": "DateRangeType",
+                "DateRangeType": {
+                 "format": "dd.MM.yyyy",
+                 "rangeSeparator": "-"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/Flag",
+              "name": "Flag",
+              "Field": {
+               "fieldType": {
+                "type": "BooleanType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/Tier",
+              "name": "Tier",
+              "Field": {
+               "fieldType": {
+                "type": "EnumerationType",
+                "EnumerationType": {
+                 "values": [
+                  {
+                   "value": "A"
+                  },
+                  {
+                   "value": "B"
+                  }
+                 ]
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Fulfilment/Shipments/Parcels/Season",
+              "name": "Season",
+              "Field": {
+               "fieldType": {
+                "type": "DateRangeType",
+                "DateRangeType": {
+                 "format": "dd.MM",
+                 "rangeSeparator": "-"
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rtvcbelowship",
+           "name": "Rtvcbelowship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtvcbelowship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And NumberOfValueInFields(\"x\" In /Fulfilment/Shipments*/Parcels/Code) > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rtvcallship",
+           "name": "Rtvcallship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtvcallship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And NumberOfValueInFields(\"x\" In /Fulfilment/Shipments*/Parcels*/Code) > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rtevlbelowship",
+           "name": "Rtevlbelowship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevlbelowship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Code, /Fulfilment/Ledger/LCode In \"x\")",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rtevlallship",
+           "name": "Rtevlallship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevlallship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels*/Code, /Fulfilment/Ledger/LCode In \"x\")",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rtevvbelowship",
+           "name": "Rtevvbelowship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevvbelowship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Code In /Fulfilment/Ledger/LCode)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rtevvallship",
+           "name": "Rtevvallship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rtevvallship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels*/Code In /Fulfilment/Ledger/LCode)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rnevlbelowship",
+           "name": "Rnevlbelowship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rnevlbelowship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels/Weight In /Fulfilment/Ledger/Total)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rnevlallship",
+           "name": "Rnevlallship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rnevlallship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneFieldValueIncludedInValueList(/Fulfilment/Shipments*/Parcels*/Weight In /Fulfilment/Ledger/Total)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rdminbelowship",
+           "name": "Rdminbelowship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rdminbelowship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And MinValue(/Fulfilment/Shipments*/Parcels/ShipDate) < [/Fulfilment/Ledger/LedgerDate]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Rdminallship",
+           "name": "Rdminallship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Rdminallship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And MinValue(/Fulfilment/Shipments*/Parcels*/ShipDate) < [/Fulfilment/Ledger/LedgerDate]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Ryovbelowship",
+           "name": "Ryovbelowship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryovbelowship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And DateRangesOverlap(/Fulfilment/Ledger/LSeason, /Fulfilment/Shipments*/Parcels/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Ryovallship",
+           "name": "Ryovallship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryovallship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And DateRangesOverlap(/Fulfilment/Ledger/LSeason, /Fulfilment/Shipments*/Parcels*/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Ryaovbelowship",
+           "name": "Ryaovbelowship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryaovbelowship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneDateRangeOverlaps(/Fulfilment/Ledger/LSeason IN /Fulfilment/Shipments*/Parcels/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Fulfilment/Shipments/Ryaovallship",
+           "name": "Ryaovallship",
+           "Rule": {
+            "errorEntityRelPath": "../../Summary/Result",
+            "errorCode": "Ryaovallship",
+            "errorCondition": "FieldFilled(/Fulfilment/Summary/Result) And AtLeastOneDateRangeOverlaps(/Fulfilment/Ledger/LSeason IN /Fulfilment/Shipments*/Parcels*/Season)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

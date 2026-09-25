@@ -35,9 +35,9 @@ private def condition (origin : HavingOrigin) (path : GroupPath)
 private def cells? (origin : HavingOrigin) (path : GroupPath)
     (op : SurfaceComparisonOp := .equal) (outer : Env := []) :
     Option (List (Option Rat)) := do
-  let checked ← (elaborateStarNumberHavingSource model
-    (if outer.isEmpty then ["Rep"] else base.groupPath) source
-    (condition origin path op)).toOption
+  let declaringGroup := if outer.isEmpty then ["Rep"] else base.groupPath
+  let checked ← (elaborateStarNumberHavingSource model declaringGroup source
+    (condition origin path op) declaringGroup).toOption
   let document : Document :=
     { instantiatedRows := [1, 2, 3].map fun row => { group := 10, path := [row] }
       rawCells := fun _ => none }
@@ -59,7 +59,7 @@ example : cells? .outer fixedPath .equal [(10, 3)] = some [some 1] := by native_
 
 private def error? (declaringGroup : GroupPath) (having : SurfaceCorrelatedHaving) :
     Option CorrelationElabError :=
-  match elaborateStarNumberHavingSource model declaringGroup source having with
+  match elaborateStarNumberHavingSource model declaringGroup (writtenGroup := declaringGroup) source having with
   | .error (.having error) => some error
   | _ => none
 
@@ -81,12 +81,12 @@ example :
     error = some .missingInner ∧
       error.bind CorrelationElabError.diagnostic? = some .noIterationForWildcard := by native_decide
 
-example : (elaborateStarNumberHavingSource model ["Rep"] source
+example : (elaborateStarNumberHavingSource model ["Rep"] (writtenGroup := ["Rep"]) source
     (.compareRepetitions .equal (reference .inner fixedPath) (reference .inner fixedPath))).isOk
     = true := by native_decide
 
 private def checkedHaving? (path : GroupPath) : Option CorrelatedHaving :=
-  (elaborateStarNumberHavingSource model base.groupPath source
+  (elaborateStarNumberHavingSource model base.groupPath (writtenGroup := base.groupPath) source
     (condition .outer path)).toOption.map (·.having)
 
 example : checkedHaving? fixedPath = some

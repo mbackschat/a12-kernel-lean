@@ -1,0 +1,85 @@
+{
+ "command": "dmtool model check",
+ "engineVersion": "30.8.1",
+ "model": "all4.json",
+ "rules": {
+  "/Fulfilment/Ledger/Rdminallledger": [],
+  "/Fulfilment/Ledger/Rdminbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rnevlallledger": [],
+  "/Fulfilment/Ledger/Rnevlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rtevlallledger": [],
+  "/Fulfilment/Ledger/Rtevlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rtevvallledger": [],
+  "/Fulfilment/Ledger/Rtevvbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rtvcallledger": [],
+  "/Fulfilment/Ledger/Rtvcbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Ryaovallledger": [],
+  "/Fulfilment/Ledger/Ryaovbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Ryovallledger": [],
+  "/Fulfilment/Ledger/Ryovbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rdminallship": [],
+  "/Fulfilment/Shipments/Rdminbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rnevlallship": [],
+  "/Fulfilment/Shipments/Rnevlbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rtevlallship": [],
+  "/Fulfilment/Shipments/Rtevlbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rtevvallship": [],
+  "/Fulfilment/Shipments/Rtevvbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rtvcallship": [],
+  "/Fulfilment/Shipments/Rtvcbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Ryaovallship": [],
+  "/Fulfilment/Shipments/Ryaovbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Ryovallship": [],
+  "/Fulfilment/Shipments/Ryovbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Summary/Rdminbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rnevlbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rtevlbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rtevvbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rtvcbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Ryaovbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Ryovbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ]
+ },
+ "valid": false
+}

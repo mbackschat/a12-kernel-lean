@@ -105,20 +105,21 @@ def certifyStarEnumerationSource (declaringGroup : GroupPath)
 /-- Reuse the general checked star path, then retain its exact checked stored/category projection. -/
 def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceStarFieldPath) (projectionRef : EnumerationProjectionRef)
-    (having : Option SurfaceCorrelatedHaving := none) :
+    (having : Option SurfaceCorrelatedHaving) (writtenGroup : GroupPath) :
     Except StarEnumerationValueListElabError
       (CheckedStarEnumerationSource model) := do
-  let source ← elaborateStarFieldPath model declaringGroup authored |>.mapError .path
+  let source ← elaborateStarFieldPath model declaringGroup authored
+    |>.mapError fun error => .path (error.placeBelowStar model declaringGroup writtenGroup)
   certifyStarEnumerationSource declaringGroup source projectionRef having
 
 /-- Check projection-specific literal admission after the exact starred Enumeration operand has been resolved. -/
 def elaborateStarEnumerationValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceStarEnumerationValueListSource) :
+    (authored : SurfaceStarEnumerationValueListSource) (writtenGroup : GroupPath := declaringGroup) :
     Except StarEnumerationValueListElabError
       (CheckedStarEnumerationValueListSource model) := do
   let fields ← elaborateStarEnumerationSource model declaringGroup authored.fields
-    authored.projectionRef authored.having
+    authored.projectionRef authored.having writtenGroup
   match authored.values with
   | [] => throw .emptyValues
   | firstValue :: restValues =>
@@ -149,13 +150,13 @@ private def StarEnumerationValueListElabError.ofDirectField : ElabError →
 /-- Resolve the starred values projection and re-check the direct fields projection against the same model. No display or domain-containment gate is added. -/
 def elaborateEnumerationValueListStarValuesSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceEnumerationValueListStarValuesSource) :
+    (authored : SurfaceEnumerationValueListStarValuesSource) (writtenGroup : GroupPath := declaringGroup) :
     Except StarEnumerationValueListElabError
       (CheckedEnumerationValueListStarValuesSource model) := do
   let values ← elaborateStarEnumerationSource model declaringGroup authored.values
-    authored.valuesProjectionRef authored.having
+    authored.valuesProjectionRef authored.having writtenGroup
   let (fieldPath, _, fieldCore) ←
-    elaborateEnumerationFieldOperand model declaringGroup authored.field
+    elaborateEnumerationFieldOperand model declaringGroup authored.field writtenGroup
       |>.mapError StarEnumerationValueListElabError.ofDirectField
   match hAdmitted : model.checkedEnumerationOperand? fieldCore with
   | none => throw .incoherentCore
