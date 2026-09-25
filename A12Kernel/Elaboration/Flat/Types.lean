@@ -80,6 +80,17 @@ inductive SurfaceTextFieldOperand where
   | category (field : SurfaceFieldPath) (name : String)
   deriving Repr, DecidableEq
 
+namespace SurfaceTextFieldOperand
+
+def reference : SurfaceTextFieldOperand → SurfaceFieldPath
+  | .direct field | .category field _ => field
+
+def projectionRef : SurfaceTextFieldOperand → EnumerationProjectionRef
+  | .direct _ => .stored
+  | .category _ name => .category name
+
+end SurfaceTextFieldOperand
+
 inductive SurfaceComparisonOp where
   | equal
   | notEqual

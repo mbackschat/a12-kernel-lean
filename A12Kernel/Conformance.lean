@@ -186,6 +186,7 @@ import A12Kernel.Conformance.EnumerationRepetitionNotUnique
 import A12Kernel.Conformance.EnumerationValueList
 import A12Kernel.Conformance.FieldEntityGroupOperand
 import A12Kernel.Conformance.FieldEntityRootGroup
+import A12Kernel.Conformance.FieldValueReadCarriers
 import A12Kernel.Conformance.ValueListQuantifierKindGate
 import A12Kernel.Conformance.FilledFieldCount
 import A12Kernel.Conformance.FilledFieldGroupCount

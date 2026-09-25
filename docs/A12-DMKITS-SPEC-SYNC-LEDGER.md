@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-25-09"></a>
+### `SPEC-2026-09-25-09` — the field-value read's gates answer ahead of an arithmetic operator's class, on a computation's operand whatever its target's kind, and on a category read of a group
+
+- `status`: pending.
+- `origin`: locally originated; it extends your `kf473` and [`SPEC-2026-09-25-06`](#spec-2026-09-25-06) to the carriers both leave out.
+- `clause`: [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-).
+- `delta`: `[Amount] == {[Ledger] + 1}`, `Abs([Ledger])` and `Min([Ledger], [Amount])` draw `MVK_NO_GROUPS_ALLOWED`, `{[Note] + 1}` `MVK_INVALID_RAW_TYPE` and `{[Partial] - 1}` `MVK_INVALID_DATE_TYPE`, where `{[Due] - 1}` draws `MVK_NO_NUMBER_FOR_CALC`. Computations copying `[Ledger]` into a String, an Enumeration or a Time draw `MVK_NO_GROUPS_ALLOWED`, and copying a raw String into the last two `MVK_INVALID_RAW_TYPE`. `[Ledger -> Band] == [Other]` draws `MVK_NO_GROUPS_ALLOWED`.
+- `basis`: [carriers checkpoint](sources/static-admission-and-class-probes.md#src-field-value-read-carriers), one `dmtool batch --observations` run at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer checker whose arithmetic operator, computation target or category reader asks its own class ahead of the bracket's gates.
+- `acceptance`: confirm the class on any refused row above, or supply a contrary row.
+- `limit`: static admission only, one model, rules and computations declared at the root. No computation reads a repeatable group, and no category read of a raw String or a partially known Date is measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-25-08"></a>
 ### `SPEC-2026-09-25-08` — a reference repeated across a value-list quantifier's two lists is asked after its base-type and kind gates, contradicting `kf380`'s pre-emption
 

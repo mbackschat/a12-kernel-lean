@@ -446,7 +446,7 @@ private def FlatModel.resolveNumericComputationAtoms
         pure (.sumOfProducts checked)
     | .numeric (.field reference) => do
         let declaration ←
-          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference).mapError .resolve
+          (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
         if declaration.toNumberField?.isSome then
           pure (.numeric (.field declaration))
         else

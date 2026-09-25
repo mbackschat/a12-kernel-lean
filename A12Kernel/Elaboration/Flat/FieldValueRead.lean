@@ -49,14 +49,54 @@ def checkFieldValueRead (resolved : Except ResolveError FlatFieldDecl)
   | some refusal => throw refusal
   | none => pure declaration
 
-/-- A rule's nonrepeatable field-value read. A group read meets the repetition walk as a presence
+/-- Class a rule's read whose path names a group: it meets the repetition walk as a presence
     operand's does, and past it the group class, which a root group draws too. -/
+def FlatModel.ruleGroupRead (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Unit → Option (GroupPath × Option UnboundOperandLevel) :=
+  fun _ => (model.groupFieldSlotRefusal? declaringGroup writtenGroup reference).map fun
+    | (group, .unboundLevel unbound) => (group, some unbound)
+    | (group, _) => (group, none)
+
+/-- A rule's nonrepeatable field-value read. -/
 def FlatModel.resolveFieldValueRead (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :
     Except ResolveError FlatFieldDecl :=
   checkFieldValueRead (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
-    fun _ => (model.groupFieldSlotRefusal? declaringGroup writtenGroup reference).map fun
-      | (group, .unboundLevel unbound) => (group, some unbound)
-      | (group, _) => (group, none)
+    (model.ruleGroupRead declaringGroup writtenGroup reference)
+
+/-- A rule's category read `[F -> C]`, which asks the group gate alone: a group draws the group
+    class ahead of the category reader's refusal of a field without that category
+    ([`kf359`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359),
+    [checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)).
+    Only an Enumeration declares a category, and no row orders a value gate against that refusal, so
+    the value gates are left to the refusal, which projects no class. -/
+def FlatModel.resolveCategoryRead (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :
+    Except ResolveError FlatFieldDecl :=
+  displaceGroupRead (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
+    (model.ruleGroupRead declaringGroup writtenGroup reference)
+
+/-- A rule's bracketed read through `projectionRef`: a stored read asks every gate of the
+    field-value read, and a category read the group gate alone. -/
+def FlatModel.resolveProjectedFieldValueRead (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) (projectionRef : EnumerationProjectionRef)
+    (writtenGroup : GroupPath := declaringGroup) : Except ResolveError FlatFieldDecl :=
+  match projectionRef with
+  | .stored => model.resolveFieldValueRead declaringGroup reference writtenGroup
+  | .category _ => model.resolveCategoryRead declaringGroup reference writtenGroup
+
+/-- A computation's nonrepeatable field-value read, which asks the gates on every target kind
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)).
+    Its target's scope binds its reads, so a group read meets the walk from there before the group
+    class. The grid reads a fixed group only; a repeatable one is walked on the account the rule's
+    read measures, where an unstarred repeatable group draws the missing-star class first. -/
+def FlatModel.resolveComputationFieldValueRead (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
+    Except ResolveError FlatFieldDecl :=
+  checkFieldValueRead
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference)
+    fun _ => (model.groupNamedBy? declaringGroup reference).map fun group =>
+      (group, model.firstUnboundOperandLevel? declaringGroup targetGroup
+        [model.repeatableScopeForGroupPath group])
 
 end A12Kernel

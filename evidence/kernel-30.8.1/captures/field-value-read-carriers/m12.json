@@ -1,0 +1,15 @@
+{
+ "computedField": "/Grid/ClockCopy",
+ "alternatives": [
+  {
+   "operation": "[Note]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Grid"
+}

@@ -204,10 +204,12 @@ example : (FlatField.string { id := 1 }).evalFilled {
       else malformedCheckedCell } = .fired .value := by
   native_decide
 
-/- Checked computation, repeatable list, aggregate-source, and uniqueness routes share the same gate. -/
+/- A String computation's copied field is a field-value read, which the read's raw gate refuses. The
+   repeatable list, aggregate-source, and uniqueness routes read entity lists, not brackets, and share
+   their own gate. -/
 example : errorOf (elaborateStringExpr model ["Claim"]
     (.field (directPath "IncidentNote"))) =
-      some (.rawStringValue ["Claim", "IncidentNote"]) := by
+      some (.resolve (.rawFieldValueRead ["Claim", "IncidentNote"])) := by
   native_decide
 
 example : errorOf (elaborateStarStringValueListSource model ["Claim", "Attachments"] {

@@ -735,6 +735,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, the token families in both orders on both sides and the boolean kinds in both orders against a literal](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)
 <a id="src-field-value-read-grid"></a>
 - [The field-value read's gates reach a root group, a filter body's iterated level, a value-list member, a copied computation operand and a `Today` comparison, and a partner whose read fails answers ahead of an ordering's kind class](sources/static-admission-and-class-probes.md#src-field-value-read-grid)
+<a id="src-field-value-read-carriers"></a>
+- [The field-value read's gates answer ahead of an arithmetic operator's class, on a computation's operand whatever its target's kind, and on a category read](sources/static-admission-and-class-probes.md#src-field-value-read-carriers)
 <a id="src-value-list-cross-list-repeat-order"></a>
 - [A reference repeated across a value-list quantifier's two lists is asked after its base-type and kind gates, and one repeated within the field list before them](sources/static-admission-and-class-probes.md#src-value-list-cross-list-repeat-order)
 <a id="src-ordering-date-class-reads-the-pair"></a>

@@ -45,12 +45,13 @@ def admitStringComputationValueField
       else
         throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
 
-/-- Resolve one legal nonrepeatable String-value field for scalar String computation syntax. -/
+/-- Resolve one legal nonrepeatable String-value field for scalar String computation syntax. The
+copied field is a field-value read, so its gates refuse a raw String ahead of this carrier's own
+refusal. -/
 def elaborateStringValueField (model : FlatModel) (declaringGroup targetGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except StringComputationElabError FieldId := do
   let declaration ←
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup
-      reference).mapError .resolve
+    (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
   admitStringComputationValueField declaration
 
 /-- Admit one already-resolved nonrepeatable Number declaration as a `FieldValueAsString` operand. -/

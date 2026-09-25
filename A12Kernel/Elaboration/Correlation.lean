@@ -266,10 +266,21 @@ private def CorrelationElabError.ofSingleGroup (origin : HavingOrigin) :
   | .fieldScopeMismatch fieldPath expected actual =>
       .fieldScopeMismatch fieldPath expected actual
 
+/-- Class a filter body's read whose path names a group. The body's reader asks no environment as it
+    resolves an unmarked reference, so such a path meets the group gate directly. -/
+private def FlatModel.havingGroupRead (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Unit → Option (GroupPath × Option UnboundOperandLevel) :=
+  fun _ => (model.groupNamedBy? declaringGroup reference).map (·, none)
+
+/-- The single-group route's body read. It asks the field-value read's gates as the star route's
+    body does, ahead of this route's requirement that the field sit directly in the filtered group,
+    whose iteration class the star route likewise asks only after its body's reads. -/
 private def FlatModel.resolveHavingNumberInGroup (model : FlatModel)
     (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError ResolvedNumberRef := do
+  discard <| (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
+    (model.havingGroupRead declaringGroup reference)).mapError .resolve
   let (declaration, field) ← model.resolveNumberInGroup declaringGroup group reference
     |>.mapError (.ofSingleGroup origin)
   pure { declaration, core := { origin, field } }
@@ -382,9 +393,8 @@ private def requireOuterFieldAvailable (origin : HavingOrigin) (outerLevels : Li
   else
     pure ()
 
-/-- A filter body's field-value read, with the gates its bracket asks as it closes. The body's reader
-    asks no environment as it resolves an unmarked reference, so a path naming a group meets the group
-    gate directly: measured on the level the filter iterates and on a fixed group
+/-- A filter body's field-value read, with the gates its bracket asks as it closes. A path naming a
+    group draws the group class, measured on the level the filter iterates and on a fixed group
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
     A group the filter does not iterate is read the same way on that account, and the value gates on
     the same production's account; no row reads either in a body. A marked reference's captured
@@ -394,7 +404,7 @@ private def FlatModel.resolveHavingFieldValueRead (model : FlatModel) (declaring
     (outerLevels : List RepeatableLevel) (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError FlatFieldDecl := do
   let declaration ← (displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
-    fun _ => (model.groupNamedBy? declaringGroup reference).map (·, none)).mapError .resolve
+    (model.havingGroupRead declaringGroup reference)).mapError .resolve
   requireOuterFieldAvailable origin outerLevels declaration
   match declaration.fieldValueReadRefusal? with
   | some refusal => throw (.resolve refusal)

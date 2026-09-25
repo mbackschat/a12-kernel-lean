@@ -174,6 +174,9 @@ def elaborateEnumerationComputation
       | .literal token =>
           pure (.literal token)
       | .field surface =>
+          -- The copied field is a bracketed read, whose gates answer ahead of the operand's own.
+          discard <| (model.resolveProjectedFieldValueRead declaringGroup surface.reference
+            surface.projectionRef).mapError (.source ∘ .resolve)
           let (path, _, operand) ←
             elaborateEnumerationFieldOperand model declaringGroup surface
               |>.mapError .source

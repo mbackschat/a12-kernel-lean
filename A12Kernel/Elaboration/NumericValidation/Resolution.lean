@@ -70,8 +70,9 @@ private def resolveFieldValueAsNumberAtom
 private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
   | .field reference => do
-      let declaration ←
-        (model.resolveField rowGroup reference writtenGroup).mapError .resolve
+      let declaration ← (do
+        model.validate
+        model.resolveFieldValueRead rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       match declaration.toNumberField? with
@@ -202,11 +203,14 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
           | some root => throw (.rootGroupInGroupCount root.path)
           | none => pure (.filledGroupCount groups)
 
+/-- Resolve an addressed operand with `resolved`, then refuse a field the row group's scope does not
+    cover as this fragment's boundary. -/
 private def resolveAddressedNumericDeclaration (model : FlatModel)
-    (rowGroup : GroupPath) (reference : SurfaceFieldPath) :
+    (rowGroup : GroupPath) (reference : SurfaceFieldPath)
+    (resolved : Except ResolveError FlatFieldDecl :=
+      model.resolveFieldDeclarationUnchecked rowGroup reference) :
     Except NumericValidationElabError FlatFieldDecl := do
-  let declaration ←
-    (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .resolve
+  let declaration ← resolved.mapError .resolve
   if !declaration.repeatableScope.isPrefixOf
       (model.repeatableScopeForGroupPath rowGroup) then
     throw (.fieldOutsideRowGroup declaration.path rowGroup)
@@ -220,8 +224,13 @@ private def resolveAddressedNumericAtom (model : FlatModel)
         (model.repeatableScopeForGroupPath rowGroup) reference
         |>.mapError .currentRepetitionSource
   | .field reference => do
-      let declaration ←
-        resolveAddressedNumericDeclaration model rowGroup reference
+      -- The bracket's group gate answers ahead of this fragment's scope boundary and its value
+      -- gates after it, as the walk and then the value gates do on a same-group read.
+      let declaration ← resolveAddressedNumericDeclaration model rowGroup reference
+        (displaceGroupRead (model.resolveFieldDeclarationUnchecked rowGroup reference)
+          (model.ruleGroupRead rowGroup rowGroup reference))
+      if let some refusal := declaration.fieldValueReadRefusal? then
+        throw (.resolve refusal)
       match declaration.toNumberField? with
       | some field => pure (.field field)
       | none => throw (.fieldNotNumber declaration.path)

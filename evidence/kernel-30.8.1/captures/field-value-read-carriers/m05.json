@@ -1,0 +1,15 @@
+{
+ "computedField": "/Grid/Amount",
+ "alternatives": [
+  {
+   "operation": "[Note] + 1"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Grid"
+}

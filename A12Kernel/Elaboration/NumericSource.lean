@@ -112,17 +112,6 @@ def FieldValueAsNumberSourceError.diagnostic? :
   | .notConvertible => some .noConvertInNumber
   | _ => none
 
-namespace SurfaceTextFieldOperand
-
-def reference : SurfaceTextFieldOperand → SurfaceFieldPath
-  | .direct field | .category field _ => field
-
-def projectionRef : SurfaceTextFieldOperand → EnumerationProjectionRef
-  | .direct _ => .stored
-  | .category _ name => .category name
-
-end SurfaceTextFieldOperand
-
 /-- Admit one exact bounded value-validating String or ordinary closed Enumeration/category source after field/path resolution. -/
 def FlatFieldDecl.resolveFieldValueAsNumberSource
     (declaration : FlatFieldDecl) (projectionRef : EnumerationProjectionRef) :
