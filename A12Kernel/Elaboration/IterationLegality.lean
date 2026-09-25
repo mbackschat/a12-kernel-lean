@@ -20,7 +20,7 @@ namespace A12Kernel
 /-- A refusal from the iteration and semantic-index static gate. Constructor names are local; `catalogKey` carries the identity a consumer compares against. -/
 inductive IterationRefusal where
   /-- A reference iterates a level it may not: below a wildcard, below the error field's path, or
-  off that path without a valid parallel iteration. Reported for an ordinary reference. -/
+  off that path in a group that declares no index field. Reported for an ordinary reference. -/
   | noWildcard
   /-- The same defect on a reference that carries a semantic index. Same cause, different class. -/
   | semanticIndexInvalidIter

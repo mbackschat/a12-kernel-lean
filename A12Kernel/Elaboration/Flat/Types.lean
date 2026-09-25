@@ -386,8 +386,8 @@ inductive WrittenFieldPlacement where
 
 /-- The index gates a level beside the written field's group meets when the written field lies
     inside the declaring group and both the level's group and the written field's path declare an
-    index field, in the Kernel's order
-    ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
+    index field ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). The order among
+    the three refusals has no separating row: `kf371` reads it from source. -/
 inductive ParallelIndexGate where
   /-- The level is not such a level. -/
   | notReached
@@ -416,6 +416,7 @@ structure UnboundOperandLevel where
   indexKeyed : Bool
   /-- A repeatable group on the written field's own path declares an index field. -/
   writtenPathKeyed : Bool := false
+  /-- The index gate a parallel level meets when both chains are keyed, `notReached` for any other. -/
   parallelGate : ParallelIndexGate := .notReached
   /-- Inside the declaring group, the level's group holds the written field, so the written field
       binds the level and the Kernel admits the read
@@ -442,7 +443,9 @@ def UnboundOperandLevel.passesWalk (unbound : UnboundOperandLevel) : Bool :=
     keyed the level meets its index gates
     ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). A legal parallel iteration,
     a level the written field binds, and a shape no row measures claim no class: the Kernel admits
-    the first two, and a route refusing them refuses a read it does not evaluate. -/
+    the first two, and a route refusing them refuses a read it does not evaluate. The written path's
+    index is asked before the level's own chain, the reverse of `kf371`'s source-read order; the
+    outermost-first walk reaches no measured row where the two orders differ. -/
 def UnboundOperandLevel.diagnostic? (unbound : UnboundOperandLevel) :
     Option KernelStaticDiagnostic :=
   match unbound.placement with

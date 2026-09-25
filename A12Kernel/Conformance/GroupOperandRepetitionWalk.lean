@@ -411,8 +411,8 @@ private def keyedChainModel (batchesKeyed : Bool) : FlatModel :=
       { level := 2, path := ["Batches", "Boxes"], indexField := some 3 }] }
 
 /- `Boxes` lies beside `Seal`. With nothing keyed on the written field's chain it draws the index
-   class; with `Batches` keyed too the level is a parallel iteration whose own index gates decide, so
-   the walk claims no class ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
+   class; with `Batches` keyed too, a keyed group both chains share, no row measures the gate, so the
+   walk claims no class ([`kf371`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). -/
 example :
     ((keyedChainModel false).unboundOperandLevel ["Batches"] ["Batches", "Seal"] 2).diagnostic? =
         some .errorFieldNoIndex ∧

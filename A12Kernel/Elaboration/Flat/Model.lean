@@ -298,8 +298,8 @@ def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writ
   UnboundOperandLevel.walkRefusal? <| scopes.filterMap fun scope =>
     UnboundOperandLevel.walkRefusal? (scope.map (model.unboundOperandLevel declaringGroup writtenGroup))
 
-/-- A validation read's outermost level this evaluation does not bind, placed by the written field,
-    or `none` when `bound` covers every level of it. `bound` defaults to what the rule group binds; a
+/-- The level a validation read is refused at among those this evaluation does not bind, found by
+    the walk and placed by the written field, or `none` when `bound` covers every level of it. `bound` defaults to what the rule group binds; a
     caller with a narrower reading scope passes that. With the written field outside the rule group
     nothing binds a level, the rule group's own included, so every level draws containment
     ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). Inside it the

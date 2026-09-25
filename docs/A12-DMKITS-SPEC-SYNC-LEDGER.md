@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-25-03"></a>
+### `SPEC-2026-09-25-03` — the index type gate answers between a String key and Enumeration, Boolean and Date keys, and a marked filter reference with no enclosing iteration draws the walk's class, the index class included
+
+- `status`: pending.
+- `origin`: locally originated from the walk batch grid. The type delta extends [`kf353`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf353), whose rows pair a String key with a Number key only, and the filter delta narrows a clause this project states.
+- `clause`: [`07` §2, the index-gate paragraph, and the filter-iteration paragraph](../spec/07-repetition-and-iteration.md).
+- `delta`: from `Invoices`, keyed by the String `ShipmentKey`, and reporting on its own `InvoiceNote`, a read of a sibling keyed by a `ShipmentKey` of type Number, Enumeration, Boolean or Date draws `MVK_ERROR_FIELD_INVALID_INDEX_TYPE`, and one keyed by a String `ShipmentKey` is admitted.
+- `delta`: from the fixed `Insured` reporting on its own `Remark`, `Sum(/Policy/Plain*/PAmount Having ([$/Policy/Claims/Amount] == [/Policy/Plain/PAmount])) > 0` draws `MVK_ERROR_FIELD_NO_INDEX` with `Claims` keyed, where the marked twin over the unkeyed `Plain` draws `MVK_NO_WILDCARD`. So a marked reference with no enclosing iteration draws the walk's class rather than always the missing star.
+- `basis`: [walk batch checkpoint](sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope), rows `Rn3s`, `Rn3n`, `Rn3e`, `Rn3b`, `Rn3d`, `Rl20fk` and `Rl20fp`, two `model check` runs at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: a peer checker that pairs index fields only on an equal declared type, as `kf353` records, and any peer statement that a marked reference without an enclosing iteration draws only `MVK_NO_WILDCARD`.
+- `acceptance`: confirm the type class on any non-Number kind and the index class on the marked reference, or supply a contrary row.
+- `limit`: static admission only. No pair of two non-String kinds, no Date against DateTime, and the marked reference only beside the error field's group, never with the error field outside the rule group.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-25-02"></a>
 ### `SPEC-2026-09-25-02` — the below-star placement reaches every other kind, both value-list sides, a group under a filled-field carrier, a filtered star and `SumOfProducts`
 
@@ -98,6 +112,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 - `reviewed a12-dmkits revision`: `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`, the peer's `-2026-09-25` letter, read 2026-09-25.
 - `disposition`: **accepted at a12-dmkits `10b0740db4b5fd374c8acdfcde5cdae9a6dc6d99`.** The three requested rows are supplied: a bare repeatable group operand places its refusal as a field read does, a keyed group operand's walk stops at the first filled cell and a String index decides as a Number index does, and a comment admits every character but CR and LF. The index delta is extended past its limit with rule-arm rows over group operands, the legal pair then meeting each carrier's own gates. The field-slot and per-row-source deltas drew no contrary row and stand as scoped. `spec/07`, `spec/10` and `spec/12` carry the rows ([inbound](SOURCES.md#inbound-2026-09-25-bare-group-placement), [inbound](SOURCES.md#inbound-2026-09-25-keyed-group-walk), [inbound](SOURCES.md#inbound-2026-09-25-comment-terminators), [inbound](SOURCES.md#inbound-2026-09-25-parallel-index-gates)).
+- `correction`: appended 2026-09-25 rather than rewriting the receipt. The `limit` misread `kf371`: its route table is measured on rule verdicts, `ParallelIterationRouteLawsTest` building each as a rule, and only `kf255`'s sibling pair is measured on the computation arm. The `basis` lock now holds the index gates' classes, the withholding surviving only for a keyed group both chains share. The field-slot delta overstated its reach: only `Claims/Amount*/..` contradicts a segment-by-segment order, since `Claims.*` carries its defect on the unbound segment itself.
 
 <a id="spec-2026-09-24-04"></a>
 ### `SPEC-2026-09-24-04` — no `kf464` row isolates the group-count walk's reach check, and its list rule is measured on single operands and the fixed-only pair

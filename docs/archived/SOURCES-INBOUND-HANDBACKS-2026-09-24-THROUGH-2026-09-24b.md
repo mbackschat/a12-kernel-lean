@@ -1,6 +1,6 @@
 # Archived inbound handback checkpoints of 2026-09-24 and 2026-09-24b
 
-This immutable archive contains the 8 terminal inbound handback receipts reviewed from the peer's `-2026-09-24` and `-2026-09-24b` letters, frozen when [`../SOURCES.md`](../SOURCES.md) crossed its 200,000-byte hub ceiling. Every obligation they recorded already lives in its gap owner. Stable `inbound-` anchors remain authoritative here, and every original `SOURCES.md#inbound-…` citation still resolves through the compatibility entry the hub keeps.
+This immutable archive contains the 8 terminal inbound handback receipts reviewed from the peer's `-2026-09-24` and `-2026-09-24b` letters, frozen when [`../SOURCES.md`](../SOURCES.md) neared its 200,000-byte hub ceiling. Every obligation they recorded already lives in its gap owner. Stable `inbound-` anchors remain authoritative here, and every original `SOURCES.md#inbound-…` citation still resolves through the compatibility entry the hub keeps.
 
 <a id="inbound-2026-09-24b-keyed-partial-read"></a>
 ### Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to
