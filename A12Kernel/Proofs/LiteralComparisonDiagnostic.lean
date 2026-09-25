@@ -50,6 +50,21 @@ theorem numericComparisonDiagnostic_total_on_refusals
       | (rename_i temporalKind; cases temporalKind <;> decide)
       | decide
 
+/-- **An ordering's class does not depend on which side is which.** Both gates read the pair, so a
+consumer that swaps the operands of an ordering keeps its class, and one reading the refused side
+alone breaks this law on a Date against a String. -/
+theorem orderingComparisonDiagnostic_comm (left right : SurfaceScalarKind) :
+    orderingComparisonDiagnostic? left right = orderingComparisonDiagnostic? right left := by
+  cases left <;> cases right <;> rfl
+
+/-- **The orderability class is drawn exactly when a side cannot be ordered**, whatever the other
+side is. -/
+theorem orderingComparisonDiagnostic_type_iff (left right : SurfaceScalarKind) :
+    orderingComparisonDiagnostic? left right = some .invalidTypeForComparison ↔
+      ¬ (left.orderable = true ∧ right.orderable = true) := by
+  cases left <;> cases right <;>
+    simp [orderingComparisonDiagnostic?, SurfaceScalarKind.orderable]
+
 /-- **A temporal constant is never unclassified.** Rung 2 makes its row total: every target kind
 draws a class, including the two the other families are admitted at. This is the law a consumer
 needs to know that a date-shaped literal always reports something, whatever it is assigned to. -/

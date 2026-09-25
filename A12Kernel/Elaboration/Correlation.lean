@@ -72,11 +72,15 @@ inductive CorrelationElabError where
   | wildcardOnRuleGroup
   | wildcardWithParentNavigation (parents : Nat)
   | fieldNotNumber (path : List String) (actual : SurfaceScalarKind)
+  /-- A side of an ordering comparison that is not a Number, with its partner's kind, or `none` when
+      the partner failed for another cause. The Kernel's ordering class reads the pair, so a refused
+      side cannot name it alone. -/
+  | orderingFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
+      (partner : Option SurfaceScalarKind)
   /-- A side of an equality or inequality that is not a Number, which this Number fragment refuses
-      while the Kernel judges the pair: it admits two Strings and draws
-      `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a String against a Number
-      ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)). The ordering comparison
-      keeps `fieldNotNumber`, whose column is measured. -/
+      while the Kernel judges the pair: it draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a
+      String against a Number ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), a
+      class the ordering gates never draw. -/
   | equalityFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   /-- The reference does not name a String field carrying evaluated values. A raw-mode String
       declaration reaches this arm too, matching every other checked String consumer. -/
@@ -123,13 +127,16 @@ class on all three ([checkpoint](../../docs/SOURCES.md#src-having-filter-compari
 One shared projection is therefore right, where a per-carrier table would have been three copies of
 one fact.
 
-The two comparison arms carry the field's kind because **one arm reports several classes**. A
-numeric ordering comparison collapses every non-Number, non-temporal kind into one class; a String-literal
-comparison spreads the same kinds across four, and that column is the shared literal-comparison ladder's
-`stringLike` row cell for cell — one Kernel comparison vocabulary that a plain rule comparison
-reaches too, whatever route an assignment takes to it.
-Reading either column off the other is wrong for six kinds of eight; the two temporal families are
-the only agreement.
+The two comparison arms carry kinds because **one arm reports several classes**. An ordering
+comparison collapses every non-orderable kind into one class and reads both operands to decide it; a
+String-literal comparison spreads the same kinds across four, and that column is the shared
+literal-comparison ladder's `stringLike` row cell for cell — one Kernel comparison vocabulary that a
+plain rule comparison reaches too, whatever route an assignment takes to it. Reading either column
+off the other is wrong for six kinds of eight; the two temporal families are the only agreement.
+
+A refused ordering side whose partner failed for another cause keeps the class a non-orderable kind
+draws whatever its partner is, and claims none for a temporal kind, whose class needs the partner.
+Reporting that side ahead of its partner's own failure is an unmeasured order.
 
 The scope classes separate cleanly: a filter with no unmarked reference into a reopened level
 reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference
@@ -142,6 +149,9 @@ The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
+  | .orderingFieldNotNumber _ actual (some partner) => orderingComparisonDiagnostic? actual partner
+  | .orderingFieldNotNumber _ actual none =>
+      if actual.orderable then none else some .invalidTypeForComparison
   | .fieldNotStringValue _ actual =>
       literalComparisonDiagnostic? .stringLike actual
   | .fieldOutsideGroup _ _ _ | .missingInner => some .noIterationForWildcard
@@ -155,9 +165,10 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .outerLevelUnbound _ unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
   -- Named rather than wildcarded. `stringLeafOutsideStarRoute` and `disjunctionOutsideStarRoute`
-  -- are the legacy one-group route's own narrowness — the Kernel accepts both — and so is
-  -- `equalityFieldNotNumber`, whose class depends on a pair it does not carry; the rest are
-  -- routing, an unmeasured operator gate, or unreachable by construction.
+  -- are the legacy one-group route's own narrowness — the Kernel accepts both — and
+  -- `equalityFieldNotNumber` is both routes' Number fragment's, its class depending on a pair it
+  -- does not carry; the rest are routing, an unmeasured operator gate, or unreachable by
+  -- construction.
   | .invalidGroupReference _ | .fieldScopeMismatch _ _ _ | .equalityFieldNotNumber _ _
   | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .unsupportedOperator _
@@ -287,6 +298,24 @@ private structure HavingLeafResolvers where
   presence : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError HavingPresenceRef
 
+/-- Both sides of an ordering comparison, a kind refusal carrying its partner's kind. Left before
+    right as every other filter refusal is, so a left side failing for another cause is raised
+    unchanged. -/
+private def orderingSides (left right : Except CorrelationElabError ResolvedNumberRef) :
+    Except CorrelationElabError (ResolvedNumberRef × ResolvedNumberRef) :=
+  let partnerKind : Except CorrelationElabError ResolvedNumberRef → Option SurfaceScalarKind
+    | .ok _ => some .number
+    | .error (.fieldNotNumber _ actual) => some actual
+    | .error _ => none
+  match left, right with
+  | .ok leftResolved, .ok rightResolved => pure (leftResolved, rightResolved)
+  | .error (.fieldNotNumber path actual), _ =>
+      throw (.orderingFieldNotNumber path actual (partnerKind right))
+  | .error error, _ => throw error
+  | .ok _, .error (.fieldNotNumber path actual) =>
+      throw (.orderingFieldNotNumber path actual (some .number))
+  | .ok _, .error error => throw error
+
 private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving →
     Except CorrelationElabError CorrelatedHaving
@@ -294,15 +323,16 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      let side (reference : SurfaceHavingNumberRef) :=
-        (resolvers.number reference.origin reference.field).mapError fun
-          | .fieldNotNumber path actual =>
-              match coreOp with
-              | .lessThan => .fieldNotNumber path actual
-              | .equal | .notEqual => .equalityFieldNotNumber path actual
-          | error => error
-      let leftResolved ← side left
-      let rightResolved ← side right
+      let resolve (reference : SurfaceHavingNumberRef) :=
+        resolvers.number reference.origin reference.field
+      let (leftResolved, rightResolved) ← match coreOp with
+        | .lessThan => orderingSides (resolve left) (resolve right)
+        | .equal | .notEqual => do
+            let side (reference : SurfaceHavingNumberRef) :=
+              (resolve reference).mapError fun
+                | .fieldNotNumber path actual => .equalityFieldNotNumber path actual
+                | error => error
+            pure (← side left, ← side right)
       if !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
         throw (.equalityScaleMismatch
           leftResolved.declaration.path leftResolved.core.field.info.scale

@@ -1,12 +1,14 @@
+import A12Kernel.Elaboration.StaticDiagnostic
+
 /-! # `ValueNotConsistent` and the table enumeration it needs, which an A12 document model never has
 
 A **table enumeration** is an enumeration whose values live in an external data table rather than in the model: the declaration names a table, a key column, and a list of *dependent* columns. The `ValueNotConsistent` condition exists for it and for nothing else — it asks whether a field's value is inconsistent with the values of the columns its table declares as dependent, so the whole construct is meaningless for an enumeration whose values are written out in the model.
 
-**The load-bearing fact is a constant.** An A12 document model's enumeration declaration reports no table name, no column name, and no dependent columns, whatever the model says; the Kernel's table-enumeration predicate is exactly "a table name is present". So in an A12 model no enumeration is a table enumeration, and the construct's *first* check refuses every candidate. `ValueNotConsistent` parses, elaborates, and is then rejected — always, on any operand, in any model of this kind.
+**The load-bearing fact is a constant.** An A12 document model's enumeration declaration reports no table name, no column name, and no dependent columns, whatever the model says; the Kernel's table-enumeration predicate is exactly "a table name is present". So in an A12 model no enumeration is a table enumeration, and the construct's table check refuses every field that reaches it. `ValueNotConsistent` parses, elaborates, and is then rejected — always, on any operand, in any model of this kind.
 
 That single constant decides the whole family, so the classes below split into one a consumer will meet and four it will not:
 
-1. **The operand must be a field, carry no wildcard, and be a table enumeration.** The third arm is the one that fires, and it is measured.
+1. **The operand must be a field, carry no wildcard, and be a table enumeration**, asked in that order. The first two answer in the shared operand classes rather than in this family's: a non-repeating group draws `MVK_NO_GROUPS_ALLOWED` and a starred selector `MVK_NO_WILDCARDS_ALLOWED`. A field clearing them meets the third arm, measured on an Enumeration, a String and a Number field. All three arms are measured.
 2. **The parameter count must equal the declared dependent-column count.** Unreachable behind arm 1; and the declared count is itself always zero here.
 3. **Each parameter must be an enumeration.** Unreachable behind arm 1.
 4. **Each parameter's value must appear in its dependent column** — one class for a string literal, another for an enumeration whose value set is not contained in the column's. Unreachable behind arm 1, and additionally behind a second constant: the check runs only when the declaration carries *table data*, which no A12 declaration does either.
@@ -15,7 +17,9 @@ A fifth class belongs to the same constant from the other side. The ordinary fie
 
 **Why model a construct that cannot succeed.** A consumer enumerating the catalogs meets all six keys and cannot tell from the catalog which it will ever see. An importer reading a model that came from elsewhere needs to know that a `ValueNotConsistent` rule is not a rule it failed to understand but one the Kernel itself rejects. And the constant is a *version* fact about the A12 mapping, not a law of the language: the accessor's own neighbours in the Kernel's tool API are not constant, so a later model version could make four of these live without any change to the condition's semantics. Recording the gate in full is what makes that change cheap to absorb.
 
-**Evidence.** `tableEnumExpected` is measured on an ordinary two-value enumeration ([checkpoint](../../docs/SOURCES.md#src-table-enumeration-inertness)). The other four rest on the constant, established by enumerating every implementation of the table-name accessor reachable from an A12 document model — there is exactly one, and it returns absence unconditionally. That is a mechanism claim discharged by exhaustive implementation search, not a measured one, and it is marked as such in the coverage record.
+**Evidence.** `tableEnumExpected` is measured on an ordinary two-value enumeration ([checkpoint](../../docs/SOURCES.md#src-table-enumeration-inertness)), and a12-dmkits measures it on a String and a Number field too, beside the two shape classes ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-gate-raise-points)). The other four rest on the constant, established by enumerating every implementation of the table-name accessor reachable from an A12 document model — there is exactly one, and it returns absence unconditionally. That is a mechanism claim discharged by exhaustive implementation search, not a measured one, and it is marked as such in the coverage record.
+
+Two refusals ahead of the whole gate are not modelled here, because they belong to reading the operand rather than to this operator: an unstarred repeatable group draws the walk's `MVK_NO_WILDCARD`, and a name resolving to nothing `MVK_INVALID_ENTITY`, both measured on the same lock.
 
 This module carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
 -/
@@ -68,7 +72,7 @@ structure EnumerationTableColumn where
 
 `tableName` is the whole predicate: the Kernel's table-enumeration test is its presence and nothing
 else. `table` is separate and gates only the column checks, so a declaration can name a table whose
-data is unavailable and still pass the first arm. -/
+data is unavailable and still pass the table check. -/
 structure TableEnumerationDeclaration where
   /-- The enumeration's own values, as declared. -/
   values : List String := []
@@ -112,10 +116,29 @@ inductive TableConsistencyParameter where
 
 /-- The operand of `ValueNotConsistent`, reduced to what its three checks read. -/
 structure TableConsistencyOperand where
+  /-- `false` for a group. -/
   isField : Bool := true
   hasWildcard : Bool := false
   declaration : TableEnumerationDeclaration
   deriving Repr, DecidableEq
+
+/-- A refusal of `ValueNotConsistent`, in the order its checks run. The two operand-shape classes
+belong to the shared operand checks and keep their own classes, so they are not members of
+`TableEnumRefusal`, whose vocabulary is this family's alone. -/
+inductive ValueNotConsistentRefusal where
+  /-- The operand is a group. -/
+  | groupOperand
+  /-- The operand carries a wildcard. -/
+  | wildcardOperand
+  /-- This family's own chain refused the field. -/
+  | family (refusal : TableEnumRefusal)
+  deriving Repr, DecidableEq
+
+/-- The exact catalog key. -/
+def ValueNotConsistentRefusal.catalogKey : ValueNotConsistentRefusal → String
+  | .groupOperand => KernelStaticDiagnostic.noGroupsAllowed.kernelCode
+  | .wildcardOperand => KernelStaticDiagnostic.noWildcardsAllowed.kernelCode
+  | .family refusal => refusal.catalogKey
 
 /-- One parameter checked against its dependent column. The column's empty value set means the
 column is absent from the table, and the Kernel then checks nothing rather than refusing. -/
@@ -131,23 +154,33 @@ def parameterValueRefusal (parameter : TableConsistencyParameter) (column : Enum
         if values.all column.allowedValues.contains then none else some .enumValuesNotInColumn
     | .otherKind => none
 
-/-- `ValueNotConsistent`'s static gate, in the Kernel's order.
+/-- The family's own chain on a field operand, in the Kernel's order.
 
-The first arm is the whole story for an A12 document model, and the last is doubly guarded: the
-column checks run only when the declaration carries table data. -/
-def valueNotConsistentRefusal (operand : TableConsistencyOperand)
+The table check is the whole story for an A12 document model, and the last arm is doubly guarded:
+the column checks run only when the declaration carries table data. -/
+def tableEnumChainRefusal (declaration : TableEnumerationDeclaration)
     (parameters : List TableConsistencyParameter) : Option TableEnumRefusal :=
-  if !isTableEnumeration operand.declaration then
+  if !isTableEnumeration declaration then
     some .tableEnumExpected
-  else if parameters.length != operand.declaration.dependentColumns.length then
+  else if parameters.length != declaration.dependentColumns.length then
     some .dependentColumnSizeMismatch
   else if parameters.any (· == .otherKind) then
     some .onlyEnumsAllowed
-  else if !operand.declaration.tableAvailable then
+  else if !declaration.tableAvailable then
     none
   else
-    (parameters.zip operand.declaration.table).findSome? fun (parameter, column) =>
+    (parameters.zip declaration.table).findSome? fun (parameter, column) =>
       parameterValueRefusal parameter column
+
+/-- `ValueNotConsistent`'s static gate: the operand's shape, then the family's chain. -/
+def valueNotConsistentRefusal (operand : TableConsistencyOperand)
+    (parameters : List TableConsistencyParameter) : Option ValueNotConsistentRefusal :=
+  if !operand.isField then
+    some .groupOperand
+  else if operand.hasWildcard then
+    some .wildcardOperand
+  else
+    (tableEnumChainRefusal operand.declaration parameters).map .family
 
 /-- The mirror check in the ordinary field-value operator: it refuses a table enumeration, where
 `ValueNotConsistent` requires one. -/

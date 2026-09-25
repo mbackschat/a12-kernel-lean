@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.ComputationNormalForm
 
 The one theorem this module exists for is a semantic-preservation bridge: every normalized condition the joiner emits from a structured computation passes the shape half of the calculation checker. It is what makes the shape classes unreachable from a model that declares its computations structurally, and it is the obligation a reimplementer that emits its own condition inherits.
 
-The rounding-mode results characterize the one arm the generator does not settle, because the mode is declared beside the structure rather than emitted from it: the class fires exactly when the declared mode is not exact and some alternative declares no tolerance range.
+The rounding-mode results characterize the arm the generator leaves to a member declared beside the structure: this check fires exactly when the declared mode is not exact and some alternative declares no tolerance range. That `RoundDown` counts as not exact is the peer's reading of the gate, which no row measures.
 -/
 
 namespace A12Kernel
@@ -60,7 +60,8 @@ theorem roundingRefusal_emitted_isSome_iff (alternative : DeclaredComputationAlt
 
 /-- **The rounding-mode class is a judgement about a pair, owed by every alternative.** A
 computation draws it exactly when its declared mode is not exact and at least one alternative
-declares no tolerance range, so neither the mode alone nor any single alternative decides it. -/
+declares no tolerance range. So the mode alone never decides it, and under a non-exact mode one
+alternative without a range is enough, whatever the others declare. -/
 theorem roundingModeRefusal_isSome_iff (computation : StructuredComputation) :
     (roundingModeRefusal computation).isSome ↔
       computation.roundingMode ≠ .exact ∧

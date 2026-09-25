@@ -313,7 +313,7 @@ private def correlationElaborationResult : CorrelationElabError →
       pure (.make .pathForm "$.rule.valueField"
         (Json.mkObj [("form", toJson "parentNavigatingStar"),
           ("parents", toJson parents)]))
-  | .fieldNotNumber path _ | .equalityFieldNotNumber path _ =>
+  | .fieldNotNumber path _ | .orderingFieldNotNumber path _ _ | .equalityFieldNotNumber path _ =>
       pure (.make .fieldKindMismatch "$.rule"
         (Json.mkObj [("path", toJson path), ("expected", toJson "number")]))
   -- The public filter vocabulary carries `compareNumbers`, `compareRepetitions`, and `and` only

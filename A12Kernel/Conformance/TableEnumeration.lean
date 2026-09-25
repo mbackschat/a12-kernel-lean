@@ -2,9 +2,9 @@ import A12Kernel.Elaboration.TableEnumeration
 
 /-! # Locks on the table-enumeration construct
 
-The cases fix two things a consumer gets wrong in opposite directions: that `ValueNotConsistent` is a condition it might one day see succeed on an A12 model, and — the mirror error — that the four classes behind its first arm are simply dead code rather than a gate that a later model version could open.
+The cases fix two things a consumer gets wrong in opposite directions: that `ValueNotConsistent` is a condition it might one day see succeed on an A12 model, and — the mirror error — that the four classes behind its table check are simply dead code rather than a gate that a later model version could open.
 
-The measured witness is the first arm on an ordinary two-value enumeration ([checkpoint](../../docs/SOURCES.md#src-table-enumeration-inertness)). Every case below that exercises a later arm supplies the table declaration by hand, because no A12 model can.
+The measured witnesses are the table check on an ordinary two-value enumeration ([checkpoint](../../docs/SOURCES.md#src-table-enumeration-inertness)) and the two shape arms ahead of it ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-gate-raise-points)). Every case below that exercises a later arm supplies the table declaration by hand, because no A12 model can.
 -/
 
 namespace A12Kernel.Conformance.TableEnumeration
@@ -26,11 +26,22 @@ private def tableBacked : TableEnumerationDeclaration :=
    which is what distinguishes an inert construct from a restricted one. -/
 example :
     isTableEnumeration measuredOperand.declaration = false ∧
-      valueNotConsistentRefusal measuredOperand [] = some .tableEnumExpected ∧
+      valueNotConsistentRefusal measuredOperand [] = some (.family .tableEnumExpected) ∧
       valueNotConsistentRefusal measuredOperand [.stringLiteral "ALPHA"] =
-        some .tableEnumExpected ∧
+        some (.family .tableEnumExpected) ∧
       valueNotConsistentRefusal measuredOperand [.otherKind, .otherKind] =
-        some .tableEnumExpected := by
+        some (.family .tableEnumExpected) := by
+  native_decide
+
+/- **The operand's shape is asked first, and answers in the shared classes.** A non-repeating group
+   draws `MVK_NO_GROUPS_ALLOWED` and a starred selector `MVK_NO_WILDCARDS_ALLOWED`, each ahead of the
+   table check that refuses a field. A gate reading the declaration alone names the family's class
+   for both. -/
+example :
+    (valueNotConsistentRefusal { measuredOperand with isField := false } []).map (·.catalogKey) =
+        some "MVK_NO_GROUPS_ALLOWED" ∧
+      (valueNotConsistentRefusal { measuredOperand with hasWildcard := true } []).map
+        (·.catalogKey) = some "MVK_NO_WILDCARDS_ALLOWED" := by
   native_decide
 
 /- The A12 declaration drops the table parts whatever the model declares, so the constant is a
@@ -51,15 +62,15 @@ example :
                            tableAvailable := true } = false := by
   native_decide
 
-/- With the first arm cleared, the gate is ordered and each later arm is reachable in turn. The
+/- With the table check cleared, the chain is ordered and each later arm is reachable in turn. The
    parameter-count arm precedes the parameter-kind arm, so a list that is both the wrong length and
    the wrong kind reports its length. -/
 example :
-    valueNotConsistentRefusal { declaration := tableBacked } [] =
+    tableEnumChainRefusal tableBacked [] =
         some .dependentColumnSizeMismatch ∧
-      valueNotConsistentRefusal { declaration := tableBacked } [.otherKind, .otherKind] =
+      tableEnumChainRefusal tableBacked [.otherKind, .otherKind] =
         some .dependentColumnSizeMismatch ∧
-      valueNotConsistentRefusal { declaration := tableBacked } [.otherKind] =
+      tableEnumChainRefusal tableBacked [.otherKind] =
         some .onlyEnumsAllowed := by
   native_decide
 
@@ -67,12 +78,12 @@ example :
    the enumeration arm asks for containment of the whole declared value set rather than of one
    value — so an enumeration admitting one extra value refuses even though its other values fit. -/
 example :
-    valueNotConsistentRefusal { declaration := tableBacked } [.stringLiteral "GAMMA"] =
+    tableEnumChainRefusal tableBacked [.stringLiteral "GAMMA"] =
         some .stringValueNotInColumn ∧
-      valueNotConsistentRefusal { declaration := tableBacked } [.stringLiteral "ALPHA"] = none ∧
-      valueNotConsistentRefusal { declaration := tableBacked }
+      tableEnumChainRefusal tableBacked [.stringLiteral "ALPHA"] = none ∧
+      tableEnumChainRefusal tableBacked
           [.enumerationField ["ALPHA", "GAMMA"]] = some .enumValuesNotInColumn ∧
-      valueNotConsistentRefusal { declaration := tableBacked }
+      tableEnumChainRefusal tableBacked
           [.enumerationField ["ALPHA"]] = none := by
   native_decide
 
@@ -80,12 +91,10 @@ example :
    column the table does not carry — the second is a pass rather than a refusal, which is the arm a
    consumer most plausibly inverts. -/
 example :
-    valueNotConsistentRefusal
-        { declaration := { tableBacked with tableAvailable := false } }
+    tableEnumChainRefusal { tableBacked with tableAvailable := false }
         [.stringLiteral "GAMMA"] = none ∧
-      valueNotConsistentRefusal
-        { declaration := { tableBacked with
-            table := [{ name := "Col", allowedValues := [] }] } }
+      tableEnumChainRefusal { tableBacked with
+          table := [{ name := "Col", allowedValues := [] }] }
         [.stringLiteral "GAMMA"] = none := by
   native_decide
 

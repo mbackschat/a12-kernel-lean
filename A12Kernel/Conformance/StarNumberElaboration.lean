@@ -49,6 +49,10 @@ private def due : FlatFieldDecl :=
     policy := { kind := .temporal .date TemporalComponents.fullDate },
     temporalTargetPolicy := some { format := "dd.MM.yyyy" } }
 
+/-- A second Date on the candidate row, so an ordering can pair two orderable non-Number kinds. -/
+private def due2 : FlatFieldDecl :=
+  { due with id := 19, name := "Due2" }
+
 /-- A scale-2 Number beside the scale-0 `Amount` on the candidate row, for the equality scale gate. -/
 private def paid : FlatFieldDecl :=
   { amount with id := 18, name := "Paid", policy := { kind := .number { scale := 2, signed := false } } }
@@ -67,6 +71,11 @@ private def otherAmount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [30] }
 
+/-- A String on the sibling repeatable level, for the body comparisons that read a repetition the
+    filter does not iterate. -/
+private def otherName : FlatFieldDecl :=
+  { otherAmount with id := 20, name := "Name", policy := { kind := .string } }
+
 /-- A repeatable level **nested under** the operand's reopened outer level, and off its path. The
     filter gate turns out not to care that its parent level is reopened. -/
 private def extraValue : FlatFieldDecl :=
@@ -77,8 +86,8 @@ private def extraValue : FlatFieldDecl :=
     repeatableScope := [10, 40] }
 
 private def model : FlatModel :=
-  { fields := [amount, note, token, flag, signed, span, due, custom, paid, sectionLimit,
-      otherAmount, extraValue]
+  { fields := [amount, note, token, flag, signed, span, due, due2, custom, paid, sectionLimit,
+      otherAmount, otherName, extraValue]
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
       { level := 10, path := ["Shop", "Sections"], repeatability := some 2 },
@@ -478,24 +487,51 @@ private def bodyDiagnostic? (having : SurfaceCorrelatedHaving) : Option KernelSt
   | _ => none
 
 /- **A body's comparison is raised ahead of the filter's iteration class.** The peer measures it on a
-   sibling repetition the filter does not iterate, the rows mirrored here
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)): the sibling `Other/Amount`
-   against the scale-2 candidate `Paid` draws the scale gate's class, while its sound twin against
-   `Amount` draws the iteration class. Checking each side's environment as it is read names the
-   iteration class for both. -/
+   sibling repetition the filter does not iterate
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)). Its `Parties/Count` against
+   the scale-2 `Paid` draws the scale gate's class, mirrored by `Other/Amount` here. Its control,
+   `Parties/Name` against a String literal, draws the iteration class, and so does the sound Number
+   twin against `Amount`. Checking each side's environment as it is read names the iteration class
+   for all of them. -/
 example :
-    bodyDiagnostic? (.compareNumbers .equal (surfaceNumber .inner otherAmount.groupPath "Amount")
-        (surfaceNumber .inner amount.groupPath "Paid")) = some .invalidCompareDecimalPlaces ∧
-      bodyDiagnostic? (.compareNumbers .equal (surfaceNumber .inner otherAmount.groupPath "Amount")
-        (surfaceNumber .inner amount.groupPath "Amount")) =
+    let sibling := surfaceNumber .inner otherAmount.groupPath "Amount"
+    bodyDiagnostic? (.compareNumbers .equal sibling (surfaceNumber .inner amount.groupPath "Paid")) =
+        some .invalidCompareDecimalPlaces ∧
+      bodyDiagnostic? (.compareNumbers .equal sibling (surfaceNumber .inner amount.groupPath "Amount")) =
+        some .invalidIterationInFilterCondition ∧
+      bodyDiagnostic? (.compareStrings .equal
+          { origin := .inner, field := absoluteField otherName.groupPath "Name" } "x") =
         some .invalidIterationInFilterCondition := by
   native_decide
 
-/- **An equality with a non-Number side leaves this Number fragment and claims no class.** The
-   ordering column holds for `<` on two fields of the filtered row, while the Kernel judges an
-   equality by its pair, drawing `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for this one and admitting two
-   Strings ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), so projecting the
-   ordering column onto `==` names a class the Kernel does not draw. -/
+/- The peer's other two sibling rows, `Parties/Name` against `Parties/Count`. The ordering draws the
+   ordering class ahead of the iteration class. The equality draws
+   `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` in the Kernel, which this Number fragment refuses without a
+   class; the lock is that it does not fall back to the iteration class. -/
+example :
+    let name := surfaceNumber .inner otherName.groupPath "Name"
+    let count := surfaceNumber .inner otherAmount.groupPath "Amount"
+    bodyDiagnostic? (.compareNumbers .less name count) = some .invalidTypeForComparison ∧
+      havingErrorOf amount.groupPath (source) (.compareNumbers .equal name count) =
+        some (.having (.equalityFieldNotNumber otherName.path .string)) := by
+  native_decide
+
+/- **The whole body is read before the iteration class is asked**, an assumption this locks rather
+   than a measurement. The earlier leaf reads the sibling level and the later comparison is refused
+   by scale. Checking the environment leaf by leaf would name the iteration class; no row places the
+   two ([gap](../../docs/gaps/paths-and-groups.md#sg17--having-filter-leaf-and-connective-completion)). -/
+example :
+    bodyDiagnostic? (.and
+        (.presence .filled { origin := .inner, field := absoluteField otherAmount.groupPath "Amount" })
+        (.compareNumbers .equal (surfaceNumber .inner amount.groupPath "Amount")
+          (surfaceNumber .inner amount.groupPath "Paid"))) =
+      some .invalidCompareDecimalPlaces := by
+  native_decide
+
+/- **An equality with a non-Number side leaves this Number fragment and claims no class**, because
+   the Kernel judges an equality by its pair and draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for this
+   one ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), a class no ordering gate
+   draws. The ordering `[Note] < [Amount]` is the measured String row of the ordering class. -/
 example :
     let text := surfaceNumber .inner amount.groupPath "Note"
     let number := surfaceNumber .inner amount.groupPath "Amount"
@@ -503,6 +539,26 @@ example :
       havingErrorOf amount.groupPath (source) (.compareNumbers .equal text number) =
         some (.having (.equalityFieldNotNumber note.path .string)) ∧
       bodyDiagnostic? (.compareNumbers .equal text number) = none := by
+  native_decide
+
+/- **An ordering's class reads both sides** ([KF270](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)).
+   A Date against a String draws the orderability class whichever side is first. Read off the Date
+   side alone it would draw the date class. Two Dates clear both kind gates, so this Number fragment
+   refuses them without a class. A Date against a Number field draws the date class in either order,
+   on the assumption that a Number field stands where the measured numeric literal does. -/
+example :
+    let date := surfaceNumber .inner amount.groupPath "Due"
+    let text := surfaceNumber .inner amount.groupPath "Note"
+    let number := surfaceNumber .inner amount.groupPath "Amount"
+    [bodyDiagnostic? (.compareNumbers .less date text), bodyDiagnostic? (.compareNumbers .less text date),
+      bodyDiagnostic? (.compareNumbers .less date (surfaceNumber .inner amount.groupPath "Due2")),
+      bodyDiagnostic? (.compareNumbers .less date number),
+      bodyDiagnostic? (.compareNumbers .less number date)] =
+      [some .invalidTypeForComparison, some .invalidTypeForComparison, none,
+        some .invalidCompareToDate, some .invalidCompareToDate] ∧
+    havingErrorOf amount.groupPath (source)
+        (.compareNumbers .less date (surfaceNumber .inner amount.groupPath "Due2")) =
+      some (.having (.orderingFieldNotNumber due.path (.temporal .date) (some (.temporal .date)))) := by
   native_decide
 
 /- Either an inner or outer over-capacity coordinate makes the selected Number cell formally unavailable. -/

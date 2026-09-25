@@ -1515,6 +1515,8 @@ run_cmd do
 #print axioms A12Kernel.resolvedCheckedNumberEntityValueList_evaluate_delegates
 #print axioms A12Kernel.literalComparisonDiagnostic_total_on_refusals
 #print axioms A12Kernel.numericComparisonDiagnostic_total_on_refusals
+#print axioms A12Kernel.orderingComparisonDiagnostic_comm
+#print axioms A12Kernel.orderingComparisonDiagnostic_type_iff
 #print axioms A12Kernel.temporalLiteralComparison_alwaysClassified
 #print axioms A12Kernel.checkedTokenEntityValueList_uniqueDirectOperands
 #print axioms A12Kernel.checkedTokenEntityValueList_commonFamily
@@ -2678,6 +2680,7 @@ run_cmd do
 #print axioms A12Kernel.conditionRefusal_invalid_implies_earlier_clear
 #print axioms A12Kernel.a12TableView_not_table
 #print axioms A12Kernel.valueNotConsistent_a12_always_refuses
+#print axioms A12Kernel.valueNotConsistent_a12_field_class
 #print axioms A12Kernel.valueNotConsistent_a12_unreachable_classes
 #print axioms A12Kernel.fieldValueOperand_a12_admits
 #print axioms A12Kernel.fieldValueOperand_invalidTableEnum_iff

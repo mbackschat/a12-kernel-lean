@@ -66,7 +66,8 @@ example :
    against a band is admitted, `Exact` is admitted against either, and on two alternatives one
    band-less alternative refuses the computation in either position
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages)). A mode derived from the
-   band would admit the second row. -/
+   band would admit the second row. The peer's two-alternative rows condition each alternative, and
+   the preconditions are dropped here because this check reads none. -/
 example :
     let plain : DeclaredComputationAlternative := { operation := "42.00" }
     let banded : DeclaredComputationAlternative := { plain with toleranceRange := some .one }
