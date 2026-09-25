@@ -38,7 +38,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-25-04"></a>
 ### `SPEC-2026-09-25-04` — two lines of the accepted `SPEC-2026-09-24-05` stated more than their rows: the field-slot order delta and the `kf371` limit
 
-- `status`: pending.
+- `status`: accepted.
 - `supersedes`: [`SPEC-2026-09-24-05`](#spec-2026-09-24-05)'s field-slot `delta` and its `limit`, the rest of that receipt standing.
 - `origin`: locally originated from a cold review of this project's records; neither delta changes a measured outcome.
 - `clause`: [`02` the `FieldFilled` slot bullet](../spec/02-logic-and-formal-errors.md), whose text already states only what the rows measured.
@@ -49,11 +49,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: confirm both narrowings, or supply a row where `Claims.*` separates the two orders.
 - `limit`: record wording only; no new measurement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `12cd537b67cbeb00087303e9d654540f40a83ae3`, the peer's `-2026-09-25b` letter, read 2026-09-25.
+- `disposition`: **accepted at a12-dmkits `12cd537b67cbeb00087303e9d654540f40a83ae3`.** Both narrowings are confirmed: `kf371` now scopes its route table to rule verdicts, with the computation arm measuring only `kf255`'s sibling pair, and the peer holds no row where `Claims.*` separates the two orders ([inbound](SOURCES.md#inbound-2026-09-25b-index-type-table)).
 
 <a id="spec-2026-09-25-03"></a>
 ### `SPEC-2026-09-25-03` — the index type gate answers between a String key and Enumeration, Boolean and Date keys, and a marked filter reference with no enclosing iteration draws the walk's class, the index class included
 
-- `status`: pending.
+- `status`: accepted.
 - `origin`: locally originated from the walk batch grid. The type delta extends [`kf353`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf353), whose rows pair a String key with a Number key only, and the filter delta narrows a clause this project states.
 - `clause`: [`07` §2, the index-gate paragraph, and the filter-iteration paragraph](../spec/07-repetition-and-iteration.md).
 - `delta`: from `Invoices`, keyed by the String `ShipmentKey`, and reporting on its own `InvoiceNote`, a read of a sibling keyed by a `ShipmentKey` of type Number, Enumeration, Boolean or Date draws `MVK_ERROR_FIELD_INVALID_INDEX_TYPE`, and one keyed by a String `ShipmentKey` is admitted.
@@ -63,6 +65,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: confirm the type class on any non-Number kind and the index class on the marked reference, or supply a contrary row.
 - `limit`: static admission only. No pair of two non-String kinds, no Date against DateTime, and the marked reference only beside the error field's group, never with the error field outside the rule group.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `12cd537b67cbeb00087303e9d654540f40a83ae3`, the peer's `-2026-09-25b` letter, read 2026-09-25.
+- `disposition`: **accepted at a12-dmkits `12cd537b67cbeb00087303e9d654540f40a83ae3`, and two limits closed.** The peer measures the type class on every non-Number kind beside a String key on its own fixture, and the index class and the missing star on the marked reference. Its type table adds pairs of two non-String kinds, some admitted and some split, Date against DateTime, admitted, and the marked reference's unmarked twin. `spec/07` carries the table, Lean pairs by it, and the error field outside the rule group stays unmeasured on both sides ([inbound](SOURCES.md#inbound-2026-09-25b-index-type-table)).
 
 <a id="spec-2026-09-25-02"></a>
 ### `SPEC-2026-09-25-02` — the below-star placement reaches every other kind, both value-list sides, a group under a filled-field carrier, a filtered star and `SumOfProducts`

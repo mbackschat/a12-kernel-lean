@@ -17,7 +17,9 @@ claiming no class. Every other unbound level takes the walk's class, which reach
 operand list and a filter's marked reference too, and a computation's target places the class on
 every carrier. The semantic-index group count keeps its own refusal at every locus. Each expected
 value is a verdict from the walk batch grid, its rule or observation id named beside it
-([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)),
+or a row of the peer's index-type table, which the case's comment cites; the walk past a legal pair
+of two kinds is this project's assumption, and its case says so.
 -/
 
 namespace A12Kernel.Conformance.ReadingScope
