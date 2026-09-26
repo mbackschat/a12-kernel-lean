@@ -6,7 +6,7 @@ import A12Kernel.Semantics.HeterogeneousComputationDependency
 
 This capsule composes already-consolidated checked String and scalar Number tables in one supplied order. Every step, completion, fault, and outcome retains its family. Pending targets hide source state; completed targets are projected only when a consumer context reads them, so a Number remains numeric for Number computation and becomes canonical text for String computation.
 
-Same-target grouping remains in each family owner. Family result projection, whole-document application, repeatable targets, and a generic dependency graph remain separate.
+An authored plan of any length is put into dependency order first, by running the earliest authored step that reads no other pending target; the plan's own order is not a supplied one. Same-target grouping remains in each family owner. Family result projection, whole-document application, repeatable targets, and a generic dependency graph remain separate.
 -/
 
 namespace A12Kernel
@@ -140,126 +140,74 @@ def certifyScalarComputationRun
   | .error cause => .error cause
   | .ok run => .ok run.1
 
-/-- Select the bounded pair's execution order without erasing its authored order. -/
-def scalarComputationPairExecutionSteps
-    (first second : CheckedScalarComputationStep model) :
-    List (CheckedScalarComputationStep model) :=
-  if first.referencesField second.targetField then
-    [second, first]
-  else
-    [first, second]
+/-- The first step of `scan` that reads no target of another step in `pending`, and `scan`
+without it. A step's own target does not block it: a self-read is the family owner's refusal. -/
+def firstReadyScalarComputationStep?
+    (pending : List (CheckedScalarComputationStep model)) :
+    List (CheckedScalarComputationStep model) →
+      Option (CheckedScalarComputationStep model × List (CheckedScalarComputationStep model))
+  | [] => none
+  | step :: rest =>
+      if pending.all fun other =>
+          other.targetField == step.targetField || !step.referencesField other.targetField then
+        some (step, rest)
+      else
+        (firstReadyScalarComputationStep? pending rest).map fun (ready, remaining) =>
+          (ready, step :: remaining)
 
-/-- Exactly two authored scalar steps together with their certified dependency order. The authored order remains available to analysis consumers while execution reuses the finite checked run. -/
-structure CheckedScalarComputationPair (model : FlatModel) where
+/-- Run the earliest authored step that reads no other pending target, then repeat. When every
+pending step reads another pending target, the steps left form or wait on a cycle and stay in
+authored order, where run certification reports the first forward read among them. -/
+def scalarComputationAuthoredOrder :
+    Nat → List (CheckedScalarComputationStep model) → List (CheckedScalarComputationStep model)
+  | 0, pending => pending
+  | fuel + 1, pending =>
+      match firstReadyScalarComputationStep? pending pending with
+      | none => pending
+      | some (ready, remaining) => ready :: scalarComputationAuthoredOrder fuel remaining
+
+/-- The dependency order of an authored plan. Among the orders that run every producer before its
+readers, it keeps each independent step at its earliest authored place; which of those orders the
+Kernel takes is not observable, since independent steps read nothing of each other. -/
+def scalarComputationAuthoredExecutionSteps
+    (steps : List (CheckedScalarComputationStep model)) :
+    List (CheckedScalarComputationStep model) :=
+  scalarComputationAuthoredOrder steps.length steps
+
+/-- An authored plan of scalar steps with its certified dependency order. The authored order stays
+available to analysis consumers while execution reuses the finite checked run. -/
+structure CheckedScalarComputationPlan (model : FlatModel) where
   private mk ::
-  authoredFirst : CheckedScalarComputationStep model
-  authoredSecond : CheckedScalarComputationStep model
+  authored : List (CheckedScalarComputationStep model)
   execution : CheckedScalarComputationRun model
   executionUsesSelectedSteps :
-    execution.steps =
-      scalarComputationPairExecutionSteps authoredFirst authoredSecond
+    execution.steps = scalarComputationAuthoredExecutionSteps authored
 
-/-- Certify an authored pair, moving the second step before the first exactly when the first reads the second target. This closes the bounded two-step order boundary without constructing a general scheduler. -/
-def certifyScalarComputationPair
-    (first second : CheckedScalarComputationStep model) :
-    Except ScalarComputationRunPlanError
-      (CheckedScalarComputationPair model) :=
+/-- Certify an authored plan by ordering it and certifying that order as a run. A cycle leaves a
+forward read in the order and is refused with it. -/
+def certifyScalarComputationPlan
+    (steps : List (CheckedScalarComputationStep model)) :
+    Except ScalarComputationRunPlanError (CheckedScalarComputationPlan model) :=
   match certifyScalarComputationRunWithSteps
-      (scalarComputationPairExecutionSteps first second) with
+      (scalarComputationAuthoredExecutionSteps steps) with
   | .error cause => .error cause
   | .ok execution => .ok {
-      authoredFirst := first
-      authoredSecond := second
+      authored := steps
       execution := execution.1
       executionUsesSelectedSteps := execution.2
     }
 
-namespace CheckedScalarComputationPair
+namespace CheckedScalarComputationPlan
 
 /-- Target identities in caller-authored order for Analyze consumers. -/
-def authoredTargetFields (pair : CheckedScalarComputationPair model) :
-    List FieldId :=
-  [pair.authoredFirst.targetField, pair.authoredSecond.targetField]
+def authoredTargetFields (plan : CheckedScalarComputationPlan model) : List FieldId :=
+  plan.authored.map (·.targetField)
 
 /-- Target identities in the certified checked execution order. -/
-def executionTargetFields (pair : CheckedScalarComputationPair model) :
-    List FieldId :=
-  pair.execution.steps.map (·.targetField)
+def executionTargetFields (plan : CheckedScalarComputationPlan model) : List FieldId :=
+  plan.execution.steps.map (·.targetField)
 
-end CheckedScalarComputationPair
-
-/-- The six possible orders of exactly three authored scalar steps, with the authored order first. This is the bounded three-target boundary rather than a general dependency scheduler. -/
-def scalarComputationTripleExecutionCandidates
-    (first second third : CheckedScalarComputationStep model) :
-    List (List (CheckedScalarComputationStep model)) :=
-  [[first, second, third],
-    [first, third, second],
-    [second, first, third],
-    [second, third, first],
-    [third, first, second],
-    [third, second, first]]
-
-private def certifyFirstScalarComputationRun
-    (fallback : ScalarComputationRunPlanError)
-    (candidates : List (List (CheckedScalarComputationStep model))) :
-    Except ScalarComputationRunPlanError
-      { run : CheckedScalarComputationRun model // run.steps ∈ candidates } :=
-  match candidates with
-  | [] => .error fallback
-  | candidate :: remaining =>
-      match certifyScalarComputationRunWithSteps candidate with
-      | .ok run => .ok ⟨run.1, by
-          simp only [List.mem_cons]
-          exact Or.inl run.2⟩
-      | .error cause =>
-          match cause with
-          | .forwardDependency _ _ =>
-              match certifyFirstScalarComputationRun cause remaining with
-              | .error cause => .error cause
-              | .ok run => .ok ⟨run.1, List.mem_cons_of_mem _ run.2⟩
-          | _ => .error cause
-
-/-- Exactly three authored scalar steps together with the first dependency-valid order among their six permutations. Analysis retains the authored order while execution reuses the finite checked run. -/
-structure CheckedScalarComputationTriple (model : FlatModel) where
-  private mk ::
-  authoredFirst : CheckedScalarComputationStep model
-  authoredSecond : CheckedScalarComputationStep model
-  authoredThird : CheckedScalarComputationStep model
-  execution : CheckedScalarComputationRun model
-  executionUsesCandidate :
-    execution.steps ∈ scalarComputationTripleExecutionCandidates
-      authoredFirst authoredSecond authoredThird
-
-/-- Certify the bounded authored triple by checking its six possible orders in authored-stable order. A non-ordering defect is returned immediately; forward dependencies select the next candidate. -/
-def certifyScalarComputationTriple
-    (first second third : CheckedScalarComputationStep model) :
-    Except ScalarComputationRunPlanError
-      (CheckedScalarComputationTriple model) :=
-  match certifyFirstScalarComputationRun
-      .empty (scalarComputationTripleExecutionCandidates first second third) with
-  | .error cause => .error cause
-  | .ok execution => .ok {
-      authoredFirst := first
-      authoredSecond := second
-      authoredThird := third
-      execution := execution.1
-      executionUsesCandidate := execution.2
-    }
-
-namespace CheckedScalarComputationTriple
-
-/-- Target identities in caller-authored order for Analyze consumers. -/
-def authoredTargetFields (triple : CheckedScalarComputationTriple model) :
-    List FieldId :=
-  [triple.authoredFirst.targetField, triple.authoredSecond.targetField,
-    triple.authoredThird.targetField]
-
-/-- Target identities in the certified checked execution order. -/
-def executionTargetFields (triple : CheckedScalarComputationTriple model) :
-    List FieldId :=
-  triple.execution.steps.map (·.targetField)
-
-end CheckedScalarComputationTriple
+end CheckedScalarComputationPlan
 
 /-- One completed rich target outcome with its family and target identity retained. -/
 inductive ScalarComputationOutcome where
@@ -410,28 +358,16 @@ def execute (run : CheckedScalarComputationRun model)
 
 end CheckedScalarComputationRun
 
-namespace CheckedScalarComputationPair
+namespace CheckedScalarComputationPlan
 
-/-- Execute the dependency-ordered pair through the existing typed mixed-run evaluator. -/
-def execute (pair : CheckedScalarComputationPair model)
+/-- Execute the dependency-ordered plan through the existing typed mixed-run evaluator. -/
+def execute (plan : CheckedScalarComputationPlan model)
     (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model) :
     Except ScalarComputationRunFault (List ScalarComputationOutcome) :=
-  pair.execution.execute world patterns input
+  plan.execution.execute world patterns input
 
-end CheckedScalarComputationPair
-
-namespace CheckedScalarComputationTriple
-
-/-- Execute the dependency-ordered triple through the existing typed mixed-run evaluator. -/
-def execute (triple : CheckedScalarComputationTriple model)
-    (world : World)
-    (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
-    Except ScalarComputationRunFault (List ScalarComputationOutcome) :=
-  triple.execution.execute world patterns input
-
-end CheckedScalarComputationTriple
+end CheckedScalarComputationPlan
 
 end A12Kernel

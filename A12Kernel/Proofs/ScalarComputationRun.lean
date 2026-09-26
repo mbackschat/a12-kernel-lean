@@ -220,93 +220,85 @@ theorem scalarComputationRun_execute_faultTarget
       change Except.ok state.outcomes = Except.error fault at executed
       cases executed
 
-/-- Analyze always sees the exact caller-authored target order. -/
-@[simp] theorem scalarComputationPair_authoredTargetFields
-    (pair : CheckedScalarComputationPair model) :
-    pair.authoredTargetFields =
-      [pair.authoredFirst.targetField, pair.authoredSecond.targetField] := by
-  rfl
+/-- Selecting a ready step removes it from the scanned list and changes nothing else. -/
+theorem firstReadyScalarComputationStep_perm
+    (pending : List (CheckedScalarComputationStep model)) :
+    ∀ (scan rest : List (CheckedScalarComputationStep model))
+      (ready : CheckedScalarComputationStep model),
+      firstReadyScalarComputationStep? pending scan = some (ready, rest) →
+        (ready :: rest).Perm scan := by
+  intro scan
+  induction scan with
+  | nil => intro _ _ selected; simp [firstReadyScalarComputationStep?] at selected
+  | cons step tail ih =>
+    intro rest ready selected
+    unfold firstReadyScalarComputationStep? at selected
+    split at selected
+    · simp only [Option.some.injEq, Prod.mk.injEq] at selected
+      obtain ⟨rfl, rfl⟩ := selected
+      exact List.Perm.refl _
+    · cases hTail : firstReadyScalarComputationStep? pending tail with
+      | none => simp [hTail] at selected
+      | some found =>
+        obtain ⟨found, remaining⟩ := found
+        simp only [hTail, Option.map_some, Option.some.injEq, Prod.mk.injEq] at selected
+        obtain ⟨sameReady, sameRest⟩ := selected
+        rw [← sameReady, ← sameRest]
+        exact (List.Perm.swap _ _ remaining).trans
+          (List.Perm.cons step (ih remaining found hTail))
 
-/-- A first-authored consumer of the second target selects producer-first execution. -/
-theorem scalarComputationPairExecutionSteps_forward
+/-- Ordering only reorders: every authored step is run exactly once. -/
+theorem scalarComputationAuthoredOrder_perm :
+    ∀ (fuel : Nat) (pending : List (CheckedScalarComputationStep model)),
+      (scalarComputationAuthoredOrder fuel pending).Perm pending := by
+  intro fuel
+  induction fuel with
+  | zero => intro pending; exact List.Perm.refl _
+  | succ fuel ih =>
+    intro pending
+    unfold scalarComputationAuthoredOrder
+    split
+    · exact List.Perm.refl _
+    · rename_i ready remaining selected
+      exact (List.Perm.cons ready (ih remaining)).trans
+        (firstReadyScalarComputationStep_perm pending pending remaining ready selected)
+
+/-- A certified plan runs exactly its authored steps, typed operations included, in some order. -/
+theorem scalarComputationPlan_executionSteps_perm
+    (plan : CheckedScalarComputationPlan model) :
+    plan.execution.steps.Perm plan.authored := by
+  rw [plan.executionUsesSelectedSteps]
+  exact scalarComputationAuthoredOrder_perm _ _
+
+/-- Two authored steps where the first reads the second's target and the second does not read the
+first's run producer first: the two-step case of the plan order. -/
+theorem scalarComputationAuthoredExecutionSteps_pair_forward
     (first second : CheckedScalarComputationStep model)
-    (forward : first.referencesField second.targetField = true) :
-    scalarComputationPairExecutionSteps first second = [second, first] := by
-  simp [scalarComputationPairExecutionSteps, forward]
+    (distinct : first.targetField ≠ second.targetField)
+    (forward : first.referencesField second.targetField = true)
+    (backward : second.referencesField first.targetField = false) :
+    scalarComputationAuthoredExecutionSteps [first, second] = [second, first] := by
+  have firstSecond := beq_false_of_ne distinct
+  have secondFirst := beq_false_of_ne (Ne.symm distinct)
+  simp [scalarComputationAuthoredExecutionSteps, scalarComputationAuthoredOrder,
+    firstReadyScalarComputationStep?, firstSecond, secondFirst, forward, backward]
 
-/-- A pair without that forward edge preserves authored execution order. -/
-theorem scalarComputationPairExecutionSteps_preserved
+/-- Two authored steps where the first does not read the second's target keep authored order. -/
+theorem scalarComputationAuthoredExecutionSteps_pair_preserved
     (first second : CheckedScalarComputationStep model)
     (forward : first.referencesField second.targetField = false) :
-    scalarComputationPairExecutionSteps first second = [first, second] := by
-  simp [scalarComputationPairExecutionSteps, forward]
+    scalarComputationAuthoredExecutionSteps [first, second] = [first, second] := by
+  simp [scalarComputationAuthoredExecutionSteps, scalarComputationAuthoredOrder,
+    firstReadyScalarComputationStep?, forward]
 
-/-- A checked pair retains the exact selected steps, including their operations rather than only their target identities. -/
-@[simp] theorem scalarComputationPair_executionSteps
-    (pair : CheckedScalarComputationPair model) :
-    pair.execution.steps =
-      scalarComputationPairExecutionSteps
-        pair.authoredFirst pair.authoredSecond := by
-  exact pair.executionUsesSelectedSteps
-
-/-- Pair execution is exactly the established typed mixed-run execution. -/
-theorem scalarComputationPair_execute
-    (pair : CheckedScalarComputationPair model)
+/-- Plan execution is exactly the established typed mixed-run execution. -/
+theorem scalarComputationPlan_execute
+    (plan : CheckedScalarComputationPlan model)
     (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model) :
-    pair.execute world patterns input =
-      pair.execution.execute world patterns input := by
-  rfl
-
-/-- Analyze always sees the exact caller-authored three-target order. -/
-@[simp] theorem scalarComputationTriple_authoredTargetFields
-    (triple : CheckedScalarComputationTriple model) :
-    triple.authoredTargetFields =
-      [triple.authoredFirst.targetField, triple.authoredSecond.targetField,
-        triple.authoredThird.targetField] := by
-  rfl
-
-/-- A checked triple's selected order is one of the six exact authored-step permutations rather than a reconstructed or family-erased plan. -/
-theorem scalarComputationTriple_executionUsesCandidate
-    (triple : CheckedScalarComputationTriple model) :
-    triple.execution.steps ∈ scalarComputationTripleExecutionCandidates
-      triple.authoredFirst triple.authoredSecond triple.authoredThird := by
-  exact triple.executionUsesCandidate
-
-/-- Triple certification changes only dependency order: every authored typed step occurs exactly once in execution. -/
-theorem scalarComputationTriple_executionSteps_perm
-    (triple : CheckedScalarComputationTriple model) :
-    triple.execution.steps.Perm
-      [triple.authoredFirst, triple.authoredSecond, triple.authoredThird] := by
-  have candidate := triple.executionUsesCandidate
-  simp only [scalarComputationTripleExecutionCandidates, List.mem_cons,
-    List.not_mem_nil, or_false] at candidate
-  rcases candidate with h | h | h | h | h | h
-  · rw [h]
-  · rw [h]
-    exact List.Perm.cons _ (List.Perm.swap _ _ [])
-  · rw [h]
-    exact List.Perm.swap _ _ [_]
-  · rw [h]
-    exact (List.Perm.cons _ (List.Perm.swap _ _ [])).trans
-      (List.Perm.swap _ _ [_])
-  · rw [h]
-    exact (List.Perm.swap _ _ [_]).trans
-      (List.Perm.cons _ (List.Perm.swap _ _ []))
-  · rw [h]
-    exact (List.Perm.swap _ _ [_]).trans
-      ((List.Perm.cons _ (List.Perm.swap _ _ [])).trans
-        (List.Perm.swap _ _ [_]))
-
-/-- Triple execution is exactly the established typed mixed-run execution. -/
-theorem scalarComputationTriple_execute
-    (triple : CheckedScalarComputationTriple model)
-    (world : World)
-    (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
-    triple.execute world patterns input =
-      triple.execution.execute world patterns input := by
+    plan.execute world patterns input =
+      plan.execution.execute world patterns input := by
   rfl
 
 /-- Pre-schedule analysis preserves every candidate target exactly and in authored order. -/

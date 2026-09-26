@@ -237,22 +237,22 @@ private def missingPatterns :
 private def pairTargetOrders?
     (first second : CheckedScalarComputationStep model) :
     Option (List FieldId × List FieldId) := do
-  let pair ← (certifyScalarComputationPair first second).toOption
-  pure (pair.authoredTargetFields, pair.executionTargetFields)
+  let plan ← (certifyScalarComputationPlan [first, second]).toOption
+  pure (plan.authoredTargetFields, plan.executionTargetFields)
 
 private def pairOutcomes?
     (first second : CheckedScalarComputationStep model)
     (cells : List ClassifiedCellInput := []) :
     Option (List ScalarComputationOutcome) := do
-  let pair ← (certifyScalarComputationPair first second).toOption
+  let plan ← (certifyScalarComputationPlan [first, second]).toOption
   let input ← checkedDocument cells
-  (pair.execute world prepared.patterns input).toOption
+  (plan.execute world prepared.patterns input).toOption
 
 private def tripleTargetOrders?
     (first second third : CheckedScalarComputationStep model) :
     Option (List FieldId × List FieldId) := do
-  let triple ← (certifyScalarComputationTriple first second third).toOption
-  pure (triple.authoredTargetFields, triple.executionTargetFields)
+  let plan ← (certifyScalarComputationPlan [first, second, third]).toOption
+  pure (plan.authoredTargetFields, plan.executionTargetFields)
 
 private def dependencySummary
     (steps : List (CheckedScalarComputationStep model)) :=
@@ -515,9 +515,9 @@ example :
         (.number firstNumberValue) =
       some ([firstStringId, firstNumberId],
         [firstStringId, firstNumberId]) ∧
-    (certifyScalarComputationPair
-      (.string firstStringFromNumber)
-      (.number firstNumberFromStringOnly)).toOption = none := by
+    (certifyScalarComputationPlan [
+      .string firstStringFromNumber,
+      .number firstNumberFromStringOnly]).toOption = none := by
   native_decide
 
 /- The Kernel packet at `src-scalar-mixed-reverse-authored-triple` separates fresh completion, an unreached malformed source, reached poison, and empty zero through the reverse-authored Number-to-String-to-Number chain. The internal table now represents its singleton unguarded alternatives directly, so Analyze exposes no invented Gate dependency and a malformed Gate cannot poison the producer; those two extra separators are internal and make no wider Kernel-correspondence claim. -/
@@ -628,16 +628,16 @@ example :
       } := by
   native_decide
 
-/- Three independent authored steps retain their order, while the complete three-target cycle has no certified permutation. -/
+/- Three independent authored steps retain their order, while the complete three-target cycle has no certified order. -/
 example :
     tripleTargetOrders? (.string firstStringValue)
         (.number firstNumberValue) (.number secondNumberValue) =
       some ([firstStringId, firstNumberId, secondNumberId],
         [firstStringId, firstNumberId, secondNumberId]) ∧
-    (certifyScalarComputationTriple
-      (.string firstStringFromSecondNumber)
-      (.number firstNumberFromStringOnly)
-      (.number secondNumberFromFirstNumber)).toOption = none := by
+    (certifyScalarComputationPlan [
+      .string firstStringFromSecondNumber,
+      .number firstNumberFromStringOnly,
+      .number secondNumberFromFirstNumber]).toOption = none := by
   native_decide
 
 /- The kernel-calibrated consumer-first representative reads the fresh producer, preserves an unread invalid producer behind the selected safe row, poisons a reached read, and treats empty Number input as zero. -/

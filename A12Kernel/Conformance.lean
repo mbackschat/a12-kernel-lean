@@ -292,6 +292,7 @@ import A12Kernel.Conformance.RepetitionNotUniqueDiagnostic
 import A12Kernel.Conformance.RepetitionNotUniqueElaboration
 import A12Kernel.Conformance.RepetitionNotUniqueValidationRule
 import A12Kernel.Conformance.Required
+import A12Kernel.Conformance.ScalarComputationPlan
 import A12Kernel.Conformance.ScalarComputationRun
 import A12Kernel.Conformance.ScalarText
 import A12Kernel.Conformance.SemanticIndex
