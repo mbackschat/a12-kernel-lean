@@ -223,4 +223,25 @@ example :
       [finalId, final3Id, twiceId, sFinalId, nsId, aId, bId, saId, sbId, cId, p1Id, p2Id] := by
   native_decide
 
+/-- The refusal class a plan's certification draws, or `none` for an admitted plan. -/
+private def planRefusal? (steps : List (Option (CheckedScalarComputationStep model))) :
+    Option (Option CalculationRefusal) := do
+  let steps ← steps.mapM id
+  match certifyScalarComputationPlan steps with
+  | .ok _ => pure none
+  | .error cause => pure cause.planCalculationRefusal?
+
+/- A cycle is refused with the Kernel's cycle class, and so is a step waiting on one, since the
+   Kernel sorts the whole model before it computes anything
+   ([`spec/09`](../../spec/09-computations.md) §1). The acyclic control is admitted. -/
+example :
+    planRefusal? [numberStep? aId none (read "B"), numberStep? bId none (read "A")] =
+      some (some .calcCycle) ∧
+    planRefusal? [numberStep? cId none (read "A"), numberStep? aId none (read "B"),
+        numberStep? bId none (read "A")] =
+      some (some .calcCycle) ∧
+    planRefusal? [numberStep? aId none (read "B"), numberStep? bId none (read "Base2")] =
+      some none := by
+  native_decide
+
 end A12Kernel.Conformance.ScalarComputationPlan

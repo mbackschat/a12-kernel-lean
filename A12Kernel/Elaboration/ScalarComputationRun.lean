@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ComputationNormalForm
 import A12Kernel.Elaboration.NumericComputation.Run
 import A12Kernel.Elaboration.StringComputationRun
 import A12Kernel.Semantics.HeterogeneousComputationDependency
@@ -196,6 +197,16 @@ def certifyScalarComputationPlan
       execution := execution.1
       executionUsesSelectedSteps := execution.2
     }
+
+/-- The Kernel class a refusal of `certifyScalarComputationPlan` draws. Ordering leaves a forward
+read only where steps close or wait on a cycle, which the Kernel refuses as `MVK_ERROR_CALC_CYCLE`
+before it computes anything ([`spec/09`](../../spec/09-computations.md) §1). A supplied-order run's
+forward read is an order error instead, so this reads a plan's refusal only; the other refusals
+are the run's own structural gates and claim no class. -/
+def ScalarComputationRunPlanError.planCalculationRefusal? :
+    ScalarComputationRunPlanError → Option CalculationRefusal
+  | .forwardDependency _ _ => some .calcCycle
+  | .empty | .repeatableContextRequired _ | .duplicateTarget _ => none
 
 namespace CheckedScalarComputationPlan
 
