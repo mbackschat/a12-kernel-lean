@@ -91,17 +91,16 @@ example :
                          insideSemanticIndexKey := true } = some .semanticIndexInvalidIter := by
   native_decide
 
-/- The flag is where the reference stands, not whether it carries the index. From a root rule,
-   `Riders/Legs/Amount For "X"` crosses the unindexed `Riders` above its index group and draws the
-   wildcard class although it carries the index, while `Claims/Amount For Riders/RiderRef` draws the
-   semantic-index class for the same crossing inside its key, which carries none
+/- The flag is where the reference stands, not whether it carries the index. From `/It/A`,
+   `[/It/P/Q/QV For "q1"]` crosses the unindexed `P` above its index group and draws the wildcard
+   class although it carries the index (`SIwild3`), while `[/It/L/V For /It/P/Q/QV]`, whose key makes
+   the same crossing, draws the semantic-index class (`SIkeySI`, the case above). The peer's
+   `Riders/Legs/Amount For "X"` beside `Claims/Amount For Riders/RiderRef` repeats the pair
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-key-addressing)). Deriving the flag from the
-   index marker would swap both. -/
+   index marker would give this keyed value the semantic-index class. -/
 example :
     referenceRefusal { levels := [{ marker := .iteration, relation := .belowErrorPath },
-                                  { marker := .semanticIndex }] } = some .noWildcard ∧
-      referenceRefusal { levels := [{ marker := .iteration, relation := .belowErrorPath }],
-                         insideSemanticIndexKey := true } = some .semanticIndexInvalidIter := by
+                                  { marker := .semanticIndex }] } = some .noWildcard := by
   native_decide
 
 /- First match wins across levels: the outermost illegal level answers, and a later level that

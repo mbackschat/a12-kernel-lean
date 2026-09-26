@@ -763,9 +763,10 @@ example :
 /- **`Length`'s parameter asks the group gate alone**
    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
    an unstarred repeatable group draws the missing-star class and a fixed group the group class on
-   either side of the comparison, and a name resolving to nothing its own class. A raw String and a
-   partially known Date meet `Length`'s own gates, which draw no class here, where the read's value
-   gates would draw the raw and the date class. -/
+   either side of the comparison, and a name resolving to nothing its own class. A raw String meets
+   `Length`'s own raw refusal, which `ElabError.rawStringDiagnostic?` projects rather than this view,
+   and a partially known Date `Length`'s kind refusal, which projects no class; the read's value gates
+   would draw the raw and the date class instead. -/
 example :
     let two : DecodedNumericLiteral := { value := 2, authoredScale := 0 }
     [readView (.lengthCompare .greater (absolute ["Order"] "Items") two),
@@ -780,8 +781,9 @@ example :
 /- **A multi-field list's group operand is expanded by the Kernel**, which then reports the base-type
    class of the group's fields beside the String
    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
-   This route cannot expand a group and refuses without a class on its String, Number and Enumeration
-   lists, where the group class would be the wrong claim. An unstarred repeatable group meets the
+   This route cannot expand a group and refuses without a class on its String and Number lists, where
+   the group class would be the wrong claim; the flat multi-field Enumeration list is an open
+   [SG8](../../../docs/gaps/strings-and-messages.md#gap-sg8) partition. An unstarred repeatable group meets the
    walk first and draws the missing-star class whatever the slot's shape
    ([`spec/06`](../../../spec/06-strings-and-enumerations.md)). -/
 example :
@@ -790,9 +792,8 @@ example :
     [readView (.stringValueList .atLeastOne [ledger, note] ["a"]),
       readView (.numberFieldValueList .atLeastOne [ledger, absolute ["Order"] "Quantity"]
         [absolute ["Order", "Ledger"] "Total"]),
-      readView (.enumerationFieldValueList .atLeastOne [.direct ledger, .direct note] [.direct note]),
       readView (.stringValueList .atLeastOne [absolute ["Order"] "Items", note] ["a"])] =
-      [.refused none, .refused none, .refused none, .refused (some .noWildcard)] := by
+      [.refused none, .refused none, .refused (some .noWildcard)] := by
   native_decide
 
 /- **A bare name naming a group of the declaring group is a group read, whether one field elsewhere

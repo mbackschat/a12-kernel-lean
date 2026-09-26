@@ -18,8 +18,8 @@ operand list and a filter's marked reference too, and a computation's target pla
 every carrier. The semantic-index group count keeps its own refusal at every locus. Each expected
 value is a verdict from the walk batch grid, its rule or observation id named beside it
 ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)),
-or a row of the peer's index-type table, which the case's comment cites; the walk past a legal pair
-of two kinds is this project's assumption, and its case says so.
+or a peer row the case's comment cites, from the index-type table, `kf477` or `kf480`; the walk past
+a legal pair of two kinds is this project's assumption, and its case says so.
 -/
 
 namespace A12Kernel.Conformance.ReadingScope
@@ -214,17 +214,17 @@ example :
 /- The field slot's kind gate answers wherever the rule's iteration binds the level: a read of the
    fixed `Sub` draws the group class from a rule declared inside `Claims` and from a root rule whose
    error field lies in `Claims`, where a root rule reporting at the root draws the missing star
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-rule-iteration), `kf477`). A climbing read from
-   the fixed `Seal2` is judged where it lands: into `Claims` by one or two up-steps it draws the group
-   class, and into the unkeyed `Plain` the missing star
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-rule-iteration), `kf477`). A climbing read of
+   the rule's own group from inside it is judged where it lands: `Seal2` reached by one up-step or by
+   two through `Claims` draws the group class, and the unkeyed `Plain`'s `PSeal2` the missing star
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26-climbing-read), `kf480`). -/
 example :
     [fieldFilled (g []) (g []) (p ["Claims"] "Sub"),
       fieldFilled (g ["Claims"]) (g ["Claims"]) (rel 0 [] "Sub"),
       fieldFilled (g []) (g ["Claims"]) (p ["Claims"] "Sub"),
-      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 1 [] "Sub"),
-      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 2 ["Claims"] "Sub"),
-      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 2 ["Plain"] "PSub")] =
+      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 1 [] "Seal2"),
+      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 2 ["Claims"] "Seal2"),
+      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 2 ["Plain"] "PSeal2")] =
     [noWildcard, some (some .noGroupsAllowed), some (some .noGroupsAllowed),
       some (some .noGroupsAllowed), some (some .noGroupsAllowed), noWildcard] := by
   native_decide

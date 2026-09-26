@@ -2,9 +2,10 @@ import A12Kernel.Elaboration.SemanticIndexAdmission
 
 /-! # Locks on the semantic-index admission cascade
 
-`external evidence pending`: `dmtool` has no measured route to declare a semantic index, so neither
-the order nor the admitting side can be probed at this revision. These cases lock *this project's*
-chosen reading so a later calibration has something exact to disagree with.
+The order is read from the Kernel's semantic-index checker, and these cases lock *this project's*
+chosen reading so a calibration has something exact to disagree with. The last case replays the
+peer's measured two-defect rows; which positions carry Kernel rows is owned by the
+[implementation map](../../docs/implementation/cross-clause.md#cap-semantic-index-admission).
 
 The matrix is two **descending ladders**. Each row of a ladder removes exactly one offence from the
 row above and the reported class advances to the next gate, which is a stronger separator than
@@ -175,6 +176,28 @@ example :
 example :
     semanticIndexSiteAdmitted (site false [indexGroup]) cleanKey = true ∧
       semanticIndexSiteAdmitted resolving cleanKey = false := by
+  native_decide
+
+/- **The peer's two-defect rows agree with the cascade's order**
+   ([`kf351`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf351), its order table). A starred key
+   outranks a missing index field and a star at the index level; a missing index field outranks a star
+   there and an empty constant; and an empty constant and a category key each outrank a star at the
+   index level. -/
+example :
+    let indexed : IndexDeclaringGroup := { declaredNames := 1 }
+    let unindexed : IndexDeclaringGroup := { declaredNames := 0 }
+    [semanticIndexAdmissionRefusal { indexPath := [unindexed] } (.reference { starred := true }),
+      semanticIndexAdmissionRefusal { indexPath := [indexed], starredAtIndexLevel := true }
+        (.reference { starred := true }),
+      semanticIndexAdmissionRefusal { indexPath := [unindexed], starredAtIndexLevel := true }
+        (.constant "k" true),
+      semanticIndexAdmissionRefusal { indexPath := [unindexed] } (.constant "" true),
+      semanticIndexAdmissionRefusal { indexPath := [indexed], starredAtIndexLevel := true }
+        (.constant "" true),
+      semanticIndexAdmissionRefusal { indexPath := [indexed], starredAtIndexLevel := true }
+        (.reference { carriesCategory := true })] =
+      [some .semanticIndexKeyStarred, some .semanticIndexKeyStarred, some .noIndexField,
+        some .noIndexField, some .semanticIndexConstantInvalid, some .semanticIndexKeyWithCategory] := by
   native_decide
 
 end A12Kernel.Conformance.SemanticIndexAdmission

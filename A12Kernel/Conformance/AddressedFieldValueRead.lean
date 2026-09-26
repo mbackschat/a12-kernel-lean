@@ -16,9 +16,8 @@ A computation writing a repeatable target reads the same way as one writing a no
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
 a bracket read asks the group gate and then the two value gates ahead of the carrier's kind check, an
 operator's parameter asks the group gate alone and meets its operator's own gates, and a category read
-of a field declaring no Enumeration draws its own class. The walk starts from the target's scope, so a
-group whose level the target binds passes it and draws the group class. The fixture mirrors the grid's
-model. A carrier that projects no Kernel class of its own is read through its resolution failure's
+of a field declaring no Enumeration draws its own class. The walk starts from the target's scope, so
+the target's own group passes it and draws the group class. The fixture mirrors the grid's model. A carrier that projects no Kernel class of its own is read through its resolution failure's
 class, and a refusal of the carrier's own is kept apart from one that projects no class.
 -/
 
@@ -253,14 +252,19 @@ example :
 /- **A bare name naming a group reads as the group, and an operator's parameter beside
    `CurrentRepetition` asks the group gate alone**: `[Ledger] + 1` draws the group class ahead of this
    carrier's own refusal of an expression carrying no repetition, which the admitted `[Amount] + 1`
-   meets instead (row `c9` measures the first, `c10` admits the second). `RangeAsNumber`, a DateRange
+   meets instead (row `c9` measures the first, on a model whose short names are allowed and whose
+   root `Alt` declares a Number `Ledger`; `c10` admits the second). `RangeAsNumber`, a DateRange
    endpoint's component and `FieldValueAsNumber` naming a group draw the group class on this carrier by
    the parameter rule measured on the others; only `Length` is measured here (`w5`). -/
 example :
     let one : AuthoredNumericExpr SurfaceNumericAtom := .literal { value := 1, authoredScale := 0 }
+    let shortNamed : FlatModel :=
+      { model with fields := model.fields ++ [{ amountDecl with id := 30, groupPath := ["Alt"], name := "Ledger" }]
+                   fieldRefByShortNameAllowed := true }
     let noRepetition (reference : SurfaceFieldPath) :=
       viewOf (fun | AddressedRepetitionComputationElabError.source cause => some cause | _ => none)
-        (checkAddressedRepetitionComputation model ["Grid"] qtyDecl.id (.binary .add (.atom (.field reference)) one))
+        (checkAddressedRepetitionComputation shortNamed ["Grid"] qtyDecl.id
+          (.binary .add (.atom (.field reference)) one))
     [noRepetition { base := .relative 0, groups := [], field := "Ledger" }, noRepetition (grid "Amount"),
       repetitionView (.stringRange (grid "Ledger") 1 2),
       repetitionView (.dateRangeBoundPart (grid "Ledger") .start .year),

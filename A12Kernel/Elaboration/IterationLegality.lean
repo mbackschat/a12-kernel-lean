@@ -100,7 +100,9 @@ structure IndexLevel where
 /-- A reference as the scan sees it: its levels outermost first, plus whether it is read inside a
 semantic index's key. That selects *which class* an illegal iteration reports, and it is not
 derivable from the levels: a keyed value carries the semantic-index marker yet reports the wildcard
-class, and the key that selects its row carries none yet reports the semantic-index class. -/
+class, and the key that selects its row carries none yet reports the semantic-index class. A read in
+a filter body that is not `$`-marked, a key's own filter included, is not scanned here: the filter's
+own classes answer for it ([`spec/07`](../../spec/07-repetition-and-iteration.md)). -/
 structure IndexedReference where
   levels : List IndexLevel
   insideSemanticIndexKey : Bool := false

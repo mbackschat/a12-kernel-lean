@@ -569,9 +569,10 @@ example :
       | .error error => error.diagnostic?) = some .noEnumeration ∧
     let emailCategory : SurfaceProjectedTokenEntityOperand :=
       .field (.category { base := .absolute, groups := ["Probe"], field := "Email" } "Band")
+    let phone : SurfaceTextFieldOperand := .direct { base := .absolute, groups := ["Probe"], field := "Phone" }
     (match elaborateProjectedTokenEntityValueListSource readGateModel ["Probe"]
         { quantifier := .atLeastOne, fields := { first := emailCategory, rest := [] }
-          values := { first := .field email, rest := [] } } with
+          values := { first := .field phone, rest := [] } } with
       | .ok _ => none
       | .error error => error.diagnostic?) = some .noEnumeration := by
   native_decide

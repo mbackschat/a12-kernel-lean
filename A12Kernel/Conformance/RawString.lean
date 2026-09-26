@@ -174,10 +174,12 @@ example :
         (lengthLiteral 5 1))) = some .invalidLengthOfRawType := by
   native_decide
 
-/- **The max-length route asks `Length`'s parameter the group gate before recognizing its shape**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
-   a fixed group draws the group class on either side of the comparison (rows `b6`, `l2`) and an
-   unstarred repeatable group the missing-star class (row `l1`). -/
+/- **`Length`'s parameter asks the group gate on both routes**
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   Nested beside a presence, as rows `b6`, `l2` and `l1` read it, a fixed group draws the group class
+   on either side of the comparison and an unstarred repeatable group the missing-star class. The
+   whole-condition max-length route asks the same gate before recognizing its shape, which no row
+   reads: it is this project's assumption by the parameter rule. -/
 example :
     let ledgerModel : FlatModel :=
       { model with fields := model.fields ++ [{ other with id := 4, groupPath := ["Claim", "Ledger"], name := "Total" }] }
@@ -185,10 +187,15 @@ example :
       (errorOf (elaborateFlatRuleCondition ledgerModel ["Claim"] condition)).map fun
         | .resolve error => error.diagnostic?
         | _ => none
-    [classOf (.lengthCompare .greater (directPath "Ledger") (lengthLiteral 5 0)),
+    let nested (condition : SurfaceCondition) := classOf (.and (.fieldFilled (directPath "Other")) condition)
+    [nested (.lengthCompare .greater (directPath "Ledger") (lengthLiteral 0 0)),
+      nested (.literalCompareLength (lengthLiteral 0 0) .less (directPath "Ledger")),
+      nested (.lengthCompare .greater (directPath "Attachments") (lengthLiteral 0 0)),
+      classOf (.lengthCompare .greater (directPath "Ledger") (lengthLiteral 5 0)),
       classOf (.literalCompareLength (lengthLiteral 0 0) .less (directPath "Ledger")),
       classOf (.lengthCompare .greater (directPath "Attachments") (lengthLiteral 5 0))] =
-      [some (some .noGroupsAllowed), some (some .noGroupsAllowed), some (some .noWildcard)] := by
+      [some (some .noGroupsAllowed), some (some .noGroupsAllowed), some (some .noWildcard),
+        some (some .noGroupsAllowed), some (some .noGroupsAllowed), some (some .noWildcard)] := by
   native_decide
 
 /- The same non-strict decimal-bound shape remains executable for an ordinary String. -/
