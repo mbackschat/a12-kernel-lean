@@ -235,6 +235,13 @@ inductive FixedGroupReferenceError where
   /-- A group path whose first segment names no declared root; see `FlatModel.declaresRoot`. -/
   | unknownRootGroup (path : GroupPath)
   | repeatableGroupRequiresAddress (path : GroupPath)
+  /-- A repeatable group, or a group below one, whose read the walk passed and this carrier still
+  refuses. The Kernel's classes there are the error-locus matrix's, which this carrier does not own:
+  from inside the group a sole count draws the count's arity class, a paired one the
+  negative-condition class unguarded and admission guarded
+  ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
+  [inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). -/
+  | walkedRepeatableGroupUnsupported (path : GroupPath)
   /-- A computation's fixed group operand whose repeatable levels a fixed target cannot bind. -/
   | unboundOperandLevel (path : GroupPath) (unbound : UnboundOperandLevel)
   deriving Repr, DecidableEq
@@ -252,6 +259,7 @@ def FixedGroupReferenceError.diagnostic? :
   | .unknownGroup _ => some .invalidEntity
   | .unknownRootGroup _ => some .invalidRootGroup
   | .repeatableGroupRequiresAddress _ => some .noWildcard
+  | .walkedRepeatableGroupUnsupported _ => none
   | .unboundOperandLevel _ unbound => unbound.diagnostic?
   | .reference _ => none
 
@@ -300,7 +308,8 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           if let some unbound := writtenGroup?.bind (model.unboundReadLevel? declaringGroup · operandScope) then
             throw (.unboundOperandLevel resolved.path unbound)
           let refuse : Except FixedGroupReferenceError ResolvedGroupReference :=
-            throw (.repeatableGroupRequiresAddress resolved.path)
+            throw (if writtenGroup?.isSome then .walkedRepeatableGroupUnsupported resolved.path
+              else .repeatableGroupRequiresAddress resolved.path)
           -- Every list pairing a root with another operand meets a root gate before its core is
           -- checked, so admitting a bound repeatable root reaches no executable list the core
           -- predicate refuses.
@@ -336,7 +345,7 @@ def FlatModel.resolveRuleBoundFixedGroupReference (model : FlatModel)
   model.resolveFixedGroupReferenceWith .ruleBound declaringGroup surface writtenGroup?
 
 /-- Resolve a fixed group operand of a validation carrier whose measured admission covers the
-repeatable group its rule sits in as well as a fixed child of it
+repeatable root its rule sits in as well as a fixed child of the rule's group
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)). -/
 def FlatModel.resolveValidationBoundFixedGroupReference (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceGroupReference)

@@ -136,9 +136,13 @@ a nonrepeatable group must not, and the two refusals are distinct classes rather
 example : diagnostic? [group ["Probe", "Rows"]] = some .noWildcard := by
   native_decide
 
-/- Group-list error-locus binding does not widen this entity-list carrier in that same row. -/
-example : diagnosticAt? ["Probe", "Rows"] [group ["Probe", "Rows"]] =
-      some .noWildcard := by
+/- From a rule inside `Rows` the walk passes the read, and this carrier still refuses the unstarred
+   group without a class: no row reads an entity list from inside the group it names, where the
+   group-list carriers are admitted or draw their own classes. -/
+example :
+    (elaborateNumberValuesNotUniqueSource probeModel ["Probe", "Rows"]
+        { first := group ["Probe", "Rows"], rest := [] }).toOption.isNone ∧
+    diagnosticAt? ["Probe", "Rows"] [group ["Probe", "Rows"]] = none := by
   native_decide
 
 example :

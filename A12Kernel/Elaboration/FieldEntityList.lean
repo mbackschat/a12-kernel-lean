@@ -543,7 +543,10 @@ def resolveFieldEntityOperandUnchecked (model : FlatModel)
     Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model) :=
   resolveFieldEntityOperandIn model declaringGroup [] authored (writtenGroup := declaringGroup)
 
-private def resolveFieldEntityOperands (model : FlatModel)
+/-- Read every operand in authored order, each through `resolveFieldEntityOperandIn`, so the first
+    that cannot be read answers. A carrier with a gate of its own ahead of the shared list gates
+    reads the list with this first. -/
+def resolveFieldEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (fixedTargetGroup? : Option GroupPath)
     (writtenGroup : GroupPath) :
     List SurfaceFieldEntityOperand →

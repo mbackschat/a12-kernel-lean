@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
 import A12Kernel.Elaboration.YearlessDateRangeOverlap
 
 /-! # Unconfigured yearless DateRange overlap locks
@@ -272,6 +273,23 @@ example :
           | _ => none
       | .error _ => none) = some .invalidDateRangeFormat ∧
     (certify? model 1).isSome = true := by
+  native_decide
+
+/- The plural route reads its list before the scalar's own gate, as the canonical route does
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)): a starred scalar beside a list
+   operand that does not resolve draws the resolver's class, and beside a resolvable one the
+   scalar's own refusal. -/
+private def pluralRefusal? (listed : String) : Option (Option KernelStaticDiagnostic) :=
+  match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model ["Form"] [] {
+      scalar := periodStar
+      list := { first := .field { base := .relative 0, groups := [], field := listed }, rest := [] } } with
+  | .ok _ => none
+  | .error error => some error.diagnostic?
+
+example :
+    pluralRefusal? "Nope" = some (some .invalidEntity) ∧
+    (pluralRefusal? "MonthSlash").isSome ∧
+    pluralRefusal? "MonthSlash" ≠ some (some .invalidEntity) := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap

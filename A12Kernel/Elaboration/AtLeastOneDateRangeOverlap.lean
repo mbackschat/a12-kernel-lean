@@ -257,11 +257,17 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
   match model.validate with
   | .error error => .error (.shape (.resolve error))
   | .ok () => do
-      let scalarDeclaration ←
+      -- Every operand is read before the scalar slot's gate: the Kernel's read of a later
+      -- operand, in either slot, answers ahead of it
+      -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)).
+      let scalarOperand ←
         resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
             (writtenGroup := writtenGroup)
           |>.mapError .shape
-          |>.bind certifyAtLeastOneDateRangeOverlapScalarShape
+      let _ ← resolveFieldEntityOperands model declaringGroup scope none writtenGroup
+          (authored.list.first :: authored.list.rest)
+        |>.mapError .shape
+      let scalarDeclaration ← certifyAtLeastOneDateRangeOverlapScalarShape scalarOperand
       let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
           first := authored.scalar
           rest := authored.list.first :: authored.list.rest
@@ -328,6 +334,10 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
         (writtenGroup := writtenGroup)
       |>.mapError fun error => .source (.shape error)
+  -- As on the canonical route, every operand is read before the scalar's own gate.
+  let _ ← resolveFieldEntityOperands model declaringGroup scope none writtenGroup
+      (authored.list.first :: authored.list.rest)
+    |>.mapError fun error => .source (.shape error)
   let scalarDeclaration ←
     match scalarOperand with
     | .field declaration .stored => pure declaration

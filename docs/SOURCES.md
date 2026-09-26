@@ -207,6 +207,21 @@ a12-dmkits revision `214ce432c9f51fea0bee8c619a80120e179f5846` on `main`, confir
 
 **Lean.** Corrected. [`elaborateRepetitionNotUniqueSource`](../A12Kernel/Elaboration/RepetitionNotUnique.lean) would have claimed the containment class for an empty repeatable scope, the only empty group a flat model can hold ([checkpoint](sources/group-and-iteration-probes.md#src-empty-declared-group)). It now refuses that scope ahead of containment without a class, because the walk refuses the same read and no row fixes which answers first, which [SG9](gaps/paths-and-groups.md#gap-sg9) records. A `$`-marked key has no spelling in a plain field path.
 
+<a id="inbound-2026-09-26h-list-reads"></a>
+#### Reviewed 2026-09-26h list-read handback — eight more list carriers read every operand before their duplicate gate, the plural overlap before its scalar slot's gate, and both root gates ask an index-selected root
+
+It shares the provenance of the empty-scope record above. This record takes the letter's §1, the §2 category and overlap rows, §3 and §4. Its §5 reports the peer's own records, not recorded as a claim.
+
+**Claim.** Its §1 (`EntityListQuantifierReadLawsTest`, 114 rows), on `/Item` behind `FieldFilled(Title)` except `RepetitionNotUnique` in the repeatable `Keyed` reporting on `Key`. On `AtLeastOneFieldFilled`, `FieldValuesNotUnique`, `AtLeastOneGroupFilled`, `NumberOfValueInFields`, `AtLeastOneFieldValueIncludedInValueList` over a literal and over a field, `RepetitionNotUnique` and `FieldValueIncludedInValueList`'s value list, an index on a group without an index field or on its field draws `MVK_NO_INDEX_FIELD`, an empty key `MVK_INDEX_VALUE_INVALID`, the empty `Hollow` `MVK_GROUP_IS_EMPTY`, the empty root `/Other` `MVK_ROOT_GROUP_IS_EMPTY` and a `$` operand `MVK_INVALID_OUTER_ITERATION`, first or last beside a duplicate pair whose controls draw `MVK_DUPLICATE_PARAM1`.
+
+Its §2. `AtLeastOneFieldValueIncludedInValueList` with `Tier -> Nope` first or after a duplicate pair draws `MVK_CATEGORY_UNKOWN`, against `Tier -> Band` drawing the duplicate class. `AtLeastOneDateRangeOverlaps` with `Keyed/Span For ""` before or after `Stays*/Span` ahead of `In Window`, or as the whole `In` list after `Stays*/Span`, draws `MVK_INDEX_VALUE_INVALID`, against `Stays*/Span In Window` drawing `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON`.
+
+Its §3. `NumberOfFilledGroups(/Lot For "k", Grading) > 0` in either order draws `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS` and `Keyed/Amount For "k"` in its place `MVK_SEMANTIC_INDEX_NOT_ALLOWED`. `Sum(/Lot For "k", Weight)`, `MaxValue(Weight, /Lot For "k")`, `NumberOfFilledFields` and `NumberOfDifferentValues` over `Weight, /Lot For "k"` draw `MVK_ROOT_GROUP_REFERENCED`. `NumberOfFilledGroups(Keyed, Grading) > 0` draws `MVK_NO_WILDCARD` from `/Item` and is admitted from a rule in `Keyed`.
+
+Its §4 (`ComputationSuppressionLawsTest`). An `errorCodesToSuppress` list of an unsupported name then the supported one, or of the supported name three times, draws `MVK_UNEXPECTED_TOKEN`.
+
+**Lean.** Corrected twice. The plural overlap, canonical and yearless, asked its scalar slot's gate before reading the list, so a starred scalar beside a list operand that does not resolve drew the slot's class. It now reads every operand first, locked in [`DateRangeOverlapOperators`](../A12Kernel/Conformance/DateRangeOverlapOperators.lean) and [`YearlessDateRangeOverlap`](../A12Kernel/Conformance/YearlessDateRangeOverlap.lean). A fixed-group operand that the walk passes but the carrier still refuses now claims no class, where it had claimed `MVK_NO_WILDCARD`, which no row draws from inside the group, locked in [`GroupListDiagnostic`](../A12Kernel/Conformance/GroupListDiagnostic.lean). The shared entity-list shape already read every operand before its duplicate gate. The index operands, a `$` operand outside a filter and an empty fixed group have no spelling on these carriers.
+
 ### Inbound 2026-09-26g handback
 
 <a id="inbound-2026-09-26g-type-match"></a>

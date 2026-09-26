@@ -253,6 +253,15 @@ example :
           some .invalidParameterForDateRangeComparison := by
   native_decide
 
+/- Every operand is read before the scalar slot's gate: a starred scalar beside a list operand that
+   does not resolve draws the resolver's class, as the Kernel's index read of a value-slot operand
+   answers ahead of that gate ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). -/
+example :
+    (pluralAdmissionError? (.star (star "Window")) (direct "Nope")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+          some .invalidEntity := by
+  native_decide
+
 /- The exact measured Number/Number pair maps to `MVK_NO_DATE_RANGE`; either isolated kind mismatch stays unmapped. -/
 example :
     (pluralAdmissionError? (direct "Quantity")

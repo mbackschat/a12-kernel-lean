@@ -292,4 +292,28 @@ example :
         some .tooManyParentGroups] := by
   native_decide
 
+private def countAtDiagnostic? (rowGroup : GroupPath) (operands : List SurfaceGroupCountOperand) :
+    Option (Option KernelStaticDiagnostic) :=
+  let surface : SurfaceNumericComparison :=
+    { op := .ordinary .greater
+      left := .atom (.filledGroupCount operands)
+      right := .literal { value := 0, authoredScale := 0 } }
+  match elaborateNumericComparison probeModel rowGroup surface with
+  | .ok _ => none
+  | .error error => some error.groupCountDiagnostic?
+
+/- From a rule inside `Rows` the walk passes a read of `Rows` itself, so the missing-star class is
+   not the Kernel's there: a sole count draws the count's arity class, a paired one the
+   negative-condition class unguarded and admission guarded
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
+   [inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). The comparison route, which sees
+   no guard, refuses without a class; from the root the walk refuses and draws the missing star. -/
+example :
+    let g (gs : GroupPath) : SurfaceGroupCountOperand := .fixed (.path { base := .absolute, groups := gs })
+    countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some none ∧
+    countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"]] = some none ∧
+    countAtDiagnostic? ["Probe"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some (some .noWildcard) ∧
+    countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "B"], g ["Probe", "A"]] = none := by
+  native_decide
+
 end A12Kernel.Conformance.GroupListDiagnostic
