@@ -496,7 +496,8 @@ example :
   native_decide
 
 /- A Number field list is inside the kind set, so a Number repeated across the lists reaches the
-   cross-list repeat and draws the duplicate class. A value-side name resolving to nothing answers ahead
+   cross-list repeat and draws the duplicate class, on the String and Date rows' account: no row
+   repeats a Number across the lists. A value-side name resolving to nothing answers ahead
    of the field list's value validation
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)),
    where asking the field list's gates first draws the raw class. -/
@@ -515,7 +516,8 @@ private def readGateModel : FlatModel :=
         enumeration := some { storedTokens := ["A", "B"], categories := [{ name := "Band", tokens := ["Hi", "Lo"] }] } },
       { id := 27, groupPath := ["Probe", "Mix"], name := "MixText", policy := { kind := .string } },
       { id := 28, groupPath := ["Probe", "Mix"], name := "MixDate",
-        policy := { kind := .temporal .date dateFragmentComponents } },
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
       { id := 29, groupPath := ["Probe", "Ledger"], name := "Total",
         policy := { kind := .number { scale := 0, signed := false } } },
       { id := 30, groupPath := ["Probe", "Items"], name := "Label", policy := { kind := .string },
@@ -549,9 +551,10 @@ example :
 /- **A category read of a field declaring no Enumeration draws its own class**, on the stored form
    and on a starred operand of the projected form
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
-   The starred row is measured against a literal, which the projected form does not carry; the read
-   answers as it is parsed, ahead of the value side, as the stored row shows. A token list reading
-   the field stored instead admits the first row. -/
+   The starred row is measured against a literal, which the projected form does not carry, and each
+   measured row's value side is clean, so no row orders the category read against a failing value.
+   The projected form's direct category arm answers the same class. A token list reading the field
+   stored instead admits the first row. -/
 example :
     let star : SurfaceStarFieldPath :=
       { base := .absolute, groups := [{ name := "Probe" }, { name := "Items", starred := true }],
@@ -563,7 +566,34 @@ example :
         { quantifier := .atLeastOne, fields := { first := .star star (.category "Band"), rest := [] }
           values := { first := .field email, rest := [] } } with
       | .ok _ => none
+      | .error error => error.diagnostic?) = some .noEnumeration ∧
+    let emailCategory : SurfaceProjectedTokenEntityOperand :=
+      .field (.category { base := .absolute, groups := ["Probe"], field := "Email" } "Band")
+    (match elaborateProjectedTokenEntityValueListSource readGateModel ["Probe"]
+        { quantifier := .atLeastOne, fields := { first := emailCategory, rest := [] }
+          values := { first := .field email, rest := [] } } with
+      | .ok _ => none
       | .error error => error.diagnostic?) = some .noEnumeration := by
+  native_decide
+
+/- **The stored form keeps a category read's projection**, so the category's own token is a legal
+   literal against it and the Enumeration's stored tokens are not, where reading the slot stored
+   would decide both the other way ([`spec/06`](../../spec/06-strings-and-enumerations.md)'s union
+   rule). A group operand beside a String draws the base-type class on the literal form as it does on
+   the field-valued one (row `b8`). -/
+example :
+    let admits (operand : SurfaceFieldEntityOperand) (literal : String) : Bool :=
+      (elaborateTokenEntityStringLiteralValueListSource readGateModel ["Probe"]
+        { quantifier := .atLeastOne, fields := { first := operand, rest := [] }, values := [literal] }).isOk
+    let category : SurfaceFieldEntityOperand :=
+      .field { base := .absolute, groups := ["Probe"], field := "Grade" } (.projected "Band")
+    [admits category "Hi", admits category "A", admits (field "Grade") "A", admits (field "Grade") "Hi"] =
+      [true, false, true, false] ∧
+    let ledger : SurfaceFieldEntityOperand := .group (.path { base := .absolute, groups := ["Probe", "Ledger"] })
+    (match elaborateTokenEntityStringLiteralValueListSource readGateModel ["Probe"]
+        { quantifier := .atLeastOne, fields := { first := ledger, rest := [field "Email"] }, values := ["a"] } with
+      | .ok _ => none
+      | .error error => error.diagnostic?) = some .varyingTypesNotAllowed := by
   native_decide
 
 end A12Kernel.Conformance.ValueListQuantifierKindGate

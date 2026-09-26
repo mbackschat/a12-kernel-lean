@@ -303,6 +303,8 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
       pure (.make .conditionForm "$.condition"
         (Json.mkObj [("operation", toJson "numberValueList"),
           ("path", toJson path)]))
+  -- The protocol's condition forms (`parseCondition`) carry no multi-field list, so no protocol
+  -- input produces this arm.
   | .groupOperandOutsideTokenRoute path =>
       pure (.make .conditionForm "$.condition"
         (Json.mkObj [("operation", toJson "valueListGroupOperand"),

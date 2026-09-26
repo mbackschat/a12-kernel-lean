@@ -77,14 +77,15 @@ private def elaborateEnumerationLiteralList (model : FlatModel)
 /-- A multi-field list's operand, read through a field resolver. A path naming a group is an operand
     the Kernel expands, so `(Ledger, Other In "a")` draws the base-type class of the group's fields
     beside the String ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions));
-    this flat route cannot expand it and refuses without the entity class a field resolver reports. A
-    membership's subject and members are read before any list operand, so none reaches here as a
-    group. -/
+    this flat route cannot expand it and refuses without the entity class a field resolver reports. An
+    unstarred repeatable group meets the walk first and keeps its missing-star class
+    ([`spec/06`](../../../../spec/06-strings-and-enumerations.md)). A membership's subject and members
+    are read before any list operand, so none reaches here as a group. -/
 private def FlatModel.resolveFlatListOperand (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (surface : SurfaceFieldPath) : Except ElabError FlatFieldDecl :=
   (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError fun miss =>
     match displaceGroupMiss miss (model.ruleGroupRead declaringGroup writtenGroup surface) with
-    | .groupInFieldValueRead group _ _ => .groupOperandOutsideTokenRoute group
+    | .groupInFieldValueRead group none _ => .groupOperandOutsideTokenRoute group
     | other => .resolve other
 
 private abbrev ElaboratedEnumerationOperand :=

@@ -454,9 +454,10 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   let star (path : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup path).mapError fun error =>
       .starPath (error.placeBelowStar model declaringGroup written)
-  -- A category read of a field declaring no Enumeration draws the read's own class on every list
-  -- carrying one, after the walk as a bracketed category read does
-  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+  -- A category read of a field declaring no Enumeration draws the read's own class, after the walk
+  -- as a bracketed category read does. It is measured inside `Sum`, the two DateRange overlaps,
+  -- `FieldValuesNotUnique` and the value list, and every other list sharing this shape asks it on
+  -- that account ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
   -- A fixed-target list asks its walk list-wide later, an order no row measures.
   let categoryRead (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
       Except FieldEntityShapeElabError Unit :=

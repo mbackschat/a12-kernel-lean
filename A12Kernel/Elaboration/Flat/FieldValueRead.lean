@@ -81,12 +81,13 @@ def FlatModel.resolveFieldValueRead (model : FlatModel) (declaringGroup : GroupP
     (model.ruleGroupRead declaringGroup writtenGroup reference)
 
 /-- A rule's read of a field an operator names as a parameter rather than in brackets, which asks the
-    group gate alone. `Length`, `RangeAsNumber`, `FieldValueAsNumber`, `FieldValueAsString`, a
-    DateRange bound's field and a scalar membership's subject draw the group class for a group and
-    the missing-star class for an unstarred repeatable group, while a raw String and a partially known
-    Date meet each operator's own gates: `Length` has a raw class of its own, the two conversions
-    refuse both with their own classes, and a Date meets the membership's kind gate before any date
-    gate ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    group gate alone. A fixed group draws the group class inside `Length`, `RangeAsNumber`,
+    `FieldValueAsNumber`, a DateRange bound's field and a scalar membership's subject, and an unstarred
+    repeatable group the missing-star class inside `Length` and the membership's subject, the other
+    parameters taking it by the same gate. A raw String and a partially known Date meet each
+    operator's own gates: `Length` has a raw class of its own, the two conversions refuse both with
+    their own classes, and a Date meets the membership's kind gate before any date gate
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 def FlatModel.resolveEntityRead (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :
     Except ResolveError FlatFieldDecl :=
@@ -140,9 +141,10 @@ def FlatModel.resolveComputationFieldValueRead (model : FlatModel)
     (model.computationGroupRead declaringGroup targetGroup reference)
 
 /-- A computation's read of a field an operator names as a parameter, which asks the group gate alone,
-    as `FlatModel.resolveEntityRead` does on a rule. Measured on `Length`, the two conversions,
-    `RangeAsNumber` and a DateRange bound's field into a fixed Number target, where a group draws the
-    group class and an unstarred repeatable group the missing-star class
+    as `FlatModel.resolveEntityRead` does on a rule. A fixed group draws the group class inside
+    `Length`, `FieldValueAsNumber`, `RangeAsNumber` and a DateRange bound's field into a Number target
+    and inside `FieldValueAsString` into a String target, and an unstarred repeatable group the
+    missing-star class inside `FieldValueAsNumber` and `FieldValueAsString`
     ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 def FlatModel.resolveComputationEntityRead (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :

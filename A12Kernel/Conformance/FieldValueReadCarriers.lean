@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.StringPattern
+import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.ValidationCondition.Assembly
 
 /-! # The field-value read's gates on its remaining carriers
@@ -81,9 +82,11 @@ private def span2Decl : FlatFieldDecl := { spanDecl with id := 13, name := "Span
 private def priceDecl : FlatFieldDecl :=
   { qtyDecl with id := 14, name := "Price", policy := { kind := .number { scale := 2, signed := false } } }
 
+private def dueCopyDecl : FlatFieldDecl := { dueDecl with id := 15, name := "DueCopy" }
+
 private def model : FlatModel :=
   { fields := [refDecl, otherDecl, copyDecl, noteDecl, amountDecl, dueDecl, partialDecl, gradeDecl,
-      gradeCopyDecl, totalDecl, qtyDecl, labelDecl, spanDecl, span2Decl, priceDecl],
+      gradeCopyDecl, totalDecl, qtyDecl, labelDecl, spanDecl, span2Decl, priceDecl, dueCopyDecl],
     repeatableGroups := [items] }
 
 private def grid (field : String) : SurfaceFieldPath := absolute ["Grid"] field
@@ -142,15 +145,21 @@ private def atom (operand : SurfaceNumericAtom) : AuthoredNumericExpr SurfaceNum
 /- **A rule in a repeatable group reads the same way**
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
    its addressed operands ask the gates, so a fixed group and a raw String read from the iterated
-   level draw their classes, and a fixed group named as `Length`'s parameter draws the group class. -/
+   level draw their classes, and a fixed group named as `Length`'s parameter draws the group class.
+   The rows measure the root's `Amount` on the left (`r1`, `r2`), which this route's row boundary
+   refuses, so the fixture reads the row's own `Qty` there. The last three parameters take the group
+   class by the parameter rule measured at the root; only `Length` is measured on this route (`r4`). -/
 example :
     let addressed (right : AuthoredNumericExpr SurfaceNumericAtom) :=
       viewOf numericResolve? (elaborateRepeatableNumericComparison model items.path
         { op := .ordinary .equal, left := .atom (.field (absolute items.path "Qty")), right })
     [addressed (.binary .add (field "Ledger") one), addressed (.binary .add (field "Note") one),
-      addressed (atom (.stringLength (grid "Ledger")))] =
-      [.read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid),
-        .read (some .noGroupsAllowed)] := by
+      addressed (atom (.stringLength (grid "Ledger"))),
+      addressed (atom (.stringRange (grid "Ledger") 1 2)),
+      addressed (atom (.dateRangeBoundPart (grid "Ledger") .start .year)),
+      addressed (atom (.fieldValueAsNumber (.direct (grid "Ledger"))))] =
+      [.read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid)] ++
+        List.replicate 4 (.read (some .noGroupsAllowed)) := by
   native_decide
 
 /- **A field an operator names as a parameter asks the group gate alone and meets the operator's own
@@ -353,6 +362,25 @@ example :
       numberList (.field (absolute items.path "Qty") (.projected "Band")),
       numberList (.field (grid "Amount"))] =
       [.read (some .noEnumeration), .read (some .noWildcard), .admitted] := by
+  native_decide
+
+/- The same class answers inside `FieldValuesNotUnique` over two Dates (row `d3`). A computation's
+   fixed-target list asks it too, before its list-wide walk, an order no row measures. -/
+example :
+    let unique :=
+      match elaborateTemporalValuesNotUniqueSource model ["Grid"]
+          { first := .field (grid "Due") (.projected "Band"), rest := [.field (grid "DueCopy")] } with
+      | .ok _ => ReadView.admitted
+      | .error (.shape (.resolve error)) => .read error.diagnostic?
+      | .error _ => .carrier
+    let fixedTarget :=
+      match elaborateNumberEntitySource model ["Grid"]
+          { first := .field (grid "Amount") (.projected "Band"),
+            rest := [.field (absolute ["Grid", "Ledger"] "Total")] } (fixedTargetGroup? := some ["Grid"]) with
+      | .ok _ => ReadView.admitted
+      | .error (.shape (.resolve error)) => .read error.diagnostic?
+      | .error _ => .carrier
+    [unique, fixedTarget] = [.read (some .noEnumeration), .read (some .noEnumeration)] := by
   native_decide
 
 /- **A scalar membership's plain subject is an entity whose group refusal waits for the members**,

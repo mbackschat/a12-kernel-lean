@@ -733,10 +733,11 @@ example :
 
 /- **A scalar membership against literals asks its subject's group gate first**, having no members to
    wait for ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
-   a fixed group, a bare name naming one and a root draw the group class and an unstarred repeatable
-   group the missing-star class. The Kernel's one construct covers the String, Number and Enumeration
-   literal forms this surface splits by kind. A field resolver reports every row as a name resolving
-   to nothing. -/
+   a fixed group, a bare name naming one while a field elsewhere shares the name, and a root draw the
+   group class and an unstarred repeatable group the missing-star class. The Kernel's one construct
+   covers the String, Number and Enumeration literal forms this surface splits by kind, and the bare
+   name is measured on the String form. A field resolver reports every row as a name resolving to
+   nothing. -/
 example :
     let ledger := absolute ["Order"] "Ledger"
     let items := absolute ["Order"] "Items"
@@ -744,7 +745,9 @@ example :
     [readView (.stringValueMembership .included ledger ["a"]),
       readView (.stringValueMembership .included items ["a"]),
       readView (.stringValueMembership .included root ["a"]),
-      readView (.stringValueMembership .included (bare "Ledger") ["a"]),
+      readViewIn { readModel with
+          fields := readModel.fields ++ [{ noteDecl with id := 30, groupPath := ["Reference"], name := "Ledger" }] }
+        (.stringValueMembership .included (bare "Ledger") ["a"]),
       readView (.numberValueMembership .included ledger [1]),
       readView (.numberValueMembership .included items [1]),
       readView (.numberValueMembership .included root [1]),
@@ -777,11 +780,19 @@ example :
 /- **A multi-field list's group operand is expanded by the Kernel**, which then reports the base-type
    class of the group's fields beside the String
    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
-   This route cannot expand a group and refuses without a class, where the group class would be the
-   wrong claim. -/
+   This route cannot expand a group and refuses without a class on its String, Number and Enumeration
+   lists, where the group class would be the wrong claim. An unstarred repeatable group meets the
+   walk first and draws the missing-star class whatever the slot's shape
+   ([`spec/06`](../../../spec/06-strings-and-enumerations.md)). -/
 example :
-    readView (.stringValueList .atLeastOne [absolute ["Order"] "Ledger", absolute ["Order"] "Note"] ["a"]) =
-      .refused none := by
+    let ledger := absolute ["Order"] "Ledger"
+    let note := absolute ["Order"] "Note"
+    [readView (.stringValueList .atLeastOne [ledger, note] ["a"]),
+      readView (.numberFieldValueList .atLeastOne [ledger, absolute ["Order"] "Quantity"]
+        [absolute ["Order", "Ledger"] "Total"]),
+      readView (.enumerationFieldValueList .atLeastOne [.direct ledger, .direct note] [.direct note]),
+      readView (.stringValueList .atLeastOne [absolute ["Order"] "Items", note] ["a"])] =
+      [.refused none, .refused none, .refused none, .refused (some .noWildcard)] := by
   native_decide
 
 /- **A bare name naming a group of the declaring group is a group read, whether one field elsewhere

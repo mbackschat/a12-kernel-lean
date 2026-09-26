@@ -222,7 +222,7 @@ private def resolveAddressedNumericDeclaration (model : FlatModel)
     throw (.fieldOutsideRowGroup declaration.path rowGroup)
   pure declaration
 
-/-- The group gate every read in this fragment asks first: a bracket read's value gates follow it,
+/-- The group gate a field read and an operator's field parameter ask first here: a bracket read's value gates follow it,
     while an operator parameter meets its operator's own gates instead
     ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 private def addressedEntityResolution (model : FlatModel) (rowGroup : GroupPath)

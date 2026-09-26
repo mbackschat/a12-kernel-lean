@@ -223,8 +223,9 @@ def certifyDirectTokenOperand (model : FlatModel)
       match declaration.policy.kind, projectionRef with
       | .enumeration, .category name =>
           throw (.enumerationOperand declaration.path (.unknownCategory name))
-      -- The category read's own class, asked as the read is parsed and so ahead of the slot's value
-      -- and kind gates ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+      -- The category read's own class, ahead of the slot's value and kind gates. The stored form's
+      -- shape asks it first as each operand is read; the projected form reaches it here, after every
+      -- operand resolves ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
       | _, .category _ =>
           throw (.shape (.resolve (.categoryReadOfNonEnumeration declaration.path)))
       | _, .stored =>

@@ -116,7 +116,10 @@ private def directViews (source : String) : List ReadView :=
    String the raw class and a partially known Date the date class, while a Number field is admitted.
    The target's own group passes the walk, which its scope binds, and draws the group class too.
    Resolving the source without the gates reports a group as a name resolving to nothing and each
-   value refusal as the carrier's Number check. -/
+   value refusal as the carrier's Number check. The rows measure every source as a direct copy
+   (`c1` to `c3`, `y5`) and the fixed group and raw String inside `Abs` and a sum (`g16` to `g19`); the
+   partial Date and the target's own group inside `Abs` and a sum share the one source check and are
+   not measured there. -/
 example :
     ["Ledger", "Note", "Partial", "Items", "Amount"].map directViews =
       [List.replicate 3 (.read (some .noGroupsAllowed)),
@@ -217,6 +220,8 @@ private def targetGroup : RepeatableGroupDecl :=
 private def operandGroup : RepeatableGroupDecl :=
   { level := 70, path := ["Plan", "Operand"], repeatability := some 2, indexField := some 3 }
 
+private def thirdGroup : RepeatableGroupDecl := { level := 80, path := ["Plan", "Third"] }
+
 /-- The parallel grid's model: two keyed repeatable groups side by side, the operand one holding a raw
     String, a partially known Date and a fixed group. -/
 private def parallelModel : FlatModel :=
@@ -226,19 +231,42 @@ private def parallelModel : FlatModel :=
   { fields := [within targetGroup 1 "Key" otherDecl, within targetGroup 2 "Result" amountDecl,
       within operandGroup 3 "Key" otherDecl, within operandGroup 4 "Input" amountDecl,
       within operandGroup 20 "Memo" noteDecl, within operandGroup 21 "Part" partialDecl,
-      { within operandGroup 22 "Total" amountDecl with groupPath := operandGroup.path ++ ["Sub"] }],
-    repeatableGroups := [targetGroup, operandGroup] }
+      { within operandGroup 22 "Total" amountDecl with groupPath := operandGroup.path ++ ["Sub"] },
+      within thirdGroup 23 "Extra" amountDecl],
+    repeatableGroups := [targetGroup, operandGroup, thirdGroup] }
 
 /- **A parallel operand is a field-value read**: a fixed group inside the operand group and the operand
    group itself draw the group class, since the index join binds the operand's level, and a raw String
-   and a partially known Date draw their value classes, while a Number is admitted. -/
+   and a partially known Date draw their value classes, while a Number is admitted. The last row names
+   an unkeyed repeatable group beside the target, which the join does not bind; it takes the shared
+   walk's missing-star class, and no row measures it on this carrier. -/
 example :
-    ["Sub", "Operand", "Memo", "Part", "Input"].map (fun name =>
-      let reference := if name == "Operand" then absolute ["Plan"] name else absolute operandGroup.path name
-      viewOf (fun | ParallelComputationPlanError.operandResolve cause => some cause | _ => none)
-        (checkParallelNumericComputationClearingPlan parallelModel ["Plan"] 2 reference)) =
+    [absolute operandGroup.path "Sub", absolute ["Plan"] "Operand", absolute operandGroup.path "Memo",
+      absolute operandGroup.path "Part", absolute operandGroup.path "Input", absolute ["Plan"] "Third"].map
+      (fun reference =>
+        viewOf (fun | ParallelComputationPlanError.operandResolve cause => some cause | _ => none)
+          (checkParallelNumericComputationClearingPlan parallelModel ["Plan"] 2 reference)) =
       [.read (some .noGroupsAllowed), .read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid),
-        .read (some .invalidDateType), .admitted] := by
+        .read (some .invalidDateType), .admitted, .read (some .noWildcard)] := by
+  native_decide
+
+/- **A bare name naming a group reads as the group, and an operator's parameter beside
+   `CurrentRepetition` asks the group gate alone**: `[Ledger] + 1` draws the group class ahead of this
+   carrier's own refusal of an expression carrying no repetition, which the admitted `[Amount] + 1`
+   meets instead (row `c9` measures the first, `c10` admits the second). `RangeAsNumber`, a DateRange
+   endpoint's component and `FieldValueAsNumber` naming a group draw the group class on this carrier by
+   the parameter rule measured on the others; only `Length` is measured here (`w5`). -/
+example :
+    let one : AuthoredNumericExpr SurfaceNumericAtom := .literal { value := 1, authoredScale := 0 }
+    let noRepetition (reference : SurfaceFieldPath) :=
+      viewOf (fun | AddressedRepetitionComputationElabError.source cause => some cause | _ => none)
+        (checkAddressedRepetitionComputation model ["Grid"] qtyDecl.id (.binary .add (.atom (.field reference)) one))
+    [noRepetition { base := .relative 0, groups := [], field := "Ledger" }, noRepetition (grid "Amount"),
+      repetitionView (.stringRange (grid "Ledger") 1 2),
+      repetitionView (.dateRangeBoundPart (grid "Ledger") .start .year),
+      repetitionView (.fieldValueAsNumber (.direct (grid "Ledger")))] =
+      [.read (some .noGroupsAllowed), .carrier, .read (some .noGroupsAllowed),
+        .read (some .noGroupsAllowed), .read (some .noGroupsAllowed)] := by
   native_decide
 
 end A12Kernel.Conformance.AddressedFieldValueRead

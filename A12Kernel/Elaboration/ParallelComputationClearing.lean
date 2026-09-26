@@ -480,9 +480,11 @@ def checkParallelNumericTargetRoute (model : FlatModel)
 /-- Check one direct non-starred Number operand as a bounded parallel route to a repeatable Number target. No caller chooses the indexed groups or mark prefixes.
 
     The operand is a field-value read, so a group draws the group class and a raw String and a
-    partially known Date their value classes, ahead of the Number check; the index join binds the
-    operand's own level, so its group meets no walk
+    partially known Date their value classes, ahead of the Number check
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+    A group meets the computation reader's walk from the target's scope, which passes the operand's
+    own keyed level as a legal parallel iteration, so that group and a fixed group inside it draw the
+    group class, measured, while a repeatable group the join does not bind keeps the walk's class.
     The kind-neutral route stays ungated, since a presence guard's operand is not a value read. -/
 def checkParallelNumericComputationClearingPlan (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
@@ -492,8 +494,11 @@ def checkParallelNumericComputationClearingPlan (model : FlatModel)
   let route ←
     (checkParallelNumericTargetRoute model declaringGroup targetField operandReference).mapError fun
       | .operandResolve miss =>
-          .operandResolve (displaceGroupMiss miss fun _ =>
-            (model.groupNamedBy? declaringGroup operandReference).map (·, none))
+          let targetGroup := match model.lookupUniqueId targetField with
+            | .ok declaration => declaration.groupPath
+            | .error _ => declaringGroup
+          .operandResolve (displaceGroupMiss miss
+            (model.computationGroupRead declaringGroup targetGroup operandReference))
       | error => error
   if let some refusal := route.sourceDeclaration.fieldValueReadRefusal? then
     throw (.operandResolve refusal)

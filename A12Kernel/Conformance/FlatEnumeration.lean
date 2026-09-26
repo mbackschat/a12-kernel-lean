@@ -272,7 +272,9 @@ example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
       (.enumerationOperand ["Order", "Code"] (.unknownCategory "kind")) := by native_decide
 
 /- A category read of a String meets the read's non-Enumeration class ahead of the comparison's kind
-   gate ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+   gate. The rows measure it against a literal (`k2` in the
+   [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions));
+   this field-pair comparison asks the same read first. -/
 example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
     (.category (fieldPath "Text") "Kind") directCategoryPeer)) = some
       (.resolve (.categoryReadOfNonEnumeration ["Order", "Text"])) := by native_decide

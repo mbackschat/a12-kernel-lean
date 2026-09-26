@@ -615,9 +615,9 @@ The field-value read's group arm was measured on 2026-09-25 on rule comparisons,
 member, a filter body and a computation operation, a root group drawing the group class as any other
 group does, and its raw and partial-Date arms on those carriers but a filter body
 ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
-The category read's non-Enumeration arm was measured on 2026-09-25 on a comparison, a membership's
-subject and member, a value list's side and two computation sources, answering ahead of a raw or
-partially known field's value gates and of an unknown category
+The category read's non-Enumeration arm was measured on 2026-09-25 and 2026-09-26 on a comparison, a
+membership's subject and member, a value list's field, three computation sources and five entity-list
+operators, answering ahead of a raw or partially known field's value gates and of an unknown category
 ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
