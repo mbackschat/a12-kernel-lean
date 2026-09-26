@@ -361,13 +361,13 @@ private def nestedCountAt? (rowGroup writtenGroup counted : GroupPath) :
   | .ok _ => none
   | .error error => some error.groupCountDiagnostic?
 
-/- The count's arity answers a lone repeatable group wherever the rule's error field sits in it,
-   whichever group declares the rule: the group itself, the fixed root, a fixed ancestor between them,
-   or a repeatable group enclosing it, one repeatable level deeper as well, and as a repeatable root
-   holding subgroups
-   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
-   An error field outside the counted group claims no class, whether it sits below it, in a fixed child
-   of it or above it. -/
+/- A lone group meets the count's arity wherever the rule's error field lies at or below it and inside
+   the rule group, whichever group declares the rule: the counted group, a child of it, the fixed root,
+   a fixed ancestor between them, or a repeatable group enclosing it, and as a repeatable root. An error
+   field outside the counted group draws the missing star, and one outside the rule group the
+   containment class ahead of the arity
+   ([disposition grid](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid),
+   [placement grid](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-by-error-field)). -/
 example :
     nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows"] ["Probe", "Rows"] =
       some (some .paramSizeInvalidGN) ∧
@@ -381,18 +381,38 @@ example :
     nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] =
       some (some .paramSizeInvalidGN) ∧
     nestedCountAt? ["Lot"] ["Lot"] ["Lot"] = some (some .paramSizeInvalidGN) ∧
-    nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] = some none ∧
-    nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Fix"] =
-      some none ∧
-    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] = some none ∧
-    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Fix"] ["Probe", "Rows"] = some none ∧
-    nestedCountAt? ["Probe", "Rows", "Fix"] ["Probe", "Rows", "Fix"] ["Probe", "Rows"] = some none ∧
+    nestedCountAt? ["Lot", "Sub"] ["Lot", "Sub"] ["Lot", "Sub"] = some (some .paramSizeInvalidGN) ∧
     nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] =
       some (some .paramSizeInvalidGN) ∧
     nestedCountAt? ["Lot"] ["Lot", "Sub"] ["Lot", "Sub"] = some (some .paramSizeInvalidGN) ∧
-    nestedCountAt? ["Lot"] ["Lot", "Sub"] ["Lot"] = some none ∧
-    nestedCountAt? ["Lot"] ["Lot", "Fix"] ["Lot"] = some none ∧
-    nestedCountAt? ["Lot", "Fix"] ["Lot", "Fix"] ["Lot"] = some none := by
+    nestedCountAt? ["Probe"] ["Probe", "Rows", "Fix"] ["Probe", "Rows", "Fix"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Fix"] ["Probe", "Rows", "Fix"] =
+      some (some .paramSizeInvalidGN) ∧
+    -- The error field below the counted group, in a repeatable or a fixed child of it.
+    nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Fix"] ["Probe", "Rows"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe"] ["Probe", "Rows", "Fix"] ["Probe", "Rows"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Rows", "Fix"] ["Probe", "Rows", "Fix"] ["Probe", "Rows"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Lot"] ["Lot", "Sub"] ["Lot"] = some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Lot"] ["Lot", "Fix"] ["Lot"] = some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Lot", "Fix"] ["Lot", "Fix"] ["Lot"] = some (some .paramSizeInvalidGN) ∧
+    -- The error field outside the counted group, above it or beside it.
+    nestedCountAt? ["Probe"] ["Probe", "B"] ["Probe", "Rows"] = some (some .noWildcard) ∧
+    nestedCountAt? ["Probe", "B"] ["Probe", "B"] ["Probe", "Rows"] = some (some .noWildcard) ∧
+    -- The error field outside the rule group, which iterates.
+    nestedCountAt? ["Probe", "B"] ["Probe", "Rows"] ["Probe", "Rows"] =
+      some (some .fieldNotInRuleGroup) ∧
+    nestedCountAt? ["Lot", "Fix"] ["Lot", "Sub"] ["Lot", "Sub"] =
+      some (some .fieldNotInRuleGroup) := by
   native_decide
 
 /-- The whole rule `FieldFilled(A/AVal) And GroupFilled(<group>)` at the root: the presence carrier

@@ -198,12 +198,15 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
               ((SurfaceGroupCountOperand.firstStarred? operands).getD
                 { base := .absolute, groups := [] }))
       -- A lone repeatable group meets the count's arity as a lone fixed group does wherever the
-      -- rule's error field sits in it, whichever enclosing group declares the rule, at any depth, as
-      -- a root and holding subgroups
-      -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
-      -- The arity answers ahead of whichever refusal the placement meets: the rule's row binding the
-      -- group, the walk passing it, or an enclosing rule leaving its level unbound.
-      let soleArityMeasured (path : GroupPath) : Bool := path == writtenGroup
+      -- rule's error field lies at or below it and inside the rule group, whichever group declares
+      -- the rule, as a root too
+      -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-by-error-field)).
+      -- The arity answers ahead of the refusal such a placement otherwise meets: the rule's row
+      -- binding the group, the walk passing it, or an enclosing rule leaving its level unbound. An
+      -- error field outside the rule group keeps the resolver's containment class, which the Kernel
+      -- raises first.
+      let soleArityMeasured (path : GroupPath) : Bool :=
+        GroupPath.isPrefixOf path writtenGroup && GroupPath.isPrefixOf rowGroup writtenGroup
       let groups ←
         match model.resolveValidationBoundFixedGroupReferences rowGroup writtenGroup surfaces with
         | .ok groups => pure groups
