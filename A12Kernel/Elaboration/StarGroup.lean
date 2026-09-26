@@ -259,10 +259,8 @@ def StarredGroupFillQuantifier.evalCount (operator : StarredGroupFillQuantifier)
 
 /-- Resolve the shared topology and retain only environments within every declared repeatability. -/
 def StarPath.inCapacityEnvironments (path : StarPath)
-    (document : Document) (outer : Env) : Except StarAddressingError (List Env) := do
-  let resolved ← path.resolve document outer
-  pure (resolved.environments.filter fun environment =>
-    !StarAxes.environmentOverLimit path.axes environment)
+    (document : Document) (outer : Env) : Except StarAddressingError (List Env) :=
+  (·.environments) <$> path.resolveInCapacity document outer
 
 namespace CheckedStarredGroupSource
 

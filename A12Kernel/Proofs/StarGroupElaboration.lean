@@ -297,7 +297,7 @@ theorem checkedStarredGroupSource_evaluateFull_of_resolved
     simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
   unfold CheckedStarredGroupSource.evaluateFull
     CheckedStarredGroupSource.inCapacityRowCount
-    StarPath.inCapacityEnvironments
+    StarPath.inCapacityEnvironments StarPath.resolveInCapacity
   rw [pathResolution]
   rfl
 
@@ -313,7 +313,7 @@ theorem checkedStarredGroupSource_numberOfFilledGroups_of_resolved
     simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
   unfold CheckedStarredGroupSource.numberOfFilledGroups
     CheckedStarredGroupSource.inCapacityRowCount
-    StarPath.inCapacityEnvironments
+    StarPath.inCapacityEnvironments StarPath.resolveInCapacity
   rw [pathResolution]
   rfl
 

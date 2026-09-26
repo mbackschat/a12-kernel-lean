@@ -299,6 +299,22 @@ def StarPath.resolve (path : StarPath) (document : Document) (outer : Env) :
     Except StarAddressingError ResolvedStarTopology :=
   document.resolveStarPath path outer
 
+/-- Keep only the leaf environments within every declared repeatability. A row beyond its level's
+capacity stays in the physical topology but lies outside the evaluation domain of an operand that
+expands rows, on the validation and the computation arm alike, so its cell contributes neither a value
+nor a formal poison ([`spec/07`](../../spec/07-repetition-and-iteration.md)). The open-tail state is
+the domain's and unchanged: a level holding an over-limit row is full. -/
+def ResolvedStarTopology.inCapacity (resolved : ResolvedStarTopology)
+    (axes : List StarAxis) : ResolvedStarTopology :=
+  { resolved with
+    environments := resolved.environments.filter fun environment =>
+      !StarAxes.environmentOverLimit axes environment }
+
+/-- Resolve the topology and narrow it to the declared-capacity extent. -/
+def StarPath.resolveInCapacity (path : StarPath) (document : Document) (outer : Env) :
+    Except StarAddressingError ResolvedStarTopology :=
+  (·.inCapacity path.axes) <$> path.resolve document outer
+
 /-- A successful checked star resolution constructs its hierarchical tree and ordered leaf environments from the same named axes and exact bound outer prefix. -/
 theorem StarPath.resolve_environmentCorrespondence
     (path : StarPath) (document : Document) (outer : Env)

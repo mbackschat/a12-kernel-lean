@@ -132,7 +132,7 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
       source.resolvedValueSide document outer filterRead starRead
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
-/-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. -/
+/-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. A plain star narrows to its declared-capacity extent, as the checked-document route does. -/
 def resolvedValidationAggregateSideIn
     (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -142,7 +142,7 @@ def resolvedValidationAggregateSideIn
   | .field source =>
       pure (source.resolvedAggregateSideAt .validation direct)
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       pure (resolved.toResolvedSide
         (source.checkedValueListCellAt .validation read))
   | .starHaving source =>
@@ -151,7 +151,7 @@ def resolvedValidationAggregateSideIn
         (source.source.checkedValueListCellAt .validation read)
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
-/-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. -/
+/-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. A plain star narrows to its declared-capacity extent, which the Kernel applies on the computation arm too, so an over-limit row neither contributes nor poisons ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)). -/
 def resolvedComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -162,7 +162,7 @@ def resolvedComputationAggregateSide
   | .field source =>
       pure (.inl (source.resolvedAggregateSideAt .computation direct))
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       pure (.inl (resolved.toResolvedSide
         (source.checkedValueListCellAt .computation starRead)))
   | .starHaving source => do

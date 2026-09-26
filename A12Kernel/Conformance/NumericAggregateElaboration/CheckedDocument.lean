@@ -291,6 +291,47 @@ def checkedFilteredCapacityValueCountSnapshot
   let (source, document) ← checkedFilteredCapacityFixture values
   (source.evaluateCheckedDocumentValueCountValidation 7 document []).toOption
 
+/-- One plain Number star over rows holding `values`, where `none` is a malformed cell. -/
+def plainCapacityFixture (values : List (Option Nat)) :
+    Option (CheckedNumberEntitySource model × CheckedDocument model) := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource (.star aggregateStar) [])).toOption
+  let rows := values.mapIdx fun index _ =>
+    { group := 10, path := [index + 1] }
+  let cells := values.mapIdx fun index value =>
+    match value with
+    | some number => {
+        address := { field := repeated.id, path := [index + 1] }
+        stored := toString number
+        raw := .parsed (.num number) }
+    | none => {
+        address := { field := repeated.id, path := [index + 1] }
+        stored := "x"
+        raw := .rejected .malformed }
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  pure (source, document)
+
+/-- `Sum` over the plain star on the checked-document validation and computation routes, then on the
+reader validation and computation routes that the aggregate cascades and generated computation
+validation use, the readers reading the same checked document. -/
+def plainCapacitySums (values : List (Option Nat)) : Option (List (Option NumericOperand)) := do
+  let (source, document) ← plainCapacityFixture values
+  let read := fun environment field =>
+    match document.checkedCellWithRead document.read environment field with
+    | .ok cell => cell
+    | .error _ => malformedCheckedCell
+  pure [
+    (source.evaluateCheckedDocumentValidationAggregate .sum document []).toOption,
+    (source.evaluateCheckedDocumentComputationAggregate .sum document []).toOption,
+    (source.evaluateValidationAggregateIn .sum document.source.toDocument []
+      document.flatContext read).toOption,
+    (source.evaluateComputationAggregate .sum document.source.toDocument []
+      document.flatContext.read read read).toOption]
+
 structure NumberEntityConsumerSlot where
   field : FieldId
   repeated : Bool
@@ -422,6 +463,19 @@ example :
         some (.value 1 .both) ∧
       checkedFilteredCapacityValueCountSnapshot [7, 7, 5, 5] =
         some (.value 2 .both) := by
+  native_decide
+
+/- Every route leaves an over-limit row out of a plain star's extent rather than reading it as
+   unavailable, so neither a well-formed nor a malformed fourth row over a `max 3` group reaches the
+   `Sum`, while the same malformed cell in capacity makes every route unavailable
+   ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)).
+   The reader routes had read it as over-repetition poison. -/
+example :
+    let definite := some (NumericOperand.value 15 { canGrow := false, canShrink := false })
+    let unavailable := some (NumericOperand.unknown .malformed)
+    plainCapacitySums [some 5, some 5, some 5, some 7] = some (List.replicate 4 definite) ∧
+      plainCapacitySums [some 5, some 5, some 5, none] = some (List.replicate 4 definite) ∧
+      plainCapacitySums [some 5, some 5, none] = some (List.replicate 4 unavailable) := by
   native_decide
 
 /- Partial checked-document evaluation preserves concrete direct relevance, wildcard star extent, and rule-level filter skip for both accumulators. -/
