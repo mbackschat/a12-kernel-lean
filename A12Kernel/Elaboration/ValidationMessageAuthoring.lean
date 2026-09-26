@@ -112,8 +112,9 @@ inductive ValidationMessageTemplateError where
   /-- Preserve the other check's cause beside the repertoire refusal ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)); an unsupported-fragment cause remains local rather than acquiring a Kernel class. -/
   | unsupportedCharacterWithError (character : Char)
       (cause : ValidationMessageTemplateError)
-  /-- A non-ASCII character inside a **parameter body**, which the surrounding text admits. Carries the
-  parameter as authored; the Kernel additionally reports the character's 1-based offset. -/
+  /-- A non-ASCII character inside a rule message's **parameter body**, which the surrounding text
+  admits. Carries the parameter as authored; the Kernel additionally reports the character's 1-based
+  offset. -/
   | parameterCharacter (parameter : String) (character : Char)
   | oddDollarCount
   | invalidParameter (parameter : String)
@@ -574,10 +575,14 @@ private def validateMessageTemplatePrefix (source : String) :
 private def validateMessageTemplateSegments (source : String) :
     Except ValidationMessageTemplateError (List String) := do
   if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
-  let segments := source.splitOn "$"
-  -- Parameter segments are the odd-indexed pieces of a balanced split, and only they carry the ASCII
-  -- bound. Checking it here rather than inside each producer's grammar keeps the two producers on one
-  -- lexical gate, which is the whole reason this function is shared.
+  pure (source.splitOn "$")
+
+/-- A rule message's parameter bodies, the odd-indexed pieces of a balanced split, carry the ASCII
+bound its reference lexer imposes. A field's own message compares its parameters with two fixed tokens
+instead, so a non-ASCII letter there is a wrong name, not a lexer failure
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)). -/
+private def checkRuleMessageParameterBodies (segments : List String) :
+    Except ValidationMessageTemplateError Unit :=
   match segments.zipIdx.find? fun (segment, index) =>
       index % 2 == 1 && segment.toList.any (fun c => !isBoundedAscii c) with
   | some (segment, _) =>
@@ -585,11 +590,10 @@ private def validateMessageTemplateSegments (source : String) :
       | some character => throw (.parameterCharacter segment character)
       | none => pure ()
   | none => pure ()
-  pure segments
 
-/-- The lexical gates both producers share: the line and control gates, then dollar parity and the
-parameter-body bound. The repertoire refusal is not one of them; each producer adds it with
-`withMessageRepertoire`, since it stands beside these failures. -/
+/-- The lexical gates both producers share: the line and control gates, then dollar parity. The
+repertoire refusal is not one of them; each producer adds it with `withMessageRepertoire`, since it
+stands beside these failures. -/
 def validateMessageTemplateSource (source : String) :
     Except ValidationMessageTemplateError (List String) := do
   validateMessageTemplatePrefix source
@@ -610,8 +614,9 @@ def withMessageRepertoire (source : String)
 private def parseValidationMessageTemplate
     (profile : ValidationMessageKeywordProfile) (source : String) :
     Except ValidationMessageTemplateError (List ParsedValidationMessagePart) := do
-  validateMessageTemplatePrefix source
-  parseSegments profile (← validateMessageTemplateSegments source)
+  let segments ← validateMessageTemplateSource source
+  checkRuleMessageParameterBodies segments
+  parseSegments profile segments
 
 /-- One checked field reference of a message parameter. `parameter` retains the authored spelling for
 Explain, including any value suffix; `reference` is its decoded path, which is what resolved. -/

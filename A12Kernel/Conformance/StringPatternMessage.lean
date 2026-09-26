@@ -91,16 +91,19 @@ example :
    character gates ahead of both, and every parameter other than the two tokens, the empty one included,
    `INVALID_PARAMETER` ([ledger](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-07-30-01),
    [inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-message-gates)). The German spelling is a
-   wrong name in an English model. An empty text is the pairing class, not a character one. -/
+   wrong name in an English model, and so is a token with one non-ASCII letter
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
+   An empty text is the pairing class, not a character one. -/
 example :
     ["capitals only", "$field$ takes capitals", "$field.value$ is not capitals",
         "$field$$field.value$"].all (fun text => stringPatternTemplateError? text == none) ∧
     ["$field takes capitals", "$Field$ takes capitals", "$Code$ takes capitals", "cost $$ in capitals",
-        "$Feld$ takes capitals", "$field\ttakes capitals", "$Code$ and $field", ""].map
+        "$Feld$ takes capitals", "$f" ++ cp 0x00EF ++ "eld$ is not capitals", "$field\ttakes capitals",
+        "$Code$ and $field", ""].map
         stringPatternNamedDiagnostic? =
       [some (some "WRONG_NUMBER_OF_DOLLARS"), some (some "INVALID_PARAMETER"),
        some (some "INVALID_PARAMETER"), some (some "INVALID_PARAMETER"),
-       some (some "INVALID_PARAMETER"), some (some "INVALID_CHARACTERS"),
+       some (some "INVALID_PARAMETER"), some (some "INVALID_PARAMETER"), some (some "INVALID_CHARACTERS"),
        some (some "WRONG_NUMBER_OF_DOLLARS"), some (some "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID")] := by
   native_decide
 
