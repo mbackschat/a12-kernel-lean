@@ -47,6 +47,12 @@ private def combine (operation : CheckedAddressedNumberBinary model)
     (fun leftValue rightValue => .value (operation.op.eval leftValue rightValue))
     left right
 
+/-- Evaluate both ordered operands at one row environment through a caller-supplied exact-address view, each at its own repeatable scope. -/
+def evaluateAtEnvironmentWithRead (operation : CheckedAddressedNumberBinary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
+    Except AddressedNumberBinaryFault NumericComputationResult :=
+  operation.pair.evaluateAtEnvironmentWithRead read operation.combine environment
+
 /-- Execute both ordered operands through a caller-supplied exact-address view. -/
 def executeWithRead (operation : CheckedAddressedNumberBinary model)
     (input : CheckedDocument model)

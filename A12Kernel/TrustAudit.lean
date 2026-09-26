@@ -2163,6 +2163,12 @@ run_cmd do
 #print axioms A12Kernel.certifyScalarComputationRunWithSteps_forwardDependency
 #print axioms A12Kernel.certifyScalarComputationPlan_cycle_readClosed
 #print axioms A12Kernel.scalarComputationPlan_not_readClosed
+#print axioms A12Kernel.repeatableNumberPlan_executionSteps_perm
+#print axioms A12Kernel.certifyRepeatableNumberPlan_cycle_readClosed
+#print axioms A12Kernel.repeatableNumberPlan_not_readClosed
+#print axioms A12Kernel.repeatableNumberPlan_read_pending
+#print axioms A12Kernel.repeatableNumberPlan_read_completed
+#print axioms A12Kernel.checkedAddressedNumericTarget_executeGuarded_holds
 #print axioms A12Kernel.scalarComputationPlan_execute
 #print axioms A12Kernel.analyzeScalarComputationSteps_targets
 #print axioms A12Kernel.analyzeScalarComputationSteps_kinds

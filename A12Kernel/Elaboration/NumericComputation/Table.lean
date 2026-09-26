@@ -129,6 +129,17 @@ def evaluate (table : CheckedNumericComputationTable model)
   | .poison cause => pure (.supported (.inheritedPoison cause))
   | .selected operation => operation.evaluate context
 
+/-- Select first through the context's scalar guards, then evaluate only that operation with its
+repeatable reads, so a selected aggregate reads its rows through the context's star view. -/
+def evaluateIn (table : CheckedNumericComputationTable model)
+    (context : NumericComputationEvaluationContext) :
+    Except NumericComputationFault NumericTargetCheckResult :=
+  match ComputationAlternative.selectFirst
+      table.selectableAlternatives context.scalar with
+  | .noMatch => pure (.supported .noValue)
+  | .poison cause => pure (.supported (.inheritedPoison cause))
+  | .selected operation => operation.evaluateIn context
+
 end CheckedNumericComputationTable
 
 end A12Kernel

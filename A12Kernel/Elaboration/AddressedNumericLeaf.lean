@@ -244,6 +244,7 @@ namespace CheckedAddressedNumericTarget
 private def executeAtEnvironmentUsing (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
     (checkTarget : NumericComputationResult → NumericTargetCheckResult)
+    (guard : Env → ComputationConditionResult)
     (evaluate : Env →
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
@@ -263,11 +264,15 @@ private def executeAtEnvironmentUsing (placement : CheckedAddressedNumericTarget
       })
     (fun environment => do
       let targetAddress ← addressAt environment
-      let result ← evaluate environment
-      let outcome ←
-        match checkTarget result with
-        | .supported outcome => pure outcome
-        | .unsupported cause => throw (.targetCheck cause)
+      -- The guard is read first and the operation only when it holds, so an operand read the
+      -- guard withholds is never reached.
+      let outcome ← match guard environment with
+        | .notTrue => pure .noValue
+        | .poison cause => pure (.inheritedPoison cause)
+        | .holds =>
+            match checkTarget (← evaluate environment) with
+            | .supported outcome => pure outcome
+            | .unsupported cause => throw (.targetCheck cause)
       pure {
         targetField := targetAddress
         outcome
@@ -282,7 +287,20 @@ def executeAtEnvironment (placement : CheckedAddressedNumericTarget model)
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.executeAtEnvironmentUsing input placement.targetPolicy.check evaluate
+  placement.executeAtEnvironmentUsing input placement.targetPolicy.check (fun _ => .holds)
+    evaluate
+
+/-- Execute through the ordinary unsuppressed target checker under a per-row presence guard. A row
+whose guard is not true clears its target and one whose guard reads poison inherits it, both without
+evaluating the operation; an over-limit row clears without reading the guard. -/
+def executeGuardedAtEnvironment (placement : CheckedAddressedNumericTarget model)
+    (input : CheckedDocument model)
+    (guard : Env → ComputationConditionResult)
+    (evaluate : Env →
+      Except AddressedNumericLeafFault NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  placement.executeAtEnvironmentUsing input placement.targetPolicy.check guard evaluate
 
 /-- Execute through this placement's own warning-suppressed target checker. -/
 def executeAtEnvironmentScaleWarningSuppressed
@@ -293,7 +311,7 @@ def executeAtEnvironmentScaleWarningSuppressed
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
   placement.executeAtEnvironmentUsing input
-    placement.targetPolicy.checkWithScaleWarningSuppressed evaluate
+    placement.targetPolicy.checkWithScaleWarningSuppressed (fun _ => .holds) evaluate
 
 end CheckedAddressedNumericTarget
 

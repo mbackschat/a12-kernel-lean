@@ -230,6 +230,7 @@ import A12Kernel.Proofs.RepeatableNumberAggregateRowCascade
 import A12Kernel.Proofs.RepeatableNumberAggregateRowChainRelation
 import A12Kernel.Proofs.RepeatableNumberAggregateRowRelation
 import A12Kernel.Proofs.RepeatableNumberAggregateStringRowCascade
+import A12Kernel.Proofs.RepeatableNumberPlan
 import A12Kernel.Proofs.RepeatableNumberAggregateStringRowRelation
 import A12Kernel.Proofs.RepetitionNotUnique
 import A12Kernel.Proofs.RepetitionNotUniqueElaboration

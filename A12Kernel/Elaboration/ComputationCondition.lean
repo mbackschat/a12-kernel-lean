@@ -20,6 +20,18 @@ def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool
   | .and left right | .or left right =>
       left.wellFormedBool model && right.wellFormedBool model
 
+/-- Check that every presence leaf names one model-owned declaration whose repeatable levels the row
+scope `scope` binds, so one row of that scope reads each leaf at exactly one cell. -/
+def rowBoundBool (condition : ComputationCondition) (model : FlatModel)
+    (scope : List RepeatableLevel) : Bool :=
+  match condition with
+  | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
+      match model.lookupUniqueId field with
+      | .ok declaration => declaration.repeatableScope.isPrefixOf scope
+      | .error _ => false
+  | .and left right | .or left right =>
+      left.rowBoundBool model scope && right.rowBoundBool model scope
+
 def WellFormed (condition : ComputationCondition) (model : FlatModel) : Prop :=
   condition.wellFormedBool model = true
 
