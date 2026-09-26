@@ -78,4 +78,32 @@ theorem temporalLiteralComparison_alwaysClassified
       | (rename_i temporalKind; cases temporalKind <;> decide)
       | decide
 
+/-- **A copied field's kind arm does not depend on which side is the target.** Each arm claims its
+kind on either side ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)),
+so a consumer may read the pair unordered, and one keying the class on the target's kind alone breaks
+this law on a Confirm copied into a Boolean. -/
+theorem copyComparisonKindArm_comm (target source : SurfaceScalarKind) :
+    copyComparisonKindArm? target source = copyComparisonKindArm? source target := by
+  cases target <;> cases source <;> rfl
+
+/-- The kind pairs no kind arm refuses: two of one kind, two temporal kinds, which meet the date arm's
+format questions, and a String with an Enumeration, which meet the display arm. -/
+def copyComparisonKindUnrefused : SurfaceScalarKind → SurfaceScalarKind → Bool
+  | .temporal _, .temporal _ => true
+  | .string, .enumeration | .enumeration, .string => true
+  | left, right => left == right
+
+/-- **The kind arms are total on refusals.** A pair outside the unrefused set always meets an arm,
+so a consumer reading `none` knows the pair passes to the format, display or scale question rather
+than that a class went unrecorded. -/
+theorem copyComparisonKindArm_none_iff (target source : SurfaceScalarKind) :
+    copyComparisonKindArm? target source = none ↔
+      copyComparisonKindUnrefused target source = true := by
+  cases target <;> cases source <;>
+    first
+      | rfl
+      | (rename_i temporalKind; cases temporalKind <;> decide)
+      | decide
+      | simp [copyComparisonKindArm?, copyComparisonKindUnrefused]
+
 end A12Kernel

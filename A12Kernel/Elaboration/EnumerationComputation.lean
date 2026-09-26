@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.Flat.Context
-import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Elaboration.ComputationNormalForm
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Semantics.FirstFilledValue
 
@@ -71,6 +72,13 @@ inductive EnumerationComputationElabError where
   | source (error : ElabError)
   | literalOutsideTarget (targetPath : List String) (literal : String)
   | sourceIncompatible (sourcePath targetPath : List String)
+  | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
+  /-- A String the generated comparison admits into an unlabelled target, which the calculation then
+      refuses. -/
+  | stringSource (sourcePath targetPath : List String)
+  /-- An Enumeration whose display the comparison admits, reading a token the target does not
+      declare. -/
+  | sourceOutsideTargetDomain (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceAtDirectField (field : FieldId)
   | targetSelfReferenceAtCompatibleCategory (field : FieldId)
@@ -79,16 +87,27 @@ inductive EnumerationComputationElabError where
 
 namespace EnumerationComputationElabError
 
-/-- Only the literal-domain refusal carries a measured Kernel identity. The others are this project's
-own routing, or gates whose Kernel class was never observed, so they claim none
-([checkpoint](../../docs/SOURCES.md#src-constant-literal-family-gate)). -/
+/-- The comparison refusals carry a measured Kernel identity: the literal-domain refusal
+([checkpoint](../../docs/SOURCES.md#src-constant-literal-family-gate)) and a copied field's
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
+The calculation's own refusals are `calculationRefusal?`'s. The others are this project's own
+routing, or gates whose Kernel class was never observed, so they claim none. -/
 def diagnostic? : EnumerationComputationElabError → Option KernelStaticDiagnostic
   | .literalOutsideTarget _ _ => some .invalidStringConstantForEnumComparison
+  | .copyComparison _ _ refusal => some refusal.diagnostic
   | .resolve _ | .targetKindMismatch _ _ | .source _
-  | .sourceIncompatible _ _ | .targetSelfReference _
+  | .sourceIncompatible _ _ | .stringSource _ _ | .sourceOutsideTargetDomain _ _
+  | .targetSelfReference _
   | .targetSelfReferenceAtDirectField _
   | .targetSelfReferenceAtCompatibleCategory _
   | .incoherentCore => none
+
+/-- The calculation's own class for a copy the comparison admitted, measured for a String into an
+unlabelled target and for a wider Enumeration
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)). -/
+def calculationRefusal? : EnumerationComputationElabError → Option CalculationRefusal
+  | .stringSource _ _ | .sourceOutsideTargetDomain _ _ => some .invalidEnumCalculation
+  | _ => none
 
 /-- Project the measured direct and compatible-category Enumeration
 target-reference refusals to their distinct Kernel diagnostic classes. Domain,
@@ -162,6 +181,27 @@ structure CheckedEnumerationComputationOperation (model : FlatModel) where
   sourceAllowed : source.allowedFor target.projection = true
   targetNotReferenced : source.referencesField target.field = false
 
+/-- The comparison the computation generates between its target and a directly copied stored field,
+asked after the target's read and then the copied field's read. The comparison answers ahead of the
+calculation, so where a wider source's display fails too, the display class is the one drawn
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
+A category read skips the display arm and has no spelling on another kind's target here. -/
+private def FlatModel.checkEnumerationCopyComparison (model : FlatModel)
+    (declaringGroup : GroupPath) (targetField : FieldId) :
+    SurfaceEnumerationComputationSource → Except EnumerationComputationElabError Unit
+  | .field (.direct reference) => do
+      let target ← (model.resolveNonrepeatableDeclarationById targetField).mapError .resolve
+      if target.fieldValueReadRefusal?.isNone then
+        let source ← (model.resolveProjectedFieldValueRead declaringGroup reference .stored).mapError
+          (.source ∘ .resolve)
+        match target.copyComparisonRefusal? source, target.policy.kind,
+            source.toTextFieldComparison? with
+        | some refusal, _, _ => throw (.copyComparison target.path source.path refusal)
+        | none, .enumeration, some (_, .plainString) =>
+            throw (.stringSource source.path target.path)
+        | _, _, _ => pure ()
+  | _ => pure ()
+
 /-- Check one ordinary closed-Enumeration target together with a literal or direct stored/category source. General String expressions cannot inhabit this surface. -/
 def elaborateEnumerationComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -169,7 +209,13 @@ def elaborateEnumerationComputation
     Except EnumerationComputationElabError
       (CheckedEnumerationComputationOperation model) :=
   do
-    let target ← elaborateEnumerationComputationTarget model targetField
+    let target ← match elaborateEnumerationComputationTarget model targetField with
+      | .ok target => pure target
+      | .error (.targetKindMismatch path actual) => do
+          model.checkEnumerationCopyComparison declaringGroup targetField authored
+          throw (.targetKindMismatch path actual)
+      | .error error => throw error
+    model.checkEnumerationCopyComparison declaringGroup targetField authored
     let source ← match authored with
       | .literal token =>
           pure (.literal token)
@@ -211,8 +257,10 @@ def elaborateEnumerationComputation
       match source with
       | .literal token =>
           throw (.literalOutsideTarget target.path token)
+      -- The display arm has already answered for a stored source, and a category read has none, so
+      -- what remains is the domain.
       | .field sourcePath _ _ _ =>
-          throw (.sourceIncompatible sourcePath target.path)
+          throw (.sourceOutsideTargetDomain sourcePath target.path)
 
 namespace CheckedEnumerationComputationOperation
 

@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericAggregate
-import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.NumericTarget
@@ -76,6 +76,7 @@ inductive NumericComputationElabError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
+  | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
   | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
   | invalidStringRange (start finish : Nat)
@@ -131,12 +132,13 @@ def groupCountDiagnostic? :
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | _ => none
 
-/-- Project the measured computed Number target-scale rejection and the target
-reference reached after that gate on the measured arithmetic surface. Other
-computation failures remain unmapped. -/
+/-- Project the measured computed Number target-scale rejection, the target
+reference reached after that gate on the measured arithmetic surface, and a copied
+field the generated comparison refuses. Other computation failures remain unmapped. -/
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
+  | .copyComparison _ _ refusal => some refusal.diagnostic
   | .targetSelfReferenceAfterScale _ => some .errorReferenceToCalculatedField
   | _ => none
 
@@ -695,6 +697,23 @@ private def certifyNumericComputationDeclaringGroup (declaringGroup : GroupPath)
   else
     .error (.resolve (.invalidRuleGroup declaringGroup))
 
+/-- The comparison the computation generates between its target and a **directly copied** field,
+asked after the target's read and then the copied field's read, ahead of this carrier's own kind
+gates ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
+A wider expression is not typed here, and two Numbers pass to the scale rule. -/
+private def FlatModel.checkNumericCopyComparison (model : FlatModel) (declaringGroup : GroupPath)
+    (targetField : FieldId) :
+    AuthoredNumericExpr SurfaceNumericComputationAtom → Except NumericComputationElabError Unit
+  | .atom (.numeric (.field reference)) => do
+      let target ← (model.resolveNonrepeatableDeclarationById targetField).mapError .resolve
+      if target.fieldValueReadRefusal?.isNone then
+        let source ←
+          (model.resolveComputationFieldValueRead declaringGroup target.groupPath reference).mapError
+            .resolve
+        if let some refusal := target.copyComparisonRefusal? source then
+          throw (.copyComparison target.path source.path refusal)
+  | _ => pure ()
+
 /-- Resolve and check the complete numeric computation surface, including checked entity-list atoms and the distinct row-aligned `SumOfProducts` source, through the one shared numeric expression tree. -/
 def elaborateCompleteNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -707,6 +726,7 @@ def elaborateCompleteNumericComputationOperation
   | .ok () => do
       let checkedDeclaringGroup ←
         certifyNumericComputationDeclaringGroup declaringGroup
+      model.checkNumericCopyComparison checkedDeclaringGroup.val targetField expression
       let (target, targetGroup) ← model.resolveNumericComputationTarget targetField
       let deferredTargetExpression? :=
         model.resolveDirectTargetAdmissionExpression?

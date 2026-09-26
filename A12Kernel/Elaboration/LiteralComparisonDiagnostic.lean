@@ -138,4 +138,78 @@ fields of a filtered row with `<`. -/
 def numericComparisonDiagnostic? (kind : SurfaceScalarKind) : Option KernelStaticDiagnostic :=
   orderingComparisonDiagnostic? kind .number
 
+/-- The arm of the comparison walk that refuses two operands of different kinds, in the order the
+Kernel asks them ([`kf469`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf469)): a Confirm partner,
+then a Boolean one, then a temporal one, then a DateRange one, then a Number against text. -/
+inductive CopyComparisonKindArm where
+  | confirm
+  | boolean
+  | temporal
+  | dateRange
+  | numberAgainstText
+  deriving Repr, DecidableEq
+
+def CopyComparisonKindArm.diagnostic : CopyComparisonKindArm → KernelStaticDiagnostic
+  | .confirm => .invalidCompareToYes
+  | .boolean => .invalidCompareToYesNo
+  | .temporal => .invalidCompareToDate
+  | .dateRange => .invalidCompareToDateRange
+  | .numberAgainstText => .invalidCompareToEnumOrString
+
+/-- The kind arm that refuses a computation's generated comparison between its target and a field
+copied into it, or `none` where no kind arm does.
+
+A computation is judged as the comparison `[target] != operation`
+([`spec/09`](../../spec/09-computations.md) §6), so a copied field meets that comparison's arms, and
+each arm claims its kind on **either** side: a Confirm against anything else is the Confirm class, a
+Boolean the Boolean class, and so on down the order. Measured on every pair of eleven declarations
+spanning all nine kinds, each copied into each from a root computation
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
+
+`none` leaves three questions to the arms that follow, which this function is not given: two
+temporal fields meet the date arm's **format** questions, never a kind test, so a TIME field
+declaring a complete-date format copies into a Date target; a String against an Enumeration, or two
+Enumerations, meet the display arm; two Numbers meet the scale rule. Unlike a rule's `==`, the
+generated `!=` admits a Confirm against a Confirm. -/
+def copyComparisonKindArm? : SurfaceScalarKind → SurfaceScalarKind → Option CopyComparisonKindArm
+  | .confirm, .confirm => none
+  | .confirm, _ | _, .confirm => some .confirm
+  | .boolean, .boolean => none
+  | .boolean, _ | _, .boolean => some .boolean
+  | .temporal _, .temporal _ => none
+  | .temporal _, _ | _, .temporal _ => some .temporal
+  | .dateRange, .dateRange => none
+  | .dateRange, _ | _, .dateRange => some .dateRange
+  | .number, .number => none
+  | .number, _ | _, .number => some .numberAgainstText
+  | _, _ => none
+
+/-- Why a computation's generated comparison refuses a directly copied field: a kind arm, or the
+display arm between a String and an Enumeration or two Enumerations. -/
+inductive CopyComparisonRefusal where
+  | kindArm (arm : CopyComparisonKindArm)
+  | displayArm (error : EnumerationComparabilityError)
+  deriving Repr, DecidableEq
+
+def CopyComparisonRefusal.diagnostic : CopyComparisonRefusal → KernelStaticDiagnostic
+  | .kindArm arm => arm.diagnostic
+  | .displayArm error => error.diagnostic
+
+/-- The refusal the generated comparison draws for a field copied into a target, once both reads
+passed, or `none` where its kind and display arms pass the pair. A display-map conflict between two
+labelled Enumerations draws `MVK_INVALID_COMPARE_ENUM_TO_ENUM` and a labelled against an unlabelled
+side `MVK_INVALID_COMPARE_ENUM_TO_STRING`, measured on this carrier too. The format and scale
+questions stay with the carrier. -/
+def FlatFieldDecl.copyComparisonRefusal? (target source : FlatFieldDecl) :
+    Option CopyComparisonRefusal :=
+  match copyComparisonKindArm? target.policy.kind.surfaceKind source.policy.kind.surfaceKind with
+  | some arm => some (.kindArm arm)
+  | none =>
+      match target.toTextFieldComparison?, source.toTextFieldComparison? with
+      | some (_, targetProfile), some (_, sourceProfile) =>
+          match classifyDirectFieldComparison targetProfile sourceProfile with
+          | .accepted => none
+          | .rejected error => some (.displayArm error)
+      | _, _ => none
+
 end A12Kernel

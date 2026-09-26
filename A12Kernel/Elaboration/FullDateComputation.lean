@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.Flat.FieldValueRead
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 
 /-! # Checked nonrepeatable full-Date computations
 
@@ -13,7 +14,9 @@ namespace A12Kernel
 inductive FullDateComputationElabError where
   | target (error : FullDateTargetElabError)
   | source (error : ResolveError)
-  | sourceNotTemporal (source : FieldId)
+  /-- A source of another kind than a temporal one, refused by the generated comparison's kind arm:
+      a Confirm or a Boolean by its own arm, every other kind by the date arm. -/
+  | sourceKind (source : FieldId) (arm : CopyComparisonKindArm)
   /-- The declared format is not a complete date. This is the **whole** source refusal, with no
       companion wrong-kind cause: the Kernel reads the declared format here and never the declared
       kind, so all three temporal kinds carrying a complete-date format are admitted while a
@@ -26,6 +29,18 @@ inductive FullDateComputationElabError where
   | baseYearNotDeclared
   | incoherentCore
   deriving Repr, DecidableEq
+
+namespace FullDateComputationElabError
+
+/-- The generated comparison's classes on this carrier, each measured by copying every kind into a
+full-Date target ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)):
+a temporal source's format question and every other kind's arm. -/
+def diagnostic? : FullDateComputationElabError → Option KernelStaticDiagnostic
+  | .sourceKind _ arm => some arm.diagnostic
+  | .sourceComponents _ _ => some .invalidCompareToDate
+  | _ => none
+
+end FullDateComputationElabError
 
 /-- Whether one resolved field is exactly an ordinary nonrepeatable full-Date source in this model. -/
 def FlatModel.admitsFullDateComputationSource
@@ -75,7 +90,12 @@ def elaborateFullDateFieldComputation
     throw (.source refusal)
   let source ← match declaration.toTemporalField? with
     | some source => pure source
-    | none => throw (.sourceNotTemporal sourceField)
+    | none =>
+        -- A temporal target meets every other kind at a kind arm, so `none` cannot arise here.
+        match copyComparisonKindArm? (.temporal target.checked.target.kind)
+            declaration.policy.kind.surfaceKind with
+        | some arm => throw (.sourceKind sourceField arm)
+        | none => throw .incoherentCore
   -- No declared-kind guard: the Kernel reads the declared format here, so a TIME- or
   -- DATE_TIME-declared field carrying a complete-date format is an admitted bare-copy source while
   -- a DATE-declared bare clock is refused (checkpoint cited on `sourceComponents` below). A former

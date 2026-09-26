@@ -799,6 +799,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A starred path is judged segment by segment, so a star on a nonrepeatable segment outranks a later miss and a miss outranks its own star](sources/path-resolution-class-probes.md#src-starred-path-segment-order)
 <a id="src-resolver-failure-classes-every-carrier"></a>
 - [A field name that does not resolve draws one of three classes on every carrier asked, and the root class turns on the first segment](sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)
+<a id="src-field-copy-comparison-grid"></a>
+- [A field copied into a field of another kind draws the comparison walk's arm order on every pair of nine kinds, a temporal pair meets the format question, and the display arm answers ahead of the Enumeration calculation](sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
 <a id="src-entity-list-kind-empty-and-root-carriers"></a>
 - [`Sum` refuses a String in every position and form, an empty starred group answers ahead of the group-list star gate, and the root gate reaches the value list and a computation](sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)
 <a id="src-value-list-slot-kind-set"></a>

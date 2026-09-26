@@ -115,12 +115,13 @@ example :
           some (.poison .declaredConstraint) := by
   native_decide
 
-/- Complete selected-domain containment and direct display compatibility are independent static gates. -/
+/- Complete selected-domain containment and direct display compatibility are independent static gates:
+   the display is the generated comparison's, asked first, and the domain the calculation's. -/
 example :
     errorOf (.field (.direct (bare "Wider"))) =
-        some (.sourceIncompatible wider.path target.path) ∧
+        some (.sourceOutsideTargetDomain wider.path target.path) ∧
       errorOf (.field (.direct (bare "Displayed"))) =
-        some (.sourceIncompatible displayed.path target.path) := by
+        some (.copyComparison target.path displayed.path (.displayArm .displayClassMismatch)) := by
   native_decide
 
 /- A category source is checked by its projected token domain and bypasses direct display remapping.
@@ -165,10 +166,11 @@ example :
           "MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD" := by
   native_decide
 
-/- An ordinary String field cannot enter the Enumeration-producing source surface merely because both store text. -/
+/- An ordinary String field cannot enter the Enumeration-producing source surface merely because both
+   store text: the comparison admits it into this unlabelled target, and the calculation refuses it. -/
 example :
     errorOf (.field (.direct (bare "PlainString"))) =
-      some (.source (.textFieldOperandKindMismatch plainString.path .string)) := by
+      some (.stringSource plainString.path target.path) := by
   native_decide
 
 end A12Kernel.Conformance.EnumerationComputation

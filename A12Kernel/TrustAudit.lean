@@ -1520,6 +1520,8 @@ run_cmd do
 #print axioms A12Kernel.orderingComparisonDiagnostic_comm
 #print axioms A12Kernel.orderingComparisonDiagnostic_type_iff
 #print axioms A12Kernel.temporalLiteralComparison_alwaysClassified
+#print axioms A12Kernel.copyComparisonKindArm_comm
+#print axioms A12Kernel.copyComparisonKindArm_none_iff
 #print axioms A12Kernel.checkedTokenEntityValueList_uniqueDirectOperands
 #print axioms A12Kernel.checkedTokenEntityValueList_commonFamily
 #print axioms A12Kernel.checkedTokenEntityGroup_expansion_complete

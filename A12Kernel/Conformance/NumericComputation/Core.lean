@@ -502,8 +502,12 @@ example :
           (checkedNumber (.parsed (.num 2)))) = some (.value 3) := by
   native_decide
 
+/- A String copied whole meets the generated comparison; nested in an expression it meets this
+   carrier's own operand gate, since the rows type only a whole-expression copy. -/
 example :
     checkedErrorOf (surfaceField ["Root"] "Wrong") =
+        some (.copyComparison target.path wrong.path (.kindArm .numberAgainstText)) ∧
+      checkedErrorOf (.abs (surfaceField ["Root"] "Wrong")) =
         some (.operandNotNumber wrong.path) ∧
       checkedErrorOf (surfaceField ["Root", "Rows"] "Repeated") =
         some (.resolve (.unboundOperandLevel repeated.path unboundRows)) ∧

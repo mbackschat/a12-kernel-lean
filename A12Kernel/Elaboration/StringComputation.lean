@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
@@ -16,6 +16,7 @@ inductive StringComputationElabError where
   | rawStringValue (path : List String)
   | invalidRange (start finish : Nat)
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
   | rawStringTarget (path : List String)
   | customStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
@@ -26,14 +27,15 @@ inductive StringComputationElabError where
 namespace StringComputationElabError
 
 /-- Project the measured target refusals to their exact Kernel diagnostic class: the root
-direct-copy and `RangeAsString` self-references, and a raw target, which the generated comparison
-reads before the operation. The raw row is measured with a String field source
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)); a literal source takes it by
-that read, which does not depend on the operation. -/
+direct-copy and `RangeAsString` self-references, a raw target, which the generated comparison
+reads before the operation, and a copied field that comparison refuses. The raw row is measured with
+a String field source ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)); a literal
+source takes it by that read, which does not depend on the operation. -/
 def targetDiagnostic? :
     StringComputationElabError → Option KernelStaticDiagnostic
   | .targetSelfReferenceAtRoot _ => some .errorReferenceToCalculatedField
   | .rawStringTarget _ => some .rawTypeOperandInvalid
+  | .copyComparison _ _ refusal => some refusal.diagnostic
   | _ => none
 
 end StringComputationElabError
@@ -207,6 +209,23 @@ def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
       let core ← elaborateStringExprCore model declaringGroup targetGroup expression
       certifyStringExpr model hModel core
 
+/-- The comparison the computation generates between its target and a **directly copied** field,
+asked after the target's read and then the copied field's read, as the Kernel asks them
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
+A wider expression is not typed here: the rows measure a whole-expression copy. A pair the comparison
+admits falls through to this carrier's own gates, so an unlabelled Enumeration, which the Kernel copies
+into a String, is still refused by this carrier's missing Enumeration leaf. -/
+private def FlatModel.checkStringCopyComparison (model : FlatModel) (declaringGroup : GroupPath)
+    (target : FlatFieldDecl) : StringExpr SurfaceFieldPath → Except StringComputationElabError Unit
+  | .field reference => do
+      if target.fieldValueReadRefusal?.isNone then
+        let source ←
+          (model.resolveComputationFieldValueRead declaringGroup target.groupPath reference).mapError
+            .resolve
+        if let some refusal := target.copyComparisonRefusal? source then
+          throw (.copyComparison target.path source.path refusal)
+  | _ => pure ()
+
 /-- Check computation-group syntax independently of operands, including operand-free literals. -/
 private def certifyStringComputationDeclaringGroup (declaringGroup : GroupPath) :
     Except StringComputationElabError { group : GroupPath // GroupPath.isValid group = true } :=
@@ -229,11 +248,14 @@ def elaborateStringComputationOperation
         (model.resolveNonrepeatableDeclarationById targetField).mapError .resolve
       match declaration.policy.kind with
       | .string => pure ()
-      | actual => throw (.targetKindMismatch declaration.path actual.surfaceKind)
+      | actual =>
+          model.checkStringCopyComparison checkedDeclaringGroup.val declaration expression
+          throw (.targetKindMismatch declaration.path actual.surfaceKind)
       if declaration.stringValueMode == .raw then
         throw (.rawStringTarget declaration.path)
       if declaration.customType.isSome then
         throw (.customStringTarget declaration.path)
+      model.checkStringCopyComparison checkedDeclaringGroup.val declaration expression
       let core ←
         elaborateStringExprCore model checkedDeclaringGroup.val declaration.groupPath expression
       let checked ← certifyStringExpr model hModel core
