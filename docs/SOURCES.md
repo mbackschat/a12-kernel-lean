@@ -212,7 +212,7 @@ a12-dmkits revision `8f088ca71f8b82ef8d78cdd4d31c50f6c1548bae` on `main`, confir
 
 **Claim.** Its §2 and §3 (`CheckerEntityListCategoryAgreementTest`, `kf482`), every rule at the root of `/Order` with an Enumeration `Tier` carrying the category `Level`. `Tier -> Level` draws `MVK_CATEGORY_NOT_ALLOWED` in the nine field-fill predicates, `DateRangesOverlap`, `FieldValuesNotUnique`, the three counts, the five group-list quantifiers, `GroupFilled`, `GroupNotFilled` and `RepetitionNotUnique`. Beside a repeated operand the counts still draw it while `AllFieldsFilled`, `FieldValuesNotUnique`, `AtLeastOneGroupFilled` and `RepetitionNotUnique` draw `MVK_DUPLICATE_PARAM1`, and `AllFieldsFilled(Tier -> Level, Tier)` draws the category class. `GroupFilled(Tier)` draws `MVK_NO_FIELDS_ALLOWED` and `RepetitionNotUnique(Tier, Label)` `MVK_REPEATABLE_GROUP_MISSING`. `Billing -> Level` draws `MVK_NO_GROUPS_ALLOWED` in seven entity lists, ahead of a repeat in `AtLeastOneGroupFilled`. The peer's source reading names four carriers that call the gate.
 
-**Lean.** No change. Lean carries no `MVK_CATEGORY_NOT_ALLOWED`, and its token uniqueness and distinct-count carriers admit the category, which [SG8](gaps/strings-and-messages.md#gap-sg8) records.
+**Lean.** The shared entity-list shape takes the gate as a per-carrier position: the token `NumberOfDifferentValues` asks it ahead of the repeat, and the token `FieldValuesNotUnique` and both overlap routes behind the root gate, locked in [`EntityListCategoryGate`](../A12Kernel/Conformance/EntityListCategoryGate.lean). The carriers that stay outside it are recorded in [SG8](gaps/strings-and-messages.md#gap-sg8).
 
 ### Inbound 2026-09-25i and 2026-09-26 handbacks
 

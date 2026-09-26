@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.DateRangeOverlap
 import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.TokenFirstFilledValue
 import A12Kernel.Elaboration.TokenValuesNotUnique
+import A12Kernel.Elaboration.YearlessDateRangeOverlap
 
 /-! # The entity list's category gate
 
@@ -31,7 +32,9 @@ private def orderModel : FlatModel :=
         dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } },
       { id := 5, groupPath := ["Order", "Billing"], name := "Net",
         policy := { kind := .number { scale := 0, signed := false } } },
-      { id := 6, groupPath := ["Order", "Contact"], name := "Email", policy := { kind := .string } }] }
+      { id := 6, groupPath := ["Order", "Contact"], name := "Email", policy := { kind := .string } },
+      { id := 7, groupPath := ["Order"], name := "Season", policy := { kind := .dateRange },
+        dateRangePolicy := some { format := "MM", separator := "/" } }] }
 
 private def field (name : String) : SurfaceFieldEntityOperand :=
   .field { base := .relative 0, groups := [], field := name }
@@ -72,9 +75,9 @@ private def overlap (first : SurfaceFieldEntityOperand) (rest : List SurfaceFiel
 /- **Each carrier refuses the category, and its place against the repeat is its own.**
    `FieldValuesNotUnique` asks the repeat first, so beside a repeated `Label` the duplicate class
    answers, while `NumberOfDifferentValues` asks the category first and keeps its class there.
-   `FieldValuesNotUnique` asks the category ahead of its mixing gate, which would refuse `Tier`'s
-   category beside a String too, and `DateRangesOverlap` ahead of its own DateRange kind gate. The
-   category-free lists are admitted. -/
+   Both rows would otherwise meet a Lean gate that speaks first: `FieldValuesNotUnique`'s mixing
+   gate refuses an Enumeration beside a String, and `DateRangesOverlap`'s kind gate a non-DateRange,
+   so the category gate stands ahead of each. The category-free lists are admitted. -/
 example :
     [notUnique (level "Tier") [field "Label"], notUnique (level "Tier") [field "Label", field "Label"],
       notUnique (field "Reference") [field "Label"],
@@ -84,6 +87,20 @@ example :
     [.mapped .categoryNotAllowed, .mapped .duplicateParam1, .admitted,
       .mapped .categoryNotAllowed, .mapped .categoryNotAllowed, .admitted,
       .mapped .categoryNotAllowed] := by
+  native_decide
+
+private def yearlessOverlap (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) : Decision :=
+  decide (elaborateYearlessDateRangesOverlapSource orderModel ["Order"] { first, rest })
+    YearlessDateRangesOverlapElabError.diagnostic?
+
+/- The yearless route is the same operator on a yearless range, so it asks the gate where the
+   year-bearing route does; no row reads a yearless range, so this lock states that assumption. The
+   uncategorized field meets the route's own kind refusal instead, so the category row's class is
+   the gate's. -/
+example :
+    yearlessOverlap (field "Season") [level "Tier"] = .mapped .categoryNotAllowed ∧
+      yearlessOverlap (field "Season") [field "Tier"] ≠ .mapped .categoryNotAllowed := by
   native_decide
 
 /- The category is part of the operand's identity for the repeat, so a category beside its own
