@@ -414,12 +414,14 @@ theorem certifyScalarComputationPlan_cycle_readClosed
     ∃ stuck, ScalarComputationStepsReadClosed stuck ∧ ∀ member ∈ stuck, member ∈ steps := by
   unfold certifyScalarComputationPlan at refused
   split at refused
-  · rename_i cause certified
-    have forwardCause : cause = .forwardDependency step reads := by
-      cases cause <;> simp_all [ScalarComputationRunPlanError.inPlan]
-    subst forwardCause
+  · simp at refused
+  · simp at refused
+  · simp at refused
+  · rename_i step' reads' certified
+    simp only [Except.error.injEq, ScalarComputationPlanError.cycle.injEq] at refused
+    obtain ⟨rfl, rfl⟩ := refused
     obtain ⟨noDuplicate, forward⟩ :=
-      certifyScalarComputationRunWithSteps_forwardDependency _ step reads certified
+      certifyScalarComputationRunWithSteps_forwardDependency _ step' reads' certified
     have orderPerm := scalarComputationAuthoredOrder_perm steps.length steps
     have unique : (steps.map (·.targetField)).Nodup :=
       (orderPerm.map _).nodup_iff.mp ((fieldId_firstDuplicate_none_iff_nodup _).mp noDuplicate)

@@ -438,15 +438,16 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
         declaration.id == field
   | .customFieldValidity leaf, field => leaf.operand.source == field
 
-/-- Whether a leaf reaches `field` for the rule's error-field gates. Only the ordered numeric
-    carrier owns a filter, and there a body's unmarked reads do not count; every other leaf reads
-    as `referencesField` does. -/
+/-- Whether a leaf reaches `field` for the rule's error-field gates. The ordered numeric carrier
+    and the DateRange overlap leaves own filters, and there a body's unmarked reads do not count
+    while its marked ones do; every other leaf reads as `referencesField` does. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
+  | .iteratedDateRange condition, field => condition.referencesErrorField field
   | leaf@(.flat _), field | leaf@(.numeric _ _), field | leaf@(.groupPresence _ _), field
   | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
-  | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field | leaf@(.iteratedDateRange _), field
+  | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
   | leaf@(.customFieldValidity _), field => leaf.referencesField field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/

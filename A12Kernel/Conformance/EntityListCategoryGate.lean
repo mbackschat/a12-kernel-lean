@@ -191,4 +191,17 @@ example :
         TemporalValuesNotUniqueElabError.diagnostic?].all (· == .mapped .categoryUnknown) := by
   native_decide
 
+/- A carrier that asks no category gate still reads the operand's category first, so
+   `FirstFilledValue` refuses an undeclared category with the read's class, alone or repeated, while
+   it admits a declared one. The read's position rests on the same source reading as above. -/
+example :
+    [decide (elaborateFirstFilledTokenSource orderModel ["Order"]
+        { first := category "Tier" "Nope", rest := [field "Label"] })
+        (fun error => error.diagnostic?),
+      decide (elaborateFirstFilledTokenSource orderModel ["Order"]
+        { first := category "Tier" "Nope", rest := [category "Tier" "Nope"] })
+        (fun error => error.diagnostic?)] =
+    [.mapped .categoryUnknown, .mapped .categoryUnknown] := by
+  native_decide
+
 end A12Kernel.Conformance.EntityListCategoryGate

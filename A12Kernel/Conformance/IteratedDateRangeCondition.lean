@@ -638,4 +638,38 @@ example :
     (plural? ["Form"] scalarExisting scalarExisting).isOk = false := by
   native_decide
 
+private def rowGuard : FlatFieldDecl :=
+  { id := 5, groupPath := ["Form", "Rows"], name := "Guard", repeatableScope := [10]
+    policy := { kind := .number { scale := 0, signed := true } } }
+private def quantity : FlatFieldDecl :=
+  { id := 6, groupPath := ["Form"], name := "Quantity"
+    policy := { kind := .number { scale := 0, signed := true } } }
+private def filterModel : FlatModel := { model with fields := model.fields ++ [rowGuard, quantity] }
+
+/-- `DateRangesOverlap(Form/Rows*/RowRange Having [Rows/Guard] == [Quantity], Form/Rows*/RowRange)`
+    declared at the root and reporting on `Quantity`, with the `Quantity` read marked or not; `none`
+    when the rule assembles. -/
+private def filteredOverlapAssembly? (marked : Bool) : Option (Option FlatRuleAssemblyError) := do
+  let star : SurfaceStarFieldPath :=
+    { base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+      field := "RowRange" }
+  let condition ← (CheckedValidationCondition.fromIteratedDateRangeOverlap filterModel ["Form"] {
+      first := .starHaving star (.compareNumbers .equal
+        { origin := .inner, field := path ["Form", "Rows"] "Guard" }
+        { origin := if marked then .outer else .inner, field := path ["Form"] "Quantity" })
+      rest := [.star star] }).toOption
+  pure (match assembleResolvedValidationRule filterModel condition quantity.id "filteredOverlap"
+      .error { parts := [] } with
+    | .ok _ => none
+    | .error error => some error)
+
+/- A DateRange overlap's filter reaches the rule's error field only through a `$`-marked read, as
+   the ordered numeric carriers' filters do ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)).
+   The peer's rows read this rule on a numeric aggregate; that a DateRange overlap's filter follows
+   it rests on the filter body being one production whatever its carrier. -/
+example :
+    filteredOverlapAssembly? true = some none ∧
+      filteredOverlapAssembly? false = some (some (.errorFieldNotReferenced quantity.id)) := by
+  native_decide
+
 end A12Kernel.Conformance.IteratedDateRangeCondition

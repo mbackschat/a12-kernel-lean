@@ -7,7 +7,7 @@ import A12Kernel.Semantics.HeterogeneousComputationDependency
 
 This capsule composes already-consolidated checked String and scalar Number tables. A run executes them in one supplied order. Every step, completion, fault, and outcome retains its family. Pending targets hide source state; completed targets are projected only when a consumer context reads them, so a Number remains numeric for Number computation and becomes canonical text for String computation.
 
-An authored plan of any length over the same flat scalar steps is put into dependency order first, by running the earliest authored step that reads no other pending target, and a plan whose steps are read-closed is refused as a cycle. Same-target grouping remains in each family owner. Family result projection, whole-document application, and repeatable targets remain separate.
+An authored plan of any length over the same flat scalar steps is put into dependency order first, by running the earliest authored step that reads no other pending target, and a plan some of whose steps are read-closed is refused as a cycle. Same-target grouping remains in each family owner. Family result projection, whole-document application, and repeatable targets remain separate.
 -/
 
 namespace A12Kernel
@@ -196,13 +196,6 @@ inductive ScalarComputationPlanError where
   | cycle (step reads : FieldId)
   deriving Repr, DecidableEq
 
-/-- A plan's refusal for a run refusal of its dependency order. -/
-def ScalarComputationRunPlanError.inPlan : ScalarComputationRunPlanError → ScalarComputationPlanError
-  | .empty => .empty
-  | .repeatableContextRequired target => .repeatableContextRequired target
-  | .duplicateTarget target => .duplicateTarget target
-  | .forwardDependency step reads => .cycle step reads
-
 /-- An authored plan of scalar steps with its certified dependency order. The authored order stays
 available to analysis consumers while execution reuses the finite checked run. -/
 structure CheckedScalarComputationPlan (model : FlatModel) where
@@ -216,9 +209,14 @@ structure CheckedScalarComputationPlan (model : FlatModel) where
 def certifyScalarComputationPlan
     (steps : List (CheckedScalarComputationStep model)) :
     Except ScalarComputationPlanError (CheckedScalarComputationPlan model) :=
+  -- The run refusal is translated here and nowhere else, so a supplied-order run's forward read
+  -- has no route to the cycle refusal.
   match certifyScalarComputationRunWithSteps
       (scalarComputationAuthoredExecutionSteps steps) with
-  | .error cause => .error cause.inPlan
+  | .error .empty => .error .empty
+  | .error (.repeatableContextRequired target) => .error (.repeatableContextRequired target)
+  | .error (.duplicateTarget target) => .error (.duplicateTarget target)
+  | .error (.forwardDependency step reads) => .error (.cycle step reads)
   | .ok execution => .ok {
       authored := steps
       execution := execution.1

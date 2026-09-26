@@ -162,6 +162,37 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
         comparison.right.start.checked.declaration,
         comparison.right.finish.checked.declaration]
 
+/-- The filters this condition's starred overlap operands carry, in authored order. -/
+def filters : IteratedDateRangeCondition model → List CorrelatedHaving
+  | .overlap source =>
+      source.operands.filterMap fun
+        | .canonical (.star _ _ filter) => filter
+        | .canonical (.field _) | .fragmentField _ => none
+  | .pluralOverlap source =>
+      source.operands.filterMap fun
+        | .field (.canonical (.star _ _ filter)) => filter
+        | .field (.canonical (.field _)) | .field (.fragmentField _) | .group _ => none
+  | .yearlessOverlap source =>
+      source.operands.filterMap fun
+        | .star _ _ filter => filter
+        | .direct _ | .group _ => none
+  | .yearlessPluralOverlap source =>
+      source.operands.filterMap fun
+        | .star _ _ filter => filter
+        | .direct _ | .group _ => none
+  | .storedEquality _ | .boundAgainstFixed _ _ _ _ | .boundPair _ _ _
+  | .boundPairYearless _ _ _ | .constructionAgainstStored _
+  | .constructionAgainstConstruction _ => []
+
+/-- Whether this condition reaches `field` for the rule's error-field gates: an operand read at the
+row, or a filter's `$`-marked read, which the Kernel judges as the rule's own
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). Whether a starred or group
+operand reaches the error field is not decided here, since no row reads one alone. -/
+def referencesErrorField (condition : IteratedDateRangeCondition model)
+    (field : FieldId) : Bool :=
+  condition.operandDeclarations.any (·.id == field) ||
+    condition.filters.any (·.referencesMarkedField field)
+
 /-- The operands that actually cross a repeatable level. These are the declarations the enclosing
 rule resolves before evaluation and the levels it derives its iteration from. -/
 def repeatableDeclarations (condition : IteratedDateRangeCondition model) :

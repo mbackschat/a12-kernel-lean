@@ -102,8 +102,8 @@ def conditionParsed (lenient : Bool) (declaration : ErrorFieldDeclaration) : Boo
 independent inputs rather than a classification, because the roles derived from them overlap.
 
 The list holds only the references outside every filter body and the `$`-marked ones inside: a
-body's unmarked read reaches none of these gates, and after a nested filter the outer body's rest
-counts as the rule's ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+body's unmarked read reaches none of these gates
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
 structure ConditionReference where
   /-- Names the very entity the error field names. -/
   sameEntity : Bool := false

@@ -666,4 +666,62 @@ private def filteredBooleanCountReferenceError? :
 example : filteredBooleanCountReferenceError? = some .filteredStarOperand := by
   native_decide
 
+/-- A filtered token value count and a filtered Boolean value count, each reaching the error field
+    only through its filter's `OuterAmount`/`FixedAmount` read, marked or not; `none` when the rule
+    assembles. -/
+private def filteredTokenAssembly? (origin : HavingOrigin) :
+    Option (Option FlatRuleAssemblyError) := do
+  let source ← (elaborateTokenValueCountSource ordinaryIterationModel ["Order", "Sections"] "A" {
+    first := .starHaving deeperInnerTokenStar .stored (.compareNumbers .notEqual
+      { origin := .inner
+        field := ordinaryPath ["Order", "Sections", "Items"] "InnerAmount" }
+      { origin, field := ordinaryPath ["Order", "Sections"] "OuterAmount" })
+    rest := [] }).toOption
+  let condition ← tokenValueCountCondition? (some source)
+  pure (match assembleResolvedValidationRule ordinaryIterationModel condition outerAmount.id
+      "filteredToken" .error { parts := [] } with
+    | .ok _ => none
+    | .error error => some error)
+
+private def filteredBooleanAssembly? (origin : HavingOrigin) :
+    Option (Option FlatRuleAssemblyError) := do
+  let source ← (elaborateBooleanValueCountSource countModel ["Count"] true {
+    first := .starHaving {
+      base := .absolute
+      groups := [{ name := "Count" }, { name := "Rows", starred := true }]
+      field := "RowFlag" } (.compareNumbers .notEqual
+        { origin := .inner
+          field := { base := .absolute, groups := ["Count", "Rows"], field := "RowAmount" } }
+        { origin
+          field := { base := .absolute, groups := ["Count", "Fixed"], field := "FixedAmount" } })
+    rest := [] }).toOption
+  let core : OrderedNumericComparison countModel := {
+    op := .ordinary .greater
+    left := .atom (.booleanValueCount source)
+    right := .literal { value := 0, authoredScale := 0 } }
+  if hCore : core.wellFormedInBool ["Count"] .sameGroupAddressed = true then do
+    let condition ← (CheckedValidationCondition.fromOrderedNumeric {
+      rowGroup := ["Count"]
+      operandScope := .sameGroupAddressed
+      core
+      modelWellFormed := by native_decide
+      wellFormed := hCore }).toOption
+    pure (match assembleResolvedValidationRule countModel condition fixedAmount.id
+        "filteredBoolean" .error { parts := [] } with
+      | .ok _ => none
+      | .error error => some error)
+  else
+    none
+
+/- The token and Boolean value counts take the error field from their filter as the aggregates do:
+   a marked read references it and an unmarked one does not
+   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). The rows the rule rests on
+   read a numeric aggregate's filter; these lock the two carriers' own arms of that predicate. -/
+example :
+    filteredTokenAssembly? .outer = some none ∧
+      filteredTokenAssembly? .inner = some (some (.errorFieldNotReferenced outerAmount.id)) ∧
+      filteredBooleanAssembly? .outer = some none ∧
+      filteredBooleanAssembly? .inner = some (some (.errorFieldNotReferenced fixedAmount.id)) := by
+  native_decide
+
 end A12Kernel.Conformance.ValidationRule.OrdinaryReference

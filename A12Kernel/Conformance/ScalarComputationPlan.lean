@@ -227,26 +227,27 @@ example :
       [finalId, final3Id, twiceId, sFinalId, nsId, aId, bId, saId, sbId, cId, p1Id, p2Id] := by
   native_decide
 
-/-- The refusal class a plan's certification draws, or `none` for an admitted plan. -/
-private def planRefusal? (steps : List (Option (CheckedScalarComputationStep model))) :
-    Option (Option CalculationRefusal) := do
+/-- A plan's certification: `.inl ()` when admitted, else the refusal and the class it draws. -/
+private def planDecision? (steps : List (Option (CheckedScalarComputationStep model))) :
+    Option (Unit ⊕ ScalarComputationPlanError × Option CalculationRefusal) := do
   let steps ← steps.mapM id
   match certifyScalarComputationPlan steps with
-  | .ok _ => pure none
-  | .error cause => pure cause.calculationRefusal?
+  | .ok _ => pure (.inl ())
+  | .error cause => pure (.inr (cause, cause.calculationRefusal?))
 
 /- A cycle is refused with the Kernel's cycle class, and so is a plan where a step waits on one,
    since the Kernel sorts the whole model's computed fields before it generates anything
-   ([`spec/09`](../../spec/09-computations.md) §1); no Kernel row here measures a cycle. The acyclic
-   control is admitted. -/
+   ([`spec/09`](../../spec/09-computations.md) §1); no Kernel row here measures a cycle. The waiting
+   plan's refusal names the waiting step `C`, which lies off the cycle. The acyclic control is
+   admitted. -/
 example :
-    planRefusal? [numberStep? aId none (read "B"), numberStep? bId none (read "A")] =
-      some (some .calcCycle) ∧
-    planRefusal? [numberStep? cId none (read "A"), numberStep? aId none (read "B"),
+    planDecision? [numberStep? aId none (read "B"), numberStep? bId none (read "A")] =
+      some (.inr (.cycle aId bId, some .calcCycle)) ∧
+    planDecision? [numberStep? cId none (read "A"), numberStep? aId none (read "B"),
         numberStep? bId none (read "A")] =
-      some (some .calcCycle) ∧
-    planRefusal? [numberStep? aId none (read "B"), numberStep? bId none (read "Base2")] =
-      some none := by
+      some (.inr (.cycle cId aId, some .calcCycle)) ∧
+    planDecision? [numberStep? aId none (read "B"), numberStep? bId none (read "Base2")] =
+      some (.inl ()) := by
   native_decide
 
 end A12Kernel.Conformance.ScalarComputationPlan

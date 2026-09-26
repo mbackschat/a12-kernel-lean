@@ -487,7 +487,8 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- Enumeration does not declare draws `MVK_CATEGORY_UNKOWN` at the same read, ahead of every list
   -- gate: it is the second gate of the category check the non-Enumeration class opens
   -- ([`kf359`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359)), and beside a Number in a value
-  -- list it pre-empts the varying-types gate. No entity-list row reads it; its position there rests
+  -- list it pre-empts the varying-types gate (the 2026-09-18 extension under
+  -- [`kf106`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf106)). No entity-list row reads it; its position there rests
   -- on the peer's source reading that the check answers wherever the operand's spec stands
   -- ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
   let categoryRead (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
