@@ -273,8 +273,15 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       -- The Kernel's checker asks its root and base-type gates over the scalar before the slot
       -- gate; the base-type order is measured
       -- ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)),
-      -- the root gate's is read, so it claims no class.
-      if let some root := scalarOperand.rootGroupPath? then throw (.scalarRootGroup root)
+      -- the root gate's is read, so it claims no class. The Kernel's root test ignores the star, so
+      -- a starred repeatable root is held back with the fixed one.
+      let starredRoot? : Option GroupPath := match scalarOperand with
+        | .starredGroup source => if source.group.path.length == 1 then some source.group.path else none
+        | .starredGroupPresence source =>
+            if source.groupPath.length == 1 then some source.groupPath else none
+        | _ => none
+      if let some root := scalarOperand.rootGroupPath? <|> starredRoot? then
+        throw (.scalarRootGroup root)
       if let some path := fieldListBaseTypeMismatch? [scalarOperand] then
         throw (.scalarVaryingBaseType path)
       let scalarDeclaration ← certifyAtLeastOneDateRangeOverlapScalarShape scalarOperand

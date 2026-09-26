@@ -39,10 +39,15 @@ private def admissionModel : FlatModel := {
     { id := 11, groupPath := ["Form"], name := "Quantity",
       policy := { kind := .number { scale := 0, signed := false } } },
     { id := 12, groupPath := ["Form"], name := "BackorderQuantity",
-      policy := { kind := .number { scale := 0, signed := false } } }]
+      policy := { kind := .number { scale := 0, signed := false } } },
+    rangeField 13 ["Form", "Mixed"] "Span",
+    { id := 14, groupPath := ["Form", "Mixed"], name := "Count",
+      policy := { kind := .number { scale := 0, signed := false } } },
+    rangeField 15 ["Lot"] "Term" [12]]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 4 },
-    { level := 11, path := ["Form", "Periods"], repeatability := some 3 }]
+    { level := 11, path := ["Form", "Periods"], repeatability := some 3 },
+    { level := 12, path := ["Lot"], repeatability := some 3 }]
 }
 
 private def direct (field : String) : SurfaceFieldEntityOperand :=
@@ -247,15 +252,23 @@ example :
    A starred group whose expansion mixes kinds draws `MVK_VARYING_TYPES_NOT_ALLOWED` instead, because
    the base-type gate reports before the slot's
    ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
-   The root gate stands ahead of both in the Kernel's checker, read rather than measured on this
-   carrier, so the root group, whose fields mix kinds too, is refused without a class. -/
+   A fixed group of mixed kinds takes the same gate, read rather than measured on this carrier, an
+   assumption SG6 records. The root gate stands ahead of both in the Kernel's checker, read rather
+   than measured here too, so a root, fixed or starred, is refused without a class. -/
 example :
     (pluralAdmissionError? starredPeriodsGroup (direct "Start")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? =
           some .invalidParameterForDateRangeComparison ∧
       (pluralAdmissionError? starredRowsGroup (direct "Start")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .varyingTypesNotAllowed ∧
+      (pluralAdmissionError? (.group (.path { base := .absolute, groups := ["Form", "Mixed"] }))
+        (direct "Start")).bind AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+          some .varyingTypesNotAllowed ∧
       (pluralAdmissionError? (.group (.path { base := .absolute, groups := ["Form"] }))
+        (direct "Start")).map AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+          some none ∧
+      (pluralAdmissionError?
+        (.starredGroup { base := .absolute, groups := [{ name := "Lot", starred := true }] })
         (direct "Start")).map AtLeastOneDateRangeOverlapsElabError.diagnostic? =
           some none := by
   native_decide
