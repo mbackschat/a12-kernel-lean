@@ -211,7 +211,7 @@ The field's message draws the same two classes for each separator and each of ta
 
 **Lean.** Partly adopted. [`namedStringPatternDiagnostic?`](../A12Kernel/Elaboration/ValidationMessageDiagnostic.lean) now projects the field message's two character classes and its parameter class, measured for a named parameter by [`EXP-2026-07-30-01`](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-07-30-01), locked in [`StringPatternMessage`](../A12Kernel/Conformance/StringPatternMessage.lean), and [`ValidationMessageAuthoring`](../A12Kernel/Conformance/ValidationMessageAuthoring.lean) locks the separator and withholding rows.
 
-The shared control predicate still holds only C0, `DELETE` to the C1 block, soft hyphen and zero-width space, so it admits `U+FEFF`, `U+200E`, `U+E000` and `U+0378` and omits `INVALID_CHARACTERS` beside the supplementary rows, and the field message does not co-report the refusal; [SG25](gaps/strings-and-messages.md#gap-sg25) holds both behind the owner decision [`PLAN.md`](PLAN.md#active-unit) names. A computation's message template is not modelled.
+With the owner's approval the shared control predicate is now [`JavaOtherCategory`](../A12Kernel/Elaboration/JavaOtherCategory.lean), JDK 21's `\p{C}` as a pinned table, and both producers add the repertoire refusal through one composition, so every row above that Lean can spell is locked; a lone surrogate has no `Char`. A computation's message template is not modelled.
 
 <a id="inbound-2026-09-26m-model-texts"></a>
 #### Reviewed 2026-09-26m model-text handback — the codeless repertoire refusal meets every text of a rule, a computation and a field or group's names, annotations and enumeration entries, once per element, but no label
