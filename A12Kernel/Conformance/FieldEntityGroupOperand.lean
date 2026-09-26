@@ -136,9 +136,8 @@ a nonrepeatable group must not, and the two refusals are distinct classes rather
 example : diagnostic? [group ["Probe", "Rows"]] = some .noWildcard := by
   native_decide
 
-/- From a rule inside `Rows` the walk passes the read, and this carrier still refuses the unstarred
-   group without a class: no row reads an entity list from inside the group it names, where the
-   group-list carriers are admitted or draw their own classes. -/
+/- From a rule inside `Rows` the walk passes the read, and this carrier refuses the unstarred group
+   without a class: no row reads an entity list from inside the group it names. -/
 example :
     (elaborateNumberValuesNotUniqueSource probeModel ["Probe", "Rows"]
         { first := group ["Probe", "Rows"], rest := [] }).toOption.isNone ∧
@@ -573,7 +572,8 @@ example :
     aggregateOutcome .distinctCount [group ["Probe", "B"]] = (true, none) := by
   native_decide
 
-/- Starred declaration order is an internal specialization, with external calibration pending. -/
+/- A starred group is read in declaration order too, as the peer measures on its own starred rows
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26i-expansion-order)). -/
 example : aggregateOutcome .distinctCount
     [starredGroup [{ name := "Probe" }, { name := "Kinds", starred := true }]]
     (orderedKindGroupModel true true) = (false, some .numberAndNonNumber) := by

@@ -375,6 +375,10 @@ structure RepeatableGroupDecl where
   deriving Repr, DecidableEq
 
 structure FlatModel where
+  /-- Every field in the model's depth-first declaration order, so a subgroup's fields stand at the
+  subgroup's declared position. A group operand's expansion is this list filtered to its subtree, and
+  the Kernel reads a group in exactly that order when its first field sets a list's family
+  ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26i-expansion-order)). -/
   fields : List FlatFieldDecl
   repeatableGroups : List RepeatableGroupDecl := []
   fieldRefByShortNameAllowed : Bool := false

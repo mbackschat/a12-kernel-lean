@@ -212,6 +212,7 @@ import A12Kernel.Conformance.FullDateComputationResult
 import A12Kernel.Conformance.FullDateFirstFilledComputation
 import A12Kernel.Conformance.FullDateInput
 import A12Kernel.Conformance.GeneratedComputationValidation
+import A12Kernel.Conformance.GroupExpansionOrder
 import A12Kernel.Conformance.GroupListDiagnostic
 import A12Kernel.Conformance.GroupOperandRepetitionWalk
 import A12Kernel.Conformance.ReadingScope
