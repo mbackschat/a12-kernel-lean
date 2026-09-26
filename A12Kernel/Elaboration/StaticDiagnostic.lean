@@ -375,6 +375,8 @@ inductive KernelStaticDiagnostic where
   | noFieldsAllowed
   /-- Two `RepetitionNotUnique` keys whose repeatable groups lie on no one hierarchy path, in the form that takes no explicit scope. -/
   | notInSamePath
+  /-- Keys of `RepetitionNotUnique` in two parallel repeatable groups the rule iterates jointly, once an `@From` scope's gates pass. The construct forbids parallel iteration beside it after the parse ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)). -/
+  | parallelIterationNotAllowed
   /-- Two groups related by parallel iteration whose declared index fields differ in base type. Distinct from the missing-index class: both groups **have** an index here, and only their types disagree. -/
   | indexTypeInconsistent
   /-- A message parameter naming a form-pointer target that resolves to a group rather than to a field. The parameter grammar admits the shape, so the refusal is the resolution's and not the parser's. -/
@@ -589,6 +591,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .notInRuleGroup => "MVK_NOT_IN_RULEGROUP"
   | .noFieldsAllowed => "MVK_NO_FIELDS_ALLOWED"
   | .notInSamePath => "MVK_NOT_IN_SAME_PATH"
+  | .parallelIterationNotAllowed => "MVK_PARALLEL_ITERATION_NOT_ALLOWED"
   | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
   | .invalidFieldInParameter => "INVALID_FIELD_IN_PARAMETER"
   | .errorEmptyPrecondition => "MVK_ERROR_EMPTY_PRECONDITION"
@@ -676,7 +679,8 @@ def all : List KernelStaticDiagnostic :=
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
     .invalidCompareEnumToString, .invalidCompareEnumToEnum, .invalidDateString, .noConst,
     .paramSizeInvalidTwo, .pointInA12Model,
-    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .indexTypeInconsistent,
+    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed,
+    .indexTypeInconsistent,
     .invalidFieldInParameter,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,
     .invalidConst, .noStringOrEnum,

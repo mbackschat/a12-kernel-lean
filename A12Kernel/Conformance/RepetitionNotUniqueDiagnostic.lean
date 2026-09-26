@@ -240,6 +240,8 @@ the peer's; its category and starred rows have no spelling here, since a key is 
 private def policyModel : FlatModel :=
   { fields := [
       { id := 1, groupPath := ["Policy"], name := "Reference", policy := { kind := .string } },
+      { id := 2, groupPath := ["Policy"], name := "Memo", policy := { kind := .string },
+        stringValueMode := .raw, stringPolicy := { lineBreaksPermitted := true } },
       { id := 3, groupPath := ["Policy", "Insured"], name := "InsuredName",
         policy := { kind := .string } },
       { id := 4, groupPath := ["Policy", "Claims"], name := "ClaimRef",
@@ -251,20 +253,35 @@ private def policyModel : FlatModel :=
         stringPolicy := { lineBreaksPermitted := true }, repeatableScope := [10] },
       { id := 7, groupPath := ["Policy", "Claims", "Items"], name := "ItemRef",
         policy := { kind := .string }, repeatableScope := [10, 12] },
+      { id := 11, groupPath := ["Policy", "Claims", "Detail"], name := "DetailRef",
+        policy := { kind := .string }, repeatableScope := [10] },
+      { id := 12, groupPath := ["Policy", "Claims", "Adjuster"], name := "AdjusterRef",
+        policy := { kind := .string }, repeatableScope := [10] },
+      { id := 13, groupPath := ["Policy", "Claims", "Assessor"], name := "AssessorRef",
+        policy := { kind := .string }, repeatableScope := [10] },
       { id := 8, groupPath := ["Policy", "Payments"], name := "ClaimRef",
         policy := { kind := .string }, repeatableScope := [11] },
       { id := 9, groupPath := ["Policy", "Payments"], name := "PayRef",
         policy := { kind := .string }, repeatableScope := [11] },
       { id := 10, groupPath := ["Policy", "Notes"], name := "NoteRef",
         policy := { kind := .string }, repeatableScope := [13] },
-      { id := 11, groupPath := ["Policy", "Claims", "Detail"], name := "DetailRef",
-        policy := { kind := .string }, repeatableScope := [10] }]
+      { id := 14, groupPath := ["Policy", "Batches", "Items"], name := "LineRef",
+        policy := { kind := .string }, repeatableScope := [15, 16] },
+      { id := 15, groupPath := ["Policy", "Batches", "Items"], name := "ItemRef",
+        policy := { kind := .string }, repeatableScope := [15, 16] },
+      { id := 16, groupPath := ["Policy", "Batches", "Parts"], name := "LineRef",
+        policy := { kind := .string }, repeatableScope := [15, 17] },
+      { id := 17, groupPath := ["Policy", "Batches", "Parts"], name := "PartRef",
+        policy := { kind := .string }, repeatableScope := [15, 17] }]
     repeatableGroups := [
       { level := 10, path := ["Policy", "Claims"], indexField := some 4 },
       { level := 12, path := ["Policy", "Claims", "Items"] },
       { level := 11, path := ["Policy", "Payments"], indexField := some 8 },
       { level := 13, path := ["Policy", "Notes"] },
-      { level := 14, path := ["Policy", "Vacant"] }] }
+      { level := 14, path := ["Policy", "Vacant"] },
+      { level := 15, path := ["Policy", "Batches"] },
+      { level := 16, path := ["Policy", "Batches", "Items"], indexField := some 14 },
+      { level := 17, path := ["Policy", "Batches", "Parts"], indexField := some 16 }] }
 
 private def rel (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups, field }
@@ -298,8 +315,8 @@ example :
     atRoot (rel ["Claims"] "RawNote") = some (some .rawTypeOperandInvalid) := by
   native_decide
 
-/- A semantic index on a key is refused whichever field the rule reports on: here the key is
-   `Amount` and the error field `ClaimRef`. -/
+/- A semantic index on a key other than the error field is refused too: here the key is `Amount`
+   and the error field `ClaimRef`. -/
 example :
     projectRepetitionNotUniqueSemanticIndexDiagnostic? policyModel ["Policy"]
       { target := rel ["Claims"] "Amount", token := "C-1" } ["Policy", "Claims"] =
@@ -334,8 +351,8 @@ example :
       some (some .notInRuleGroup) := by
   native_decide
 
-/- Two defects at once: the key list answers ahead of the scope, and with a scope the shared-path
-   check never runs, so parallel keys meet the scope's containment instead. -/
+/- Two defects at once: the key list answers ahead of the scope's own gates, and with a scope the
+   shared-path check never runs, so parallel keys meet the scope's containment instead. -/
 example :
     atRoot (rel [] "Claims") [] (fromGroups ["Insured"]) = some (some .noGroupsAllowed) ∧
     atRoot (rel ["Claims"] "RawNote") [] (fromGroups ["Payments"]) =
@@ -344,28 +361,67 @@ example :
       some (some .entityNotInGroup) := by
   native_decide
 
-/- The list's duplicate gate answers ahead of the group gate: a group named twice draws the direct
-   class, and a group beside a key it holds, the root beside any key included, the nested one,
-   whichever is written first. On this carrier `kf388` measures a group before its own field and the
-   `-26f` letter a starred field before its group; a group named twice and the root beside a key are
-   measured on the other list carriers sharing the list builder
-   ([`kf388`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf388)), an assumption SG9 records. -/
+/- The key-list gates answer one gate at a time over the whole list, so the group gate answers ahead
+   of the raw one whatever the key order, and the duplicate gate ahead of both: a group named twice
+   draws the direct class, and a group beside a key it holds, the root beside any key included, the
+   nested one, whichever is written first
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)). The peer's duplicate rows
+   name the fixed `Insured` and the root; on the repeatable `Claims`, [`kf388`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf388)
+   measures a group before its own field, and the group named twice is carried over. -/
 example :
+    atRoot (rel [] "Insured") [rel ["Claims"] "RawNote"] = some (some .noGroupsAllowed) ∧
+    atRoot (rel ["Claims"] "RawNote") [rel [] "Insured"] = some (some .noGroupsAllowed) ∧
+    atRoot (rel [] "Insured") [rel [] "Insured"] = some (some .duplicateParam1) ∧
+    atRoot (rel [] "Insured") [rel ["Insured"] "InsuredName"] = some (some .duplicateParam2) ∧
+    atRoot (key [] "Policy") [rel ["Claims"] "ClaimRef"] = some (some .duplicateParam2) ∧
+    atRoot (rel ["Claims"] "ClaimRef") [key [] "Policy"] = some (some .duplicateParam2) ∧
     atRoot (rel [] "Claims") [rel [] "Claims"] = some (some .duplicateParam1) ∧
     atRoot (rel [] "Claims") [rel ["Claims"] "ClaimRef"] = some (some .duplicateParam2) ∧
-    atRoot (rel ["Claims"] "ClaimRef") [rel [] "Claims"] = some (some .duplicateParam2) ∧
-    atRoot (key [] "Policy") [rel ["Claims"] "ClaimRef"] = some (some .duplicateParam2) := by
+    atRoot (rel ["Claims"] "ClaimRef") [rel [] "Claims"] = some (some .duplicateParam2) := by
   native_decide
 
-/- The scope is read as a key is. An index-free `Notes` beside the error field's `Claims` is an
-   unpaired repetition, and a scope below a root error field is one the rule does not iterate, so
-   both draw the walk's missing-star class rather than containment, as the peer measured on its
-   index-free carrier; this `Claims` is keyed, an assumption SG9 records. So does a second key in
-   `Notes` under a scope that holds the first. -/
+/-- The rule at the root reporting on the root's `Reference`, so it iterates nothing. -/
+private def atReference (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := [])
+    (scope : SurfaceRepetitionNotUniqueScope := .default) :
+    Option (Option KernelStaticDiagnostic) :=
+  policyVerdict ["Policy"] ["Policy"] first rest scope
+
+/- Every key is read, and walked, before any gate. Reporting at the root, a `Claims` key's read is an
+   iteration the rule does not have, and its missing star answers ahead of a group, a raw key and a
+   group named twice, written before it or after it. The scope is read as a key is, so a keyed, an
+   index-free and an empty repeatable scope draw the same class there. -/
 example :
-    atRoot (rel ["Claims"] "ClaimRef") [] (fromGroups ["Notes"]) = some (some .noWildcard) ∧
-    policyVerdict ["Policy"] ["Policy"] (rel [] "Reference") [] (fromGroups ["Claims"]) =
+    atReference (rel [] "Reference") [rel ["Claims"] "ClaimRef"] = some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [rel ["Claims"] "ClaimRef", rel [] "Insured"] =
       some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [rel [] "Insured", rel ["Claims"] "ClaimRef"] =
+      some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [rel ["Claims"] "ClaimRef", rel [] "Memo"] =
+      some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [rel [] "Memo", rel ["Claims"] "ClaimRef"] =
+      some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [rel ["Claims"] "ClaimRef", rel [] "Insured", rel [] "Insured"] =
+      some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [rel [] "Insured", rel [] "Insured", rel ["Claims"] "ClaimRef"] =
+      some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [] (fromGroups ["Claims"]) = some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [] (fromGroups ["Notes"]) = some (some .noWildcard) ∧
+    atReference (rel [] "Reference") [] (fromGroups ["Vacant"]) = some (some .noWildcard) := by
+  native_decide
+
+/- The scope is read with the keys, ahead of the duplicate and raw gates, and its walk answers ahead
+   of its emptiness: the rule iterates `Claims`, so the empty repeatable `Vacant`'s level is unbound.
+   An index-free `Notes` beside the error field's `Claims` is an unpaired repetition too, and so is a
+   second key in it under a scope that holds the first. A key that does not resolve answers ahead of
+   the scope; the peer's row reads an index on a group without one, which a plain field path cannot
+   spell, so the resolver's miss stands in for it here, read from the same position. -/
+example :
+    atRoot (rel ["Claims"] "RawNote") [] (fromGroups ["Vacant"]) = some (some .noWildcard) ∧
+    atRoot (rel ["Claims"] "ClaimRef") [] (fromGroups ["Vacant"]) = some (some .noWildcard) ∧
+    atRoot (rel ["Claims"] "ClaimRef") [rel ["Claims"] "ClaimRef"] (fromGroups ["Vacant"]) =
+      some (some .noWildcard) ∧
+    atRoot (rel ["Claims"] "Nope") [] (fromGroups ["Vacant"]) = some (some .invalidEntity) ∧
+    atRoot (rel ["Claims"] "ClaimRef") [] (fromGroups ["Notes"]) = some (some .noWildcard) ∧
     atRoot (rel ["Claims"] "ClaimRef") [rel ["Notes"] "NoteRef"] (fromGroups ["Claims"]) =
       some (some .noWildcard) := by
   native_decide
@@ -378,58 +434,101 @@ example :
       some (some .noWildcard) := by
   native_decide
 
-/- An empty scope is refused ahead of containment, but without a class. The peer's row, drawing the
-   empty-group class, names an empty fixed group, which this model cannot build
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-empty-scope)); the empty repeatable `Vacant`
-   also meets the walk, and no row fixes which of the two answers first. -/
-example :
-    atRoot (rel ["Claims"] "ClaimRef") [] (fromGroups ["Vacant"]) = some none := by
-  native_decide
-
-/- The shared-path gate compares the keys' lowest repeatable groups, so a key in the fixed
-   `Claims/Detail` lies on one path with a key in `Claims/Items`; the two own groups still diverge,
-   which this theory's topology refuses without a class. -/
-example :
-    policyVerdict ["Policy"] ["Policy", "Claims", "Items"] (rel ["Claims", "Detail"] "DetailRef")
-        [rel ["Claims", "Items"] "ItemRef"] =
-      some none := by
-  native_decide
-
-/- An outsider under no repetition at all reads cleanly too: beside a rule in `Claims`, a second key
-   in the fixed `Insured` is the rule-group gate's rather than the repeatable-group one's, as the peer
-   measured on a second key in a fixed sibling of the rule's repeatable group
+/- The shared-path gate answers ahead of the rule-group gate: from a rule in `Claims`, the jointly
+   iterated `Payments` key alone draws the rule-group class and beside a key of `Claims` the
+   shared-path one, in either order. An outsider under no repetition at all reads cleanly too, so a
+   second key in the fixed `Insured` is the rule-group gate's rather than the repeatable-group one's
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). -/
 example :
     policyVerdict ["Policy", "Claims"] ["Policy", "Claims"] (rel [] "ClaimRef")
-        [key ["Policy", "Insured"] "InsuredName"] =
-      some (some .notInRuleGroup) := by
+        [key ["Policy", "Payments"] "PayRef"] = some (some .notInSamePath) ∧
+    policyVerdict ["Policy", "Claims"] ["Policy", "Claims"] (key ["Policy", "Payments"] "PayRef")
+        [rel [] "ClaimRef"] = some (some .notInSamePath) ∧
+    policyVerdict ["Policy", "Claims"] ["Policy", "Claims"] (rel [] "ClaimRef")
+        [key ["Policy", "Insured"] "InsuredName"] = some (some .notInRuleGroup) := by
   native_decide
 
-/-- A root `Ledger` holding `Key` directly and `Entry` in its fixed `Detail`, repeatable or not. -/
-private def ledgerModel (repeatable : Bool) : FlatModel :=
+/-- The rule at the root reporting on its first key's field. -/
+private def atFirstKey (writtenGroup : GroupPath) (first : SurfaceFieldPath)
+    (rest : List SurfaceFieldPath := []) (scope : SurfaceRepetitionNotUniqueScope := .default) :
+    Option (Option KernelStaticDiagnostic) :=
+  policyVerdict ["Policy"] writtenGroup first rest scope
+
+/- The shared path is the keys' lowest repeatable groups, so keys in the sibling fixed groups
+   `Adjuster` and `Assessor` of `Claims` share one, and the Kernel admits them with a scope and
+   without one. This theory's topology takes the deepest key's row and refuses two keys whose own
+   groups diverge, without a class; so does it a key in the fixed `Claims/Detail` beside one in the
+   repeatable `Claims/Items`, which no row reads. Keys in the parallel `Items` and `Parts` of
+   `Batches`, jointly iterated on their shared index field, draw the shared-path class without a
+   scope, and under one, which asks no shared-path gate, the construct's ban on parallel
+   iteration. -/
+example :
+    atFirstKey ["Policy", "Claims", "Adjuster"] (rel ["Claims", "Adjuster"] "AdjusterRef") = none ∧
+    atFirstKey ["Policy", "Claims", "Adjuster"] (rel ["Claims", "Adjuster"] "AdjusterRef")
+        [rel ["Claims", "Assessor"] "AssessorRef"] = some none ∧
+    atFirstKey ["Policy", "Claims", "Adjuster"] (rel ["Claims", "Adjuster"] "AdjusterRef")
+        [rel ["Claims", "Assessor"] "AssessorRef"] (fromGroups ["Claims"]) = some none ∧
+    atFirstKey ["Policy", "Claims", "Items"] (rel ["Claims", "Detail"] "DetailRef")
+        [rel ["Claims", "Items"] "ItemRef"] = some none ∧
+    atFirstKey ["Policy", "Batches", "Items"] (rel ["Batches", "Items"] "ItemRef")
+        [rel ["Batches", "Parts"] "PartRef"] = some (some .notInSamePath) ∧
+    atFirstKey ["Policy", "Batches", "Items"] (rel ["Batches", "Items"] "ItemRef")
+        [rel ["Batches", "Parts"] "PartRef"] (fromGroups ["Batches"]) =
+      some (some .parallelIterationNotAllowed) := by
+  native_decide
+
+/-- A root `Fleet`, repeatable or not, holding `Plate` and `Vin` directly, `RegNo` in its fixed
+    `Registration` and `License` in its repeatable `Drivers`. -/
+private def fleetModel (repeatable : Bool) : FlatModel :=
   let scope := if repeatable then [20] else []
   { fields := [
-      { id := 1, groupPath := ["Ledger"], name := "Key", policy := { kind := .string },
+      { id := 1, groupPath := ["Fleet"], name := "Plate", policy := { kind := .string },
         repeatableScope := scope },
-      { id := 2, groupPath := ["Ledger", "Detail"], name := "Entry", policy := { kind := .string },
-        repeatableScope := scope }]
-    repeatableGroups := if repeatable then [{ level := 20, path := ["Ledger"] }] else [] }
+      { id := 2, groupPath := ["Fleet"], name := "Vin", policy := { kind := .string },
+        repeatableScope := scope },
+      { id := 3, groupPath := ["Fleet", "Registration"], name := "RegNo",
+        policy := { kind := .string }, repeatableScope := scope },
+      { id := 4, groupPath := ["Fleet", "Drivers"], name := "License",
+        policy := { kind := .string }, repeatableScope := scope ++ [21] }]
+    repeatableGroups :=
+      (if repeatable then [{ level := 20, path := ["Fleet"] }] else []) ++
+        [{ level := 21, path := ["Fleet", "Drivers"] }] }
 
-private def ledgerVerdict (repeatable : Bool) (first : SurfaceFieldPath) :
-    Option (Option KernelStaticDiagnostic) :=
-  match CheckedValidationCondition.fromRepetitionNotUnique (ledgerModel repeatable) ["Ledger"]
-      { firstKey := first, restKeys := [] } ["Ledger"] with
+/-- The rule at the root `Fleet` reporting on its first key's field. -/
+private def fleetVerdict (repeatable : Bool) (writtenGroup : GroupPath) (first : SurfaceFieldPath)
+    (rest : List SurfaceFieldPath := []) : Option (Option KernelStaticDiagnostic) :=
+  match CheckedValidationCondition.fromRepetitionNotUnique (fleetModel repeatable) ["Fleet"]
+      { firstKey := first, restKeys := rest } writtenGroup with
   | .ok _ => none
   | .error (.repetitionNotUnique error) => some error.diagnostic?
   | .error _ => some none
 
-/- A rule at a repeatable root whose keys all sit directly in a root group skips the Kernel's
-   repeatable-group gate, a source reading no row measures, so the shape claims no class. A fixed root
-   is the measured sole-key shape, and a key one group deeper is outside the exemption. -/
+/- At a repeatable root, keys all sitting directly in the root skip the repeatable-group gate, and
+   the Kernel admits them ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)). What
+   such a rule fires on is unmeasured, and this theory has no reference group to evaluate it against,
+   so it refuses them without a class. A key in a fixed subgroup brings the class back, alone or beside
+   a direct key, a key in a repeatable subgroup is admitted, and at a fixed root a direct key is the
+   measured sole-key shape. -/
 example :
-    ledgerVerdict true (rel [] "Key") = some none ∧
-    ledgerVerdict false (rel [] "Key") = some (some .repeatableGroupMissing) ∧
-    ledgerVerdict true (rel ["Detail"] "Entry") = some (some .repeatableGroupMissing) := by
+    fleetVerdict true ["Fleet"] (rel [] "Plate") = some none ∧
+    fleetVerdict true ["Fleet"] (rel [] "Plate") [rel [] "Vin"] = some none ∧
+    fleetVerdict true ["Fleet", "Registration"] (rel ["Registration"] "RegNo") =
+      some (some .repeatableGroupMissing) ∧
+    fleetVerdict true ["Fleet"] (rel [] "Plate") [rel ["Registration"] "RegNo"] =
+      some (some .repeatableGroupMissing) ∧
+    fleetVerdict true ["Fleet", "Drivers"] (rel ["Drivers"] "License") = none ∧
+    fleetVerdict false ["Fleet"] (rel [] "Plate") = some (some .repeatableGroupMissing) := by
+  native_decide
+
+/- A rule in `Claims` reporting on the root's `Reference` reads a `Claims` row per row, which the
+   walk's containment class refuses, on a key and on a scope alike: the scope is a per-row read too,
+   so it does not reach its own containment gate. -/
+example :
+    policyVerdict ["Policy", "Claims"] ["Policy"] (rel [] "ClaimRef") =
+      some (some .fieldNotInRuleGroup) ∧
+    policyVerdict ["Policy", "Claims"] ["Policy"] (key ["Policy"] "Reference") []
+        (.from (.path { base := .absolute, groups := ["Policy", "Claims"] })) =
+      some (some .fieldNotInRuleGroup) := by
   native_decide
 
 end A12Kernel.Conformance.RepetitionNotUniqueDiagnostic
