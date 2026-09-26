@@ -139,7 +139,7 @@ inductive NumericValidationElabError where
 
 namespace NumericValidationElabError
 
-/-- Project the measured filled-group-count admission classes. The count's own multiplicity class fires for a lone fixed operand, and for a lone repeatable one only where its rule is declared in it with its error field there and it is the outermost repeatable level, while the same unbound path draws the star class. Exact duplicate and ancestor overlap are two classes carried by one local error. A disjoint root beside another operand has its own class; strict overlap pre-empts it. Every other refusal returns `none`. -/
+/-- Project the measured filled-group-count admission classes. The count's own multiplicity class fires for a lone fixed operand, and for a lone repeatable one wherever the rule's error field sits in it, while an unbound path beside an error field outside it draws the star class. Exact duplicate and ancestor overlap are two classes carried by one local error. A disjoint root beside another operand has its own class; strict overlap pre-empts it. Every other refusal returns `none`. -/
 def groupCountDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
   | .groupCountNeedsMultipleOperands => some .paramSizeInvalidGN

@@ -1,0 +1,29 @@
+[
+ {
+  "id": "w0",
+  "verb": "field",
+  "args": [
+   "add",
+   "w0.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "w1",
+  "verb": "field",
+  "args": [
+   "add",
+   "w1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "w2",
+  "verb": "field",
+  "args": [
+   "add",
+   "w2.json",
+   "--dry-run"
+  ]
+ }
+]

@@ -1,0 +1,1 @@
+{"group": "/Ship", "name": "Probe0", "kind": "STRING", "string": {"pattern": "[A-Z]+", "patternMessage": "$field$ is not capitals"}}

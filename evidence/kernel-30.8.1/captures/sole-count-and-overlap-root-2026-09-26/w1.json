@@ -1,0 +1,1 @@
+{"group": "/Ship", "name": "Probe1", "kind": "STRING", "string": {"pattern": "[A-Z]+", "patternMessage": "$Fxeld$ is not capitals"}}

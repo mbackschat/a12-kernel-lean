@@ -197,15 +197,13 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
             throw (NumericValidationElabError.starredGroupCountOperand
               ((SurfaceGroupCountOperand.firstStarred? operands).getD
                 { base := .absolute, groups := [] }))
-      -- A lone repeatable group meets the count's arity as a lone fixed group does only where a row
-      -- reads it: a rule declared in the group with its error field there, the group being its
-      -- outermost repeatable level, under a fixed root
-      -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26j-count-star)) or as a root, measured on
-      -- one holding no subgroup ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)). Every
-      -- other placement claims no class, whether the walk passed the group or the rule's row bound it.
-      let soleArityMeasured (path : GroupPath) : Bool :=
-        path == rowGroup && writtenGroup == rowGroup &&
-          (model.repeatableScopeForGroupPath path).length == 1
+      -- A lone repeatable group meets the count's arity as a lone fixed group does wherever the
+      -- rule's error field sits in it, whichever enclosing group declares the rule, at any depth, as
+      -- a root and holding subgroups
+      -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
+      -- The arity answers ahead of whichever refusal the placement meets: the rule's row binding the
+      -- group, the walk passing it, or an enclosing rule leaving its level unbound.
+      let soleArityMeasured (path : GroupPath) : Bool := path == writtenGroup
       let groups ←
         match model.resolveValidationBoundFixedGroupReferences rowGroup writtenGroup surfaces with
         | .ok groups => pure groups
@@ -213,6 +211,10 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
             if surfaces.length == 1 && soleArityMeasured path then
               throw .groupCountNeedsMultipleOperands
             else throw (.groupReference (.walkedRepeatableGroupUnsupported path))
+        | .error (.unboundOperandLevel path unbound) =>
+            if surfaces.length == 1 && soleArityMeasured path then
+              throw .groupCountNeedsMultipleOperands
+            else throw (.groupReference (.unboundOperandLevel path unbound))
         | .error error => throw (.groupReference error)
       if let [sole] := groups then
         if model.repeatableGroups.any (·.path == sole.path) && !soleArityMeasured sole.path then

@@ -326,8 +326,9 @@ example :
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "B"], g ["Probe", "A"]] = none := by
   native_decide
 
-/-- `Rows` holding a fixed `Fix` and a repeatable `Deep`, and a repeatable root `Lot` holding a fixed
-    `Fix` and a repeatable `Sub`, for the count's rule placements. -/
+/-- `Rows` holding a fixed `Fix` and a repeatable `Deep`, a fixed `Mid` holding a repeatable `Inner`,
+    and a repeatable root `Lot` holding a fixed `Fix` and a repeatable `Sub`, for the count's rule
+    placements. -/
 private def nestedModel : FlatModel :=
   { fields := [
       { id := 1, groupPath := ["Probe", "B"], name := "BVal", policy := { kind := .number unsigned } },
@@ -342,10 +343,13 @@ private def nestedModel : FlatModel :=
       { id := 6, groupPath := ["Lot", "Fix"], name := "LotFixVal",
         policy := { kind := .number unsigned }, repeatableScope := [20] },
       { id := 7, groupPath := ["Lot", "Sub"], name := "SubVal",
-        policy := { kind := .number unsigned }, repeatableScope := [20, 21] }]
+        policy := { kind := .number unsigned }, repeatableScope := [20, 21] },
+      { id := 8, groupPath := ["Probe", "Mid"], name := "MidVal", policy := { kind := .number unsigned } },
+      { id := 9, groupPath := ["Probe", "Mid", "Inner"], name := "InnerVal",
+        policy := { kind := .number unsigned }, repeatableScope := [12] }]
     repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] },
-      { level := 11, path := ["Probe", "Rows", "Deep"] }, { level := 20, path := ["Lot"] },
-      { level := 21, path := ["Lot", "Sub"] }] }
+      { level := 11, path := ["Probe", "Rows", "Deep"] }, { level := 12, path := ["Probe", "Mid", "Inner"] },
+      { level := 20, path := ["Lot"] }, { level := 21, path := ["Lot", "Sub"] }] }
 
 private def nestedCountAt? (rowGroup writtenGroup counted : GroupPath) :
     Option (Option KernelStaticDiagnostic) :=
@@ -357,26 +361,35 @@ private def nestedCountAt? (rowGroup writtenGroup counted : GroupPath) :
   | .ok _ => none
   | .error error => some error.groupCountDiagnostic?
 
-/- The count's arity answers a lone repeatable group only where it is measured to: a rule declared
-   in the counted group with its error field there, the group being its outermost repeatable level,
-   under a fixed root ([inbound](../../docs/SOURCES.md#inbound-2026-09-26j-count-star)) or as a root,
-   measured on one holding no subgroup ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
-   A rule in a deeper repeatable group counting its ancestor or a fixed child of it, an error field
-   below the counted group, a rule in a fixed child of it, and the same placement one repeatable level
-   deeper are placements no row reads, so they claim no class. The root rows lock that restriction on
-   the bound route Lean reads a root by, apart from the walked route a subgroup takes. -/
+/- The count's arity answers a lone repeatable group wherever the rule's error field sits in it,
+   whichever group declares the rule: the group itself, the fixed root, a fixed ancestor between them,
+   or a repeatable group enclosing it, one repeatable level deeper as well, and as a repeatable root
+   holding subgroups
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
+   An error field outside the counted group claims no class, whether it sits below it, in a fixed child
+   of it or above it. -/
 example :
     nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows"] ["Probe", "Rows"] =
       some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe"] ["Probe", "Rows"] ["Probe", "Rows"] = some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Mid", "Inner"] ["Probe", "Mid", "Inner"] ["Probe", "Mid", "Inner"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Mid"] ["Probe", "Mid", "Inner"] ["Probe", "Mid", "Inner"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe"] ["Probe", "Mid", "Inner"] ["Probe", "Mid", "Inner"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Lot"] ["Lot"] ["Lot"] = some (some .paramSizeInvalidGN) ∧
     nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] = some none ∧
     nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Fix"] =
       some none ∧
     nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] = some none ∧
     nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Fix"] ["Probe", "Rows"] = some none ∧
     nestedCountAt? ["Probe", "Rows", "Fix"] ["Probe", "Rows", "Fix"] ["Probe", "Rows"] = some none ∧
-    nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] =
-      some none ∧
-    nestedCountAt? ["Lot"] ["Lot"] ["Lot"] = some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Lot"] ["Lot", "Sub"] ["Lot", "Sub"] = some (some .paramSizeInvalidGN) ∧
     nestedCountAt? ["Lot"] ["Lot", "Sub"] ["Lot"] = some none ∧
     nestedCountAt? ["Lot"] ["Lot", "Fix"] ["Lot"] = some none ∧
     nestedCountAt? ["Lot", "Fix"] ["Lot", "Fix"] ["Lot"] = some none := by
