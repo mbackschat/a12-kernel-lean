@@ -47,7 +47,7 @@ private def categoryDomain : EnumerationDeclaration :=
       { locale := "en", stored := "X", display := "Ex" },
       { locale := "en", stored := "Y", display := "Why" }
     ]
-    categories := [{ name := "Target", tokens := ["A", "B"] }]
+    categories := [{ name := "Target", tokens := ["A", "B"] }, { name := "Wide", tokens := ["A", "C"] }]
   }
 
 private def target := enumField 0 "Target" targetDomain
@@ -116,12 +116,24 @@ example :
   native_decide
 
 /- Complete selected-domain containment and direct display compatibility are independent static gates:
-   the display is the generated comparison's, asked first, and the domain the calculation's. -/
+   the display is the generated comparison's and the domain the calculation's. Neither row fails both,
+   so the order between them is locked on the field-copy grid, where a wider Enumeration into a
+   labelled target draws the display class. -/
 example :
     errorOf (.field (.direct (bare "Wider"))) =
         some (.sourceOutsideTargetDomain wider.path target.path) ∧
       errorOf (.field (.direct (bare "Displayed"))) =
         some (.copyComparison target.path displayed.path (.displayArm .displayClassMismatch)) := by
+  native_decide
+
+/- A category whose projected tokens leave the target's domain draws the calculation's class, as the
+   Kernel's local `[Banded -> Wide]` into an Enumeration does
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-enum-source)). -/
+example :
+    errorOf (.field (.category (bare "Category") "Wide")) =
+        some (.sourceOutsideTargetDomain category.path target.path) ∧
+      ((errorOf (.field (.category (bare "Category") "Wide"))).bind
+        EnumerationComputationElabError.calculationRefusal?) = some .invalidEnumCalculation := by
   native_decide
 
 /- A category source is checked by its projected token domain and bypasses direct display remapping.

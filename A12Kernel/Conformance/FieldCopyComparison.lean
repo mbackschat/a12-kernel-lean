@@ -95,6 +95,57 @@ private def range := "MVK_INVALID_COMPARE_TO_DATE_RANGE"
 private def yesNo := "MVK_INVALID_COMPARE_TO_YESNO"
 private def yes := "MVK_INVALID_COMPARE_TO_YES"
 private def display := "MVK_INVALID_COMPARE_ENUM_TO_STRING"
+private def ok := "admitted"
+private def places := "MVK_INVALID_COMPARE_DEC_PLACES"
+private def enumEnum := "MVK_INVALID_COMPARE_ENUM_TO_ENUM"
+private def enumCalc := "MVK_ERROR_INVALID_ENUM_CALCULATION"
+
+/-- Every retained row copying one field into another, as (target, source, measured verdict), in the
+    capture's order ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)). -/
+private def grid : List (String × String × String) :=
+  [("Note2", "Note", ok), ("Note2", "Qty", text), ("Note2", "Amount", text),
+    ("Note2", "Due", date), ("Note2", "At", date), ("Note2", "Window", range),
+    ("Note2", "Flag", yesNo), ("Note2", "Signed", yes), ("Note2", "Plain", ok),
+    ("Note2", "Labelled", display), ("Qty2", "Note", text), ("Qty2", "Qty", ok),
+    ("Qty2", "Amount", places), ("Qty2", "Due", date), ("Qty2", "At", date),
+    ("Qty2", "Window", range), ("Qty2", "Flag", yesNo), ("Qty2", "Signed", yes),
+    ("Qty2", "Plain", text), ("Qty2", "Labelled", text), ("Amount2", "Note", text),
+    ("Amount2", "Qty", places), ("Amount2", "Amount", ok), ("Amount2", "Due", date),
+    ("Amount2", "At", date), ("Amount2", "Window", range), ("Amount2", "Flag", yesNo),
+    ("Amount2", "Signed", yes), ("Amount2", "Plain", text), ("Amount2", "Labelled", text),
+    ("Due2", "Note", date), ("Due2", "Qty", date), ("Due2", "Amount", date),
+    ("Due2", "Due", ok), ("Due2", "At", date), ("Due2", "Window", date),
+    ("Due2", "Flag", yesNo), ("Due2", "Signed", yes), ("Due2", "Plain", date),
+    ("Due2", "Labelled", date), ("At2", "Note", date), ("At2", "Qty", date),
+    ("At2", "Amount", date), ("At2", "Due", date), ("At2", "At", ok),
+    ("At2", "Window", date), ("At2", "Flag", yesNo), ("At2", "Signed", yes),
+    ("At2", "Plain", date), ("At2", "Labelled", date), ("Window2", "Note", range),
+    ("Window2", "Qty", range), ("Window2", "Amount", range), ("Window2", "Due", date),
+    ("Window2", "At", date), ("Window2", "Window", ok), ("Window2", "Flag", yesNo),
+    ("Window2", "Signed", yes), ("Window2", "Plain", range), ("Window2", "Labelled", range),
+    ("Flag2", "Note", yesNo), ("Flag2", "Qty", yesNo), ("Flag2", "Amount", yesNo),
+    ("Flag2", "Due", yesNo), ("Flag2", "At", yesNo), ("Flag2", "Window", yesNo),
+    ("Flag2", "Flag", ok), ("Flag2", "Signed", yes), ("Flag2", "Plain", yesNo),
+    ("Flag2", "Labelled", yesNo), ("Signed2", "Note", yes), ("Signed2", "Qty", yes),
+    ("Signed2", "Amount", yes), ("Signed2", "Due", yes), ("Signed2", "At", yes),
+    ("Signed2", "Window", yes), ("Signed2", "Flag", yes), ("Signed2", "Signed", ok),
+    ("Signed2", "Plain", yes), ("Signed2", "Labelled", yes), ("Plain2", "Note", enumCalc),
+    ("Plain2", "Qty", text), ("Plain2", "Amount", text), ("Plain2", "Due", date),
+    ("Plain2", "At", date), ("Plain2", "Window", range), ("Plain2", "Flag", yesNo),
+    ("Plain2", "Signed", yes), ("Plain2", "Plain", ok), ("Plain2", "Labelled", display),
+    ("Labelled2", "Note", display), ("Labelled2", "Qty", text), ("Labelled2", "Amount", text),
+    ("Labelled2", "Due", date), ("Labelled2", "At", date), ("Labelled2", "Window", range),
+    ("Labelled2", "Flag", yesNo), ("Labelled2", "Signed", yes), ("Labelled2", "Plain", display),
+    ("Labelled2", "Labelled", ok), ("Stamp2", "Note", date), ("Stamp2", "Qty", date),
+    ("Stamp2", "Amount", date), ("Stamp2", "Due", date), ("Stamp2", "At", date),
+    ("Stamp2", "Window", date), ("Stamp2", "Flag", yesNo), ("Stamp2", "Signed", yes),
+    ("Stamp2", "Plain", date), ("Stamp2", "Labelled", date), ("Stamp2", "Stamp", ok),
+    ("Note2", "Stamp", date), ("Qty2", "Stamp", date), ("Amount2", "Stamp", date),
+    ("Due2", "Stamp", date), ("At2", "Stamp", date), ("Window2", "Stamp", date),
+    ("Flag2", "Stamp", yesNo), ("Signed2", "Stamp", yes), ("Plain2", "Stamp", date),
+    ("Labelled2", "Stamp", date), ("Labelled2", "Swapped", enumEnum), ("Plain2", "Wide", enumCalc),
+    ("Labelled2", "Wide", display), ("Wide", "Plain", ok), ("Note2", "Swapped", display)]
+
 
 /-- The kind arms against the measured grid: each arm claims its kind on either side, in the walk's
     order, so a Confirm outranks a Boolean, both outrank a temporal field, and a temporal field
@@ -112,67 +163,44 @@ example :
         (copyComparisonKindArm? target source).map (·.diagnostic.kernelCode) == expected) := by
   native_decide
 
-/- A String target: every other kind draws its arm's class, a labelled Enumeration the display class.
-   An unlabelled Enumeration is admitted by the Kernel, and this carrier, which has no Enumeration
-   leaf, still refuses it without claiming a class. -/
+private def kindOf (name : String) : SurfaceScalarKind :=
+  ((model.fields.find? (·.name == name)).map (·.policy.kind.surfaceKind)).getD .string
+
+/-- A row neither side of which is of the carrier's kind, whose two kinds meet no kind arm, and which
+    the display arm does not refuse: two fields of one other family, which the scale rule, the format
+    question or the Enumeration calculation decides on that family's own carrier. Every carrier reads a
+    copy through the shared comparison, so each answers the display arm's refusals too. -/
+private def outside (own : SurfaceScalarKind) (row : String × String × String) : Bool :=
+  kindOf row.1 != own && kindOf row.2.1 != own &&
+    (copyComparisonKindArm? (kindOf row.1) (kindOf row.2.1)).isNone &&
+    row.2.2 != display && row.2.2 != enumEnum
+
+private def refuses (carrier : String → String → String) (row : String × String × String) : Bool :=
+  carrier row.1 row.2.1 == "refused"
+
+/- Every carrier answers every retained row with its measured verdict or claims no class, so no
+   carrier ever claims a wrong one. -/
 example :
-    ["Note", "Qty", "Amount", "Due", "At", "Stamp", "Window", "Flag", "Signed", "Labelled", "Plain"].map
-        (stringCopy "Note2") =
-      ["admitted", text, text, date, date, date, range, yesNo, yes, display, "refused"] := by
+    [stringCopy, numberCopy, enumerationCopy, fullDateCopy].all fun carrier =>
+      grid.all fun row => carrier row.1 row.2.1 == row.2.2 || refuses carrier row := by
   native_decide
 
-/- A String copied into each other kind. An unlabelled Enumeration target draws the calculation's
-   own class, which belongs to the Enumeration carrier, so this one claims none. -/
+/- Where each carrier claims no class, exactly. The String, Number and Enumeration carriers answer
+   every row one side of which is their kind, and every row whose kinds meet an arm; the rest are
+   another family's. The exceptions are named: an unlabelled Enumeration into a String is admitted by
+   the Kernel and refused here without a class, since neither the String carrier nor the Enumeration
+   one has a leaf reading it as text; a String into an unlabelled Enumeration draws the calculation's
+   class, which the Enumeration carrier owns. The full-Date carrier answers only a full-Date target, a
+   clock or instant source through its format gate. -/
 example :
-    ["Qty2", "Amount2", "Due2", "At2", "Stamp2", "Window2", "Flag2", "Signed2", "Labelled2", "Plain2"].map
-        (stringCopy · "Note") =
-      [text, text, date, date, date, range, yesNo, yes, display, "refused"] := by
+    let unlabelledIntoText := ("Note2", "Plain")
+    let textIntoUnlabelled := ("Plain2", "Note")
+    grid.all (fun row => refuses stringCopy row ==
+      (outside .string row || [unlabelledIntoText, textIntoUnlabelled].contains (row.1, row.2.1))) ∧
+    grid.all (fun row => refuses numberCopy row == outside .number row) ∧
+    grid.all (fun row => refuses enumerationCopy row ==
+      (outside .enumeration row || (row.1, row.2.1) == unlabelledIntoText)) ∧
+    grid.all (fun row => refuses fullDateCopy row == (row.1 != "Due2")) := by
   native_decide
-
-/- A Number target, the scale rule deciding between two Numbers. -/
-example :
-    ["Qty", "Amount", "Note", "Due", "At", "Stamp", "Window", "Flag", "Signed", "Plain", "Labelled"].map
-        (numberCopy "Qty2") =
-      ["admitted", "MVK_INVALID_COMPARE_DEC_PLACES", text, date, date, date, range, yesNo, yes, text,
-       text] := by
-  native_decide
-
-/- A Number copied into each other kind. -/
-example :
-    ["Note2", "Due2", "At2", "Stamp2", "Window2", "Flag2", "Signed2", "Plain2", "Labelled2"].map
-        (numberCopy · "Qty") =
-      [text, date, date, date, range, yesNo, yes, text, text] := by
-  native_decide
-
-/- An Enumeration target. The comparison answers first; only a copy it admits reaches the
-   calculation's domain class, which a String into an unlabelled target and a wider unlabelled
-   Enumeration draw. Where the display and the domain both fail, the display class answers. -/
-example :
-    ["Plain", "Note", "Qty", "Amount", "Due", "At", "Stamp", "Window", "Flag", "Signed", "Labelled",
-        "Wide"].map (enumerationCopy "Plain2") =
-      ["admitted", "MVK_ERROR_INVALID_ENUM_CALCULATION", text, text, date, date, date, range, yesNo,
-       yes, display, "MVK_ERROR_INVALID_ENUM_CALCULATION"] ∧
-    ["Labelled", "Note", "Plain", "Swapped", "Wide"].map (enumerationCopy "Labelled2") =
-      ["admitted", display, display, "MVK_INVALID_COMPARE_ENUM_TO_ENUM", display] ∧
-    enumerationCopy "Wide" "Plain" = "admitted" := by
-  native_decide
-
-/- An Enumeration copied into each other kind. An unlabelled one into a String is admitted by the
-   Kernel and still refused here without a class, as on the String carrier. -/
-example :
-    ["Note2", "Qty2", "Due2", "At2", "Stamp2", "Window2", "Flag2", "Signed2"].map
-        (enumerationCopy · "Labelled") =
-      [display, text, date, date, date, range, yesNo, yes] ∧
-    enumerationCopy "Note2" "Plain" = "refused" := by
-  native_decide
-
-/- A full-Date target. A temporal source is judged by its declared format, so a clock and an
-   instant draw the date class through that gate, and every other kind through its arm. -/
-example :
-    ["Due", "Note", "Qty", "Amount", "Plain", "Labelled", "Window", "Flag", "Signed", "At", "Stamp"].map
-        (fullDateCopy "Due2") =
-      ["admitted", date, date, date, date, date, date, yesNo, yes, date, date] := by
-  native_decide
-
 
 end A12Kernel.Conformance.FieldCopyComparison

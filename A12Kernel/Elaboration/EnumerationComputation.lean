@@ -102,9 +102,11 @@ def diagnostic? : EnumerationComputationElabError → Option KernelStaticDiagnos
   | .targetSelfReferenceAtCompatibleCategory _
   | .incoherentCore => none
 
-/-- The calculation's own class for a copy the comparison admitted, measured for a String into an
+/-- The calculation's own class for a source the comparison admitted, measured for a String into an
 unlabelled target and for a wider Enumeration
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)). -/
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)),
+and for a category whose tokens leave the target's domain
+([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-enum-source)). -/
 def calculationRefusal? : EnumerationComputationElabError → Option CalculationRefusal
   | .stringSource _ _ | .sourceOutsideTargetDomain _ _ => some .invalidEnumCalculation
   | _ => none
