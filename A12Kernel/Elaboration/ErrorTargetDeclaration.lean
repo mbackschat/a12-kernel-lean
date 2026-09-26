@@ -78,7 +78,9 @@ namespace A12Kernel
 nothing"**: a declared relative path that resolves to no entity lands here too, so an unresolvable
 path draws the missing-declaration class rather than the unknown-name one. Measured — a rule whose
 path names a nonexistent sibling, and a rule whose path is the empty string, both draw the missing
-class ([checkpoint](../../docs/SOURCES.md#src-error-target-declaration)).
+class ([checkpoint](../../docs/SOURCES.md#src-error-target-declaration)). Beside it the Kernel reports
+`MVK_ERROR_FIELD_MISSING`, a model-member class `spec/01` owns and this module does not
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-error-target-paths)).
 
 `declared` therefore means an error entity object exists, and `knownToModel` is the narrower second
 question of whether the model's entity container holds its full name. -/

@@ -75,7 +75,10 @@ structure SemanticIndexAdmissionKeyRef where
 inductive SemanticIndexAdmissionKey where
   /-- `[A For B]` — a reference to another field. -/
   | reference (spec : SemanticIndexAdmissionKeyRef)
-  /-- `[A For "k"]` — a string constant, paired with whether the index field's type accepts it. -/
+  /-- `[A For "k"]` — a string constant, paired with whether the index field's type accepts it. For a
+  String index field that verdict is a conjunction of the declared length bounds and the declared
+  pattern, either failing refuses the key, and the pattern is matched against the whole key over code
+  points ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-index-key-pattern)). -/
   | constant (text : String) (applicableToIndexField : Bool)
   deriving Repr, DecidableEq
 
