@@ -196,6 +196,33 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+### Inbound 2026-09-26n handback
+
+<a id="inbound-2026-09-26n-field-message-gates"></a>
+#### Reviewed 2026-09-26n field-message handback — a field type's own message takes its condition language's two tokens as the pieces of a split that drops trailing empty pieces, reports one class per field from the first failing declared locale, and draws nothing where a path class stops the element walk
+
+a12-dmkits revision `37b68148da09d00ebe300941700901b47df24d3f` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26n`, frozen as sent in the user's exchange directory with SHA-256 `7639da2d939436bf88245fa9e0ec19481befa39706f8f603dd07dba8fbbfab57`. The locks were read at that revision, not run here. It answers no ledger entry and creates none. Its §7 names the field checker's order, its per-language loop and the element walk's early return as source-read hypotheses, and its §8 reports the peer's own records; neither is recorded as a claim.
+
+**Claim.** Its §1 (`FieldTypeMessageTextLawsTest`), a String `Code` whose `[A-Z]+` pattern carries its own message in the one declared `en_US`, the condition language English unless a row says German. `capitals only`, `$field$ takes capitals`, `$field.value$ is not capitals`, `$field$$field.value$`, `capitals only $$` and `$$` are admitted. `$field takes capitals` draws `WRONG_NUMBER_OF_DOLLARS`, as does `$Code$ and $field` alone.
+
+`$Field$ …`, `$Code$ …`, `cost $$ in capitals`, `$$ capitals only` and, under English, `$Feld$ takes capitals` draw `INVALID_PARAMETER`. A tab beside an odd count draws `INVALID_CHARACTERS` alone. Under German, `$Feld$ …` and `$Feld.Wert$ …` are admitted and `$field$ …` draws `INVALID_PARAMETER`. The peer's `kf42`, the source of this project's former reading that `$$` is refused at this producer, is corrected in place.
+
+Its §2, with a tab in the `en_US` text and a line feed in the `de_DE` one where both are defective. Declaring `en_US` first draws `INVALID_CHARACTERS` and declaring `de_DE` first `INVALID_LINEBREAK`, in either entry order. Only the second declared locale defective draws `INVALID_CHARACTERS`. Of two `en_US` entries a tab in the first is admitted and in the second draws `INVALID_CHARACTERS`. A tab for the undeclared `fr_FR` is admitted, and a lone low surrogate draws `WRONG_ENCODING`.
+
+A String message with a tab and no pattern draws `INVALID_CHARACTERS` with `MVK_ERROR_MESSAGE_AND_NO_PATTERN`. An Enumeration `Status`'s invalid-value message draws `INVALID_CHARACTERS` for a tab and `INVALID_PARAMETER` for `$Status$ is not allowed`, and admits `$field$ is not allowed`. A required field's message with a tab is admitted, an empty pattern message draws `MVK_ERROR_MESSAGE_AND_PATTERN_INVALID`, and a tab on a field its own `ONLY` filter deletes is admitted.
+
+Its §3, a tab in the named field's pattern message. A field named `Codeé`, `Co.1de` or beneath a group named `Parté` or `1Part` draws `MVK_PATH_INVALID` alone, a plain message the same for `Codeé` and `Parté`. `1Code` draws `MVK_PATH_INVALID` with `MVK_NAME_STARTS_WITH_DIGIT_A12_DV`, and `Co/de` or a group `Pa/rt` `MVK_PATHS_INCONSISTENT`. `Co.de` and `Co:de` draw `INVALID_CHARACTERS` with `MVK_NAME_INVALID_DOT_COLON_A12_DV`, and `_Code`, a group `Teilä` and a root group `Schadenä` `INVALID_CHARACTERS`. A root group `1Claim` draws `INVALID_CHARACTERS` with `MVK_NAME_STARTS_WITH_DIGIT`.
+
+Its §4, a rule `ProbeRule` beside the field. The condition `FieldFilled(Reference) And And FieldFilled(Code)` draws `INVALID_CHARACTERS` with `MVK_UNEXPECTED_TOKEN`, and the error target `../NoSuchField` `INVALID_CHARACTERS` with `MVK_ERROR_FIELD_MISSING` and `MVK_MISSING_ERROR_FIELD`.
+
+Its §5 takes §3's group rows against the peer's `kf315`, corrected in place: a group admits `ä` and `ö` and refuses `é`. The letter reports `Ö` measured too, which the lock read here does not carry, and names the group pattern's seven German letters as source-read.
+
+Its §6 (`ModelTextRepertoireLawsTest`), `U+1F600` in a String type's pattern message and in an Enumeration's invalid-value message draws the codeless repertoire refusal on the field, and in a pattern message for the undeclared `de_DE`, written into the model file, is admitted.
+
+**Lean.** Corrected. [`elaborateStringPatternMessageTemplate`](../A12Kernel/Elaboration/StringPatternMessage.lean) now takes the condition language's two tokens and reads the parameters as the split pieces with trailing empty pieces dropped. [`namedStringPatternDiagnostic?`](../A12Kernel/Elaboration/ValidationMessageDiagnostic.lean) projects the parity, parameter and empty-text classes, and [`StringPatternMessage`](../A12Kernel/Conformance/StringPatternMessage.lean) locks every §1 row and the empty one. An admitted trailing pair renders as literal dollars, an assumption [SG25](gaps/strings-and-messages.md#gap-sg25) records.
+
+A field message has no locale, and no Lean surface carries a second locale, an Enumeration's invalid-value message, a message with no pattern, a required field's message, a field's variant filter, or a rule beside the field, so §2's other rows, §4 and §6 have none. §3 fits [`EntityContainerIntegrity`](../A12Kernel/Elaboration/EntityContainerIntegrity.lean)'s blocking stages, which stop an entity's check and the walk into its children, but that module takes a path's validity as an input and composes with no field-message check, so neither §3 nor §5 has a Lean row.
+
 ### Inbound 2026-09-26m handback
 
 <a id="inbound-2026-09-26m-message-characters"></a>
