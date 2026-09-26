@@ -285,7 +285,7 @@ def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
     Except YearlessDateRangesOverlapElabError
       (CheckedYearlessDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
-      (writtenGroup := writtenGroup)
+      (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
     |>.mapError fun error => .source (.shape error)
   let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
     shape.first

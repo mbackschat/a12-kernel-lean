@@ -52,6 +52,7 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
     Except TokenValuesNotUniqueElabError
       (CheckedTokenValuesNotUniqueSource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+      (categoryGate := .behindRootGate)
     |>.mapError fun error => .source (.shape error)
   match firstFieldListKindRefusal? shape.operands with
   | some refusal => throw (.inadmissibleKind refusal.path refusal.actual)

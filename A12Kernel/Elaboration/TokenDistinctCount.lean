@@ -87,6 +87,7 @@ def elaborateTokenDistinctCountSource (model : FlatModel)
     (writtenGroup : GroupPath := declaringGroup) :
     Except TokenDistinctCountElabError (CheckedTokenEntitySource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+      (categoryGate := .aheadOfRepeat)
     |>.mapError fun error => .source (.shape error)
   match distinctPositionalError? shape.operands with
   | some error => throw error

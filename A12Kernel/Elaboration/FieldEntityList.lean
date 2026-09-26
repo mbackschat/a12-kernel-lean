@@ -101,6 +101,14 @@ def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
   | .field .. | .star _ | .starHaving _ _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
+/-- The Enumeration a category slot reads, for a carrier's category gate. A category of a field
+    declaring no Enumeration was already refused as the slot resolved, and a starred slot spells no
+    category on this surface. -/
+def categoryPath? : ResolvedFieldEntityOperand model → Option (List String)
+  | .field declaration (.projected _) => some declaration.path
+  | .field _ .stored | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+      .starredGroupPresence _ => none
+
 /-- The authored path each slot occupies for the indirect duplicate arm. -/
 def entityPath : ResolvedFieldEntityOperand model → List String
   | .field declaration _ => declaration.path
@@ -286,6 +294,16 @@ def firstFieldListCategoryMismatch?
       | some mismatch => some mismatch
       | none => firstFieldListCategoryMismatch? expected remaining
 
+/-- Where an entity list's carrier asks the category gate against the list's repeat. The counts ask
+    it ahead of the repeat, the other carriers that ask it behind the repeat and the root gate, and a
+    carrier outside the gate asks none
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category)). -/
+inductive EntityListCategoryGate where
+  | absent
+  | aheadOfRepeat
+  | behindRootGate
+  deriving Repr, DecidableEq
+
 /-- The source-shape failures shared by every homogeneous aggregate family. -/
 inductive FieldEntityShapeElabError where
   | resolve (error : ResolveError)
@@ -304,6 +322,8 @@ inductive FieldEntityShapeElabError where
       whole list is judged before the duplicate scans, as the Kernel's missing-star bar is
       ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
   | unboundOperandLevel (unbound : UnboundOperandLevel)
+  /-- An Enumeration's category in a list whose carrier asks the category gate. -/
+  | categoryNotAllowed (path : List String)
   deriving Repr, DecidableEq
 
 /-- The gates this shared checker owns, projected once. The **classes** do not vary by carrier, and
@@ -321,6 +341,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .duplicateGroupOperand _ => some .duplicateParam1
   | .overlappingOperands _ _ => some .duplicateParam2
   | .rootGroupOperand _ => some .rootGroupReferenced
+  | .categoryNotAllowed _ => some .categoryNotAllowed
   | .unboundOperandLevel unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
   | .groupReference error => error.diagnostic?
@@ -530,7 +551,7 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource)
     (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath) :
+    (writtenGroup : GroupPath) (categoryGate : EntityListCategoryGate := .absent) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -545,6 +566,9 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
         if let some unbound := model.firstUnboundOperandLevel? declaringGroup targetGroup
             ((first :: rest).map ResolvedFieldEntityOperand.bindingScope) then
           throw (.unboundOperandLevel unbound)
+      if categoryGate == .aheadOfRepeat then
+        if let some path := (first :: rest).findSome? ResolvedFieldEntityOperand.categoryPath? then
+          throw (.categoryNotAllowed path)
       match hDuplicate : firstDuplicateResolvedEntityOperand? (first :: rest) with
       | some (.field (field, _)) => throw (.duplicateOperand field)
       | some (.fixedGroup path) => throw (.duplicateGroupOperand path)
@@ -555,7 +579,11 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
           | none =>
               match (first :: rest).findSome? ResolvedFieldEntityOperand.rootGroupPath? with
               | some root => throw (.rootGroupOperand root)
-              | none =>
+              | none => do
+                  if categoryGate == .behindRootGate then
+                    if let some path :=
+                        (first :: rest).findSome? ResolvedFieldEntityOperand.categoryPath? then
+                      throw (.categoryNotAllowed path)
                   if hMultiplicity :
                       arity.allowsSole || first.isAlreadyMany || !rest.isEmpty then
                     pure {
@@ -573,9 +601,10 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
 def elaborateFieldEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
     (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath) :
+    (writtenGroup : GroupPath) (categoryGate : EntityListCategoryGate := .absent) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   elaborateFieldEntityShapeIn model declaringGroup [] authored arity fixedTargetGroup? writtenGroup
+    categoryGate
 
 /-- One direct `Having` operand after origin-sensitive scope resolution. The resolved declaration,
     read form, and origin together are its exact authored identity. -/

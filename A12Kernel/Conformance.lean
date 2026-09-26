@@ -84,6 +84,7 @@ import A12Kernel.Conformance.TemporalConstructorOperand
 import A12Kernel.Conformance.RootGroupConditionLegality
 import A12Kernel.Conformance.GeneratedRuleIdentity
 import A12Kernel.Conformance.EntityContainerIntegrity
+import A12Kernel.Conformance.EntityListCategoryGate
 import A12Kernel.Conformance.ErrorTargetDeclaration
 import A12Kernel.Conformance.IndexGroupResolution
 import A12Kernel.Conformance.RuleChangePropagation

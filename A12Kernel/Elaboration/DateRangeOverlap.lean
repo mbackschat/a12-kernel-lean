@@ -295,7 +295,7 @@ def elaborateDateRangesOverlapSourceIn (model : FlatModel)
     Except DateRangesOverlapElabError
       (CheckedDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
-      (writtenGroup := writtenGroup)
+      (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
     |>.mapError .shape
   if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
     throw .dateWithAndWithoutYear
