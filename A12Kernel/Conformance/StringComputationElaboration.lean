@@ -423,6 +423,22 @@ example :
       rawTarget.id (.literal "TEXT")) = some (.rawStringTarget rawTarget.path) := by
   native_decide
 
+/- A raw target is read by the generated comparison before its operation, so a copy from an
+ordinary String draws the raw read's class alone
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)). Only this field-source row is
+measured; the literal-source refusal above keeps its local error and claims the class by the same
+target read, since the read does not depend on the operation. -/
+example :
+    let rawTarget := { target with
+      stringValueMode := StringValueMode.raw
+      stringPolicy := { lineBreaksPermitted := true } }
+    let rawModel : FlatModel := { fields := [rawTarget, suffix] }
+    let copied := operationErrorOf (elaborateStringComputationOperation rawModel ["Form"]
+      rawTarget.id (.field (bare "Suffix")))
+    copied = some (.rawStringTarget rawTarget.path) ∧
+      targetDiagnosticOf copied = some .rawTypeOperandInvalid := by
+  native_decide
+
 example :
     let customTarget := { target with
       stringPolicy := {}

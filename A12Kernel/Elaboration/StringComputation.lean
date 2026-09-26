@@ -25,11 +25,15 @@ inductive StringComputationElabError where
 
 namespace StringComputationElabError
 
-/-- Project only the measured root direct-copy and `RangeAsString` target
-reference refusals to their exact Kernel diagnostic class. -/
+/-- Project the measured target refusals to their exact Kernel diagnostic class: the root
+direct-copy and `RangeAsString` self-references, and a raw target, which the generated comparison
+reads before the operation. The raw row is measured with a String field source
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)); a literal source takes it by
+that read, which does not depend on the operation. -/
 def targetDiagnostic? :
     StringComputationElabError → Option KernelStaticDiagnostic
   | .targetSelfReferenceAtRoot _ => some .errorReferenceToCalculatedField
+  | .rawStringTarget _ => some .rawTypeOperandInvalid
   | _ => none
 
 end StringComputationElabError

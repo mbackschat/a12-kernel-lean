@@ -58,6 +58,16 @@ example :
         some .semanticIndexBelowWildcard := by
   native_decide
 
+/- The rule's own iteration addresses the level above the index group, and it is the only thing
+   that does: from inside `Regions`, `Regions/Stores For "S1"` is admitted, while the starred
+   `Regions*/Stores For "S1"` from the same rule is the lock above, the star's level carrying no
+   relation the scan reads ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-star-above-index)). -/
+example :
+    referenceRefusal { levels :=
+        [{ marker := .iteration, relation := .aboveOrEqualErrorPath }, { marker := .semanticIndex }] } =
+      none := by
+  native_decide
+
 /- Only an *outer* wildcard poisons: a wildcard at the last level, or after the iteration it would
    otherwise have poisoned, leaves the reference legal. The direction is what matters, and reversing
    the two levels of the second reference below is exactly the case above. -/

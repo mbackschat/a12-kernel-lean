@@ -39,9 +39,14 @@ second carrier measures it independently: inside a `Having` filter, a field comp
 literal draws this function's `stringLike` row cell for cell, on every kind and on all three
 operators tested ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)).
 A **plain rule comparison** carrying neither construct draws the same class, so the vocabulary is the
-comparison's and not either carrier's. *Why* an assignment reaches it is a separate, undischarged
-question: the natural account is the generated equality rule, which would also explain the `COMPARE_TO`
-naming, but no witness separates that from a classifier both routes call, so it stays a hypothesis. An **ordering** comparison is a different pair of gates and gets its own
+comparison's and not either carrier's. An assignment reaches it through the comparison its
+generated validation ends in ([`spec/09`](../../spec/09-computations.md) §6): a tolerance band, which
+exists only as that comparison's operator, turns an admitted String copy into the tolerance
+operator's class, and a class in an earlier member of the joined text withholds the comparison's
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-joined-comparison)). **The ladder is still not
+a field-pair function**: a Boolean *field* copied into a String draws the Boolean class, where a
+Boolean literal at a String target draws the text class, and one copied into a Confirm draws the
+Confirm class, where `True` is admitted. An **ordering** comparison is a different pair of gates and gets its own
 function below rather than being forced through this one — measured, its non-orderable kinds collapse to
 a single class where the literal column spreads them across five.
 -/

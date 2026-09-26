@@ -36,13 +36,14 @@ namespace RepeatableStringConstantComputationElabError
 /-- Containment carries its own measured identity, and a wrong-kind target draws the shared
 literal-comparison ladder's `stringLike` row.
 
-The ladder returns `none` for the two shapes this carrier still refuses without the Kernel
-refusing them. A **raw** String target is one: it has the String kind and so passes every kind
-gate, and it is declined here because a raw declaration closes the checked value-reading route,
-not because the Kernel objects. An **Enumeration** target is the other, and there the Kernel gates
-the literal rather than the kind — a declared token is admitted outright. Both are stated
-representation boundaries tracked in [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md), not
-unmeasured declines. -/
+The ladder returns `none` for two shapes this carrier refuses. A **raw** String target passes every
+kind gate, and the Kernel refuses it by the generated comparison's read of the target, drawing
+`MVK_INVALID_RAW_TYPE` on the one row measured, a String field copied into a nonrepeatable raw
+target ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)). This error does not
+separate a raw target from a custom one, so it projects no class. An **Enumeration** target is the
+other, and there the Kernel gates the literal rather than the kind — a declared token is admitted
+outright, which this carrier refuses. Both are tracked in
+[SG15](../../docs/gaps/targets-and-derivation.md#gap-sg15). -/
 def diagnostic? :
     RepeatableStringConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup

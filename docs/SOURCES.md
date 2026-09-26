@@ -196,6 +196,35 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+### Inbound 2026-09-26c handback
+
+<a id="inbound-2026-09-26c-joined-comparison"></a>
+#### Reviewed 2026-09-26c joined-comparison handback — a field copied into a field draws the class its kind pair draws in a comparison, and a Boolean field source leaves the constant ladder
+
+a12-dmkits revision `2a55a3d0ce925cff1771da985681ce88fb6802f2` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26c`, frozen as sent in the user's exchange directory with SHA-256 `e1f975f4378a17d656bc8a8e07ab3118f131bf88ce94790a0ad6c8e47e8599f4`. Every lock the records below cite was read at that revision, not run here. It answers no ledger entry and creates none, and the `-2026-09-26c` records below share this provenance. Its §4 reports the peer's own checker and its §5 a source hypothesis, neither recorded as a claim.
+
+**Claim.** Its §1 (`CheckerComputationJoinedConditionAgreementTest`, `kf483`), every computation writing a field of `/Order` from the root unless named. A Number into a String or Enumeration, a String or a written-out text into a Number, and `1` into a String draw `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`. A Number, String or Time into a Date and a Date into a Number or DateRange draw `MVK_INVALID_COMPARE_TO_DATE`, and a String into a DateRange `MVK_INVALID_COMPARE_TO_DATE_RANGE`. A Number into a Boolean and a Boolean into a String draw `MVK_INVALID_COMPARE_TO_YESNO`, a Boolean into a Confirm `MVK_INVALID_COMPARE_TO_YES`, and `True` into a Number `MVK_INCONSISTENT_TYPES_COMPARED`.
+
+A Number of the other scale in either direction and `1.50` into a scale-0 Number draw `MVK_INVALID_COMPARE_DEC_PLACES`, `"PLATINUM"` into an Enumeration `MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON`, and a labelled Enumeration into an unlabelled one declaring the same values `MVK_INVALID_COMPARE_ENUM_TO_STRING`. A field of the target's own kind and scale, on each of String, Enumeration, Number, Date, Time, DateRange, Boolean and Confirm, a declared token, `True` into a Boolean or Confirm, `1` into a scale-2 Number and a Number copy under a tolerance band are admitted, while a String copy under `DiffersWithToleranceRange1` draws `MVK_INVALID_TYPE_FOR_TOLERANCE_OP`.
+
+`[Total] + 1` and `[Total] [Note]` into a String draw the text class, the second not `MVK_UNEXPECTED_TOKEN`. The four target spellings, relative below the declaring group and absolute outside it, from `Billing` and from `Lines`, draw the text class alike.
+
+**Lean.** [`LiteralComparisonDiagnostic`](../A12Kernel/Elaboration/LiteralComparisonDiagnostic.lean) now names the generated comparison as the route and the two Boolean field cells as where a field source leaves the ladder. Lean's String and Number expression computations refuse a field source of another kind without a class, which [SG15](gaps/targets-and-derivation.md#gap-sg15) records.
+
+<a id="inbound-2026-09-26c-target-read"></a>
+#### Reviewed 2026-09-26c target-read and member-order handback — a partially known Date or raw String read draws its read class alone, and a computation's members answer in the order A12 joins them
+
+**Claim.** Its §2 and §3 (same lock). `[ShippedCopy]` into a `DAY_OPTIONAL` Date and `[Promised]` into a Number draw `MVK_INVALID_DATE_TYPE`, and `[Note]` into a raw String and `[Remark]` into a Number `MVK_INVALID_RAW_TYPE`, each alone. Into `Total`, with `[Shipped] > [Billing/Net]` drawing `MVK_INVALID_COMPARE_TO_DATE` and a read of the group `Billing` `MVK_NO_GROUPS_ALLOWED`, the class first in joined order answers: a precondition's date class ahead of its operation's group read and of an unresolved name there, the common precondition's ahead of an alternative precondition's group read, the first alternative's operation's group read ahead of the second alternative's precondition's date class, and an unresolved name in a precondition, `MVK_INVALID_ENTITY`, ahead of its operation's group read. Every member readable is admitted.
+
+**Lean.** [`StringComputation`](../A12Kernel/Elaboration/StringComputation.lean) projects its raw-target refusal, asked ahead of the operation, to `MVK_INVALID_RAW_TYPE`, a literal source taking it by that read as an assumption. The repeatable String constant carrier's error does not separate a raw target from a custom one, and Lean's Number and String tables assemble already-checked operations, so no class is ordered across members, both recorded in [SG15](gaps/targets-and-derivation.md#gap-sg15).
+
+<a id="inbound-2026-09-26c-star-above-index"></a>
+#### Reviewed 2026-09-26c star-above-index handback — a star on an unindexed repetition above the index group is refused even from a rule that iterates that level
+
+**Claim.** Its §6 (`SemanticIndexWildcardPlacementLawsTest`, `kf351`, and `kf478` corrected in place). Over a repeatable `Regions` declaring no index field above a repeatable `Stores` indexed by `StoreCode`, `FirstFilledValue(Regions*/Stores For "S1") == [Title]` and `NoGroupFilled(Regions*/Stores For "S1")` declared in `/Order`, and `NoGroupFilled(/Order/Regions*/Stores For "S1")` declared in `/Order/Regions`, draw `MVK_SEMANTIC_INDEX_BELOW_WILDCARD`, while `NoGroupFilled(/Order/Regions/Stores For "S1")` declared in `/Order/Regions` is admitted. It corrects the peer's `-2026-09-25i` §2, whose star half [`spec/08`](../spec/08-paths-and-references.md) §4 never took.
+
+**Lean.** No behaviour change: [`IterationLegality`](../A12Kernel/Conformance/IterationLegality.lean) already refused the starred read and now locks the admitted one.
+
 ### Inbound 2026-09-26b handback
 
 <a id="inbound-2026-09-26b-dispositions"></a>
