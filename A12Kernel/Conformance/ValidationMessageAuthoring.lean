@@ -480,6 +480,23 @@ example :
     templateError? ("sep " ++ cp 0x2028) = some .lineSeparator := by
   native_decide
 
+/- **Both Unicode separators are the line class, and the line gate is asked first over the whole text**
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). `U+2029` is not a control
+   character, so a reading keyed on control characters misses it; beside a tab written earlier the
+   separator still answers. Either character gate withholds the parameter classes: the unknown name draws
+   its entity class only in the control row, and the unclosed parameter its dollar class not at all. -/
+example :
+    templateError? ("par " ++ cp 0x2029) = some .lineSeparator ∧
+    templateError? ("a\tb" ++ cp 0x2028 ++ "c") = some .lineSeparator ∧
+    templateError? "see $Missing$" =
+      some (.reference "Missing" (.invalidEntity (bare "Missing"))) ∧
+    templateError? ("see $Missing$ a" ++ cp 0x200B ++ "b") =
+      some (.controlCharacter (Char.ofNat 0x200B)) ∧
+    templateError? ("see $Missing$ a" ++ cp 0x2028 ++ "b") = some .lineSeparator ∧
+    templateError? ("see $Amount a" ++ cp 0x200B ++ "b") =
+      some (.controlCharacter (Char.ofNat 0x200B)) := by
+  native_decide
+
 /- **A parameter's own body keeps the ASCII bound, and that is a different refusal from the repertoire
    one.** The Kernel reports a non-ASCII letter inside a parameter through its lexer, naming the character
    and its position, where the same letter in surrounding text is admitted — so the bound belongs to the

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringPatternMessage
+import A12Kernel.Elaboration.ValidationMessageDiagnostic
 
 /-! # en_US String-pattern producer conformance locks
 
@@ -40,6 +41,28 @@ example :
         some (.invalidParameter "") ∧
       stringPatternTemplateError? "$field" =
         some .oddDollarCount := by
+  native_decide
+
+private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
+
+private def stringPatternNamedDiagnostic? (template : String) : Option (Option String) :=
+  (stringPatternTemplateError? template).map fun error =>
+    error.namedStringPatternDiagnostic?.map KernelStaticDiagnostic.kernelCode
+
+/- **The field's own message meets the rule message's two character gates, line before control**
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). Each row sits in the one
+   declared locale's message of a `[A-Z]+` pattern. Beside the line feed the Kernel also reports a
+   codeless line-break finding on the field, which is the field's String check and not this template's.
+   The supplementary scalar is the codeless repertoire refusal alone, so it projects no class. -/
+example :
+    ["a\nb", "a" ++ cp 0x2028 ++ "b", "a" ++ cp 0x2029 ++ "b", "a\tb" ++ cp 0x2028 ++ "c",
+        "a\tb", "a" ++ cp 0x0085 ++ "b", "a" ++ cp 0x200B ++ "b", "a" ++ cp 0x00AD ++ "b",
+        "a" ++ cp 0x1F600 ++ "b"].map stringPatternNamedDiagnostic? =
+      [some (some "INVALID_LINEBREAK"), some (some "INVALID_LINEBREAK"),
+       some (some "INVALID_LINEBREAK"), some (some "INVALID_LINEBREAK"),
+       some (some "INVALID_CHARACTERS"), some (some "INVALID_CHARACTERS"),
+       some (some "INVALID_CHARACTERS"), some (some "INVALID_CHARACTERS"), some none] ∧
+    stringPatternTemplateError? ("a" ++ cp 0x00A0 ++ "b") = none := by
   native_decide
 
 end A12Kernel.Conformance.StringPatternMessage

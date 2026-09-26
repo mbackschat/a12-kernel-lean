@@ -27,4 +27,17 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .unsupportedCharacterWithError _ cause => cause.namedRuleDiagnostic?
   | _ => none
 
+/-- The established named class of a String-pattern field-message refusal.
+
+Only the two character gates carry field-carrier rows: a line separator draws `INVALID_LINEBREAK`
+and a control character `INVALID_CHARACTERS`, as on a rule's message
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). The field's checker also
+asks dollar parity and the two parameter tokens, but no measured row yet names their classes on this
+carrier, so they stay `none` like every other refusal here, and `none` never means acceptance. -/
+def ValidationMessageTemplateError.namedStringPatternDiagnostic? :
+    ValidationMessageTemplateError → Option KernelStaticDiagnostic
+  | .lineSeparator => some .invalidMessageLinebreak
+  | .controlCharacter _ => some .invalidMessageCharacters
+  | _ => none
+
 end A12Kernel
