@@ -53,10 +53,8 @@ example :
    `semanticIndexBelowWildcard`, not the iteration class. The measured witness is a semantic index
    under a starred outer group. -/
 example :
-    referenceRefusal { levels := [{ marker := .fixed }, { marker := .semanticIndex }],
-                       carriesSemanticIndex := true } = none ∧
-      referenceRefusal { levels := [{ marker := .wildcard }, { marker := .semanticIndex }],
-                         carriesSemanticIndex := true } =
+    referenceRefusal { levels := [{ marker := .fixed }, { marker := .semanticIndex }] } = none ∧
+      referenceRefusal { levels := [{ marker := .wildcard }, { marker := .semanticIndex }] } =
         some .semanticIndexBelowWildcard := by
   native_decide
 
@@ -83,13 +81,27 @@ example :
   native_decide
 
 /- The class follows the reference, not the defect. Two references break the *same* rule — an
-   iteration below the error path — and report different classes because one carries a semantic
-   index. A consumer switching on the code to decide what went wrong gets this backwards. -/
+   iteration below the error path — and report different classes because one is read inside a
+   semantic index's key. A consumer switching on the code to decide what went wrong gets this
+   backwards. -/
 example :
     referenceRefusal { levels := [{ marker := .iteration, relation := .belowErrorPath }],
-                       carriesSemanticIndex := false } = some .noWildcard ∧
+                       insideSemanticIndexKey := false } = some .noWildcard ∧
       referenceRefusal { levels := [{ marker := .iteration, relation := .belowErrorPath }],
-                         carriesSemanticIndex := true } = some .semanticIndexInvalidIter := by
+                         insideSemanticIndexKey := true } = some .semanticIndexInvalidIter := by
+  native_decide
+
+/- The flag is where the reference stands, not whether it carries the index. From a root rule,
+   `Riders/Legs/Amount For "X"` crosses the unindexed `Riders` above its index group and draws the
+   wildcard class although it carries the index, while `Claims/Amount For Riders/RiderRef` draws the
+   semantic-index class for the same crossing inside its key, which carries none
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-key-addressing)). Deriving the flag from the
+   index marker would swap both. -/
+example :
+    referenceRefusal { levels := [{ marker := .iteration, relation := .belowErrorPath },
+                                  { marker := .semanticIndex }] } = some .noWildcard ∧
+      referenceRefusal { levels := [{ marker := .iteration, relation := .belowErrorPath }],
+                         insideSemanticIndexKey := true } = some .semanticIndexInvalidIter := by
   native_decide
 
 /- First match wins across levels: the outermost illegal level answers, and a later level that
@@ -98,7 +110,7 @@ example :
     referenceRefusal
         { levels := [{ marker := .iteration, relation := .belowErrorPath },
                      { marker := .wildcard }, { marker := .semanticIndex }],
-          carriesSemanticIndex := false } = some .noWildcard := by
+          insideSemanticIndexKey := false } = some .noWildcard := by
   native_decide
 
 /- Markers that name no repetition walk are inert at every position, including below a wildcard —

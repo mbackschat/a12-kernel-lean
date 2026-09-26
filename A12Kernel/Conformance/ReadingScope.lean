@@ -211,6 +211,24 @@ example :
     [containment, containment, unclassed, containment, containment, none] := by
   native_decide
 
+/- The field slot's kind gate answers wherever the rule's iteration binds the level: a read of the
+   fixed `Sub` draws the group class from a rule declared inside `Claims` and from a root rule whose
+   error field lies in `Claims`, where a root rule reporting at the root draws the missing star
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-rule-iteration), `kf477`). A climbing read from
+   the fixed `Seal2` is judged where it lands: into `Claims` by one or two up-steps it draws the group
+   class, and into the unkeyed `Plain` the missing star
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26-climbing-read), `kf480`). -/
+example :
+    [fieldFilled (g []) (g []) (p ["Claims"] "Sub"),
+      fieldFilled (g ["Claims"]) (g ["Claims"]) (rel 0 [] "Sub"),
+      fieldFilled (g []) (g ["Claims"]) (p ["Claims"] "Sub"),
+      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 1 [] "Sub"),
+      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 2 ["Claims"] "Sub"),
+      fieldFilled (g ["Claims", "Seal2"]) (g ["Claims", "Seal2"]) (rel 2 ["Plain"] "PSub")] =
+    [noWildcard, some (some .noGroupsAllowed), some (some .noGroupsAllowed),
+      some (some .noGroupsAllowed), some (some .noGroupsAllowed), noWildcard] := by
+  native_decide
+
 /-! ## The DateRange reader and a filter's marked reference -/
 
 private def overlap (rowGroup writtenGroup : GroupPath) (first second : SurfaceFieldPath) : Verdict :=

@@ -45,10 +45,10 @@ substituted into the no-value-validation message as the name of the offending op
 own error documentation marks it not relevant, its German entry is a placeholder, and its only use is
 that substitution. Registering it as a refusal class would assert a refusal that does not exist.
 
-**Evidence.** `external evidence pending` for the whole cascade. `dmtool` has no measured route to
-declare a semantic index, so neither the admitting side nor the order can be probed at this revision;
-the mechanism is read from the Kernel's semantic-index checker and its two entity helpers. This module
-carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
+**Evidence.** The order is read from the Kernel's semantic-index checker and its two entity helpers.
+Which of its classes and orders carry Kernel rows is owned by the
+[implementation map](../../docs/implementation/cross-clause.md#cap-semantic-index-admission). This
+module carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
 -/
 
 namespace A12Kernel

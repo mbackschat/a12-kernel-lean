@@ -4,7 +4,7 @@ Three ways of naming a repetition share one static gate, and a consumer that tre
 
 The gate has two layers, and both are first-match-wins.
 
-**Per reference, a left-to-right scan over the reference's index levels**, carrying one bit of state: whether some *outer* level was a wildcard. At each level the iteration test runs first, against the bit as it stood before this level; only then does the level update the bit or trip the semantic-index test. Two consequences a reimplementer misses. A wildcard poisons every level below it, so the same reference is legal above the wildcard and refused below. And the two arms of the iteration test report *different classes for the same defect* — a reference carrying a semantic index reports the semantic-index class where an ordinary one reports the wildcard class — so the class identifies the reference's shape, not the defect.
+**Per reference, a left-to-right scan over the reference's index levels**, carrying one bit of state: whether some *outer* level was a wildcard. At each level the iteration test runs first, against the bit as it stood before this level; only then does the level update the bit or trip the semantic-index test. Two consequences a reimplementer misses. A wildcard poisons every level below it, so the same reference is legal above the wildcard and refused below. And the two arms of the iteration test report *different classes for the same defect*: a reference read inside a semantic index's key reports the semantic-index class, while any other reference, a keyed value included, reports the wildcard class. So the class identifies where the reference stands, not the defect ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-key-addressing)).
 
 **Per condition, an ordered sequence of whole-condition tests** run after parsing. Parallel iteration combined with `RepetitionNotUnique` is refused; so is a filter condition that itself iterates in parallel or reaches through a semantic index; and a parallel-iterated condition all of whose leaves are negative is refused last, because such a rule would fire for every repetition that has no values at all. A negative leaf beside a positive one is admitted, which is the distinction that makes the last test worth stating precisely.
 
@@ -20,9 +20,11 @@ namespace A12Kernel
 /-- A refusal from the iteration and semantic-index static gate. Constructor names are local; `catalogKey` carries the identity a consumer compares against. -/
 inductive IterationRefusal where
   /-- A reference iterates a level it may not: below a wildcard, below the error field's path, or
-  off that path in a group that declares no index field. Reported for an ordinary reference. -/
+  off that path in a group that declares no index field. Reported for every reference outside a
+  semantic index's key, a keyed value included. -/
   | noWildcard
-  /-- The same defect on a reference that carries a semantic index. Same cause, different class. -/
+  /-- The same defect on a reference read inside a semantic index's key. Same cause, different
+  class. -/
   | semanticIndexInvalidIter
   /-- A semantic index sits below a wildcard level. -/
   | semanticIndexBelowWildcard
@@ -95,12 +97,13 @@ structure IndexLevel where
   relation : GroupRelation := .aboveOrEqualErrorPath
   deriving Repr, DecidableEq
 
-/-- A reference as the scan sees it: its levels outermost first, plus whether the reference as a
-whole carries a semantic index — which selects *which class* an illegal iteration reports and is
-therefore not derivable from the levels alone, since the key may sit on a different reference. -/
+/-- A reference as the scan sees it: its levels outermost first, plus whether it is read inside a
+semantic index's key. That selects *which class* an illegal iteration reports, and it is not
+derivable from the levels: a keyed value carries the semantic-index marker yet reports the wildcard
+class, and the key that selects its row carries none yet reports the semantic-index class. -/
 structure IndexedReference where
   levels : List IndexLevel
-  carriesSemanticIndex : Bool := false
+  insideSemanticIndexKey : Bool := false
   deriving Repr, DecidableEq
 
 /-- The iteration test at one level, against the wildcard bit as it stood *before* this level.
@@ -108,13 +111,13 @@ structure IndexedReference where
 An iteration is illegal when an outer wildcard already reopened the list, when the group lies below
 the error field, or when it lies off the path in an unkeyed group. The class then depends on the
 reference, not on which of the three conditions fired. -/
-def levelIterationRefusal (level : IndexLevel) (outerWildcard carriesSemanticIndex : Bool) :
+def levelIterationRefusal (level : IndexLevel) (outerWildcard insideSemanticIndexKey : Bool) :
     Option IterationRefusal :=
   if level.marker != .iteration then
     none
   else if outerWildcard || level.relation == .belowErrorPath
       || level.relation == .offPathNotParallelIterable then
-    some (if carriesSemanticIndex then .semanticIndexInvalidIter else .noWildcard)
+    some (if insideSemanticIndexKey then .semanticIndexInvalidIter else .noWildcard)
   else
     none
 
@@ -122,22 +125,22 @@ def levelIterationRefusal (level : IndexLevel) (outerWildcard carriesSemanticInd
 
 The order inside a level is observable: the iteration test runs against the bit as it stood before
 this level, and only then does the level set the bit or trip the semantic-index test. -/
-def indexScan (carriesSemanticIndex : Bool) : List IndexLevel → Bool → Option IterationRefusal
+def indexScan (insideSemanticIndexKey : Bool) : List IndexLevel → Bool → Option IterationRefusal
   | [], _ => none
   | level :: rest, outerWildcard =>
-      match levelIterationRefusal level outerWildcard carriesSemanticIndex with
+      match levelIterationRefusal level outerWildcard insideSemanticIndexKey with
       | some refusal => some refusal
       | none =>
         match level.marker with
-        | .wildcard => indexScan carriesSemanticIndex rest true
+        | .wildcard => indexScan insideSemanticIndexKey rest true
         | .semanticIndex =>
             if outerWildcard then some .semanticIndexBelowWildcard
-            else indexScan carriesSemanticIndex rest outerWildcard
-        | _ => indexScan carriesSemanticIndex rest outerWildcard
+            else indexScan insideSemanticIndexKey rest outerWildcard
+        | _ => indexScan insideSemanticIndexKey rest outerWildcard
 
 /-- The per-reference verdict: the first illegal level, or nothing. -/
 def referenceRefusal (reference : IndexedReference) : Option IterationRefusal :=
-  indexScan reference.carriesSemanticIndex reference.levels false
+  indexScan reference.insideSemanticIndexKey reference.levels false
 
 /-- What the semantic index's own entity check needs beyond the scan. Its two measured arms are
 ordered: an ambiguous index path is refused before the key's category reach is looked at. -/

@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.IterationLegality
 
 /-! # Iteration and semantic-index legality laws
 
-Three properties carry the clause. A wildcard is *absorbing*: once one has been seen, no later level may iterate or carry a semantic index. The scan is *prefix-determined*, so a refusal cannot be undone by appending levels. And the iteration class is *decided by the reference's shape* rather than by which of the three illegal-iteration conditions fired — which is why a consumer cannot read the cause off the code.
+Three properties carry the clause. A wildcard is *absorbing*: once one has been seen, no later level may iterate or carry a semantic index. The scan is *prefix-determined*, so a refusal cannot be undone by appending levels. And the iteration class is *decided by where the reference stands*, inside a semantic index's key or outside it, rather than by which of the three illegal-iteration conditions fired — which is why a consumer cannot read the cause off the code.
 -/
 
 namespace A12Kernel
@@ -59,10 +59,10 @@ theorem indexScan_prefix_determines (semantic : Bool) :
         · simpa using h
     · exact h
 
-/-- The iteration class is chosen by the reference's shape, not by the defect: an ordinary reference
-never reports the semantic-index class and a semantic-indexed one never reports the wildcard class.
-A consumer reading the code therefore learns what the reference looked like, and learns nothing
-about which of the three illegal-iteration conditions fired. -/
+/-- The iteration class is chosen by where the reference stands, not by the defect: a reference
+outside a semantic index's key never reports the semantic-index class, and one read inside the key
+never reports the wildcard class. A consumer reading the code therefore learns where the reference
+stood, and learns nothing about which of the three illegal-iteration conditions fired. -/
 theorem indexScan_class_follows_reference (semantic : Bool) :
     ∀ (levels : List IndexLevel) (outerWildcard : Bool) (refusal : IterationRefusal),
       indexScan semantic levels outerWildcard = some refusal →

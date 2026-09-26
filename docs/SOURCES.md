@@ -281,60 +281,81 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+### Inbound 2026-09-25i and 2026-09-26 handbacks
+
+<a id="inbound-2026-09-25i-key-addressing"></a>
+#### Reviewed 2026-09-25i key-addressing handback — a key addresses only its index group's level, a defective key answers first, and the key's own crossing draws the semantic-index class
+
+a12-dmkits revision `16dca38ac1616e43554d2ca063946e21ef9f37ae` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-25i`, frozen as sent in the user's exchange directory with SHA-256 `07e45d5039c9b0bdd6f33a1c62429a0e568632784736f2d8fa448fa281215a0d`. Every lock the records below cite was read at that revision, not run here. It answers no ledger entry and creates none, and the `-2026-09-25i` records below share this provenance. Its §7 reports the peer's own checker and its §8 source hypotheses, neither recorded as a claim.
+
+**Claim.** Its §1 and §2, static verdicts (`KeyedOperandFamilyGateLawsTest`, `SemanticIndexPinnedLevelLawsTest`, `kf476`, `kf478`). Over a repeatable `Claims` keyed by a String and `Endorsements` by an Enumeration, 26 operand gates and the field-operand kind gate, each probed on an operand it refuses, draw their own class on a keyed read from the root, on an unkeyed read from a rule declared inside `Claims` and inside a `Having` body, where the unkeyed read from the root draws `MVK_NO_WILDCARD`. A defective key answers first: `MVK_NO_INDEX_FIELD`, `MVK_INDEX_TYPE_INCONSISTENT` for a Number field key, `MVK_INDEX_VALUE_INVALID` for a refused Enumeration constant even ahead of the operand's filter, `MVK_SEMANTIC_INDEX_INVALID_ITER` for a key crossing an unkeyed repetition, `MVK_SEMANTIC_INDEX_AND_WILDCARD` for a starred keyed level and `MVK_MULTIPLE_INDEX_FIELDS` for a second indexed ancestor. Of two reads the first in the text answers.
+
+From the root `Riders/Legs/Amount For "X"` over an unindexed `Riders` draws `MVK_NO_WILDCARD`, as does a key indexed on the root or a fixed group above an unindexed repetition, while from a rule declared inside `Riders` the read reaches `Sum`'s arity class.
+
+**Lean.** [`IterationLegality`](../A12Kernel/Elaboration/IterationLegality.lean) had glossed its class selector as whether a reference carries a semantic index, which `Riders/Legs/Amount For "X"` beside `Claims/Amount For Riders/RiderRef` refutes. The Kernel's iteration check asks whether the reference stands inside the key's production, read in its entity checker, so the selector is now `insideSemanticIndexKey` and [its conformance module](../A12Kernel/Conformance/IterationLegality.lean) locks that pair. [`SemanticIndexAdmission`](../A12Kernel/Elaboration/SemanticIndexAdmission.lean) agrees with each single-defect class. The validation spine carries no keyed leaf, so no row is replayed on a carrier.
+
+<a id="inbound-2026-09-25i-literal-key"></a>
+#### Reviewed 2026-09-25i literal-key handback — a quoted key is judged by the index field, and an unquoted digit sequence is an entity name
+
+**Claim.** Its §3 (`LiteralIndexKeyLawsTest`, `kf479`). Over an Enumeration index, `For "OPEN"` is admitted while an undeclared value, the token in another case and the token's label draw `MVK_INDEX_VALUE_INVALID`, and over a whole-number Number index `For "5"` is admitted. An unquoted digit sequence draws `MVK_INVALID_ENTITY` over a String, an Enumeration and a Number index alike, a leading zero included, and `For 5.5` draws `MVK_UNEXPECTED_TOKEN`. Under `Fuer` on a `de_DE` model four of those keys read the same.
+
+**Lean.** No change. [`SemanticIndexAdmission`](../A12Kernel/Elaboration/SemanticIndexAdmission.lean) takes a constant key's fit as an input, and an entity key resolving to nothing is outside its inputs.
+
+<a id="inbound-2026-09-25i-rule-iteration"></a>
+#### Reviewed 2026-09-25i rule-iteration handback — the level a rule iterates addresses a scalar slot's read, from the declaring group or the error field's
+
+**Claim.** Its §4 (`RuleIterationAddressesScalarSlotLawsTest`, `kf477`). Of a repeatable, keyed `Claims`, `FieldFilled` of a fixed subgroup, `FieldValueIncludedInValueList` over a Boolean, `AddDays` and `ValueAsDate` over a String and `RangeAsString` over a Number draw their own classes from a rule declared inside `Claims` and from a root rule whose error field lies there, and `MVK_NO_WILDCARD` from a root rule reporting at the root. A string key inside `Claims` draws the gate's class, `For 5` draws `MVK_INVALID_ENTITY`, and from inside an unindexed twin the string key draws `MVK_NO_INDEX_FIELD`.
+
+**Lean.** [`ReadingScope`](../A12Kernel/Conformance/ReadingScope.lean) locks the field slot's three rows, which settles the [SG9](gaps/paths-and-groups.md#gap-sg9) assumption that a level the error field binds reaches the slot's kind gate. The membership's Boolean subject has no Lean class at either bound locus: from inside `Claims` the flat route refuses it as a bound repeatable read, and its kind refusal projects no class, which [SG8](gaps/strings-and-messages.md#gap-sg8) records. The other three gates have no flat surface.
+
+<a id="inbound-2026-09-25i-keyed-duplicate"></a>
+#### Reviewed 2026-09-25i keyed-duplicate handback — a keyed group and a keyed field of it repeat only under one key
+
+**Claim.** Its §5 (`CheckerKeyedOperandAgreementTest.theCheckerReadsAKeyedGroupOperandAsA12Does`, `kf475`). `Sum(Claims For "X", Claims/Amount For "X") > 0` draws `MVK_DUPLICATE_PARAM2`, and with the field keyed `"Y"` it draws `MVK_NO_NUMBER`, the group holding String fields.
+
+**Lean.** No change: no entity list carries a keyed operand.
+
+<a id="inbound-2026-09-25i-enum-source"></a>
+#### Reviewed 2026-09-25i enumeration-source handback — a starred source meets the star gate after its category and before the target's source gate, and a climbing source is judged as a local one
+
+**Claim.** Its §6 and the keyed rows of §1 (`CheckerKeyedOperandAgreementTest.theCheckerReadsAnEnumComputationSourceAsA12Does`, `KeyedOperandFamilyGateLawsTest.anEnumComputationSourceReadThroughAKey`). Into a root Enumeration, `[Claims*/Banded -> Band]`, `-> Wide` and the stored `[Claims*/Banded]` draw `MVK_NO_WILDCARDS_ALLOWED`, where the local `[Banded -> Wide]` draws `MVK_ERROR_INVALID_ENUM_CALCULATION`, and `-> Nope`, which the Enumeration does not declare, draws `MVK_CATEGORY_UNKOWN`. From `Claims/Review` into its `Outcome`, `[../Banded -> Band]` is admitted while `-> Wide` and the stored read draw `MVK_ERROR_INVALID_ENUM_CALCULATION`. `[Claims/Memo For "X"]` into an Enumeration draws that class too, unkeyed it draws `MVK_NO_WILDCARD`, and `For 5` draws `MVK_INVALID_ENTITY`.
+
+**Lean.** No change. A piped probe of the addressed Enumeration computation admits the climbing covering category and refuses the other two climbing rows, but its refusal projects no class, which [SG8](gaps/strings-and-messages.md#gap-sg8) records. No surface spells a starred or keyed source.
+
+<a id="inbound-2026-09-26-climbing-read"></a>
+#### Reviewed 2026-09-26 climbing-read handback — a climbing read is judged at the level it lands on
+
+a12-dmkits revision `c823c798fac47359aa4e49f960e4c23310f8a37f` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26`, frozen as sent in the user's exchange directory with SHA-256 `7824dd20ed05a83033f530d5a016aefa00bcd3f12c9a99ca9e5d0e195fc5fdc3`. Every lock the records below cite was read at that revision, not run here. It answers no ledger entry and creates none. Its §2 and §4 report the peer's own checker and its §5 a source hypothesis, none recorded as a claim.
+
+**Claim.** Its §1 (`KeyedOperandFamilyGateLawsTest.aClimbingReadIsJudgedAtTheLevelItReaches`, `kf480`). From a rule declared in the fixed `Review` inside the keyed `Claims`, `../<x>`, `../<x> For "X"` and `../../Claims/<x>` draw each of the 27 gates' own class, and `../../Riders/<x>` into an unindexed repetition draws `MVK_NO_WILDCARD`.
+
+**Lean.** [`ReadingScope`](../A12Kernel/Conformance/ReadingScope.lean) locks the field slot's unkeyed rows.
+
+<a id="inbound-2026-09-26-index-key-shape"></a>
+#### Reviewed 2026-09-26 index-key handback — a constant key meets its index field's value validation as a shape test, one rule per kind
+
+**Claim.** Its §3 (`CheckerIndexKeyConstantAgreementTest`, `kf481`), 48 rows over 17 index fields, each `Sum(<group>/Amount For "<constant>") > 0` from the root. A String key is refused empty, outside declared length bounds, and against a declared pattern unless the whole key matches. A Number key admits an optional minus, digits and a fraction after `.` or `,` within the declared fraction bounds, admitting `05` and `12345` on a two-integer-digit field and refusing `+5`. A temporal key matches its format one digit per component letter, admitting `2020-13-45`, and a date range is two dates around its separator. A Boolean admits exactly `true` and `false`, refusing its custom `J` and `N`, and a Confirm only `true`.
+
+**Lean.** No change. [`SemanticIndexAdmission`](../A12Kernel/Elaboration/SemanticIndexAdmission.lean) takes a constant key's fit as an input; deriving it from the declaration is recorded in [SG9](gaps/paths-and-groups.md#gap-sg9).
+
 ### Inbound 2026-09-25g and 2026-09-25h handbacks
 
+Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+
 <a id="inbound-2026-09-25g-value-list-order"></a>
-#### Reviewed 2026-09-25g value-list handback — `SPEC-2026-09-25-08` confirmed, and the construct's five gate positions measured
-
-a12-dmkits revision `389920a922fdfc372875a328a2ca26626b6807fa` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-25. The letter is the peer's `-2026-09-25g`, frozen as sent in the user's exchange directory with SHA-256 `cdea0f22449ba14aceffe638e95e6f9616f5369c786ce87fbd257db4a5e8fe8e`. Every lock the records below cite was read at that revision, not run here. The letter answers [`SPEC-2026-09-25-06`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-06), `-07` and `-08`, whose entries record the dispositions; its other facts create no outbound entry, and the `-2026-09-25g` records below share this provenance.
-
-**Claim.** Its §1, source-read in the Kernel's field-and-value-list check and then measured at each position (`ValueListQuantifierOperandKindLawsTest.whatTheValueListMayCarryAndWhereARepeatIsAsked`). The field list refuses its own repeat as it is built, then asks its root, base-type, kind and value-validation gates. A field value list refuses its own repeat, and either spelling then asks its root and base-type gates. A repeat across the two lists comes next, an exact one drawing `MVK_DUPLICATE_PARAM1` and a group beside its own member `MVK_DUPLICATE_PARAM2`, and the value list's value validation last. A raw String on either list, or against a literal, draws `MVK_INVALID_RAW_TYPE`. The peer corrected its `kf380` in place.
-
-**Lean.** [`TokenEntityValueList`](../A12Kernel/Elaboration/TokenEntityValueList.lean)'s stored form now asks the repeat across the lists, containment included, after the value list's base type and ahead of its certification, where it had certified the value list first and asked only an exact repeat, and it projects the raw refusal of either list. The projected form certifies both sides first, so its raw refusal claims no class. [`ValueListQuantifierKindGate`](../A12Kernel/Conformance/ValueListQuantifierKindGate.lean) locks the discriminating rows.
-
+- [Reviewed 2026-09-25g value-list handback — `SPEC-2026-09-25-08` confirmed, and the construct's five gate positions measured](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-value-list-order)
 <a id="inbound-2026-09-25g-date-class"></a>
-#### Reviewed 2026-09-25g ordering handback — `SPEC-2026-09-25-07` confirmed with the Date on either side
-
-**Claim.** Its §2 (`TemporalComparisonAgreementLawsTest.whatADatePartnerOfAnotherKindDraws`). `[Premium] < [Start]`, `1 < [Start]` and `[Start] < 1` over a Number and a Date draw `MVK_INVALID_COMPARE_TO_DATE`, and `[Start] < [Reference]` against a String draws `MVK_INVALID_TYPE_FOR_COMPARISON`.
-
-**Lean.** No change: the rows confirm this project's own [measurement](#src-ordering-date-class-reads-the-pair).
-
+- [Reviewed 2026-09-25g ordering handback — `SPEC-2026-09-25-07` confirmed with the Date on either side](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-date-class)
 <a id="inbound-2026-09-25g-field-value-read"></a>
-#### Reviewed 2026-09-25g field-value read handback — `SPEC-2026-09-25-06` confirmed, and a filter's body refuses a repeatable group it does not iterate
-
-**Claim.** Its §3 (`FieldValueReadOperandLawsTest.theGatesReachEveryCarrierOfTheRead`). Every row of `SPEC-2026-09-25-06` holds on a fulfilment sheet. `Sum(/Fulfilment/Shipments*/Parcels*/Weight Having [/Fulfilment/Returns] > 0) > 0`, whose body reads a repeatable group the filter does not iterate, draws `MVK_NO_GROUPS_ALLOWED`.
-
-**Lean.** No change: the star route's body already asked the gates of every read. [`StarNumberElaboration`](../A12Kernel/Conformance/StarNumberElaboration.lean) now locks a repeatable group the filter does not iterate.
-
+- [Reviewed 2026-09-25g field-value read handback — `SPEC-2026-09-25-06` confirmed, and a filter's body refuses a repeatable group it does not iterate](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-field-value-read)
 <a id="inbound-2026-09-25g-rounding-mode"></a>
-#### Reviewed 2026-09-25g rounding-mode handback — `RoundDown` beside `!=` is refused
-
-**Claim.** Its §4 (`ComputationRoundingModeLawsTest.aRoundingModeIsOnlyWrongAgainstAStrictInequality`). On one computation model, `RoundDown` and `RoundUp` beside a band-less alternative draw `MVK_ERROR_WRONG_ROUNDING_MODE`, while `Exact` beside it and every mode beside a tolerance range are admitted.
-
-**Lean.** No change: [`ComputationNormalForm`](../A12Kernel/Elaboration/ComputationNormalForm.lean) already refused the cell on the peer's earlier reading, and [its conformance module](../A12Kernel/Conformance/ComputationNormalForm.lean) now locks it as measured.
-
+- [Reviewed 2026-09-25g rounding-mode handback — `RoundDown` beside `!=` is refused](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-rounding-mode)
 <a id="inbound-2026-09-25g-banded-rounding"></a>
-#### Reviewed 2026-09-25g banded-rounding handback — a banded computation's mode rounds to zero places, `Exact` floors to the target's digits, and the validation compares the operation as authored
-
-**Claim.** Its §5, runtime, on the adapter differential with both Kernel strategies agreeing (`ComputationRoundingModeDiffTest`). Beside a tolerance band, into a two-digit target, `RoundUp` writes 1.25 as 2 and −1.25 as −1, and `RoundDown` writes 1.75 as 1 and −1.25 as −2. `Exact` writes a finer operand floored to the target's two digits, 1.255 as 1.25 and −1.255 as −1.26, where the same model without its band errors. An empty operand writes 0 under `Exact` and `RoundUp`. The implicit validation compares the entered value with the unrounded operation. The letter's §7 source hypotheses about where the rounding happens are not recorded as claims.
-
-**Lean.** No change. No Lean computation applies a rounding mode at runtime; [SG5](gaps/numeric-and-temporal.md#gap-sg5) records the gap.
-
+- [Reviewed 2026-09-25g banded-rounding handback — a banded computation's mode rounds to zero places, `Exact` floors to the target's digits, and the validation compares the operation as authored](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-banded-rounding)
 <a id="inbound-2026-09-25g-keyed-group"></a>
-#### Reviewed 2026-09-25g keyed-group handback — a keyed group's operand reads the selected row's cells, a lower repeatable level included
-
-**Claim.** Its §6, runtime, with both Kernel strategies agreeing (`KeyedGroupFieldListDiffTest`). `NumberOfFilledFields(Packages For "P1")` counts both filled rows of the repeatable `Items` below the key, 8 where collapsing that level to its first row gives 6, and `AllFieldsFilled` reads that level's declared tail. A key no row carries reads every cell empty, and a key two rows carry is undecided. A malformed cell in the selected row keeps `NumberOfFilledFields` and `NoFieldFilled` silent, poisons `NoFieldFilled` in a computation, and lets `AtLeastOneFieldFilled` stop at the filled key. Statically, `Sum(Packages/Items For "P1")` draws `MVK_NO_WILDCARD`, `Sum(Packages/Items* For "P1")` draws `MVK_NO_NUMBER`, and `Sum(Packages/Items*/Weight For "P1")` is admitted.
-
-**Lean.** No change. The validation spine carries no keyed leaf; [SG9](gaps/paths-and-groups.md#gap-sg9) records the rows.
-
+- [Reviewed 2026-09-25g keyed-group handback — a keyed group's operand reads the selected row's cells, a lower repeatable level included](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-keyed-group)
 <a id="inbound-2026-09-25h-category-index-relevance"></a>
-#### Reviewed 2026-09-25h category handback — a category read over an index cell the document makes unavailable tracks the value read
-
-a12-dmkits revision `b9e30dc72883608ac761cd946bc5fa0b2ba72b89` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-25. The letter is the peer's `-2026-09-25h`, frozen as sent in the user's exchange directory with SHA-256 `5e9f6889975d4fd70d0471e1d7c01fb12a9cfca740473d05d4c3bb2babb4a7a0`. Its lock `EnumCategoryIndexRelevanceDiffTest` was read at that revision, not run here. It answers no ledger entry and creates none.
-
-**Claim.** Runtime, with both Kernel strategies agreeing. Over a repeatable group keyed by an Enumeration `Plan` with a category `Tier`, `[Plan -> Tier] == HIGH` and `[Plan] == PREMIUM` fire on no row when two rows carry the same key, and neither read's tautology fires there either. On a row above capacity the reads fire nowhere while the tautology fires on the two rows within capacity. A computation guarded by either read clears its target on every row of a duplicated key and on the one row of a missing key. The rows are a second basis for the category bullet in [`06`](../spec/06-strings-and-enumerations.md) and the category read in [`09`](../spec/09-computations.md), on a well-formed cell.
-
-**Lean.** No change was made, and the rows were not replayed against a Lean case.
+- [Reviewed 2026-09-25h category handback — a category read over an index cell the document makes unavailable tracks the value read](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25h-category-index-relevance)
 
 ### Inbound 2026-09-25e and 2026-09-25f handbacks
 
