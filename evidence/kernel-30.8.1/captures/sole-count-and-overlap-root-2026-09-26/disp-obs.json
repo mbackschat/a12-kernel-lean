@@ -127,5 +127,23 @@
     "ok" : true,
     "valid" : false,
     "codes" : [ "MVK_ROOT_GROUP_REFERENCED" ]
+  }, {
+    "id" : "o7",
+    "inputHash" : "cf984c3d7de230f61ffe2e1f749264ea0890f7bab2f8b49e9ae497b95a2dd62b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "o8",
+    "inputHash" : "9d04d1f341eff4d429ac20d123056108e9298291fec0ff8eb491b381c05d448a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "o9",
+    "inputHash" : "efe838b132c625c787408ea5ce330240ea043fdfe6273cbed0e44cf46d56fe86",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
   } ]
 }

@@ -36,6 +36,9 @@ cond oYTerm FieldFilled(YTerm) And AtLeastOneDateRangeOverlaps(YTerm In /Lot*)
 cond oTermBoth FieldFilled(Term) And AtLeastOneDateRangeOverlaps(Term In Term, /Lot*)
 cond oSpan FieldFilled(Span) And AtLeastOneDateRangeOverlaps(Span In /Form)
 cond oYSpan FieldFilled(YSpan) And AtLeastOneDateRangeOverlaps(YSpan In /Form)
+cond oTermSerial FieldFilled(Term) And AtLeastOneDateRangeOverlaps(Term In Term, Serial)
+cond oSerial FieldFilled(Term) And AtLeastOneDateRangeOverlaps(Term In Serial)
+cond oSerialTwice FieldFilled(Term) And AtLeastOneDateRangeOverlaps(Term In Serial, Serial)
 cond oWin FieldFilled(Win) And AtLeastOneDateRangeOverlaps(Win In /Form)
 row c1 fLabel cParcels m gParcels
 row c2 fLabel cParcels m gShip
@@ -57,3 +60,6 @@ row o3 fTerm oTermBoth m gLot
 row o4 fSpan oSpan m gForm
 row o5 fYSpan oYSpan m gForm
 row o6 fWin oWin m gShip
+row o7 fTerm oTermSerial m gLot
+row o8 fTerm oSerial m gLot
+row o9 fTerm oSerialTwice m gLot

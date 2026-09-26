@@ -46,6 +46,9 @@ inductive YearlessDateRangesOverlapElabError where
   `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON`, but no row places such an operand in this
   route's slot, so no class is claimed. -/
   | pluralScalarNotDirect (path : List String)
+  /-- A plural `In` list operand whose base type differs from the scalar's, asked by the same list
+  gates as on the canonical route, since the Kernel asks them before any year question. -/
+  | listVaryingBaseType (path : List String)
   deriving Repr, DecidableEq
 
 /-- One direct stored field whose declaration is yearless in a model with no Base Year. -/
@@ -103,6 +106,7 @@ def YearlessDateRangesOverlapElabError.diagnostic? :
     YearlessDateRangesOverlapElabError → Option KernelStaticDiagnostic
   | .source cause => cause.diagnostic?
   | .groupsNotAllowed _ => some KernelStaticDiagnostic.noGroupsAllowed
+  | .listVaryingBaseType _ => some KernelStaticDiagnostic.varyingTypesNotAllowed
   | .baseYearConfigured _ | .notYearless _ _ _
   | .unsupportedReadForm _ _ | .pluralScalarNotDirect _ => none
 

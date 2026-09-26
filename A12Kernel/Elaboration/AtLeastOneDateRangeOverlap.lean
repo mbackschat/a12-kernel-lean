@@ -27,6 +27,8 @@ inductive AtLeastOneDateRangeOverlapsElabError where
   | scalarGroup (path : GroupPath)
   | scalarRootGroup (path : GroupPath)
   | scalarVaryingBaseType (path : List String)
+  /-- An `In` list operand whose base type differs from the scalar's. -/
+  | listVaryingBaseType (path : List String)
   | measuredNumberPairNotDateRange (scalarPath listPath : List String)
   | sourceNotDateRange (role : DateRangeOverlapSourceRole)
       (path : List String) (actual : SurfaceScalarKind)
@@ -56,7 +58,7 @@ def diagnostic? : AtLeastOneDateRangeOverlapsElabError →
   -- The paired slots are what make it a property of the slot rather than of the form.
   | .scalarStarred _ | .scalarFilteredStarred _ | .scalarGroup _ =>
       some .invalidParameterForDateRangeComparison
-  | .scalarVaryingBaseType _ => some .varyingTypesNotAllowed
+  | .scalarVaryingBaseType _ | .listVaryingBaseType _ => some .varyingTypesNotAllowed
   | .measuredNumberPairNotDateRange _ _ => some .noDateRange
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .yearInterpretationNotSupported _ _ => some .invalidDateRangeFormat
@@ -259,16 +261,22 @@ private def starredRootPath? : ResolvedFieldEntityOperand model → Option Group
   | _ => none
 
 /-- The `In` list checked as an entity list of its own, ahead of the scalar beside it: its duplicates
-and containments first, then its star-blind root test. Duplicates across the two sides wait for the
-shared shape over both. A root-only list holding the scalar therefore draws the root class, and a
-list whose own members overlap draws that overlap ahead of the scalar's duplicate
+and containments first, then its star-blind root test, returning the list's operands for the base-type
+match against the scalar that follows. Duplicates across the two sides wait for the shared shape over
+both, so a root-only list holding the scalar draws the root class, a list whose own members overlap
+draws that overlap ahead of the scalar's duplicate, and a list member of another base type draws the
+base-type class ahead of the scalar's duplicate. That is the order the value-list quantifiers ask
+([§6](../../spec/06-strings-and-enumerations.md), [inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)),
+measured on this operator
 ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)). -/
 private def checkAtLeastOneDateRangeOverlapValueList (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (list : SurfaceFieldEntitySource)
-    (writtenGroup : GroupPath) : Except FieldEntityShapeElabError Unit := do
+    (writtenGroup : GroupPath) :
+    Except FieldEntityShapeElabError (List (ResolvedFieldEntityOperand model)) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope list .soleAllowed none writtenGroup
   if let some root := (shape.first :: shape.rest).findSome? starredRootPath? then
     throw (.rootGroupOperand root)
+  pure (shape.first :: shape.rest)
 
 /-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Finally certify the supported DateRange policies. -/
 def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
@@ -298,8 +306,11 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       if let some path := fieldListBaseTypeMismatch? [scalarOperand] then
         throw (.scalarVaryingBaseType path)
       let scalarDeclaration ← certifyAtLeastOneDateRangeOverlapScalarShape scalarOperand
-      checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup
-        |>.mapError .shape
+      let listOperands ←
+        checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup
+          |>.mapError .shape
+      if let some path := fieldListBaseTypeMismatch? (scalarOperand :: listOperands) then
+        throw (.listVaryingBaseType path)
       let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
           first := authored.scalar
           rest := authored.list.first :: authored.list.rest
@@ -380,8 +391,11 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     | .starredGroup source => throw (.pluralScalarNotDirect source.group.path)
     | .starredGroupPresence source => throw (.pluralScalarNotDirect source.groupPath)
   let scalar ← certifyYearlessDateRangeOverlapField model scalarDeclaration
-  checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup
-    |>.mapError fun error => .source (.shape error)
+  let listOperands ←
+    checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup
+      |>.mapError fun error => .source (.shape error)
+  if let some path := fieldListBaseTypeMismatch? (scalarOperand :: listOperands) then
+    throw (.listVaryingBaseType path)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
       first := authored.scalar
       rest := authored.list.first :: authored.list.rest

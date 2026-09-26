@@ -43,7 +43,9 @@ private def admissionModel : FlatModel := {
     rangeField 13 ["Form", "Mixed"] "Span",
     { id := 14, groupPath := ["Form", "Mixed"], name := "Count",
       policy := { kind := .number { scale := 0, signed := false } } },
-    rangeField 15 ["Lot"] "Term" [12]]
+    rangeField 15 ["Lot"] "Term" [12],
+    { id := 16, groupPath := ["Lot"], name := "Serial", policy := { kind := .string },
+      repeatableScope := [12] }]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 4 },
     { level := 11, path := ["Form", "Periods"], repeatability := some 3 },
@@ -292,11 +294,12 @@ private def pluralClassAt (group : GroupPath) (scope : List RepeatableLevel)
   | .error error => some error.diagnostic?
 
 /- The `In` list is an entity list of its own before it meets the scalar: its duplicates first, then
-   its root, then duplicates across both sides
+   its root, then its base type against the scalar's, then duplicates across both sides
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
    A root-only list holding the scalar draws the root class, fixed or starred, where one pass over
-   both sides would find the containment first, and `Term In Term, /Lot*` draws the containment
-   inside the list, not the scalar's duplicate beside it. -/
+   both sides would find the containment first; `Term In Term, /Lot*` draws the containment inside
+   the list and `Term In Term, Serial` the String's base type, neither the scalar's duplicate beside
+   it; and `Term In Serial, Serial` draws the list's own duplicate ahead of the base type. -/
 example :
     let lot : SurfaceFieldEntityOperand :=
       .starredGroup { base := .absolute, groups := [{ name := "Lot", starred := true }] }
@@ -304,7 +307,12 @@ example :
     pluralClassAt ["Lot"] [12] (direct "Term") (direct "Term") [lot] =
       some (some .duplicateParam2) ∧
     pluralClassAt ["Form"] [] (direct "Start")
-      (.group (.path { base := .absolute, groups := ["Form"] })) = some (some .rootGroupReferenced) := by
+      (.group (.path { base := .absolute, groups := ["Form"] })) = some (some .rootGroupReferenced) ∧
+    pluralClassAt ["Lot"] [12] (direct "Term") (direct "Term") [direct "Serial"] =
+      some (some .varyingTypesNotAllowed) ∧
+    pluralClassAt ["Lot"] [12] (direct "Term") (direct "Serial") = some (some .varyingTypesNotAllowed) ∧
+    pluralClassAt ["Lot"] [12] (direct "Term") (direct "Serial") [direct "Serial"] =
+      some (some .duplicateParam1) := by
   native_decide
 
 /- Every operand is read before the scalar slot's gate: a starred scalar beside a list operand that
@@ -318,15 +326,19 @@ example :
           some .invalidEntity := by
   native_decide
 
-/- The exact measured Number/Number pair maps to `MVK_NO_DATE_RANGE`; either isolated kind mismatch stays unmapped. -/
+/- The exact measured Number/Number pair maps to `MVK_NO_DATE_RANGE`, since two Numbers share a base
+   type. A list opposite a scalar of another base type meets the list's base-type match first: a String
+   list opposite a DateRange scalar is measured
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)),
+   and the reverse pair is the same comparison with the roles swapped, not measured. -/
 example :
     (pluralAdmissionError? (direct "Quantity")
       (direct "BackorderQuantity")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .noDateRange ∧
       (pluralAdmissionError? (direct "Code") (direct "Start")).bind
-        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .varyingTypesNotAllowed ∧
       (pluralAdmissionError? (direct "Start") (direct "Code")).bind
-        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .varyingTypesNotAllowed := by
   native_decide
 
 /- A yearless declaration beside a year-bearing one meets the uniform-year gate on either side, and
@@ -347,12 +359,15 @@ example :
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .noEnumeration := by
   native_decide
 
-/- Exact duplication spans scalar and list, and a group cannot certify by silently dropping its wrong-kind field. -/
+/- Exact duplication spans scalar and list, and a group cannot certify by silently dropping its
+   wrong-kind field: the base-type match reads a group through the fields it expands to, so the
+   starred `Rows` refuses for its Number `Guard`. The expansion is the Kernel's (source-read), and a
+   list-side group of mixed kinds has no row of its own. -/
 example :
     (pluralAdmissionError? (direct "Start") (direct "Start")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .duplicateParam1 ∧
       pluralAdmissionError? (direct "Start") starredRowsGroup =
-        some (.groupExpansionNotDateRange ["Form", "Rows"]) := by
+        some (.listVaryingBaseType ["Form", "Rows", "Guard"]) := by
   native_decide
 
 /-! ## Checked-document assembly -/
