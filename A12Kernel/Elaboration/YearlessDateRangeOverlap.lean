@@ -8,13 +8,12 @@ admission and evaluation separately from the Base-Year-completed route, because 
 retain different domains: the completed route yields exact instants, and this one must never
 manufacture a year.
 
-The admitted shape is deliberately narrow. Every operand is a direct stored field whose
-declaration is yearless, and a list mixing a year-bearing operand with a yearless one is
-refused here because the Kernel refuses it statically: with no Base Year to complete the
-yearless side, the uniform-year gate in `A12Kernel.Elaboration.DateRangeOverlap` rejects the
-whole list. A configured model completes the value instead, so a mixed list there is admitted
-and belongs to the exact route. Filters, stars, groups, and the plural operator keep their
-existing owners.
+Every field an operand reaches must be declared yearless, and a list mixing a year-bearing
+operand with a yearless one is refused here because the Kernel refuses it statically: with no
+Base Year to complete the yearless side, the uniform-year gate in
+`A12Kernel.Elaboration.DateRangeOverlap` rejects the whole list. A configured model completes the
+value instead, so a mixed list there is admitted and belongs to the exact route. The singular
+operator refuses every group carrier, while the plural list admits one by its expansion.
 -/
 
 namespace A12Kernel
@@ -42,12 +41,16 @@ inductive YearlessDateRangesOverlapElabError where
   | notYearless (path : List String) (format separator : String)
   | unsupportedReadForm (path : List String) (form : FieldEntityReadForm)
   | groupsNotAllowed (path : GroupPath)
+  /-- A group carrier on the plural list whose expansion is empty or holds a declaration this route
+  does not certify. The Kernel admits a group there, so this route-local refusal claims no class. -/
+  | groupNotYearless (path : GroupPath)
   /-- A plural scalar slot holding a star, a filtered star or a group. The canonical route's slot draws
   `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON`, but no row places such an operand in this
   route's slot, so no class is claimed. -/
   | pluralScalarNotDirect (path : List String)
   /-- A plural `In` list operand whose base type differs from the scalar's, asked by the same list
-  gates as on the canonical route, since the Kernel asks them before any year question. -/
+  gates as on the canonical route and ahead of the scalar's year interpretation
+  ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)). -/
   | listVaryingBaseType (path : List String)
   deriving Repr, DecidableEq
 
@@ -107,7 +110,7 @@ def YearlessDateRangesOverlapElabError.diagnostic? :
   | .source cause => cause.diagnostic?
   | .groupsNotAllowed _ => some KernelStaticDiagnostic.noGroupsAllowed
   | .listVaryingBaseType _ => some KernelStaticDiagnostic.varyingTypesNotAllowed
-  | .baseYearConfigured _ | .notYearless _ _ _
+  | .baseYearConfigured _ | .notYearless _ _ _ | .groupNotYearless _
   | .unsupportedReadForm _ _ | .pluralScalarNotDirect _ => none
 
 namespace CheckedYearlessDateRangeOverlapField
@@ -231,13 +234,13 @@ def certifyYearlessDateRangeEntityGroup (model : FlatModel)
     match (model.groupSubtreeFields source.groupPath).filterMap
         (fun declaration =>
           (certifyYearlessDateRangeOverlapField model declaration).toOption) with
-    | [] => throw (.groupsNotAllowed source.groupPath)
+    | [] => throw (.groupNotYearless source.groupPath)
     | first :: rest =>
         pure { source, first, rest, expansionAllYearless := hAll }
   else
-    throw (.groupsNotAllowed source.groupPath)
+    throw (.groupNotYearless source.groupPath)
 
-/-- Certify one authored operand for the unconfigured yearless route. Non-stored read forms and group carriers are refused here rather than guessed. -/
+/-- Certify one authored operand for the unconfigured yearless route. Non-stored read forms are refused here rather than guessed, and a group carrier is certified by its whole expansion. -/
 def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
     (declaringGroup : GroupPath) :
     ResolvedFieldEntityOperand model →
@@ -282,11 +285,11 @@ def operands (checked : CheckedYearlessDateRangesOverlapSource model) :
 
 end CheckedYearlessDateRangesOverlapSource
 
-/-- Apply the shared shape gates first, then certify every operand as unconfigured yearless.
-`scope` is the reading rule's iteration scope, so an unstarred operand inside a level the rule
-iterates is admitted; every other gate is the shared checker's and is unaware of the scope. The
-uniform-year gate is not applied here, because a source reaching this route is uniformly yearless by
-construction — a mixed list is refused by the exact owner before the fallback. -/
+/-- Apply the shared shape gates first, then the singular operator's group refusal and the shared field
+walk, then certify every operand as unconfigured yearless. `scope` is the reading rule's iteration
+scope, so an unstarred operand inside a level the rule iterates is admitted; every other gate is the
+shared checker's and is unaware of the scope. The uniform-year gate is not applied here, because an
+admitted source is uniformly yearless by construction. -/
 def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
@@ -295,6 +298,9 @@ def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
       (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
     |>.mapError fun error => .source (.shape error)
+  if let some path := firstDateRangesOverlapGroup? (shape.first :: shape.rest) then
+    throw (.groupsNotAllowed path)
+  (walkDateRangeOverlapFields (shape.first :: shape.rest)).mapError .source
   let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
     shape.first
   let rest ← shape.rest.mapM

@@ -359,6 +359,78 @@ example :
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .noEnumeration := by
   native_decide
 
+private def interpreted (declaration : FlatFieldDecl) : FlatFieldDecl :=
+  { declaration with
+    dateRangePolicy := declaration.dateRangePolicy.map
+      ({ · with interpretationOfYear := some .anchorFinish }) }
+
+/-- The admission model plus a direct and a starred year-bearing declaration that carry a year
+interpretation, and a yearless month-day one, the profiles the field-walk rows pair with `Finish`. -/
+private def interpretedModel : FlatModel :=
+  { admissionModel with
+    fields := admissionModel.fields ++ [
+      interpreted (rangeField 17 ["Form"] "Stamped"),
+      rangeField 18 ["Form"] "MonthDay" [] "MM-dd",
+      interpreted (rangeField 19 ["Form", "Rows"] "StampedRow" [10])] }
+
+private def interpretedSingular? (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) : Option (Option KernelStaticDiagnostic) :=
+  match elaborateDateRangesOverlapSource interpretedModel ["Form"] { first, rest } with
+  | .ok _ => none
+  | .error error => some error.diagnostic?
+
+private def interpretedPlural? (scalar : String) (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) : Option (Option KernelStaticDiagnostic) :=
+  match elaborateAtLeastOneDateRangeOverlapsSource interpretedModel ["Form"] {
+      scalar := direct scalar
+      list := { first, rest } } with
+  | .ok _ => none
+  | .error error => some error.diagnostic?
+
+/- Both operators walk every field in authored order, asking its kind and then its year
+   interpretation, before the uniform-year gate over the whole list; a repeat answers first. So an
+   interpreted declaration is refused beside a year mix wherever it sits, starred included, and beside a
+   year-bearing list with no mix at all, and a wrong kind ahead of a mix draws the kind class
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)). -/
+example :
+    interpretedPlural? "Stamped" (direct "MonthDay") = some (some .invalidDateRangeFormat) ∧
+    interpretedPlural? "Stamped" (direct "Finish") = some (some .invalidDateRangeFormat) ∧
+    interpretedPlural? "Finish" (direct "MonthDay") = some (some .dateWithAndWithoutYear) ∧
+    interpretedPlural? "Finish" (direct "Stamped") [direct "MonthDay"] =
+      some (some .invalidDateRangeFormat) ∧
+    interpretedPlural? "Finish" (direct "MonthDay") [direct "Stamped"] =
+      some (some .invalidDateRangeFormat) ∧
+    interpretedPlural? "Stamped" (direct "Stamped") = some (some .duplicateParam1) ∧
+    interpretedPlural? "Finish" (direct "MonthDay") [.star (star "StampedRow")] =
+      some (some .invalidDateRangeFormat) ∧
+    interpretedSingular? (direct "Stamped") [direct "MonthDay"] =
+      some (some .invalidDateRangeFormat) ∧
+    interpretedSingular? (direct "Finish") [direct "MonthDay", direct "Stamped"] =
+      some (some .invalidDateRangeFormat) ∧
+    interpretedSingular? (direct "Finish") [direct "MonthDay"] =
+      some (some .dateWithAndWithoutYear) ∧
+    interpretedSingular? (direct "Code") [direct "Finish", direct "MonthDay"] =
+      some (some .noDateRange) ∧
+    interpretedSingular? (direct "Finish") [direct "Stamped", direct "Code"] =
+      some (some .invalidDateRangeFormat) ∧
+    interpretedSingular? (direct "Stamped") [direct "Stamped"] = some (some .duplicateParam1) ∧
+    interpretedSingular? (direct "Finish") [direct "MonthDay", .star (star "StampedRow")] =
+      some (some .invalidDateRangeFormat) := by
+  native_decide
+
+/- The singular operator's group refusal is asked over the whole list ahead of that walk and of the
+   uniform-year gate: a group draws its class beside an interpreted field or a String written before it,
+   and beside a year mix
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)). -/
+example :
+    let fixedGroup : SurfaceFieldEntityOperand :=
+      .group (.path { base := .absolute, groups := ["Form", "Fixed"] })
+    interpretedSingular? (direct "Stamped") [fixedGroup] = some (some .noGroupsAllowed) ∧
+    interpretedSingular? (direct "Code") [fixedGroup] = some (some .noGroupsAllowed) ∧
+    interpretedSingular? (direct "Finish") [direct "MonthDay", fixedGroup] =
+      some (some .noGroupsAllowed) := by
+  native_decide
+
 /- Exact duplication spans scalar and list, and a group cannot certify by silently dropping its
    wrong-kind field: the base-type match reads a group through the fields it expands to, so the
    starred `Rows` refuses for its Number `Guard`. The expansion is the Kernel's (source-read), and a

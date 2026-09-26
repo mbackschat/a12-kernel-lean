@@ -252,8 +252,8 @@ private def groupCarrierVerdict? (scalarText leftText rightText : String) :
 
 /- A group carrier on the plural list side contributes every yearless declaration in its subtree,
 so either member can be the match, and an unusable scalar still terminates first. The singular
-operator's refusal of every group carrier is measured too, and stays locked with its exact
-diagnostic in `Conformance.DateRangeOverlapOperators`. -/
+operator's refusal of every group carrier is measured too, and is locked on this route below and on
+the year-bearing one in `Conformance.DateRangeOverlapOperators`. -/
 example :
     groupCarrierVerdict? "01/06" "04/09" "10-01/12-31" = some (.fired .value) ∧
       groupCarrierVerdict? "01/06" "08/09" "05-01/07-31" = some (.fired .value) ∧
@@ -323,6 +323,65 @@ example :
       some (some .rootGroupReferenced) ∧
     at? ["Form"] [] "MonthSlash" (.group (.path { base := .absolute, groups := ["Form"] })) =
       some (some .rootGroupReferenced) := by
+  native_decide
+
+/-- The model plus a month-day declaration that carries a year interpretation, a String field, and a
+fixed group mixing a year-bearing and a yearless declaration. -/
+private def interpretedModel : FlatModel :=
+  { model with
+    fields := model.fields ++ [
+      rangeField 12 "MonthDayFrom" "MM-dd" "/" ["Form"] [] (some .anchorStart),
+      { id := 13, name := "Note", groupPath := ["Form"], policy := { kind := .string } },
+      rangeField 14 "Dated" "yyyy-MM-dd" "/" ["Form", "Mixed"],
+      rangeField 15 "Undated" "MM" "/" ["Form", "Mixed"]] }
+
+/- The list's own gates answer ahead of the scalar's year-interpretation refusal: a root, a repeat
+   within the list and a list of another base type each draw their class beside an interpreted scalar,
+   which draws the refusal beside an admissible list
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)). -/
+example :
+    let refusal? (first : SurfaceFieldEntityOperand) (rest : List SurfaceFieldEntityOperand := []) :=
+      match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn interpretedModel ["Form"] [] {
+          scalar := .field { base := .relative 0, groups := [], field := "MonthDayFrom" }
+          list := { first, rest } } with
+      | .ok _ => none
+      | .error error => some error.diagnostic?
+    let direct (field : String) : SurfaceFieldEntityOperand :=
+      .field { base := .relative 0, groups := [], field }
+    refusal? (.group (.path { base := .absolute, groups := ["Form"] })) =
+      some (some .rootGroupReferenced) ∧
+    refusal? (direct "MonthDaySlash") [direct "MonthDaySlash"] = some (some .duplicateParam1) ∧
+    refusal? (direct "Note") = some (some .varyingTypesNotAllowed) ∧
+    refusal? (direct "MonthDaySlash") = some (some .invalidDateRangeFormat) := by
+  native_decide
+
+private def interpretedSingular? (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) : Option (Option KernelStaticDiagnostic) :=
+  match elaborateYearlessDateRangesOverlapSource interpretedModel ["Form"] { first, rest } with
+  | .ok _ => none
+  | .error error => some error.diagnostic?
+
+/- The singular operator refuses a group carrier whose whole expansion is yearless, as on the
+   year-bearing route
+   ([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-date-range-yearless-group-carrier)),
+   and its field walk answers before this route's own yearless refusal: the year-bearing member of a
+   list that also holds an interpreted one is no reason to stop, as a year mix is none on the Kernel's
+   one checker
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)).
+   On the plural list a group is admitted, so a group this route cannot certify claims no class. -/
+example :
+    let direct (field : String) : SurfaceFieldEntityOperand :=
+      .field { base := .relative 0, groups := [], field }
+    let group (name : String) : SurfaceFieldEntityOperand :=
+      .group (.path { base := .absolute, groups := ["Form", name] })
+    interpretedSingular? (direct "MonthSlash") [group "Windows"] = some (some .noGroupsAllowed) ∧
+    interpretedSingular? (direct "MonthDaySlash") [direct "ExactIso", direct "MonthDayFrom"] =
+      some (some .invalidDateRangeFormat) ∧
+    (match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn interpretedModel ["Form"] [] {
+        scalar := direct "MonthSlash"
+        list := { first := group "Mixed", rest := [] } } with
+      | .ok _ => none
+      | .error error => some error.diagnostic?) = some none := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap

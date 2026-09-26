@@ -278,7 +278,7 @@ private def checkAtLeastOneDateRangeOverlapValueList (model : FlatModel)
     throw (.rootGroupOperand root)
   pure (shape.first :: shape.rest)
 
-/-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Finally certify the supported DateRange policies. -/
+/-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Then walk every field for its kind and year interpretation, ask the uniform-year gate, and finally certify the supported DateRange policies. -/
 def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
@@ -325,6 +325,10 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
                 throw (.measuredNumberPairNotDateRange
                   scalarDeclaration.path listed.path)
           | _, _ => pure ()
+          -- The shared field walk answers ahead of the uniform-year gate; the scalar's own
+          -- certification below never asks the year interpretation, so the walk is its only refusal.
+          (walkDateRangeOverlapFields [shape.first]).mapError (pluralOperandError .scalar)
+          (walkDateRangeOverlapFields shape.rest).mapError (pluralOperandError .list)
           if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
             throw .dateWithAndWithoutYear
           let scalar ← certifyPluralScalar model scalarDeclaration
@@ -364,9 +368,9 @@ def operands (checked : CheckedYearlessAtLeastOneDateRangeOverlapsSource model) 
 
 end CheckedYearlessAtLeastOneDateRangeOverlapsSource
 
-/-- Read every operand, then gate the scalar shape, then resolve both sides as one entity sequence so
-the shared duplicate and overlap checks stay cross-side, then certify every operand as unconfigured
-yearless. `scope` is the reading rule's iteration scope, so an unstarred operand on either side may
+/-- Read every operand, then gate the scalar shape, then ask the list's gates and resolve both sides as
+one entity sequence so the shared duplicate and overlap checks stay cross-side, then walk every field
+for its kind and year interpretation, then certify every operand as unconfigured yearless. `scope` is the reading rule's iteration scope, so an unstarred operand on either side may
 sit inside a level the rule iterates. -/
 def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
@@ -390,7 +394,6 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     | .group reference => throw (.pluralScalarNotDirect reference.path)
     | .starredGroup source => throw (.pluralScalarNotDirect source.group.path)
     | .starredGroupPresence source => throw (.pluralScalarNotDirect source.groupPath)
-  let scalar ← certifyYearlessDateRangeOverlapField model scalarDeclaration
   let listOperands ←
     checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup
       |>.mapError fun error => .source (.shape error)
@@ -400,6 +403,11 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       first := authored.scalar
       rest := authored.list.first :: authored.list.rest
     } (writtenGroup := writtenGroup) |>.mapError fun error => .source (.shape error)
+  -- Every list gate answers ahead of the scalar's year interpretation, and the field walk ahead of
+  -- this route's own yearless refusal
+  -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)).
+  (walkDateRangeOverlapFields (shape.first :: shape.rest)).mapError .source
+  let scalar ← certifyYearlessDateRangeOverlapField model scalarDeclaration
   match shape.rest with
   | [] => throw (.source .incoherentCore)
   | listFirst :: listRest => do

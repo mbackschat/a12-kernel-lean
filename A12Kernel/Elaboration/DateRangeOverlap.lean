@@ -6,7 +6,7 @@ import A12Kernel.Semantics.DateRangeOverlapOperators
 
 /-! # Checked DateRange overlap operands
 
-This boundary owns static admission and full-validation checked-document assembly for the any-pair singular `DateRangesOverlap` operator, plus the certification steps and uniform-year gate its plural sibling in `A12Kernel.Elaboration.AtLeastOneDateRangeOverlap` reuses. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the internally supported year fragment plus measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Every operand list first passes the Kernel's uniform-year gate, which is decided by the declarations and the model's Base Year alone. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
+This boundary owns static admission and full-validation checked-document assembly for the any-pair singular `DateRangesOverlap` operator, plus the certification steps, field walk and uniform-year gate its plural sibling in `A12Kernel.Elaboration.AtLeastOneDateRangeOverlap` reuses. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the internally supported year fragment plus measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Every operand list passes the field walk and then the Kernel's uniform-year gate, which is decided by the declarations and the model's Base Year alone, before any operand is certified. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
 -/
 
 namespace A12Kernel
@@ -31,9 +31,11 @@ def diagnostic? : DateRangesOverlapElabError → Option KernelStaticDiagnostic
   | .groupsNotAllowed _ => some .noGroupsAllowed
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .yearInterpretationNotSupported _ => some .invalidDateRangeFormat
+  -- The field walk raises this for the first field of another kind, ahead of the year question
+  -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)).
+  | .sourceNotDateRange _ _ => some .noDateRange
   | .having error => error.diagnostic?
-  | .sourceNotDateRange _ _ | .unsupportedPolicy _ _ _
-  | .unsupportedReadForm _ _ | .incoherentCore => none
+  | .unsupportedPolicy _ _ _ | .unsupportedReadForm _ _ | .incoherentCore => none
 
 end DateRangesOverlapElabError
 
@@ -152,7 +154,7 @@ def hasHaving (checked : CheckedDateRangesOverlapSource model) : Bool :=
 
 end CheckedDateRangesOverlapSource
 
-/-- Refuse a DateRange declaration that carries an `interpretationOfYear`. Both overlap operators key their format allowlist on the whole declaration including that reading, so the composite format is refused on either operand side, under every profile including a year-bearing exact one, and with or without a Base Year. Bound extraction and comparison accept the same declaration, so this gate belongs to the overlap operators alone. -/
+/-- Refuse a DateRange declaration that carries an `interpretationOfYear`, on either operand side of either overlap operator, under every profile including a year-bearing exact one, and with or without a Base Year. Bound extraction and comparison accept the same declaration, so this gate belongs to the overlap operators alone. -/
 def refuseDateRangeOverlapYearInterpretation (declaration : FlatFieldDecl)
     (policy : DateRangeDeclarationPolicy) :
     Except DateRangesOverlapElabError Unit :=
@@ -160,6 +162,31 @@ def refuseDateRangeOverlapYearInterpretation (declaration : FlatFieldDecl)
     throw (.yearInterpretationNotSupported declaration.path)
   else
     pure ()
+
+/-- The first group carrier in a singular overlap list. The singular operator refuses every group
+carrier, even one whose whole expansion is DateRange, ahead of its field walk and year question
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)). -/
+def firstDateRangesOverlapGroup? :
+    List (ResolvedFieldEntityOperand model) → Option GroupPath :=
+  List.findSome? fun
+    | .group reference => some reference.path
+    | .starredGroup source => some source.group.path
+    | .starredGroupPresence source => some source.groupPath
+    | .field .. | .star _ | .starHaving _ _ => none
+
+/-- Both overlap operators' field walk: every field the operands expand to, in authored order, must be
+a DateRange declaration without a year interpretation. It completes before the uniform-year gate over
+the whole list, so an interpreted field is refused beside a year mix and a wrong kind ahead of one
+draws the kind refusal
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)).
+A DateRange declaration with no policy passes and keeps its own certification. -/
+def walkDateRangeOverlapFields (operands : List (ResolvedFieldEntityOperand model)) :
+    Except DateRangesOverlapElabError Unit :=
+  (expandedDeclarations operands).forM fun declaration =>
+    match declaration.policy.kind, declaration.dateRangePolicy with
+    | .dateRange, some policy => refuseDateRangeOverlapYearInterpretation declaration policy
+    | .dateRange, none => pure ()
+    | kind, _ => throw (.sourceNotDateRange declaration.path kind.surfaceKind)
 
 /-- Apply the operator's two declaration-level gates in order: the canonical exact policy, then the
 year-interpretation refusal. Every operand shape the operator admits — direct, starred, filtered, and
@@ -283,12 +310,12 @@ def mixesDateRangeYearInclusion (model : FlatModel)
   let inclusions := operands.filterMap (dateRangeOperandIncludesYear? model)
   inclusions.contains true && inclusions.contains false
 
-/-- Apply the shared shape gates first, then the singular operator's group refusal and exact-or-direct-fragment policy certification in authored order.
+/-- Apply the shared shape gates first, then the singular operator's group refusal, the field walk, the uniform-year gate, and exact-or-direct-fragment policy certification in authored order.
 
     `scope` is the reading rule's iteration scope, threaded to the shared shape resolver so an
     unstarred operand inside a level the rule iterates is admitted. Every other gate — arity,
-    duplicates, overlap, the group refusal, the uniform-year rule, and per-operand policy — is
-    unchanged and unaware of the scope. -/
+    duplicates, overlap, the group refusal, the field walk, the uniform-year rule, and per-operand
+    policy — is unchanged and unaware of the scope. -/
 def elaborateDateRangesOverlapSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
@@ -297,6 +324,9 @@ def elaborateDateRangesOverlapSourceIn (model : FlatModel)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
       (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
     |>.mapError .shape
+  if let some path := firstDateRangesOverlapGroup? (shape.first :: shape.rest) then
+    throw (.groupsNotAllowed path)
+  walkDateRangeOverlapFields (shape.first :: shape.rest)
   if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
     throw .dateWithAndWithoutYear
   let first ← certifySingularDateRangesOverlapOperand model declaringGroup
