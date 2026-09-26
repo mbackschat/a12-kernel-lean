@@ -40,20 +40,20 @@ private def numberDeclaration (id : FieldId) (name : String) : FlatFieldDecl whe
   policy := { kind := .number { scale := 0, signed := true } }
 
 private def stringDeclaration (id : FieldId) (name : String)
-    (digits : Bool := false) : FlatFieldDecl where
+    (maxLength : Option Nat := some 20) (digits : Bool := false) : FlatFieldDecl where
   id
   groupPath := ["Join"]
   name
   policy := { kind := .string }
-  stringPolicy := if digits then { maxLength := some 6 } else { maxLength := some 20 }
+  stringPolicy := { maxLength }
   stringPatternSource := if digits then some "[0-9]+" else none
 
 private def model : FlatModel :=
   { fields := [
       numberDeclaration base1Id "Base1", numberDeclaration base2Id "Base2",
       numberDeclaration base3Id "Base3",
-      stringDeclaration gate1Id "Gate1", stringDeclaration gate2Id "Gate2",
-      stringDeclaration s1Id "S1" true, stringDeclaration s2Id "S2" true,
+      stringDeclaration gate1Id "Gate1" none, stringDeclaration gate2Id "Gate2" none,
+      stringDeclaration s1Id "S1" (some 6) true, stringDeclaration s2Id "S2" (some 6) true,
       numberDeclaration p1Id "P1", numberDeclaration p2Id "P2",
       numberDeclaration aId "A", numberDeclaration bId "B", numberDeclaration cId "C",
       numberDeclaration finalId "Final", numberDeclaration final3Id "Final3",
@@ -139,18 +139,21 @@ private def seeds : List ClassifiedCellInput :=
 private def reported : List FieldId :=
   [p1Id, p2Id, aId, bId, cId, finalId, final3Id, twiceId, saId, sbId, sFinalId, nsId]
 
-private def valueOf : ScalarComputationOutcome → FieldId × Option String
-  | .number target (.accepted value) => (target, some (toString value.unscaled))
-  | .string target (.accepted term) => (target, some term.text)
-  | .number target _ => (target, none)
-  | .string target _ => (target, none)
+/-- A computed value, `none` for a cleared target, or no projection for an errored one, which no
+Kernel row reports: every target the grid clears is reported not errored. -/
+private def valueOf? : ScalarComputationOutcome → Option (FieldId × Option String)
+  | .number target (.accepted value) => some (target, some (toString value.unscaled))
+  | .string target (.accepted term) => some (target, some term.text)
+  | .number target .noValue | .number target (.inheritedPoison _) => some (target, none)
+  | .string target .noValue | .string target (.poison _) => some (target, none)
+  | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ (.errored _ _) => none
 
 /-- The computed value of each reported target, `none` where it is cleared. -/
 private def values? (cells : List ClassifiedCellInput) : Option (List (Option String)) := do
   let input ← (checkDocument prepared "en_US"
     { instantiatedRows := [], cells := seeds ++ cells }).toOption
   let outcomes ← (plan.execute world prepared.patterns input).toOption
-  let found := outcomes.map valueOf
+  let found ← outcomes.mapM valueOf?
   reported.mapM fun target => (found.find? (·.1 == target)).map (·.2)
 
 private def cleanInputs (without : List FieldId := []) : List ClassifiedCellInput :=
@@ -167,9 +170,9 @@ example :
         some "12", some "34", some "1234", some "734"] := by
   native_decide
 
-/- A malformed producer poisons every join that reaches it, whatever the other branch holds: a
-   second malformed producer, a producer cleared by its unmet precondition, which reads as zero, or
-   an absent source, which substitutes zero. The independent `C`, `SA` and `SB` still compute. -/
+/- A malformed producer poisons every Number join that reaches it, whatever the other branch holds:
+   a second malformed producer, a producer cleared by its unmet precondition, which reads as zero,
+   or an absent source, which substitutes zero. The independent `C`, `SA` and `SB` still compute. -/
 example :
     values? (malformedNumberCell base1Id :: malformedNumberCell base2Id ::
         cleanInputs [base1Id, base2Id]) =
@@ -215,7 +218,8 @@ example :
 
 /- The plan runs the earliest authored step that reads no other pending target, so an independent
    step keeps its authored place among the ready ones and every join waits for its last producer.
-   The Kernel's own order among independent steps is not observable; only dependency order is. -/
+   The Kernel's own order among independent steps is unmeasured; the rows fix only dependency
+   order. -/
 example :
     plan.executionTargetFields =
       [saId, sbId, sFinalId, cId, p1Id, twiceId, aId, nsId, p2Id, bId, finalId, final3Id] ∧
@@ -229,11 +233,12 @@ private def planRefusal? (steps : List (Option (CheckedScalarComputationStep mod
   let steps ← steps.mapM id
   match certifyScalarComputationPlan steps with
   | .ok _ => pure none
-  | .error cause => pure cause.planCalculationRefusal?
+  | .error cause => pure cause.calculationRefusal?
 
-/- A cycle is refused with the Kernel's cycle class, and so is a step waiting on one, since the
-   Kernel sorts the whole model before it computes anything
-   ([`spec/09`](../../spec/09-computations.md) §1). The acyclic control is admitted. -/
+/- A cycle is refused with the Kernel's cycle class, and so is a plan where a step waits on one,
+   since the Kernel sorts the whole model's computed fields before it generates anything
+   ([`spec/09`](../../spec/09-computations.md) §1); no Kernel row here measures a cycle. The acyclic
+   control is admitted. -/
 example :
     planRefusal? [numberStep? aId none (read "B"), numberStep? bId none (read "A")] =
       some (some .calcCycle) ∧

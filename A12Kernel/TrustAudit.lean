@@ -2158,6 +2158,13 @@ run_cmd do
 #print axioms A12Kernel.firstReadyScalarComputationStep_perm
 #print axioms A12Kernel.scalarComputationAuthoredOrder_perm
 #print axioms A12Kernel.scalarComputationPlan_executionSteps_perm
+#print axioms A12Kernel.firstReadyScalarComputationStep_ready
+#print axioms A12Kernel.firstReadyScalarComputationStep_none
+#print axioms A12Kernel.scalarComputationAuthoredOrder_forward_readClosed
+#print axioms A12Kernel.certifyScalarComputationRunWithSteps_forwardDependency
+#print axioms A12Kernel.certifyScalarComputationPlan_cycle_readClosed
+#print axioms A12Kernel.scalarComputationRun_not_readClosed
+#print axioms A12Kernel.scalarComputationPlan_not_readClosed
 #print axioms A12Kernel.scalarComputationAuthoredExecutionSteps_pair_forward
 #print axioms A12Kernel.scalarComputationAuthoredExecutionSteps_pair_preserved
 #print axioms A12Kernel.scalarComputationPlan_execute

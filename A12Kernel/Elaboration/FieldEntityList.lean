@@ -102,16 +102,10 @@ def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
       .starredGroupPresence _ => none
 
 /-- The Enumeration a category slot reads, for a carrier's category gate. A category of a field
-    declaring no Enumeration was already refused as the slot resolved, and a starred slot spells no
-    category on this surface. A category the Enumeration does not declare is left to certification,
-    which refuses it without a class: the operand's own category check may answer ahead of the
-    gate, and no row decides which class the lists draw for it. -/
+    declaring no Enumeration, or one its Enumeration does not declare, was already refused as the
+    slot resolved, and a starred slot spells no category on this surface. -/
 def categoryPath? : ResolvedFieldEntityOperand model → Option (List String)
-  | .field declaration (.projected category) =>
-      if declaration.enumeration.any (·.categories.any (·.name == category)) then
-        some declaration.path
-      else
-        none
+  | .field declaration (.projected _) => some declaration.path
   | .field _ .stored | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
@@ -331,6 +325,8 @@ inductive FieldEntityShapeElabError where
   | unboundOperandLevel (unbound : UnboundOperandLevel)
   /-- An Enumeration's category in a list whose carrier asks the category gate. -/
   | categoryNotAllowed (path : List String)
+  /-- A category the Enumeration does not declare, refused as the slot is read. -/
+  | unknownCategory (path : List String) (category : String)
   deriving Repr, DecidableEq
 
 /-- The gates this shared checker owns, projected once. The **classes** do not vary by carrier, and
@@ -349,6 +345,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .overlappingOperands _ _ => some .duplicateParam2
   | .rootGroupOperand _ => some .rootGroupReferenced
   | .categoryNotAllowed _ => some .categoryNotAllowed
+  | .unknownCategory _ _ => some .categoryUnknown
   | .unboundOperandLevel unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
   | .groupReference error => error.diagnostic?
@@ -486,12 +483,21 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- as a bracketed category read does. It is measured inside `Sum`, the two DateRange overlaps,
   -- `FieldValuesNotUnique` and the value list, and every other list sharing this shape asks it on
   -- that account ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
-  -- A fixed-target list asks its walk list-wide later, an order no row measures.
+  -- A fixed-target list asks its walk list-wide later, an order no row measures. A category its
+  -- Enumeration does not declare draws `MVK_CATEGORY_UNKOWN` at the same read, ahead of every list
+  -- gate: it is the second gate of the category check the non-Enumeration class opens
+  -- ([`kf359`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359)), and beside a Number in a value
+  -- list it pre-empts the varying-types gate. No entity-list row reads it; its position there rests
+  -- on the peer's source reading that the check answers wherever the operand's spec stands
+  -- ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
   let categoryRead (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
       Except FieldEntityShapeElabError Unit :=
     match form, declaration.categoryReadRefusal? with
     | .projected _, some refusal => throw (.resolve refusal)
-    | _, _ => pure ()
+    | .projected category, none =>
+        if declaration.enumeration.any (·.categories.any (·.name == category)) then pure ()
+        else throw (.unknownCategory declaration.path category)
+    | .stored, _ => pure ()
   match authored with
   | .field path form => do
       let resolved ←

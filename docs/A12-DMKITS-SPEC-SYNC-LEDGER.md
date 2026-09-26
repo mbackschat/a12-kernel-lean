@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-26-03"></a>
+### `SPEC-2026-09-26-03` — a field copied into a field of another kind draws the comparison class on the kind pairs measured, while at an Enumeration target the calculation's own class can answer first
+
+- `status`: pending
+- `origin`: locally originated; it narrows the doc of your `CheckerComputationJoinedConditionAgreementTest` at `2a55a3d0c`, which states that a copy of one declared kind into another draws the class the comparison raises for that pair, by your own [`-25i` Enumeration-source rows](SOURCES.md#inbound-2026-09-25i-enum-source).
+- `clause`: [`09` §1 the ground rules](../spec/09-computations.md#1-the-ground-rules), the field-source bullet.
+- `delta`: on every kind pair the joined-comparison rows measure, a field copied into a field of another kind is refused by the generated comparison with no computation-specific class. At an Enumeration target the calculation's own class can answer instead: a keyed String source such as `[Claims/Memo For "X"]` draws `MVK_ERROR_INVALID_ENUM_CALCULATION`, as a stored or category read wider than the target's domain does.
+- `basis`: the [`-26c` joined-comparison record](SOURCES.md#inbound-2026-09-26c-joined-comparison) at a12-dmkits `2a55a3d0c` and the [`-25i` Enumeration-source record](SOURCES.md#inbound-2026-09-25i-enum-source) at `16dca38ac`, both Kernel `30.8.1`; no new measurement.
+- `surfaces`: any peer checker, lock doc or finding that assigns every cross-kind field copy the comparison's class, an Enumeration target included.
+- `acceptance`: confirm the scope, or supply a String field copied into an Enumeration target that draws the comparison class where the `-25i` keyed row draws the calculation class.
+- `limit`: scope only, combining two peer measurements. An unkeyed String field copied into an Enumeration target has no row in either.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-26-02"></a>
 ### `SPEC-2026-09-26-02` — the joined text's first-class rule covers the classes raised while that text is parsed, and your own stage rows keep the alternatives stage outside it
 
@@ -42,10 +55,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `origin`: locally originated; it narrows the rule of your `kf483` and its lock that the first class in the joined order is the only one A12 names, by your own [`-25c` stage rows](SOURCES.md#inbound-2026-09-25c-calculation-stages).
 - `clause`: [`09` §6 the implicit validation rule](../spec/09-computations.md#6-the-implicit-validation-rule-precisely)
 - `delta`: among the classes raised while the joined text is parsed, on every pair measured, A12 names only the one first in the joined order. The alternatives stage is not a parse class, and there `MVK_ERROR_EMPTY_PRECONDITION` stands beside `MVK_ERROR_INVALID_ENUM_CALCULATION` or `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` in the other alternative, while each member class stands beside `MVK_ERROR_MESSAGE_MISSING`.
-- `basis`: the [`-26c` target-read record](SOURCES.md#inbound-2026-09-26c-target-read) and the [`-25c` stage record](SOURCES.md#inbound-2026-09-25c-calculation-stages); no new measurement.
+- `basis`: the [`-26c` target-read record](SOURCES.md#inbound-2026-09-26c-target-read) at a12-dmkits `2a55a3d0c` and the [`-25c` stage record](SOURCES.md#inbound-2026-09-25c-calculation-stages) at `0e4fe9f92`, both Kernel `30.8.1`; no new measurement.
 - `surfaces`: any peer checker or finding that stops at the first class of a computation's joined text for every class it can raise.
 - `acceptance`: confirm the scope, or supply a row where two parse classes of one joined text are reported together.
 - `limit`: scope only, combining two peer measurements; no row of this project's own.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-26-01"></a>
 ### `SPEC-2026-09-26-01` — a category read of a non-Enumeration draws its own class on every carrier measured, entity lists included, a membership subject's remaining gates are ordered, and a repeatable target or a rule in a repeatable group reads as the root does

@@ -1329,7 +1329,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-diamond-dependency-clear-kinds"></a>
 - [A four-deep dependency diamond orders correctly, and a silently cleared producer reads EMPTY where an errored one poisons](sources/evaluation-and-application-routes.md#src-diamond-dependency-clear-kinds)
 <a id="src-join-poison-and-substitution"></a>
-- [A malformed producer clears every join that reaches it, and a twelve-computation plan runs in dependency order, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-join-poison-and-substitution)
+- [A malformed producer clears every Number join that reaches it, and a twelve-computation plan runs in dependency order, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-join-poison-and-substitution)
 <a id="src-two-level-repeatable-join"></a>
 - [Poison and empty substitution cross repetition levels and rows by the same rule, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-two-level-repeatable-join)
 <a id="src-scalar-mixed-reverse-authored-triple"></a>

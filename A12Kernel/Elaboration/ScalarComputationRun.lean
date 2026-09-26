@@ -5,9 +5,9 @@ import A12Kernel.Semantics.HeterogeneousComputationDependency
 
 /-! # Finite checked mixed scalar computation runs
 
-This capsule composes already-consolidated checked String and scalar Number tables in one supplied order. Every step, completion, fault, and outcome retains its family. Pending targets hide source state; completed targets are projected only when a consumer context reads them, so a Number remains numeric for Number computation and becomes canonical text for String computation.
+This capsule composes already-consolidated checked String and scalar Number tables. A run executes them in one supplied order. Every step, completion, fault, and outcome retains its family. Pending targets hide source state; completed targets are projected only when a consumer context reads them, so a Number remains numeric for Number computation and becomes canonical text for String computation.
 
-An authored plan of any length is put into dependency order first, by running the earliest authored step that reads no other pending target; the plan's own order is not a supplied one. Same-target grouping remains in each family owner. Family result projection, whole-document application, repeatable targets, and a generic dependency graph remain separate.
+An authored plan of any length over the same flat scalar steps is put into dependency order first, by running the earliest authored step that reads no other pending target, and a plan whose steps are read-closed is refused as a cycle. Same-target grouping remains in each family owner. Family result projection, whole-document application, and repeatable targets remain separate.
 -/
 
 namespace A12Kernel
@@ -100,7 +100,7 @@ structure CheckedScalarComputationRun (model : FlatModel) where
     firstForwardScalarComputationDependency? steps = none
 
 /-- Certify a mixed scalar run while retaining the exact supplied steps for callers that add a stronger wrapper invariant. -/
-private def certifyScalarComputationRunWithSteps
+def certifyScalarComputationRunWithSteps
     (steps : List (CheckedScalarComputationStep model)) :
     Except ScalarComputationRunPlanError
       { run : CheckedScalarComputationRun model // run.steps = steps } :=
@@ -168,12 +168,40 @@ def scalarComputationAuthoredOrder :
       | some (ready, remaining) => ready :: scalarComputationAuthoredOrder fuel remaining
 
 /-- The dependency order of an authored plan. Among the orders that run every producer before its
-readers, it keeps each independent step at its earliest authored place; which of those orders the
-Kernel takes is not observable, since independent steps read nothing of each other. -/
+readers, it is the least by authored position, compared step by step. Which of those orders the
+Kernel takes is unmeasured: independent steps read nothing of each other, and no retained row
+separates two of them. -/
 def scalarComputationAuthoredExecutionSteps
     (steps : List (CheckedScalarComputationStep model)) :
     List (CheckedScalarComputationStep model) :=
   scalarComputationAuthoredOrder steps.length steps
+
+/-- Steps none of which can run first: the list is nonempty and each member reads the target of
+another member. Following reads inside such a list must revisit a step, so it closes a cycle, and a
+step waiting on a cycle lies in one with it. -/
+def ScalarComputationStepsReadClosed
+    (stuck : List (CheckedScalarComputationStep model)) : Prop :=
+  stuck ≠ [] ∧ ∀ step ∈ stuck, ∃ other ∈ stuck,
+    other.targetField ≠ step.targetField ∧ step.referencesField other.targetField = true
+
+/-- Why an authored plan is refused. It shares the run's structural gates, but a plan has no order
+error: after ordering, a step still reads a later target only where some of its steps are
+read-closed. -/
+inductive ScalarComputationPlanError where
+  | empty
+  | repeatableContextRequired (target : FieldId)
+  | duplicateTarget (target : FieldId)
+  /-- `step` is a step ordering could not place and `reads` a pending target it reads. `step` may
+  wait on the cycle rather than close it; which members the Kernel spells out is not projected. -/
+  | cycle (step reads : FieldId)
+  deriving Repr, DecidableEq
+
+/-- A plan's refusal for a run refusal of its dependency order. -/
+def ScalarComputationRunPlanError.inPlan : ScalarComputationRunPlanError → ScalarComputationPlanError
+  | .empty => .empty
+  | .repeatableContextRequired target => .repeatableContextRequired target
+  | .duplicateTarget target => .duplicateTarget target
+  | .forwardDependency step reads => .cycle step reads
 
 /-- An authored plan of scalar steps with its certified dependency order. The authored order stays
 available to analysis consumers while execution reuses the finite checked run. -/
@@ -184,28 +212,29 @@ structure CheckedScalarComputationPlan (model : FlatModel) where
   executionUsesSelectedSteps :
     execution.steps = scalarComputationAuthoredExecutionSteps authored
 
-/-- Certify an authored plan by ordering it and certifying that order as a run. A cycle leaves a
-forward read in the order and is refused with it. -/
+/-- Certify an authored plan by ordering it and certifying that order as a run. -/
 def certifyScalarComputationPlan
     (steps : List (CheckedScalarComputationStep model)) :
-    Except ScalarComputationRunPlanError (CheckedScalarComputationPlan model) :=
+    Except ScalarComputationPlanError (CheckedScalarComputationPlan model) :=
   match certifyScalarComputationRunWithSteps
       (scalarComputationAuthoredExecutionSteps steps) with
-  | .error cause => .error cause
+  | .error cause => .error cause.inPlan
   | .ok execution => .ok {
       authored := steps
       execution := execution.1
       executionUsesSelectedSteps := execution.2
     }
 
-/-- The Kernel class a refusal of `certifyScalarComputationPlan` draws. Ordering leaves a forward
-read only where steps close or wait on a cycle, which the Kernel refuses as `MVK_ERROR_CALC_CYCLE`
-before it computes anything ([`spec/09`](../../spec/09-computations.md) §1). A supplied-order run's
-forward read is an order error instead, so this reads a plan's refusal only; the other refusals
-are the run's own structural gates and claim no class. -/
-def ScalarComputationRunPlanError.planCalculationRefusal? :
-    ScalarComputationRunPlanError → Option CalculationRefusal
-  | .forwardDependency _ _ => some .calcCycle
+/-- The Kernel class a plan refusal draws. The Kernel sorts the computed fields before it
+generates anything and refuses a cycle among them as `MVK_ERROR_CALC_CYCLE`
+([`spec/09`](../../spec/09-computations.md) §1). The same clause lists classes measured beside a
+cycle that withhold it, among them another computation's text defect or member class, a rule's text
+defect, a structural path class, and a missing error text, so the class holds only for a model free
+of them. A plan sees none of them, and a variant-filtered declaration is not one of its steps. The
+structural gates claim no class. -/
+def ScalarComputationPlanError.calculationRefusal? :
+    ScalarComputationPlanError → Option CalculationRefusal
+  | .cycle _ _ => some .calcCycle
   | .empty | .repeatableContextRequired _ | .duplicateTarget _ => none
 
 namespace CheckedScalarComputationPlan

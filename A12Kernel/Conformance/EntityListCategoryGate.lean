@@ -156,14 +156,39 @@ example :
       [.mapped .duplicateParam1, .mapped .rootGroupReferenced] := by
   native_decide
 
-/- A category the Enumeration does not declare is not the gate's: the operand's own category
-   check may answer first, and no row decides which class these lists draw, so each carrier keeps
-   refusing it at certification without claiming the gate's class. -/
+/- The Number, temporal and yearless routes ask the gate behind the repeat, where the token
+   `FieldValuesNotUnique` row measures it: a repeated field ahead of a category draws the duplicate
+   class. That these routes share the token row's position rests on the peer's source reading that
+   the gate belongs to the operator's carrier, whatever its operands' kind
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category)); the yearless route
+   rests on the same reading for `DateRangesOverlap`. -/
+example :
+    [decide (elaborateNumberValuesNotUniqueSource orderModel ["Order"]
+        { first := net, rest := [net, level "Tier"] }) NumberValuesNotUniqueElabError.diagnostic?,
+      decide (elaborateTemporalValuesNotUniqueSource orderModel ["Order"]
+        { first := field "Shipped", rest := [field "Shipped", level "Tier"] })
+        TemporalValuesNotUniqueElabError.diagnostic?,
+      yearlessOverlap (field "Season") [field "Season", level "Tier"]] =
+    [.mapped .duplicateParam1, .mapped .duplicateParam1, .mapped .duplicateParam1] := by
+  native_decide
+
+/- A category the Enumeration does not declare is refused as the slot is read, ahead of every list
+   gate: beside a String, a Number, a Date or a DateRange, repeated, and on the count carrier that
+   asks the category gate first. No entity-list row reads it; the class is measured at a comparison
+   and a value list, and its position here rests on the peer's source reading that the category
+   check answers wherever the operand's spec stands. -/
 example :
     [notUnique (category "Tier" "Nope") [field "Label"],
       distinct (category "Tier" "Nope") [field "Label"],
-      overlap (field "Window") [category "Tier" "Nope"]].all
-      (fun decision => decision != .admitted && decision != .mapped .categoryNotAllowed) := by
+      overlap (field "Window") [category "Tier" "Nope"],
+      notUnique (category "Tier" "Nope") [category "Tier" "Nope"],
+      distinct (category "Tier" "Nope") [category "Tier" "Nope"],
+      decide (elaborateNumberValuesNotUniqueSource orderModel ["Order"]
+        { first := net, rest := [category "Tier" "Nope"] })
+        NumberValuesNotUniqueElabError.diagnostic?,
+      decide (elaborateTemporalValuesNotUniqueSource orderModel ["Order"]
+        { first := field "Shipped", rest := [category "Tier" "Nope"] })
+        TemporalValuesNotUniqueElabError.diagnostic?].all (· == .mapped .categoryUnknown) := by
   native_decide
 
 end A12Kernel.Conformance.EntityListCategoryGate
