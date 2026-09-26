@@ -5,8 +5,8 @@ import A12Kernel.Proofs.FieldId
 /-! # Authored repeatable Number plan laws
 
 The plan's certificate is sound and complete for cycles by specializing the shared authored-order
-laws, and its read overlay never exposes a plan target's stored value. The guard hook leaves every
-unguarded addressed carrier's execution unchanged.
+laws, and its read overlay never exposes a plan target's stored value. Under an always-holding guard
+the guarded addressed executor is definitionally the unguarded one.
 -/
 
 namespace A12Kernel

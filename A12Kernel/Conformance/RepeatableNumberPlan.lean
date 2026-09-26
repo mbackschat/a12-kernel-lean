@@ -101,9 +101,16 @@ private inductive Source where
   | malformed
   | absent
 
+/-- The guard field `OGate`: filled, absent, or holding a rejected value, which the measured model's
+unbounded String cannot store and which only the poisoned-guard lock uses. -/
+private inductive Gate where
+  | filled
+  | absent
+  | poisoned
+
 private structure OuterRow where
   base : Source
-  gated : Bool := true
+  gate : Gate := .filled
   inner : List Source
 
 private def numberCell (field : FieldId) (path : List Nat) (number : Int) : ClassifiedCellInput :=
@@ -114,6 +121,12 @@ private def sourceCells (field : FieldId) (path : List Nat) : Source → List Cl
   | .malformed => [{ address := { field, path }, stored := "bad", raw := .rejected .malformed }]
   | .absent => []
 
+private def gateCells (path : List Nat) : Gate → List ClassifiedCellInput
+  | .filled => [{ address := { field := oGateId, path }, stored := "g", raw := .parsed (.str "g") }]
+  | .absent => []
+  | .poisoned =>
+      [{ address := { field := oGateId, path }, stored := "g", raw := .rejected .declaredConstraint }]
+
 private def document? (rows : List OuterRow) : Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" {
     instantiatedRows := rows.zipIdx.flatMap fun (row, outer) =>
@@ -121,10 +134,7 @@ private def document? (rows : List OuterRow) : Option (CheckedDocument model) :=
         row.inner.zipIdx.map fun (_, inner) => { group := 20, path := [outer + 1, inner + 1] }
     cells := numberCell rootSumId [] 99 :: rows.zipIdx.flatMap fun (row, outer) =>
       sourceCells oBaseId [outer + 1] row.base ++
-        (if row.gated then
-          [{ address := { field := oGateId, path := [outer + 1] }, stored := "g",
-             raw := .parsed (.str "g") }]
-        else []) ++
+        gateCells [outer + 1] row.gate ++
         numberCell opId [outer + 1] 99 ::
         row.inner.zipIdx.flatMap fun (inner, index) =>
           sourceCells iBaseId [outer + 1, index + 1] inner ++
@@ -132,10 +142,13 @@ private def document? (rows : List OuterRow) : Option (CheckedDocument model) :=
               numberCell iJoinId [outer + 1, index + 1] 99]
   }).toOption
 
-/-- The Kernel's report: a value, or `none` where it clears the target. -/
-private def reported : NumericTargetOutcome → Option Int
-  | .accepted stored => if stored.scale = 0 then some stored.unscaled else none
-  | .noValue | .rejected _ _ | .invalidNoValue _ | .inheritedPoison _ => none
+/-- A computed value, `none` for a cleared target, or no projection for an errored outcome or a value
+at another scale, which no Kernel row reports: every target the grid clears is reported not errored,
+and every target declares no fraction digits. -/
+private def reported? : NumericTargetOutcome → Option (Option Int)
+  | .accepted stored => if stored.scale = 0 then some (some stored.unscaled) else none
+  | .noValue | .inheritedPoison _ => some none
+  | .rejected _ _ | .invalidNoValue _ => none
 
 /-- Run the steps `order` picks from the plan; the certified run uses its execution order. -/
 private def outcomes? (rows : List OuterRow)
@@ -144,7 +157,7 @@ private def outcomes? (rows : List OuterRow)
   let plan ← plan?
   let input ← document? rows
   let outcomes ← (plan.executeSteps world input (order plan) []).toOption
-  pure (outcomes.map fun outcome => (outcome.targetField, reported outcome.outcome))
+  outcomes.mapM fun outcome => (reported? outcome.outcome).map (outcome.targetField, ·)
 
 /-- Equal as sets of addressed reports: the Kernel sorts its report by field, so the order Lean emits
 rows in is not compared. -/
@@ -191,10 +204,19 @@ example : reportsAs (twoRows { firstRow with base := .malformed }) [
   native_decide
 
 /- An unmet guard clears `OP` cleanly, so its readers substitute zero rather than clearing. -/
-example : reportsAs (twoRows { firstRow with gated := false }) [
+example : reportsAs (twoRows { firstRow with gate := .absent }) [
     report opId [1] none, report opId [2] (some 5), report rootSumId [] (some 5),
     report iaId [1, 1] (some 1), report iaId [1, 2] (some 2), report iaId [2, 1] (some 3),
     report iJoinId [1, 1] (some 1), report iJoinId [1, 2] (some 2), report iJoinId [2, 1] (some 8)] := by
+  native_decide
+
+/- No Kernel row reads a poisoned guard, so this locks Lean's account alone: the guard's poison reaches
+`OP` as inherited poison, which its readers clear on rather than substituting zero as they do for an
+unmet guard. -/
+example : reportsAs (twoRows { firstRow with gate := .poisoned }) [
+    report opId [1] none, report opId [2] (some 5), report rootSumId [] none,
+    report iaId [1, 1] (some 1), report iaId [1, 2] (some 2), report iaId [2, 1] (some 3),
+    report iJoinId [1, 1] none, report iJoinId [1, 2] none, report iJoinId [2, 1] (some 8)] := by
   native_decide
 
 /- An absent outer source copies as zero and gives the readers the same values. -/

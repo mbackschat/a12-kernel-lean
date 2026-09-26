@@ -302,8 +302,11 @@ def StarPath.resolve (path : StarPath) (document : Document) (outer : Env) :
 /-- Keep only the leaf environments within every declared repeatability. A row beyond its level's
 capacity stays in the physical topology but lies outside the evaluation domain of an operand that
 expands rows, on the validation and the computation arm alike, so its cell contributes neither a value
-nor a formal poison ([`spec/07`](../../spec/07-repetition-and-iteration.md)). The open-tail state is
-the domain's and unchanged: a level holding an over-limit row is full. -/
+nor a formal poison ([`spec/07`](../../spec/07-repetition-and-iteration.md)). The domain stays the
+physical tree, over-limit rows included, so the environment correspondence
+`StarPath.resolve_environmentCorrespondence` states holds for the resolved topology and not for this
+projection; consumers read only the domain's open-tail state, which is unchanged because a level
+holding an over-limit row is full. -/
 def ResolvedStarTopology.inCapacity (resolved : ResolvedStarTopology)
     (axes : List StarAxis) : ResolvedStarTopology :=
   { resolved with

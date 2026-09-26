@@ -8,7 +8,7 @@ import A12Kernel.Elaboration.NumericComputation.Table
 An authored plan of Number steps at fixed and repeatable targets, put into dependency order by the
 shared authored-order rule and executed one whole step at a time. A fixed step is a checked Number
 table, whose aggregate reads rows through the plan. A row step is a direct copy or a two-source
-arithmetic computed at every row of its target's scope under an optional presence guard, each operand
+addition, subtraction or multiplication computed at every row of its target's scope under an optional presence guard, each operand
 addressed at its own scope, so an inner row reads an enclosing row's target at that row.
 
 Every read goes through one overlay: a completed step's outcome at its exact address, a target of a
@@ -18,8 +18,8 @@ target is therefore never read.
 The two-level grid of the [checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-two-level-repeatable-join)
 calibrates one plan: a root aggregate over a guarded outer copy, and an inner join of an inner copy
 with the enclosing outer target, the aggregate and the join authored ahead of what they read. Other
-admitted shapes run by the same rules without a measurement of their own. The row step admits only the
-two operations that grid measured.
+admitted shapes run by the same rules without a measurement of their own: the grid measures the direct
+copy and addition, not subtraction or multiplication, and no row reads a poisoned guard.
 -/
 
 namespace A12Kernel
