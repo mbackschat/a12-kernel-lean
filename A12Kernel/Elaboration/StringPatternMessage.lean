@@ -52,9 +52,10 @@ private def parseEnUsStringPatternSegments :
 /-- Check the bounded English String-pattern producer. Its empty dollar-pair parameter is invalid rather than a literal-dollar escape. -/
 def elaborateEnUsStringPatternMessageTemplate (source : String) :
     Except ValidationMessageTemplateError
-      CheckedEnUsStringPatternMessageTemplate := do
-  let segments ← validateMessageTemplateSource source
-  pure { source, parts := ← parseEnUsStringPatternSegments segments }
+      CheckedEnUsStringPatternMessageTemplate :=
+  withMessageRepertoire source do
+    let segments ← validateMessageTemplateSource source
+    pure { source, parts := ← parseEnUsStringPatternSegments segments }
 
 /-- Exact replacement bytes selected by the caller for the owning field. Provider invocation and empty-value fallback precede this boundary and remain outside the supported fragment. -/
 structure StringPatternMessageInputs where

@@ -66,6 +66,20 @@ example :
     stringPatternTemplateError? ("a" ++ cp 0x00A0 ++ "b") = none := by
   native_decide
 
+/- The field's message meets the same `\p{C}` set, and its refusal of a supplementary character stands
+   beside the named class the text draws, as on a rule's message
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). -/
+example :
+    ["a" ++ cp 0xFEFF ++ "b", "a" ++ cp 0x200E ++ "b", "a" ++ cp 0xE000 ++ "b",
+        "a" ++ cp 0x0378 ++ "b", "a" ++ cp 0xF0000 ++ "b", "a" ++ cp 0xE0001 ++ "b"].map
+        stringPatternNamedDiagnostic? =
+      List.replicate 6 (some (some "INVALID_CHARACTERS")) ∧
+    stringPatternTemplateError? ("a" ++ cp 0xF0000 ++ "b") =
+      some (.unsupportedCharacterWithError (Char.ofNat 0xF0000) (.controlCharacter (Char.ofNat 0xF0000))) ∧
+    stringPatternTemplateError? ("a" ++ cp 0x1F600 ++ "b") =
+      some (.unsupportedCharacter (Char.ofNat 0x1F600)) := by
+  native_decide
+
 /- A parameter other than the two tokens draws `INVALID_PARAMETER`, measured for the stylized and the
    actual field name ([ledger](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-07-30-01)).
    The empty pair is refused too, but that disposition names no class for it, so it claims none. -/

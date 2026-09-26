@@ -165,6 +165,7 @@ import A12Kernel.Elaboration.ParallelPresenceRule
 import A12Kernel.Elaboration.CheckedRequired
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.ValidationRuleGroupOperand
+import A12Kernel.Elaboration.JavaOtherCategory
 import A12Kernel.Elaboration.ValidationMessageAuthoring
 import A12Kernel.Elaboration.ValidationMessageDiagnostic
 import A12Kernel.Elaboration.StringPatternMessage

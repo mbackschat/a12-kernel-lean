@@ -500,6 +500,20 @@ example :
       some (.controlCharacter (Char.ofNat 0x200B)) := by
   native_decide
 
+/- **The control class is Java's `\p{C}` asked per code point**
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)), so the format, private-use
+   and unassigned characters draw it too, and a supplementary character inside the set draws it beside
+   the repertoire refusal where one outside it draws the refusal alone. -/
+example :
+    [0xFEFF, 0x200E, 0xE000, 0x378].all (fun point =>
+      templateError? ("a" ++ cp point ++ "b") == some (.controlCharacter (Char.ofNat point))) ∧
+    [0xF0000, 0xE0001].all (fun point =>
+      templateError? ("a" ++ cp point ++ "b") ==
+        some (.unsupportedCharacterWithError (Char.ofNat point) (.controlCharacter (Char.ofNat point)))) ∧
+    templateNamedDiagnostic? ("a" ++ cp 0xE0001 ++ "b") = some (some "INVALID_CHARACTERS") ∧
+    templateError? ("a" ++ cp 0x1F600 ++ "b") = some (.unsupportedCharacter (Char.ofNat 0x1F600)) := by
+  native_decide
+
 /- **A parameter's own body keeps the ASCII bound, and that is a different refusal from the repertoire
    one.** The Kernel reports a non-ASCII letter inside a parameter through its lexer, naming the character
    and its position, where the same letter in surrounding text is admitted — so the bound belongs to the

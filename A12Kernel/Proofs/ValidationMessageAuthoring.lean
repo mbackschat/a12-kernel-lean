@@ -5,17 +5,23 @@ import A12Kernel.Proofs.ValidationRule
 
 namespace A12Kernel
 
+/-- The repertoire composition never admits a source whose repertoire check fails, whatever the
+producer's own result was. -/
+theorem withMessageRepertoire_repertoireFailure_refused {α : Type}
+    (source : String) (checked : Except ValidationMessageTemplateError α) (character : Char)
+    (failure : firstUnsupportedMessageTemplateCharacter? source = some character) :
+    (withMessageRepertoire source checked).isOk = false := by
+  unfold withMessageRepertoire
+  rw [failure]
+  cases checked <;> rfl
+
 /-- Co-reporting never admits a template whose repertoire check fails, even when every parameter checks. -/
 theorem validationMessageTemplate_repertoireFailure_refused
     (model : FlatModel) (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model) (source : String) (character : Char)
     (failure : firstUnsupportedMessageTemplateCharacter? source = some character) :
-    (elaborateValidationMessageTemplate model profile condition source).isOk = false := by
-  simp only [elaborateValidationMessageTemplate, failure]
-  split
-  · contradiction
-  · rfl
-  · rfl
+    (elaborateValidationMessageTemplate model profile condition source).isOk = false :=
+  withMessageRepertoire_repertoireFailure_refused _ _ _ failure
 
 theorem checkedValidationMessageReference_usedByCondition
     (reference : CheckedValidationMessageReference model condition) :

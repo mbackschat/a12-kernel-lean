@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationRule
+import A12Kernel.Elaboration.JavaOtherCategory
 
 /-! # Checked authoring for bounded flat validation-message templates
 
@@ -223,12 +224,11 @@ private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
     character.toNat == 0x2028 || character.toNat == 0x2029
 
-/-- The Kernel's `INVALID_CHARACTERS` class over a message template. It is **not** "C0 plus DELETE": the
-C1 block and the two invisible format characters measured draw the same class, while a line separator
-draws its own ([checkpoint](../../docs/SOURCES.md#src-message-template-character-repertoire)). -/
+/-- The Kernel's `INVALID_CHARACTERS` class over a message template: every code point Java's `\p{C}`
+matches on JDK 21, control, format, private-use and unassigned alike, asked after the line gate so a
+line separator keeps its own class ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). -/
 private def isControlCharacter (character : Char) : Bool :=
-  character.toNat < 0x20 || (0x7f ≤ character.toNat && character.toNat ≤ 0x9f) ||
-    character.toNat == 0xad || character.toNat == 0x200b
+  isJavaOtherCategory character
 
 /-- The template's repertoire is the **BMP**, the same bound a stored value's default charset applies.
 An earlier printable-ASCII bound here was an over-refusal: fourteen BMP code points spanning Latin-1,
@@ -587,14 +587,25 @@ private def validateMessageTemplateSegments (source : String) :
   | none => pure ()
   pure segments
 
-/-- The bounded String-pattern producer's existing source gate. Rule messages combine repertoire findings separately because they coexist with the other failures ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)). -/
+/-- The lexical gates both producers share: the line and control gates, then dollar parity and the
+parameter-body bound. The repertoire refusal is not one of them; each producer adds it with
+`withMessageRepertoire`, since it stands beside these failures. -/
 def validateMessageTemplateSource (source : String) :
     Except ValidationMessageTemplateError (List String) := do
   validateMessageTemplatePrefix source
-  match firstUnsupportedMessageTemplateCharacter? source with
-  | some character => throw (.unsupportedCharacter character)
-  | none => pure ()
   validateMessageTemplateSegments source
+
+/-- Add the codeless repertoire refusal to a producer's result, keeping the producer's own first
+failure beside it. It stands beside a named class on a rule's message
+([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)) and beside the control class
+on a field's pattern message ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). -/
+def withMessageRepertoire (source : String)
+    (checked : Except ValidationMessageTemplateError α) :
+    Except ValidationMessageTemplateError α :=
+  match firstUnsupportedMessageTemplateCharacter? source, checked with
+  | none, result => result
+  | some character, .ok _ => .error (.unsupportedCharacter character)
+  | some character, .error cause => .error (.unsupportedCharacterWithError character cause)
 
 private def parseValidationMessageTemplate
     (profile : ValidationMessageKeywordProfile) (source : String) :
@@ -876,11 +887,7 @@ def elaborateValidationMessageTemplate (model : FlatModel)
       (CheckedValidationMessageTemplate model condition) := do
     let parsed ← parseValidationMessageTemplate profile source
     pure { source, parts := ← checkMessageParts model profile condition parsed }
-  match firstUnsupportedMessageTemplateCharacter? source, checked with
-  | none, result => result
-  | some character, .ok _ => .error (.unsupportedCharacter character)
-  | some character, .error cause =>
-      .error (.unsupportedCharacterWithError character cause)
+  withMessageRepertoire source checked
 
 structure ValidationMessageInputs where
   fieldName : FieldId → MessageNameInput

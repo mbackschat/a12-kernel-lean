@@ -40,6 +40,7 @@ def ValidationMessageTemplateError.namedStringPatternDiagnostic? :
   | .lineSeparator => some .invalidMessageLinebreak
   | .controlCharacter _ => some .invalidMessageCharacters
   | .invalidParameter parameter => if parameter.isEmpty then none else some .invalidMessageParameter
+  | .unsupportedCharacterWithError _ cause => cause.namedStringPatternDiagnostic?
   | _ => none
 
 end A12Kernel

@@ -1089,6 +1089,7 @@ run_cmd do
 #print axioms A12Kernel.checkMessageGroup_ruleGroup_refusedAtRootLocus
 #print axioms A12Kernel.checkMessageGroup_rootGroup_resolvesToChainRoot
 #print axioms A12Kernel.checkedEnUsStringPatternMessage_fieldValue_isOpaque
+#print axioms A12Kernel.enUsStringPatternMessageTemplate_repertoireFailure_refused
 #print axioms A12Kernel.checkedEnUsStringPatternMessage_rendering_preservesPatternError
 #print axioms A12Kernel.checkedNumericComparison_modelWellFormed
 #print axioms A12Kernel.checkedNumericComparison_wellFormed
@@ -2874,4 +2875,5 @@ run_cmd do
 #print axioms A12Kernel.roundingArgument_overflow_iff
 #print axioms A12Kernel.roundingArgument_scale_refusal_iff
 #print axioms A12Kernel.fieldValueAsNumberSource_diagnostic_iff
+#print axioms A12Kernel.withMessageRepertoire_repertoireFailure_refused
 #print axioms A12Kernel.validationMessageTemplate_repertoireFailure_refused
