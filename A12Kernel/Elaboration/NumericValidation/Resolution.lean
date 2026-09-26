@@ -200,12 +200,15 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       let groups ←
         match model.resolveValidationBoundFixedGroupReferences rowGroup writtenGroup surfaces with
         | .ok groups => pure groups
-        -- A lone repeatable group whose read the walk passed meets the count's arity, as a lone
-        -- fixed group does ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26j-count-star)).
-        | .error error =>
-            if error matches .walkedRepeatableGroupUnsupported _ && surfaces.length == 1 then
+        -- A lone repeatable group counted by a rule declared in it, with its error field there,
+        -- meets the count's arity as a lone fixed group does
+        -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26j-count-star)). No row reads another
+        -- placement, so every other walked group keeps claiming no class.
+        | .error (.walkedRepeatableGroupUnsupported path) =>
+            if surfaces.length == 1 && path == rowGroup && writtenGroup == rowGroup then
               throw .groupCountNeedsMultipleOperands
-            else throw (.groupReference error)
+            else throw (.groupReference (.walkedRepeatableGroupUnsupported path))
+        | .error error => throw (.groupReference error)
       if groups.length < 2 then
         throw .groupCountNeedsMultipleOperands
       match ResolvedGroupReferences.firstOverlap? groups with

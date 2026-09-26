@@ -244,7 +244,7 @@ a12-dmkits revision `7129827809d14f28af455eb3235cd471d537d735` on `main`, confir
 
 **Claim.** Its §1 and §2 (`GroupCountScopeOperandLawsTest`), on a root `Item` holding a fixed `Grading` and a repeatable `Keyed` indexed by its `Key`, beside a repeatable root `Lot`. At `/Item` reporting at `Title` behind `FieldFilled(Title)`, `NumberOfFilledGroups(…) > 0` over `Keyed`, `Grading, Keyed` and `/Lot` draws `MVK_NO_WILDCARD`, over `/Item` and `Grading` `MVK_PARAMSIZE_INVALIDGN`, and over `Keyed*` is admitted. In `/Item/Keyed` reporting at `Amount` behind `FieldFilled(/Item/Keyed/Amount)`, the count over `/Item/Grading, /Item/Keyed` and over `/Item/Keyed*` is admitted and over `/Item/Keyed` alone draws `MVK_PARAMSIZE_INVALIDGN`.
 
-**Lean.** Corrected. The fixed-list count refused a lone group counted from inside it without a class; it now meets the count's arity, and [`GroupListDiagnostic`](../A12Kernel/Conformance/GroupListDiagnostic.lean) locks the lone rows from both placements. The paired count from inside the group refuses without a class, since the comparison route sees no guard.
+**Lean.** Corrected. The fixed-list count refused a lone group counted from inside it without a class; from the measured placement, a rule declared in the group with its error field there, it now meets the count's arity, every other placement still claiming no class, and [`GroupListDiagnostic`](../A12Kernel/Conformance/GroupListDiagnostic.lean) locks the lone rows from both placements. The paired count from inside the group refuses without a class, since the comparison route sees no guard.
 
 ### Inbound 2026-09-26i handback
 

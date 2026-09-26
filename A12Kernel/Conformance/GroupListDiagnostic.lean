@@ -325,6 +325,43 @@ example :
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "B"], g ["Probe", "A"]] = none := by
   native_decide
 
+/-- `Rows` holding a fixed `Fix` and a repeatable `Deep`, for the count's rule placements. -/
+private def nestedModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Probe", "B"], name := "BVal", policy := { kind := .number unsigned } },
+      { id := 2, groupPath := ["Probe", "Rows"], name := "RowVal",
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := 3, groupPath := ["Probe", "Rows", "Fix"], name := "FixVal",
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := 4, groupPath := ["Probe", "Rows", "Deep"], name := "DeepVal",
+        policy := { kind := .number unsigned }, repeatableScope := [10, 11] }]
+    repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] },
+      { level := 11, path := ["Probe", "Rows", "Deep"] }] }
+
+private def nestedCountAt? (rowGroup writtenGroup counted : GroupPath) :
+    Option (Option KernelStaticDiagnostic) :=
+  let surface : SurfaceNumericComparison :=
+    { op := .ordinary .greater
+      left := .atom (.filledGroupCount [.fixed (.path { base := .absolute, groups := counted })])
+      right := .literal { value := 0, authoredScale := 0 } }
+  match elaborateNumericComparison nestedModel rowGroup surface writtenGroup with
+  | .ok _ => none
+  | .error error => some error.groupCountDiagnostic?
+
+/- The count's arity answers a lone group only where it is measured to: a rule declared in the
+   counted group with its error field there
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26j-count-star)). A rule in a deeper repeatable
+   group counting its ancestor or a fixed child of it, and an error field below the counted group,
+   are placements no row reads, so they claim no class. -/
+example :
+    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows"] ["Probe", "Rows"] =
+      some (some .paramSizeInvalidGN) ∧
+    nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] = some none ∧
+    nestedCountAt? ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Deep"] ["Probe", "Rows", "Fix"] =
+      some none ∧
+    nestedCountAt? ["Probe", "Rows"] ["Probe", "Rows", "Deep"] ["Probe", "Rows"] = some none := by
+  native_decide
+
 /-- The whole rule `FieldFilled(A/AVal) And GroupFilled(<group>)` at the root: the presence carrier
     passes a repeatable group to rule assembly, which projects the walk's class. -/
 private def presenceRuleClass (groups : GroupPath) : Option (Option KernelStaticDiagnostic) :=
