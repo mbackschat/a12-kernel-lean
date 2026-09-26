@@ -306,4 +306,23 @@ example :
       | .error error => some error.diagnostic?) = some (some .rootGroupReferenced) := by
   native_decide
 
+/- The list's root test answers ahead of the duplicate across both sides, as on the canonical route:
+   a root-only list holding the scalar draws the root class, starred from a rule in the repeatable
+   root and fixed from one in the fixed root
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)). -/
+example :
+    let at? (group : GroupPath) (scope : List RepeatableLevel) (scalar : String)
+        (first : SurfaceFieldEntityOperand) :=
+      match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model group scope {
+          scalar := .field { base := .relative 0, groups := [], field := scalar }
+          list := { first, rest := [] } } with
+      | .ok _ => none
+      | .error error => some error.diagnostic?
+    at? ["Lot"] [20] "Term"
+        (.starredGroup { base := .absolute, groups := [{ name := "Lot", starred := true }] }) =
+      some (some .rootGroupReferenced) ∧
+    at? ["Form"] [] "MonthSlash" (.group (.path { base := .absolute, groups := ["Form"] })) =
+      some (some .rootGroupReferenced) := by
+  native_decide
+
 end A12Kernel.Conformance.YearlessDateRangeOverlap

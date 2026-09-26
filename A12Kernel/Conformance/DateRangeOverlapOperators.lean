@@ -282,6 +282,31 @@ example :
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .rootGroupReferenced := by
   native_decide
 
+/-- The plural source read by a rule declared in `group` with iteration scope `scope`. -/
+private def pluralClassAt (group : GroupPath) (scope : List RepeatableLevel)
+    (scalar first : SurfaceFieldEntityOperand) (rest : List SurfaceFieldEntityOperand := []) :
+    Option (Option KernelStaticDiagnostic) :=
+  match elaborateAtLeastOneDateRangeOverlapsSourceIn admissionModel group scope
+      { scalar, list := { first, rest } } with
+  | .ok _ => none
+  | .error error => some error.diagnostic?
+
+/- The `In` list is an entity list of its own before it meets the scalar: its duplicates first, then
+   its root, then duplicates across both sides
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
+   A root-only list holding the scalar draws the root class, fixed or starred, where one pass over
+   both sides would find the containment first, and `Term In Term, /Lot*` draws the containment
+   inside the list, not the scalar's duplicate beside it. -/
+example :
+    let lot : SurfaceFieldEntityOperand :=
+      .starredGroup { base := .absolute, groups := [{ name := "Lot", starred := true }] }
+    pluralClassAt ["Lot"] [12] (direct "Term") lot = some (some .rootGroupReferenced) ∧
+    pluralClassAt ["Lot"] [12] (direct "Term") (direct "Term") [lot] =
+      some (some .duplicateParam2) ∧
+    pluralClassAt ["Form"] [] (direct "Start")
+      (.group (.path { base := .absolute, groups := ["Form"] })) = some (some .rootGroupReferenced) := by
+  native_decide
+
 /- Every operand is read before the scalar slot's gate: a starred scalar beside a list operand that
    does not resolve draws the resolver's class. The measured row reads an index that cannot be read
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)), which this surface cannot
