@@ -335,6 +335,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [First-selected tables](implementation/computations.md#cap-first-selected-tables)
 <a id="cap-scalar-execution-plans"></a>
 - [Scalar execution plans](implementation/computations.md#cap-scalar-execution-plans)
+<a id="cap-authored-repeatable-number-plans"></a>
+- [Authored repeatable Number plans](implementation/computations.md#cap-authored-repeatable-number-plans)
 <a id="cap-mixed-scalar-failure-transitions"></a>
 - [Mixed scalar failure transitions](implementation/computations.md#cap-mixed-scalar-failure-transitions)
 <a id="cap-repeatable-number-plan"></a>

@@ -2569,3 +2569,11 @@ The shared entity-list shape keeps each slot's read form, stored or a category p
 **When a shared representation carries a field, grep its consumers for a wildcard over it.** Each wildcard is a decision the consumer never made. Decide the class at the shape when the Kernel raises it at the read, and check that every remaining wildcard is safe by another gate.
 
 Related: [[LF195]] on owning a production's gate once, [[LF116]] on reusing a mechanism across a boundary.
+
+## LF197 — a domain correction on one resolver of an operand form leaves its twin on another route with the refuted account, and clean fixtures never reach the twin
+
+The [computation-arm capacity checkpoint](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm) narrowed a plain Number star to its declared-capacity extent and merged the checked-document resolvers, so the correction read as complete. The reader routes resolve the same operand form through a caller's cell view, which the aggregate cascades and generated computation validation use, and they kept resolving every physical row and poisoning the over-limit one. No case caught it, because every fixture those routes saw was in capacity. It surfaced only when the [two-level grid](sources/evaluation-and-application-routes.md#src-two-level-repeatable-join)'s over-limit outer row reached a reader route through the repeatable plan, and the existing cascade reproduced it unprompted. The fix narrows the shared topology once, `StarPath.resolveInCapacity`, and one lock evaluates the same document on all four routes. The filtered star still splits across them, which [SG13](gaps/paths-and-groups.md#gap-sg13) records.
+
+**When a correction changes which rows an operand denotes, list every route that resolves that operand form before calling it done, and lock them on one document.** A route is a resolver, not an arm: checked-document, reader and partial are three, and each arm may have all of them.
+
+Related: [[LF195]] on owning a production's gate once, [[LF124]] on pinning an unmeasured side.
