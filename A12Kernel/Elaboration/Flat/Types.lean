@@ -380,8 +380,8 @@ structure FlatModel where
   the Kernel reads a group in exactly that order when its first field sets a list's family
   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26i-expansion-order)). `validate` does not
   check the order: a list that leaves a group's subtree and re-enters it denotes no Kernel model, and
-  its expansions follow the list as given, so a fixture locking an expansion lists its fields
-  depth-first. -/
+  its expansions follow the list as given, so a fixture locking an expansion keeps each expanded
+  group's own fields in depth-first order. -/
   fields : List FlatFieldDecl
   repeatableGroups : List RepeatableGroupDecl := []
   fieldRefByShortNameAllowed : Bool := false
