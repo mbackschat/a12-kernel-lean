@@ -179,53 +179,6 @@ inductive TokenEntityStringLiteralValueListElabError where
   | emptyValues
   deriving Repr, DecidableEq
 
-/-- Whether two declared kinds share the base type the value-list quantifiers compare before any
-    kind gate.
-
-    The four temporal kinds share one base type, and every other kind is its own. A custom
-    declaration shares String's, because it carries the String kind (`customTypeRequiresString`).
-    Measured: a Date beside a date fragment, a Time beside a DateTime and a String beside a custom
-    declaration share one ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
-    Every cross pair measured differs. On the field list, an Enumeration beside a String and a
-    Boolean beside a Confirm in both orders, and a Number beside a Date, a Number before a String, a
-    date range beside a String and a Boolean beside a Date in the order measured
-    ([checkpoint](../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)); a String beside a
-    Number (the inbound above) and beside a Date
-    ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
-    Opposite a field value list, a String and an Enumeration in either direction, an Enumeration
-    opposite a Number and a Number opposite a String (the cross-pair checkpoint), and a String
-    opposite a Number or a Time (the inbound). The pairs no row reaches follow the Kernel's per-type
-    base-type match, read rather than measured. -/
-def SurfaceScalarKind.sharesValueListBaseType :
-    SurfaceScalarKind → SurfaceScalarKind → Bool
-  | .temporal _, .temporal _ => true
-  | left, right => left == right
-
-/-- The path of the first declaration whose base type differs from `expected`'s. The Kernel compares
-    each declaration with the one before it, which finds the same first declaration here because
-    sharing a base type is an equivalence. -/
-private def firstBaseTypeMismatch? (expected : SurfaceScalarKind) :
-    List FlatFieldDecl → Option (List String)
-  | [] => none
-  | declaration :: remaining =>
-      if expected.sharesValueListBaseType declaration.policy.kind.surfaceKind then
-        firstBaseTypeMismatch? expected remaining
-      else
-        some declaration.path
-
-/-- Every declaration the slots expand to, in authored order. A group slot contributes its
-    subtree, so the base-type gate reads a group by the fields it reaches. -/
-private def expandedDeclarations (operands : List (ResolvedFieldEntityOperand model)) :
-    List FlatFieldDecl :=
-  operands.flatMap ResolvedFieldEntityOperand.expansionDeclarations
-
-/-- The path of the first field-list declaration whose base type differs from the first one's. -/
-private def fieldListBaseTypeMismatch? (operands : List (ResolvedFieldEntityOperand model)) :
-    Option (List String) :=
-  match expandedDeclarations operands with
-  | [] => none
-  | first :: remaining => firstBaseTypeMismatch? first.policy.kind.surfaceKind remaining
-
 /-- The kinds this carrier's field slot admits. The partition is exhaustive over `FieldKind` and
     every refusing constructor is measured: DATE, TIME, DATETIME and DATEFRAGMENT on the temporal
     arm, plus DATERANGE, BOOLEAN and CONFIRM

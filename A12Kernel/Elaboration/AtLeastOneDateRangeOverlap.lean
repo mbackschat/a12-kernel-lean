@@ -25,6 +25,8 @@ inductive AtLeastOneDateRangeOverlapsElabError where
   | scalarStarred (path : List String)
   | scalarFilteredStarred (path : List String)
   | scalarGroup (path : GroupPath)
+  | scalarRootGroup (path : GroupPath)
+  | scalarVaryingBaseType (path : List String)
   | measuredNumberPairNotDateRange (scalarPath listPath : List String)
   | sourceNotDateRange (role : DateRangeOverlapSourceRole)
       (path : List String) (actual : SurfaceScalarKind)
@@ -54,13 +56,14 @@ def diagnostic? : AtLeastOneDateRangeOverlapsElabError →
   -- The paired slots are what make it a property of the slot rather than of the form.
   | .scalarStarred _ | .scalarFilteredStarred _ | .scalarGroup _ =>
       some .invalidParameterForDateRangeComparison
+  | .scalarVaryingBaseType _ => some .varyingTypesNotAllowed
   | .measuredNumberPairNotDateRange _ _ => some .noDateRange
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .yearInterpretationNotSupported _ _ => some .invalidDateRangeFormat
   | .having error => error.diagnostic?
   | .sourceNotDateRange _ _ _ | .unsupportedPolicy _ _ _ _
   | .unsupportedReadForm _ _ _ | .groupExpansionEmpty _
-  | .groupExpansionNotDateRange _ | .incoherentCore => none
+  | .groupExpansionNotDateRange _ | .scalarRootGroup _ | .incoherentCore => none
 
 end AtLeastOneDateRangeOverlapsElabError
 
@@ -248,7 +251,7 @@ private def certifyAtLeastOneDateRangeOverlapsListOperands (model : FlatModel)
         (List (CheckedAtLeastOneDateRangeOverlapsListOperand model)) :=
   List.mapM (certifyAtLeastOneDateRangeOverlapsListOperand model declaringGroup)
 
-/-- Resolve and gate the scalar shape before reading the list, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Finally certify the supported DateRange policies. -/
+/-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Finally certify the supported DateRange policies. -/
 def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
@@ -267,6 +270,13 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       let _ ← resolveFieldEntityOperands model declaringGroup scope none writtenGroup
           (authored.list.first :: authored.list.rest)
         |>.mapError .shape
+      -- The Kernel's checker asks its root and base-type gates over the scalar before the slot
+      -- gate; the base-type order is measured
+      -- ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)),
+      -- the root gate's is read, so it claims no class.
+      if let some root := scalarOperand.rootGroupPath? then throw (.scalarRootGroup root)
+      if let some path := fieldListBaseTypeMismatch? [scalarOperand] then
+        throw (.scalarVaryingBaseType path)
       let scalarDeclaration ← certifyAtLeastOneDateRangeOverlapScalarShape scalarOperand
       let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
           first := authored.scalar
@@ -321,7 +331,7 @@ def operands (checked : CheckedYearlessAtLeastOneDateRangeOverlapsSource model) 
 
 end CheckedYearlessAtLeastOneDateRangeOverlapsSource
 
-/-- Gate the scalar shape before reading the list, then resolve both sides as one entity sequence so
+/-- Read every operand, then gate the scalar shape, then resolve both sides as one entity sequence so
 the shared duplicate and overlap checks stay cross-side, then certify every operand as unconfigured
 yearless. `scope` is the reading rule's iteration scope, so an unstarred operand on either side may
 sit inside a level the rule iterates. -/

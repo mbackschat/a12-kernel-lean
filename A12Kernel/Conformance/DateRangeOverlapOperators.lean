@@ -244,13 +244,20 @@ example :
   native_decide
 
 /- A **starred** group in the scalar slot draws it too, so the class is not the fixed group's alone.
-   The measured row that does *not* land here is a starred group whose expansion mixes kinds: it
-   draws `MVK_VARYING_TYPES_NOT_ALLOWED` instead, because a kind gate reports before this one. That
-   is why the row above uses a homogeneous group — a mixed one measures the earlier gate twice. -/
+   A starred group whose expansion mixes kinds draws `MVK_VARYING_TYPES_NOT_ALLOWED` instead, because
+   the base-type gate reports before the slot's
+   ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
+   The root gate stands ahead of both in the Kernel's checker, read rather than measured on this
+   carrier, so the root group, whose fields mix kinds too, is refused without a class. -/
 example :
     (pluralAdmissionError? starredPeriodsGroup (direct "Start")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? =
-          some .invalidParameterForDateRangeComparison := by
+          some .invalidParameterForDateRangeComparison ∧
+      (pluralAdmissionError? starredRowsGroup (direct "Start")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .varyingTypesNotAllowed ∧
+      (pluralAdmissionError? (.group (.path { base := .absolute, groups := ["Form"] }))
+        (direct "Start")).map AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+          some none := by
   native_decide
 
 /- Every operand is read before the scalar slot's gate: a starred scalar beside a list operand that
