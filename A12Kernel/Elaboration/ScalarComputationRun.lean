@@ -141,48 +141,12 @@ def certifyScalarComputationRun
   | .error cause => .error cause
   | .ok run => .ok run.1
 
-/-- The first step of `scan` that reads no target of another step in `pending`, and `scan`
-without it. A step's own target does not block it: a self-read is the family owner's refusal. -/
-def firstReadyScalarComputationStep?
-    (pending : List (CheckedScalarComputationStep model)) :
-    List (CheckedScalarComputationStep model) →
-      Option (CheckedScalarComputationStep model × List (CheckedScalarComputationStep model))
-  | [] => none
-  | step :: rest =>
-      if pending.all fun other =>
-          other.targetField == step.targetField || !step.referencesField other.targetField then
-        some (step, rest)
-      else
-        (firstReadyScalarComputationStep? pending rest).map fun (ready, remaining) =>
-          (ready, step :: remaining)
-
-/-- Run the earliest authored step that reads no other pending target, then repeat. When every
-pending step reads another pending target, the steps left form or wait on a cycle and stay in
-authored order, where run certification reports the first forward read among them. -/
-def scalarComputationAuthoredOrder :
-    Nat → List (CheckedScalarComputationStep model) → List (CheckedScalarComputationStep model)
-  | 0, pending => pending
-  | fuel + 1, pending =>
-      match firstReadyScalarComputationStep? pending pending with
-      | none => pending
-      | some (ready, remaining) => ready :: scalarComputationAuthoredOrder fuel remaining
-
-/-- The dependency order of an authored plan. Among the orders that run every producer before its
-readers, it is the least by authored position, compared step by step. Which of those orders the
-Kernel takes is unmeasured: independent steps read nothing of each other, and no retained row
-separates two of them. -/
+/-- The dependency order of an authored plan, by the shared authored-order rule. -/
 def scalarComputationAuthoredExecutionSteps
     (steps : List (CheckedScalarComputationStep model)) :
     List (CheckedScalarComputationStep model) :=
-  scalarComputationAuthoredOrder steps.length steps
-
-/-- Steps none of which can run first: the list is nonempty and each member reads the target of
-another member. Following reads inside such a list must revisit a step, so it closes a cycle, and a
-step waiting on a cycle lies in one with it. -/
-def ScalarComputationStepsReadClosed
-    (stuck : List (CheckedScalarComputationStep model)) : Prop :=
-  stuck ≠ [] ∧ ∀ step ∈ stuck, ∃ other ∈ stuck,
-    other.targetField ≠ step.targetField ∧ step.referencesField other.targetField = true
+  computationAuthoredOrder CheckedScalarComputationStep.targetField
+    CheckedScalarComputationStep.referencesField steps.length steps
 
 /-- Why an authored plan is refused. It shares the run's structural gates, but a plan has no order
 error: after ordering, a step still reads a later target only where some of its steps are
