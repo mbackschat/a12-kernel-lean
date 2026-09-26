@@ -196,6 +196,61 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+### Inbound 2026-09-26m handback
+
+<a id="inbound-2026-09-26m-message-characters"></a>
+#### Reviewed 2026-09-26m message-character handback — a message's two character gates are the four line characters and Java's `\p{C}` asked per code point, on the rule's, the computation's and the field's message
+
+a12-dmkits revision `2c43d17e4e35381dff4017998990fbf05ed0e2ea` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26m`, frozen as sent in the user's exchange directory with SHA-256 `a7dc83578a1a3d61700787c9163b3ced88009f4d3486900132f6e63c88e3ce21`. The locks were read at that revision, not run here. It answers no ledger entry and creates none. Its §7 reports the peer's own records, and its §2 names a field message's parity and parameter classes as source-read and not yet measured; neither is recorded as a claim.
+
+**Claim.** Its §1 and §2 (`ErrorTextCharacterGateLawsTest`, `MessageTextControlCharacterLawsTest`), a rule at `/Claim` reporting on `Reference` beside a String `Code` whose `[A-Z]+` pattern carries the field message. On the rule's message `U+2029`, and `U+2028` beside a tab, draw `INVALID_LINEBREAK` alone; `NEL`, `U+FEFF`, `U+200E`, `U+E000` and the unassigned `U+0378` draw `INVALID_CHARACTERS`; a lone high surrogate, `U+F0000` and `U+E0001` draw the codeless repertoire refusal with `INVALID_CHARACTERS`, and `U+1F600` the refusal alone.
+
+The field's message draws the same two classes for each separator and each of tab, `NEL`, `U+200B`, `U+00AD`, `U+FEFF`, `U+200E`, `U+E000` and `U+0378`, admits `U+00A0`, answers a lone surrogate with `WRONG_ENCODING` and the refusal on the field, `U+F0000` and `U+E0001` with `INVALID_CHARACTERS` and the refusal on the field, and `U+1F600` with the refusal alone.
+
+`see $NoSuchField$` draws `INVALID_ENTITY`, beside `U+200B` `INVALID_CHARACTERS` alone and beside `U+2028` `INVALID_LINEBREAK` alone, and the unclosed `see $Reference` beside `U+200B` `INVALID_CHARACTERS` alone. A computation's message draws `INVALID_LINEBREAK` for `U+2029` and `INVALID_CHARACTERS` for `U+FEFF`. The predicates are the peer's source reading of the Kernel's message-text checks; this project confirmed on a local JDK 21 that its `\p{C}` matches `NEL`, `U+FEFF`, `U+200E`, `U+E000`, `U+0378`, `U+F0000`, `U+E0001` and a lone high surrogate, and not `U+2029`, `U+00A0` or `U+1F600`.
+
+**Lean.** Partly adopted. [`namedStringPatternDiagnostic?`](../A12Kernel/Elaboration/ValidationMessageDiagnostic.lean) now projects the field message's two classes, locked in [`StringPatternMessage`](../A12Kernel/Conformance/StringPatternMessage.lean), and [`ValidationMessageAuthoring`](../A12Kernel/Conformance/ValidationMessageAuthoring.lean) locks the separator and withholding rows. The shared control predicate still holds only C0, `DELETE` to the C1 block, soft hyphen and zero-width space, so it admits `U+FEFF`, `U+200E`, `U+E000` and `U+0378` and omits `INVALID_CHARACTERS` beside the supplementary rows, and the field message does not co-report the refusal; [SG25](gaps/strings-and-messages.md#gap-sg25) holds both behind the owner decision [`PLAN.md`](PLAN.md#active-unit) names. A computation's message template is not modelled.
+
+<a id="inbound-2026-09-26m-model-texts"></a>
+#### Reviewed 2026-09-26m model-text handback — the codeless repertoire refusal meets every text of a rule, a computation and a field or group's names, annotations and enumeration entries, once per element, but no label
+
+It shares the provenance of the message-character record above and takes the letter's §3.
+
+**Claim.** Its §3 (`ModelTextRepertoireLawsTest`), a rule at `/Claim` reporting on `Reference`, each text carrying `U+1F600` in turn with an `é` twin. The refusal names the rule for its condition's literal, comment and bare text, the last beside `MVK_LEXER_STANDARD_ERROR`, its error code, its name and its message; the computation, named a rule, for its operation's literal and comment, its common and alternative precondition, its name and its message; the field for its annotation name and value and an enumeration value and label, and beside `MVK_PATH_INVALID` for its name; and the nested group for its name, beside `MVK_PATH_INVALID` and repeated on its field and on a rule inside it, and for its annotation name and value.
+
+The model's, the group's and the field's labels, and a message or an enumeration label in the undeclared `de_DE`, are admitted. Two texts of one rule or one field draw one refusal; a lone high or low surrogate in a message draws it with `INVALID_CHARACTERS`. The `é` twins are admitted except outside a literal, `MVK_LEXER_STANDARD_ERROR`, and on the error code and the field name, which draw their own codeless laws where `U+1F600` draws the refusal alone.
+
+With `see 😀` as the message, `../NoSuchField` draws the refusal with `MVK_ERROR_FIELD_MISSING` and `MVK_MISSING_ERROR_FIELD`, `../Summary` the refusal with `MVK_ERROR_FIELD_NOT_REFERENCED`, and `variantFilter` `ONLY ["premium"]` is admitted, each beside a plain-message twin drawing the same without the refusal.
+
+**Lean.** No change. The rule message's refusal was already co-reported; condition, name, annotation and enumeration texts carry no repertoire check and a message has no locale, which [SG25](gaps/strings-and-messages.md#gap-sg25) records.
+
+<a id="inbound-2026-09-26m-error-target-paths"></a>
+#### Reviewed 2026-09-26m error-target handback — a declared error target takes `..` lexically from the rule element, and a group target is judged like an unnamed field except the rule's own group, which fails the build
+
+It shares the provenance of the message-character record above and takes the letter's §4.
+
+**Claim.** Its §4 (`ErrorFieldRelativePathLawsTest`, `kf284` extended), `/Order` holding a String `Code`, a group `Meta` holding a String `Ref`, and a repeatable `Lines`, each rule in `/Order` over `FieldFilled(Code)` unless placed otherwise. `../Meta/../Code` is admitted, `../Meta` and `../Meta/Ref/..` draw `MVK_ERROR_FIELD_NOT_REFERENCED`, `../Code/..` and `../../Order` fail the build, and `Code` draws `MVK_ERROR_FIELD_MISSING` with `MVK_MISSING_ERROR_FIELD`. From a rule in `/Order/Meta` over `FieldFilled(Ref)`, `../../Meta` fails the build and `../..` draws `MVK_ERROR_FIELD_NOT_REFERENCED`. A computation in `/Order` into `../Code` is admitted, and into `..` or `../Meta` fails the build. A failed build carries an internal exception's text and no class.
+
+**Lean.** Docstring only. [`ErrorFieldDeclaration`](../A12Kernel/Elaboration/ErrorTargetDeclaration.lean) now names the companion member class beside its missing class. Rule and computation targets are field identities, so no relative path or group reaches them, which [SG9](gaps/paths-and-groups.md#gap-sg9) and [SG4](gaps/keystone.md#gap-sg4) record.
+
+<a id="inbound-2026-09-26m-index-key-pattern"></a>
+#### Reviewed 2026-09-26m index-key handback — a String index key must meet its length bounds and its pattern, the pattern matched over code points
+
+It shares the provenance of the message-character record above and takes the letter's §5.
+
+**Claim.** Its §5 (`CheckerIndexKeyConstantAgreementTest`, `kf481`), each probe `Sum(<group>/Amount For "<key>") > 0` from the root, where an admitted key draws `MVK_PARAMSIZE_INVALIDN` and a refused one `MVK_INDEX_VALUE_INVALID`. Admitted against refused: over `[A-Z]+-[0-9]{2,3}` `AB-12` against `AB-1234` and `-12`, over `[^0-9]*` `abc` against `a1`, over `[a-z]?[0-9]*` `5` and `a` against `ab`, over `[0-9]{3,}` `123` against `12`, and over maximum length 3 with `[A-Z]+` `AB` against `ABCD` and `ab`. Over `.{2}` `ab` is admitted and `a` refused, and with maximum length 1 `ab` is refused. Over `[^0-9]{2}` `😀a` is admitted and `😀` refused, each beside the repertoire refusal. The peer read the length check as asked before the pattern.
+
+**Lean.** Docstring only. [`SemanticIndexAdmissionKey.constant`](../A12Kernel/Elaboration/SemanticIndexAdmission.lean) takes the key's fit as an input and now says what decides it for a String; deriving it is [SG9](gaps/paths-and-groups.md#gap-sg9)'s.
+
+<a id="inbound-2026-09-26m-marked-keyed-read"></a>
+#### Reviewed 2026-09-26m marked-keyed-read handback — a `$`-marked keyed read in a body draws the index class from a root rule reporting at the root too, and after the parse
+
+It shares the provenance of the message-character record above and takes the letter's §6.
+
+**Claim.** Its §6 (`CheckerFilterBodyAgreementTest`, `kf487`), on the `-26d` claims policy with each rule at the root. Reporting on `Reference`, `Sum(Claims*/Paid Having [Claims/Units] > 1 And [$Orders/Note For "A"] == "x") > 0` draws `MVK_SEMANTIC_INDEX_NOT_ALLOWED`. Reporting on `Claims/Notes`, `Sum(Parties*/Count Having [Parties/Name] == [$Orders/Note For "A"]) > 0 And Sum(Parties*/Count Having [Orders/Note] == "y") > 0` draws `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` alone.
+
+**Lean.** No change. A filter reference carries no key, so neither row has a spelling.
+
 ### Inbound 2026-09-26l handback
 
 <a id="inbound-2026-09-26l-repeatable-root"></a>
