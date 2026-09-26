@@ -174,9 +174,9 @@ example :
 
 /- A category the Enumeration does not declare is refused as the slot is read, ahead of every list
    gate: beside a String, a Number, a Date or a DateRange, repeated, and on the count carrier that
-   asks the category gate first. No entity-list row reads it; the class is measured at a comparison
-   and a value list, and its position here rests on the peer's source reading that the category
-   check answers wherever the operand's spec stands. -/
+   asks the category gate first. On an entity list the class is measured on the value-list
+   quantifier's field list alone, so its position on these carriers rests on the peer's source
+   reading that the category check answers wherever the operand's spec stands. -/
 example :
     [notUnique (category "Tier" "Nope") [field "Label"],
       distinct (category "Tier" "Nope") [field "Label"],

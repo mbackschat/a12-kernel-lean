@@ -8,8 +8,9 @@ A group operand is its fields, and the kind gates read them in one order: depth-
 order, a subgroup's fields standing at the subgroup's position and an index field at its own. The
 peer's `EntityListGroupExpansionKindLawsTest` rows fix that order on the Kernel
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-26i-expansion-order)); here the fixture lists its
-fields in that same order, which is the representation contract `FlatModel.fields` states, and every
-row is one of the peer's on the same shape. Each positional row separates an account: a later field
+fields depth-first, the representation contract `FlatModel.fields` states, and every row is one of
+the peer's on groups of the same kinds and nesting, whose names and root-level order differ from
+the peer's without any locked row depending on them. Each positional row separates an account: a later field
 leading, an index field leading wherever declared, direct fields expanded ahead of a subgroup's, or a
 subgroup's ahead of direct fields.
 -/

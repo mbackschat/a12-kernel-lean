@@ -597,4 +597,21 @@ example :
       | .error error => error.diagnostic?) = some .varyingTypesNotAllowed := by
   native_decide
 
+/- **A category the Enumeration does not declare is read with the operand, ahead of the duplicate
+   gate**, first or after a repeated String, against a declared category meeting that gate
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). -/
+example :
+    let verdict (fields : SurfaceFieldEntitySource) : Option (Option KernelStaticDiagnostic) :=
+      match elaborateTokenEntityStringLiteralValueListSource readGateModel ["Probe"]
+          { quantifier := .atLeastOne, fields, values := ["a"] } with
+      | .ok _ => none
+      | .error error => some error.diagnostic?
+    let grade (category : String) : SurfaceFieldEntityOperand :=
+      .field { base := .absolute, groups := ["Probe"], field := "Grade" } (.projected category)
+    [verdict { first := grade "Nope", rest := [field "Email", field "Email"] },
+      verdict { first := field "Email", rest := [field "Email", grade "Nope"] },
+      verdict { first := grade "Band", rest := [field "Email", field "Email"] }] =
+      [some (some .categoryUnknown), some (some .categoryUnknown), some (some .duplicateParam1)] := by
+  native_decide
+
 end A12Kernel.Conformance.ValueListQuantifierKindGate

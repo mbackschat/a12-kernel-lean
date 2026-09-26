@@ -261,8 +261,10 @@ example :
   native_decide
 
 /- Every operand is read before the scalar slot's gate: a starred scalar beside a list operand that
-   does not resolve draws the resolver's class, as the Kernel's index read of a value-slot operand
-   answers ahead of that gate ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). -/
+   does not resolve draws the resolver's class. The measured row reads an index that cannot be read
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)), which this surface cannot
+   spell; the resolver's miss stands in for it as a failure of the same read, an assumption SG6
+   records. -/
 example :
     (pluralAdmissionError? (.star (star "Window")) (direct "Nope")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? =

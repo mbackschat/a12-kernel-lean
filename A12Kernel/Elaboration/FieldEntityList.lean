@@ -535,9 +535,11 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- gate: it is the second gate of the category check the non-Enumeration class opens
   -- ([`kf359`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359)), and beside a Number in a value
   -- list it pre-empts the varying-types gate (the 2026-09-18 extension under
-  -- [`kf106`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf106)). No entity-list row reads it; its position there rests
-  -- on the peer's source reading that the check answers wherever the operand's spec stands
-  -- ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
+  -- [`kf106`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf106)). On an entity list it is
+  -- measured on the value-list quantifier's field list, ahead of the duplicate gate
+  -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)); on the other carriers its
+  -- position rests on the peer's source reading that the check answers wherever the operand's spec
+  -- stands ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
   let categoryRead (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
       Except FieldEntityShapeElabError Unit :=
     match form, declaration.categoryReadRefusal? with

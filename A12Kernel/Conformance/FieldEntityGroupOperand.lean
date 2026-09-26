@@ -136,8 +136,8 @@ a nonrepeatable group must not, and the two refusals are distinct classes rather
 example : diagnostic? [group ["Probe", "Rows"]] = some .noWildcard := by
   native_decide
 
-/- From a rule inside `Rows` the walk passes the read, and this carrier refuses the unstarred group
-   without a class: no row reads an entity list from inside the group it names. -/
+/- From inside `Rows` the walk passes and this carrier refuses without a class: no entity-list row
+   read from inside its group is known in this repository or the peer's letters through `-26k`. -/
 example :
     (elaborateNumberValuesNotUniqueSource probeModel ["Probe", "Rows"]
         { first := group ["Probe", "Rows"], rest := [] }).toOption.isNone ∧

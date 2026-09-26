@@ -35,9 +35,11 @@ namespace FlatRuleAssemblyError
 
     The level is not attributed to the operand that derived it. The DateRange and marked-filter
     readers are measured to follow the walk
-    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)); a
-    repetition key's level, and an error field with repeatable levels of its own, take the class
-    unmeasured ([SG9](../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)).
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)),
+    and a repetition key's level is walked at the key itself, measured from a host outside it
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)); an error field with
+    repeatable levels of its own takes the class unmeasured
+    ([SG9](../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)).
     An error field in a sibling repeatable scope inside the rule group is not a prefix and does not
     count. -/
 def unboundLevel? (model : FlatModel) (ruleGroup : GroupPath) :

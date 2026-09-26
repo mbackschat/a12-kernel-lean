@@ -1,6 +1,6 @@
 # Archived inbound handback checkpoints of 2026-09-26b and 2026-09-26c
 
-This immutable archive contains the 5 terminal inbound handback receipts reviewed from the peer's `-2026-09-26b` and `-2026-09-26c` letters, frozen when [`../SOURCES.md`](../SOURCES.md) neared its 200,000-byte hub ceiling. Every obligation they recorded already lives in its gap owner. Stable `inbound-` anchors remain authoritative here, and every original `SOURCES.md#inbound-…` citation still resolves through the compatibility entry the hub keeps.
+This immutable archive contains the 5 terminal inbound handback receipts reviewed from the peer's `-2026-09-26b` and `-2026-09-26c` letters, frozen when [`../SOURCES.md`](../SOURCES.md) neared its 195,000-byte archiving threshold. Every obligation they recorded already lives in its gap owner. Stable `inbound-` anchors remain authoritative here, and every original `SOURCES.md#inbound-…` citation still resolves through the anchor the hub keeps.
 
 ### Inbound 2026-09-26c handback
 
