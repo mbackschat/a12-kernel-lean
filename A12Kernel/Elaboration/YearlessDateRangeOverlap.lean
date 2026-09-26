@@ -42,6 +42,10 @@ inductive YearlessDateRangesOverlapElabError where
   | notYearless (path : List String) (format separator : String)
   | unsupportedReadForm (path : List String) (form : FieldEntityReadForm)
   | groupsNotAllowed (path : GroupPath)
+  /-- A plural scalar slot holding a star, a filtered star or a group. The canonical route's slot draws
+  `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON`, but no row places such an operand in this
+  route's slot, so no class is claimed. -/
+  | pluralScalarNotDirect (path : List String)
   deriving Repr, DecidableEq
 
 /-- One direct stored field whose declaration is yearless in a model with no Base Year. -/
@@ -100,7 +104,7 @@ def YearlessDateRangesOverlapElabError.diagnostic? :
   | .source cause => cause.diagnostic?
   | .groupsNotAllowed _ => some KernelStaticDiagnostic.noGroupsAllowed
   | .baseYearConfigured _ | .notYearless _ _ _
-  | .unsupportedReadForm _ _ => none
+  | .unsupportedReadForm _ _ | .pluralScalarNotDirect _ => none
 
 namespace CheckedYearlessDateRangeOverlapField
 

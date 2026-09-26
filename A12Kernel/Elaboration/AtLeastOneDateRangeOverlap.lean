@@ -342,12 +342,11 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     match scalarOperand with
     | .field declaration .stored => pure declaration
     | .field declaration form => throw (.unsupportedReadForm declaration.path form)
-    | .star source => throw (.groupsNotAllowed source.declaration.groupPath)
-    | .starHaving source _ =>
-        throw (.groupsNotAllowed source.declaration.groupPath)
-    | .group reference => throw (.groupsNotAllowed reference.path)
-    | .starredGroup source => throw (.groupsNotAllowed source.group.path)
-    | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)
+    | .star source => throw (.pluralScalarNotDirect source.declaration.path)
+    | .starHaving source _ => throw (.pluralScalarNotDirect source.declaration.path)
+    | .group reference => throw (.pluralScalarNotDirect reference.path)
+    | .starredGroup source => throw (.pluralScalarNotDirect source.group.path)
+    | .starredGroupPresence source => throw (.pluralScalarNotDirect source.groupPath)
   let scalar ← certifyYearlessDateRangeOverlapField model scalarDeclaration
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
       first := authored.scalar

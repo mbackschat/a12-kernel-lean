@@ -277,8 +277,9 @@ example :
 
 /- The plural route reads its list before the scalar's own gate, as the canonical route does
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)): a starred scalar beside a list
-   operand that does not resolve draws the resolver's class, and beside a resolvable one the
-   scalar's own refusal. -/
+   operand that does not resolve draws the resolver's class. Beside a resolvable one the scalar's own
+   refusal claims no class, since no row places a star in this route's scalar slot and the singular
+   operator's measured group class is another operator's gate. -/
 private def pluralRefusal? (listed : String) : Option (Option KernelStaticDiagnostic) :=
   match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model ["Form"] [] {
       scalar := periodStar
@@ -288,8 +289,7 @@ private def pluralRefusal? (listed : String) : Option (Option KernelStaticDiagno
 
 example :
     pluralRefusal? "Nope" = some (some .invalidEntity) ∧
-    (pluralRefusal? "MonthSlash").isSome ∧
-    pluralRefusal? "MonthSlash" ≠ some (some .invalidEntity) := by
+    pluralRefusal? "MonthSlash" = some none := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap
