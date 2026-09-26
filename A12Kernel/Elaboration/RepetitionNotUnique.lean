@@ -71,6 +71,10 @@ inductive RepetitionNotUniqueElabError where
   | rawStringValue (path : List String)
   | customStringRequiresPreparedChecking (path : List String)
   | missingReferenceGroup (keyPath : List String)
+  /-- A rule at a repeatable root whose keys all sit directly in a root group. The Kernel skips its
+  repeatable-group gate for this shape, read from its source and measured by no row, and this theory
+  has no reference group to evaluate it against. -/
+  | repeatableRootKeys (keyPath : List String)
   /-- Without a scope, a key above the default reference group the deepest key selects. -/
   | keyOutsideDefaultReferenceGroup (referenceGroup keyGroup : GroupPath)
   | scopeIsField (path : List String)
@@ -88,9 +92,9 @@ namespace RepetitionNotUniqueElabError
 
 /-- Project the measured `RepetitionNotUnique` key-admission classes. Every key is read first, a key that does not resolve drawing the shared resolver's class ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)) and one the reading-scope walk refuses drawing the walk's; the list's duplicate gate comes next, a key named twice before a group holding another key ([`kf388`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf388)), then its own gates, each over the whole list, then exactly one branch: with `@From` the scope is read and must be a group that repeats and holds every key, without it the shared-path, rule-group and repeatable-group gates run ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)).
 
-Three shapes draw `MVK_REPEATABLE_GROUP_MISSING`: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group. The walk's missing-star class is measured on a key and on a scope; its index and containment classes on either are the shared read's, and a group named twice or the root beside a key takes the duplicate class measured on the other list carriers, assumptions [SG9](../../docs/gaps/paths-and-groups.md#gap-sg9) records. An empty scope claims no class: the measured one is a fixed group ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-empty-scope)), which this model cannot hold, while the empty repeatable group it can hold meets the walk as well, and no row fixes which of the two answers first.
+Three shapes draw `MVK_REPEATABLE_GROUP_MISSING`: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group, unless that group is a repeatable root holding every key directly. The walk's missing-star class is measured on a key and on a scope; its index and containment classes on either are the shared read's, and a group named twice or the root beside a key takes the duplicate class measured on the other list carriers, assumptions [SG9](../../docs/gaps/paths-and-groups.md#gap-sg9) records. An empty scope claims no class: the measured one is a fixed group ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-empty-scope)), which this model cannot hold, while the empty repeatable group it can hold meets the walk as well, and no row fixes which of the two answers first.
 
-Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. A custom String key needing prepared checking and an unsupported key kind are this theory's value-reading limits, and diverging key groups its topology limit, not Kernel gates. `model` is routing rather than a key refusal, and `incoherentCore` is the unreachable-by-construction arm. The rest are Kernel refusals whose class this carrier has no evidence for. -/
+Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. A custom String key needing prepared checking and an unsupported key kind are this theory's value-reading limits, diverging key groups its topology limit, and a repeatable root's direct keys its reference-group limit, not Kernel gates. `model` is routing rather than a key refusal, and `incoherentCore` is the unreachable-by-construction arm. The rest are Kernel refusals whose class this carrier has no evidence for. -/
 def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .resolve error => error.diagnostic?
   | .keyReadRefused _ unbound | .scopeReadRefused _ unbound => unbound.diagnostic?
@@ -105,7 +109,7 @@ def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .keyOutsideRuleGroup _ => some .notInRuleGroup
   | .keyPathMismatch _ _ | .missingReferenceGroup _ =>
       some .repeatableGroupMissing
-  | .model _ | .scope _ | .scopeIsEmpty _ | .keyGroupsDiverge _ _
+  | .model _ | .scope _ | .scopeIsEmpty _ | .keyGroupsDiverge _ _ | .repeatableRootKeys _
   | .keyOutsideDefaultReferenceGroup _ _
   | .unsupportedKeyKind _ _ | .customStringRequiresPreparedChecking _
   | .path _ | .incoherentCore => none
@@ -417,7 +421,12 @@ private def resolveDefaultReferenceGroup (model : FlatModel) (declaringGroup : G
   | first :: rest =>
       let terminal ← deepestKeyDeclaration model first rest
       match model.defaultRepetitionReferenceGroup? declaringGroup terminal.groupPath with
-      | none => throw (.missingReferenceGroup terminal.path)
+      | none =>
+          if declaringGroup.length == 1 &&
+              model.repeatableGroups.any (·.path == declaringGroup) &&
+              declarations.all (·.groupPath.length == 1) then
+            throw (.repeatableRootKeys terminal.path)
+          else throw (.missingReferenceGroup terminal.path)
       | some group =>
           match firstKeyGroupOutside? group.path declarations with
           | none => pure (terminal, group)

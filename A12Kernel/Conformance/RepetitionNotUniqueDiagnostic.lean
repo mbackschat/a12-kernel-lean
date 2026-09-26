@@ -405,4 +405,31 @@ example :
       some (some .notInRuleGroup) := by
   native_decide
 
+/-- A root `Ledger` holding `Key` directly and `Entry` in its fixed `Detail`, repeatable or not. -/
+private def ledgerModel (repeatable : Bool) : FlatModel :=
+  let scope := if repeatable then [20] else []
+  { fields := [
+      { id := 1, groupPath := ["Ledger"], name := "Key", policy := { kind := .string },
+        repeatableScope := scope },
+      { id := 2, groupPath := ["Ledger", "Detail"], name := "Entry", policy := { kind := .string },
+        repeatableScope := scope }]
+    repeatableGroups := if repeatable then [{ level := 20, path := ["Ledger"] }] else [] }
+
+private def ledgerVerdict (repeatable : Bool) (first : SurfaceFieldPath) :
+    Option (Option KernelStaticDiagnostic) :=
+  match CheckedValidationCondition.fromRepetitionNotUnique (ledgerModel repeatable) ["Ledger"]
+      { firstKey := first, restKeys := [] } ["Ledger"] with
+  | .ok _ => none
+  | .error (.repetitionNotUnique error) => some error.diagnostic?
+  | .error _ => some none
+
+/- A rule at a repeatable root whose keys all sit directly in a root group skips the Kernel's
+   repeatable-group gate, a source reading no row measures, so the shape claims no class. A fixed root
+   is the measured sole-key shape, and a key one group deeper is outside the exemption. -/
+example :
+    ledgerVerdict true (rel [] "Key") = some none ∧
+    ledgerVerdict false (rel [] "Key") = some (some .repeatableGroupMissing) ∧
+    ledgerVerdict true (rel ["Detail"] "Entry") = some (some .repeatableGroupMissing) := by
+  native_decide
+
 end A12Kernel.Conformance.RepetitionNotUniqueDiagnostic
