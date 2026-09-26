@@ -5,15 +5,36 @@ import A12Kernel.Proofs.ValidationRule
 
 namespace A12Kernel
 
+/-- A source whose repertoire check fails is refused with the first unsupported character, and the
+producer's own first failure, when it has one, stands beside it rather than being dropped or
+replaced: the co-reporting both message producers share. -/
+theorem withMessageRepertoire_repertoireFailure {α : Type}
+    (source : String) (checked : Except ValidationMessageTemplateError α) (character : Char)
+    (failure : firstUnsupportedMessageTemplateCharacter? source = some character) :
+    withMessageRepertoire source checked =
+      .error (match checked with
+        | .ok _ => .unsupportedCharacter character
+        | .error cause => .unsupportedCharacterWithError character cause) := by
+  unfold withMessageRepertoire
+  rw [failure]
+  cases checked <;> rfl
+
+/-- A source whose repertoire check passes keeps the producer's own result unchanged. -/
+theorem withMessageRepertoire_repertoirePass {α : Type}
+    (source : String) (checked : Except ValidationMessageTemplateError α)
+    (pass : firstUnsupportedMessageTemplateCharacter? source = none) :
+    withMessageRepertoire source checked = checked := by
+  unfold withMessageRepertoire
+  rw [pass]
+
 /-- The repertoire composition never admits a source whose repertoire check fails, whatever the
 producer's own result was. -/
 theorem withMessageRepertoire_repertoireFailure_refused {α : Type}
     (source : String) (checked : Except ValidationMessageTemplateError α) (character : Char)
     (failure : firstUnsupportedMessageTemplateCharacter? source = some character) :
     (withMessageRepertoire source checked).isOk = false := by
-  unfold withMessageRepertoire
-  rw [failure]
-  cases checked <;> rfl
+  rw [withMessageRepertoire_repertoireFailure source checked character failure]
+  rfl
 
 /-- Co-reporting never admits a template whose repertoire check fails, even when every parameter checks. -/
 theorem validationMessageTemplate_repertoireFailure_refused

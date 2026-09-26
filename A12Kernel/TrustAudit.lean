@@ -2877,5 +2877,7 @@ run_cmd do
 #print axioms A12Kernel.roundingArgument_overflow_iff
 #print axioms A12Kernel.roundingArgument_scale_refusal_iff
 #print axioms A12Kernel.fieldValueAsNumberSource_diagnostic_iff
+#print axioms A12Kernel.withMessageRepertoire_repertoireFailure
+#print axioms A12Kernel.withMessageRepertoire_repertoirePass
 #print axioms A12Kernel.withMessageRepertoire_repertoireFailure_refused
 #print axioms A12Kernel.validationMessageTemplate_repertoireFailure_refused
