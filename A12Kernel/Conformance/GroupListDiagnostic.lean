@@ -31,11 +31,13 @@ private def probeModel : FlatModel :=
       { id := 4, groupPath := ["Probe", "Rows"], name := "RowVal",
         policy := { kind := .number unsigned }, repeatableScope := [10] },
       { id := 5, groupPath := ["Other"], name := "OtherVal",
-        policy := { kind := .number unsigned } }]
+        policy := { kind := .number unsigned } },
+      { id := 6, groupPath := ["Lot"], name := "Serial",
+        policy := { kind := .number unsigned }, repeatableScope := [40] }]
     -- `Hollow` declares no field anywhere below it, which a repeatable declaration can express.
     repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] },
       { level := 20, path := ["Probe", "Hollow"] },
-      { level := 30, path := ["Archive"] }] }
+      { level := 30, path := ["Archive"] }, { level := 40, path := ["Lot"] }] }
 
 private def group (groups : GroupPath) : SurfaceGroupListOperand :=
   .group (.path { base := .absolute, groups })
@@ -305,16 +307,21 @@ private def countAtDiagnostic? (rowGroup : GroupPath) (operands : List SurfaceGr
   | .error error => some error.groupCountDiagnostic?
 
 /- From a rule inside `Rows` the walk passes a read of `Rows` itself, so the missing-star class is
-   not the Kernel's there: a sole count draws the count's arity class, a paired one the
-   negative-condition class unguarded and admission guarded
+   not the Kernel's there: a sole count meets the count's arity, a paired one the negative-condition
+   class unguarded and admission guarded
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
-   [inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). The comparison route, which sees
-   no guard, refuses without a class; from the root the walk refuses and draws the missing star. -/
+   [inbound](../../docs/SOURCES.md#inbound-2026-09-26j-count-star)). The comparison route, which sees
+   no guard, refuses the pair without a class. From the root the walk refuses, and a lone repeatable
+   group, a repeatable root included, draws the missing star ahead of arity, which a lone fixed group
+   meets. -/
 example :
     let g (gs : GroupPath) : SurfaceGroupCountOperand := .fixed (.path { base := .absolute, groups := gs })
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some none ∧
-    countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"]] = some none ∧
+    countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"]] = some (some .paramSizeInvalidGN) ∧
     countAtDiagnostic? ["Probe"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some (some .noWildcard) ∧
+    countAtDiagnostic? ["Probe"] [g ["Probe", "Rows"]] = some (some .noWildcard) ∧
+    countAtDiagnostic? ["Probe"] [g ["Lot"]] = some (some .noWildcard) ∧
+    countAtDiagnostic? ["Probe"] [g ["Probe", "B"]] = some (some .paramSizeInvalidGN) ∧
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "B"], g ["Probe", "A"]] = none := by
   native_decide
 

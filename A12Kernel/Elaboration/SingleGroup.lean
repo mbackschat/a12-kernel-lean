@@ -236,11 +236,11 @@ inductive FixedGroupReferenceError where
   | unknownRootGroup (path : GroupPath)
   | repeatableGroupRequiresAddress (path : GroupPath)
   /-- A repeatable group, or a group below one, whose read the walk passed and this carrier still
-  refuses. The Kernel's classes there are the error-locus matrix's, which this carrier does not own:
-  from inside the group a sole count draws the count's arity class, a paired one the
-  negative-condition class unguarded and admission guarded
+  refuses. The Kernel's classes there are the error-locus matrix's, which this resolver does not own:
+  from inside the group a sole count draws the count's arity class, which the count projects, and a
+  paired one the negative-condition class unguarded and admission guarded
   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
-  [inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). -/
+  [inbound](../../docs/SOURCES.md#inbound-2026-09-26j-count-star)). -/
   | walkedRepeatableGroupUnsupported (path : GroupPath)
   /-- A computation's fixed group operand whose repeatable levels a fixed target cannot bind. -/
   | unboundOperandLevel (path : GroupPath) (unbound : UnboundOperandLevel)

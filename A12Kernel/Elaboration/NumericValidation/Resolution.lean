@@ -197,8 +197,15 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
             throw (NumericValidationElabError.starredGroupCountOperand
               ((SurfaceGroupCountOperand.firstStarred? operands).getD
                 { base := .absolute, groups := [] }))
-      let groups ← model.resolveValidationBoundFixedGroupReferences rowGroup writtenGroup surfaces
-        |>.mapError NumericValidationElabError.groupReference
+      let groups ←
+        match model.resolveValidationBoundFixedGroupReferences rowGroup writtenGroup surfaces with
+        | .ok groups => pure groups
+        -- A lone repeatable group whose read the walk passed meets the count's arity, as a lone
+        -- fixed group does ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26j-count-star)).
+        | .error error =>
+            if error matches .walkedRepeatableGroupUnsupported _ && surfaces.length == 1 then
+              throw .groupCountNeedsMultipleOperands
+            else throw (.groupReference error)
       if groups.length < 2 then
         throw .groupCountNeedsMultipleOperands
       match ResolvedGroupReferences.firstOverlap? groups with
