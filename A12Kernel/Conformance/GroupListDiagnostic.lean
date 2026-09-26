@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationCondition
+import A12Kernel.Elaboration.ValidationRule
 
 /-! # A12Kernel.Conformance.GroupListDiagnostic — group-list admission diagnostic identity
 
@@ -33,7 +34,8 @@ private def probeModel : FlatModel :=
         policy := { kind := .number unsigned } }]
     -- `Hollow` declares no field anywhere below it, which a repeatable declaration can express.
     repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] },
-      { level := 20, path := ["Probe", "Hollow"] }] }
+      { level := 20, path := ["Probe", "Hollow"] },
+      { level := 30, path := ["Archive"] }] }
 
 private def group (groups : GroupPath) : SurfaceGroupListOperand :=
   .group (.path { base := .absolute, groups })
@@ -314,6 +316,49 @@ example :
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"]] = some none ∧
     countAtDiagnostic? ["Probe"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some (some .noWildcard) ∧
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "B"], g ["Probe", "A"]] = none := by
+  native_decide
+
+/-- The whole rule `FieldFilled(A/AVal) And GroupFilled(<group>)` at the root: the presence carrier
+    passes a repeatable group to rule assembly, which projects the walk's class. -/
+private def presenceRuleClass (groups : GroupPath) : Option (Option KernelStaticDiagnostic) :=
+  match CheckedValidationCondition.fromGroupPresence probeModel ["Probe"]
+      (.path { base := .absolute, groups }) .filled with
+  | .error error => some error.groupListDiagnostic?
+  | .ok presence =>
+      match (elaborate probeModel ["Probe"]
+          (.fieldFilled { base := .relative 0, groups := ["A"], field := "AVal" })).toOption.bind
+          (CheckedValidationCondition.fromFlat · |>.toOption) with
+      | none => some none
+      | some guard =>
+          match guard.and presence with
+          | .error _ => some none
+          | .ok whole =>
+              match assembleResolvedValidationRule probeModel whole 1 "EMPTY" .error
+                  { parts := [] } with
+              | .ok _ => none
+              | .error error => some error.diagnostic?
+
+/- An empty group's missing star answers ahead of its emptiness: the empty repeatable `Hollow`,
+   unstarred, draws the walk's class through presence, a quantifier and the count, and so does the
+   empty repeatable root `Archive`; starred, their reads pass and the emptiness answers, the root with
+   its own class ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-empty-star)). The root class is
+   measured on the count; the quantifier reads the operand by the same check, an assumption SG9
+   records. -/
+example :
+    let hollow : SurfaceGroupCountOperand := .fixed (.path { base := .absolute, groups := ["Probe", "Hollow"] })
+    let b : SurfaceGroupCountOperand := .fixed (.path { base := .absolute, groups := ["Probe", "B"] })
+    let archiveStar : SurfaceGroupListOperand :=
+      .starredGroup { base := .absolute, groups := [{ name := "Archive", starred := true }] }
+    presenceRuleClass ["Probe", "Hollow"] = some (some .noWildcard) ∧
+    presenceRuleClass ["Archive"] = some (some .noWildcard) ∧
+    diagnostic? .atLeastOneGroupFilled [group ["Probe", "Hollow"], group ["Probe", "B"]] =
+      some .noWildcard ∧
+    countOperandsDiagnostic? [hollow, b] = some .noWildcard ∧
+    starredCountDiagnostic? [.starred (.terminallyStarred .absolute ["Probe", "Hollow"])] =
+      some .groupIsEmpty ∧
+    starredCountDiagnostic? [.starred (.terminallyStarred .absolute ["Archive"])] =
+      some .rootGroupIsEmpty ∧
+    diagnostic? .atLeastOneGroupFilled [archiveStar] = some .rootGroupIsEmpty := by
   native_decide
 
 end A12Kernel.Conformance.GroupListDiagnostic

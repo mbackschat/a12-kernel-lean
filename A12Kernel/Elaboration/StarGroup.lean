@@ -32,12 +32,15 @@ group-list quantifiers, and the group count on both arms
 ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group),
 [inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads),
 [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
-The read precedes every list gate, the quantifiers' star gate included. An empty **root**
-draws a different code, measured only on a nonrepeatable root this model cannot express, so a
-starred root projects nothing rather than borrowing either code. -/
+The read precedes every list gate, the quantifiers' star gate included. An empty **root** draws
+its own class, measured on the group count's starred repeatable root
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-empty-star)) and on a nonrepeatable root's
+presence; the other carriers read the root by the same check, an assumption
+[SG9](../../docs/gaps/paths-and-groups.md#gap-sg9) records. -/
 def StarredGroupElabError.emptyGroupDiagnostic? :
     StarredGroupElabError → Option KernelStaticDiagnostic
-  | .groupHasNoFields groupPath => if groupPath.length == 1 then none else some .groupIsEmpty
+  | .groupHasNoFields groupPath =>
+      some (if groupPath.length == 1 then .rootGroupIsEmpty else .groupIsEmpty)
   | .resolve _ | .invalidGroupReference _ | .unknownGroup _ | .unknownRootGroup _ | .path _
   | .incoherentCore => none
 
