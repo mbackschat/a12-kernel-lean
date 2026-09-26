@@ -319,6 +319,7 @@ example :
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some none ∧
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"]] = some (some .paramSizeInvalidGN) ∧
     countAtDiagnostic? ["Probe"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some (some .noWildcard) ∧
+    countAtDiagnostic? ["Probe"] [g ["Probe", "B"], g ["Probe", "Rows"]] = some (some .noWildcard) ∧
     countAtDiagnostic? ["Probe"] [g ["Probe", "Rows"]] = some (some .noWildcard) ∧
     countAtDiagnostic? ["Probe"] [g ["Lot"]] = some (some .noWildcard) ∧
     countAtDiagnostic? ["Probe"] [g ["Probe", "B"]] = some (some .paramSizeInvalidGN) ∧

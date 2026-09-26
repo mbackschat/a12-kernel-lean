@@ -745,10 +745,13 @@ example :
         some (firstTwoFired .value)] := by
   native_decide
 
-/- A control whose plates differ fires nothing. -/
+/- A control whose plates differ fires nothing, whichever of the three rules reads it. -/
 example :
-    fleetVerdicts? (fleetRule? ["Plate", "Vin"]) distinctPlates =
-      some [([(20, 1)], .notFired), ([(20, 2)], .notFired), ([(20, 3)], .notFired)] := by
+    [fleetVerdicts? (fleetRule? ["Plate", "Vin"]) distinctPlates,
+      fleetVerdicts? (fleetRule? ["Plate"]) distinctPlates,
+      fleetVerdicts? (fleetRule? ["Plate"] rootScope) distinctPlates] =
+      List.replicate 3
+        (some [([(20, 1)], .notFired), ([(20, 2)], .notFired), ([(20, 3)], .notFired)]) := by
   native_decide
 
 private def licences : DocumentData :=

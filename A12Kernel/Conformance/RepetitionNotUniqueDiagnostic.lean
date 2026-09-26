@@ -426,6 +426,18 @@ example :
       some (some .noWildcard) := by
   native_decide
 
+/- Emptiness is asked once the scope's walk passes, which a flat model allows only for a rule
+   declared in the empty repeatable group itself; that refusal claims no class, since the measured
+   empty scopes whose read passes are a fixed group and a starred one. -/
+example :
+    (match CheckedValidationCondition.fromRepetitionNotUnique policyModel ["Policy", "Vacant"]
+        { firstKey := key ["Policy"] "Reference", restKeys := [],
+          scope := .from (.path { base := .absolute, groups := ["Policy", "Vacant"] }) }
+        ["Policy", "Vacant"] with
+      | .error (.repetitionNotUnique (.scopeIsEmpty ["Policy", "Vacant"])) => true
+      | _ => false) = true := by
+  native_decide
+
 /- An outsider in a repetition nothing addresses is refused at its read, ahead of the rule-group
    gate a clean outsider meets. -/
 example :
