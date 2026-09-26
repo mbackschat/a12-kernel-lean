@@ -580,6 +580,9 @@ inductive ResolveError where
   -- declaration it resolved to.
   | rawFieldValueRead (path : List String)
   | partialDateFieldValueRead (path : List String)
+  -- `categoryReadOfNonEnumeration`: a category read `[F -> C]` whose field declares no Enumeration,
+  -- asked once the read's group gate passes.
+  | categoryReadOfNonEnumeration (path : List String)
   deriving Repr, DecidableEq
 
 /-- The Kernel class a resolution failure reports, projected once for every wrapping error type.
@@ -611,7 +614,11 @@ a computation
 The field-value read's group arm was measured on 2026-09-25 on rule comparisons, a scalar value-list
 member, a filter body and a computation operation, a root group drawing the group class as any other
 group does, and its raw and partial-Date arms on those carriers but a filter body
-([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)). -/
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+The category read's non-Enumeration arm was measured on 2026-09-25 on a comparison, a membership's
+subject and member, a value list's side and two computation sources, answering ahead of a raw or
+partially known field's value gates and of an unknown category
+([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .repeatableReference _ => some .noWildcard
   | .unboundOperandLevel _ unbound => unbound.diagnostic?
@@ -625,6 +632,7 @@ def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
   | .groupInFieldValueRead _ none _ => some .noGroupsAllowed
   | .rawFieldValueRead _ => some .rawTypeOperandInvalid
   | .partialDateFieldValueRead _ => some .invalidDateType
+  | .categoryReadOfNonEnumeration _ => some .noEnumeration
   | _ => none
 
 /-- The misses a field resolver reports for a path naming a group, which a group-reading site
@@ -658,6 +666,9 @@ inductive ElabError where
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | textFieldOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | emptyValueList (path : List String)
+  /-- A multi-field list's operand naming a group, which the Kernel expands and the token entity-list
+      route represents; this flat route does not, so it refuses without a class. -/
+  | groupOperandOutsideTokenRoute (path : GroupPath)
   | emptyValueListFields
   | emptyValueListValueFields
   | duplicateValueListField (path : List String)

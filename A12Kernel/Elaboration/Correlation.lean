@@ -96,6 +96,12 @@ inductive CorrelationElabError where
   | disjunctionOutsideStarRoute
   | fieldOutsideGroup (origin : HavingOrigin)
       (fieldPath expectedGroup : List String)
+  /-- A leaf outside the filtered group beside a leaf reading one of its Number fields. The Kernel
+      admits it as a constant ([`spec/07`](../../spec/07-repetition-and-iteration.md),
+      [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)),
+      which the legacy one-group route does not represent, so it refuses without a class. -/
+  | constantLeafBesideIteratedLeaf (origin : HavingOrigin)
+      (fieldPath expectedGroup : List String)
   | fieldScopeMismatch (fieldPath : List String)
       (expected actual : List RepeatableLevel)
   | fieldOutsideEnvironment (origin : HavingOrigin) (fieldPath : List String)
@@ -168,6 +174,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   -- does not carry; the rest are routing, an unmeasured operator gate, or unreachable by
   -- construction.
   | .invalidGroupReference _ | .fieldScopeMismatch _ _ _ | .equalityFieldNotNumber _ _
+  | .constantLeafBesideIteratedLeaf _ _ _
   | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .unsupportedOperator _
   | .missingOuter | .errorGuardMismatch _ _
@@ -375,13 +382,29 @@ private def FlatModel.resolveHavingNumberRead (model : FlatModel) (declaringGrou
   | some field => pure { declaration, core := { origin, field } }
   | none => throw (.fieldNotNumber declaration.path declaration.policy.kind.surfaceKind)
 
+/-- Whether an unmarked leaf of the body reads a Number field of the filtered group. A marked
+    reference reads the captured outer row, not the level the filter reopens. -/
+private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declaringGroup : GroupPath)
+    (group : RepeatableGroupDecl) : SurfaceCorrelatedHaving → Bool
+  | .compareNumbers _ left right =>
+      [left, right].any fun reference =>
+        reference.origin == .inner &&
+          (model.resolveNumberInGroup declaringGroup group reference.field).isOk
+  | .and left right | .or left right =>
+      left.readsGroupNumber model declaringGroup group ||
+        right.readsGroupNumber model declaringGroup group
+  | .compareRepetitions _ _ _ | .compareStrings _ _ _ | .presence _ _ => false
+
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
     second asks the route's placement requirement, as the star route asks its candidate environment
     only after the whole body
     ([`spec/07`](../../spec/07-repetition-and-iteration.md),
     [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
-    A String leaf, which this route does not represent, still asks its read's gates first. -/
+    A String leaf, which this route does not represent, still asks its read's gates first. A leaf
+    outside the group draws the missing-iteration class only when no leaf reads one of the group's
+    Number fields; beside such a leaf the Kernel admits it as a constant
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
@@ -393,12 +416,17 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         (model.havingGroupRead declaringGroup reference)).mapError .resolve
       throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
-  let condition ← elaborateHavingCoreWith {
+  let readsGroup := authored.readsGroupNumber model declaringGroup group
+  let condition ← (elaborateHavingCoreWith {
     number := model.resolveHavingNumberInGroup declaringGroup group
     repetition := resolveHavingRepetitionInGroup declaringGroup group
     -- The legacy one-group route admits neither newer leaf; both fail closed here.
     string := fun _ _ => throw .stringLeafOutsideStarRoute
-    presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
+    presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored).mapError fun
+      | .fieldOutsideGroup origin fieldPath expectedGroup =>
+          if readsGroup then .constantLeafBesideIteratedLeaf origin fieldPath expectedGroup
+          else .fieldOutsideGroup origin fieldPath expectedGroup
+      | error => error
   -- Disjunction is refused here too: this route's well-formedness predicate requires a conjunctive
   -- core, and refusing at this arm names that cause instead of failing later as an unexplained
   -- incoherence.

@@ -477,15 +477,26 @@ def checkParallelNumericTargetRoute (model : FlatModel)
                     throw (.incoherentTargetScope
                       targetDeclaration.path)
 
-/-- Check one direct non-starred Number operand as a bounded parallel route to a repeatable Number target. No caller chooses the indexed groups or mark prefixes. -/
+/-- Check one direct non-starred Number operand as a bounded parallel route to a repeatable Number target. No caller chooses the indexed groups or mark prefixes.
+
+    The operand is a field-value read, so a group draws the group class and a raw String and a
+    partially known Date their value classes, ahead of the Number check; the index join binds the
+    operand's own level, so its group meets no walk
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+    The kind-neutral route stays ungated, since a presence guard's operand is not a value read. -/
 def checkParallelNumericComputationClearingPlan (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath) :
     Except ParallelComputationPlanError
       (CheckedParallelNumericClearingPlan model) := do
   let route ←
-    checkParallelNumericTargetRoute
-      model declaringGroup targetField operandReference
+    (checkParallelNumericTargetRoute model declaringGroup targetField operandReference).mapError fun
+      | .operandResolve miss =>
+          .operandResolve (displaceGroupMiss miss fun _ =>
+            (model.groupNamedBy? declaringGroup operandReference).map (·, none))
+      | error => error
+  if let some refusal := route.sourceDeclaration.fieldValueReadRefusal? then
+    throw (.operandResolve refusal)
   match hOperandNumber : route.sourceDeclaration.toNumberField? with
   | none => throw (.operandNotNumber route.sourceDeclaration.path)
   | some operand =>

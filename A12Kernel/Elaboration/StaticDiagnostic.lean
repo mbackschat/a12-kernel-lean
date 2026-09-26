@@ -108,6 +108,9 @@ inductive KernelStaticDiagnostic where
   | invalidStringConstantForEnumerationCategory
   /-- The named category is not declared on the field's enumeration. The Kernel's own constant carries the misspelling. -/
   | categoryUnknown
+  /-- A category read `[F -> C]` of a field that declares no Enumeration, asked after the read's group
+  gate and ahead of the category's own lookup and the field's value gates. -/
+  | noEnumeration
   /-- An `index(...)` parameter whose short name matches no index field on the error field's own path. **Not** the same class as `nameUnresolved .indexField`: that one is the model's own `MVK_INVALID_INDEX_FIELD` declaration refusal, while this is the error-text checker's prefix-free `INVALID_INDEX_FIELD`. Two codes, one identifier apart. -/
   | indexFieldUnresolved
   /-- Several index fields on the error field's path share the parameter's short name, so the name selects none of them. The identical parameter is admitted from an error field on a level carrying only one. -/
@@ -440,6 +443,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidStringConstantForEnumerationCategory =>
       "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_CATEGORY"
   | .categoryUnknown => "MVK_CATEGORY_UNKOWN"
+  | .noEnumeration => "MVK_NO_ENUMERATION"
   | .indexFieldUnresolved => "INVALID_INDEX_FIELD"
   | .indexFieldAmbiguous => "INVALID_INDEX_FIELD_AMBIGUOUS"
   | .indexFieldComposedIndex => "INVALID_INDEX_FIELD_COMPOSED_INDEX"
@@ -612,7 +616,7 @@ def all : List KernelStaticDiagnostic :=
     .groupIsEmpty,
     .repeatableGroupMissing, .negativeConditionInIteration,
     .errorFieldNotReferenced, .invalidStringConstantForEnumeration,
-    .invalidStringConstantForEnumerationCategory, .categoryUnknown,
+    .invalidStringConstantForEnumerationCategory, .categoryUnknown, .noEnumeration,
     .indexFieldUnresolved, .indexFieldAmbiguous, .indexFieldComposedIndex,
     .indexFieldRepeatabilityMismatch, .indexFieldNotIterating, .indexFieldNonRepeatableEnum,
     .wildcardOnRelativeStep, .wildcardsRequired, .wildcardOnRuleContext,

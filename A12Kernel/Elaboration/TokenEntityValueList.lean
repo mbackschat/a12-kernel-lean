@@ -456,8 +456,8 @@ private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)
     next, and the value list's value validation last
     ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)). Every operand of both
     lists is read before those gates, so a name resolving to nothing in the value list answers ahead
-    of the field list's gates, on the account that the Kernel reads each entity as the text is parsed;
-    no row places a value-side reader class beside a field-list gate.
+    of the field list's gates: opposite a raw String it draws the entity class
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
 
     Each side admits a sole field: the construct does not share the entity-list arity gate
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/

@@ -206,6 +206,11 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   | .partialDateFieldValueRead path =>
       .make .fieldKindMismatch referenceLocation
         (Json.mkObj [("operation", toJson "partiallyKnownDateValue"), ("path", toJson path)])
+  -- The protocol's condition forms (`parseCondition`) name no category read, so no protocol input
+  -- produces this arm; it reports the kind mismatch a category read of a non-Enumeration meets.
+  | .categoryReadOfNonEnumeration path =>
+      .make .fieldKindMismatch referenceLocation
+        (Json.mkObj [("operation", toJson "categoryRead"), ("path", toJson path)])
 
 private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .resolve error => pure (resolveDiagnosticAt "$.condition" error)
@@ -298,6 +303,10 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
       pure (.make .conditionForm "$.condition"
         (Json.mkObj [("operation", toJson "numberValueList"),
           ("path", toJson path)]))
+  | .groupOperandOutsideTokenRoute path =>
+      pure (.make .conditionForm "$.condition"
+        (Json.mkObj [("operation", toJson "valueListGroupOperand"),
+          ("path", toJson path)]))
   | .enumerationComparability leftPath rightPath error =>
       let reason := match error with
         | .displayClassMismatch => "displayClassMismatch"
@@ -331,7 +340,10 @@ private def correlationElaborationResult : CorrelationElabError →
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
   | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute => throw .incoherentCore
-  | .fieldOutsideGroup origin fieldPath expectedGroup =>
+  -- The constant leaf splits from the placement refusal for the Kernel projection only; the public
+  -- code stays the one this input always had.
+  | .fieldOutsideGroup origin fieldPath expectedGroup
+  | .constantLeafBesideIteratedLeaf origin fieldPath expectedGroup =>
       pure (.make .fieldOutsideGroup "$.rule.having"
         (Json.mkObj [("origin", toJson (havingOriginTag origin)),
           ("fieldPath", toJson fieldPath), ("expectedGroup", toJson expectedGroup)]))

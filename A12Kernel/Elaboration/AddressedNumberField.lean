@@ -8,6 +8,8 @@ namespace A12Kernel
 /-- Fail-closed errors for one addressed direct Number source before any operation-specific result-scale check. -/
 inductive AddressedNumberSourceElabError where
   | placement (cause : AddressedNumericPlacementElabError)
+  /-- The bracket read's value gates, asked of a resolved source ahead of its kind. -/
+  | sourceRead (refusal : ResolveError)
   | sourceNotNumber (path : List String) (actual : SurfaceScalarKind)
   deriving Repr, DecidableEq
 
@@ -29,6 +31,9 @@ def checkAddressedNumberSource
       targetField sourceReference with
   | .error cause => .error (.placement cause)
   | .ok placement =>
+    match placement.sourceDeclaration.fieldValueReadRefusal? with
+    | some refusal => .error (.sourceRead refusal)
+    | none =>
     match hSource : placement.sourceDeclaration.toNumberField? with
     | none =>
         .error (.sourceNotNumber placement.sourceDeclaration.path
@@ -70,6 +75,7 @@ def checkAddressedNumberPair
 /-- Fail-closed errors specific to direct addressed Number assignment. -/
 inductive AddressedNumberFieldElabError where
   | placement (cause : AddressedNumericPlacementElabError)
+  | sourceRead (refusal : ResolveError)
   | sourceNotNumber (path : List String) (actual : SurfaceScalarKind)
   | scaleMismatch (target source : Nat)
   deriving Repr, DecidableEq
@@ -89,6 +95,7 @@ def checkAddressedNumberField
   match checkAddressedNumberSource model declaringGroup
       targetField sourceReference with
   | .error (.placement cause) => .error (.placement cause)
+  | .error (.sourceRead refusal) => .error (.sourceRead refusal)
   | .error (.sourceNotNumber path actual) =>
       .error (.sourceNotNumber path actual)
   | .ok numberSource =>

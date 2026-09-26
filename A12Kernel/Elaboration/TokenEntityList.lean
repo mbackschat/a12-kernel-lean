@@ -223,7 +223,11 @@ def certifyDirectTokenOperand (model : FlatModel)
       match declaration.policy.kind, projectionRef with
       | .enumeration, .category name =>
           throw (.enumerationOperand declaration.path (.unknownCategory name))
-      | _, _ =>
+      -- The category read's own class, asked as the read is parsed and so ahead of the slot's value
+      -- and kind gates ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+      | _, .category _ =>
+          throw (.shape (.resolve (.categoryReadOfNonEnumeration declaration.path)))
+      | _, .stored =>
           if declaration.isRawString then
             throw (.rawStringValue declaration.path)
           else
@@ -253,7 +257,9 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
       | .enumeration, .category name =>
           throw (.enumerationOperand source.declaration.path
             (.unknownCategory name))
-      | _, _ =>
+      | _, .category _ =>
+          throw (.shape (.resolve (.categoryReadOfNonEnumeration source.declaration.path)))
+      | _, .stored =>
           if source.declaration.isRawString then
             throw (.rawStringValue source.declaration.path)
           else
@@ -277,8 +283,13 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
 private def certifyTokenEntityOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except TokenEntityElabError (CheckedTokenEntityOperand model)
-  | .field declaration _ =>
-      do pure (.field (← certifyDirectTokenOperand model declaration))
+  -- The authored read form is kept: a category read certifies through its projection, which reading
+  -- the field stored would silently replace.
+  | .field declaration form =>
+      let projectionRef : EnumerationProjectionRef := match form with
+        | .stored => .stored
+        | .projected category => .category category
+      do pure (.field (← certifyDirectTokenOperand model declaration projectionRef))
   | .star source =>
       do pure (.star (← certifyStarTokenOperand declaringGroup source none))
   | .starHaving source having =>

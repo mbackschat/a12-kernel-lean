@@ -182,13 +182,24 @@ private def resolveSubdayEndpoint (target : CheckedAddressedNumericTarget model)
       | none => throw .unsupportedExpression
   | .baseYear _ | .now => throw .unsupportedExpression
 
+/-- Resolve a field the target's declaring group names, asking the group gate every read shares from
+    the target's scope ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+private def resolveRepetitionEntity (target : CheckedAddressedNumericTarget model)
+    (reference : SurfaceFieldPath) :
+    Except AddressedRepetitionComputationElabError FlatFieldDecl :=
+  model.resolveFieldDeclarationUnchecked target.declaringGroup reference |>.mapError fun cause =>
+    .source (displaceGroupMiss cause
+      (model.computationGroupRead target.declaringGroup target.targetDeclaration.groupPath reference))
+
 private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget model)
     (surface : SurfaceNumericAtom) :
     Except AddressedRepetitionComputationElabError (AddressedRepetitionOperand target) := do
   let atom ← match surface with
     | .field reference => do
-        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
-          |>.mapError .source
+        -- A bracket read: its value gates follow the group gate, ahead of the Number check.
+        let declaration ← resolveRepetitionEntity target reference
+        if let some refusal := declaration.fieldValueReadRefusal? then
+          throw (.source refusal)
         pure (.field declaration)
     | .currentRepetition reference =>
         model.resolveNumericCurrentRepetition target.declaringGroup
@@ -201,14 +212,12 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         | some year => pure (.baseYear year)
         | none => throw .baseYearNotDeclared
     | .stringLength reference => do
-        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
-          |>.mapError .source
+        let declaration ← resolveRepetitionEntity target reference
         match declaration.toStringValueField? with
         | some field => pure (.stringLength field)
         | none => throw .unsupportedExpression
     | .stringRange reference start finish => do
-        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
-          |>.mapError .source
+        let declaration ← resolveRepetitionEntity target reference
         -- The interval rule is the shared one; suppression cannot widen it, so it is checked here
         -- rather than left to the target's scale gate.
         if validStringRange start finish then
@@ -221,8 +230,7 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         | some year => pure (.baseYearDatePart year source part)
         | none => throw .baseYearNotDeclared
     | .dateRangeBoundPart reference bound part => do
-        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
-          |>.mapError .source
+        let declaration ← resolveRepetitionEntity target reference
         match declaration.toDateRangeField? with
         | some field => pure (.dateRangeBoundPart field bound part)
         | none => throw .unsupportedExpression
@@ -233,8 +241,7 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         | some field => pure (.temporalFieldPart field part)
         | none => throw .unsupportedExpression
     | .fieldValueAsNumber source => do
-        let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup
-          source.reference |>.mapError .source
+        let declaration ← resolveRepetitionEntity target source.reference
         match declaration.resolveFieldValueAsNumberSource source.projectionRef with
         | .ok resolved => pure (.fieldValueAsNumber resolved)
         | .error _ => throw .unsupportedExpression

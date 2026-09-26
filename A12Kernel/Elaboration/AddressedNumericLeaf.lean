@@ -156,7 +156,11 @@ def checkAddressedNumericTarget
       else
         .error (.target (.invalidRuleGroup declaringGroup))
 
-/-- Check only the placement facts common to completed one-source addressed numeric leaves. -/
+/-- Check only the placement facts common to completed one-source addressed numeric leaves. The
+    source asks the group gate every read shares, from the target's scope, so a group draws the group
+    class on a bracket read and on an operator's parameter alike; a bracket read's value gates are the
+    direct source's, since an operator's parameter meets its operator's own
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 def checkAddressedNumericPlacement
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) :
@@ -165,7 +169,10 @@ def checkAddressedNumericPlacement
   let target ← checkAddressedNumericTarget model declaringGroup targetField
   match hSourceResolved :
       model.resolveFieldDeclarationUnchecked target.declaringGroup sourceReference with
-  | .error cause => .error (.source cause)
+  | .error cause =>
+      .error (.source (displaceGroupMiss cause
+        (model.computationGroupRead target.declaringGroup target.targetDeclaration.groupPath
+          sourceReference)))
   | .ok sourceDeclaration =>
     if hSelf : sourceDeclaration.id == target.targetField then
       .error (.targetSelfReference target.targetField)

@@ -20,21 +20,37 @@ def FlatFieldDecl.fieldValueReadRefusal? (declaration : FlatFieldDecl) : Option 
   else if declaration.isPartiallyKnownDate then some (.partialDateFieldValueRead declaration.path)
   else none
 
-/-- The field-value read's group gate: a path naming a group draws the group class, displacing the
-    field miss a field resolver reports for it. `groupRead` classes such a path, since where the read
-    stands decides whether a reader's class answers first. -/
+/-- A category read's refusal of a field declaring no Enumeration, asked once its group gate passed. -/
+def FlatFieldDecl.categoryReadRefusal? (declaration : FlatFieldDecl) : Option ResolveError :=
+  match declaration.policy.kind with
+  | .enumeration => none
+  | _ => some (.categoryReadOfNonEnumeration declaration.path)
+
+/-- The refusal a read through `projectionRef` draws once its group gate passed: a stored read's value
+    gates, or a category read's non-Enumeration class. -/
+def FlatFieldDecl.projectedReadRefusal? (declaration : FlatFieldDecl) :
+    EnumerationProjectionRef → Option ResolveError
+  | .stored => declaration.fieldValueReadRefusal?
+  | .category _ => declaration.categoryReadRefusal?
+
+/-- The field-value read's group gate asked of a failed resolution: a path naming a group draws the
+    group class, displacing the field miss a field resolver reports for it. `groupRead` classes such a
+    path, since where the read stands decides whether a reader's class answers first. A site whose
+    success branch certifies the undisplaced resolution asks this on its failure branch alone. -/
+def displaceGroupMiss (miss : ResolveError)
+    (groupRead : Unit → Option (GroupPath × Option UnboundOperandLevel)) : ResolveError :=
+  if miss.isGroupDisplaceableMiss then
+    match groupRead () with
+    | some (group, unbound) => .groupInFieldValueRead group unbound miss
+    | none => miss
+  else
+    miss
+
+/-- The field-value read's group gate, `displaceGroupMiss` asked of a resolution. -/
 def displaceGroupRead (resolved : Except ResolveError FlatFieldDecl)
     (groupRead : Unit → Option (GroupPath × Option UnboundOperandLevel)) :
     Except ResolveError FlatFieldDecl :=
-  match resolved with
-  | .error miss =>
-      if miss.isGroupDisplaceableMiss then
-        match groupRead () with
-        | some (group, unbound) => .error (.groupInFieldValueRead group unbound miss)
-        | none => .error miss
-      else
-        .error miss
-  | other => other
+  resolved.mapError (displaceGroupMiss · groupRead)
 
 /-- The gates the field-value read `[…]` asks of the entity it names once its bracket closes, after
     the reader's own classes ([`kf473`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf473),
@@ -64,17 +80,32 @@ def FlatModel.resolveFieldValueRead (model : FlatModel) (declaringGroup : GroupP
   checkFieldValueRead (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
     (model.ruleGroupRead declaringGroup writtenGroup reference)
 
-/-- A rule's category read `[F -> C]`, which asks the group gate alone: a group draws the group
-    class ahead of the category reader's refusal of a field without that category
-    ([`kf359`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359),
-    [checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)).
-    Only an Enumeration declares a category, and no row orders a value gate against that refusal, so
-    the value gates are left to the refusal, which projects no class. -/
-def FlatModel.resolveCategoryRead (model : FlatModel) (declaringGroup : GroupPath)
+/-- A rule's read of a field an operator names as a parameter rather than in brackets, which asks the
+    group gate alone. `Length`, `RangeAsNumber`, `FieldValueAsNumber`, `FieldValueAsString`, a
+    DateRange bound's field and a scalar membership's subject draw the group class for a group and
+    the missing-star class for an unstarred repeatable group, while a raw String and a partially known
+    Date meet each operator's own gates: `Length` has a raw class of its own, the two conversions
+    refuse both with their own classes, and a Date meets the membership's kind gate before any date
+    gate ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+def FlatModel.resolveEntityRead (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :
     Except ResolveError FlatFieldDecl :=
   displaceGroupRead (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
     (model.ruleGroupRead declaringGroup writtenGroup reference)
+
+/-- A rule's category read `[F -> C]`: the group gate, then a field declaring no Enumeration draws
+    the non-Enumeration class ahead of the category's own lookup and of the field's value gates
+    ([`kf359`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359),
+    [checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+    A raw String, a partially known Date and a full Date all draw that class, so no value gate is
+    asked of a category read. -/
+def FlatModel.resolveCategoryRead (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :
+    Except ResolveError FlatFieldDecl := do
+  let declaration ← model.resolveEntityRead declaringGroup reference writtenGroup
+  match declaration.categoryReadRefusal? with
+  | some refusal => throw refusal
+  | none => pure declaration
 
 /-- A rule's bracketed read through `projectionRef`: a stored read asks every gate of the
     field-value read, and a category read the group gate alone. -/
@@ -84,6 +115,16 @@ def FlatModel.resolveProjectedFieldValueRead (model : FlatModel) (declaringGroup
   match projectionRef with
   | .stored => model.resolveFieldValueRead declaringGroup reference writtenGroup
   | .category _ => model.resolveCategoryRead declaringGroup reference writtenGroup
+
+/-- Class a computation's read whose path names a group: its target's scope binds the read, so a
+    group meets the walk from there before the group class. A level the walk passes, such as the
+    target's own group, falls through to the group class, as a rule's does at `refusedReadLevel?`
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+def FlatModel.computationGroupRead (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Unit → Option (GroupPath × Option UnboundOperandLevel) :=
+  fun _ => (model.groupNamedBy? declaringGroup reference).map fun group =>
+    (group, (model.firstUnboundOperandLevel? declaringGroup targetGroup
+      [model.repeatableScopeForGroupPath group]).filter (!·.passesWalk))
 
 /-- A computation's nonrepeatable field-value read, whose gates are measured on a String, an
     Enumeration, a Time and a Number target
@@ -96,8 +137,18 @@ def FlatModel.resolveComputationFieldValueRead (model : FlatModel)
     Except ResolveError FlatFieldDecl :=
   checkFieldValueRead
     (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference)
-    fun _ => (model.groupNamedBy? declaringGroup reference).map fun group =>
-      (group, model.firstUnboundOperandLevel? declaringGroup targetGroup
-        [model.repeatableScopeForGroupPath group])
+    (model.computationGroupRead declaringGroup targetGroup reference)
+
+/-- A computation's read of a field an operator names as a parameter, which asks the group gate alone,
+    as `FlatModel.resolveEntityRead` does on a rule. Measured on `Length`, the two conversions,
+    `RangeAsNumber` and a DateRange bound's field into a fixed Number target, where a group draws the
+    group class and an unstarred repeatable group the missing-star class
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+def FlatModel.resolveComputationEntityRead (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
+    Except ResolveError FlatFieldDecl :=
+  displaceGroupRead
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference)
+    (model.computationGroupRead declaringGroup targetGroup reference)
 
 end A12Kernel

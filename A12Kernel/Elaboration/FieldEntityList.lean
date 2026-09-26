@@ -454,18 +454,30 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   let star (path : SurfaceStarFieldPath) :=
     (elaborateStarFieldPath model declaringGroup path).mapError fun error =>
       .starPath (error.placeBelowStar model declaringGroup written)
+  -- A category read of a field declaring no Enumeration draws the read's own class on every list
+  -- carrying one, after the walk as a bracketed category read does
+  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+  -- A fixed-target list asks its walk list-wide later, an order no row measures.
+  let categoryRead (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
+      Except FieldEntityShapeElabError Unit :=
+    match form, declaration.categoryReadRefusal? with
+    | .projected _, some refusal => throw (.resolve refusal)
+    | _, _ => pure ()
   match authored with
   | .field path form => do
       let resolved ←
         model.resolveFieldDeclarationUnchecked declaringGroup path
           |>.mapError .resolve
-      if fixedTargetGroup?.isSome then return .field resolved form
+      if fixedTargetGroup?.isSome then
+        categoryRead resolved form
+        return .field resolved form
       -- The walk answers first: with the error field outside the rule group it refuses a level
       -- `scope` binds.
       if let some unbound :=
           model.unboundReadLevel? declaringGroup writtenGroup resolved.repeatableScope scope then
         throw (.resolve (.unboundOperandLevel resolved.path unbound))
       let declaration ← resolved.requireRepetitionBoundBy scope |>.mapError .resolve
+      categoryRead declaration form
       pure (.field declaration form)
   | .star path => do
       pure (.star (← star path))

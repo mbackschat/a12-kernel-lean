@@ -470,7 +470,7 @@ private def FlatModel.resolveNumericComputationAtoms
         pure (.numeric (.temporalFieldPart field part))
     | .numeric (.dateRangeBoundPart reference bound part) => do
         let declaration ←
-          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference).mapError
+          (model.resolveComputationEntityRead declaringGroup targetGroup reference).mapError
             .resolve
         -- The target is a Number field, so a DateRange operand can never be the target itself.
         let source : FlatDateRangeField := { id := declaration.id }
@@ -480,13 +480,13 @@ private def FlatModel.resolveNumericComputationAtoms
           throw (.dateRangeBoundPartNotExposed declaration.path part)
     | .numeric (.stringLength reference) => do
         let declaration ←
-          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference).mapError .resolve
+          (model.resolveComputationEntityRead declaringGroup targetGroup reference).mapError .resolve
         match declaration.toStringValueField? with
         | some field => pure (.numeric (.stringLength field))
         | none => throw (.lengthOperandNotEvaluatedString declaration.path)
     | .numeric (.stringRange reference start finish) => do
         let declaration ←
-          (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference).mapError .resolve
+          (model.resolveComputationEntityRead declaringGroup targetGroup reference).mapError .resolve
         if !validStringRange start finish then
           throw (.invalidStringRange start finish)
         match declaration.toStringValueField? with
@@ -494,7 +494,7 @@ private def FlatModel.resolveNumericComputationAtoms
         | some field => pure (.numeric (.stringRange field start finish))
     | .numeric (.fieldValueAsNumber surface) => do
         let declaration ←
-          (model.resolveNonrepeatableComputationOperandUnchecked
+          (model.resolveComputationEntityRead
             declaringGroup targetGroup surface.reference).mapError .resolve
         match declaration.resolveFieldValueAsNumberSource surface.projectionRef with
         | .ok source => pure (.numeric (.fieldValueAsNumber source))

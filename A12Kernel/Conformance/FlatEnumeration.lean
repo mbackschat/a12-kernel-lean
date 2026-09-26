@@ -271,9 +271,11 @@ example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
     (.category (fieldPath "Code") "kind") directCategoryPeer)) = some
       (.enumerationOperand ["Order", "Code"] (.unknownCategory "kind")) := by native_decide
 
+/- A category read of a String meets the read's non-Enumeration class ahead of the comparison's kind
+   gate ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
     (.category (fieldPath "Text") "Kind") directCategoryPeer)) = some
-      (.textFieldOperandKindMismatch ["Order", "Text"] .string) := by native_decide
+      (.resolve (.categoryReadOfNonEnumeration ["Order", "Text"])) := by native_decide
 
 private def incoherentCategoryCore : FlatCondition :=
   .compare (.textFields .equal

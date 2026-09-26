@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-26-01"></a>
+### `SPEC-2026-09-26-01` — a category read of a non-Enumeration draws its own class on every carrier measured, entity lists included, a membership subject's remaining gates are ordered, and a repeatable or parallel target reads as a nonrepeatable one does
+
+- `status`: pending.
+- `origin`: locally originated; it extends [`SPEC-2026-09-25-09`](#spec-2026-09-25-09) to the shapes its `limit` names, and your `kf359`, `kf395`, `kf398` and `kf405` to carriers they leave out. The parameter chains themselves are yours and are cited, not requested.
+- `clause`: [`08` bare-name resolution order](../spec/08-paths-and-references.md#2-bare-name-resolution-order-), [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-), [`06` the scalar member paragraph](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-) and the value-list quantifier bullets.
+- `delta`: `[F -> Band]` over a raw String, a partial Date or a full Date, and `[Other -> Nope]` over a String, draw `MVK_NO_ENUMERATION`, as do a category member inside `Sum`, `NumberOfFilledFields`, `DateRangesOverlap`, `AtLeastOneDateRangeOverlaps` and `FieldValuesNotUnique`, a starred value-list field and a copy into a repeatable Enumeration. `[Items/Label -> Band]` unstarred draws `MVK_NO_WILDCARD` first, and a category of an Enumeration inside `NumberOfFilledFields` and `FieldValuesNotUnique` draws `MVK_CATEGORY_NOT_ALLOWED`.
+- `delta`: against literals `FieldValueIncludedInValueList(Ledger, "a", "b")` and the root draw `MVK_NO_GROUPS_ALLOWED` and `(Items, "a", "b")` `MVK_NO_WILDCARD`, on the Number form too. Against field members the root waits as a fixed group does, while `Items` and a name resolving to nothing answer ahead of a raw member. In a value-list quantifier a group's expansion joins the base-type gate, and a name resolving to nothing on either side draws `MVK_INVALID_ENTITY` ahead of a raw String on the other.
+- `delta`: into a repeatable target the target's own group `[Items]` draws `MVK_NO_GROUPS_ALLOWED`, and so do a parallel operand's keyed group and a fixed group inside it. A computation resolves a relative name from its declaring group, not from its target's group.
+- `basis`: [predictions checkpoint](sources/static-admission-and-class-probes.md#src-field-value-read-predictions), eight `dmtool batch --observations` runs at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532` in the pinned measurement checkout, `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer checker that asks a category's value gates or its unknown-category class ahead of the non-Enumeration class, admits a category in `FieldValuesNotUnique`, orders a membership subject's gates otherwise, or walks a repeatable target's own group to the missing-star class.
+- `acceptance`: confirm the class on any refused row the checkpoint names, or supply a contrary row.
+- `limit`: static admission only, `en_US`. No row reads a category on the list side of `AtLeastOneDateRangeOverlaps` or orders a fixed-target entity list's category read against its list-wide walk.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-25-10"></a>
 ### `SPEC-2026-09-25-10` — a bare name naming a group of the declaring group takes no short-name fallback
 

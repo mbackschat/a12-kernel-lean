@@ -122,7 +122,9 @@ example :
         DateRangesOverlapElabError.diagnostic? = some .duplicateParam1 := by
   native_decide
 
-/- Wrong-kind and wrong-read-form sources fail explicitly instead of becoming empty operands.
+/- Wrong-kind sources fail explicitly instead of becoming empty operands, and a category read of a
+DateRange draws the category read's non-Enumeration class ahead of this route's own read-form refusal
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
 A yearless declaration beside a year-bearing one meets the earlier uniform-year gate, so this
 route's policy refusal is reachable only from a uniformly yearless list and is locked with its
 payload in `Conformance.DateRangeFragmentOverlap`. -/
@@ -131,9 +133,8 @@ example :
         some (.sourceNotDateRange ["Form", "Code"] .string) ∧
       (admissionError? (direct "Start") [direct "Unsupported"]).bind
         DateRangesOverlapElabError.diagnostic? = some .dateWithAndWithoutYear ∧
-      admissionError? (.field { base := .relative 0, groups := [], field := "Start" }
-        (.projected "Band")) [direct "Finish"] =
-        some (.unsupportedReadForm ["Form", "Start"] (.projected "Band")) := by
+      (admissionError? (projected "Start") [direct "Finish"]).bind
+        DateRangesOverlapElabError.diagnostic? = some .noEnumeration := by
   native_decide
 
 /-! ## Checked `AtLeastOneDateRangeOverlaps` source admission -/
@@ -263,8 +264,11 @@ example :
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
   native_decide
 
-/- A yearless declaration beside a year-bearing one meets the uniform-year gate on either side;
-read-form refusals stay unmapped. -/
+/- A yearless declaration beside a year-bearing one meets the uniform-year gate on either side, and
+a category read of a DateRange draws the non-Enumeration class
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+The measured row reads the category on the scalar side; the list-side row is the same read in the
+other slot, which no row measures. -/
 example :
     (pluralAdmissionError? (direct "Unsupported") (direct "Finish")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? =
@@ -273,9 +277,9 @@ example :
         AtLeastOneDateRangeOverlapsElabError.diagnostic? =
         some .dateWithAndWithoutYear ∧
       (pluralAdmissionError? (projected "Start") (direct "Finish")).bind
-        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .noEnumeration ∧
       (pluralAdmissionError? (direct "Start") (projected "Finish")).bind
-        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .noEnumeration := by
   native_decide
 
 /- Exact duplication spans scalar and list, and a group cannot certify by silently dropping its wrong-kind field. -/

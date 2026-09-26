@@ -170,10 +170,17 @@ private def checkAddressedEnumerationSource
       | .category _ name => .category name
     match hResolved :
         model.resolveFieldDeclarationUnchecked declaringGroup reference with
-    | .error cause => throw (.ordinary (.source (.resolve cause)))
+    | .error cause =>
+        throw (.ordinary (.source (.resolve (displaceGroupMiss cause
+          (model.computationGroupRead declaringGroup target.declaration.groupPath reference)))))
     | .ok declaration =>
       if hScope : declaration.repetitionBoundBy
           target.declaration.repeatableScope = true then
+        -- The read's own gates answer ahead of the kind: a stored read's value gates, and a category
+        -- read's non-Enumeration class
+        -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+        if let some refusal := declaration.projectedReadRefusal? projectionRef then
+          throw (.ordinary (.source (.resolve refusal)))
         match hKind : declaration.policy.kind,
             hEnumeration : declaration.enumeration with
         | .enumeration, some source =>

@@ -77,7 +77,8 @@ private def elaborateRawStringMaximumLength (model : FlatModel)
     Except ElabError (Option (CheckedRawStringMaximumLength model)) :=
   match hResolved :
       model.resolveNonrepeatableFieldUnchecked declaringGroup authoredField with
-  | .error error => .error (.resolve error)
+  | .error error =>
+      .error (.resolve (displaceGroupMiss error (model.ruleGroupRead declaringGroup declaringGroup authoredField)))
   | .ok declaration =>
       if hRaw : declaration.isRawString = true then
         if hBound : bound.authoredScale ≤ 0 ∧

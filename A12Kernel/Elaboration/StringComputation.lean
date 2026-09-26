@@ -61,13 +61,14 @@ def admitNumberAsStringField
   | .number _ => pure declaration.id
   | actual => throw (.fieldKindMismatch declaration.path actual.surfaceKind)
 
-/-- Resolve one legal nonrepeatable Number field for `FieldValueAsString`. -/
+/-- Resolve one legal nonrepeatable Number field for `FieldValueAsString`, a parameter asking the group
+    gate alone: its raw String draws the conversion's Number class rather than the raw one
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 def elaborateNumberAsStringField (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except StringComputationElabError FieldId := do
   let declaration ←
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup
-      reference).mapError .resolve
+    (model.resolveComputationEntityRead declaringGroup targetGroup reference).mapError .resolve
   admitNumberAsStringField declaration
 
 /-- Whether one runtime leaf is the exact nonrepeatable String-value declaration in the model. -/

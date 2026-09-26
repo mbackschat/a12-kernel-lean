@@ -96,7 +96,10 @@ def checkAddressedFieldValueAsString
                     match hSourceResolved :
                         model.resolveFieldDeclarationUnchecked
                           declaringGroup sourceReference with
-                    | .error cause => .error (.source cause)
+                    | .error cause =>
+                        .error (.source (displaceGroupMiss cause
+                          (model.computationGroupRead declaringGroup targetDeclaration.groupPath
+                            sourceReference)))
                     | .ok sourceDeclaration =>
                       match hSourceKind :
                           sourceDeclaration.policy.kind with

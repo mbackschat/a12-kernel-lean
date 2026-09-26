@@ -497,13 +497,73 @@ example :
 
 /- A Number field list is inside the kind set, so a Number repeated across the lists reaches the
    cross-list repeat and draws the duplicate class. A value-side name resolving to nothing answers ahead
-   of the field list's value validation; that row locks the unmeasured account stated at
-   `elaborateTokenEntityValueListSource`, where asking the field list's gates first draws the raw
-   class. -/
+   of the field list's value validation
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)),
+   where asking the field list's gates first draws the raw class. -/
 example :
     [entityAdmissionIn validationModel [field "AVal"] [field "AVal"],
       entityAdmissionIn validationModel [field "Memo"] [field "NoSuch"]] =
       [.refused (some .duplicateParam1), .refused (some .invalidEntity)] := by
+  native_decide
+
+/-- The validation model plus an Enumeration declaring a category, a fixed group holding a String and
+    a Date, a fixed group holding a Number, and a repeatable group holding a String. -/
+private def readGateModel : FlatModel :=
+  { validationModel with
+    fields := validationModel.fields ++ [
+      { id := 26, groupPath := ["Probe"], name := "Grade", policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["A", "B"], categories := [{ name := "Band", tokens := ["Hi", "Lo"] }] } },
+      { id := 27, groupPath := ["Probe", "Mix"], name := "MixText", policy := { kind := .string } },
+      { id := 28, groupPath := ["Probe", "Mix"], name := "MixDate",
+        policy := { kind := .temporal .date dateFragmentComponents } },
+      { id := 29, groupPath := ["Probe", "Ledger"], name := "Total",
+        policy := { kind := .number { scale := 0, signed := false } } },
+      { id := 30, groupPath := ["Probe", "Items"], name := "Label", policy := { kind := .string },
+        repeatableScope := [10] }]
+    repeatableGroups := [{ level := 10, path := ["Probe", "Items"] }] }
+
+/- **A group operand is expanded and a category read is an Enumeration, both ahead of the base-type
+   gate** ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   A group holding a String and a Date, on either side, and a group holding a Number opposite a String
+   draw the base-type class. A category read of an Enumeration opposite a String draws it too, while a
+   raw String ahead of that category draws the raw class, the field list's value validation answering
+   first. A name resolving to nothing answers on either side. -/
+example :
+    let group (name : String) : SurfaceFieldEntityOperand :=
+      .group (.path { base := .absolute, groups := ["Probe", name] })
+    let category (name : String) : SurfaceFieldEntityOperand :=
+      .field { base := .absolute, groups := ["Probe"], field := name } (.projected "Band")
+    [entityAdmissionIn readGateModel [field "NoSuch"] [field "Memo"],
+      entityAdmissionIn readGateModel [field "Email"] [group "Mix"],
+      entityAdmissionIn readGateModel [group "Mix"] [field "Email"],
+      entityAdmissionIn readGateModel [field "Email"] [group "Ledger"],
+      entityAdmissionIn readGateModel [category "Grade"] [field "Memo"],
+      entityAdmissionIn readGateModel [field "Memo"] [category "Grade"],
+      entityAdmissionIn readGateModel [category "Grade"] [field "Email"]] =
+      [.refused (some .invalidEntity), .refused (some .varyingTypesNotAllowed),
+        .refused (some .varyingTypesNotAllowed), .refused (some .varyingTypesNotAllowed),
+        .refused (some .varyingTypesNotAllowed), .refused (some .rawTypeOperandInvalid),
+        .refused (some .varyingTypesNotAllowed)] := by
+  native_decide
+
+/- **A category read of a field declaring no Enumeration draws its own class**, on the stored form
+   and on a starred operand of the projected form
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   The starred row is measured against a literal, which the projected form does not carry; the read
+   answers as it is parsed, ahead of the value side, as the stored row shows. A token list reading
+   the field stored instead admits the first row. -/
+example :
+    let star : SurfaceStarFieldPath :=
+      { base := .absolute, groups := [{ name := "Probe" }, { name := "Items", starred := true }],
+        field := "Label" }
+    let email : SurfaceTextFieldOperand := .direct { base := .absolute, groups := ["Probe"], field := "Email" }
+    entityAdmissionIn readGateModel [.field { base := .absolute, groups := ["Probe"], field := "Email" }
+        (.projected "Band")] [field "Phone"] = .refused (some .noEnumeration) ∧
+    (match elaborateProjectedTokenEntityValueListSource readGateModel ["Probe"]
+        { quantifier := .atLeastOne, fields := { first := .star star (.category "Band"), rest := [] }
+          values := { first := .field email, rest := [] } } with
+      | .ok _ => none
+      | .error error => error.diagnostic?) = some .noEnumeration := by
   native_decide
 
 end A12Kernel.Conformance.ValueListQuantifierKindGate

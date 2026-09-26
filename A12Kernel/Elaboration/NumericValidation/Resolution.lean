@@ -98,8 +98,9 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       let field ← checkTemporalNumericPartField model declaration part
       pure (.temporalFieldPart field part)
   | .dateRangeBoundPart reference bound part => do
-      let declaration ←
-        (model.resolveField rowGroup reference writtenGroup).mapError .resolve
+      let declaration ← (do
+        model.validate
+        model.resolveEntityRead rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       let source : FlatDateRangeField := { id := declaration.id }
@@ -108,14 +109,18 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       else
         throw (.dateRangeBoundPartNotExposed declaration.path part)
   | .stringLength reference => do
-      let declaration ← (model.resolveField rowGroup reference writtenGroup).mapError .resolve
+      let declaration ← (do
+        model.validate
+        model.resolveEntityRead rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       match declaration.toStringValueField? with
       | some field => pure (.stringLength field)
       | none => throw (.lengthOperandNotEvaluatedString declaration.path)
   | .stringRange reference start finish => do
-      let declaration ← (model.resolveField rowGroup reference writtenGroup).mapError .resolve
+      let declaration ← (do
+        model.validate
+        model.resolveEntityRead rowGroup reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       if !validStringRange start finish then
@@ -124,8 +129,9 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       | some field => pure (.stringRange field start finish)
       | none => throw (.rangeOperandNotString declaration.path)
   | .fieldValueAsNumber surface => do
-      let declaration ←
-        (model.resolveField rowGroup surface.reference writtenGroup).mapError .resolve
+      let declaration ← (do
+        model.validate
+        model.resolveEntityRead rowGroup surface.reference writtenGroup).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
@@ -216,6 +222,14 @@ private def resolveAddressedNumericDeclaration (model : FlatModel)
     throw (.fieldOutsideRowGroup declaration.path rowGroup)
   pure declaration
 
+/-- The group gate every read in this fragment asks first: a bracket read's value gates follow it,
+    while an operator parameter meets its operator's own gates instead
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+private def addressedEntityResolution (model : FlatModel) (rowGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl :=
+  displaceGroupRead (model.resolveFieldDeclarationUnchecked rowGroup reference)
+    (model.ruleGroupRead rowGroup rowGroup reference)
+
 private def resolveAddressedNumericAtom (model : FlatModel)
     (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
@@ -227,8 +241,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
       -- The bracket's group gate answers ahead of this fragment's scope boundary and its value
       -- gates after it, as the walk and then the value gates do on a same-group read.
       let declaration ← resolveAddressedNumericDeclaration model rowGroup reference
-        (displaceGroupRead (model.resolveFieldDeclarationUnchecked rowGroup reference)
-          (model.ruleGroupRead rowGroup rowGroup reference))
+        (addressedEntityResolution model rowGroup reference)
       if let some refusal := declaration.fieldValueReadRefusal? then
         throw (.resolve refusal)
       match declaration.toNumberField? with
@@ -242,6 +255,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .dateRangeBoundPart reference bound part => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
+          (addressedEntityResolution model rowGroup reference)
       let source : FlatDateRangeField := { id := declaration.id }
       if model.exposesDateRangeBoundPart source part then
         pure (.dateRangeBoundPart source bound part)
@@ -250,12 +264,14 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .stringLength reference => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
+          (addressedEntityResolution model rowGroup reference)
       match declaration.toStringValueField? with
       | some field => pure (.stringLength field)
       | none => throw (.lengthOperandNotEvaluatedString declaration.path)
   | .stringRange reference start finish => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
+          (addressedEntityResolution model rowGroup reference)
       if !validStringRange start finish then
         throw (.invalidStringRange start finish)
       match declaration.toStringValueField? with
@@ -264,6 +280,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .fieldValueAsNumber surface => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup surface.reference
+          (addressedEntityResolution model rowGroup surface.reference)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
       let resolveOperand := resolveDateDifferenceOperandWith model

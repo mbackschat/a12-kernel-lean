@@ -1,6 +1,7 @@
 import A12Kernel.Conformance.Elaboration.Support
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.EnumerationComputation
+import A12Kernel.Elaboration.NumberEntityList
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.StringComputation
@@ -15,6 +16,9 @@ an Enumeration, a Time or a Number, and on a category read
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)), and on a pattern comparison's field and a DateRange
 comparison's sides, while a scalar membership's group subject, an entity, waits for its members'
 reads ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+A field an operator names as a parameter asks the group gate alone and meets its operator's own value
+gates, and a category read of a field declaring no Enumeration draws its own class
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
 The fixture mirrors those grids' model. A carrier that projects no Kernel class of its own is read
 through its resolution failure's class, and a refusal of the carrier's own is kept apart from one
 that projects no class.
@@ -23,7 +27,7 @@ that projects no class.
 namespace A12Kernel.Conformance.FieldValueReadCarriers
 
 open A12Kernel
-open A12Kernel.Conformance.Elaboration.Support (absolute dispatchDateComponents errorOf)
+open A12Kernel.Conformance.Elaboration.Support (absolute bare dispatchDateComponents errorOf)
 
 private def items : RepeatableGroupDecl := { level := 10, path := ["Grid", "Items"] }
 
@@ -133,16 +137,37 @@ example :
         .read (some .invalidEntity), .admitted] := by
   native_decide
 
-/- **A rule in a repeatable group reads the same way**, on the assumption that the root rule's
-   measured order carries to the addressed route: no row declares an arithmetic rule in a repeatable
-   group. Its addressed operands ask the gates, so a fixed group and a raw String read from the
-   iterated level draw their classes. -/
+private def atom (operand : SurfaceNumericAtom) : AuthoredNumericExpr SurfaceNumericAtom := .atom operand
+
+/- **A rule in a repeatable group reads the same way**
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   its addressed operands ask the gates, so a fixed group and a raw String read from the iterated
+   level draw their classes, and a fixed group named as `Length`'s parameter draws the group class. -/
 example :
     let addressed (right : AuthoredNumericExpr SurfaceNumericAtom) :=
       viewOf numericResolve? (elaborateRepeatableNumericComparison model items.path
         { op := .ordinary .equal, left := .atom (.field (absolute items.path "Qty")), right })
-    [addressed (.binary .add (field "Ledger") one), addressed (.binary .add (field "Note") one)] =
-      [.read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid)] := by
+    [addressed (.binary .add (field "Ledger") one), addressed (.binary .add (field "Note") one),
+      addressed (atom (.stringLength (grid "Ledger")))] =
+      [.read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid),
+        .read (some .noGroupsAllowed)] := by
+  native_decide
+
+/- **A field an operator names as a parameter asks the group gate alone and meets the operator's own
+   value gates**
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   A group draws the group class inside `RangeAsNumber`, `Length`, `FieldValueAsNumber` and a
+   DateRange endpoint's component. A raw String meets `RangeAsNumber`'s and `Length`'s own gates, which
+   this carrier refuses without projecting their classes. -/
+example :
+    [ruleView (atom (.stringRange (grid "Ledger") 1 2)) one,
+      ruleView (.binary .add (atom (.stringLength (grid "Ledger"))) one) one,
+      ruleView (atom (.fieldValueAsNumber (.direct (grid "Ledger")))) one,
+      ruleView (atom (.dateRangeBoundPart (grid "Ledger") .start .year)) one,
+      ruleView (atom (.stringRange (grid "Note") 1 2)) one,
+      ruleView (.binary .add (atom (.stringLength (grid "Note"))) one) one] =
+      [.read (some .noGroupsAllowed), .read (some .noGroupsAllowed), .read (some .noGroupsAllowed),
+        .read (some .noGroupsAllowed), .carrier, .carrier] := by
   native_decide
 
 private def numericComputationResolve? : NumericComputationElabError → Option ResolveError
@@ -166,6 +191,27 @@ example :
         .read (some .invalidDateType), .admitted, .carrier, .read (some .noWildcard)] := by
   native_decide
 
+/- **A Number computation's operator parameter asks the group gate alone**
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   a group draws the group class and a repeatable group the missing-star class, while a raw String
+   and a partially known Date meet the operator's own gates rather than the read's. Asking the read's
+   value gates would draw the raw class for `Length` and `FieldValueAsNumber` and the date class for
+   `RangeAsNumber`. -/
+example :
+    let computed (operand : SurfaceNumericAtom) :=
+      viewOf numericComputationResolve?
+        (elaborateNumericComputationOperation model ["Grid"] amountDecl.id (atom operand))
+    [computed (.stringLength (grid "Ledger")), computed (.fieldValueAsNumber (.direct (grid "Ledger"))),
+      computed (.stringRange (grid "Ledger") 1 2),
+      computed (.dateRangeBoundPart (grid "Ledger") .start .year),
+      computed (.fieldValueAsNumber (.direct (grid "Items"))), computed (.stringLength (grid "Note")),
+      computed (.fieldValueAsNumber (.direct (grid "Note"))), computed (.stringRange (grid "Note") 1 2),
+      computed (.stringRange (grid "Partial") 1 2)] =
+      [.read (some .noGroupsAllowed), .read (some .noGroupsAllowed), .read (some .noGroupsAllowed),
+        .read (some .noGroupsAllowed), .read (some .noWildcard), .carrier, .carrier, .carrier,
+        .carrier] := by
+  native_decide
+
 private def stringComputationResolve? : StringComputationElabError → Option ResolveError
   | .resolve error => some error
   | _ => none
@@ -183,6 +229,18 @@ example :
         .read (some .noWildcard)] := by
   native_decide
 
+/- **`FieldValueAsString`'s parameter asks the group gate alone**
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   a group and a repeatable group draw their classes, while a raw String meets the conversion's own
+   Number gate rather than the read's raw class. -/
+example :
+    let computed (source : String) :=
+      viewOf stringComputationResolve?
+        (elaborateStringComputationOperation model ["Grid"] copyDecl.id (.fieldValueAsString (grid source)))
+    [computed "Ledger", computed "Items", computed "Note", computed "Amount"] =
+      [.read (some .noGroupsAllowed), .read (some .noWildcard), .carrier, .admitted] := by
+  native_decide
+
 private def enumerationComputationResolve? : EnumerationComputationElabError → Option ResolveError
   | .resolve error | .source (.resolve error) => some error
   | _ => none
@@ -196,9 +254,44 @@ example :
       viewOf enumerationComputationResolve?
         (elaborateEnumerationComputation model ["Grid"] gradeCopyDecl.id (.field source))
     [computed (.direct (grid "Ledger")), computed (.category (grid "Ledger") "Band"),
-      computed (.direct (grid "Note")), computed (.direct (grid "Grade"))] =
+      computed (.direct (grid "Note")), computed (.direct (grid "Grade")),
+      computed (.category (grid "Other") "Band"), computed (.category (grid "Note") "Band")] =
       [.read (some .noGroupsAllowed), .read (some .noGroupsAllowed),
-        .read (some .rawTypeOperandInvalid), .admitted] := by
+        .read (some .rawTypeOperandInvalid), .admitted, .read (some .noEnumeration),
+        .read (some .noEnumeration)] := by
+  native_decide
+
+/-- The origin grid's model, whose fixed group `Ledger` declares fields named as the root's, each of
+    another kind. -/
+private def originModel : FlatModel :=
+  let ledger := ["Grid", "Ledger"]
+  { fields := [otherDecl, gradeDecl, { gradeDecl with id := 20, groupPath := ledger, name := "Tier" },
+      { amountDecl with id := 21, groupPath := ledger, name := "Grade" },
+      { amountDecl with id := 22, groupPath := ledger, name := "Sum" },
+      { amountDecl with id := 23, groupPath := ledger, name := "Other" },
+      { refDecl with id := 24, groupPath := ledger, name := "Text" }] }
+
+private def enumerationOrigin (declaringGroup : GroupPath) : ReadView :=
+  viewOf enumerationComputationResolve?
+    (elaborateEnumerationComputation originModel declaringGroup 20 (.field (.direct (bare "Grade"))))
+
+private def numberOrigin (declaringGroup : GroupPath) : ReadView :=
+  viewOf numericComputationResolve? (elaborateNumericComputationOperation originModel declaringGroup 22
+    (.binary .add (.atom (.field (bare "Grade"))) one))
+
+private def stringOrigin (declaringGroup : GroupPath) : ReadView :=
+  viewOf stringComputationResolve?
+    (elaborateStringComputationOperation originModel declaringGroup 24 (.field (bare "Other")))
+
+/- **A computation's relative name resolves from its declaring group, not from its target's**
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   A target in `Ledger` declared at the root reads the root's field of that name, and declared in
+   `Ledger` reads `Ledger`'s, on an Enumeration, a Number and a String target alike, so each pair
+   admits one declaration and refuses the other. -/
+example :
+    [enumerationOrigin ["Grid"], enumerationOrigin ["Grid", "Ledger"], numberOrigin ["Grid"],
+      numberOrigin ["Grid", "Ledger"], stringOrigin ["Grid"], stringOrigin ["Grid", "Ledger"]] =
+      [.admitted, .carrier, .carrier, .admitted, .admitted, .carrier] := by
   native_decide
 
 private def conditionView (condition : SurfaceCondition) : ReadView :=
@@ -206,9 +299,9 @@ private def conditionView (condition : SurfaceCondition) : ReadView :=
 
 /- **A category read `[F -> C]` asks the group gate**, as a membership's member and as either side
    of a text comparison: a group draws the group class ahead of the subject's kind and the category
-   reader's own gates. Its value gates never answer, since only an Enumeration has a category, so a
-   raw String's category read meets the category reader's refusal where its stored read draws the raw
-   class. -/
+   reader's own gates. Its value gates never answer: a raw String's category read draws the
+   non-Enumeration class where its stored read draws the raw class
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 example :
     let ledgerBand : SurfaceTextFieldOperand := .category (grid "Ledger") "Band"
     [conditionView (.enumerationFieldValueMembership .included (.direct (grid "Other")) [ledgerBand]),
@@ -219,17 +312,57 @@ example :
       conditionView (.compareEnumeration .equal (grid "Note") (.category "Band") "Hi"),
       conditionView (.compareEnumeration .equal (grid "Note") .stored "A")] =
       [.read (some .noGroupsAllowed), .read (some .noGroupsAllowed), .read (some .noGroupsAllowed),
-        .read (some .noGroupsAllowed), .admitted, .carrier, .read (some .rawTypeOperandInvalid)] := by
+        .read (some .noGroupsAllowed), .admitted, .read (some .noEnumeration),
+        .read (some .rawTypeOperandInvalid)] := by
+  native_decide
+
+/- **The category read's non-Enumeration class answers ahead of the field's value gates and of the
+   category's own lookup**, on a comparison and as a membership's member
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   A String, a partially known Date and a full Date draw it alike, so no date gate answers first, and
+   a category the String does not declare draws it rather than the unknown-category class. An
+   unstarred repeatable group meets the walk before it. -/
+example :
+    [conditionView (.compareEnumeration .equal (grid "Other") (.category "Band") "Hi"),
+      conditionView (.compareEnumeration .equal (grid "Partial") (.category "Band") "Hi"),
+      conditionView (.compareEnumeration .equal (grid "Due") (.category "Band") "Hi"),
+      conditionView (.compareEnumeration .equal (grid "Other") (.category "Nope") "Hi"),
+      conditionView (.compareEnumeration .equal (grid "Items") (.category "Band") "Hi"),
+      conditionView (.enumerationFieldValueMembership .included (.direct (grid "Other"))
+        [.category (grid "Note") "Band"]),
+      conditionView (.enumerationFieldValueMembership .included (.direct (grid "Other"))
+        [.category (grid "Other") "Band"])] =
+      [.read (some .noEnumeration), .read (some .noEnumeration), .read (some .noEnumeration),
+        .read (some .noEnumeration), .read (some .noWildcard), .read (some .noEnumeration),
+        .read (some .noEnumeration)] := by
+  native_decide
+
+/- **An entity list's category member asks the same class once the walk passes**
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   a category read of a Number inside `Sum` draws the non-Enumeration class, and one of an unstarred
+   repeatable field meets the walk first, as a bracketed category read of such a field does. A list
+   that dropped the category would admit the first row and sum the Number. -/
+example :
+    let numberList (first : SurfaceFieldEntityOperand) : ReadView :=
+      match elaborateNumberEntitySource model ["Grid"]
+          { first, rest := [.field (absolute ["Grid", "Ledger"] "Total")] } with
+      | .ok _ => .admitted
+      | .error (.shape (.resolve error)) => .read error.diagnostic?
+      | .error _ => .carrier
+    [numberList (.field (grid "Amount") (.projected "Band")),
+      numberList (.field (absolute items.path "Qty") (.projected "Band")),
+      numberList (.field (grid "Amount"))] =
+      [.read (some .noEnumeration), .read (some .noWildcard), .admitted] := by
   native_decide
 
 /- **A scalar membership's plain subject is an entity whose group refusal waits for the members**,
    while a category subject's chain answers as it is read
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
-   A group subject beside a raw member draws the raw class, beside a clean one the group class, and a
-   category read of a group as the subject draws the group class ahead of a raw member. A subject
-   resolved ahead of the members reports the group as a name resolving to nothing on all three.
-   The last three rows lock an unmeasured account, stated at `checkScalarMemberReads`: a root subject
-   waits for the members and takes the group class, and an unstarred repeatable one answers first. -/
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites),
+   [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   A group or a root subject beside a raw member draws the raw class and beside a clean one the group
+   class, while an unstarred repeatable group, a name resolving to nothing, a category read of a group
+   and a category read of a String answer ahead of a raw member. A subject resolved ahead of the
+   members reports the fixed group and the root as names resolving to nothing. -/
 example :
     [conditionView (.stringFieldValueMembership .included (grid "Ledger") [grid "Note"]),
       conditionView (.stringFieldValueMembership .included (grid "Ledger") [grid "Other"]),
@@ -237,10 +370,15 @@ example :
         [.direct (grid "Note")]),
       conditionView (.stringFieldValueMembership .included (absolute [] "Grid") [grid "Note"]),
       conditionView (.stringFieldValueMembership .included (absolute [] "Grid") [grid "Other"]),
-      conditionView (.stringFieldValueMembership .included (grid "Items") [grid "Note"])] =
+      conditionView (.stringFieldValueMembership .included (grid "Items") [grid "Note"]),
+      conditionView (.stringFieldValueMembership .included (grid "Items") [grid "Other"]),
+      conditionView (.stringFieldValueMembership .included (grid "NoSuch") [grid "Note"]),
+      conditionView (.enumerationFieldValueMembership .included (.category (grid "Other") "Band")
+        [.direct (grid "Note")])] =
       [.read (some .rawTypeOperandInvalid), .read (some .noGroupsAllowed),
         .read (some .noGroupsAllowed), .read (some .rawTypeOperandInvalid),
-        .read (some .noGroupsAllowed), .read (some .noWildcard)] := by
+        .read (some .noGroupsAllowed), .read (some .noWildcard), .read (some .noWildcard),
+        .read (some .invalidEntity), .read (some .noEnumeration)] := by
   native_decide
 
 private def patternDiagnostic? (name : String) : Option (Option KernelStaticDiagnostic) :=
@@ -310,6 +448,21 @@ example :
         CorrelationElabError.diagnostic?) =
       [some (some .noGroupsAllowed), some (some .noGroupsAllowed),
         some (some .rawTypeOperandInvalid), some (some .noIterationForWildcard), none] := by
+  native_decide
+
+/- **A leaf reading a field outside the filtered group beside a leaf reading its iterated level is
+   admitted**, so this route's refusal of it claims no class, and a partially known Date in the body
+   draws the date class
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   The kernel rows order their sides, which this route does not carry; an equality asks the same reads
+   ahead of any comparison class. Claiming the iteration class for the first row is the wrong account. -/
+example :
+    let inner (field : SurfaceFieldPath) : SurfaceHavingNumberRef := { origin := .inner, field }
+    [.compareNumbers .equal (inner itemsQty) (inner (grid "Amount")),
+      .compareNumbers .equal (inner (grid "Partial")) (inner (grid "Due"))].map (fun having =>
+      (errorOf (elaborateSingleCorrelatedRule model ["Grid"] { filterRule itemsQty with having })).map
+        CorrelationElabError.diagnostic?) =
+      [some none, some (some .invalidDateType)] := by
   native_decide
 
 /- **Each leaf's reads and comparison class answer as the leaf closes, and the route's placement

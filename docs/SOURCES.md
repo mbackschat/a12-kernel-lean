@@ -794,6 +794,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The field-value read's gates answer ahead of an arithmetic operator's class, on a computation's operand writing a String, an Enumeration, a Time or a Number, and on a category read](sources/static-admission-and-class-probes.md#src-field-value-read-carriers)
 <a id="src-field-value-read-remaining-sites"></a>
 - [A pattern comparison's field and a DateRange comparison's sides answer the field-value read's classes, a scalar membership's group subject waits for its members, a declaring group's own group takes no short-name fallback, and a computation reading a repeatable group draws the missing-star class](sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)
+<a id="src-field-value-read-predictions"></a>
+- [A field an operator names as a parameter asks the group gate alone, a category read of a field declaring no Enumeration draws `MVK_NO_ENUMERATION` on every carrier measured, entity lists included, and a repeatable or parallel computation target reads as a nonrepeatable one does, its own group drawing the group class](sources/static-admission-and-class-probes.md#src-field-value-read-predictions)
 <a id="src-value-list-cross-list-repeat-order"></a>
 - [A reference repeated across a value-list quantifier's two lists is asked after its base-type and kind gates, and one repeated within the field list before them](sources/static-admission-and-class-probes.md#src-value-list-cross-list-repeat-order)
 <a id="src-ordering-date-class-reads-the-pair"></a>

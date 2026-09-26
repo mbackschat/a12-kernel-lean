@@ -74,6 +74,19 @@ private def elaborateEnumerationLiteralList (model : FlatModel)
     | some value => throw (.enumerationOperand path (.invalidLiteral value))
     | none => pure operand
 
+/-- A multi-field list's operand, read through a field resolver. A path naming a group is an operand
+    the Kernel expands, so `(Ledger, Other In "a")` draws the base-type class of the group's fields
+    beside the String ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions));
+    this flat route cannot expand it and refuses without the entity class a field resolver reports. A
+    membership's subject and members are read before any list operand, so none reaches here as a
+    group. -/
+private def FlatModel.resolveFlatListOperand (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (surface : SurfaceFieldPath) : Except ElabError FlatFieldDecl :=
+  (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError fun miss =>
+    match displaceGroupMiss miss (model.ruleGroupRead declaringGroup writtenGroup surface) with
+    | .groupInFieldValueRead group _ _ => .groupOperandOutsideTokenRoute group
+    | other => .resolve other
+
 private abbrev ElaboratedEnumerationOperand :=
   List String × CheckedEnumerationProjection × FlatEnumerationOperand
 
@@ -92,7 +105,10 @@ private def elaborateEnumerationOperandList (model : FlatModel)
     (emptyError : ElabError) : Except ElabError (List ElaboratedEnumerationOperand) := do
   if surfaces.isEmpty then
     throw emptyError
-  surfaces.mapM (elaborateEnumerationFieldOperand model declaringGroup · writtenGroup)
+  surfaces.mapM fun surface => do
+    if let .direct reference := surface then
+      discard <| model.resolveFlatListOperand declaringGroup writtenGroup reference
+    elaborateEnumerationFieldOperand model declaringGroup surface writtenGroup
 
 private def rejectDuplicateEnumerationOperands
     (resolved : List ElaboratedEnumerationOperand) : Except ElabError Unit :=
@@ -156,8 +172,7 @@ private def duplicateExactValueListOperand? {operand : Type} [BEq operand] :
 private def elaborateStringValueListOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath) :
     Except ElabError ElaboratedStringValueListOperand := do
-  let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError .resolve
+  let declaration ← model.resolveFlatListOperand declaringGroup writtenGroup surface
   let field ← requireStringValueField declaration
   pure (declaration.path, .string field)
 
@@ -213,8 +228,7 @@ private abbrev ElaboratedNumberValueListOperand := List String × FlatNumberFiel
 private def elaborateNumberValueListOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath) :
     Except ElabError ElaboratedNumberValueListOperand := do
-  let declaration ←
-    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError .resolve
+  let declaration ← model.resolveFlatListOperand declaringGroup writtenGroup surface
   match declaration.toNumberField? with
   | some operand => pure (declaration.path, operand)
   | none =>
@@ -253,29 +267,32 @@ private def elaborateNumberFieldValueSides (model : FlatModel)
   rejectDuplicateNumberValueListOperands (fields ++ values)
   pure (fields.map (·.2), values.map (·.2))
 
+/-- A scalar membership's subject is an entity rather than a bracket, so it asks the group gate alone
+    as it is read, and a category subject the category read's gates. The construct's kind gate follows
+    and then its value validation: a partially known Date draws the kind class a full Date draws, and
+    a raw String the raw class, on both the literal and the field-valued form
+    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+private def FlatModel.scalarSubjectRead (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
+    SurfaceTextFieldOperand → Except ResolveError FlatFieldDecl
+  | .category reference _ => model.resolveCategoryRead declaringGroup reference writtenGroup
+  | .direct reference => model.resolveEntityRead declaringGroup reference writtenGroup
+
 /-- A scalar membership's field-valued members are field-value reads, whose gates the Kernel asks as
     each bracket closes, during the parse and so ahead of the subject's kind gate and the member
     list's duplicate and base-type gates
     ([inbound](../../../../docs/SOURCES.md#inbound-2026-09-25f-field-value-read)). A category member
-    asks the group gate alone.
+    asks the category read's gates.
 
-    The subject is an entity, not a bracket. A category subject's chain answers as it is read, ahead
-    of the members, while a plain subject naming a fixed group is refused `MVK_NO_GROUPS_ALLOWED` only
-    after them
-    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
-    A root takes that group class after the members too, and an unstarred repeatable group the
-    reader's missing-star class ahead of them, on the account that the construct's field check runs
-    after the members while the reader's level check runs as the subject is read; no row measures
-    either. A subject that resolves to nothing answers ahead of the members on the same account. -/
+    The subject's gates split around the members. A plain subject naming a fixed group or a root is
+    refused `MVK_NO_GROUPS_ALLOWED` only after them, by the construct's field check, while an unstarred
+    repeatable group's missing-star class, a name resolving to nothing and a category subject's chain
+    answer as the subject is read, ahead of them
+    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites),
+    [checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (subject : SurfaceTextFieldOperand) (members : List SurfaceTextFieldOperand) :
     Except ElabError Unit := do
-  let subjectRead := match subject with
-    | .category reference _ => model.resolveCategoryRead declaringGroup reference writtenGroup
-    | .direct reference => displaceGroupRead
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
-        (model.ruleGroupRead declaringGroup writtenGroup reference)
-  let groupSubject ← match subject, subjectRead with
+  let groupSubject ← match subject, model.scalarSubjectRead declaringGroup writtenGroup subject with
     | .direct _, .error error@(.groupInFieldValueRead _ none _) => pure (some error)
     | _, .error error => throw (.resolve error)
     | _, .ok _ => pure none
@@ -284,6 +301,14 @@ private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGr
       writtenGroup).mapError .resolve
   if let some error := groupSubject then
     throw (.resolve error)
+
+/-- A scalar membership against literals has no members to wait for, so its subject's group gate
+    answers first: a fixed group or a root draws the group class and an unstarred repeatable group the
+    missing-star class, on the String and the Number form alike
+    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+private def checkScalarLiteralSubjectRead (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (subject : SurfaceTextFieldOperand) : Except ElabError Unit :=
+  discard <| (model.scalarSubjectRead declaringGroup writtenGroup subject).mapError .resolve
 
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) : SurfaceTextFieldOperand →
@@ -337,6 +362,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         elaborateStringFieldValueSides model declaringGroup writtenGroup fieldSurfaces valueSurfaces
       pure (.tokenValueList quantifier fields (.fields values))
   | .stringValueMembership op surface values => do
+      checkScalarLiteralSubjectRead model declaringGroup writtenGroup (.direct surface)
       let operand ← elaborateStringLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [operand] (.literals values))
   | .stringFieldValueMembership op surface valueSurfaces => do
@@ -345,6 +371,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         elaborateStringFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier fields (.fields values))
   | .numberValueMembership op surface values => do
+      checkScalarLiteralSubjectRead model declaringGroup writtenGroup (.direct surface)
       let (operand, values) ←
         elaborateNumberLiteralMembership model declaringGroup writtenGroup surface values
       pure (.numberValueList op.quantifier [operand] (.literals values))
@@ -358,6 +385,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         elaborateNumberFieldValueSides model declaringGroup writtenGroup fieldSurfaces valueSurfaces
       pure (.numberValueList quantifier fields (.fields values))
   | .enumerationValueMembership op surface values => do
+      checkScalarLiteralSubjectRead model declaringGroup writtenGroup surface
       let operand ←
         elaborateEnumerationLiteralList model declaringGroup writtenGroup surface values
       pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values))
@@ -598,7 +626,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       | .dateRange =>
           throw (.literalKindMismatch declaration.path .dateRange literal.kind)
   | .lengthCompare op reference expected => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+      let declaration ← (model.resolveEntityRead declaringGroup reference writtenGroup).mapError .resolve
       if declaration.isRawString then
         throw (.rawStringLength declaration.path)
       else
@@ -611,7 +639,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         | none => throw (.lengthOperandKindMismatch declaration.path
             declaration.policy.kind.surfaceKind)
   | .literalCompareLength expected op reference => do
-      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup).mapError .resolve
+      let declaration ← (model.resolveEntityRead declaringGroup reference writtenGroup).mapError .resolve
       if declaration.isRawString then
         throw (.rawStringLength declaration.path)
       else

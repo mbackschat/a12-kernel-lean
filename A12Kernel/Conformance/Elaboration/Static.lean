@@ -731,14 +731,67 @@ example :
         .refused (some .rawTypeOperandInvalid), .refused (some .rawTypeOperandInvalid)] := by
   native_decide
 
+/- **A scalar membership against literals asks its subject's group gate first**, having no members to
+   wait for ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   a fixed group, a bare name naming one and a root draw the group class and an unstarred repeatable
+   group the missing-star class. The Kernel's one construct covers the String, Number and Enumeration
+   literal forms this surface splits by kind. A field resolver reports every row as a name resolving
+   to nothing. -/
+example :
+    let ledger := absolute ["Order"] "Ledger"
+    let items := absolute ["Order"] "Items"
+    let root := absolute [] "Order"
+    [readView (.stringValueMembership .included ledger ["a"]),
+      readView (.stringValueMembership .included items ["a"]),
+      readView (.stringValueMembership .included root ["a"]),
+      readView (.stringValueMembership .included (bare "Ledger") ["a"]),
+      readView (.numberValueMembership .included ledger [1]),
+      readView (.numberValueMembership .included items [1]),
+      readView (.numberValueMembership .included root [1]),
+      readView (.enumerationValueMembership .included (.direct ledger) ["a"]),
+      readView (.enumerationValueMembership .included (.direct items) ["a"])] =
+      [.refused (some .noGroupsAllowed), .refused (some .noWildcard),
+        .refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed),
+        .refused (some .noGroupsAllowed), .refused (some .noWildcard),
+        .refused (some .noGroupsAllowed), .refused (some .noGroupsAllowed),
+        .refused (some .noWildcard)] := by
+  native_decide
+
+/- **`Length`'s parameter asks the group gate alone**
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   an unstarred repeatable group draws the missing-star class and a fixed group the group class on
+   either side of the comparison, and a name resolving to nothing its own class. A raw String and a
+   partially known Date meet `Length`'s own gates, which draw no class here, where the read's value
+   gates would draw the raw and the date class. -/
+example :
+    let two : DecodedNumericLiteral := { value := 2, authoredScale := 0 }
+    [readView (.lengthCompare .greater (absolute ["Order"] "Items") two),
+      readView (.literalCompareLength two .less (absolute ["Order"] "Ledger")),
+      readView (.lengthCompare .greater (absolute ["Order"] "NoSuch") two),
+      readView (.lengthCompare .greater (absolute ["Order"] "RawNote") two),
+      readView (.lengthCompare .greater (absolute ["Order"] "PartialDispatch") two)] =
+      [.refused (some .noWildcard), .refused (some .noGroupsAllowed), .refused (some .invalidEntity),
+        .refused none, .refused none] := by
+  native_decide
+
+/- **A multi-field list's group operand is expanded by the Kernel**, which then reports the base-type
+   class of the group's fields beside the String
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   This route cannot expand a group and refuses without a class, where the group class would be the
+   wrong claim. -/
+example :
+    readView (.stringValueList .atLeastOne [absolute ["Order"] "Ledger", absolute ["Order"] "Note"] ["a"]) =
+      .refused none := by
+  native_decide
+
 /- **A bare name naming a group of the declaring group is a group read, whether one field elsewhere
    shares the name or two do.** The reader takes no short-name fallback for a name its declaring group
    declares ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)),
    so the bracket read and the presence operand both draw the group class. Falling back binds the one
    String field, which the presence operand admits, and displacing only a name resolving to nothing
-   leaves two fields on the ambiguity class. A carrier that displaces no group miss, `Length`, draws
-   the miss's entity class, as it does for an absolute path naming a group; that last row locks an
-   unmeasured account which [SG9](../../../docs/gaps/paths-and-groups.md#gap-sg9) records. -/
+   leaves two fields on the ambiguity class. `Length`'s parameter asks the same group gate, so the
+   bare name draws the group class there too, as an absolute path naming a group does
+   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 example :
     let unique : FlatModel := { readModel with
       fields := readModel.fields ++ [{ noteDecl with id := 30, groupPath := ["Reference"], name := "Ledger" }] }
@@ -749,7 +802,7 @@ example :
       readViewIn ambiguous (compare .greater (bare "Ledger") (.number 0)),
       readViewIn ambiguous (.fieldFilled (bare "Ledger")),
       readViewIn unique (.lengthCompare .greater (bare "Ledger") { value := 2, authoredScale := 0 })] =
-      List.replicate 4 (.refused (some .noGroupsAllowed)) ++ [.refused (some .invalidEntity)] := by
+      List.replicate 5 (.refused (some .noGroupsAllowed)) := by
   native_decide
 
 end A12Kernel.Conformance.Elaboration.Static
