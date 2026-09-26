@@ -647,17 +647,21 @@ private def quantity : FlatFieldDecl :=
 private def filterModel : FlatModel := { model with fields := model.fields ++ [rowGuard, quantity] }
 
 /-- `DateRangesOverlap(Form/Rows*/RowRange Having [Rows/Guard] == [Quantity], Form/Rows*/RowRange)`
-    declared at the root and reporting on `Quantity`, with the `Quantity` read marked or not; `none`
-    when the rule assembles. -/
-private def filteredOverlapAssembly? (marked : Bool) : Option (Option FlatRuleAssemblyError) := do
+    declared at the root, with the `Quantity` read marked or not. -/
+private def filteredOverlapCondition? (marked : Bool) :
+    Option (CheckedValidationCondition filterModel) :=
   let star : SurfaceStarFieldPath :=
     { base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }]
       field := "RowRange" }
-  let condition ← (CheckedValidationCondition.fromIteratedDateRangeOverlap filterModel ["Form"] {
+  (CheckedValidationCondition.fromIteratedDateRangeOverlap filterModel ["Form"] {
       first := .starHaving star (.compareNumbers .equal
         { origin := .inner, field := path ["Form", "Rows"] "Guard" }
         { origin := if marked then .outer else .inner, field := path ["Form"] "Quantity" })
       rest := [.star star] }).toOption
+
+/-- The filtered overlap reporting on `Quantity`; `none` when the rule assembles. -/
+private def filteredOverlapAssembly? (marked : Bool) : Option (Option FlatRuleAssemblyError) := do
+  let condition ← filteredOverlapCondition? marked
   pure (match assembleResolvedValidationRule filterModel condition quantity.id "filteredOverlap"
       .error { parts := [] } with
     | .ok _ => none
@@ -670,6 +674,27 @@ private def filteredOverlapAssembly? (marked : Bool) : Option (Option FlatRuleAs
 example :
     filteredOverlapAssembly? true = some none ∧
       filteredOverlapAssembly? false = some (some (.errorFieldNotReferenced quantity.id)) := by
+  native_decide
+
+/-- The marked filtered overlap under partial validation of an empty document; `false` on any
+    structural refusal. -/
+private def filteredOverlapPartiallySkips : Bool := Id.run do
+  let some condition := filteredOverlapCondition? true | return false
+  let .ok rule := assembleResolvedValidationRule filterModel condition quantity.id
+      "filteredOverlap" .error { parts := [] } | return false
+  let .ok prepared := prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler filterModel | return false
+  let .ok document := checkDocument prepared "en_US" { instantiatedRows := [], cells := [] }
+    | return false
+  match rule.evalAddressedPartial document .full with
+  | .ok .skipped => true
+  | _ => false
+
+/- A rule holding any `Having` filter returns before relevance or evaluation under partial
+   validation ([`spec/10`](../../spec/10-validation-and-polarity.md) §5), and a filter on a DateRange
+   overlap operand counts: the skip answers before the addressed partial evaluator, which this leaf
+   does not support, could refuse the rule as unsupported. -/
+example : filteredOverlapPartiallySkips = true := by
   native_decide
 
 end A12Kernel.Conformance.IteratedDateRangeCondition

@@ -450,15 +450,15 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
   | leaf@(.customFieldValidity _), field => leaf.referencesField field
 
-/-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
+/-- Whether a leaf retains any `Having` filter in its checked source. The ordered numeric carrier and the DateRange overlap leaves can own one; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison => comparison.hasHaving
+  | .iteratedDateRange condition => !condition.filters.isEmpty
   | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
   | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
-  | .customFieldValidity _
-  | .iteratedDateRange _ => false
+  | .customFieldValidity _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
