@@ -667,4 +667,103 @@ example :
       ] := by
   native_decide
 
+
+/-! ## A repeatable root holding every key
+
+The rule sits in the repeatable root `Fleet` and reports on `Plate`. With every key directly in the
+root, no repeatable group lies below the rule group, so the reference group is the root itself and
+its rows are compared across the document, as an explicit `@From` of the root compares them; a key
+in the repeatable `Drivers` keeps that group and is compared per root row
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26l-repeatable-root)). -/
+
+private def text (id : FieldId) (groupPath : GroupPath) (name : String)
+    (repeatableScope : List RepeatableLevel) : FlatFieldDecl :=
+  { id, groupPath, name, repeatableScope, policy := { kind := .string } }
+
+private def fleetModel : FlatModel :=
+  { fields := [text 1 ["Fleet"] "Plate" [20], text 2 ["Fleet"] "Vin" [20],
+      text 3 ["Fleet", "Drivers"] "License" [20, 21]]
+    repeatableGroups := [
+      { level := 20, path := ["Fleet"], repeatability := some 5 },
+      { level := 21, path := ["Fleet", "Drivers"], repeatability := some 3 }] }
+
+private def fleetRule? (keys : List String) (scope : SurfaceRepetitionNotUniqueScope := .default)
+    (writtenGroup : GroupPath := ["Fleet"]) (errorField : FieldId := 1) :
+    Option (CheckedResolvedValidationRule fleetModel) := do
+  let first :: rest := keys.map fun key =>
+    ({ base := .relative 0, groups := (key.splitOn "/").dropLast, field := (key.splitOn "/").getLast! } :
+      SurfaceFieldPath) | none
+  let condition ← (CheckedValidationCondition.fromRepetitionNotUnique fleetModel ["Fleet"]
+    { firstKey := first, restKeys := rest, scope } writtenGroup).toOption
+  (assembleResolvedValidationRule fleetModel condition errorField "rnu" .error
+    { parts := [] }).toOption
+
+private def textCell (fieldId : FieldId) (path : List Nat) (value : String) : ClassifiedCellInput :=
+  { address := { field := fieldId, path }, stored := value, raw := .parsed (.str value) }
+
+/-- Three vehicles, each `(Plate, Vin)` with `none` leaving the cell empty. -/
+private def vehicles (rows : List (String × Option String)) : DocumentData :=
+  { instantiatedRows := (List.range rows.length).map fun index => { group := 20, path := [index + 1] }
+    cells := (rows.zip (List.range rows.length)).flatMap fun ((plate, vin), index) =>
+      textCell 1 [index + 1] plate :: (vin.map (textCell 2 [index + 1] ·)).toList }
+
+private def fleetVerdicts? (rule : Option (CheckedResolvedValidationRule fleetModel))
+    (data : DocumentData) : Option (List (Env × Verdict)) := do
+  let checked ← rule
+  let prepared ←
+    (prepareFlatStringContext world builtinStringPatternCompiler fleetModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (checked.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+private def rootScope : SurfaceRepetitionNotUniqueScope :=
+  .from (.path { base := .absolute, groups := ["Fleet"] })
+
+private def duplicatePlates := vehicles [("A", some "1"), ("A", some "1"), ("B", some "2")]
+private def duplicatePlatesEmptyVin := vehicles [("A", none), ("A", none), ("B", some "2")]
+private def distinctPlates := vehicles [("A", some "1"), ("B", some "1"), ("C", some "2")]
+
+private def firstTwoFired (polarity : Polarity) : List (Env × Verdict) :=
+  [([(20, 1)], .fired polarity), ([(20, 2)], .fired polarity), ([(20, 3)], .notFired)]
+
+/- The pair, the sole key and the scoped sole key fire on the first two vehicles and not on the
+   third. -/
+example :
+    [fleetVerdicts? (fleetRule? ["Plate", "Vin"]) duplicatePlates,
+      fleetVerdicts? (fleetRule? ["Plate"]) duplicatePlates,
+      fleetVerdicts? (fleetRule? ["Plate"] rootScope) duplicatePlates] =
+      List.replicate 3 (some (firstTwoFired .value)) := by
+  native_decide
+
+/- With `Vin` empty on the duplicates the pair fires as an omission while the sole key, scoped or
+   not, still fires on its value. -/
+example :
+    [fleetVerdicts? (fleetRule? ["Plate", "Vin"]) duplicatePlatesEmptyVin,
+      fleetVerdicts? (fleetRule? ["Plate"]) duplicatePlatesEmptyVin,
+      fleetVerdicts? (fleetRule? ["Plate"] rootScope) duplicatePlatesEmptyVin] =
+      [some (firstTwoFired .omission), some (firstTwoFired .value),
+        some (firstTwoFired .value)] := by
+  native_decide
+
+/- A control whose plates differ fires nothing. -/
+example :
+    fleetVerdicts? (fleetRule? ["Plate", "Vin"]) distinctPlates =
+      some [([(20, 1)], .notFired), ([(20, 2)], .notFired), ([(20, 3)], .notFired)] := by
+  native_decide
+
+private def licences : DocumentData :=
+  { instantiatedRows := [{ group := 20, path := [1] }, { group := 20, path := [2] },
+      { group := 21, path := [1, 1] }, { group := 21, path := [1, 2] },
+      { group := 21, path := [2, 1] }]
+    cells := [textCell 1 [1] "A", textCell 1 [2] "B", textCell 3 [1, 1] "L-1",
+      textCell 3 [1, 2] "L-1", textCell 3 [2, 1] "L-1"] }
+
+/- A key in `Drivers` is compared per vehicle: the first vehicle lists `L-1` twice and fires on both
+   drivers, the second lists it once and does not. -/
+example :
+    fleetVerdicts? (fleetRule? ["Drivers/License"] .default ["Fleet", "Drivers"] 3) licences =
+      some [([(20, 1), (21, 1)], .fired .value), ([(20, 1), (21, 2)], .fired .value),
+        ([(20, 2), (21, 1)], .notFired)] := by
+  native_decide
+
 end A12Kernel.Conformance.RepetitionNotUniqueValidationRule

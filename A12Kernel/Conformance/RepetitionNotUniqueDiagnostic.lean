@@ -503,15 +503,15 @@ private def fleetVerdict (repeatable : Bool) (writtenGroup : GroupPath) (first :
   | .error (.repetitionNotUnique error) => some error.diagnostic?
   | .error _ => some none
 
-/- At a repeatable root, keys all sitting directly in the root skip the repeatable-group gate, and
-   the Kernel admits them ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)). What
-   such a rule fires on is unmeasured, and this theory has no reference group to evaluate it against,
-   so it refuses them without a class. A key in a fixed subgroup brings the class back, alone or beside
-   a direct key, a key in a repeatable subgroup is admitted, and at a fixed root a direct key is the
-   measured sole-key shape. -/
+/- At a repeatable root, keys all sitting directly in the root skip the repeatable-group gate and
+   are admitted, the root being their reference group
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates); what they fire on is locked in
+   `RepetitionNotUniqueValidationRule`). A key in a fixed subgroup brings the class back, alone or
+   beside a direct key, a key in a repeatable subgroup is admitted, and at a fixed root a direct key is
+   the measured sole-key shape. -/
 example :
-    fleetVerdict true ["Fleet"] (rel [] "Plate") = some none ∧
-    fleetVerdict true ["Fleet"] (rel [] "Plate") [rel [] "Vin"] = some none ∧
+    fleetVerdict true ["Fleet"] (rel [] "Plate") = none ∧
+    fleetVerdict true ["Fleet"] (rel [] "Plate") [rel [] "Vin"] = none ∧
     fleetVerdict true ["Fleet", "Registration"] (rel ["Registration"] "RegNo") =
       some (some .repeatableGroupMissing) ∧
     fleetVerdict true ["Fleet"] (rel [] "Plate") [rel ["Registration"] "RegNo"] =
