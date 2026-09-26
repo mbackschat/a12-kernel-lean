@@ -426,9 +426,10 @@ example :
       some (some .noWildcard) := by
   native_decide
 
-/- Emptiness is asked once the scope's walk passes, which a flat model allows only for a rule
-   declared in the empty repeatable group itself; that refusal claims no class, since the measured
-   empty scopes whose read passes are a fixed group and a starred one. -/
+/- Emptiness is asked once the scope's walk passes, which a flat model allows only when the rule's
+   error-field group lies inside the empty repeatable group, a placement no Kernel model can author
+   since that group holds no field; that refusal claims no class, since the measured empty scopes
+   whose read passes are a fixed group and a starred one. -/
 example :
     (match CheckedValidationCondition.fromRepetitionNotUnique policyModel ["Policy", "Vacant"]
         { firstKey := key ["Policy"] "Reference", restKeys := [],

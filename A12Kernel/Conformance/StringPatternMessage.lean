@@ -52,8 +52,9 @@ private def stringPatternNamedDiagnostic? (template : String) : Option (Option S
 /- **The field's own message meets the rule message's two character gates, line before control**
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). Each row sits in the one
    declared locale's message of a `[A-Z]+` pattern. Beside the line feed the Kernel also reports a
-   codeless line-break finding on the field, which is the field's String check and not this template's.
-   The supplementary scalar is the codeless repertoire refusal alone, so it projects no class. -/
+   codeless line-break finding, as it does beside a rule message's line feed; that finding is not this
+   projection's. The supplementary scalar is the codeless repertoire refusal alone, so it projects no
+   class. -/
 example :
     ["a\nb", "a" ++ cp 0x2028 ++ "b", "a" ++ cp 0x2029 ++ "b", "a\tb" ++ cp 0x2028 ++ "c",
         "a\tb", "a" ++ cp 0x0085 ++ "b", "a" ++ cp 0x200B ++ "b", "a" ++ cp 0x00AD ++ "b",

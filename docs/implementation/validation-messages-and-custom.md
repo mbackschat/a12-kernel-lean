@@ -82,10 +82,10 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-string-pattern-field-messages"></a>
 #### String-pattern field messages
 
-- `boundary`: Checked nonempty `en_US` templates admit only fixed lowercase `$field$` and `$field.value$`, reject the empty `$$` parameter, lower already-selected owning-field bytes once, and attach resolved text without reclassifying the established pattern error. It shares only the lexical gate and the refusal type with the rule producer, so it owns its own module
-- `boundary`: `namedStringPatternDiagnostic?` projects the field message's line and control classes, measured on that carrier ([inbound](../SOURCES.md#inbound-2026-09-26m-message-characters)); its dollar-parity and parameter refusals stay unprojected until a field-carrier row names them
+- `boundary`: Checked nonempty `en_US` templates admit only fixed lowercase `$field$` and `$field.value$`, reject the empty `$$` parameter, lower already-selected owning-field bytes once, and attach resolved text without reclassifying the established pattern error. It shares only the lexical gate and the refusal type with the rule producer, so it owns its own module.
+- `boundary`: `namedStringPatternDiagnostic?` projects the field message's line and control classes ([inbound](../SOURCES.md#inbound-2026-09-26m-message-characters)) and a named parameter's `INVALID_PARAMETER` ([ledger](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-07-30-01)), each measured on that carrier; the empty pair and dollar parity stay unprojected, no field-carrier row naming their classes.
 - `owner`: [`StringPatternMessage.lean`](../../A12Kernel/Elaboration/StringPatternMessage.lean)
-- `assurance`: E/P closed for the measured String-pattern producer, the two projected classes locked on each measured separator and control row and mutation-checked against a control-first order; upstream L at [source registry](../SOURCES.md); C/X/Q none
+- `assurance`: E/P closed for the measured String-pattern producer, the character classes locked on each measured row the shared predicate classifies and mutation-checked against a control-first order, the parameter class on both measured spellings; upstream L at [source registry](../SOURCES.md); C/X/Q none
 - `remains`: Requiredness grammar, other locales, provider invocation, empty-value fallback, and other field-message producers: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
 <a id="cap-structural-message-references"></a>
