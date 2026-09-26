@@ -129,8 +129,10 @@ def scaleSummary (_checked : CheckedTokenValueCountSource model) :
   NumericScaleSummary.field 0
 
 def referencesField (checked : CheckedTokenValueCountSource model)
-    (field : FieldId) : Bool :=
-  checked.source.referencesField field
+    (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
+    Bool :=
+  checked.source.referencesField field filterReads
 
 end CheckedTokenValueCountSource
 

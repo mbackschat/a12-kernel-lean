@@ -99,7 +99,11 @@ def conditionParsed (lenient : Bool) (declaration : ErrorFieldDeclaration) : Boo
   (declarationRefusal lenient declaration).isNone
 
 /-- One reference the condition makes, as far as the error-target gate reads it. The four facts are
-independent inputs rather than a classification, because the roles derived from them overlap. -/
+independent inputs rather than a classification, because the roles derived from them overlap.
+
+The list holds only the references outside every filter body and the `$`-marked ones inside: a
+body's unmarked read reaches none of these gates, and after a nested filter the outer body's rest
+counts as the rule's ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
 structure ConditionReference where
   /-- Names the very entity the error field names. -/
   sameEntity : Bool := false
@@ -141,7 +145,8 @@ def reachedThroughFormAlone (references : List ConditionReference) : Bool :=
 /-- The iteration facts the form-only branch reads.
 
 `firstInnerLevel` is the lowest level in the half-open range from one to the error field's level count
-that carries plain iteration; level zero is the root group's own and is deliberately skipped, being
+that carries plain iteration, meaning an unstarred and unkeyed read of that level among the references
+`ConditionReference` admits, so a starred, keyed or unmarked body read carries none; level zero is the root group's own and is deliberately skipped, being
 checked further down the cascade. `indexFieldLevel` is the **rule's** index-field level rather than
 the offending reference's — the Kernel's guard and its message parameter read two different subjects
 through two same-named helpers, and it is the guard's subject that decides. -/

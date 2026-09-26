@@ -107,15 +107,19 @@ def projectionRefs (checked : CheckedTokenEntityOperand model) :
     List (Option EnumerationProjectionRef) :=
   checked.tokenOperands.map FlatTextFieldOperand.projectionRef?
 
+/-- Whether this slot reads `field`. `filterReads` decides which of a filter's reads count: every
+    read for a dependency or pointer, only the marked ones for the rule's error-field gates. -/
 def referencesField (checked : CheckedTokenEntityOperand model)
-    (field : FieldId) : Bool :=
+    (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
+    Bool :=
   match checked with
   | .field source => source.operand.field.id == field
   | .star source =>
       source.operand.field.id == field ||
         match source.filter with
         | none => false
-        | some having => having.condition.referencesField field
+        | some having => filterReads having.condition field
   | .group source => source.referencesField field
 
 end CheckedTokenEntityOperand
@@ -164,8 +168,10 @@ def hasHaving (checked : CheckedTokenEntitySource model) : Bool :=
   checked.operands.any (fun operand => operand.hasHaving)
 
 def referencesField (checked : CheckedTokenEntitySource model)
-    (field : FieldId) : Bool :=
-  checked.operands.any (fun operand => operand.referencesField field)
+    (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
+    Bool :=
+  checked.operands.any (fun operand => operand.referencesField field filterReads)
 
 end CheckedTokenEntitySource
 

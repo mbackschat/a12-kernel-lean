@@ -156,6 +156,23 @@ def fieldIds : CorrelatedHaving → List FieldId
 def referencesField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
   condition.fieldIds.contains field
 
+/-- Fields the filter reads through a `$`-marked reference, in first authored occurrence order. The
+    Kernel judges a marked read as the rule's own read, so these alone of a body's reads reach the
+    rule's error-field gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+def markedFieldIds : CorrelatedHaving → List FieldId
+  | .leaf (.compareNumbers _ left right) =>
+      ([left, right].filter (·.origin == .outer)).map (·.field.id) |>.eraseDups
+  | .leaf (.compareRepetitions _ _ _) => []
+  | .leaf (.compareStringLiteral _ reference _) =>
+      if reference.origin == .outer then [reference.field.id] else []
+  | .leaf (.presence _ reference) =>
+      if reference.origin == .outer then [reference.field] else []
+  | .and left right | .or left right =>
+      (markedFieldIds left ++ markedFieldIds right).eraseDups
+
+def referencesMarkedField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
+  condition.markedFieldIds.contains field
+
 end CorrelatedHaving
 
 private def HavingOrigin.isInner : HavingOrigin → Bool

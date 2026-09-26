@@ -140,13 +140,16 @@ def declarationSigned : CheckedNumberEntityOperand model → Bool
   | .starHaving source => source.source.field.info.signed
   | .group source => source.declarationSigned
 
-def referencesField (field : FieldId) :
+/-- Whether this slot reads `field`. `filterReads` decides which of a filter's reads count: every
+    read for a dependency or pointer, only the marked ones for the rule's error-field gates. -/
+def referencesField (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
     CheckedNumberEntityOperand model → Bool
   | .field source => source.field.id == field
   | .star source => source.field.id == field
   | .starHaving source =>
       source.source.field.id == field ||
-        source.having.referencesField field
+        filterReads source.having field
   | .group source => source.referencesField field
 
 end CheckedNumberEntityOperand
@@ -188,8 +191,10 @@ def aggregateScaleSummary (op : NumericAggregateOp)
   | .distinctCount => NumericScaleSummary.field 0
 
 def referencesField (checked : CheckedNumberEntitySource model)
-    (field : FieldId) : Bool :=
-  checked.operands.any (·.referencesField field)
+    (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
+    Bool :=
+  checked.operands.any (·.referencesField field filterReads)
 
 def directFields? (checked : CheckedNumberEntitySource model) :
     Option (FlatNumberField × List FlatNumberField) := do

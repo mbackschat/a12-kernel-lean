@@ -128,15 +128,19 @@ def hasHaving : CheckedBooleanValueCountOperand model expected → Bool
   | .star source => source.filter.isSome
   | .group _ => false
 
+/-- Whether this slot reads `field`. `filterReads` decides which of a filter's reads count: every
+    read for a dependency or pointer, only the marked ones for the rule's error-field gates. -/
 def referencesField (checked :
-    CheckedBooleanValueCountOperand model expected) (field : FieldId) : Bool :=
+    CheckedBooleanValueCountOperand model expected) (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
+    Bool :=
   match checked with
   | .field source => source.declaration.id == field
   | .star source =>
       source.source.declaration.id == field ||
         match source.filter with
         | none => false
-        | some having => having.condition.referencesField field
+        | some having => filterReads having.condition field
   | .group source => source.referencesField field
 
 end CheckedBooleanValueCountOperand
@@ -480,8 +484,10 @@ def scaleSummary (_checked : CheckedBooleanValueCountSource model) :
   NumericScaleSummary.field 0
 
 def referencesField (checked : CheckedBooleanValueCountSource model)
-    (field : FieldId) : Bool :=
-  checked.operands.any fun operand => operand.referencesField field
+    (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
+    Bool :=
+  checked.operands.any fun operand => operand.referencesField field filterReads
 
 /-- Evaluate a direct-only checked Boolean/Confirm count without inventing repeatable topology. -/
 def evaluateDirectAt? (checked : CheckedBooleanValueCountSource model)

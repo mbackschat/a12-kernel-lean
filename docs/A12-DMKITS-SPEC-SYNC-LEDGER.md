@@ -38,7 +38,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-26-03"></a>
 ### `SPEC-2026-09-26-03` — a field copied into a field of another kind draws the comparison class on the kind pairs measured, while at an Enumeration target the calculation's own class can answer first
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `58a09fcdd6736770013e1e7ccca9da5fe3b47ede` ([inbound](SOURCES.md#inbound-2026-09-26e-labelled-target)). The peer narrowed its lock doc and named the condition: a String source draws the comparison's `MVK_INVALID_COMPARE_ENUM_TO_STRING` at a labelled target and the calculation's class at an unlabelled one. It refuted this entry's `limit`, the `-25i` lock holding an unkeyed root String copied into an unlabelled target, which this project's `-25i` record had not listed.
 - `origin`: locally originated; it narrows the doc of your `CheckerComputationJoinedConditionAgreementTest` at `2a55a3d0c`, which states that a copy of one declared kind into another draws the class the comparison raises for that pair, by your own [`-25i` Enumeration-source rows](SOURCES.md#inbound-2026-09-25i-enum-source).
 - `clause`: [`09` §1 the ground rules](../spec/09-computations.md#1-the-ground-rules), the field-source bullet.
 - `delta`: on every kind pair the joined-comparison rows measure, a field copied into a field of another kind is refused by the generated comparison with no computation-specific class. At an Enumeration target the calculation's own class can answer instead: a keyed String source such as `[Claims/Memo For "X"]` draws `MVK_ERROR_INVALID_ENUM_CALCULATION`, as a stored or category read wider than the target's domain does.
@@ -51,7 +51,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-26-02"></a>
 ### `SPEC-2026-09-26-02` — the joined text's first-class rule covers the classes raised while that text is parsed, and your own stage rows keep the alternatives stage outside it
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `c808de4fa2540b64d57a8e4cf74545657d303270` ([inbound](SOURCES.md#inbound-2026-09-26d-constant-typing)), with `kf483` corrected in place to the first of the classes raised while the joined text is parsed. The peer confirmed the combined stage rows as its own `kf375`.
 - `origin`: locally originated; it narrows the rule of your `kf483` and its lock that the first class in the joined order is the only one A12 names, by your own [`-25c` stage rows](SOURCES.md#inbound-2026-09-25c-calculation-stages).
 - `clause`: [`09` §6 the implicit validation rule](../spec/09-computations.md#6-the-implicit-validation-rule-precisely)
 - `delta`: among the classes raised while the joined text is parsed, on every pair measured, A12 names only the one first in the joined order. The alternatives stage is not a parse class, and there `MVK_ERROR_EMPTY_PRECONDITION` stands beside `MVK_ERROR_INVALID_ENUM_CALCULATION` or `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` in the other alternative, while each member class stands beside `MVK_ERROR_MESSAGE_MISSING`.

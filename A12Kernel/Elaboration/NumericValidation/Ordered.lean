@@ -158,6 +158,20 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
 
+/-- Whether this atom reaches `field` for the rule's error-field gates: as `referencesField` does,
+    except that a filter's unmarked reads do not count. The Kernel's gates keep only the references
+    outside every filter body and the `$`-marked ones inside
+    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+def referencesErrorField (atom : OrderedNumericValidationAtom model)
+    (field : FieldId) : Bool :=
+  match atom with
+  | .firstFilled source | .valueCount _ source | .aggregate _ source =>
+      source.referencesField field CorrelatedHaving.referencesMarkedField
+  | .tokenValueCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
+  | .booleanValueCount source =>
+      source.referencesField field CorrelatedHaving.referencesMarkedField
+  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => atom.referencesField field
+
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
 def hasHaving : OrderedNumericValidationAtom model → Bool
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
@@ -193,6 +207,14 @@ def OrderedNumericComparison.referencesField
     (field : FieldId) : Bool :=
   comparison.left.anyAtom (·.referencesField field) ||
     comparison.right.anyAtom (·.referencesField field)
+
+/-- The error-field reference over both operands, `OrderedNumericValidationAtom.referencesErrorField`
+    at every atom. -/
+def OrderedNumericComparison.referencesErrorField
+    (comparison : OrderedNumericComparison model)
+    (field : FieldId) : Bool :=
+  comparison.left.anyAtom (·.referencesErrorField field) ||
+    comparison.right.anyAtom (·.referencesErrorField field)
 
 /-- Discover `Having` across both complete authored operands without evaluating or lowering away their expression shape. -/
 def OrderedNumericComparison.hasHaving

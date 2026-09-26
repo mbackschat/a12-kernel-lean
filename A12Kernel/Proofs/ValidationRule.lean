@@ -185,13 +185,14 @@ theorem checkedFlatRule_errorField_coherent
           rule.errorFieldScopeCompatible,
       rule.errorFieldReferenced⟩
 
-/-- Mixed checked assembly uses the shared traversal to certify the exact error declaration and its derived ordinary iteration scope. -/
+/-- Mixed checked assembly certifies the exact error declaration, its derived ordinary iteration
+scope, and a reference to the error field outside every filter body or marked inside one. -/
 theorem checkedValidationRule_errorField_coherent
     (rule : CheckedResolvedValidationRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
       ruleErrorScopeCompatible true
         rule.errorDeclaration rule.iterationScope = true ∧
-      rule.condition.core.referencesField rule.errorField = true :=
+      rule.condition.core.referencesErrorField rule.errorField = true :=
   ⟨rule.errorFieldLookup, rule.errorFieldScopeCompatible,
     rule.errorFieldReferenced⟩
 

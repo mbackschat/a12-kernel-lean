@@ -578,4 +578,38 @@ example :
       some (some [10], some .legal, true) := by
   native_decide
 
+/-- `Sum(Order/Sections*/OuterAmount Having [SectionDetail] != [OuterAmount]) > 0` declared in
+    `Sections`, with the `SectionDetail` read marked or not, and the rule reporting on
+    `SectionDetail`; `none` when the rule assembles. -/
+private def ownStarFilterAssembly? (marked : Bool) : Option (Option FlatRuleAssemblyError) := do
+  let source ← (elaborateNumberEntitySource ordinaryIterationModel ["Order", "Sections"] {
+      first := .starHaving
+        { base := .absolute
+          groups := [{ name := "Order" }, { name := "Sections", starred := true }]
+          field := "OuterAmount" }
+        (.compareNumbers .notEqual
+          { origin := if marked then .outer else .inner
+            field := ordinaryPath ["Order", "Sections", "Details"] "SectionDetail" }
+          { origin := .inner
+            field := ordinaryPath ["Order", "Sections"] "OuterAmount" })
+      rest := [] }).toOption
+  let comparison ← checkedOuterEntityComparison? {
+    op := .ordinary .greater
+    left := .atom (.aggregate .sum source)
+    right := .literal { value := 0, authoredScale := 0 } }
+  let condition ← (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+  pure (match assembleResolvedValidationRule ordinaryIterationModel condition sectionDetail.id
+      "ownStarFilter" .error { parts := [] } with
+    | .ok _ => none
+    | .error error => some error)
+
+/- A filter body's unmarked read does not reference the rule's error field, so a rule reaching it
+   only there is refused `MVK_ERROR_FIELD_NOT_REFERENCED`, while the same read marked does reference
+   it. The peer measures this shape, a filter over the rule's own starred group reading the
+   candidate row's field ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+example :
+    ownStarFilterAssembly? false = some (some (.errorFieldNotReferenced sectionDetail.id)) ∧
+      ownStarFilterAssembly? true = some none := by
+  native_decide
+
 end A12Kernel.Conformance.ValidationRule.OrdinaryAdmission

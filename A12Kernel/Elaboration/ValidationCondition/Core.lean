@@ -438,6 +438,17 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
         declaration.id == field
   | .customFieldValidity leaf, field => leaf.operand.source == field
 
+/-- Whether a leaf reaches `field` for the rule's error-field gates. Only the ordered numeric
+    carrier owns a filter, and there a body's unmarked reads do not count; every other leaf reads
+    as `referencesField` does. -/
+def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
+  | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
+  | leaf@(.flat _), field | leaf@(.numeric _ _), field | leaf@(.groupPresence _ _), field
+  | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
+  | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
+  | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field | leaf@(.iteratedDateRange _), field
+  | leaf@(.customFieldValidity _), field => leaf.referencesField field
+
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison => comparison.hasHaving
@@ -516,6 +527,12 @@ def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
 def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
+
+/-- Whether the condition references the rule's error field: a reference outside every filter body,
+    or a `$`-marked one inside ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+def referencesErrorField (condition : ValidationCondition model)
+    (field : FieldId) : Bool :=
+  condition.anyLeaf fun leaf => leaf.referencesErrorField field
 
 /-- The checked condition retains at most one RNU source; exposing it lets the ordinary rule prepare the branch-independent relation before the connective walk. -/
 def repetitionNotUniqueSources

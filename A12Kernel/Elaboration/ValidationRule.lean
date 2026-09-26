@@ -154,7 +154,7 @@ abbrev CheckedResolvedValidationRule (model : FlatModel) :=
   CheckedResolvedRule true model (CheckedValidationCondition model)
     (ValidationCondition model)
     (fun condition => condition.core)
-    (fun condition field => condition.referencesField field)
+    (fun condition field => condition.referencesErrorField field)
     ValidationCondition.ordinaryIterationScope
 
 namespace CheckedResolvedFlatRule
@@ -704,7 +704,7 @@ def assembleResolvedValidationRule (model : FlatModel)
     (messagePlan : MessageRenderPlan) :
   Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
   let assembled := assembleResolvedRule true model (fun checked => checked.core)
-    (fun core field => core.referencesField field)
+    (fun core field => core.referencesErrorField field)
     ValidationCondition.ordinaryIterationScope
     condition errorField errorCode severity messagePlan
   -- The walk's refusal answers ahead of the per-level negative-condition gate, which is measured only
