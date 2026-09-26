@@ -427,9 +427,9 @@ example :
   native_decide
 
 /- Emptiness is asked once the scope's walk passes, which a flat model allows only when the rule's
-   error-field group lies inside the empty repeatable group, a placement no Kernel model can author
-   since that group holds no field; that refusal claims no class, since the measured empty scopes
-   whose read passes are a fixed group and a starred one. -/
+   error-field group lies inside the empty repeatable group, a placement with no Kernel witness known,
+   since an error field there would make the group nonempty; that refusal claims no class, since the
+   measured empty scopes whose read passes are a fixed group and a starred one. -/
 example :
     (match CheckedValidationCondition.fromRepetitionNotUnique policyModel ["Policy", "Vacant"]
         { firstKey := key ["Policy"] "Reference", restKeys := [],

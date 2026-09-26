@@ -140,13 +140,15 @@ def numericComparisonDiagnostic? (kind : SurfaceScalarKind) : Option KernelStati
 
 /-- The arm of the comparison walk that refuses two operands of different kinds, in the order the
 Kernel asks them ([`kf469`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf469)): a Confirm partner,
-then a Boolean one, then a temporal one, then a DateRange one, then a Number against text. -/
+then a Boolean one, then a temporal one, then a DateRange one, then the text arm, a String or an
+Enumeration against a kind that is neither. After the first four only a Number remains for the text
+arm to refuse, so the Number arm that follows it never claims a copied field of another kind. -/
 inductive CopyComparisonKindArm where
   | confirm
   | boolean
   | temporal
   | dateRange
-  | numberAgainstText
+  | text
   deriving Repr, DecidableEq
 
 def CopyComparisonKindArm.diagnostic : CopyComparisonKindArm → KernelStaticDiagnostic
@@ -154,7 +156,7 @@ def CopyComparisonKindArm.diagnostic : CopyComparisonKindArm → KernelStaticDia
   | .boolean => .invalidCompareToYesNo
   | .temporal => .invalidCompareToDate
   | .dateRange => .invalidCompareToDateRange
-  | .numberAgainstText => .invalidCompareToEnumOrString
+  | .text => .invalidCompareToEnumOrString
 
 /-- The kind arm that refuses a computation's generated comparison between its target and a field
 copied into it, or `none` where no kind arm does.
@@ -180,8 +182,7 @@ def copyComparisonKindArm? : SurfaceScalarKind → SurfaceScalarKind → Option 
   | .temporal _, _ | _, .temporal _ => some .temporal
   | .dateRange, .dateRange => none
   | .dateRange, _ | _, .dateRange => some .dateRange
-  | .number, .number => none
-  | .number, _ | _, .number => some .numberAgainstText
+  | .string, .number | .enumeration, .number | .number, .string | .number, .enumeration => some .text
   | _, _ => none
 
 /-- Why a computation's generated comparison refuses a directly copied field: a kind arm, or the

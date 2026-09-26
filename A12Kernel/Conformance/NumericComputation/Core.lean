@@ -506,7 +506,7 @@ example :
    carrier's own operand gate, since the rows type only a whole-expression copy. -/
 example :
     checkedErrorOf (surfaceField ["Root"] "Wrong") =
-        some (.copyComparison target.path wrong.path (.kindArm .numberAgainstText)) ∧
+        some (.copyComparison target.path wrong.path (.kindArm .text)) ∧
       checkedErrorOf (.abs (surfaceField ["Root"] "Wrong")) =
         some (.operandNotNumber wrong.path) ∧
       checkedErrorOf (surfaceField ["Root", "Rows"] "Repeated") =
