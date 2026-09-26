@@ -582,7 +582,7 @@ private def countRepetitionNotUniqueError? (environment : Env) :
         base := .absolute
         groups := ["Count", "Rows"]
         field := "RowAmount" }
-      restKeys := [] }).toOption
+      restKeys := [] } ["Count", "Rows"]).toOption
   match condition.core.referencePointers environment with
   | .error error => some error
   | .ok _ => none

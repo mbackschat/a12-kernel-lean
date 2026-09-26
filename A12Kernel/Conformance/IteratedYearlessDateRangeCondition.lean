@@ -251,4 +251,32 @@ example :
       some [([(10, 1)], .notFired)] := by
   native_decide
 
+/-! ## A filter on a yearless overlap operand -/
+
+private def yearlessFilterModel : FlatModel := { yearlessModel with
+  fields := yearlessModel.fields ++ [
+    { id := 12, groupPath := ["Form", "Rows"], name := "Guard", repeatableScope := [10]
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 13, groupPath := ["Form"], name := "Quantity"
+      policy := { kind := .number { scale := 0, signed := true } } }] }
+
+private def filteredMonths : SurfaceFieldEntityOperand :=
+  .starHaving
+    { base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+      field := "RowMonths" }
+    (.compareNumbers .equal
+      { origin := .inner, field := path ["Form", "Rows"] "Guard" }
+      { origin := .outer, field := path ["Form"] "Quantity" })
+
+/- Both yearless overlap operators keep a filtered star's filter, so the rule holds a `Having` filter
+   and skips under partial validation as every filtered rule does. -/
+example :
+    ((CheckedValidationCondition.fromIteratedYearlessDateRangeOverlap yearlessFilterModel ["Form"]
+        { first := filteredMonths, rest := [scalarMonthsOperand] }).toOption.map
+      (·.hasHaving)) = some true ∧
+    ((CheckedValidationCondition.fromIteratedYearlessDateRangePluralOverlap yearlessFilterModel
+        ["Form"] { scalar := scalarMonthsOperand, list := { first := filteredMonths, rest := [] } }
+      ).toOption.map (·.hasHaving)) = some true := by
+  native_decide
+
 end A12Kernel.Conformance.IteratedYearlessDateRangeCondition

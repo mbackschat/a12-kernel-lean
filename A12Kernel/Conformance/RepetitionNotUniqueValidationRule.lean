@@ -64,10 +64,10 @@ private def authoredFromSource : SurfaceRepetitionNotUniqueSource :=
 
 private def checkedConditionFrom?
     (authored : SurfaceRepetitionNotUniqueSource)
-    (restKeys : List SurfaceFieldPath := []) :
+    (restKeys : List SurfaceFieldPath := []) (writtenGroup : GroupPath := count.groupPath) :
     Option (CheckedValidationCondition model) :=
   (CheckedValidationCondition.fromRepetitionNotUnique
-    model ["Order"] { authored with restKeys }).toOption
+    model ["Order"] { authored with restKeys } writtenGroup).toOption
 
 private def checkedCondition? (restKeys : List SurfaceFieldPath := []) :
     Option (CheckedValidationCondition model) :=
@@ -118,7 +118,8 @@ private def compositeRnuOrCountRule? :
 private def referenceRuleAdmitted?
     (authored : SurfaceRepetitionNotUniqueSource)
     (errorField : FieldId) : Bool :=
-  match checkedConditionFrom? authored with
+  let writtenGroup := (model.fields.find? (·.id == errorField)).map (·.groupPath)
+  match checkedConditionFrom? authored [] (writtenGroup.getD []) with
   | none => false
   | some condition =>
       (assembleResolvedValidationRule model condition errorField
@@ -319,7 +320,7 @@ private def nestedRule?
     Option (CheckedResolvedValidationRule nestedModel) := do
   let condition ←
     (CheckedValidationCondition.fromRepetitionNotUnique
-      nestedModel ["Project"] (nestedSource scope withPhase)).toOption
+      nestedModel ["Project"] (nestedSource scope withPhase) effort.groupPath).toOption
   (assembleResolvedValidationRule nestedModel condition effort.id
     "nestedRnu" .error { parts := [] }).toOption
 
@@ -329,7 +330,7 @@ private def reversedNestedCompositeRule?
   let condition ←
     (CheckedValidationCondition.fromRepetitionNotUnique
       nestedModel ["Project"]
-      (reversedNestedCompositeSource scope)).toOption
+      (reversedNestedCompositeSource scope) effort.groupPath).toOption
   (assembleResolvedValidationRule nestedModel condition effort.id
     "nestedRnu" .error { parts := [] }).toOption
 
@@ -406,7 +407,7 @@ private def nestedMissingOuterError? :
     (CheckedValidationCondition.fromRepetitionNotUnique
       nestedModel ["Project"]
       (nestedSource
-        (nestedFrom ["Project", "Milestones", "Tasks"]))).toOption
+        (nestedFrom ["Project", "Milestones", "Tasks"])) effort.groupPath).toOption
   let source ← condition.core.repetitionNotUniqueSource?
   let document ← nestedCheckedDocument? (nestedData)
   match source.evaluateChecked document [] .full with

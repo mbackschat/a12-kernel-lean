@@ -165,13 +165,13 @@ private def withinFirstMilestoneRead (environment : Env)
 private def errorOf (surface : SurfaceRepetitionNotUniqueSource)
     (declaringGroup : GroupPath := ["Project"]) :
     Option RepetitionNotUniqueElabError :=
-  match elaborateRepetitionNotUniqueSource model declaringGroup surface with
+  match elaborateRepetitionNotUniqueSource model declaringGroup surface effort.groupPath with
   | .ok _ => none
   | .error error => some error
 
 private def referenceGroupOf (surface : SurfaceRepetitionNotUniqueSource)
     (declaringGroup : GroupPath) : Option RepeatableGroupDecl :=
-  match elaborateRepetitionNotUniqueSource model declaringGroup surface with
+  match elaborateRepetitionNotUniqueSource model declaringGroup surface effort.groupPath with
   | .ok checked => some checked.referenceGroup
   | .error _ => none
 
@@ -185,7 +185,7 @@ private def checkedRead (read : Env → FieldId → RawCell) :
 private def verdictsOf (surface : SurfaceRepetitionNotUniqueSource)
     (outer : Env) (relevance : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : Option (List (Env × Verdict)) :=
-  match elaborateRepetitionNotUniqueSource model ["Project"] surface with
+  match elaborateRepetitionNotUniqueSource model ["Project"] surface effort.groupPath with
   | .error _ => none
   | .ok checked =>
       match checked.evaluate document outer relevance (checkedRead read) with
@@ -198,7 +198,7 @@ private def patternVerdictsOf
     (prepareFlatStringContext patternWorld patternCompiler patternModel).toOption
   let checked ←
     (elaborateRepetitionNotUniqueSource patternModel ["Project"]
-      (authored (firstKey := keyPath "Text"))).toOption
+      (authored (firstKey := keyPath "Text")) effort.groupPath).toOption
   let results ← (checked.evaluate document [] .full fun environment id =>
     (prepared.checkContext "en_US" { read := read environment }).read id).toOption
   pure (results.map fun result => (result.row, result.verdict))
@@ -395,22 +395,21 @@ private def modelWithCustomText : FlatModel :=
 
 private def unsupportedError : Option RepetitionNotUniqueElabError :=
   match elaborateRepetitionNotUniqueSource modelWithFlag ["Project"]
-      (authored (firstKey := keyPath "Flag")) with
+      (authored (firstKey := keyPath "Flag")) effort.groupPath with
   | .ok _ => none
   | .error error => some error
 
 private def customTextError : Option RepetitionNotUniqueElabError :=
   match elaborateRepetitionNotUniqueSource modelWithCustomText ["Project"]
-      (authored (firstKey := keyPath "CustomText")) with
+      (authored (firstKey := keyPath "CustomText")) effort.groupPath with
   | .ok _ => none
   | .error error => some error
 
-/- Static lowering fixes direct-key uniqueness, one exact key path and a supported typed component, a containing reference group, and a repeatable level below the rule group. -/
+/- Static lowering fixes direct-key uniqueness, one exact key path and a supported typed component, a containing reference group, and a repeatable level below the rule group. The unkeyed `Reviews` is an unpaired repetition beside the error field's `Tasks`, so a key or a scope there is refused at its read. -/
 example :
     errorOf (authored (restKeys := [keyPath])) =
-        some (.duplicateKeyField effort.id) ∧
-    errorOf (authored (restKeys := [reviewPath])) =
-        some (.keysOffOnePath effort.groupPath reviewScore.groupPath false) ∧
+        some (.duplicateKey effort.path) ∧
+    (errorOf (authored (restKeys := [reviewPath]))).bind (·.diagnostic?) = some .noWildcard ∧
     unsupportedError =
         some (.unsupportedKeyKind flag.path .boolean) ∧
     customTextError =
@@ -419,9 +418,8 @@ example :
         phasePath [keyPath]) =
         some (.referenceGroupDoesNotContainKey
           ["Project", "Milestones", "Tasks"] phase.groupPath) ∧
-    errorOf (authored (fromGroup ["Project", "Reviews"])) =
-        some (.referenceGroupDoesNotContainKey
-          ["Project", "Reviews"] effort.groupPath) ∧
+    (errorOf (authored (fromGroup ["Project", "Reviews"]))).bind (·.diagnostic?) =
+        some .noWildcard ∧
     errorOf (authored) effort.groupPath =
         some (.missingReferenceGroup effort.path) := by
   native_decide

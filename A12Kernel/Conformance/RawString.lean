@@ -251,7 +251,7 @@ example : errorOf (elaborateTokenEntitySource model ["Claim"] {
 
 example : errorOf (elaborateRepetitionNotUniqueSource model ["Claim"] {
     firstKey := blobPath
-    restKeys := [] }) =
+    restKeys := [] } ["Claim", "Attachments"]) =
       some (.rawStringValue ["Claim", "Attachments", "Blob"]) := by
   native_decide
 

@@ -147,10 +147,10 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-rnu-key-diagnostics"></a>
 #### RNU key diagnostics
 
-- `boundary`: every key is read, then the duplicate gate asked, then the group and raw gates over the whole list, then one branch: with `@From` the scope's field, repeat and containment classes, without it the shared-path, rule-group and three missing-repeatable shapes. A key is walked, and the shared-path and rule-group classes claimed, only when the caller names the error field's group.
+- `boundary`: every key is read and walked from the error field's group, which the entry requires, then the duplicate gate asked, then the group and raw gates over the whole list, then one branch: with `@From` the scope's read, then its field, repeat and containment classes, without it the shared-path, rule-group and three missing-repeatable shapes. An empty repeatable scope is refused without a class.
 - `owner`: [elaboration](../../A12Kernel/Elaboration/RepetitionNotUnique.lean)
-- `assurance`: E mapped; L [source](../SOURCES.md#src-group-list-rnu-admission-correction) and the [gate-order handback](../SOURCES.md#inbound-2026-09-26f-gate-order), locked in [cases](../../A12Kernel/Conformance/RepetitionNotUniqueDiagnostic.lean) on every row a plain field path spells; P/X/Q none
-- `remains`: category and starred keys, the unconfirmed gate orders, and diverging keys under a scope: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
+- `assurance`: E mapped; L [source](../SOURCES.md#src-group-list-rnu-admission-correction), the [gate-order handback](../SOURCES.md#inbound-2026-09-26f-gate-order) and the [empty-scope handback](../SOURCES.md#inbound-2026-09-26h-empty-scope), locked in [cases](../../A12Kernel/Conformance/RepetitionNotUniqueDiagnostic.lean) on every row a plain field path and this model spell, the index-free scope rows on the unkeyed `Notes` or, below a root error field, the keyed `Claims`; P/X/Q none
+- `remains`: category, starred and marked keys, the unconfirmed gate orders, the carried-over walk and duplicate classes, and diverging keys under a scope: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
 <a id="cap-formal-output-boundary"></a>
 #### Formal output boundary

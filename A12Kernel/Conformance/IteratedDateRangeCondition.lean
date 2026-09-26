@@ -676,12 +676,13 @@ example :
       filteredOverlapAssembly? false = some (some (.errorFieldNotReferenced quantity.id)) := by
   native_decide
 
-/-- The marked filtered overlap under partial validation of an empty document; `false` on any
-    structural refusal. -/
-private def filteredOverlapPartiallySkips : Bool := Id.run do
-  let some condition := filteredOverlapCondition? true | return false
-  let .ok rule := assembleResolvedValidationRule filterModel condition quantity.id
-      "filteredOverlap" .error { parts := [] } | return false
+/-- Whether the rule over `condition`, reporting on `errorField`, is skipped under partial validation
+    of an empty document; `false` on any structural refusal. -/
+private def partiallySkips (condition : Option (CheckedValidationCondition filterModel))
+    (errorField : FieldId) : Bool := Id.run do
+  let some condition := condition | return false
+  let .ok rule := assembleResolvedValidationRule filterModel condition errorField
+      "overlap" .error { parts := [] } | return false
   let .ok prepared := prepareFlatStringContext { now := { epochMillis := 0 } }
       builtinStringPatternCompiler filterModel | return false
   let .ok document := checkDocument prepared "en_US" { instantiatedRows := [], cells := [] }
@@ -693,8 +694,36 @@ private def filteredOverlapPartiallySkips : Bool := Id.run do
 /- A rule holding any `Having` filter returns before relevance or evaluation under partial
    validation ([`spec/10`](../../spec/10-validation-and-polarity.md) §5), and a filter on a DateRange
    overlap operand counts: the skip answers before the addressed partial evaluator, which this leaf
-   does not support, could refuse the rule as unsupported. -/
-example : filteredOverlapPartiallySkips = true := by
+   does not support, could refuse the rule as unsupported. The unfiltered control is refused there
+   instead, so the skip is the filter's and not the leaf's. -/
+example :
+    partiallySkips (filteredOverlapCondition? true) quantity.id = true ∧
+    partiallySkips (CheckedValidationCondition.fromIteratedDateRangeOverlap filterModel ["Form"]
+      { first := rowsStar "RowRange", rest := [scalarExisting] }).toOption existing.id =
+      false := by
+  native_decide
+
+/- The plural overlap's list keeps its filter too: the rule holds a `Having` filter, and the filter
+   reaches the error field only through a marked read. -/
+private def filteredPluralCondition? (marked : Bool) :
+    Option (CheckedValidationCondition filterModel) :=
+  let star : SurfaceStarFieldPath :=
+    { base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+      field := "RowRange" }
+  let filtered : SurfaceFieldEntityOperand := .starHaving star (.compareNumbers .equal
+    { origin := .inner, field := path ["Form", "Rows"] "Guard" }
+    { origin := if marked then .outer else .inner, field := path ["Form"] "Quantity" })
+  (CheckedValidationCondition.fromIteratedDateRangePluralOverlap filterModel ["Form"]
+    { scalar := scalarExisting, list := { first := filtered, rest := [] } }).toOption
+
+example :
+    (filteredPluralCondition? true).map (·.hasHaving) = some true ∧
+    ((filteredPluralCondition? true).map fun condition =>
+      (assembleResolvedValidationRule filterModel condition quantity.id "plural" .error
+        { parts := [] }).isOk) = some true ∧
+    ((filteredPluralCondition? false).map fun condition =>
+      (assembleResolvedValidationRule filterModel condition quantity.id "plural" .error
+        { parts := [] }).isOk) = some false := by
   native_decide
 
 end A12Kernel.Conformance.IteratedDateRangeCondition

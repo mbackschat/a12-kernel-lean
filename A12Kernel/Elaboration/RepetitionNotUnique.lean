@@ -51,24 +51,22 @@ inductive RepetitionNotUniqueElabError where
   | model (error : ResolveError)
   | resolve (error : ResolveError)
   | scope (error : SingleGroupElabError)
-  /-- A key the reading-scope walk refuses, asked only when the caller names the error field's
-  group. -/
+  /-- A key the reading-scope walk refuses. -/
   | keyReadRefused (path : List String) (unbound : UnboundOperandLevel)
-  | duplicateKeyField (field : FieldId)
-  /-- A group key beside a key it holds, or repeated. The list's duplicate gate owns it: the peer's
-  row puts a starred key beside its group, and no row reads the unstarred shape. -/
+  /-- The first key named twice: a field by its declaration, a group by its path. -/
+  | duplicateKey (path : List String)
+  /-- A group key holding another key of the list, the root beside any key included. -/
   | nestedGroupKey (group : GroupPath)
   | groupKey (group : GroupPath)
   | keyPathMismatch (expected actual : GroupPath)
-  /-- Without a scope, two keys whose repeatable groups share no one hierarchy path. `keysRead`
-  records whether every key passed the reading-scope walk, which is what lets the shared-path gate
-  answer rather than the walk. -/
-  | keysOffOnePath (left right : GroupPath) (keysRead : Bool)
-  /-- Without a scope, a key whose group lies outside the rule group, with `keysRead` as above. -/
-  | keyOutsideRuleGroup (keyPath : List String) (keysRead : Bool)
-  /-- With a scope, keys inside it whose groups share no one hierarchy path. The Kernel asks no
-  shared-path gate there; this theory needs one path to build the row topology. -/
-  | scopedKeyPathsDiverge (left right : GroupPath)
+  /-- Without a scope, two keys whose lowest repeatable groups lie on no one hierarchy path. -/
+  | keysOffOnePath (left right : GroupPath)
+  /-- Without a scope, a key whose group lies outside the rule group. -/
+  | keyOutsideRuleGroup (keyPath : List String)
+  /-- Keys whose own groups leave one hierarchy path although their repeatable groups do not, or
+  keys inside a scope that leave it. The Kernel asks no shared-path gate of either shape; this theory
+  needs one path to build the row topology. -/
+  | keyGroupsDiverge (left right : GroupPath)
   | unsupportedKeyKind (path : List String) (actual : SurfaceScalarKind)
   | rawStringValue (path : List String)
   | customStringRequiresPreparedChecking (path : List String)
@@ -76,6 +74,10 @@ inductive RepetitionNotUniqueElabError where
   /-- Without a scope, a key above the default reference group the deepest key selects. -/
   | keyOutsideDefaultReferenceGroup (referenceGroup keyGroup : GroupPath)
   | scopeIsField (path : List String)
+  /-- A scope naming a group with no field anywhere in its subtree. -/
+  | scopeIsEmpty (path : GroupPath)
+  /-- A scope the reading-scope walk refuses. -/
+  | scopeReadRefused (path : GroupPath) (unbound : UnboundOperandLevel)
   | referenceGroupNotRepeatable (path : GroupPath)
   | referenceGroupDoesNotContainKey (referenceGroup keyGroup : GroupPath)
   | path (error : StarPathElabError)
@@ -84,26 +86,26 @@ inductive RepetitionNotUniqueElabError where
 
 namespace RepetitionNotUniqueElabError
 
-/-- Project the measured `RepetitionNotUnique` key-admission classes. Every key is read first, a key that does not resolve drawing the shared resolver's class ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)) and one the reading-scope walk refuses drawing the walk's; the list's duplicate gate comes next, then its own gates, each over the whole list, then exactly one branch: with `@From` the scope's field, repeat and containment gates, without it the shared-path, rule-group and repeatable-group gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)).
+/-- Project the measured `RepetitionNotUnique` key-admission classes. Every key is read first, a key that does not resolve drawing the shared resolver's class ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)) and one the reading-scope walk refuses drawing the walk's; the list's duplicate gate comes next, a key named twice before a group holding another key ([`kf388`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf388)), then its own gates, each over the whole list, then exactly one branch: with `@From` the scope is read and must be a group that repeats and holds every key, without it the shared-path, rule-group and repeatable-group gates run ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)).
 
-Three shapes draw `MVK_REPEATABLE_GROUP_MISSING`: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group. The shared-path and rule-group classes are claimed only when every key passed the walk, since a key the walk has not been asked about may be refused there first.
+Three shapes draw `MVK_REPEATABLE_GROUP_MISSING`: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group. The walk's missing-star class is measured on a key and on a scope; its index and containment classes on either are the shared read's, and a group named twice or the root beside a key takes the duplicate class measured on the other list carriers, assumptions [SG9](../../docs/gaps/paths-and-groups.md#gap-sg9) records. An empty scope claims no class: the measured one is a fixed group ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-empty-scope)), which this model cannot hold, while the empty repeatable group it can hold meets the walk as well, and no row fixes which of the two answers first.
 
-Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. A custom String key needing prepared checking and an unsupported key kind are this theory's value-reading limits, and diverging keys under a scope its topology limit, not Kernel gates. `model` is routing rather than a key refusal, and `incoherentCore` is the unreachable-by-construction arm. The rest are Kernel refusals whose class this carrier has no evidence for. -/
+Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. A custom String key needing prepared checking and an unsupported key kind are this theory's value-reading limits, and diverging key groups its topology limit, not Kernel gates. `model` is routing rather than a key refusal, and `incoherentCore` is the unreachable-by-construction arm. The rest are Kernel refusals whose class this carrier has no evidence for. -/
 def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .resolve error => error.diagnostic?
-  | .keyReadRefused _ unbound => unbound.diagnostic?
-  | .duplicateKeyField _ => some .duplicateParam1
+  | .keyReadRefused _ unbound | .scopeReadRefused _ unbound => unbound.diagnostic?
+  | .duplicateKey _ => some .duplicateParam1
+  | .nestedGroupKey _ => some .duplicateParam2
   | .groupKey _ => some .noGroupsAllowed
   | .rawStringValue _ => some .rawTypeOperandInvalid
   | .scopeIsField _ => some .noFieldsAllowed
   | .referenceGroupNotRepeatable _ => some .groupNotRepeatable
   | .referenceGroupDoesNotContainKey _ _ => some .entityNotInGroup
-  | .keysOffOnePath _ _ true => some .notInSamePath
-  | .keyOutsideRuleGroup _ true => some .notInRuleGroup
+  | .keysOffOnePath _ _ => some .notInSamePath
+  | .keyOutsideRuleGroup _ => some .notInRuleGroup
   | .keyPathMismatch _ _ | .missingReferenceGroup _ =>
       some .repeatableGroupMissing
-  | .keysOffOnePath _ _ false | .keyOutsideRuleGroup _ false
-  | .model _ | .scope _ | .nestedGroupKey _ | .scopedKeyPathsDiverge _ _
+  | .model _ | .scope _ | .scopeIsEmpty _ | .keyGroupsDiverge _ _
   | .keyOutsideDefaultReferenceGroup _ _
   | .unsupportedKeyKind _ _ | .customStringRequiresPreparedChecking _
   | .path _ | .incoherentCore => none
@@ -211,10 +213,12 @@ structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
       (·.level)) = some referenceGroup.level
 
 /-- One otherwise-valid sole RNU key and one valid exact-text semantic-index selection certified as
-the same target and reference group before the carrier-specific refusal is projected. The refusal
-does not depend on the field the rule reports on: the peer measured it on the key itself and on a
-sibling of it ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). It supplies no
-indexed RNU evaluator. -/
+the same target and reference group before the carrier-specific refusal is projected. It asks no
+more of the error field than the key's read does: the refusal is measured with the key itself as
+the error field ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)) and with
+a sibling of it in the key's repeatable group
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). It supplies no indexed RNU
+evaluator. -/
 structure CheckedRepetitionNotUniqueSemanticIndexRefusal (model : FlatModel) where
   declaringGroup : GroupPath
   token : String
@@ -256,12 +260,12 @@ private def group? : RepetitionKeyRead → Option GroupPath
 end RepetitionKeyRead
 
 /-- Read one key as any reference is read: resolve it, classing a path that names a group as a group
-key rather than as the field miss, then, when the caller names the error field's group, walk it
-against the rule's reading scope. The walk on a key is this carrier's instance of the shared read
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). -/
-private def readRepetitionKey (model : FlatModel) (declaringGroup : GroupPath)
-    (writtenGroup? : Option GroupPath) (reference : SurfaceFieldPath) :
-    Except RepetitionNotUniqueElabError RepetitionKeyRead := do
+key rather than as the field miss, then walk it against the rule's reading scope with the error field's
+group placing each level it leaves unbound. The walk's missing-star class is measured on a key
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)); its other classes here are the
+shared read's by assumption. -/
+private def readRepetitionKey (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Except RepetitionNotUniqueElabError RepetitionKeyRead := do
   let (read, path, scope) ←
     match model.resolveFieldDeclarationUnchecked declaringGroup reference with
     | .ok declaration =>
@@ -272,62 +276,71 @@ private def readRepetitionKey (model : FlatModel) (declaringGroup : GroupPath)
         match group? with
         | some group => pure (.group group, group, model.repeatableScopeForGroupPath group)
         | none => throw (.resolve error)
-  match writtenGroup?.bind fun written => model.refusedReadLevel? declaringGroup written scope with
+  match model.refusedReadLevel? declaringGroup writtenGroup scope with
   | some unbound => throw (.keyReadRefused path unbound)
   | none => pure read
 
-private def readRepetitionKeys (model : FlatModel) (declaringGroup : GroupPath)
-    (writtenGroup? : Option GroupPath) : List SurfaceFieldPath →
-      Except RepetitionNotUniqueElabError (List RepetitionKeyRead)
+private def readRepetitionKeys (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
+    List SurfaceFieldPath → Except RepetitionNotUniqueElabError (List RepetitionKeyRead)
   | [] => pure []
   | reference :: remaining => do
-      pure ((← readRepetitionKey model declaringGroup writtenGroup? reference) ::
-        (← readRepetitionKeys model declaringGroup writtenGroup? remaining))
+      pure ((← readRepetitionKey model declaringGroup writtenGroup reference) ::
+        (← readRepetitionKeys model declaringGroup writtenGroup remaining))
 
-/-- A group key holding another key, or repeated: the group itself is one match, so any second
-match is another key inside it. -/
+private def RepetitionKeyRead.path : RepetitionKeyRead → List String
+  | .field declaration => declaration.path
+  | .group path => path
+
+/-- The first key named twice, in authored order. -/
+private def firstDuplicateKey? : List RepetitionKeyRead → Option (List String)
+  | [] => none
+  | read :: remaining =>
+      if remaining.any (·.path == read.path) then some read.path else firstDuplicateKey? remaining
+
+/-- A group key holding another key of the list, whichever of the two is written first. -/
 private def firstNestedGroupKey? (reads : List RepetitionKeyRead) : Option GroupPath :=
   reads.findSome? fun read => read.group?.bind fun group =>
-    if (reads.filter fun candidate => group.isPrefixOf candidate.groupPath).length > 1 then
+    if reads.any (fun other => other.path != group && group.isPrefixOf other.groupPath) then
       some group
     else none
-
-/-- The first pair of keys whose repeatable groups leave one hierarchy path. It keeps the deepest
-group path so far, skipping a key under no repeatable group, and reports the first key that neither
-extends nor lies on it, the account the peer read off the Kernel's own check
-([`kf355`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf355)). -/
-private def firstKeyOffSharedPath? (declarations : List FlatFieldDecl) :
-    Option (GroupPath × GroupPath) :=
-  let rec walk (deepest : Option GroupPath) : List FlatFieldDecl → Option (GroupPath × GroupPath)
-    | [] => none
-    | declaration :: remaining =>
-        if declaration.repeatableScope.isEmpty then walk deepest remaining
-        else match deepest with
-          | none => walk (some declaration.groupPath) remaining
-          | some path =>
-              if path.isPrefixOf declaration.groupPath then
-                walk (some declaration.groupPath) remaining
-              else if declaration.groupPath.isPrefixOf path then walk deepest remaining
-              else some (path, declaration.groupPath)
-  walk none declarations
 
 private def FlatModel.terminalRepeatableGroupFor?
     (model : FlatModel) (declaration : FlatFieldDecl) :
     Option RepeatableGroupDecl :=
   declaration.repeatableScope.getLast?.bind model.repeatableGroupAtLevel?
 
-private def deepestKeyDeclaration (model : FlatModel) (keysRead : Bool) (current : FlatFieldDecl) :
+/-- The first pair of keys whose lowest repeatable groups leave one hierarchy path. It keeps the
+deepest such group so far, skipping a key under no repeatable group, and reports the first key whose
+group neither extends nor lies on it. The Kernel's shared-path check compares these groups, read off
+its source; the rows measure it on keys directly in two parallel repeatable groups only. -/
+private def firstKeyOffSharedPath? (model : FlatModel) (declarations : List FlatFieldDecl) :
+    Option (GroupPath × GroupPath) :=
+  let rec walk (deepest : Option GroupPath) : List FlatFieldDecl → Option (GroupPath × GroupPath)
+    | [] => none
+    | declaration :: remaining =>
+        match model.terminalRepeatableGroupFor? declaration with
+        | none => walk deepest remaining
+        | some group =>
+            match deepest with
+            | none => walk (some group.path) remaining
+            | some path =>
+                if path.isPrefixOf group.path then walk (some group.path) remaining
+                else if group.path.isPrefixOf path then walk deepest remaining
+                else some (path, group.path)
+  walk none declarations
+
+private def deepestKeyDeclaration (model : FlatModel) (current : FlatFieldDecl) :
     List FlatFieldDecl → Except RepetitionNotUniqueElabError FlatFieldDecl
   | [] => pure current
   | declaration :: remaining =>
       if current.groupPath.isPrefixOf declaration.groupPath then
-        deepestKeyDeclaration model keysRead declaration remaining
+        deepestKeyDeclaration model declaration remaining
       else if declaration.groupPath.isPrefixOf current.groupPath then
-        deepestKeyDeclaration model keysRead current remaining
+        deepestKeyDeclaration model current remaining
       else match model.terminalRepeatableGroupFor? current,
           model.terminalRepeatableGroupFor? declaration with
         | some _, some _ =>
-            throw (.keysOffOnePath current.groupPath declaration.groupPath keysRead)
+            throw (.keyGroupsDiverge current.groupPath declaration.groupPath)
         | _, _ =>
             throw (.keyPathMismatch current.groupPath declaration.groupPath)
 
@@ -352,48 +365,57 @@ private def firstKeyGroupOutside? (referenceGroup : GroupPath) :
       else
         some declaration.groupPath
 
-/-- The `@From` branch: the scope must be a group, it must repeat, and it must hold every key. The
-Kernel asks no shared-path gate here, so keys that leave one path inside the scope reach only this
-theory's topology limit. -/
-private def resolveScopedReferenceGroup (model : FlatModel) (declaringGroup : GroupPath)
+/-- The `@From` branch. The scope is read first, as a key is: an empty group is refused and the walk
+may refuse the read, so an unpaired repetition is the walk's rather than containment's
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order),
+[inbound](../../docs/SOURCES.md#inbound-2026-09-26h-empty-scope)). Asking the empty group before
+the walk, and the whole read after the key list's gates, is this theory's order, which no row
+fixes. Then the scope must be a group,
+it must repeat, and it must hold every key. The Kernel asks no shared-path gate here, so keys that
+leave one path inside the scope reach only this theory's topology limit. -/
+private def resolveScopedReferenceGroup (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (surface : SurfaceGroupReference) (declarations : List FlatFieldDecl) :
     Except RepetitionNotUniqueElabError (FlatFieldDecl × RepeatableGroupDecl) := do
   let resolved ← surface.resolveAgainst declaringGroup |>.mapError .scope
-  let group ← match model.lookupUniqueRepeatablePath resolved.path with
+  let path := resolved.path
+  let field? := model.fields.find? (·.path == path)
+  let scope ← match field? with
+    | some field => pure field.repeatableScope
+    | none =>
+        if !model.hasGroupPath path then throw (.resolve (.unknownRepeatableGroup path))
+        else if !model.groupContributesField path then throw (.scopeIsEmpty path)
+        else pure (model.repeatableScopeForGroupPath path)
+  if let some unbound := model.refusedReadLevel? declaringGroup writtenGroup scope then
+    throw (.scopeReadRefused path unbound)
+  if field?.isSome then throw (.scopeIsField path)
+  let group ← match model.lookupUniqueRepeatablePath path with
     | .ok group => pure group
-    | .error (.unknownRepeatableGroup _) =>
-        if model.fields.any (·.path == resolved.path) then
-          throw (.scopeIsField resolved.path)
-        else if model.hasGroupPath resolved.path then
-          throw (.referenceGroupNotRepeatable resolved.path)
-        else
-          throw (.resolve (.unknownRepeatableGroup resolved.path))
+    | .error (.unknownRepeatableGroup _) => throw (.referenceGroupNotRepeatable path)
     | .error error => throw (.resolve error)
   if let some keyGroup := firstKeyGroupOutside? group.path declarations then
     throw (.referenceGroupDoesNotContainKey group.path keyGroup)
   match declarations with
   | [] => throw .incoherentCore
   | first :: rest =>
-      let terminal ← deepestKeyDeclaration model false first rest |>.mapError fun
-        | .keysOffOnePath left right _ | .keyPathMismatch left right =>
-            .scopedKeyPathsDiverge left right
+      let terminal ← deepestKeyDeclaration model first rest |>.mapError fun
+        | .keyPathMismatch left right => .keyGroupsDiverge left right
         | error => error
       pure (terminal, group)
 
-/-- The branch without `@From`: the keys' repeatable groups must lie on one path, every key inside
-the rule group, and a repeatable group between the rule group and the deepest key, which is the
-default reference group. -/
+/-- The branch without `@From`: the keys' lowest repeatable groups must lie on one path, every key
+inside the rule group, and a repeatable group between the rule group and the deepest key, which is
+the default reference group. -/
 private def resolveDefaultReferenceGroup (model : FlatModel) (declaringGroup : GroupPath)
-    (keysRead : Bool) (declarations : List FlatFieldDecl) :
+    (declarations : List FlatFieldDecl) :
     Except RepetitionNotUniqueElabError (FlatFieldDecl × RepeatableGroupDecl) := do
-  if let some (left, right) := firstKeyOffSharedPath? declarations then
-    throw (.keysOffOnePath left right keysRead)
+  if let some (left, right) := firstKeyOffSharedPath? model declarations then
+    throw (.keysOffOnePath left right)
   if let some outside := declarations.find? (!declaringGroup.isPrefixOf ·.groupPath) then
-    throw (.keyOutsideRuleGroup outside.path keysRead)
+    throw (.keyOutsideRuleGroup outside.path)
   match declarations with
   | [] => throw .incoherentCore
   | first :: rest =>
-      let terminal ← deepestKeyDeclaration model keysRead first rest
+      let terminal ← deepestKeyDeclaration model first rest
       match model.defaultRepetitionReferenceGroup? declaringGroup terminal.groupPath with
       | none => throw (.missingReferenceGroup terminal.path)
       | some group =>
@@ -479,20 +501,19 @@ private def certifyRepetitionKeys (model : FlatModel)
       pure ((← certifyRepetitionKey model modelWellFormed plan declaration) ::
         (← certifyRepetitionKeys model modelWellFormed referenceGroup remaining))
 
-/-- Resolve one typed-key branch, select its kernel-defined reference group, and derive the deepest-row topology whose bound prefix is supplied by the caller's selected outer scope. The Kernel's gates answer in their order: every key read, the duplicate gate, the key list's gates each over the whole list, then one branch ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). `writtenGroup?`, the error field's group, lets each key's read be walked; without it the walk is not asked and the placement classes it would decide are withheld. -/
+/-- Resolve one typed-key branch, select its kernel-defined reference group, and derive the deepest-row topology whose bound prefix is supplied by the caller's selected outer scope. The Kernel's gates answer in their order: every key read, the duplicate gate, the key list's gates each over the whole list, then one branch ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). `writtenGroup` is the rule's error field's group, which places every level a read leaves unbound; the rule group cannot stand in for it, since a rule at the root iterates the error field's repetition. -/
 def elaborateRepetitionNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceRepetitionNotUniqueSource)
-    (writtenGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath) :
     Except RepetitionNotUniqueElabError
       (CheckedRepetitionNotUniqueSource model) :=
   match hModel : model.validate with
   | .error error => .error (.model error)
   | .ok () => do
       let modelWellFormed : model.validate.isOk = true := by rw [hModel]; rfl
-      let reads ← readRepetitionKeys model declaringGroup writtenGroup?
+      let reads ← readRepetitionKeys model declaringGroup writtenGroup
         (authored.firstKey :: authored.restKeys)
-      if let some field := FieldId.firstDuplicate? (reads.filterMap (·.field?) |>.map (·.id)) then
-        throw (.duplicateKeyField field)
+      if let some path := firstDuplicateKey? reads then throw (.duplicateKey path)
       if let some group := firstNestedGroupKey? reads then throw (.nestedGroupKey group)
       if let some group := reads.findSome? (·.group?) then throw (.groupKey group)
       let declarations := reads.filterMap (·.field?)
@@ -502,9 +523,8 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
       | firstDeclaration :: restDeclarations => do
           let (terminalDeclaration, referenceGroup) ← match authored.scope with
             | .from surface =>
-                resolveScopedReferenceGroup model declaringGroup surface declarations
-            | .default =>
-                resolveDefaultReferenceGroup model declaringGroup writtenGroup?.isSome declarations
+                resolveScopedReferenceGroup model declaringGroup writtenGroup surface declarations
+            | .default => resolveDefaultReferenceGroup model declaringGroup declarations
           let topology ← elaborateRepetitionKeyPlan model referenceGroup.path terminalDeclaration
           let firstPlan ← elaborateRepetitionKeyPlan model referenceGroup.path firstDeclaration
           let firstKey ← certifyRepetitionKey model modelWellFormed firstPlan firstDeclaration
@@ -559,12 +579,12 @@ selection before returning the measured carrier refusal. The executable RNU sour
 index-free. -/
 def elaborateRepetitionNotUniqueSemanticIndexRefusal (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceRepetitionNotUniqueSemanticIndexUse)
-    (writtenGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath) :
     Except RepetitionNotUniqueSemanticIndexRefusalError
       (CheckedRepetitionNotUniqueSemanticIndexRefusal model) := do
   let source ← elaborateRepetitionNotUniqueSource model declaringGroup {
       firstKey := authored.target
-      restKeys := [] } writtenGroup?
+      restKeys := [] } writtenGroup
     |>.mapError .repetitionNotUnique
   let selection ← elaborateSemanticIndexSource model declaringGroup {
       target := authored.target
@@ -606,10 +626,10 @@ end CheckedRepetitionNotUniqueSemanticIndexRefusal
 RNU key, or a wider repetition topology. -/
 def projectRepetitionNotUniqueSemanticIndexDiagnostic? (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceRepetitionNotUniqueSemanticIndexUse)
-    (writtenGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath) :
     Option KernelStaticDiagnostic :=
   match elaborateRepetitionNotUniqueSemanticIndexRefusal model declaringGroup authored
-      writtenGroup? with
+      writtenGroup with
   | .ok checked => some checked.diagnostic
   | .error _ => none
 
