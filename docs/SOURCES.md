@@ -1199,7 +1199,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-starred-group-quantifier-capacity"></a>
 - [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity)
 <a id="src-count-placement-overlap-list-grid"></a>
-- [A lone repeatable group counted from any rule whose error field lies in it draws the count's arity class, the overlap `In` list is an entity list of its own, and a field message's non-ASCII token is a wrong name](sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)
+- [A lone repeatable group counted from a rule whose error field lies in it and in the rule's group draws the count's arity class, the overlap `In` list is an entity list of its own, and a field message's non-ASCII token is a wrong name](sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)
+<a id="src-count-placement-by-error-field"></a>
+- [The sole count's placement class is decided by the error field's region](sources/group-list-and-capacity-probes.md#src-count-placement-by-error-field)
+<a id="src-overlap-field-walk-order"></a>
+- [Both DateRange overlap operators ask their list gates, then a kind and year-interpretation field walk, before the year agreement](sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)
 <a id="src-address-dialect-selector"></a>
 - [An unbound repeatable level is what selects a message pointer's slash spelling](sources/message-and-pointer-probes.md#src-address-dialect-selector)
 <a id="src-repeatable-descendant-group-count"></a>

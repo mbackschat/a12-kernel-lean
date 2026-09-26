@@ -1,0 +1,690 @@
+{
+  "header": {
+    "id": "Disp_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Disp_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Ship",
+          "name": "Ship",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Ship/Title",
+                "name": "Title",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Ship/Win",
+                "name": "Win",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "dd.MM.yyyy",
+                      "rangeSeparator": "-"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Ship/Parcels",
+                "name": "Parcels",
+                "Group": {
+                  "repeatability": 20,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Ship/Parcels/Label",
+                      "name": "Label",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Group",
+                      "id": "/Ship/Parcels/Box",
+                      "name": "Box",
+                      "Group": {
+                        "repeatability": 1,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Ship/Parcels/Box/Weight",
+                            "name": "Weight",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Group",
+                      "id": "/Ship/Parcels/Lines",
+                      "name": "Lines",
+                      "Group": {
+                        "repeatability": 5,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Ship/Parcels/Lines/Qty",
+                            "name": "Qty",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Rule",
+                            "id": "/Ship/Parcels/Lines/Rp1below",
+                            "name": "Rp1below",
+                            "Rule": {
+                              "errorEntityRelPath": "../Qty",
+                              "errorCode": "Ep1below",
+                              "errorCondition": "FieldFilled(/Ship/Parcels/Lines/Qty) And NumberOfFilledGroups(/Ship/Parcels) > 0",
+                              "severity": "ERROR",
+                              "errorMessage": [
+                                {
+                                  "locale": "en_US",
+                                  "text": "m"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Ship/Parcels/Rp1boxp",
+                      "name": "Rp1boxp",
+                      "Rule": {
+                        "errorEntityRelPath": "../Box/Weight",
+                        "errorCode": "Ep1boxp",
+                        "errorCondition": "FieldFilled(/Ship/Parcels/Box/Weight) And NumberOfFilledGroups(/Ship/Parcels/Box) > 0",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "m"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Ship/Plain",
+                "name": "Plain",
+                "Group": {
+                  "repeatability": 20,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Ship/Plain/Tag",
+                      "name": "Tag",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Ship/Mid",
+                "name": "Mid",
+                "Group": {
+                  "repeatability": 1,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Ship/Mid/Note",
+                      "name": "Note",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Group",
+                      "id": "/Ship/Mid/Inner",
+                      "name": "Inner",
+                      "Group": {
+                        "repeatability": 20,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Ship/Mid/Inner/Code",
+                            "name": "Code",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Ship/Side",
+                "name": "Side",
+                "Group": {
+                  "repeatability": 1,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Ship/Side/Memo",
+                      "name": "Memo",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Ship/Side/Rp1c8",
+                      "name": "Rp1c8",
+                      "Rule": {
+                        "errorEntityRelPath": "../../Plain/Tag",
+                        "errorCode": "Ep1c8",
+                        "errorCondition": "FieldFilled(/Ship/Plain/Tag) And NumberOfFilledGroups(/Ship/Plain) > 0",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "m"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Ship/Side/Rp1c8s",
+                      "name": "Rp1c8s",
+                      "Rule": {
+                        "errorEntityRelPath": "../../Plain/Tag",
+                        "errorCode": "Ep1c8s",
+                        "errorCondition": "FieldFilled(/Ship/Plain/Tag) And NumberOfFilledGroups(/Ship/Plain*) > 0",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "m"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Ship/Side/Rp1ctl",
+                      "name": "Rp1ctl",
+                      "Rule": {
+                        "errorEntityRelPath": "../../Plain/Tag",
+                        "errorCode": "Ep1ctl",
+                        "errorCondition": "FieldFilled(/Ship/Plain/Tag)",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "m"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Ship/Rp1box",
+                "name": "Rp1box",
+                "Rule": {
+                  "errorEntityRelPath": "../Parcels/Box/Weight",
+                  "errorCode": "Ep1box",
+                  "errorCondition": "FieldFilled(/Ship/Parcels/Box/Weight) And NumberOfFilledGroups(/Ship/Parcels/Box) > 0",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Ship/Rp1belowr",
+                "name": "Rp1belowr",
+                "Rule": {
+                  "errorEntityRelPath": "../Parcels/Lines/Qty",
+                  "errorCode": "Ep1belowr",
+                  "errorCondition": "FieldFilled(/Ship/Parcels/Lines/Qty) And NumberOfFilledGroups(/Ship/Parcels) > 0",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Group",
+          "id": "/Lot",
+          "name": "Lot",
+          "Group": {
+            "repeatability": 3,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Lot/Term",
+                "name": "Term",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "dd.MM.yyyy",
+                      "rangeSeparator": "-"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Lot/YTerm",
+                "name": "YTerm",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "MM-dd",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Lot/Serial",
+                "name": "Serial",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Span",
+                "name": "Span",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "dd.MM.yyyy",
+                      "rangeSeparator": "-"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YSpan",
+                "name": "YSpan",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "MM-dd",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YFrom",
+                "name": "YFrom",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "MM-dd",
+                      "rangeSeparator": "/",
+                      "interpretationOfYear": "FROM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/IFrom",
+                "name": "IFrom",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM-dd",
+                      "rangeSeparator": "/",
+                      "interpretationOfYear": "TO"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FNote",
+                "name": "FNote",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2root",
+                "name": "Rp2root",
+                "Rule": {
+                  "errorEntityRelPath": "../YFrom",
+                  "errorCode": "Ep2root",
+                  "errorCondition": "FieldFilled(YFrom) And AtLeastOneDateRangeOverlaps(YFrom In /Form)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2dup",
+                "name": "Rp2dup",
+                "Rule": {
+                  "errorEntityRelPath": "../YFrom",
+                  "errorCode": "Ep2dup",
+                  "errorCondition": "FieldFilled(YFrom) And AtLeastOneDateRangeOverlaps(YFrom In YSpan, YSpan)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2vary",
+                "name": "Rp2vary",
+                "Rule": {
+                  "errorEntityRelPath": "../YFrom",
+                  "errorCode": "Ep2vary",
+                  "errorCondition": "FieldFilled(YFrom) And AtLeastOneDateRangeOverlaps(YFrom In FNote)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2ctl",
+                "name": "Rp2ctl",
+                "Rule": {
+                  "errorEntityRelPath": "../YFrom",
+                  "errorCode": "Ep2ctl",
+                  "errorCondition": "FieldFilled(YFrom) And AtLeastOneDateRangeOverlaps(YFrom In YSpan)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2k1",
+                "name": "Rp2k1",
+                "Rule": {
+                  "errorEntityRelPath": "../IFrom",
+                  "errorCode": "Ep2k1",
+                  "errorCondition": "FieldFilled(IFrom) And AtLeastOneDateRangeOverlaps(IFrom In YSpan)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2k2",
+                "name": "Rp2k2",
+                "Rule": {
+                  "errorEntityRelPath": "../IFrom",
+                  "errorCode": "Ep2k2",
+                  "errorCondition": "FieldFilled(IFrom) And AtLeastOneDateRangeOverlaps(IFrom In Span)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2k3",
+                "name": "Rp2k3",
+                "Rule": {
+                  "errorEntityRelPath": "../Span",
+                  "errorCode": "Ep2k3",
+                  "errorCondition": "FieldFilled(Span) And AtLeastOneDateRangeOverlaps(Span In YSpan)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2k4",
+                "name": "Rp2k4",
+                "Rule": {
+                  "errorEntityRelPath": "../Span",
+                  "errorCode": "Ep2k4",
+                  "errorCondition": "FieldFilled(Span) And AtLeastOneDateRangeOverlaps(Span In IFrom, YSpan)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Rp2k5",
+                "name": "Rp2k5",
+                "Rule": {
+                  "errorEntityRelPath": "../Span",
+                  "errorCode": "Ep2k5",
+                  "errorCondition": "FieldFilled(Span) And AtLeastOneDateRangeOverlaps(Span In YSpan, IFrom)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "m"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Group",
+          "id": "/Crate",
+          "name": "Crate",
+          "Group": {
+            "repeatability": 3,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Crate/Mark",
+                "name": "Mark",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Crate/Lid",
+                "name": "Lid",
+                "Group": {
+                  "repeatability": 1,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Crate/Lid/Seal",
+                      "name": "Seal",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Crate/Lid/Rp1lid",
+                      "name": "Rp1lid",
+                      "Rule": {
+                        "errorEntityRelPath": "../../Slots/Pos",
+                        "errorCode": "Ep1lid",
+                        "errorCondition": "FieldFilled(/Crate/Slots/Pos) And NumberOfFilledGroups(/Crate/Slots) > 0",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "m"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Crate/Slots",
+                "name": "Slots",
+                "Group": {
+                  "repeatability": 4,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Crate/Slots/Pos",
+                      "name": "Pos",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

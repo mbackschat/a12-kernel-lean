@@ -1,0 +1,1 @@
+{"group": "/Ship/Parcels", "name": "PFrom", "kind": "DATERANGE", "dateRange": {"format": "yyyy-MM-dd", "separator": "/", "interpretationOfYear": "TO"}}

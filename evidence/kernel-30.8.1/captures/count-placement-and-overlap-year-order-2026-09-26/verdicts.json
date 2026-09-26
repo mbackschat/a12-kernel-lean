@@ -1,0 +1,59 @@
+{
+  "producer": {
+    "dmtool": "0.13.0",
+    "source": "2304a684939621a8848e1261be9ab8e6278dc532",
+    "state": "CLEAN",
+    "kernel": "30.8.1"
+  },
+  "command": "model check, one run per checked model",
+  "verdicts": {
+    "part-checked.json": {
+      "/Crate/Lid/Rp1lid": "MVK_ERROR_FIELD_NOT_IN_RULEGROUP",
+      "/Form/Rp2ctl": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rp2dup": "MVK_DUPLICATE_PARAM1",
+      "/Form/Rp2k1": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rp2k2": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rp2k3": "MVK_DATE_WITH_AND_WITHOUT_YEAR",
+      "/Form/Rp2k4": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rp2k5": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rp2root": "MVK_ROOT_GROUP_REFERENCED",
+      "/Form/Rp2vary": "MVK_VARYING_TYPES_NOT_ALLOWED",
+      "/Ship/Parcels/Lines/Rp1below": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Parcels/Rp1boxp": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Rp1belowr": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Rp1box": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Side/Rp1c8": "MVK_ERROR_FIELD_NOT_IN_RULEGROUP",
+      "/Ship/Side/Rp1c8s": "MVK_ERROR_FIELD_NOT_IN_RULEGROUP",
+      "/Ship/Side/Rp1ctl": "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+    },
+    "part2-checked.json": {
+      "/Ship/Parcels/Box/Rq5": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Parcels/Rq1": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Parcels/Rq3": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Rq2": "MVK_PARAMSIZE_INVALIDGN",
+      "/Ship/Rq4": "MVK_NO_WILDCARD",
+      "/Ship/Side/Rq6": "MVK_NO_WILDCARD"
+    },
+    "part3-checked.json": {
+      "/Crate/Lid/Rr3": "MVK_PARAMSIZE_INVALIDGN",
+      "/Crate/Rr1": "MVK_PARAMSIZE_INVALIDGN",
+      "/Crate/Rr2": "MVK_PARAMSIZE_INVALIDGN"
+    },
+    "walk-checked.json": {
+      "/Form/Rd1": "MVK_DUPLICATE_PARAM1",
+      "/Form/Rs1": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rs2": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rs3": "MVK_DATE_WITH_AND_WITHOUT_YEAR",
+      "/Form/Rs4": "MVK_NO_DATE_RANGE",
+      "/Form/Rs5": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rs6": "MVK_DUPLICATE_PARAM1",
+      "/Form/Rt1": "MVK_INVALID_DATE_RANGE_FORMAT",
+      "/Form/Rt2": "MVK_INVALID_DATE_RANGE_FORMAT"
+    },
+    "group-checked.json": {
+      "/Form/Rg1": "MVK_NO_GROUPS_ALLOWED",
+      "/Form/Rg2": "MVK_NO_GROUPS_ALLOWED",
+      "/Form/Rg3": "MVK_NO_GROUPS_ALLOWED"
+    }
+  }
+}
