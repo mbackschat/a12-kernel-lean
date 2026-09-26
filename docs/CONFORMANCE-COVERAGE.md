@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-09-26; HEAD was `6b10a6ce`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-09-26; HEAD was `933fd2e3`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Whole-Kernel conformance is not quantified here. 461 of 495 diagnostic identifiers occur in Lean source (93%); 34 do not.**
+**Whole-Kernel conformance is not quantified here. 463 of 495 diagnostic identifiers occur in Lean source (93%); 32 do not.**
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -38,7 +38,7 @@ An occurrence can be a definition, fixture, comment, request, or list of exclusi
 |---|---|---|
 | Distinct identifiers in the selected diagnostic catalogs and runtime formal-code constants | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 304 | 61% |
-| Named in Lean source under `A12Kernel/` | 461 | 93% |
+| Named in Lean source under `A12Kernel/` | 463 | 93% |
 | Named in JSON under `evidence/` | 216 | 43% |
 | Touched by any of the three | 489 | 98% |
 | **Untouched everywhere** | **6** | **1%** |
@@ -74,7 +74,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 23 |
-| `remaining` rows across those gaps | 268 |
+| `remaining` rows across those gaps | 270 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 0 |
 | Ledger entries `handed-off` | 0 |
@@ -87,7 +87,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 219343 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 219578 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8765 | 3% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -176,4 +176,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-09-25T01:09:04+02:00 | `74b7f72c` | 489 | 459 | 6 | 120 | 23 |
 | 2026-09-26T01:50:27+02:00 | `9230a94c` | 489 | 460 | 6 | 120 | 23 |
 | 2026-09-26T04:02:51+02:00 | `93a63757` | 489 | 461 | 6 | 120 | 23 |
+| 2026-09-26T07:54:21+02:00 | `933fd2e3` | 489 | 463 | 6 | 120 | 23 |
 <!-- velocity-history:end -->

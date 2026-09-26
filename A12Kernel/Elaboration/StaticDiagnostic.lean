@@ -371,6 +371,10 @@ inductive KernelStaticDiagnostic where
   | pointInA12Model
   /-- A field-list operand outside the rule's own group or root group, in the form that takes no explicit source group. -/
   | notInRuleGroup
+  /-- A `RepetitionNotUnique` scope naming a field rather than a group. -/
+  | noFieldsAllowed
+  /-- Two `RepetitionNotUnique` keys whose repeatable groups lie on no one hierarchy path, in the form that takes no explicit scope. -/
+  | notInSamePath
   /-- Two groups related by parallel iteration whose declared index fields differ in base type. Distinct from the missing-index class: both groups **have** an index here, and only their types disagree. -/
   | indexTypeInconsistent
   /-- A message parameter naming a form-pointer target that resolves to a group rather than to a field. The parameter grammar admits the shape, so the refusal is the resolution's and not the parser's. -/
@@ -583,6 +587,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .paramSizeInvalidTwo => "MVK_PARAMSIZE_INVALID_2"
   | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
   | .notInRuleGroup => "MVK_NOT_IN_RULEGROUP"
+  | .noFieldsAllowed => "MVK_NO_FIELDS_ALLOWED"
+  | .notInSamePath => "MVK_NOT_IN_SAME_PATH"
   | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
   | .invalidFieldInParameter => "INVALID_FIELD_IN_PARAMETER"
   | .errorEmptyPrecondition => "MVK_ERROR_EMPTY_PRECONDITION"
@@ -670,7 +676,8 @@ def all : List KernelStaticDiagnostic :=
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc,
     .invalidCompareEnumToString, .invalidCompareEnumToEnum, .invalidDateString, .noConst,
     .paramSizeInvalidTwo, .pointInA12Model,
-    .notInRuleGroup, .indexTypeInconsistent, .invalidFieldInParameter,
+    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .indexTypeInconsistent,
+    .invalidFieldInParameter,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,
     .invalidConst, .noStringOrEnum,
     .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,

@@ -196,6 +196,21 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+### Inbound 2026-09-26f handback
+
+<a id="inbound-2026-09-26f-gate-order"></a>
+#### Reviewed 2026-09-26f gate-order handback — `RepetitionNotUnique` judges its key list gate by gate over the whole list before exactly one branch, and the rule-group class reaches every outsider whose read is clean
+
+a12-dmkits revision `e71cf7ada847acd9412284d31fe64502633baa24` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26f`, frozen as sent in the user's exchange directory with SHA-256 `4e2e3509f6aa4164a473e7ae218bfa4e41ae69e084a50c437a7313737f9752d7`. The locks cited below were read at that revision, not run here. It answers no ledger entry and creates none. Its §3 reports the peer's own checker and its §4 a source hypothesis, neither recorded as a claim.
+
+**Claim.** Its §1 (`CheckerRepetitionNotUniqueGateAgreementTest`, `RepetitionNotUniqueGateOrderLawsTest`, `kf355` amended 2026-09-26), each rule at the root of `/Policy` reporting on `Claims/ClaimRef`, with `Claims` and `Payments` keyed on `ClaimRef`. `RepetitionNotUnique(Claims/ClaimRef)` is admitted. `Tier -> Band` draws `MVK_CATEGORY_NOT_ALLOWED`, `Claims` and `/Policy` `MVK_NO_GROUPS_ALLOWED`, `Claims*/ClaimRef` `MVK_NO_WILDCARDS_ALLOWED`, `Claims/Amount For "C-1"` `MVK_SEMANTIC_INDEX_NOT_ALLOWED`, and the unvalidated `Claims/RawNote` `MVK_INVALID_RAW_TYPE`. `Claims*/ClaimRef, Insured` draws the group class, `Claims/RawNote, Tier -> Band` the category class, and `Claims*/ClaimRef, Claims` `MVK_DUPLICATE_PARAM2`.
+
+Its §2 on the same carrier. With `@From Reference`, `@From Insured` and `@From Payments` a `Claims/ClaimRef` key draws `MVK_NO_FIELDS_ALLOWED`, `MVK_GROUP_NOT_REPEATABLE` and `MVK_NOT_IN_GROUP`. Unscoped, `Claims/ClaimRef, Payments/PayRef` draws `MVK_NOT_IN_SAME_PATH` and `Reference` `MVK_REPEATABLE_GROUP_MISSING`, while the same pair `@From Claims` draws `MVK_NOT_IN_GROUP`. `/Policy/Payments/PayRef` from a rule in `Claims` and `/Policy/Claims/ClaimRef` from a rule in `Claims/Items` draw `MVK_NOT_IN_RULEGROUP`. `Claims @From Insured`, `Claims/RawNote @From Payments` and `Claims*/ClaimRef @From Reference` draw their key-list classes.
+
+`RepetitionNotUniqueFromScopeLawsTest`, read at the same revision, holds the rule-group class on a second carrier: from a rule in the repeatable `/Depot/Crates`, a second key in the fixed sibling `Office` draws `MVK_NOT_IN_RULEGROUP` and one in the index-free parallel `Pallets` `MVK_NO_WILDCARD`.
+
+**Lean.** Corrected. [`elaborateRepetitionNotUniqueSource`](../A12Kernel/Elaboration/RepetitionNotUnique.lean) had drawn the resolver's class for a group key and `MVK_REPEATABLE_GROUP_MISSING` for every outsider, and it claimed no class at the raw, scope and shared-path gates. It now reads every key, asks the duplicate gate, then the group and raw gates over the whole list, then one branch. It walks a key's read when the caller names the error field's group, and claims the shared-path and rule-group classes only then. The semantic-index carrier no longer requires its key to be the error field. [`RepetitionNotUniqueDiagnostic`](../A12Kernel/Conformance/RepetitionNotUniqueDiagnostic.lean) locks every row a plain field path can spell, and [SG9](gaps/paths-and-groups.md#gap-sg9) holds the rest.
+
 ### Inbound 2026-09-26e handback
 
 <a id="inbound-2026-09-26e-labelled-target"></a>

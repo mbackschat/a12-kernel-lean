@@ -2,10 +2,11 @@ import A12Kernel.Elaboration.ValidationRule
 
 /-! # A12Kernel.Conformance.RepetitionNotUniqueDiagnostic — RNU key-admission diagnostic identity
 
-`RepetitionNotUnique` reuses two classes the group-list families already own and adds one of its own,
-and the separating fact is the **collapse**: three structurally different shapes draw one Kernel
-class — a second key in a nonrepeatable group, a sole key whose group is not repeatable, and the rule
-already placed at that repeated group. The local error type is finer than the observable.
+`RepetitionNotUnique` reads its keys, judges the key list gate by gate, then runs one of two
+branches, and most of its classes are shared with the group-list families. One separating fact is a
+**collapse**: three structurally different shapes draw one Kernel class — a second key in a
+nonrepeatable group, a sole key whose group is not repeatable, and the rule already placed at that
+repeated group. The local error type is finer than the observable.
 
 The whole-rule error-field reference gate is measured here too, because it is the gate that decides
 whether an RNU rule is authorable at all and it is not an operand gate.
@@ -52,8 +53,7 @@ private def diagnosticAt (rowGroup : GroupPath) (first : SurfaceFieldPath) (rest
 private def refusesParallelAt (rowGroup : GroupPath) (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := []) : Bool :=
   match CheckedValidationCondition.fromRepetitionNotUnique probeModel rowGroup
       { firstKey := first, restKeys := rest } with
-  | .error (.repetitionNotUnique
-      (.unsupportedParallelRepeatableKeyPaths _ _)) => true
+  | .error (.repetitionNotUnique (.keysOffOnePath _ _ _)) => true
   | .ok _ | .error _ => false
 
 private def diagnostic? (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := []) : Option KernelStaticDiagnostic :=
@@ -68,13 +68,12 @@ private def indexedRnuUse
 private def indexedRnuRefusal?
     (token : String := "SKU-1") :
     Option (CheckedRepetitionNotUniqueSemanticIndexRefusal indexedProbeModel) :=
-  (elaborateRepetitionNotUniqueSemanticIndexRefusal indexedProbeModel ["Probe"] 2
+  (elaborateRepetitionNotUniqueSemanticIndexRefusal indexedProbeModel ["Probe"]
     (indexedRnuUse token)).toOption
 
 private def indexedRnuDiagnostic?
-    (sourceModel : FlatModel := indexedProbeModel) (errorField : FieldId := 2) :
-    Option KernelStaticDiagnostic :=
-  projectRepetitionNotUniqueSemanticIndexDiagnostic? sourceModel ["Probe"] errorField
+    (sourceModel : FlatModel := indexedProbeModel) : Option KernelStaticDiagnostic :=
+  projectRepetitionNotUniqueSemanticIndexDiagnostic? sourceModel ["Probe"]
     (indexedRnuUse "SKU-1")
 
 /- One key repeated draws the exact-duplicate class, the same one a repeated group-list operand
@@ -182,13 +181,12 @@ example : (indexedRnuRefusal? "SKU-2").map
       some (.literal (.text "SKU-2")) := by
   native_decide
 
-/- An unindexed target, a different error field, and a rule already placed at the repeated group do
-   not inherit the measured carrier code. The last keeps the otherwise-valid semantic-index side
-   from replacing the RNU source check. -/
+/- An unindexed target and a rule already placed at the repeated group do not inherit the measured
+   carrier code. The last keeps the otherwise-valid semantic-index side from replacing the RNU
+   source check. -/
 example : indexedRnuDiagnostic? probeModel = none ∧
-    indexedRnuDiagnostic? indexedProbeModel 3 = none ∧
     projectRepetitionNotUniqueSemanticIndexDiagnostic? indexedProbeModel
-      ["Probe", "Rows"] 2 (indexedRnuUse "SKU-1") = none := by
+      ["Probe", "Rows"] (indexedRnuUse "SKU-1") = none := by
   native_decide
 
 /- At the repeated rule group, both path spellings draw the third missing-repeatable shape. -/
@@ -199,15 +197,22 @@ example :
       some .repeatableGroupMissing := by
   native_decide
 
-/- The exact upstream index-free parallel fixture reports `MVK_NO_WILDCARD`, but the indexed
-   fixture differs without an established discriminator, so the generic projector refuses. -/
+/- The upstream index-free parallel fixture reports `MVK_NO_WILDCARD`, the indexed one the
+   shared-path class, and what separates them is whether the second key's read passes the walk. Named
+   the error field's group, the walk refuses the unpaired `Coupons` read with the missing-star class;
+   without it the walk is not asked, so the shared-path class is withheld rather than claimed. -/
 example :
     refusesParallelAt ["Probe"] (key ["Probe", "Rows"] "RowVal")
         [key ["Probe", "Coupons"] "CouponVal"] = true ∧
     refusesParallelAt ["Probe", "Rows"] (key ["Probe", "Rows"] "RowVal")
         [key ["Probe", "Coupons"] "CouponVal"] = true ∧
     diagnostic? (key ["Probe", "Rows"] "RowVal")
-        [key ["Probe", "Coupons"] "CouponVal"] = none := by
+        [key ["Probe", "Coupons"] "CouponVal"] = none ∧
+    (match CheckedValidationCondition.fromRepetitionNotUnique probeModel ["Probe"]
+        { firstKey := key ["Probe", "Rows"] "RowVal"
+          restKeys := [key ["Probe", "Coupons"] "CouponVal"] } (some ["Probe", "Rows"]) with
+      | .error (.repetitionNotUnique error) => error.diagnostic?
+      | _ => none) = some .noWildcard := by
   native_decide
 
 /-! ## The whole-rule error-field reference gate
@@ -231,6 +236,140 @@ example :
   native_decide
 
 example : ruleDiagnostic? 2 (key ["Probe", "Rows"] "RowVal") = none := by
+  native_decide
+
+/-! ## The key list's gates and the two branches
+
+The Kernel reads every key, asks the list's duplicate gate, then judges the key list gate by gate,
+each over the whole list, and only then runs one of two branches: with `@From` the scope's gates,
+without it the placement gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)).
+The carrier mirrors the peer's: `Claims` and `Payments` are keyed on the same index field, so a read
+of one from a rule about the other iterates jointly and reaches the placement gates. The rows are
+the peer's; its category and starred rows have no spelling here, since a key is a plain field path.
+-/
+
+private def policyModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Policy"], name := "Reference", policy := { kind := .string } },
+      { id := 3, groupPath := ["Policy", "Insured"], name := "InsuredName",
+        policy := { kind := .string } },
+      { id := 4, groupPath := ["Policy", "Claims"], name := "ClaimRef",
+        policy := { kind := .string }, repeatableScope := [10] },
+      { id := 5, groupPath := ["Policy", "Claims"], name := "Amount",
+        policy := { kind := .number { scale := 2, signed := true } }, repeatableScope := [10] },
+      { id := 6, groupPath := ["Policy", "Claims"], name := "RawNote",
+        policy := { kind := .string }, stringValueMode := .raw,
+        stringPolicy := { lineBreaksPermitted := true }, repeatableScope := [10] },
+      { id := 7, groupPath := ["Policy", "Claims", "Items"], name := "ItemRef",
+        policy := { kind := .string }, repeatableScope := [10, 12] },
+      { id := 8, groupPath := ["Policy", "Payments"], name := "ClaimRef",
+        policy := { kind := .string }, repeatableScope := [11] },
+      { id := 9, groupPath := ["Policy", "Payments"], name := "PayRef",
+        policy := { kind := .string }, repeatableScope := [11] }]
+    repeatableGroups := [
+      { level := 10, path := ["Policy", "Claims"], indexField := some 4 },
+      { level := 12, path := ["Policy", "Claims", "Items"] },
+      { level := 11, path := ["Policy", "Payments"], indexField := some 8 }] }
+
+private def rel (groups : List String) (field : String) : SurfaceFieldPath :=
+  { base := .relative 0, groups, field }
+
+private def fromGroups (groups : List String) : SurfaceRepetitionNotUniqueScope :=
+  .from (.path { base := .relative 0, groups })
+
+/-- The rule sits in `rowGroup` and reports on a field of `writtenGroup`: `none` when admitted,
+    otherwise the refusal's class. -/
+private def policyVerdict (rowGroup writtenGroup : GroupPath) (first : SurfaceFieldPath)
+    (rest : List SurfaceFieldPath := []) (scope : SurfaceRepetitionNotUniqueScope := .default) :
+    Option (Option KernelStaticDiagnostic) :=
+  match CheckedValidationCondition.fromRepetitionNotUnique policyModel rowGroup
+      { firstKey := first, restKeys := rest, scope } (some writtenGroup) with
+  | .ok _ => none
+  | .error (.repetitionNotUnique error) => some error.diagnostic?
+  | .error _ => some none
+
+/-- The peer's default carrier: the rule at the root reporting on `Claims/ClaimRef`. -/
+private def atRoot (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := [])
+    (scope : SurfaceRepetitionNotUniqueScope := .default) :
+    Option (Option KernelStaticDiagnostic) :=
+  policyVerdict ["Policy"] ["Policy", "Claims"] first rest scope
+
+/- The key list, one gate per row. A root group is one more group to this list, since the carrier
+   asks no root-group gate. -/
+example :
+    atRoot (rel ["Claims"] "ClaimRef") = none ∧
+    atRoot (rel [] "Claims") = some (some .noGroupsAllowed) ∧
+    atRoot (key [] "Policy") = some (some .noGroupsAllowed) ∧
+    atRoot (rel ["Claims"] "RawNote") = some (some .rawTypeOperandInvalid) := by
+  native_decide
+
+/- A semantic index on a key is refused whichever field the rule reports on: here the key is
+   `Amount` and the error field `ClaimRef`. -/
+example :
+    projectRepetitionNotUniqueSemanticIndexDiagnostic? policyModel ["Policy"]
+      { target := rel ["Claims"] "Amount", token := "C-1" } (some ["Policy", "Claims"]) =
+        some .semanticIndexNotAllowed := by
+  native_decide
+
+/- With `@From` the scope's gates run, one per row: a field, a group that does not repeat, and a key
+   outside the scope. -/
+example :
+    atRoot (rel ["Claims"] "ClaimRef") [] (fromGroups ["Reference"]) =
+      some (some .noFieldsAllowed) ∧
+    atRoot (rel ["Claims"] "ClaimRef") [] (fromGroups ["Insured"]) =
+      some (some .groupNotRepeatable) ∧
+    atRoot (rel ["Claims"] "ClaimRef") [] (fromGroups ["Payments"]) =
+      some (some .entityNotInGroup) := by
+  native_decide
+
+/- Without it the placement gates run: keys on parallel paths, a key with no repeatable group below
+   the rule group, and a key outside the rule group. Both outsiders read cleanly first, one in a
+   repetition iterated jointly with the rule's and one in the repetition holding the rule group,
+   so the rule-group gate is theirs. -/
+example :
+    atRoot (rel ["Claims"] "ClaimRef") [rel ["Payments"] "PayRef"] =
+      some (some .notInSamePath) ∧
+    atRoot (rel [] "Reference") = some (some .repeatableGroupMissing) ∧
+    policyVerdict ["Policy", "Claims"] ["Policy", "Claims"] (key ["Policy", "Payments"] "PayRef") =
+      some (some .notInRuleGroup) ∧
+    policyVerdict ["Policy", "Claims", "Items"] ["Policy", "Claims", "Items"]
+        (key ["Policy", "Claims"] "ClaimRef") =
+      some (some .notInRuleGroup) := by
+  native_decide
+
+/- Two defects at once: the key list answers ahead of the scope, and with a scope the shared-path
+   check never runs, so parallel keys meet the scope's containment instead. -/
+example :
+    atRoot (rel [] "Claims") [] (fromGroups ["Insured"]) = some (some .noGroupsAllowed) ∧
+    atRoot (rel ["Claims"] "RawNote") [] (fromGroups ["Payments"]) =
+      some (some .rawTypeOperandInvalid) ∧
+    atRoot (rel ["Claims"] "ClaimRef") [rel ["Payments"] "PayRef"] (fromGroups ["Claims"]) =
+      some (some .entityNotInGroup) := by
+  native_decide
+
+/- Without the error field's group no key's read is walked, so an outsider is refused without the
+   rule-group class, which a walk refusal could have preempted. -/
+example :
+    (match CheckedValidationCondition.fromRepetitionNotUnique policyModel ["Policy", "Claims"]
+        { firstKey := key ["Policy", "Payments"] "PayRef", restKeys := [] } with
+      | .error (.repetitionNotUnique (.keyOutsideRuleGroup _ false)) => true
+      | _ => false) = true := by
+  native_decide
+
+/- A group key beside a key it holds is the list's duplicate gate's, whose class the peer measured
+   only with the held key starred, so it claims neither that class nor the group gate's. -/
+example :
+    atRoot (rel ["Claims"] "ClaimRef") [rel [] "Claims"] = some none := by
+  native_decide
+
+/- An outsider under no repetition at all reads cleanly too: beside a rule in `Claims`, a second key
+   in the fixed `Insured` is the rule-group gate's rather than the repeatable-group one's, as the peer
+   measured on a second key in a fixed sibling of the rule's repeatable group
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). -/
+example :
+    policyVerdict ["Policy", "Claims"] ["Policy", "Claims"] (rel [] "ClaimRef")
+        [key ["Policy", "Insured"] "InsuredName"] =
+      some (some .notInRuleGroup) := by
   native_decide
 
 end A12Kernel.Conformance.RepetitionNotUniqueDiagnostic

@@ -314,11 +314,12 @@ def fromIteratedDateRangeOverlap (model : FlatModel) (rowGroup : GroupPath)
 
 /-- Resolve one checked RNU source and retain it as an ordinary leaf in the shared condition tree. -/
 def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)
-    (authored : SurfaceRepetitionNotUniqueSource) :
+    (authored : SurfaceRepetitionNotUniqueSource)
+    (writtenGroup? : Option GroupPath := none) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) := do
   let source ←
-    (elaborateRepetitionNotUniqueSource model rowGroup authored)
+    (elaborateRepetitionNotUniqueSource model rowGroup authored writtenGroup?)
       |>.mapError .repetitionNotUnique
   checkCore model rowGroup
     (ValidationCondition.repetitionNotUnique source)
