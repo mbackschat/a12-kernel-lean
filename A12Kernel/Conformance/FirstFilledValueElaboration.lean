@@ -30,8 +30,12 @@ private def nested : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [10, 30] }
 
+private def count : FlatFieldDecl :=
+  { id := 6, groupPath := ["Form"], name := "Count"
+    policy := { kind := .number { scale := 0, signed := false } } }
+
 private def model : FlatModel :=
-  { fields := [fallback, note, primary, secondary, nested]
+  { fields := [fallback, note, primary, secondary, nested, count]
     repeatableGroups := [
       { level := 10, path := ["Form", "Primary"], repeatability := some 2 },
       { level := 20, path := ["Form", "Secondary"], repeatability := some 2 },
@@ -241,6 +245,15 @@ example :
     scaleOf (source (.star (star "Primary")) [
       .starHaving (star "Secondary") (falseHaving "Secondary")]) =
       some (NumericScaleSummary.field 1) := by
+  native_decide
+
+/- Two direct Numbers declaring different fraction digits share one list, which the Kernel admits
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26g-type-match)), and this theory keeps the wider
+   declaration's scale, as for the mixed star and direct list above. -/
+example :
+    errorOf (source (.field (bare "Fallback")) [.field (bare "Count")]) = none ∧
+    scaleOf (source (.field (bare "Fallback")) [.field (bare "Count")]) =
+      some (NumericScaleSummary.field 2) := by
   native_decide
 
 /- A terminal first slot hides a malformed later filtered-star topology and the direct fallback. -/

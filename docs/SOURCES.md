@@ -207,6 +207,19 @@ a12-dmkits revision `214ce432c9f51fea0bee8c619a80120e179f5846` on `main`, confir
 
 **Lean.** Corrected. [`elaborateRepetitionNotUniqueSource`](../A12Kernel/Elaboration/RepetitionNotUnique.lean) would have claimed the containment class for an empty repeatable scope, the only empty group a flat model can hold ([checkpoint](sources/group-and-iteration-probes.md#src-empty-declared-group)). It now refuses that scope ahead of containment without a class, because the walk refuses the same read and no row fixes which answers first, which [SG9](gaps/paths-and-groups.md#gap-sg9) records. A `$`-marked key has no spelling in a plain field path.
 
+### Inbound 2026-09-26g handback
+
+<a id="inbound-2026-09-26g-type-match"></a>
+#### Reviewed 2026-09-26g type-match handback — `FirstFilledValue`'s type match compares neither a Boolean's stored values nor a Number's fraction digits
+
+a12-dmkits revision `82345da6b7a4b10c993c7b44e5c62b12c07c15c8` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26g`, frozen as sent in the user's exchange directory with SHA-256 `576474983d6de0af5fb8b0727a7c160243b7110d454329d185b1d1d75cc2ae2b`. The lock was read at that revision, not run here. It answers no ledger entry and creates none. Its §2 reports the peer's own checker and its §3 a source hypothesis, neither recorded as a claim.
+
+**Claim.** Its §1 (`CheckerFirstFilledValueTypeAgreementTest`), each rule in the root `/Order` reporting on the first field it reads. `FirstFilledValue` over `Title, Sku`, `Title, Tier`, `Weight, Qty` with two fraction digits beside none, `ShipOn, PackOn` at one date format, and the Booleans `Gift, Paid` at the default stored values, `Wrap, Seal` at one custom pair, `Gift, Wrap` and `Wrap, Stamp` at two different ones is admitted, and so is the String group `Names`.
+
+`Title, Weight`, `ShipOn, DueOn` at two date formats, `ShipOn, Window`, `Window, Period` at two (format, separator) pairs, the String-and-Number group `Parcel` alone and `Names, Weight` draw `MVK_VARYING_TYPES_NOT_ALLOWED`. `Title, Confirmed, Weight` draws `MVK_NO_BOOLY_ALLOWED` and `Title, Weight, Title` `MVK_DUPLICATE_PARAM1`.
+
+**Lean.** No behaviour change. Each shape the token carrier spells is locked with the same class on earlier rows, and [`FirstFilledValueElaboration`](../A12Kernel/Conformance/FirstFilledValueElaboration.lean) now locks the direct Number pair of different scales as admitted. Lean's Boolean kind declares no stored values, and no Lean condition carrier admits a Boolean, temporal or DateRange list, which [SG8](gaps/strings-and-messages.md#gap-sg8) records.
+
 ### Inbound 2026-09-26f handback
 
 <a id="inbound-2026-09-26f-gate-order"></a>
