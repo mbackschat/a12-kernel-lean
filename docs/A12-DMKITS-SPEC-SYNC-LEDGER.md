@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-26-04"></a>
+### `SPEC-2026-09-26-04` — a field copied into a field of another kind meets the rule comparison walk's arms in order on every pair of nine kinds, and the display arm answers ahead of the Enumeration calculation
+
+- `status`: pending.
+- `origin`: locally originated; it extends your `kf483`, whose copy rows cover about twenty kind pairs, to the complete cross and to the order between the display and the calculation classes at an Enumeration target.
+- `clause`: [`09` §1 the ground rules](../spec/09-computations.md#1-the-ground-rules), the field-source bullet.
+- `delta`: every cross-kind copy draws the class of the first arm your `kf469` orders, each arm claiming its kind on either side: Confirm, Boolean, temporal against non-temporal, DateRange, then Number against text. Two temporal fields meet the format question. A labelled side against a String or an unlabelled Enumeration draws `MVK_INVALID_COMPARE_ENUM_TO_STRING`, conflicting labels `MVK_INVALID_COMPARE_ENUM_TO_ENUM`, and an unlabelled Enumeration copies into a String admitted. At an Enumeration target a wider unlabelled Enumeration draws `MVK_ERROR_INVALID_ENUM_CALCULATION`, and a wider one whose labels also differ the display class alone.
+- `basis`: this project's [field-copy grid](SOURCES.md#src-field-copy-comparison-grid), 127 `computation add --dry-run` rows at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532`, Kernel `30.8.1`, with the model, generator spec and observations retained.
+- `surfaces`: any peer checker, lock doc or finding that types a copied field's refusal by one side's kind, or refuses an unlabelled Enumeration copied into a String.
+- `acceptance`: confirm the arm order and the two Enumeration rows, or supply a cross-kind copy between nonrepeatable fields whose class the order does not predict.
+- `limit`: static preflight, root computations over nonrepeatable fields, stored reads only. A category read, a repeatable target or source, and a wider expression are outside the rows.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-26-03"></a>
 ### `SPEC-2026-09-26-03` — a field copied into a field of another kind draws the comparison class on the kind pairs measured, while at an Enumeration target the calculation's own class can answer first
 

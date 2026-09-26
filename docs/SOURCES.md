@@ -215,7 +215,7 @@ Its §3, a tab in the named field's pattern message. A field named `Codeé`, `Co
 
 Its §4, a rule `ProbeRule` beside the field. The condition `FieldFilled(Reference) And And FieldFilled(Code)` draws `INVALID_CHARACTERS` with `MVK_UNEXPECTED_TOKEN`, and the error target `../NoSuchField` `INVALID_CHARACTERS` with `MVK_ERROR_FIELD_MISSING` and `MVK_MISSING_ERROR_FIELD`.
 
-Its §5 takes §3's group rows against the peer's `kf315`, corrected in place: a group admits `ä` and `ö` and refuses `é`. The letter reports `Ö` measured too, which the lock read here does not carry, and names the group pattern's seven German letters as source-read.
+Its §5 takes §3's group rows against the peer's `kf315`, corrected in place: a group admits `ä` and `ö` and refuses `é`. The letter reports `Ö` measured too; the peer's pointer places it on a root group named `Ördner`, admitted in `DeclaredNameShapeLawsTest` at the same revision and read there, and the letter names the group pattern's seven German letters as source-read.
 
 Its §6 (`ModelTextRepertoireLawsTest`), `U+1F600` in a String type's pattern message and in an Enumeration's invalid-value message draws the codeless repertoire refusal on the field, and in a pattern message for the undeclared `de_DE`, written into the model file, is admitted.
 

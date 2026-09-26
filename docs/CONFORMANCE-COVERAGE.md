@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-09-26; HEAD was `9587fb6f`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-09-26; HEAD was `0130d527`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -39,7 +39,7 @@ An occurrence can be a definition, fixture, comment, request, or list of exclusi
 | Distinct identifiers in the selected diagnostic catalogs and runtime formal-code constants | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 304 | 61% |
 | Named in Lean source under `A12Kernel/` | 464 | 93% |
-| Named in JSON under `evidence/` | 216 | 43% |
+| Named in JSON under `evidence/` | 218 | 44% |
 | Touched by any of the three | 489 | 98% |
 | **Untouched everywhere** | **6** | **1%** |
 
@@ -65,8 +65,8 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 211 | 100% |
-| Citing a Kernel checkpoint or calibration | 120 | 56% |
+| Capability records in [`implementation/`](implementation/) | 212 | 100% |
+| Citing a Kernel checkpoint or calibration | 121 | 57% |
 | Carrying an explicit evidence-pending note | 54 | 25% |
 
 ## Axis 3 — open obligation load
@@ -74,9 +74,9 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 23 |
-| `remaining` rows across those gaps | 275 |
+| `remaining` rows across those gaps | 276 |
 | Gaps whose route is **blocked** | 0 |
-| Ledger entries `pending` with a12-dmkits | 0 |
+| Ledger entries `pending` with a12-dmkits | 1 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route stops the work that depends on it. Other ready obligations can continue. Remaining-work entries differ in size and may overlap; their count is not a completion percentage.
@@ -87,8 +87,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 220766 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8767 | 3% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 221116 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8769 | 3% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
@@ -97,8 +97,8 @@ Tracked Lean files in neither estate: 0. A nonzero value means the ratio above m
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 217 |
-| `inputHash` markers in `*-obs.json` and `semantic-observations.json` | 584 |
+| Retained capture directories under `../evidence/` | 218 |
+| `inputHash` markers in `*-obs.json` and `semantic-observations.json` | 711 |
 
 The marker count excludes other observation formats, including runtime `artifact.json` files with `rows` arrays. It is neither a total observation count nor a count of independent behavioural discriminators.
 
@@ -178,4 +178,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-09-26T04:02:51+02:00 | `93a63757` | 489 | 461 | 6 | 120 | 23 |
 | 2026-09-26T07:54:21+02:00 | `933fd2e3` | 489 | 463 | 6 | 120 | 23 |
 | 2026-09-26T16:23:26+02:00 | `92f2a974` | 489 | 464 | 6 | 120 | 23 |
+| 2026-09-26T18:12:01+02:00 | `0130d527` | 489 | 464 | 6 | 121 | 23 |
 <!-- velocity-history:end -->
