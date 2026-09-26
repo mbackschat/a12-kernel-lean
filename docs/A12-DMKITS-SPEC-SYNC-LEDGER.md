@@ -51,14 +51,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-26-04"></a>
 ### `SPEC-2026-09-26-04` — a field copied into a field of another kind meets the rule comparison walk's arms in order on every pair of nine kinds, and the display arm answers ahead of the Enumeration calculation
 
-- `status`: pending.
+- `status`: accepted at a12-dmkits `4e1a49baf49fa2215c2ec98c7141edd0200d6ab8` ([inbound](SOURCES.md#inbound-2026-09-26p-walked-path)). The peer confirmed the arm order and both Enumeration rows on its own fixture, predicting every one of 127 rows, and added a limit: its three temporal kinds carry three formats, so kind and format are not separated. The delta's wording was narrowed at acceptance to the pairs and targets the rows read.
 - `origin`: locally originated; it extends your `kf483`, whose copy rows cover about twenty kind pairs, to the complete cross and to the order between the display and the calculation classes at an Enumeration target.
 - `clause`: [`09` §1 the ground rules](../spec/09-computations.md#1-the-ground-rules), the field-source bullet.
 - `delta`: a copy between two fields whose kinds meet a kind arm draws the class of the first arm your `kf469` orders, each arm claiming its kind on either side: Confirm, Boolean, temporal against non-temporal, DateRange, then the text arm, a String or an Enumeration against a Number. Two temporal fields meet the format question instead, and a String against an Enumeration or two Enumerations the display arm: a labelled side against a String or an unlabelled Enumeration draws `MVK_INVALID_COMPARE_ENUM_TO_STRING`, conflicting labels `MVK_INVALID_COMPARE_ENUM_TO_ENUM`, and an unlabelled Enumeration copies into a String admitted. At the unlabelled Enumeration target measured, a wider unlabelled Enumeration draws `MVK_ERROR_INVALID_ENUM_CALCULATION`, and into the labelled target the same wider source draws the display class alone.
 - `basis`: this project's [field-copy grid](SOURCES.md#src-field-copy-comparison-grid), 127 `computation add --dry-run` rows at a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532`, Kernel `30.8.1`, with the model, generator spec and observations retained.
 - `surfaces`: any peer checker, lock doc or finding that types a copied field's refusal by one side's kind, or refuses an unlabelled Enumeration copied into a String.
 - `acceptance`: confirm the arm order and the two Enumeration rows, or supply a cross-kind copy between nonrepeatable fields whose class the order does not predict.
-- `limit`: static preflight, root computations over nonrepeatable fields, stored reads only. A category read, a repeatable target or source, and a wider expression are outside the rows.
+- `limit`: static preflight, root computations over nonrepeatable fields, stored reads only. A category read, a repeatable target or source, and a wider expression are outside the rows, and so is a temporal pair of one format across two kinds.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-26-03"></a>

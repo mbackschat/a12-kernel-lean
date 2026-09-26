@@ -196,6 +196,38 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+### Inbound 2026-09-26p handback
+
+<a id="inbound-2026-09-26p-walked-path"></a>
+#### Reviewed 2026-09-26p walked-path and field-copy handback — a `$`-marked, up-run-led or starred path raises its class as it is read even when it never closes, and the peer confirms `SPEC-2026-09-26-04` on its own fixture
+
+a12-dmkits revision `4e1a49baf49fa2215c2ec98c7141edd0200d6ab8` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26p`, frozen as sent in the user's exchange directory with SHA-256 `1ced5086aadeddfa217137f139a04845427c9e0ac127cb7b9cbf0a6d80ee5d8f`. The locks were read at that revision, not run here. Its §1 replaces one sentence of `-26o` §1, and its §2 answers [`SPEC-2026-09-26-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-26-04). Its §3 reports the peer's own records and is recorded as no claim.
+
+**Claim.** Its §1 (`EntityProductionCloseLawsTest.aWalkedPathIsResolvedAsItIsReadEvenWhenItNeverCloses`), rule group `/Policy` with the String `Code`, the Number `Premium` and the repeatable `Items` holding the Number `Count`, each condition `FieldFilled(Code) And` an operand. `FieldFilled(Items*/NoSuch/)` and `FieldFilled(NoSuch/Items*/)` draw `MVK_INVALID_ENTITY`, `FieldFilled(/NoRoot/Items*/)` `MVK_INVALID_ROOT_GROUP`, and `FieldFilled(Items/NoSuch/)`, `FieldFilled(/NoRoot/)` and `FieldFilled(Items*/Count/)` `MVK_UNEXPECTED_TOKEN`.
+
+In a `Having` body of `AtLeastOneFieldFilled(Items*/Count Having [Items/Count] == …)`, `[$NoSuch/]` draws `MVK_INVALID_ENTITY`, and `[NoSuch/]` and `[$Items/]` `MVK_UNEXPECTED_TOKEN`. From `/Policy/Claim/Cover`, `FieldFilled(Limit) And FieldFilled(../NoSuch/)` draws `MVK_INVALID_ENTITY`.
+
+Its §2 (`CheckerFieldCopyCrossAgreementTest`), the peer's own eleven declarations and twins, 121 cross cells and six further rows, predicted from the arm order and drawn by the Kernel on all 127. It confirms the arm order and both Enumeration rows of `SPEC-2026-09-26-04`, and adds a limit: the three temporal kinds carry three different formats, so its rows do not separate the kind question from the format question.
+
+**Lean.** No change. For §1 this project models no parser, so no text has a spelling. For §2 the [field-copy locks](../A12Kernel/Conformance/FieldCopyComparison.lean) already hold the confirmed order and rows.
+
+### Inbound 2026-09-26o handback
+
+<a id="inbound-2026-09-26o-production-close"></a>
+#### Reviewed 2026-09-26o production-close handback — a reference or an arithmetic chain is checked where its production closes, a star after a bare name is that name's, up-steps chain only through `/`, and only `Time()` takes an empty argument list
+
+a12-dmkits revision `2aa289fb803747f75aaa7c3c35f57ba89d846375` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26o`, frozen as sent in the user's exchange directory with SHA-256 `284007dd908c41aff8ced5c21f909470fbdc940cabebac5af7d93f06a0ac1922`. The locks were read at that revision, not run here. It answers no ledger entry and creates none. Its §1 sentence that an open production raises no reference class holds only for an unwalked path; [`-26p`](#inbound-2026-09-26p-walked-path) replaces it. Its §6 names the grammar's closing actions and non-recovering error strategy as source-read and is recorded as no claim.
+
+**Claim.** Its §1 and §4 (`EntityProductionCloseLawsTest`), each condition `FieldFilled(Limit) And` an operand from `/Policy/Claim/Cover`. `FieldFilled(../../Code)` and `FieldFilled(.. / .. / Code)` are admitted, `FieldFilled(NoSuch Code)` draws `MVK_INVALID_ENTITY`, and `FieldFilled(NoSuch/)` and `FieldFilled(NoSuch/And)` `MVK_UNEXPECTED_TOKEN`. `FieldFilled(..)` draws `MVK_NO_GROUPS_ALLOWED`, and `FieldFilled(.. ..)`, `FieldFilled(.. .. / Code)` and `FieldFilled(..../Code)` `MVK_UNEXPECTED_TOKEN`.
+
+Its §2 and §5 (same lock), each condition `FieldFilled(Code) And` a text from `/Policy`. `[Code] * 2 == "ABC"` draws `MVK_NO_NUMBER_FOR_CALC`. `[Code] * == "ABC"`, `[Code] + * "x" == "ABC"`, `[Premium] - == 1`, `[Code] - PatternViolated "[0-9]{5}"`, `MinValue(Items**Count) > 1`, `MinValue(Items*/Count - 1) > 1` and `MinValue(Items*/Count ^ 2) > 1` draw `MVK_UNEXPECTED_TOKEN`, while `[Premium] * Abs([Premium]) > 1` and `MinValue(Items*/Count) > 1` are admitted.
+
+`FieldFilled(Premium * 2)` draws `MVK_INVALID_WILDCARD` and `FieldFilled(NoSuch * 2)` `MVK_INVALID_ENTITY`. `FieldFilled()`, `Abs() > 1`, `MinValue() > 1`, `Today() > 1`, `[Code -> ] == "x"` and `[Code -> And X] == "x"` draw `MVK_UNEXPECTED_TOKEN`, and `Time() == Time()` is admitted.
+
+Its §3 (`ValueListInfixLanguageLawsTest`), `/Policy` with the Strings `Tier` and `Premium`. `ValueNotConsistent(Tier To Premium, "gold")` in English and `WertNichtKonsistent(Tier Zu Premium, "gold")` in German draw `MVK_TABLE_ENUM_EXPECTED` in all three casings, the other language's spelling `MVK_UNEXPECTED_TOKEN`, and `In` is admitted in both.
+
+**Lean.** No change. This project models no parser, so none of these texts has a spelling, and `SurfaceFieldPath` carries no starred single field.
+
 ### Inbound 2026-09-26n handback
 
 <a id="inbound-2026-09-26n-field-message-gates"></a>
