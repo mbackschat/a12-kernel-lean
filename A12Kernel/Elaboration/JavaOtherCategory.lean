@@ -10,8 +10,7 @@ added in 15.0, are assigned there, while `U+2FFC`, `U+31EF` and `U+2EBF0`, added
 The ranges were generated once by matching `\p{C}` against every code point from `U+0000` to
 `U+10FFFF` on that JDK; no generator is retained, and the conformance module pins the table's range
 count, code-point total, order, and the search's agreement with a linear scan at every boundary. They
-keep the surrogate block for fidelity to the source set, though a Lean `Char` never holds a surrogate.
-The data is facts about Unicode code points, distributed under the permissive Unicode license. -/
+keep the surrogate block for fidelity to the source set, though a Lean `Char` never holds a surrogate. -/
 
 namespace A12Kernel
 
