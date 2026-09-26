@@ -484,9 +484,12 @@ example :
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). `U+2029` is not a control
    character, so a reading keyed on control characters misses it; beside a tab written earlier the
    separator still answers. Either character gate withholds the parameter classes: the unknown name draws
-   its entity class only in the control row, and the unclosed parameter its dollar class not at all. -/
+   its entity class only in the control row, and the unclosed parameter its dollar class not at all. A
+   no-break space is admitted, which separates the `\p{C}` reading from one refusing every non-printing
+   or space character. -/
 example :
     templateError? ("par " ++ cp 0x2029) = some .lineSeparator ∧
+    templateError? ("nbsp " ++ cp 0x00A0 ++ " x") = none ∧
     templateError? ("a\tb" ++ cp 0x2028 ++ "c") = some .lineSeparator ∧
     templateError? "see $Missing$" =
       some (.reference "Missing" (.invalidEntity (bare "Missing"))) ∧

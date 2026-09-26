@@ -65,4 +65,13 @@ example :
     stringPatternTemplateError? ("a" ++ cp 0x00A0 ++ "b") = none := by
   native_decide
 
+/- A parameter other than the two tokens draws `INVALID_PARAMETER`, measured for the stylized and the
+   actual field name ([ledger](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-07-30-01)).
+   The empty pair is refused too, but that disposition names no class for it, so it claims none. -/
+example :
+    stringPatternNamedDiagnostic? "$Field$" = some (some "INVALID_PARAMETER") ∧
+    stringPatternNamedDiagnostic? "$Code$" = some (some "INVALID_PARAMETER") ∧
+    stringPatternNamedDiagnostic? "Cost $$ $field$" = some none := by
+  native_decide
+
 end A12Kernel.Conformance.StringPatternMessage
