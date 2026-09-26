@@ -38,7 +38,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-26-01"></a>
 ### `SPEC-2026-09-26-01` — a category read of a non-Enumeration draws its own class on every carrier measured, entity lists included, a membership subject's remaining gates are ordered, and a repeatable target or a rule in a repeatable group reads as the root does
 
-- `status`: pending.
+- `status`: accepted at a12-dmkits `8f088ca71f8b82ef8d78cdd4d31c50f6c1548bae` ([inbound](SOURCES.md#inbound-2026-09-26b-dispositions)). Confirmed on the peer's own `/Order` carrier by `CheckerFieldValueReadCarrierAgreementTest` with no contrary row; the peer did not measure the parallel-iteration rows. The peer read the entry at `ec9a66c5`, and `e384adb5` then narrowed its value-list sentence to a miss ahead of a raw String's refusal on the other side, which the confirmed rows still cover.
 - `origin`: locally originated; it extends [`SPEC-2026-09-25-09`](#spec-2026-09-25-09) to two shapes its `limit` names, a category read of a raw String or a partially known Date and a rule declared in a repeatable group, and extends your `kf359`, `kf395`, `kf398` and `kf405` to carriers they leave out. The orders those findings already state are cited, not requested.
 - `clause`: [`08` bare-name resolution order](../spec/08-paths-and-references.md#2-bare-name-resolution-order-), [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-), [`06` the scalar member paragraph](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-) and the value-list quantifier bullets.
 - `delta`: `[F -> Band]` over a raw String, a partial Date or a full Date draws `MVK_NO_ENUMERATION`, ahead of the read's value gates, and so do a category member inside `Sum`, `NumberOfFilledFields`, `DateRangesOverlap`, `AtLeastOneDateRangeOverlaps` and `FieldValuesNotUnique`, a starred value-list field and a copy into a repeatable Enumeration. An unstarred `[Items/Label -> Band]` draws `MVK_NO_WILDCARD` first, a category of an Enumeration inside `FieldValuesNotUnique` draws `MVK_CATEGORY_NOT_ALLOWED`, and in a value list a category read counts as an Enumeration at the base-type gate.
@@ -53,7 +53,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-25-10"></a>
 ### `SPEC-2026-09-25-10` — a bare name naming a group of the declaring group takes no short-name fallback
 
-- `status`: pending.
+- `status`: accepted at a12-dmkits `8f088ca71f8b82ef8d78cdd4d31c50f6c1548bae` ([inbound](SOURCES.md#inbound-2026-09-26b-dispositions)). Confirmed by `CheckerFieldValueReadCarrierAgreementTest`: `[Billing] > 0` and `FieldFilled(Billing)` beside one and two fields named `Billing` elsewhere, with `[Net] > 0` as the short-name control.
 - `origin`: locally originated; it corrects this project's own resolver, which fell back to a model-wide field, and extends `08`'s first-segment rule to a bare name.
 - `clause`: [`08` bare-name resolution order](../spec/08-paths-and-references.md#2-bare-name-resolution-order-).
 - `delta`: from `/Grid`, which declares a fixed group `Ledger`, with short names allowed, `[Ledger] > 0` and `FieldFilled(Ledger)` draw `MVK_NO_GROUPS_ALLOWED` both when one Number field elsewhere is named `Ledger` and when two are. A fallback would admit the first model's rows, and an ambiguous one would draw `MVK_FIELDNAME_NOT_UNIQUE` in the second.
@@ -66,7 +66,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-09-25-09"></a>
 ### `SPEC-2026-09-25-09` — the field-value read's gates reach arithmetic and computation operands, category reads and pattern and DateRange comparisons, and a membership's group subject waits for its members
 
-- `status`: pending.
+- `status`: accepted at a12-dmkits `8f088ca71f8b82ef8d78cdd4d31c50f6c1548bae` ([inbound](SOURCES.md#inbound-2026-09-26b-dispositions)). Confirmed by `CheckerFieldValueReadCarrierAgreementTest` on the peer's own carrier, the arithmetic, computation, pattern, DateRange and membership rows alike, with no contrary row.
 - `origin`: locally originated; it extends your `kf473`, your `kf359` and [`SPEC-2026-09-25-06`](#spec-2026-09-25-06) to the carriers they leave out.
 - `clause`: [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-) and [`06` the scalar member paragraph](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-).
 - `delta`: `{[Ledger] + 1}`, `Abs([Ledger])` and `Min([Ledger], [Amount])` draw `MVK_NO_GROUPS_ALLOWED`, `{[Note] + 1}` `MVK_INVALID_RAW_TYPE` and `{[Partial] - 1}` `MVK_INVALID_DATE_TYPE`, where `{[Due] - 1}` draws `MVK_NO_NUMBER_FOR_CALC`. Computations copying `[Ledger]` into a String, an Enumeration or a Time draw `MVK_NO_GROUPS_ALLOWED`, and a raw String into the last two `MVK_INVALID_RAW_TYPE`. A computation copying `[Items]` into a String or writing `[Items] + 1` into a Number draws `MVK_NO_WILDCARD`, and one copying `[Ledger -> Band]` into an Enumeration `MVK_NO_GROUPS_ALLOWED`. `FieldValueIncludedInValueList(Other, [Ledger -> Band])` draws `MVK_NO_GROUPS_ALLOWED`.
