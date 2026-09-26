@@ -427,16 +427,22 @@ example :
 ordinary String draws the raw read's class alone
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)). Only this field-source row is
 measured; the literal-source refusal above keeps its local error and claims the class by the same
-target read, since the read does not depend on the operation. -/
+target read, since the read does not depend on the operation. The last conjunct is that order rather
+than a row: an operation that fails on its own still meets the raw target's read first, because the
+generated text reads `[target]` before the operation and the first class in it answers
+([`spec/09`](../../spec/09-computations.md) §6). -/
 example :
     let rawTarget := { target with
       stringValueMode := StringValueMode.raw
       stringPolicy := { lineBreaksPermitted := true } }
-    let rawModel : FlatModel := { fields := [rawTarget, suffix] }
+    let rawModel : FlatModel := { fields := [rawTarget, suffix, amount] }
     let copied := operationErrorOf (elaborateStringComputationOperation rawModel ["Form"]
       rawTarget.id (.field (bare "Suffix")))
+    let wrongKind := operationErrorOf (elaborateStringComputationOperation rawModel ["Form"]
+      rawTarget.id (.field (bare "Amount")))
     copied = some (.rawStringTarget rawTarget.path) ∧
-      targetDiagnosticOf copied = some .rawTypeOperandInvalid := by
+      targetDiagnosticOf copied = some .rawTypeOperandInvalid ∧
+      wrongKind = some (.rawStringTarget rawTarget.path) := by
   native_decide
 
 example :

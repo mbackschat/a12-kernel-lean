@@ -42,8 +42,9 @@ A **plain rule comparison** carrying neither construct draws the same class, so 
 comparison's and not either carrier's. An assignment reaches it through the comparison its
 generated validation ends in ([`spec/09`](../../spec/09-computations.md) §6): a tolerance band, which
 exists only as that comparison's operator, turns an admitted String copy into the tolerance
-operator's class, and a class in an earlier member of the joined text withholds the comparison's
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-joined-comparison)). **The ladder is still not
+operator's class ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-joined-comparison)), and a
+refused precondition's class withholds the comparison's
+([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)). **The ladder is still not
 a field-pair function**: a Boolean *field* copied into a String draws the Boolean class, where a
 Boolean literal at a String target draws the text class, and one copied into a Confirm draws the
 Confirm class, where `True` is admitted. An **ordering** comparison is a different pair of gates and gets its own

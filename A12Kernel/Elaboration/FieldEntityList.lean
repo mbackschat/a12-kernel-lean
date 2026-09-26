@@ -103,9 +103,15 @@ def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
 
 /-- The Enumeration a category slot reads, for a carrier's category gate. A category of a field
     declaring no Enumeration was already refused as the slot resolved, and a starred slot spells no
-    category on this surface. -/
+    category on this surface. A category the Enumeration does not declare is left to certification,
+    which refuses it without a class: the operand's own category check may answer ahead of the
+    gate, and no row decides which class the lists draw for it. -/
 def categoryPath? : ResolvedFieldEntityOperand model → Option (List String)
-  | .field declaration (.projected _) => some declaration.path
+  | .field declaration (.projected category) =>
+      if declaration.enumeration.any (·.categories.any (·.name == category)) then
+        some declaration.path
+      else
+        none
   | .field _ .stored | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
@@ -295,7 +301,8 @@ def firstFieldListCategoryMismatch?
       | none => firstFieldListCategoryMismatch? expected remaining
 
 /-- Where an entity list's carrier asks the category gate against the list's repeat. The counts ask
-    it ahead of the repeat, the other carriers that ask it behind the repeat and the root gate, and a
+    it ahead of the repeat and the other carriers that ask it behind the repeat, both measured, and
+    those other carriers behind the root gate as well, which rests on the peer's source reading; a
     carrier outside the gate asks none
     ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category)). -/
 inductive EntityListCategoryGate where
@@ -542,7 +549,7 @@ private def resolveFieldEntityOperands (model : FlatModel)
         (← resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? writtenGroup
           remaining))
 
-/-- Validate the common entity-list shape: model, path resolution and its star gate, on a fixed-target arm the list-wide unbound-level gate, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, then the multiple-slots-or-one-already-many cardinality gate.
+/-- Validate the common entity-list shape: model, path resolution and its star gate, on a fixed-target arm the list-wide unbound-level gate, the category gate where the carrier asks it ahead of the repeat, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, the category gate where the carrier asks it behind that, then the multiple-slots-or-one-already-many cardinality gate.
 
     Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair, and a root slot is already-many, so the root gate and cardinality never both fire.
 

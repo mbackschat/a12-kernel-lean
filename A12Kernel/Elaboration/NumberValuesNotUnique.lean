@@ -29,6 +29,7 @@ def elaborateNumberValuesNotUniqueSource (model : FlatModel)
     Except NumberValuesNotUniqueElabError
       (CheckedNumberValuesNotUniqueSource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+      (categoryGate := .behindRootGate)
     |>.mapError .shape
   match firstFieldListKindRefusal? shape.operands with
   | some refusal => throw (.inadmissibleKind refusal.path refusal.actual)

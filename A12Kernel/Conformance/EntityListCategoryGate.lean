@@ -1,4 +1,6 @@
 import A12Kernel.Elaboration.DateRangeOverlap
+import A12Kernel.Elaboration.NumberValuesNotUnique
+import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.TokenFirstFilledValue
 import A12Kernel.Elaboration.TokenValuesNotUnique
@@ -7,12 +9,14 @@ import A12Kernel.Elaboration.YearlessDateRangeOverlap
 /-! # The entity list's category gate
 
 An entity list whose carrier refuses a category draws `MVK_CATEGORY_NOT_ALLOWED` for an
-Enumeration's category, and where the gate stands against the list's repeat depends on the carrier:
-the counts ask it ahead of the repeat, the other carriers behind the repeat and the root gate
+Enumeration's declared category, and where the gate stands against the list's repeat depends on the
+carrier: the counts ask it ahead of the repeat and the other carriers behind it, both measured, and
+behind the root gate too by the peer's source reading
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category), `kf482`). Of the 22
-operators the peer measures, three Lean carriers spell a category operand: the token
-`FieldValuesNotUnique`, the token `NumberOfDifferentValues` and `DateRangesOverlap`. The fixture
-mirrors the peer's `/Order`, every rule declared at the root.
+operators the peer measures, the Lean carriers that ask it are the three routes of
+`FieldValuesNotUnique`, the token `NumberOfDifferentValues` and both `DateRangesOverlap` routes. The
+fixture is the peer's `/Order` plus a yearless `Season`, a Date `Shipped` and a second root
+`Archive`, every rule declared at the root.
 -/
 
 namespace A12Kernel.Conformance.EntityListCategoryGate
@@ -34,13 +38,19 @@ private def orderModel : FlatModel :=
         policy := { kind := .number { scale := 0, signed := false } } },
       { id := 6, groupPath := ["Order", "Contact"], name := "Email", policy := { kind := .string } },
       { id := 7, groupPath := ["Order"], name := "Season", policy := { kind := .dateRange },
-        dateRangePolicy := some { format := "MM", separator := "/" } }] }
+        dateRangePolicy := some { format := "MM", separator := "/" } },
+      { id := 8, groupPath := ["Order"], name := "Shipped",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 9, groupPath := ["Archive"], name := "Memo", policy := { kind := .string } }] }
 
 private def field (name : String) : SurfaceFieldEntityOperand :=
   .field { base := .relative 0, groups := [], field := name }
 
-private def level (name : String) : SurfaceFieldEntityOperand :=
-  .field { base := .relative 0, groups := [], field := name } (.projected "Level")
+private def category (name category : String) : SurfaceFieldEntityOperand :=
+  .field { base := .relative 0, groups := [], field := name } (.projected category)
+
+private def level (name : String) : SurfaceFieldEntityOperand := category name "Level"
 
 private inductive Decision where
   | admitted
@@ -105,7 +115,8 @@ example :
 
 /- The category is part of the operand's identity for the repeat, so a category beside its own
    field uncategorized repeats nothing and draws the category class. The peer measures this on
-   `AllFieldsFilled`, whose carrier `FieldValuesNotUnique` shares. -/
+   `AllFieldsFilled`; that `FieldValuesNotUnique` answers alike is an assumption resting on the
+   peer's source reading that the two share a carrier. -/
 example : notUnique (level "Tier") [field "Tier"] = .mapped .categoryNotAllowed := by
   native_decide
 
@@ -115,6 +126,44 @@ example : notUnique (level "Tier") [field "Tier"] = .mapped .categoryNotAllowed 
 example :
     decide (elaborateFirstFilledTokenSource orderModel ["Order"] { first := level "Tier", rest := [field "Label"] })
       (fun error => error.diagnostic?) = .admitted := by
+  native_decide
+
+private def net : SurfaceFieldEntityOperand :=
+  .field { base := .relative 0, groups := ["Billing"], field := "Net" }
+
+/- `FieldValuesNotUnique` is one operator whose Number and temporal operands Lean certifies on routes
+   of their own, and its measured row places the gate ahead of the mixing gate those routes answer
+   for a category beside a Number or a Date. The category-free lists stay admitted. -/
+example :
+    [decide (elaborateNumberValuesNotUniqueSource orderModel ["Order"]
+        { first := net, rest := [level "Tier"] }) NumberValuesNotUniqueElabError.diagnostic?,
+      decide (elaborateTemporalValuesNotUniqueSource orderModel ["Order"]
+        { first := field "Shipped", rest := [level "Tier"] })
+        TemporalValuesNotUniqueElabError.diagnostic?] =
+    [.mapped .categoryNotAllowed, .mapped .categoryNotAllowed] := by
+  native_decide
+
+private def archiveRoot : SurfaceFieldEntityOperand :=
+  .group (.path { base := .absolute, groups := ["Archive"] })
+
+/- Two positions no row measures, taken from the peer's source reading of which carriers ask the
+   gate behind the repeat and the root gate
+   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category)): `DateRangesOverlap`
+   answers a repeated category with the duplicate class, and beside a second model root the root
+   gate answers ahead of the category. These locks hold that reading, not a measurement. -/
+example :
+    [overlap (level "Tier") [level "Tier"], notUnique (level "Tier") [archiveRoot]] =
+      [.mapped .duplicateParam1, .mapped .rootGroupReferenced] := by
+  native_decide
+
+/- A category the Enumeration does not declare is not the gate's: the operand's own category
+   check may answer first, and no row decides which class these lists draw, so each carrier keeps
+   refusing it at certification without claiming the gate's class. -/
+example :
+    [notUnique (category "Tier" "Nope") [field "Label"],
+      distinct (category "Tier" "Nope") [field "Label"],
+      overlap (field "Window") [category "Tier" "Nope"]].all
+      (fun decision => decision != .admitted && decision != .mapped .categoryNotAllowed) := by
   native_decide
 
 end A12Kernel.Conformance.EntityListCategoryGate

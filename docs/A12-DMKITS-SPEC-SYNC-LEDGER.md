@@ -35,10 +35,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-26-02"></a>
+### `SPEC-2026-09-26-02` — the joined text's first-class rule covers the classes raised while that text is parsed, and your own stage rows keep the alternatives stage outside it
+
+- `status`: pending
+- `origin`: locally originated; it narrows the rule of your `kf483` and its lock that the first class in the joined order is the only one A12 names, by your own [`-25c` stage rows](SOURCES.md#inbound-2026-09-25c-calculation-stages).
+- `clause`: [`09` §6 the implicit validation rule](../spec/09-computations.md#6-the-implicit-validation-rule-precisely)
+- `delta`: among the classes raised while the joined text is parsed, on every pair measured, A12 names only the one first in the joined order. The alternatives stage is not a parse class, and there `MVK_ERROR_EMPTY_PRECONDITION` stands beside `MVK_ERROR_INVALID_ENUM_CALCULATION` or `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` in the other alternative, while each member class stands beside `MVK_ERROR_MESSAGE_MISSING`.
+- `basis`: the [`-26c` target-read record](SOURCES.md#inbound-2026-09-26c-target-read) and the [`-25c` stage record](SOURCES.md#inbound-2026-09-25c-calculation-stages); no new measurement.
+- `surfaces`: any peer checker or finding that stops at the first class of a computation's joined text for every class it can raise.
+- `acceptance`: confirm the scope, or supply a row where two parse classes of one joined text are reported together.
+- `limit`: scope only, combining two peer measurements; no row of this project's own.
+
 <a id="spec-2026-09-26-01"></a>
 ### `SPEC-2026-09-26-01` — a category read of a non-Enumeration draws its own class on every carrier measured, entity lists included, a membership subject's remaining gates are ordered, and a repeatable target or a rule in a repeatable group reads as the root does
 
-- `status`: accepted at a12-dmkits `8f088ca71f8b82ef8d78cdd4d31c50f6c1548bae` ([inbound](SOURCES.md#inbound-2026-09-26b-dispositions)). Confirmed on the peer's own `/Order` carrier by `CheckerFieldValueReadCarrierAgreementTest` with no contrary row; the peer did not measure the parallel-iteration rows. The peer read the entry at `ec9a66c5`, and `e384adb5` then narrowed its value-list sentence to a miss ahead of a raw String's refusal on the other side, which the confirmed rows still cover.
+- `status`: accepted at a12-dmkits `8f088ca71f8b82ef8d78cdd4d31c50f6c1548bae` ([inbound](SOURCES.md#inbound-2026-09-26b-dispositions)). Confirmed on the peer's own `/Order` carrier by `CheckerFieldValueReadCarrierAgreementTest` with no contrary row; the peer did not measure the parallel-iteration rows, the DateRange endpoint date-component row or a partially known Date into an Enumeration target. The peer read the entry at `ec9a66c5`, and `e384adb5` then narrowed its value-list sentence to a miss ahead of a raw String's refusal on the other side, which the confirmed rows still cover.
 - `origin`: locally originated; it extends [`SPEC-2026-09-25-09`](#spec-2026-09-25-09) to two shapes its `limit` names, a category read of a raw String or a partially known Date and a rule declared in a repeatable group, and extends your `kf359`, `kf395`, `kf398` and `kf405` to carriers they leave out. The orders those findings already state are cited, not requested.
 - `clause`: [`08` bare-name resolution order](../spec/08-paths-and-references.md#2-bare-name-resolution-order-), [`08` the field-value read bullets](../spec/08-paths-and-references.md#3-the-asterisk-and-), [`06` the scalar member paragraph](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-) and the value-list quantifier bullets.
 - `delta`: `[F -> Band]` over a raw String, a partial Date or a full Date draws `MVK_NO_ENUMERATION`, ahead of the read's value gates, and so do a category member inside `Sum`, `NumberOfFilledFields`, `DateRangesOverlap`, `AtLeastOneDateRangeOverlaps` and `FieldValuesNotUnique`, a starred value-list field and a copy into a repeatable Enumeration. An unstarred `[Items/Label -> Band]` draws `MVK_NO_WILDCARD` first, a category of an Enumeration inside `FieldValuesNotUnique` draws `MVK_CATEGORY_NOT_ALLOWED`, and in a value list a category read counts as an Enumeration at the base-type gate.

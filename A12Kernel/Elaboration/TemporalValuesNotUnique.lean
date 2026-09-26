@@ -294,6 +294,7 @@ def elaborateTemporalValuesNotUniqueSource (model : FlatModel)
     Except TemporalValuesNotUniqueElabError
       (CheckedTemporalValuesNotUniqueSource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+      (categoryGate := .behindRootGate)
     |>.mapError .shape
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw refusal
