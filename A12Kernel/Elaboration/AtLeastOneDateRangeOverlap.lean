@@ -251,6 +251,13 @@ private def certifyAtLeastOneDateRangeOverlapsListOperands (model : FlatModel)
         (List (CheckedAtLeastOneDateRangeOverlapsListOperand model)) :=
   List.mapM (certifyAtLeastOneDateRangeOverlapsListOperand model declaringGroup)
 
+/-- A starred operand naming a root group. The Kernel's root test reads the group's full name and
+    ignores the star, so the plural operator holds a starred root back wherever it holds a fixed one. -/
+private def starredRootPath? : ResolvedFieldEntityOperand model → Option GroupPath
+  | .starredGroup source => if source.group.path.length == 1 then some source.group.path else none
+  | .starredGroupPresence source => if source.groupPath.length == 1 then some source.groupPath else none
+  | _ => none
+
 /-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Finally certify the supported DateRange policies. -/
 def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
@@ -273,14 +280,8 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       -- The Kernel's checker asks its root and base-type gates over the scalar before the slot
       -- gate; the base-type order is measured
       -- ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)),
-      -- the root gate's is read, so it claims no class. The Kernel's root test ignores the star, so
-      -- a starred repeatable root is held back with the fixed one.
-      let starredRoot? : Option GroupPath := match scalarOperand with
-        | .starredGroup source => if source.group.path.length == 1 then some source.group.path else none
-        | .starredGroupPresence source =>
-            if source.groupPath.length == 1 then some source.groupPath else none
-        | _ => none
-      if let some root := scalarOperand.rootGroupPath? <|> starredRoot? then
+      -- the root gate's is read, so it claims no class, for a starred root as for a fixed one.
+      if let some root := scalarOperand.rootGroupPath? <|> starredRootPath? scalarOperand then
         throw (.scalarRootGroup root)
       if let some path := fieldListBaseTypeMismatch? [scalarOperand] then
         throw (.scalarVaryingBaseType path)
@@ -289,6 +290,10 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
           first := authored.scalar
           rest := authored.list.first :: authored.list.rest
         } (writtenGroup := writtenGroup) |>.mapError .shape
+      -- The list meets the same star-blind root test, so a starred root there takes the class the
+      -- shared shape gives a fixed one, carried to this slot rather than measured on it.
+      if let some root := shape.rest.findSome? starredRootPath? then
+        throw (.shape (.rootGroupOperand root))
       match shape.rest with
       | [] => throw .incoherentCore
       | listFirst :: listRest => do
@@ -369,6 +374,9 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       first := authored.scalar
       rest := authored.list.first :: authored.list.rest
     } (writtenGroup := writtenGroup) |>.mapError fun error => .source (.shape error)
+  -- The list's star-blind root test, as on the canonical route.
+  if let some root := shape.rest.findSome? starredRootPath? then
+    throw (.source (.shape (.rootGroupOperand root)))
   match shape.rest with
   | [] => throw (.source .incoherentCore)
   | listFirst :: listRest => do

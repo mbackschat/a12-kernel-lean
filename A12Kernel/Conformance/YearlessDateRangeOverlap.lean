@@ -35,9 +35,11 @@ private def model : FlatModel := {
       policy := { kind := .number { scale := 0, signed := false } } },
     rangeField 8 "WindowLeft" "MM" "/" ["Form", "Windows"],
     rangeField 9 "WindowRight" "MM-dd" "/" ["Form", "Windows"],
-    rangeField 10 "MonthSlashFrom" "MM" "/" ["Form"] [] (some .anchorStart)]
+    rangeField 10 "MonthSlashFrom" "MM" "/" ["Form"] [] (some .anchorStart),
+    rangeField 11 "Term" "MM" "/" ["Lot"] [20]]
   repeatableGroups := [
-    { level := 10, path := ["Form", "Rows"], repeatability := some 4 }]
+    { level := 10, path := ["Form", "Rows"], repeatability := some 4 },
+    { level := 20, path := ["Lot"], repeatability := some 3 }]
 }
 
 private def configured : FlatModel := { model with baseYear := some 2024 }
@@ -290,6 +292,18 @@ private def pluralRefusal? (listed : String) : Option (Option KernelStaticDiagno
 example :
     pluralRefusal? "Nope" = some (some .invalidEntity) ∧
     pluralRefusal? "MonthSlash" = some none := by
+  native_decide
+
+/- A starred repeatable root in the list meets the star-blind root test the canonical route asks
+   there, with the class the shared shape gives a fixed root in a list, carried rather than measured
+   on this slot as SG6 records. -/
+example :
+    (match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model ["Form"] [] {
+        scalar := .field { base := .relative 0, groups := [], field := "MonthSlash" }
+        list := { first := .starredGroup { base := .absolute, groups := [{ name := "Lot", starred := true }] },
+                  rest := [] } } with
+      | .ok _ => none
+      | .error error => some error.diagnostic?) = some (some .rootGroupReferenced) := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap

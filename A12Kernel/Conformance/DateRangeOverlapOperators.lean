@@ -273,6 +273,15 @@ example :
           some none := by
   native_decide
 
+/- The Kernel asks the same star-blind root test of the `In` list as of the scalar, so a starred
+   repeatable root there takes the class the shared shape gives a fixed root in a list. That class is
+   carried to this slot from the entity-list carriers rather than measured on it, as SG6 records. -/
+example :
+    (pluralAdmissionError? (direct "Start")
+      (.starredGroup { base := .absolute, groups := [{ name := "Lot", starred := true }] })).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .rootGroupReferenced := by
+  native_decide
+
 /- Every operand is read before the scalar slot's gate: a starred scalar beside a list operand that
    does not resolve draws the resolver's class. The measured row reads an index that cannot be read
    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)), which this surface cannot
