@@ -83,6 +83,10 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       | some year => pure (.baseYear year)
       | none => throw .baseYearNotDeclared
   | .currentRepetition path => do
+      if let some (group, fieldPath) := model.currentRepetitionNamedField? rowGroup path then
+        let _ ← model.resolveFixedGroupReference rowGroup (.path group) (some writtenGroup)
+          |>.mapError .currentRepetitionSource
+        throw (.currentRepetitionSource (.fieldNamedAsGroup fieldPath))
       let reference ← model.resolveFixedGroupReference rowGroup (.path path) (some writtenGroup)
         |>.mapError .currentRepetitionSource
       pure (.fixedCurrentRepetition reference)

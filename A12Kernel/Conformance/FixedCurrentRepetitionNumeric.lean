@@ -12,7 +12,8 @@ private def boundFixedPath : GroupPath := ["Root", "Rows", "Fixed"]
 private def model : FlatModel :=
   { fields := [source, { source with id := 2, name := "Target" },
       { source with id := 3, groupPath := fixedPath },
-      { source with id := 4, groupPath := boundFixedPath, repeatableScope := [10] }]
+      { source with id := 4, groupPath := boundFixedPath, repeatableScope := [10] },
+      { source with id := 5, groupPath := ["Root", "Rows"], name := "Amount", repeatableScope := [10] }]
     repeatableGroups := [
       { level := 10, path := ["Root", "Rows"], repeatability := some 5 }] }
 
@@ -109,6 +110,14 @@ is what separates resolution from the scope gate, which a projection leaving it 
 example : comparisonDiagnostic? ["Root", "Missing"] = some (some .invalidEntity) ∧
     comparisonDiagnostic? ["Root", "Rows"] = some (some .noWildcard) ∧
     comparisonDiagnostic? fixedPath = none := by
+  native_decide
+
+/-- The same cascade's field rows. A path naming a field meets its group's gates first, so a field
+of the uniterated repeatable group draws that group's missing star and a field of a fixed group the
+field class; an entity-class account of a field path gets both wrong. -/
+example : comparisonDiagnostic? (fixedPath ++ ["Source"]) = some (some .noFieldsAllowed) ∧
+    comparisonDiagnostic? ["Root", "Rows", "Amount"] = some (some .noWildcard) ∧
+    comparisonDiagnostic? ["Root", "Missing", "Amount"] = some (some .invalidEntity) := by
   native_decide
 
 example :

@@ -60,7 +60,9 @@ private def twoNonDigits (key : String) : Bool :=
 
 /- String: any constant, the empty one by the cascade's own disjunct, length bounds on both sides,
    the pattern over the whole key, pattern and length each refusing alone, and a supplementary
-   character counted as one. -/
+   character counted as one. The key fit is all these lock: the Kernel also refuses both
+   supplementary-character conditions with a codeless unsupported-character finding, which belongs
+   to the condition text and not to the key (peer `CODELESS_ROWS`). -/
 example :
     [admitted (text) "ANY", admitted (text) "",
       admitted (text { minLength := some 2, maxLength := some 3 }) "AB",

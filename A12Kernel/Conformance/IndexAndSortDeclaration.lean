@@ -95,12 +95,23 @@ private def lookupModel (parent own : Option Bool) : FlatModel :=
 private def direct : SurfaceFieldPath := { base := .relative 0, groups := [], field := "Key" }
 private def remote : SurfaceFieldPath := { base := .relative 1, groups := [], field := "Key" }
 
-/-- `none` is the build failure, which draws no class; `some none` an admitted nomination. -/
+/-- A nomination's outcome. The build failure is kept apart from a model that fails validation, so a
+fixture that stopped validating cannot pass as a nomination binding nowhere. -/
+private inductive Lookup where
+  | buildFailure
+  | invalidModel
+  | cascade (refusal : Option RowFieldRefusal)
+  deriving Repr, DecidableEq
+
+private def Lookup.of (role : RowFieldRole) :
+    Except NominationBuildFailure NominatedTarget → Lookup
+  | .ok target => .cascade (rowFieldRefusal role target)
+  | .error (.unbound _) => .buildFailure
+  | .error (.invalidModel _) => .invalidModel
+
 private def lookup (role : RowFieldRole) (nomination : SurfaceFieldPath)
-    (parent own : Option Bool := some false) (dropped : List FieldId := []) :
-    Option (Option RowFieldRefusal) :=
-  ((lookupModel parent own).nominatedTarget dropped items nomination).toOption.map
-    (rowFieldRefusal role)
+    (parent own : Option Bool := some false) (dropped : List FieldId := []) : Lookup :=
+  .of role ((lookupModel parent own).nominatedTarget dropped items nomination)
 
 /- One row per branch of the peer's scenarios, in both roles. The local namesake decides: dropping
    or removing it draws the invalid class and switching its value validation off the switch's class,
@@ -120,25 +131,25 @@ example : [RowFieldRole.indexField, .sortField].all (fun role =>
       lookup role remote (own := none),
       lookup role remote (parent := some true),
       lookup role remote (own := some true)] ==
-    [some none,
-      some (some (.nameUnresolved role)),
-      none,
-      some none,
-      some none,
-      none,
-      some (some (.nameUnresolved role)),
-      some (some (.nameUnresolved role)),
-      some (some (.nameUnresolved role)),
-      some none,
-      some (some (.valueValidationOff role))]) = true := by
+    [.cascade none,
+      .cascade (some (.nameUnresolved role)),
+      .buildFailure,
+      .cascade none,
+      .cascade none,
+      .buildFailure,
+      .cascade (some (.nameUnresolved role)),
+      .cascade (some (.nameUnresolved role)),
+      .cascade (some (.nameUnresolved role)),
+      .cascade none,
+      .cascade (some (.valueValidationOff role))]) = true := by
   native_decide
 
 /- The index nomination of a root-group field the default variant drops draws the invalid class too;
    the peer measures no sort nomination there. -/
 example :
     let root : FlatModel := { fields := [stringField 1 ["Order"] "Key"] }
-    (root.nominatedTarget [1] ["Order"] direct).toOption.map (rowFieldRefusal .indexField) =
-      some (some (.nameUnresolved .indexField)) := by
+    Lookup.of .indexField (root.nominatedTarget [1] ["Order"] direct) =
+      .cascade (some (.nameUnresolved .indexField)) := by
   native_decide
 
 end A12Kernel.Conformance.IndexAndSortDeclaration

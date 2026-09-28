@@ -126,6 +126,13 @@ example : scopeDiagnostic? innerPath outerPath = some .noWildcard ∧
     KernelStaticDiagnostic.noWildcard.kernelCode = "MVK_NO_WILDCARD" := by
   native_decide
 
+/- The root rule's field rows carried to the addressed carrier, unmeasured here: a path naming a
+   field meets its group's binding gate first, so the fixed descendant's field draws the missing star
+   from a host above its repeatable ancestor and the field class from a host binding it. -/
+example : scopeDiagnostic? (fixedPath ++ ["Base"]) innerPath = some .noFieldsAllowed ∧
+    scopeDiagnostic? (fixedPath ++ ["Base"]) outerPath = some .noWildcard := by
+  native_decide
+
 /-- Retention preserves the authored path, its bound scope, and the level the coordinate names, and
     both shapes support partial evaluation: the coordinate answers from the row environment rather
     than from a cell, so no coverage can leave it unresolved

@@ -86,18 +86,31 @@ example :
   native_decide
 
 /- The chosen account where no clean row carries the key, unmeasured on this carrier: a duplicated
-   key reads UNKNOWN, and a key no row carries reads no cell at all, which is a fixed zero, where the
+   key reads UNKNOWN, and a key no row carries folds no cell, a fixed zero on every aggregate, where the
    key-only `P2` reads an empty star whose unfilled item capacity can still grow the sum. -/
 example :
     aggregate .sum "P1" [("P1", [2, 5]), ("P1", [1])] = some (.unknown .duplicateIndex) ∧
-    aggregate .sum "P3" standard = value 0 false false ∧
+    [NumericAggregateOp.sum, .maximum, .minimum].map (aggregate · "P3" standard) =
+      [value 0 false false, value 0 false false, value 0 false false] ∧
     aggregate .sum "P2" standard = value 0 true true := by
   native_decide
 
-/- A star on the index group's own level is not this operand, and is refused without a class. -/
+/- The operand's three boundaries, each refused without a class: a star on the index group's own
+   level, a Number index, whose keys compare numerically, and a chain with no index group. -/
 example :
+    let numberIndexed : FlatModel := { model with
+      fields := [{ code with policy := { kind := .number { scale := 0, signed := false } } }, weight,
+        reference] }
+    let unindexed : FlatModel := { model with
+      repeatableGroups := model.repeatableGroups.map ({ · with indexField := none }) }
     (match elaborateKeyedStarNumberSource model ["Order"] (keyed "P1" [false, true, true]) with
       | .error (.starNotDirectlyBelowIndexGroup _) => true
+      | _ => false) &&
+    (match elaborateKeyedStarNumberSource numberIndexed ["Order"] (keyed "P1") with
+      | .error (.numberIndex _) => true
+      | _ => false) &&
+    (match elaborateKeyedStarNumberSource unindexed ["Order"] (keyed "P1") with
+      | .error (.noIndexGroup _) => true
       | _ => false) = true := by
   native_decide
 

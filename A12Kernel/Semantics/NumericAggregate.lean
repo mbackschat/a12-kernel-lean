@@ -93,7 +93,7 @@ def ResolvedValueListSide.toNumericSumSide (side : ResolvedValueListSide .number
     uninstantiatedSignedness := if side.hasUninstantiatedTail then [fieldSigned] else []
     hasHaving := side.hasHaving }
 
-/-- Evaluate resolved Number `MinValue`/`MaxValue` as a validation operand. A resolved `Having` marker makes every available result both-directionally fillable. Without one, an incomplete fold with a present value uses the selector direction, while an all-empty authored selection yields the kernel's conservative both-directionally fillable zero. The no-cell/no-marker totality state is fixed zero and is not claimed authored-reachable. -/
+/-- Evaluate resolved Number `MinValue`/`MaxValue` as a validation operand. A resolved `Having` marker makes every available result both-directionally fillable. Without one, an incomplete fold with a present value uses the selector direction, while an all-empty authored selection yields the kernel's conservative both-directionally fillable zero. The no-cell/no-marker state is fixed zero; a keyed lower star whose key no row carries reaches it, unmeasured (`KeyedStarNumberAggregate`). -/
 def evalNumericExtremumAggregate (op : NumericExtremumOp)
     (side : ResolvedValueListSide .number) : NumericOperand :=
   match op.scanAggregateCells side.cells none with

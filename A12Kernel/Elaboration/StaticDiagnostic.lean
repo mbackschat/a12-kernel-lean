@@ -404,6 +404,8 @@ inductive KernelStaticDiagnostic where
   /-- A String field's own message beside no pattern, which the Kernel judges as a message with
   nothing to pair it with. Only a text that is not blank draws it. -/
   | errorMessageAndNoPattern
+  /-- A field or rule message that answers one declared locale and leaves another unanswered. -/
+  | errorMessageForLanguageMissing
   | missingMessageCategory
   | lexerStandardError
   | incompleteInput
@@ -618,6 +620,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidMessageParameter => "INVALID_PARAMETER"
   | .errorMessageAndPatternInvalid => "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"
   | .errorMessageAndNoPattern => "MVK_ERROR_MESSAGE_AND_NO_PATTERN"
+  | .errorMessageForLanguageMissing => "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING"
   | .missingMessageCategory => "NO_CATEGORY"
   | .lexerStandardError => "MVK_LEXER_STANDARD_ERROR"
   | .incompleteInput => "MVK_INCOMPLETE_INPUT"
@@ -702,6 +705,7 @@ def all : List KernelStaticDiagnostic :=
     .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,
     .wrongNumberOfDollars, .noMessageBaseYear, .messageFieldNotReferenced,
     .invalidMessageParameter, .errorMessageAndPatternInvalid, .errorMessageAndNoPattern,
+    .errorMessageForLanguageMissing,
     .missingMessageCategory,
     .lexerStandardError, .incompleteInput, .unexpectedToken]
 

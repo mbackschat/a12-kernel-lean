@@ -394,9 +394,17 @@ inductive ResolvedNumericAtom (Field : Type)
   | filledGroupCount (groups : List ResolvedGroupReference)
   deriving Repr, DecidableEq
 
-/-- Resolve structural identity against an explicit binding scope. Validation supplies its host
-    scope; computation supplies its target scope, retaining that carrier choice at the call site. -/
-def FlatModel.resolveNumericCurrentRepetition (model : FlatModel)
+/-- The group and field path of a `CurrentRepetition` operand that names a field rather than a
+    group. Its group answers first: from a root rule the field of an uniterated repeatable group
+    draws that group's missing star and the field of a fixed group the field class
+    ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-current-repetition)). -/
+def FlatModel.currentRepetitionNamedField? (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceGroupPath) : Option (SurfaceGroupPath × List String) := do
+  let path ← (reference.resolveAgainst declaringGroup).toOption
+  if model.hasGroupPath path || !model.fields.any (·.path == path) then none
+  else some ({ reference with groups := reference.groups.dropLast }, path)
+
+private def FlatModel.resolveNumericCurrentRepetitionGroup (model : FlatModel)
     (declaringGroup : GroupPath) (available : List RepeatableLevel)
     (reference : SurfaceGroupPath) :
     Except FixedGroupReferenceError (ResolvedNumericAtom Field Aggregate) := do
@@ -412,6 +420,19 @@ def FlatModel.resolveNumericCurrentRepetition (model : FlatModel)
     pure (.boundCurrentRepetition source)
   else
     throw (.repeatableGroupRequiresAddress path)
+
+/-- Resolve structural identity against an explicit binding scope. Validation supplies its host
+    scope; computation supplies its target scope, retaining that carrier choice at the call site. -/
+def FlatModel.resolveNumericCurrentRepetition (model : FlatModel)
+    (declaringGroup : GroupPath) (available : List RepeatableLevel)
+    (reference : SurfaceGroupPath) :
+    Except FixedGroupReferenceError (ResolvedNumericAtom Field Aggregate) :=
+  match model.currentRepetitionNamedField? declaringGroup reference with
+  | some (group, fieldPath) => do
+      let _ : ResolvedNumericAtom Field Aggregate ←
+        model.resolveNumericCurrentRepetitionGroup declaringGroup available group
+      throw (.fieldNamedAsGroup fieldPath)
+  | none => model.resolveNumericCurrentRepetitionGroup declaringGroup available reference
 
 namespace ResolvedNumericAtom
 

@@ -156,12 +156,15 @@ an error field in the rule group and the class the error field places otherwise.
 is why the comparison's constant gate above is a claim about the rule's scope as much as about the
 operand: the coordinate reads no cell either way, so an outer-scope row reports the binding class and
 never the constant one (peer `kf451`, measured 2026-09-22). A name resolving to no group under a
-declared root answers ahead of that gate with the entity class, measured from a root rule
-([inbound](../../../docs/SOURCES.md#inbound-2026-09-27a-current-repetition)). A missing root and the
-plain-reference arm stay unmapped: no row measures either at this carrier. -/
+declared root answers ahead of that gate with the entity class, and a path naming a field of a
+group that passed it the field class, both measured from a root rule
+([inbound](../../../docs/SOURCES.md#inbound-2026-09-27a-current-repetition)) and carried to the
+addressed carrier unmeasured. A missing root and the plain-reference arm stay unmapped: no row
+measures either. -/
 def repetitionScopeDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
   | .currentRepetitionSource (.unknownGroup _) => some .invalidEntity
+  | .currentRepetitionSource (.fieldNamedAsGroup _) => some .noFieldsAllowed
   | .currentRepetitionSource (.repeatableGroupRequiresAddress _) => some .noWildcard
   | .currentRepetitionSource (.unboundOperandLevel _ unbound) => unbound.diagnostic?
   | _ => none

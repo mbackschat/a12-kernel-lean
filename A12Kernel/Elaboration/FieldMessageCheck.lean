@@ -17,11 +17,16 @@ The model check reads them as one field, not one text at a time
   locale reports;
 - a required field's own text meets no gate, and a field its own `ONLY` filter deletes is never
   reached;
-- a String text with no pattern also draws the **pairing class**, once, when the text asked is not
-  blank, beside whatever gate its characters fail.
+- a String's pattern and its message require each other, and a message counts only as non-blank
+  text for a declared locale: with none, a pattern draws `MVK_ERROR_MESSAGE_AND_PATTERN_INVALID`, and
+  with one, a String with no pattern draws `MVK_ERROR_MESSAGE_AND_NO_PATTERN`, beside whatever gate
+  its characters fail
+  ([`kf318`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf318));
+- a String message answering one declared locale and not another, a blank text counting as
+  unanswered, draws `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING` on either arm.
 
 Each text's gates are [`StringPatternMessage`](StringPatternMessage.lean)'s; this module owns only
-which texts are asked and the pairing class.
+which texts are asked, the pairing classes and the locale class.
 -/
 
 namespace A12Kernel
@@ -45,27 +50,37 @@ def FieldMessageEntry.askedFor? (entries : List FieldMessageEntry) (locale : Str
     Option String :=
   (entries.filter (·.locale == locale)).getLast?.map (·.text)
 
-/-- A text's named class under the pattern message's gates. The empty text's pairing class belongs
-to a patterned String alone: with no pattern an empty text is admitted, and no row measures an empty
-Enumeration text, so that carrier answers nothing for it. -/
-private def fieldMessageTextDiagnostic? (tokens : StringPatternMessageTokens)
-    (carrier : FieldMessageCarrier) (text : String) : Option KernelStaticDiagnostic :=
+/-- A text's named class under the pattern message's gates. An empty text draws none here: whether
+a message is there at all is the presence rule's question below. -/
+private def fieldMessageTextDiagnostic? (tokens : StringPatternMessageTokens) (text : String) :
+    Option KernelStaticDiagnostic :=
   match elaborateStringPatternMessageTemplate tokens text with
-  | .ok _ => none
-  | .error .emptyTemplate => if carrier == .stringPattern then some .errorMessageAndPatternInvalid else none
+  | .ok _ | .error .emptyTemplate => none
   | .error error => error.namedStringPatternDiagnostic?
 
-/-- Every class one field's messages draw, the text's class first. `reached` is false for a field
-the default variant deletes. Which asked text decides the pairing class when several locales are
-declared is unmeasured; any non-blank one draws it here. -/
+/-- Blank as the rows measure it, on spaces and a tab; the other whitespace characters Lean counts
+are unmeasured. -/
+private def blankFieldMessage (text : String) : Bool := text.all Char.isWhitespace
+
+/-- Every class one field's messages draw, in the order text, locale, pairing. `reached` is false for
+a field the default variant deletes. The presence and locale rules are measured on a String alone;
+an Enumeration's or a required field's message meets neither here, which no row measures, and no
+row orders a text class against the locale class. -/
 def fieldMessageDiagnostics (tokens : StringPatternMessageTokens)
     (declaredLocales : List String) (carrier : FieldMessageCarrier)
     (entries : List FieldMessageEntry) (reached : Bool := true) : List KernelStaticDiagnostic :=
   if !reached || carrier == .required then []
   else
     let asked := declaredLocales.filterMap (FieldMessageEntry.askedFor? entries)
-    let textClass := asked.findSome? (fieldMessageTextDiagnostic? tokens carrier)
-    let pairing := carrier == .stringNoPattern && asked.any (!·.all Char.isWhitespace)
-    textClass.toList ++ (if pairing then [.errorMessageAndNoPattern] else [])
+    let textClass := asked.findSome? (fieldMessageTextDiagnostic? tokens)
+    let answered := declaredLocales.filter fun locale =>
+      (FieldMessageEntry.askedFor? entries locale).any (!blankFieldMessage ·)
+    let isString := carrier == .stringPattern || carrier == .stringNoPattern
+    let languageMissing := isString && !answered.isEmpty && answered.length < declaredLocales.length
+    let pairing := match carrier with
+      | .stringPattern => if answered.isEmpty then [.errorMessageAndPatternInvalid] else []
+      | .stringNoPattern => if answered.isEmpty then [] else [.errorMessageAndNoPattern]
+      | _ => []
+    textClass.toList ++ (if languageMissing then [.errorMessageForLanguageMissing] else []) ++ pairing
 
 end A12Kernel

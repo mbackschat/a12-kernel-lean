@@ -15,9 +15,11 @@ The measured shape is one text key on the index group directly above the star. A
 the index group, a Number index, a level between the two, and a filter are refused here without a
 class; the Kernel's classes for the first are carrier-specific and unmeasured on this operator.
 
-A key naming no clean row reads as a key the scalar lookup misses: UNKNOWN when the column holds an
-unavailable key, a duplicate of the requested one included, and otherwise no cell at all. That
-policy is the scalar keyed read's, carried to this carrier unmeasured.
+A key naming no clean row is UNKNOWN when the column holds an unavailable key, a duplicate of the
+requested one included, as the scalar keyed read's miss is. Otherwise the star is read in no row, so
+the aggregate folds no cell and is a fixed zero, where the scalar read returns an empty cell. Both
+are unmeasured at validation; the peer measures the duplicated key's `Sum` only on the computation
+arm, which this module does not carry.
 -/
 
 namespace A12Kernel

@@ -246,6 +246,9 @@ inductive FixedGroupReferenceError where
   | walkedRepeatableGroupUnsupported (path : GroupPath)
   /-- A computation's fixed group operand whose repeatable levels a fixed target cannot bind. -/
   | unboundOperandLevel (path : GroupPath) (unbound : UnboundOperandLevel)
+  /-- A group operand whose path names a field, raised once the field's group passed its own gates.
+  Only `CurrentRepetition` raises it, and its class is that operand's. -/
+  | fieldNamedAsGroup (path : List String)
   deriving Repr, DecidableEq
 
 /-- The miss for a resolved group path that names no declared group, split by its first segment the
@@ -263,6 +266,7 @@ def FixedGroupReferenceError.diagnostic? :
   | .repeatableGroupRequiresAddress _ => some .noWildcard
   | .walkedRepeatableGroupUnsupported _ => none
   | .unboundOperandLevel _ unbound => unbound.diagnostic?
+  | .fieldNamedAsGroup _ => none
   | .reference _ => none
 
 /-- How a carrier treats a fixed group operand whose path crosses a repeatable level. -/

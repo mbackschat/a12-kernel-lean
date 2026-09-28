@@ -70,4 +70,30 @@ example :
       ["INVALID_CHARACTERS", "MVK_ERROR_MESSAGE_AND_NO_PATTERN"] := by
   native_decide
 
+/- A pattern and its message require each other, and a message counts only as non-blank text for a
+   declared locale: no entry, a blank text and an undeclared locale's text all refuse a pattern with
+   its own class and are admitted without one (peer `StringTypeMessageAndPatternLawsTest`,
+   [`kf318`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf318)). -/
+example :
+    check ["en_US"] .stringPattern [] = ["MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"] ∧
+    check ["en_US"] .stringPattern [("en_US", "   ")] = ["MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"] ∧
+    check ["en_US"] .stringPattern [("de_DE", "fehlerhaft")] =
+      ["MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"] ∧
+    check ["en_US"] .stringNoPattern [("en_US", "   ")] = [] ∧
+    check ["en_US"] .stringNoPattern [("de_DE", "fehlerhaft")] = [] := by
+  native_decide
+
+/- Once one declared locale is answered and another is not, the message draws the locale class on
+   either arm, a blank text counting as unanswered. -/
+example :
+    check both .stringPattern [("en_US", "malformed"), ("de_DE", "fehlerhaft")] = [] ∧
+    check both .stringPattern [("en_US", "malformed")] = ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING"] ∧
+    check both .stringPattern [("de_DE", "fehlerhaft")] = ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING"] ∧
+    check both .stringPattern [("en_US", "malformed"), ("de_DE", "   ")] =
+      ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING"] ∧
+    check both .stringPattern [("fr_FR", "mal forme")] = ["MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"] ∧
+    check both .stringNoPattern [("en_US", "malformed")] =
+      ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING", "MVK_ERROR_MESSAGE_AND_NO_PATTERN"] := by
+  native_decide
+
 end A12Kernel.Conformance.FieldMessageCheck
