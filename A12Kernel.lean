@@ -169,6 +169,7 @@ import A12Kernel.Elaboration.JavaOtherCategory
 import A12Kernel.Elaboration.ValidationMessageAuthoring
 import A12Kernel.Elaboration.ValidationMessageDiagnostic
 import A12Kernel.Elaboration.StringPatternMessage
+import A12Kernel.Elaboration.FieldMessageCheck
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.GeneratedComputationFormalInput
 import A12Kernel.Elaboration.GeneratedComputationAppliedValidation

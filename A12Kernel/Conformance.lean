@@ -333,6 +333,7 @@ import A12Kernel.Conformance.StringPattern
 import A12Kernel.Conformance.StringPatternElaboration
 import A12Kernel.Conformance.JavaOtherCategory
 import A12Kernel.Conformance.StringPatternMessage
+import A12Kernel.Conformance.FieldMessageCheck
 import A12Kernel.Conformance.StringToNumberComputationRun
 import A12Kernel.Conformance.TemporalEntityGroupOperand
 import A12Kernel.Conformance.TemporalFormat

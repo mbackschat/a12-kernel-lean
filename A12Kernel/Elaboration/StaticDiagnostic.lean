@@ -401,6 +401,9 @@ inductive KernelStaticDiagnostic where
   /-- A field type's own message whose text is empty, which the Kernel judges as a broken pairing of
   the message with its pattern rather than as a character or parameter fault. -/
   | errorMessageAndPatternInvalid
+  /-- A String field's own message beside no pattern, which the Kernel judges as a message with
+  nothing to pair it with. Only a text that is not blank draws it. -/
+  | errorMessageAndNoPattern
   | missingMessageCategory
   | lexerStandardError
   | incompleteInput
@@ -614,6 +617,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .messageFieldNotReferenced => "INVALID_FIELD"
   | .invalidMessageParameter => "INVALID_PARAMETER"
   | .errorMessageAndPatternInvalid => "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"
+  | .errorMessageAndNoPattern => "MVK_ERROR_MESSAGE_AND_NO_PATTERN"
   | .missingMessageCategory => "NO_CATEGORY"
   | .lexerStandardError => "MVK_LEXER_STANDARD_ERROR"
   | .incompleteInput => "MVK_INCOMPLETE_INPUT"
@@ -697,7 +701,8 @@ def all : List KernelStaticDiagnostic :=
     .invalidConst, .noStringOrEnum,
     .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,
     .wrongNumberOfDollars, .noMessageBaseYear, .messageFieldNotReferenced,
-    .invalidMessageParameter, .errorMessageAndPatternInvalid, .missingMessageCategory,
+    .invalidMessageParameter, .errorMessageAndPatternInvalid, .errorMessageAndNoPattern,
+    .missingMessageCategory,
     .lexerStandardError, .incompleteInput, .unexpectedToken]
 
 end KernelStaticDiagnostic
