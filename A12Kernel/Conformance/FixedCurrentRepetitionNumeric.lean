@@ -95,6 +95,22 @@ example : error? ["Root", "Rows"] =
     error? ["Root", "Missing"] = some (.unknownGroup ["Root", "Missing"]) := by
   native_decide
 
+private def comparisonDiagnostic? (path : GroupPath) : Option (Option KernelStaticDiagnostic) :=
+  match elaborateNumericComparison model ["Root"]
+      { op := .ordinary .greater, left := repetition path, right := literal 0 } with
+  | .ok _ => none
+  | .error error => some error.repetitionScopeDiagnostic?
+
+/-- The operand cascade's unstarred group rows from a root rule: a name resolving to nothing, a
+repeatable group the rule does not iterate, and an admitted fixed group. The unresolved name's class
+is what separates resolution from the scope gate, which a projection leaving it unmapped would hide
+(peer `PathGatePopulation.repetitionRows`,
+[inbound](../../docs/SOURCES.md#inbound-2026-09-27a-current-repetition)). -/
+example : comparisonDiagnostic? ["Root", "Missing"] = some (some .invalidEntity) ∧
+    comparisonDiagnostic? ["Root", "Rows"] = some (some .noWildcard) ∧
+    comparisonDiagnostic? fixedPath = none := by
+  native_decide
+
 example :
     !(model.admitsNumericComputationOperand
       (.numeric (.fixedCurrentRepetition
