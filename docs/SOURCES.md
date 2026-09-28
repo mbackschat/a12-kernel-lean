@@ -196,6 +196,21 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
+### Inbound 2026-09-28 parse-event account
+
+<a id="inbound-2026-09-28-parse-events"></a>
+#### Reviewed 2026-09-28 parse-event account — a refused text's class follows lexing on demand, look-ahead without checks and checks at completion, and a syntax failure's class is what failed crossed with whether the text had ended
+
+a12-dmkits `main` at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, read on 2026-09-28. Taken on the owner's direction after the [`-27a` letter](#inbound-2026-09-27a-provenance)'s §38 offered the peer's parser model for independent judgment. The peer's `KF493` landed at `bcb948771` and was corrected in place before that revision; its lock is `adapter.A12ParseTraceTest`, which traces the Kernel's own condition parser at the moment of failure. The peer's source-read model is its archived checker-reconstruction proposal §2 and Appendix A, retired at `e9353bd77`. `KF311` and `KF491` were read at the same revision. The locks were read, not run here.
+
+**Claim.** Measured by the trace over the peer's near-miss population of 9,063 conditions: every syntax failure in it is a failed required match or a failed choice between productions, drawing `MVK_EXPECTED_TOKEN_NOT_FOUND` or `MVK_INCOMPLETE_INPUT` at the end of the text and `MVK_UNEXPECTED_TOKEN` at a real token; a match fails at the cursor, a choice whose productions share no opening at its first token, and one whose productions share an opening where none continues, the reference's choice up to nine tokens past its start. `FieldFilled(Lines/Qty). And …` fails at the `.` on the match that ends the condition. The trace records failures only, and the order of the checks is not measured there.
+
+Source-read and unmeasured: that look-ahead runs no check, that checks run post-order, and where a path's look-ahead resolves between its two written forms. `spec/12` states each of these only beside the measured rows that witness it, and says which part is the peer's account.
+
+**Classification.** Behavioral and inbound: the class rule and the failure positions are new to [`spec/12`](../spec/12-concrete-syntax.md) §3.1, which now also restates its existing class-order clauses around the three events. Every measured row, code span and provenance link of the two paragraphs it replaces is retained, checked by a multiset comparison of their code spans and links, so no distinction is removed and no outbound entry follows.
+
+**Lean.** No change. This project models no condition parser, so no clause of §3.1 has an executable counterpart.
+
 ### Inbound 2026-09-27a handback
 
 <a id="inbound-2026-09-27a-provenance"></a>

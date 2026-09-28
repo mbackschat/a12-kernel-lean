@@ -119,7 +119,7 @@ Fourteen numbered areas cover the language. This is the same `§n` numbering the
 | §12 | The validation model | Severity metadata; VALUE/OMISSION typing via directional fill; full vs partial validation | ★★★★★ | [`10-validation-and-polarity.md`](10-validation-and-polarity.md) |
 | §13 | Error-message interpolation | Producer-specific grammars: rule-relative `$Field$` / `$Field.value$` / `$$`; two fixed String-pattern tokens in the condition language, whose parameters are split pieces with trailing empty pieces dropped; one-pass opaque replacement | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
 | §14 | CustomCondition — the escape hatch | Delegates the decision to host code; barred in compute + filters | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
-| — | Concrete syntax (lexing & grammar) | Keyword catalog (EN/DE), comments, `@`-directives, literals, path grammar, an EBNF sketch | ★★★☆☆ | [`12-concrete-syntax.md`](12-concrete-syntax.md) |
+| — | Concrete syntax (lexing & grammar) | Keyword catalog (EN/DE), comments, `@`-directives, literals, path grammar, an EBNF sketch, and the parse-event order that decides which class a refused text draws | ★★★☆☆ | [`12-concrete-syntax.md`](12-concrete-syntax.md) |
 | — | Lean encoding guide | Recommended core types, the encoding traps, a "start here" order, what to property-test | — | [`../docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md) |
 | — | Data model & call surface | Documents/models/rows, the compute→apply→validate flow, the iteration environment | ★★☆☆☆ | [`01-data-model.md`](01-data-model.md) |
 
@@ -212,7 +212,7 @@ Self-contained definitions of the recurring vocabulary (the deep-dive files assu
 | [`09-computations.md`](09-computations.md) | §11 computations |
 | [`10-validation-and-polarity.md`](10-validation-and-polarity.md) | §12 validation and VALUE/OMISSION polarity |
 | [`11-messages-and-custom.md`](11-messages-and-custom.md) | §13 interpolation + §14 `CustomCondition` |
-| [`12-concrete-syntax.md`](12-concrete-syntax.md) | lexing, keyword catalog, directives, and grammar sketch |
+| [`12-concrete-syntax.md`](12-concrete-syntax.md) | lexing, keyword catalog, directives, grammar sketch, and refused-text class order |
 
 Read in file order for a first pass. This map plus the relevant deep dive is the normative route for a targeted question; project-specific implementation guidance starts in [`docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md).
 
