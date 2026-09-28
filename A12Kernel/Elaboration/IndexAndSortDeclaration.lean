@@ -4,11 +4,11 @@ A repeatable group may nominate one **index field** — the row key that arms `R
 
 **The disqualifying property is the one [`ValueFormalCheck.lean`](../Semantics/ValueFormalCheck.lean) already owns.** A String declaration that switches value validation off ends the stored-value pipeline before the technical length cap, storing whatever was authored; a field the Kernel never inspects cannot serve as a row key or a sort key, because both need a comparable value. This is that switch's second consumer, and the first one outside the value pipeline.
 
-**The name-resolution arms are live, reached only through the variant.** A nomination is bound against the model as authored, where a name resolving nowhere fails the build with no class, measured on both arms. It is then judged against the default variant by the group's direct child of that short name, so a nominated field filtered `ONLY`, or a relative `../Key` whose local namesake is absent or filtered, reaches `MVK_INVALID_INDEX_FIELD` and `MVK_INVALID_SORT_FIELD`; this module's earlier reading of those arms as unreachable was defeated by that carrier ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)). The table-enumeration arm inherits [`TableEnumeration.lean`](TableEnumeration.lean)'s constant: no A12 enumeration is a table enumeration, so an index field can never be one.
+**The unresolved arm is live; the group arm has no known witness.** A nomination is bound against the model as authored, where a name resolving nowhere fails the build with no class, measured on both roles. It is then judged by the group's direct child field of that short name in the default variant, so a nominated field filtered `ONLY`, or a relative `../Key` that binds to the parent's field while its local namesake is filtered or physically absent, reaches `MVK_INVALID_INDEX_FIELD` and `MVK_INVALID_SORT_FIELD`, filter or no filter ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)); this module's earlier reading of those classes as unreachable was defeated by those two carriers. No row reaches the class through a namesake that is a group, so `NominatedTarget.group` is the source-read arm, not a measured one. The table-enumeration arm inherits [`TableEnumeration.lean`](TableEnumeration.lean)'s constant: no A12 enumeration is a table enumeration, so an index field can never be one.
 
 **The asymmetry worth keeping.** A group carries at most one index field and any number of sort fields, so the index cascade runs once and the sort cascade once per nominated field — but the classes stay distinct per role, which is what lets a consumer say *which* nomination is at fault when a group carries both.
 
-**Evidence.** Both value-validation classes are measured against the real Kernel on hand-authored declarations, alongside an accepted control for each role; the two shadowing build failures are measured too ([checkpoint](../../docs/SOURCES.md#src-index-and-sort-field-declaration)).
+**Evidence.** Both value-validation classes are measured against the real Kernel on hand-authored declarations, alongside an accepted control for each role; the build failure of a nomination resolving nowhere is measured too ([checkpoint](../../docs/SOURCES.md#src-index-and-sort-field-declaration)).
 
 This module carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
 -/
@@ -50,9 +50,10 @@ def all : List RowFieldRefusal :=
 end RowFieldRefusal
 
 /-- What a nomination resolves to: the group's direct child of the nominated short name in the
-default variant, whose declaration decides even when the nomination is a relative path to another
-field. Absence and a non-field both fail the first arm, and they are kept apart because only one of
-them is what an author usually wrote. -/
+default variant. The caller derives it, and nothing here separates that namesake from the field a
+relative nomination binds to, although the peer measures that the namesake's declaration decides.
+Absence and a non-field both fail the first arm, and they are kept apart because only one of them is
+what an author usually wrote. -/
 inductive NominatedTarget where
   /-- No direct child of that name. -/
   | unresolved
