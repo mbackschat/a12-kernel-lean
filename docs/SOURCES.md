@@ -156,45 +156,45 @@ This table names search loci, not semantic conclusions. The canonical account re
 
 ### Reviewed inbound batches through 2026-09-08
 
-Moved to [`archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md`](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md) when this hub neared its size ceiling. The anchors below keep every existing citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing citation resolving.
 
 <a id="reviewed-numeric-scale-continuity"></a>
-- [Reviewed numeric-scale continuity](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-numeric-scale-continuity)
+- Reviewed numeric-scale continuity
 <a id="reviewed-pointer-and-operator-domain-batch"></a>
-- [Reviewed pointer and operator-domain batch](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-pointer-and-operator-domain-batch)
+- Reviewed pointer and operator-domain batch
 <a id="src-2026-09-06-ladder-handback-detail"></a>
 <a id="reviewed-group-count-multiplicity-batch"></a>
-- [Reviewed group-count multiplicity batch](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-group-count-multiplicity-batch)
+- Reviewed group-count multiplicity batch
 <a id="reviewed-group-operand-extent-and-coverage-batch"></a>
-- [Reviewed group-operand extent and coverage batch](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-group-operand-extent-and-coverage-batch)
+- Reviewed group-operand extent and coverage batch
 <a id="reviewed-compute-result-granularity-and-cascade-clear-kinds--the-axis-the-computation-rows-were-queuing-measurements-for"></a>
-- [Reviewed compute result-granularity and cascade clear-kinds — the axis the computation rows were queuing measurements for](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-compute-result-granularity-and-cascade-clear-kinds--the-axis-the-computation-rows-were-queuing-measurements-for)
+- Reviewed compute result-granularity and cascade clear-kinds — the axis the computation rows were queuing measurements for
 <a id="src-2026-09-07-extremum-and-orderability-handback"></a>
 <a id="reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale"></a>
-- [Reviewed 2026-09-07 handback — the extremum leader set and the power's derived scale](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)
+- Reviewed 2026-09-07 handback — the extremum leader set and the power's derived scale
 <a id="reviewed-per-carrier-group-operand-admission--the-extrema-row-this-project-had-queued-was-already-held"></a>
-- [Reviewed per-carrier group-operand admission — the extrema row this project had queued was already held](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-per-carrier-group-operand-admission--the-extrema-row-this-project-had-queued-was-already-held)
+- Reviewed per-carrier group-operand admission — the extrema row this project had queued was already held
 <a id="reviewed-custom-field-type-leaf-observability-and-filtered-carrier-batch"></a>
-- [Reviewed custom-field-type, leaf-observability, and filtered-carrier batch](archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md#reviewed-custom-field-type-leaf-observability-and-filtered-carrier-batch)
+- Reviewed custom-field-type, leaf-observability, and filtered-carrier batch
 
 ### Inbound 2026-09-05 and 2026-09-06 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md) when this hub reached its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-05b"></a>
-- [Reviewed 2026-09-05b handback — three entries accepted, one peer premise retracted, and one overlap found by reading](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05b)
+- Reviewed 2026-09-05b handback — three entries accepted, one peer premise retracted, and one overlap found by reading
 <a id="inbound-2026-09-05c"></a>
-- [Reviewed 2026-09-05c handback — the reassigned row measured, and one over-admission found from a description of this project's code](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05c)
+- Reviewed 2026-09-05c handback — the reassigned row measured, and one over-admission found from a description of this project's code
 <a id="inbound-2026-09-05d"></a>
-- [Reviewed 2026-09-05d handback — the DateTime family's cross-kind comparison, the last item open between the two projects](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05d)
+- Reviewed 2026-09-05d handback — the DateTime family's cross-kind comparison, the last item open between the two projects
 <a id="inbound-2026-09-05e"></a>
-- [Reported 2026-09-05e — `NumberOfDifferentValues`' temporal admission gate, with later local re-derivation](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05e)
+- Reported 2026-09-05e — `NumberOfDifferentValues`' temporal admission gate, with later local re-derivation
 <a id="inbound-2026-09-05f"></a>
-- [Reported 2026-09-05f — the distinct count's temporal identity is the decoded date, and the first-operand grid's envelope](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-05f)
+- Reported 2026-09-05f — the distinct count's temporal identity is the decoded date, and the first-operand grid's envelope
 <a id="inbound-2026-09-06b"></a>
-- [Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06b)
+- Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message
 <a id="inbound-2026-09-06a"></a>
-- [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
+- Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
 ### Inbound 2026-09-28 parse-event account
 
@@ -272,272 +272,272 @@ Deleted from this hub; the records' full text is `docs/SOURCES.md` at `73595edc0
 
 ### Inbound 2026-09-26m and 2026-09-26n handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26n-field-message-gates"></a>
-- [Reviewed 2026-09-26n field-message handback — a field type's own message takes its condition language's two tokens as the pieces of a split that drops trailing empty pieces, reports one class per field from the first failing declared locale, and draws nothing where a path class stops the element walk](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md#inbound-2026-09-26n-field-message-gates)
+- Reviewed 2026-09-26n field-message handback — a field type's own message takes its condition language's two tokens as the pieces of a split that drops trailing empty pieces, reports one class per field from the first failing declared locale, and draws nothing where a path class stops the element walk
 <a id="inbound-2026-09-26m-message-characters"></a>
-- [Reviewed 2026-09-26m message-character handback — a rule message's two character gates are the four line characters and Java's `\p{C}` asked per code point, and a computation's and a field's message draw the same classes on the rows each carries](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md#inbound-2026-09-26m-message-characters)
+- Reviewed 2026-09-26m message-character handback — a rule message's two character gates are the four line characters and Java's `\p{C}` asked per code point, and a computation's and a field's message draw the same classes on the rows each carries
 <a id="inbound-2026-09-26m-model-texts"></a>
-- [Reviewed 2026-09-26m model-text handback — the codeless repertoire refusal meets every text of a rule, a computation and a field or group's names, annotations and enumeration entries, once per element, but no label](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md#inbound-2026-09-26m-model-texts)
+- Reviewed 2026-09-26m model-text handback — the codeless repertoire refusal meets every text of a rule, a computation and a field or group's names, annotations and enumeration entries, once per element, but no label
 <a id="inbound-2026-09-26m-error-target-paths"></a>
-- [Reviewed 2026-09-26m error-target handback — a declared error target takes `..` lexically from the rule element, and a group target is judged like an unnamed field except the rule's own group, which fails the build](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md#inbound-2026-09-26m-error-target-paths)
+- Reviewed 2026-09-26m error-target handback — a declared error target takes `..` lexically from the rule element, and a group target is judged like an unnamed field except the rule's own group, which fails the build
 <a id="inbound-2026-09-26m-index-key-pattern"></a>
-- [Reviewed 2026-09-26m index-key handback — a String index key must meet its length bounds and its pattern, the pattern matched over code points](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md#inbound-2026-09-26m-index-key-pattern)
+- Reviewed 2026-09-26m index-key handback — a String index key must meet its length bounds and its pattern, the pattern matched over code points
 <a id="inbound-2026-09-26m-marked-keyed-read"></a>
-- [Reviewed 2026-09-26m marked-keyed-read handback — a `$`-marked keyed read in a body draws the index class from a root rule reporting at the root too, and after the parse](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md#inbound-2026-09-26m-marked-keyed-read)
+- Reviewed 2026-09-26m marked-keyed-read handback — a `$`-marked keyed read in a body draws the index class from a root rule reporting at the root too, and after the parse
 
 ### Inbound 2026-09-26i through 2026-09-26l handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26l-repeatable-root"></a>
-- [Reviewed 2026-09-26l repeatable-root handback — a `RepetitionNotUnique` rule at a repeatable root holding every key compares the root's own rows across the document](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md#inbound-2026-09-26l-repeatable-root)
+- Reviewed 2026-09-26l repeatable-root handback — a `RepetitionNotUnique` rule at a repeatable root holding every key compares the root's own rows across the document
 <a id="inbound-2026-09-26k-paired-gates"></a>
-- [Reviewed 2026-09-26k paired-gate handback — `RepetitionNotUnique` reads every key and its scope before any gate, orders its key-list and placement gates pair by pair, and admits keys at a repeatable root](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md#inbound-2026-09-26k-paired-gates)
+- Reviewed 2026-09-26k paired-gate handback — `RepetitionNotUnique` reads every key and its scope before any gate, orders its key-list and placement gates pair by pair, and admits keys at a repeatable root
 <a id="inbound-2026-09-26k-empty-star"></a>
-- [Reviewed 2026-09-26k empty-star handback — an empty group's missing star answers ahead of its emptiness on every group carrier, and an empty repeatable root starred draws the root class](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md#inbound-2026-09-26k-empty-star)
+- Reviewed 2026-09-26k empty-star handback — an empty group's missing star answers ahead of its emptiness on every group carrier, and an empty repeatable root starred draws the root class
 <a id="inbound-2026-09-26j-count-star"></a>
-- [Reviewed 2026-09-26j count-star handback — a lone unstarred repeatable group draws the missing star ahead of the count's arity, and a rule declared in the group binds it](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md#inbound-2026-09-26j-count-star)
+- Reviewed 2026-09-26j count-star handback — a lone unstarred repeatable group draws the missing star ahead of the count's arity, and a rule declared in the group binds it
 <a id="inbound-2026-09-26i-expansion-order"></a>
-- [Reviewed 2026-09-26i expansion-order handback — a group operand is read depth-first in declaration order, its index field in place, and its first field sets the list's family](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md#inbound-2026-09-26i-expansion-order)
+- Reviewed 2026-09-26i expansion-order handback — a group operand is read depth-first in declaration order, its index field in place, and its first field sets the list's family
 
 ### Inbound 2026-09-26f through 2026-09-26h handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26h-empty-scope"></a>
-- [Reviewed 2026-09-26h empty-scope handback — an empty `@From` scope draws the empty-group class ahead of the scope's repeat gate](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md#inbound-2026-09-26h-empty-scope)
+- Reviewed 2026-09-26h empty-scope handback — an empty `@From` scope draws the empty-group class ahead of the scope's repeat gate
 <a id="inbound-2026-09-26h-list-reads"></a>
-- [Reviewed 2026-09-26h list-read handback — eight more list carriers read every operand before their duplicate gate, the plural overlap before its scalar slot's gate, and both root gates ask an index-selected root](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md#inbound-2026-09-26h-list-reads)
+- Reviewed 2026-09-26h list-read handback — eight more list carriers read every operand before their duplicate gate, the plural overlap before its scalar slot's gate, and both root gates ask an index-selected root
 <a id="inbound-2026-09-26g-type-match"></a>
-- [Reviewed 2026-09-26g type-match handback — `FirstFilledValue`'s type match compares neither a Boolean's stored values nor a Number's fraction digits](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md#inbound-2026-09-26g-type-match)
+- Reviewed 2026-09-26g type-match handback — `FirstFilledValue`'s type match compares neither a Boolean's stored values nor a Number's fraction digits
 <a id="inbound-2026-09-26f-gate-order"></a>
-- [Reviewed 2026-09-26f gate-order handback — `RepetitionNotUnique` judges its key list gate by gate over the whole list before exactly one branch, and an outsider whose read is clean meets the rule-group gate](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md#inbound-2026-09-26f-gate-order)
+- Reviewed 2026-09-26f gate-order handback — `RepetitionNotUnique` judges its key list gate by gate over the whole list before exactly one branch, and an outsider whose read is clean meets the rule-group gate
 
 ### Inbound 2026-09-26d and 2026-09-26e handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26e-labelled-target"></a>
-- [Reviewed 2026-09-26e labelled-target handback — a String copied into an Enumeration draws the comparison class at a labelled target and the calculation's class at an unlabelled one](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md#inbound-2026-09-26e-labelled-target)
+- Reviewed 2026-09-26e labelled-target handback — a String copied into an Enumeration draws the comparison class at a labelled target and the calculation's class at an unlabelled one
 <a id="inbound-2026-09-26d-constant-typing"></a>
-- [Reviewed 2026-09-26d constant-typing handback — a written-out constant is typed by its shape and the calendar before the comparison walk](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md#inbound-2026-09-26d-constant-typing)
+- Reviewed 2026-09-26d constant-typing handback — a written-out constant is typed by its shape and the calendar before the comparison walk
 <a id="inbound-2026-09-26d-filter-walk"></a>
-- [Reviewed 2026-09-26d filter-walk handback — a key-owned filter is walked against the key, and the walk reads every spec in the body](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md#inbound-2026-09-26d-filter-walk)
+- Reviewed 2026-09-26d filter-walk handback — a key-owned filter is walked against the key, and the walk reads every spec in the body
 <a id="inbound-2026-09-26d-marked-read"></a>
-- [Reviewed 2026-09-26d marked-read handback — a `$`-marked read in a body is judged as the rule's own read](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md#inbound-2026-09-26d-marked-read)
+- Reviewed 2026-09-26d marked-read handback — a `$`-marked read in a body is judged as the rule's own read
 <a id="inbound-2026-09-26d-reference-set"></a>
-- [Reviewed 2026-09-26d reference-set handback — the post-parse error-field gates count only references outside every filter body and marked ones inside](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md#inbound-2026-09-26d-reference-set)
+- Reviewed 2026-09-26d reference-set handback — the post-parse error-field gates count only references outside every filter body and marked ones inside
 
 ### Inbound 2026-09-26b and 2026-09-26c handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26c-joined-comparison"></a>
-- [Reviewed 2026-09-26c joined-comparison handback — a field copied into a field draws the class its kind pair draws in a comparison, and a Boolean field source leaves the constant ladder](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md#inbound-2026-09-26c-joined-comparison)
+- Reviewed 2026-09-26c joined-comparison handback — a field copied into a field draws the class its kind pair draws in a comparison, and a Boolean field source leaves the constant ladder
 <a id="inbound-2026-09-26c-target-read"></a>
-- [Reviewed 2026-09-26c target-read and member-order handback — a partially known Date or raw String read draws its read class alone, and a computation's members answer in the order A12 joins them](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md#inbound-2026-09-26c-target-read)
+- Reviewed 2026-09-26c target-read and member-order handback — a partially known Date or raw String read draws its read class alone, and a computation's members answer in the order A12 joins them
 <a id="inbound-2026-09-26c-star-above-index"></a>
-- [Reviewed 2026-09-26c star-above-index handback — a star on an unindexed repetition above the index group is refused even from a rule that iterates that level](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md#inbound-2026-09-26c-star-above-index)
+- Reviewed 2026-09-26c star-above-index handback — a star on an unindexed repetition above the index group is refused even from a rule that iterates that level
 <a id="inbound-2026-09-26b-dispositions"></a>
-- [Reviewed 2026-09-26b field-value read handback — `SPEC-2026-09-25-09`, `-25-10` and `-26-01` confirmed on the peer's carrier](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md#inbound-2026-09-26b-dispositions)
+- Reviewed 2026-09-26b field-value read handback — `SPEC-2026-09-25-09`, `-25-10` and `-26-01` confirmed on the peer's carrier
 <a id="inbound-2026-09-26b-entity-list-category"></a>
-- [Reviewed 2026-09-26b entity-list category handback — an Enumeration's category is refused by every entity list whose carrier refuses one, and a category behind a group draws the group class](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md#inbound-2026-09-26b-entity-list-category)
+- Reviewed 2026-09-26b entity-list category handback — an Enumeration's category is refused by every entity list whose carrier refuses one, and a category behind a group draws the group class
 
 ### Inbound 2026-09-25i and 2026-09-26 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25i-key-addressing"></a>
-- [Reviewed 2026-09-25i key-addressing handback — a key addresses only its index group's level, a defective key answers first, and the key's own crossing draws the semantic-index class](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md#inbound-2026-09-25i-key-addressing)
+- Reviewed 2026-09-25i key-addressing handback — a key addresses only its index group's level, a defective key answers first, and the key's own crossing draws the semantic-index class
 <a id="inbound-2026-09-25i-literal-key"></a>
-- [Reviewed 2026-09-25i literal-key handback — a quoted key is judged by the index field, and an unquoted digit sequence is an entity name](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md#inbound-2026-09-25i-literal-key)
+- Reviewed 2026-09-25i literal-key handback — a quoted key is judged by the index field, and an unquoted digit sequence is an entity name
 <a id="inbound-2026-09-25i-rule-iteration"></a>
-- [Reviewed 2026-09-25i rule-iteration handback — the level a rule iterates addresses a scalar slot's read, from the declaring group or the error field's](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md#inbound-2026-09-25i-rule-iteration)
+- Reviewed 2026-09-25i rule-iteration handback — the level a rule iterates addresses a scalar slot's read, from the declaring group or the error field's
 <a id="inbound-2026-09-25i-keyed-duplicate"></a>
-- [Reviewed 2026-09-25i keyed-duplicate handback — a keyed group and a keyed field of it repeat only under one key](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md#inbound-2026-09-25i-keyed-duplicate)
+- Reviewed 2026-09-25i keyed-duplicate handback — a keyed group and a keyed field of it repeat only under one key
 <a id="inbound-2026-09-25i-enum-source"></a>
-- [Reviewed 2026-09-25i enumeration-source handback — a starred source meets the star gate after its category and before the target's source gate, and a climbing source is judged as a local one](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md#inbound-2026-09-25i-enum-source)
+- Reviewed 2026-09-25i enumeration-source handback — a starred source meets the star gate after its category and before the target's source gate, and a climbing source is judged as a local one
 <a id="inbound-2026-09-26-climbing-read"></a>
-- [Reviewed 2026-09-26 climbing-read handback — a climbing read is judged at the level it lands on](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md#inbound-2026-09-26-climbing-read)
+- Reviewed 2026-09-26 climbing-read handback — a climbing read is judged at the level it lands on
 <a id="inbound-2026-09-26-index-key-shape"></a>
-- [Reviewed 2026-09-26 index-key handback — a constant key meets its index field's value validation as a shape test, one rule per kind](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md#inbound-2026-09-26-index-key-shape)
+- Reviewed 2026-09-26 index-key handback — a constant key meets its index field's value validation as a shape test, one rule per kind
 
 ### Inbound 2026-09-25g and 2026-09-25h handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25g-value-list-order"></a>
-- [Reviewed 2026-09-25g value-list handback — `SPEC-2026-09-25-08` confirmed, and the construct's five gate positions measured](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-value-list-order)
+- Reviewed 2026-09-25g value-list handback — `SPEC-2026-09-25-08` confirmed, and the construct's five gate positions measured
 <a id="inbound-2026-09-25g-date-class"></a>
-- [Reviewed 2026-09-25g ordering handback — `SPEC-2026-09-25-07` confirmed with the Date on either side](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-date-class)
+- Reviewed 2026-09-25g ordering handback — `SPEC-2026-09-25-07` confirmed with the Date on either side
 <a id="inbound-2026-09-25g-field-value-read"></a>
-- [Reviewed 2026-09-25g field-value read handback — `SPEC-2026-09-25-06` confirmed, and a filter's body refuses a repeatable group it does not iterate](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-field-value-read)
+- Reviewed 2026-09-25g field-value read handback — `SPEC-2026-09-25-06` confirmed, and a filter's body refuses a repeatable group it does not iterate
 <a id="inbound-2026-09-25g-rounding-mode"></a>
-- [Reviewed 2026-09-25g rounding-mode handback — `RoundDown` beside `!=` is refused](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-rounding-mode)
+- Reviewed 2026-09-25g rounding-mode handback — `RoundDown` beside `!=` is refused
 <a id="inbound-2026-09-25g-banded-rounding"></a>
-- [Reviewed 2026-09-25g banded-rounding handback — a banded computation's mode rounds to zero places, `Exact` floors to the target's digits, and the validation compares the operation as authored](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-banded-rounding)
+- Reviewed 2026-09-25g banded-rounding handback — a banded computation's mode rounds to zero places, `Exact` floors to the target's digits, and the validation compares the operation as authored
 <a id="inbound-2026-09-25g-keyed-group"></a>
-- [Reviewed 2026-09-25g keyed-group handback — a keyed group's operand reads the selected row's cells, a lower repeatable level included](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25g-keyed-group)
+- Reviewed 2026-09-25g keyed-group handback — a keyed group's operand reads the selected row's cells, a lower repeatable level included
 <a id="inbound-2026-09-25h-category-index-relevance"></a>
-- [Reviewed 2026-09-25h category handback — a category read over an index cell the document makes unavailable tracks the value read](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md#inbound-2026-09-25h-category-index-relevance)
+- Reviewed 2026-09-25h category handback — a category read over an index cell the document makes unavailable tracks the value read
 
 ### Inbound 2026-09-25e and 2026-09-25f handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25f-value-list-base-type"></a>
-- [Reviewed 2026-09-25f base-type handback — `SPEC-2026-09-25-05` confirmed on every pair it names](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25f-value-list-base-type)
+- Reviewed 2026-09-25f base-type handback — `SPEC-2026-09-25-05` confirmed on every pair it names
 <a id="inbound-2026-09-25f-field-value-read"></a>
-- [Reviewed 2026-09-25f field-value read handback — the bracket asks its gates as it closes, wherever it stands, and a scalar value list's members ask theirs during the parse](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25f-field-value-read)
+- Reviewed 2026-09-25f field-value read handback — the bracket asks its gates as it closes, wherever it stands, and a scalar value list's members ask theirs during the parse
 <a id="inbound-2026-09-25f-generated-text"></a>
-- [Reviewed 2026-09-25f generated-text handback — a computation's members are parsed inside the one condition generated from them](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25f-generated-text)
+- Reviewed 2026-09-25f generated-text handback — a computation's members are parsed inside the one condition generated from them
 <a id="inbound-2026-09-25f-bare-entity"></a>
-- [Reviewed 2026-09-25f bare-entity handback — a bare entity stands only where an operator's argument is typed as one](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25f-bare-entity)
+- Reviewed 2026-09-25f bare-entity handback — a bare entity stands only where an operator's argument is typed as one
 <a id="inbound-2026-09-25e-below-star-placement"></a>
-- [Reviewed 2026-09-25e placement handback — the below-star placement holds on every carrier `SPEC-2026-09-25-02` names](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25e-below-star-placement)
+- Reviewed 2026-09-25e placement handback — the below-star placement holds on every carrier `SPEC-2026-09-25-02` names
 <a id="inbound-2026-09-25e-sum-of-products-reach"></a>
-- [Reviewed 2026-09-25e `SumOfProducts` handback — the operator's chain keeps its order from outside its fields' groups, and a star on a bound level counts](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25e-sum-of-products-reach)
+- Reviewed 2026-09-25e `SumOfProducts` handback — the operator's chain keeps its order from outside its fields' groups, and a star on a bound level counts
 <a id="inbound-2026-09-25e-value-list-base-type"></a>
-- [Reviewed 2026-09-25e base-type handback — the value-list quantifiers ask one base type ahead of their kind gate, the temporal kinds sharing one and a custom declaration String's](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25e-value-list-base-type)
+- Reviewed 2026-09-25e base-type handback — the value-list quantifiers ask one base type ahead of their kind gate, the temporal kinds sharing one and a custom declaration String's
 <a id="inbound-2026-09-25e-comparison-arm-order"></a>
-- [Reviewed 2026-09-25e arm-order handback — a comparison between two fields answers its kind arms in a fixed order, and only the first draws a class](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md#inbound-2026-09-25e-comparison-arm-order)
+- Reviewed 2026-09-25e arm-order handback — a comparison between two fields answers its kind arms in a fixed order, and only the first draws a class
 
 ### Inbound 2026-09-25b and 2026-09-25c handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25b-index-type-table"></a>
-- [Reviewed 2026-09-25b index-type handback — which two index kinds pair is a measured table, and a marked filter reference draws the class its read draws outside the filter](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25b-index-type-table)
+- Reviewed 2026-09-25b index-type handback — which two index kinds pair is a measured table, and a marked filter reference draws the class its read draws outside the filter
 <a id="inbound-2026-09-25b-condition-class-order"></a>
-- [Reviewed 2026-09-25b class-order handback — a refused condition text draws the class raised first, an operator's gate as soon as its call is read](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25b-condition-class-order)
+- Reviewed 2026-09-25b class-order handback — a refused condition text draws the class raised first, an operator's gate as soon as its call is read
 <a id="inbound-2026-09-25b-condition-positions"></a>
-- [Reviewed 2026-09-25b position handback — parentheses group conditions only, and a sign stands on a number literal alone](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25b-condition-positions)
+- Reviewed 2026-09-25b position handback — parentheses group conditions only, and a sign stands on a number literal alone
 <a id="inbound-2026-09-25b-computation-texts"></a>
-- [Reviewed 2026-09-25b computation-text handback — the suppression member's class answers first, a parse-time class erases the calculation module's, and a filter's gate answers for its own predicates](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25b-computation-texts)
+- Reviewed 2026-09-25b computation-text handback — the suppression member's class answers first, a parse-time class erases the calculation module's, and a filter's gate answers for its own predicates
 <a id="inbound-2026-09-25b-message"></a>
-- [Reviewed 2026-09-25b message handback — the unreferenced-target class withholds the error-text checker's classes, and an answered locale leaves `RULE_HAS_NO_ERRORTEXT` to the other](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25b-message)
+- Reviewed 2026-09-25b message handback — the unreferenced-target class withholds the error-text checker's classes, and an answered locale leaves `RULE_HAS_NO_ERRORTEXT` to the other
 <a id="inbound-2026-09-25b-joint-level-slots"></a>
-- [Reviewed 2026-09-25b joint-level handback — a field read on a jointly iterated level meets its scalar slot's own gate](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25b-joint-level-slots)
+- Reviewed 2026-09-25b joint-level handback — a field read on a jointly iterated level meets its scalar slot's own gate
 <a id="inbound-2026-09-25c-gate-raise-points"></a>
-- [Reviewed 2026-09-25c gate-order handback — a gate is raised where the production that owns it ends](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25c-gate-raise-points)
+- Reviewed 2026-09-25c gate-order handback — a gate is raised where the production that owns it ends
 <a id="inbound-2026-09-25c-form-keyword"></a>
-- [Reviewed 2026-09-25c form-keyword handback — a form construct's class is raised on its keyword wherever a condition opens](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25c-form-keyword)
+- Reviewed 2026-09-25c form-keyword handback — a form construct's class is raised on its keyword wherever a condition opens
 <a id="inbound-2026-09-25c-key-filter"></a>
-- [Reviewed 2026-09-25c key-filter handback — a `Having` after a field-valued index key is the key's filter](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25c-key-filter)
+- Reviewed 2026-09-25c key-filter handback — a `Having` after a field-valued index key is the key's filter
 <a id="inbound-2026-09-25c-filter-body"></a>
-- [Reviewed 2026-09-25c filter-body handback — a body's comparison draws its outside class, and the filter's chain is raised at two points around the body](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25c-filter-body)
+- Reviewed 2026-09-25c filter-body handback — a body's comparison draws its outside class, and the filter's chain is raised at two points around the body
 <a id="inbound-2026-09-25c-calculation-stages"></a>
-- [Reviewed 2026-09-25c calculation handback — the calculation module asks its stages in order, its rounding mode judges each alternative, and a variant-filtered computation is no cycle node](archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md#inbound-2026-09-25c-calculation-stages)
+- Reviewed 2026-09-25c calculation handback — the calculation module asks its stages in order, its rounding mode judges each alternative, and a variant-filtered computation is no cycle node
 
 ### Inbound 2026-09-24c through 2026-09-25 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25-fixed-group-star"></a>
-- [Reviewed 2026-09-25 fixed-group-star handback — a star on a fixed group draws `MVK_INVALID_WILDCARD` alone at every position measured, and of two defects the one read first answers](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-25-fixed-group-star)
+- Reviewed 2026-09-25 fixed-group-star handback — a star on a fixed group draws `MVK_INVALID_WILDCARD` alone at every position measured, and of two defects the one read first answers
 <a id="inbound-2026-09-25-message-withheld"></a>
-- [Reviewed 2026-09-25 message-withholding handback — a refused DSL member withholds the error-text checker's classes, the message's presence classes stand, and only a declared locale's last entry is examined](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-25-message-withheld)
+- Reviewed 2026-09-25 message-withholding handback — a refused DSL member withholds the error-text checker's classes, the message's presence classes stand, and only a declared locale's last entry is examined
 <a id="inbound-2026-09-25-keyed-group-walk"></a>
-- [Reviewed 2026-09-25 keyed group-walk handback — the order-aware walk over a keyed group's fields stops at the first filled cell, and a String index is decided as a Number index is](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-25-keyed-group-walk)
+- Reviewed 2026-09-25 keyed group-walk handback — the order-aware walk over a keyed group's fields stops at the first filled cell, and a String index is decided as a Number index is
 <a id="inbound-2026-09-25-bare-group-placement"></a>
-- [Reviewed 2026-09-25 bare-group placement handback — a bare repeatable group operand places its refusal as a field read does, and `AllGroupsFilled` joins the below-star carriers](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-25-bare-group-placement)
+- Reviewed 2026-09-25 bare-group placement handback — a bare repeatable group operand places its refusal as a field read does, and `AllGroupsFilled` joins the below-star carriers
 <a id="inbound-2026-09-25-comment-terminators"></a>
-- [Reviewed 2026-09-25 comment handback — a `;;` comment admits every character but the two line terminators, and a lone carriage return ends it](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-25-comment-terminators)
+- Reviewed 2026-09-25 comment handback — a `;;` comment admits every character but the two line terminators, and a lone carriage return ends it
 <a id="inbound-2026-09-25-operator-gates-wait"></a>
-- [Reviewed 2026-09-25 operator-gates handback — every gate of an operator's own waits for its operands to be read](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-25-operator-gates-wait)
+- Reviewed 2026-09-25 operator-gates handback — every gate of an operator's own waits for its operands to be read
 <a id="inbound-2026-09-25-parallel-index-gates"></a>
-- [Reviewed `kf371` route table — a level beside the error field's group meets its index gates one level at a time, outermost first](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-25-parallel-index-gates)
+- Reviewed `kf371` route table — a level beside the error field's group meets its index gates one level at a time, outermost first
 <a id="inbound-2026-09-24e-misplaced-star"></a>
-- [Reviewed 2026-09-24e misplaced-star handback — a star on a field or fixed group draws `MVK_INVALID_WILDCARD` alone, even where the same reference leaves a repeatable level unstarred](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24e-misplaced-star)
+- Reviewed 2026-09-24e misplaced-star handback — a star on a field or fixed group draws `MVK_INVALID_WILDCARD` alone, even where the same reference leaves a repeatable level unstarred
 <a id="inbound-2026-09-24e-nested-partial-star"></a>
-- [Reviewed 2026-09-24e nested partial-star handback — a star that leaves one nested level bare counts as the unstarred read, ahead of the unreferenced-target class](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24e-nested-partial-star)
+- Reviewed 2026-09-24e nested partial-star handback — a star that leaves one nested level bare counts as the unstarred read, ahead of the unreferenced-target class
 <a id="inbound-2026-09-24e-message-withheld"></a>
-- [Reviewed 2026-09-24e message-withholding handback — a message is judged only beside a sound DSL member, post-parse classes included, and a name or error-code class does not withhold it](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24e-message-withheld)
+- Reviewed 2026-09-24e message-withholding handback — a message is judged only beside a sound DSL member, post-parse classes included, and a name or error-code class does not withhold it
 <a id="inbound-2026-09-24e-filter-leaf"></a>
-- [Reviewed 2026-09-24e filter-leaf handback — a `Having` filter's own leaf and a semantic index's value half are not per-row reads for containment](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24e-filter-leaf)
+- Reviewed 2026-09-24e filter-leaf handback — a `Having` filter's own leaf and a semantic index's value half are not per-row reads for containment
 <a id="inbound-2026-09-24d-star-containment"></a>
-- [Reviewed 2026-09-24d star-containment handback — containment, not binding, answers a per-row read into a written field outside the declaring group, and the written field's position names the walk's class](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24d-star-containment)
+- Reviewed 2026-09-24d star-containment handback — containment, not binding, answers a per-row read into a written field outside the declaring group, and the written field's position names the walk's class
 <a id="inbound-2026-09-24d-mixed-group-count"></a>
-- [Reviewed 2026-09-24d mixed group-count handback — a partial `NumberOfFilledGroups` list mixing a starred and a fixed operand is undecided when either operand is](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24d-mixed-group-count)
+- Reviewed 2026-09-24d mixed group-count handback — a partial `NumberOfFilledGroups` list mixing a starred and a fixed operand is undecided when either operand is
 <a id="inbound-2026-09-24c-path-walk"></a>
-- [Reviewed 2026-09-24c path-walk handback — an up-step stands only in a relative path's leading run, and the short-name fallback answers a relative path's first segment alone](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24c-path-walk)
+- Reviewed 2026-09-24c path-walk handback — an up-step stands only in a relative path's leading run, and the short-name fallback answers a relative path's first segment alone
 <a id="inbound-2026-09-24c-field-slot"></a>
-- [Reviewed 2026-09-24c field-slot handback — a group in `FieldFilled` or `FieldNotFilled` meets the walk, then a root's class, then the kind gate, and a star follows them](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24c-field-slot)
+- Reviewed 2026-09-24c field-slot handback — a group in `FieldFilled` or `FieldNotFilled` meets the walk, then a root's class, then the kind gate, and a star follows them
 <a id="inbound-2026-09-24c-group-operand-walk"></a>
-- [Reviewed 2026-09-24c group-operand walk handback — an unstarred repeatable group draws the missing star ahead of every carrier gate, and a repeatable root is walked like any group](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md#inbound-2026-09-24c-group-operand-walk)
+- Reviewed 2026-09-24c group-operand walk handback — an unstarred repeatable group draws the missing star ahead of every carrier gate, and a repeatable root is walked like any group
 
 ### Inbound 2026-09-24 and 2026-09-24b handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-24b-keyed-partial-read"></a>
-- [Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-keyed-partial-read)
+- Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to
 <a id="inbound-2026-09-24b-lexer-and-blank-text"></a>
-- [Reviewed 2026-09-24b lexer and blank-text handback — whitespace is the lexer's five characters, the suppression list is parsed as preamble text, and member blankness follows `isWhitespace`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-lexer-and-blank-text)
+- Reviewed 2026-09-24b lexer and blank-text handback — whitespace is the lexer's five characters, the suppression list is parsed as preamble text, and member blankness follows `isWhitespace`
 <a id="inbound-2026-09-24b-category-read-poison"></a>
-- [Reviewed 2026-09-24b category-read poison handback — a computation's category read of a malformed Enumeration cell poisons like its value read](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-category-read-poison)
+- Reviewed 2026-09-24b category-read poison handback — a computation's category read of a malformed Enumeration cell poisons like its value read
 <a id="inbound-2026-09-24b-kf463-validation"></a>
-- [Reviewed 2026-09-24b `kf463` validation handback — a below-star `Seal` counts by its decided content, a malformed-only one leaves the count unavailable, and the extent is per operand](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-kf463-validation)
+- Reviewed 2026-09-24b `kf463` validation handback — a below-star `Seal` counts by its decided content, a malformed-only one leaves the count unavailable, and the extent is per operand
 <a id="inbound-2026-09-24b-kf464-partial-group-extent"></a>
-- [Reviewed 2026-09-24b `kf464` first-table handback — a field-expanding aggregate over a starred group is evaluable under partial validation exactly when every field it contains is](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-kf464-partial-group-extent)
+- Reviewed 2026-09-24b `kf464` first-table handback — a field-expanding aggregate over a starred group is evaluable under partial validation exactly when every field it contains is
 <a id="inbound-2026-09-24b-kf464-partial-group-count"></a>
-- [Reviewed 2026-09-24b `kf464` second-table handback — `NumberOfFilledGroups` under partial validation is a four-step walk over the counted group's own instances](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-kf464-partial-group-count)
+- Reviewed 2026-09-24b `kf464` second-table handback — `NumberOfFilledGroups` under partial validation is a four-step walk over the counted group's own instances
 <a id="inbound-2026-09-24b-dispositions"></a>
-- [Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24b-dispositions)
+- Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling
 <a id="inbound-2026-09-24-ancestor-starred-group-count"></a>
-- [Reviewed 2026-09-24 ancestor-starred group-count handback — a fixed group below a starred level is a sole `NumberOfFilledGroups` operand, and it counts filled instances only](archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md#inbound-2026-09-24-ancestor-starred-group-count)
+- Reviewed 2026-09-24 ancestor-starred group-count handback — a fixed group below a starred level is a sole `NumberOfFilledGroups` operand, and it counts filled instances only
 
 ### Inbound 2026-09-23 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md) when this hub crossed its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-23d-grandparent-fill-and-malformed-key"></a>
-- [Reviewed 2026-09-23 grandparent-fill and malformed-key handback — the cascade fill reaches depth two, and a malformed field-valued key is unknown or poison on every keyed consumer](archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md#inbound-2026-09-23d-grandparent-fill-and-malformed-key)
+- Reviewed 2026-09-23 grandparent-fill and malformed-key handback — the cascade fill reaches depth two, and a malformed field-valued key is unknown or poison on every keyed consumer
 <a id="inbound-2026-09-23c-computation-cascade-reads"></a>
-- [Reviewed 2026-09-23 computation-cascade handback — a computed field's stored value is read by nothing inside one call, and a precondition has no row gate](archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md#inbound-2026-09-23c-computation-cascade-reads)
+- Reviewed 2026-09-23 computation-cascade handback — a computed field's stored value is read by nothing inside one call, and a precondition has no row gate
 <a id="inbound-2026-09-23b-entity-list-operand-reads"></a>
-- [Reviewed 2026-09-23 entity-list operand-read handback — an unreadable operand answers first across the family, and the date walk sits behind the list gates](archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md#inbound-2026-09-23b-entity-list-operand-reads)
+- Reviewed 2026-09-23 entity-list operand-read handback — an unreadable operand answers first across the family, and the date walk sits behind the list gates
 <a id="inbound-2026-09-23-first-filled-gate-positions"></a>
-- [Reviewed 2026-09-23 `FirstFilledValue` gate-position handback — operand reads first, then duplicates, root and arity, then Confirm wherever it stands](archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md#inbound-2026-09-23-first-filled-gate-positions)
+- Reviewed 2026-09-23 `FirstFilledValue` gate-position handback — operand reads first, then duplicates, root and arity, then Confirm wherever it stands
 <a id="inbound-2026-09-23-entity-list-root-group-gate"></a>
-- [Reviewed 2026-09-23 entity-list root-group gate — a Kernel gate the shared Lean shape did not ask](archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md#inbound-2026-09-23-entity-list-root-group-gate)
+- Reviewed 2026-09-23 entity-list root-group gate — a Kernel gate the shared Lean shape did not ask
 <a id="inbound-2026-09-22e-first-filled-gate-order"></a>
-- [Reviewed 2026-09-23 `FirstFilledValue` gate-order handback — duplicates, then Confirm, then one type over the expanded fields, and a Kernel row behind a Lean lock](archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md#inbound-2026-09-22e-first-filled-gate-order)
+- Reviewed 2026-09-23 `FirstFilledValue` gate-order handback — duplicates, then Confirm, then one type over the expanded fields, and a Kernel row behind a Lean lock
 
 ### Inbound 2026-09-22 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-22.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-22.md) when this hub crossed its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-22.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-22d-first-filled-cross-kind"></a>
-- [Reviewed 2026-09-22 `FirstFilledValue` cross-kind handback — the date-bearing pairs measured at a date format, and a bound this project had relayed withdrawn](archived/SOURCES-INBOUND-HANDBACKS-2026-09-22.md#inbound-2026-09-22d-first-filled-cross-kind)
+- Reviewed 2026-09-22 `FirstFilledValue` cross-kind handback — the date-bearing pairs measured at a date format, and a bound this project had relayed withdrawn
 <a id="inbound-2026-09-22-temporal-category"></a>
-- [Reviewed 2026-09-22 temporal-category handback — the four-member category measured, and a clause that was careful turned into an overclaim by the arrival of its own evidence](archived/SOURCES-INBOUND-HANDBACKS-2026-09-22.md#inbound-2026-09-22-temporal-category)
+- Reviewed 2026-09-22 temporal-category handback — the four-member category measured, and a clause that was careful turned into an overclaim by the arrival of its own evidence
 <a id="inbound-2026-09-22-dispositions"></a>
-- [Reviewed 2026-09-22 dispositions handback — the whole pending queue answered, three clauses qualified, and both instrument asks implemented](archived/SOURCES-INBOUND-HANDBACKS-2026-09-22.md#inbound-2026-09-22-dispositions)
+- Reviewed 2026-09-22 dispositions handback — the whole pending queue answered, three clauses qualified, and both instrument asks implemented
 
 ### Inbound 2026-09-21 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-21.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-21.md) when this hub approached its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-21.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-21b-corrections"></a>
-- [Reviewed 2026-09-21b reply handback — both contrary entries accepted, our own replacement reading corrected, and four clauses changed](archived/SOURCES-INBOUND-HANDBACKS-2026-09-21.md#inbound-2026-09-21b-corrections)
+- Reviewed 2026-09-21b reply handback — both contrary entries accepted, our own replacement reading corrected, and four clauses changed
 <a id="inbound-2026-09-21-corrections"></a>
-- [Reviewed 2026-09-21 corrections handback — 163 new peer findings triaged, sixteen clauses corrected, one Lean precedence defect found, and two of their rows refuted](archived/SOURCES-INBOUND-HANDBACKS-2026-09-21.md#inbound-2026-09-21-corrections)
+- Reviewed 2026-09-21 corrections handback — 163 new peer findings triaged, sixteen clauses corrected, one Lean precedence defect found, and two of their rows refuted
 
 ### Inbound 2026-09-07 and 2026-09-08 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md) when this hub reached its size ceiling a second time. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-08-corrections"></a>
-- [Reviewed 2026-09-08 corrections handback — three entries confirmed, one of their titles refuted, and the observation hash preimage changed](archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md#inbound-2026-09-08-corrections)
+- Reviewed 2026-09-08 corrections handback — three entries confirmed, one of their titles refuted, and the observation hash preimage changed
 <a id="inbound-2026-09-08-instrument"></a>
-- [Reviewed 2026-09-08 instrument handback — malformed model input reclassified, and one authoring restriction removed that opened a refusal class](archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md#inbound-2026-09-08-instrument)
+- Reviewed 2026-09-08 instrument handback — malformed model input reclassified, and one authoring restriction removed that opened a refusal class
 <a id="inbound-2026-09-08"></a>
-- [Reviewed 2026-09-08 handback — four pending entries answered, three declaration knobs made authorable, and two kernel derivations opened](archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md#inbound-2026-09-08)
+- Reviewed 2026-09-08 handback — four pending entries answered, three declaration knobs made authorable, and two kernel derivations opened
 <a id="inbound-2026-09-07-dispositions"></a>
-- [Reviewed 2026-09-07 dispositions — nine entries answered at one revision, one of ours refuted, one assumption discharged, and two rows sent unasked](archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md#inbound-2026-09-07-dispositions)
+- Reviewed 2026-09-07 dispositions — nine entries answered at one revision, one of ours refuted, one assumption discharged, and two rows sent unasked
 
 ## Provenance checkpoint index
 
