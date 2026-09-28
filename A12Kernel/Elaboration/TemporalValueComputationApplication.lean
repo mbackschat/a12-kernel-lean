@@ -18,7 +18,7 @@ namespace TemporalComputationApplicationTarget
     The declared kind is deliberately not read. A computed temporal target is admitted by its declared
     format — `CheckedClockFormatTarget` and its siblings carry that rule — and the Kernel's parser
     follows the declared format with no fallback to the kind
-    ([`SPEC-2026-09-06-09`](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-06-09)), so a TIME
+    (`SPEC-2026-09-06-09`), so a TIME
     field declared `yyyy-MM-dd` is a complete-Date target. Each family had spelled this predicate
     itself with its own kind conjunct, which refused at apply time exactly the models its own
     certificate admits; sharing it here is what stops the next family reintroducing that. -/

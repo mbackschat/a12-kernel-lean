@@ -19,7 +19,7 @@ Before editing documentation, classify each changed fact:
 | Stable representation, semantic ownership, dependency direction, composition invariant, or accepted/rejected encoding decision | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Durable non-obvious formalization or research lesson | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
 | Current cross-project semantic reconciliation state | [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) |
-| Terminal reconciliation receipts through 2026-08-28 | the frozen [historical ledger](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md) |
+| Terminal reconciliation receipts through 2026-08-28 | the frozen historical ledger (`docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md` at `a050f150`) |
 | Test method and executable gate contract | [`TESTING.md`](TESTING.md) |
 | Public process, artifact, consumer, product, or release contract | the exact owner named in [`README.md`](README.md#canonical-ownership-registry) |
 
@@ -43,7 +43,7 @@ For every documentation change:
 2. Apply only the exact triggers below; “not triggered” means the document must remain unchanged.
 3. Search the live documentation for detailed copies of the changed fact.
 4. Replace stale copies with the local consequence and a link, or delete them when they add no local consequence.
-5. Delete completed work from volatile owners. Git history is the work log and archive unless an immutable public or reconciliation record has a distinct continuing audience. An owner nearing its size ceiling deletes its oldest terminal records and leaves each anchor a one-line pointer to the Git revision that last held its text; it never copies them into a new file under `spec/` or `docs/`, and a clause keeps one discriminating row per branch, citing the revision that holds the rest.
+5. Delete completed work from volatile owners. Git history is the work log and the archive. An owner nearing its size ceiling deletes its oldest terminal records and leaves each anchor a one-line pointer to the Git revision that last held its text; it never copies them into a new file under `spec/` or `docs/`, and a clause keeps one discriminating row per branch, citing the revision that holds the rest.
 6. Verify links, stable anchors, and the document's query contract before commit.
 
 The capsule closure assessment in [`TESTING.md`](TESTING.md#same-context-capsule-closure-assessment) must reject an unnecessary document touch, a duplicated detailed fact, an appended completed narrative in an open-only owner, and a new paragraph that leaves superseded prose in place.
@@ -77,9 +77,9 @@ This table is a trigger contract, not a document-count quota. A unit that genuin
 
 ## Intentional historical records
 
-[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) and [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) are the only append-preserving live records. Findings retain stable IDs and visible corrections. The live ledger retains entries created after its archive boundary, including their eventual terminal dispositions, while the [historical ledger](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md) immutably owns the earlier terminal receipts. Neither live record may absorb routine status, source-review narrative, or a second copy of the spec.
+[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) and [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) are the only append-preserving live records. Findings retain stable IDs and visible corrections. The live ledger retains entries created after its archive boundary, including their eventual terminal dispositions, while the historical ledger (`docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md` at `a050f150`) immutably owns the earlier terminal receipts. Neither live record may absorb routine status, source-review narrative, or a second copy of the spec.
 
-Capability implementation kits may repeat the minimum semantics and procedure required to remain self-contained for their external audience. That exception does not authorize copied live counts, roadmaps, or provenance histories. Files under [`archived/`](archived/) are immutable historical records; correct live owners instead of silently rewriting an archive.
+Capability implementation kits may repeat the minimum semantics and procedure required to remain self-contained for their external audience. That exception does not authorize copied live counts, roadmaps, or provenance histories. A deleted record is read at its Git revision and never restored; correct its live owner instead.
 
 ## Scale and consolidation
 

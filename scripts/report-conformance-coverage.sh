@@ -233,11 +233,6 @@ untouched="$(( total_classes - touched ))"
 modelled_untouched="$(( total_classes - in_lean ))"
 unaccounted="$(comm -23 "$work/in-observed" "$work/in-account" | count /dev/stdin)"
 
-# A class known only from an archived receipt is a fact this repository holds but no longer reads.
-grep -oh -E '[A-Za-z0-9_]+' -r spec docs --include='*.md' --exclude-dir=archived 2>/dev/null \
-  | grep -E '^[A-Za-z][A-Za-z0-9_]+$' | sort -u > "$work/live-tokens" || : > "$work/live-tokens"
-comm -12 "$work/classes" "$work/live-tokens" > "$work/live-account"
-archived_only="$(comm -23 "$work/in-account" "$work/live-account" | count /dev/stdin)"
 
 comm -23 "$work/classes" "$work/touched" > "$work/untouched-classes"
 awk -F'\t' 'NR==FNR { open[$1]=1; next } ($1 in open) { print $2 }' \
@@ -322,7 +317,7 @@ fi
 if [[ "$mode" == "print" ]]; then
   echo "diagnostic names: ${in_lean}/${total_classes} ($(percent "$in_lean" "$total_classes")%) occur in Lean source; ${modelled_untouched} absent"
   echo "  named anywhere: ${touched} ($(percent "$touched" "$total_classes")%) across the scanned prose, Lean, and evidence JSON"
-  echo "  in prose ${in_account} | in evidence JSON ${observed} | archived-only ${archived_only} | evidence names absent from prose ${unaccounted}"
+  echo "  in prose ${in_account} | in evidence JSON ${observed} | evidence names absent from prose ${unaccounted}"
   echo "conformance     : no whole-Kernel percentage; identifier occurrence does not establish behaviour"
   echo "capabilities    : ${capability_records} records, ${calibrated} mention checkpoints/calibration, ${evidence_pending} explicitly evidence-pending"
   echo "obligations     : ${gap_records} gaps, ${remaining_rows} remaining rows, ${route_blocked} route-blocked, ${ledger_pending} pending / ${ledger_handed} handed-off"
@@ -384,7 +379,6 @@ An occurrence can be a definition, fixture, comment, request, or list of exclusi
 Two occurrence checks that may warrant an ownership lookup:
 
 - **Named in evidence JSON but absent from prose: ${unaccounted}.** Inspect the occurrence before treating it as an unaccounted observation.
-- **Named in archived prose but absent from live prose: ${archived_only}.** Check existing ownership before proposing any new work; the name alone establishes no missing semantic fact.
 
 ### Where the untouched classes are
 

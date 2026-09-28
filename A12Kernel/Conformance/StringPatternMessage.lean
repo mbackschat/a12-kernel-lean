@@ -89,7 +89,7 @@ example :
 
 /- The gates beyond the characters, in the Kernel's order: dollar parity ahead of the parameters, the
    character gates ahead of both, and every parameter other than the two tokens, the empty one included,
-   `INVALID_PARAMETER` ([ledger](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-07-30-01),
+   `INVALID_PARAMETER` (ledger (`EXP-2026-07-30-01`),
    [inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-message-gates)). The German spelling is a
    wrong name in an English model, and so is a token with one non-ASCII letter
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).

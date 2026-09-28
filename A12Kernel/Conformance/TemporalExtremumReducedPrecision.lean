@@ -196,7 +196,7 @@ example : (admittedIn? baseYearModel ["MOnly", "Month"]).isSome = true := by
    account produces. The Kernel's own row is the same one — a yearless operand beside a year-bearing
    one counts as **two** values and the extremum puts the earlier year first, supplemented by the
    declared Base Year and not by the sibling's year — accepted at the
-   [component-omitting fold entry](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-06-10). -/
+   component-omitting fold entry (`SPEC-2026-09-06-10`). -/
 example :
     (maskedFoldIn? baseYearModel ["MOnly", "Month"] .minimum (some 2024)
         [(21, dateCell 2024 3 9), (4, dateCell 2023 3 1)],

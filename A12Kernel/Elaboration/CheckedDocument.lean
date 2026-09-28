@@ -562,7 +562,7 @@ text a function of the value would delete the clause's own subject from the repr
 The second is coverage, and it is bounded by the declared **component set** rather than the declared
 kind. Only a complete-Date and a complete-DateTime declaration have an owning input classifier, and the
 Kernel's parser follows the declared format with no fallback to the kind
-([`SPEC-2026-09-06-09`](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-06-09)) — so a TIME field
+(`SPEC-2026-09-06-09`) — so a TIME field
 declared `yyyy-MM-dd` stores a Date and is checked here, while a clock or **partial**-precision
 declaration has no derivable `Value` form and can never be. A gate covering half a family is one no
 consumer could rely on, whereas a property may honestly report on the half it knows.

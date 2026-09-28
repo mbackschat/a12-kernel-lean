@@ -56,7 +56,7 @@ private def uncertifiedField : FlatFieldDecl := {
 
 /-- A TIME declaration carrying a complete-date format. The Kernel's parser follows that format and
 the declared kind supplies no fallback, so this cell stores a Date and the complete-Date classifier
-owns it ([`SPEC-2026-09-06-09`](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-06-09)). -/
+owns it (`SPEC-2026-09-06-09`). -/
 private def dateDeclaredClockField : FlatFieldDecl := {
   id := 6
   groupPath := ["Policy"]

@@ -108,7 +108,7 @@ Semantic indices and parallel iteration share checked index-column facts but not
 
 ### Whole-model computation execution keeps definition, activation, result, application, and validation separate
 
-The computation boundary follows the accepted decision recorded in the archived [`A12 Lean computation execution proposal`](archived/A12-LEAN-COMPUTATION-EXECUTION-PROPOSAL.md).
+The computation boundary follows the accepted decision recorded in the archived `A12 Lean computation execution proposal` (`docs/archived/A12-LEAN-COMPUTATION-EXECUTION-PROPOSAL.md` at `a050f150`).
 
 - A checked computation definition owns target policy, guarded alternatives, static references, and any family-specific route certificates. It retains the authored declaration context separately from resolved target placement whenever the checked family permits them to differ.
 - Fixed-target execution derives its single implicit instance from target placement rather than using the declaration context as an iteration source. Repeatable placement retains its separate static relation to the declaration context; the exact behavioral boundaries remain in [the computation specification](../spec/09-computations.md#1-the-ground-rules).
@@ -133,7 +133,7 @@ Checked custom-condition authoring retains the lexer-distinguished unquoted or q
 
 ### Family data is the default derived-consumer boundary
 
-The failed universal Core IL experiment is archived in [`SEMANTIC-CORE-IL-PROPOSAL.md`](archived/SEMANTIC-CORE-IL-PROPOSAL.md). The adopted default is to expose existing checked family structures and prove family-specific preservation laws. A shared checked-plan representation is reconsidered only under the six conditions in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#representation-policy-for-derived-consumers). An analyzer or transformer should consume the narrowest checked owner that answers its query rather than demand a universal intermediate language.
+The failed universal Core IL experiment is archived in `SEMANTIC-CORE-IL-PROPOSAL.md` (`docs/archived/SEMANTIC-CORE-IL-PROPOSAL.md` at `a050f150`). The adopted default is to expose existing checked family structures and prove family-specific preservation laws. A shared checked-plan representation is reconsidered only under the six conditions in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#representation-policy-for-derived-consumers). An analyzer or transformer should consume the narrowest checked owner that answers its query rather than demand a universal intermediate language.
 
 ### External adapters transport semantics; they do not own it
 

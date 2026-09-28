@@ -1,6 +1,6 @@
 # Repository artifact lifecycle
 
-This guide explains what belongs under [`evidence/`](../evidence/), [`reference/`](../reference/), [`examples/`](../examples/), and the historical records under [`docs/archived/`](archived/), which facts each owns, and how each should evolve. These artifacts deliberately have different lifecycles; treating all of them as either hand-authored source or disposable generated output would break the project's evidence and consumer contracts.
+This guide explains what belongs under [`evidence/`](../evidence/), [`reference/`](../reference/), [`examples/`](../examples/), and the deleted historical records read at their Git revision, which facts each owns, and how each should evolve. These artifacts deliberately have different lifecycles; treating all of them as either hand-authored source or disposable generated output would break the project's evidence and consumer contracts.
 
 ## The short answer
 
@@ -9,7 +9,7 @@ This guide explains what belongs under [`evidence/`](../evidence/), [`reference/
 | [`evidence/`](../evidence/) | Three compact accepted semantic-observation bundles | Checked-out observations preserve the current finite empirical claim; compact bundles are the ordinary Lean replay and public-association interface, not a second oracle | Append, version, or explicitly correct; retain raw audit inputs only until a reviewed compact migration records their exact recovery revision |
 | [`reference/`](../reference/) | Portable consumer shipments and the readable support-manifest mirror | Mostly derived from Lean and retained evidence; the correlation suite remains a reviewed manual index | Derive new current identities from their owners, maintain reviewed indices explicitly, and never regenerate a frozen compatibility line in place |
 | [`examples/`](../examples/) | Runnable user examples, golden process regressions, and generated shipment fixtures | No; expected outputs are reviewed regression locks, not kernel evidence | Curate the small human-facing set and regenerate owned fixture sets |
-| [`docs/archived/`](archived/) plus exact Git revisions | Retired compatibility identities, campaign outcomes, deleted artifact digests, and recovery instructions | Yes, for the documented historical claim and recovery boundary; no, for current behavior | Preserve concise immutable records; inspect deleted bytes at their pinned revision rather than restoring them to current source |
+| Exact Git revisions of deleted records | Retired compatibility identities, campaign outcomes, deleted artifact digests, and recovery instructions | Yes, for the documented historical claim and recovery boundary; no, for current behavior | Cite the file and the revision that last held it; inspect deleted bytes there rather than restoring them to current source |
 
 The authority chain remains:
 
@@ -27,7 +27,7 @@ independent candidate qualification
 
 The real kernel remains the behavioral authority. The Lean theory is the executable semantics-of-record for the project's chosen account. Retained evidence connects that account empirically to particular kernel observations. Generated shipments expose a closed part of the account to independent consumers. Qualification records preserve what was source-replayed or externally reported under their explicit assurance class. None of these roles should silently absorb another.
 
-The three completed migrations demonstrate how a complete raw audit estate can certify a compact semantic bundle without remaining in every checkout. One small generic reader checks the bundle contract, and each typed family projection checks its pinned semantic input/observation account. Each migration ran its former complete binder and compact lane together once; the current tree retains only the compact bundle, while the [validation](archived/VALIDATION-RAW-EVIDENCE.md), [root-String](archived/STRING-COMPUTATION-RAW-EVIDENCE.md), and [direct-cascade](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md) archives name exact raw recovery revisions and identities.
+The three completed migrations demonstrate how a complete raw audit estate can certify a compact semantic bundle without remaining in every checkout. One small generic reader checks the bundle contract, and each typed family projection checks its pinned semantic input/observation account. Each migration ran its former complete binder and compact lane together once; the current tree retains only the compact bundle, while the validation (`docs/archived/VALIDATION-RAW-EVIDENCE.md` at `a050f150`), root-String (`docs/archived/STRING-COMPUTATION-RAW-EVIDENCE.md` at `a050f150`), and direct-cascade (`docs/archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md` at `a050f150`) archives name exact raw recovery revisions and identities.
 
 Detailed evidence claims remain in [`EVIDENCE.md`](EVIDENCE.md), process and manifest compatibility in [`PROTOCOL.md`](PROTOCOL.md), executable gates in [`TESTING.md`](TESTING.md), consumer shipment and qualification contracts in [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), and persisted unfinished handoff state in [`PLAN.md`](PLAN.md). This guide owns only the directory-level classification and lifecycle connecting those contracts.
 
@@ -76,7 +76,7 @@ The validation and root-String bundles remain project-reviewed projections; not 
 - current [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json), the readable 0.3.0 support manifest generated from finite Lean declarations in [`Reference/Support.lean`](../A12Kernel/Reference/Support.lean);
 - current [`flat-validation-empty-logic-v2`](../reference/flat-validation-empty-logic-v2.conformance.json) and [`single-group-correlation-v2`](../reference/single-group-correlation-v2.conformance.json) conformance suites for 0.3.0.
 
-The deleted reference-semantics 0.2.0/V1 files, their SHA-256 identities, the Rust campaign outcome, and exact recovery revisions are consolidated in the [archived historical record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). They are not current shipment files or process-gate inputs.
+The deleted reference-semantics 0.2.0/V1 files, their SHA-256 identities, the Rust campaign outcome, and exact recovery revisions are consolidated in the archived historical record (`docs/archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md` at `a050f150`). They are not current shipment files or process-gate inputs.
 
 ### Responsibility and authority
 
@@ -108,7 +108,7 @@ The current public case-to-evidence associations are mechanically checked, but t
 1. curated request/response pairs intended to be readable and runnable by a user;
 2. complete fixture sets used by process and downstream conformance tests.
 
-The eight pairs under [`flat-evidence/`](../examples/reference-cli/flat-evidence/) originated in the retired 0.2.0 handover and remain useful unchanged fixtures for the corresponding current flat V2 cases; their historical generation is recorded in the [archive](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). The root request/response pairs are maintained as readable golden examples and are explicitly enumerated by the reference-process test; this includes the current directional-polarity control [`empty-unsigned-number-not-equal-negative.request.json`](../examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json), while the correlation subset is referenced by the current suite.
+The eight pairs under [`flat-evidence/`](../examples/reference-cli/flat-evidence/) originated in the retired 0.2.0 handover and remain useful unchanged fixtures for the corresponding current flat V2 cases; their historical generation is recorded in the archive (`docs/archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md` at `a050f150`). The root request/response pairs are maintained as readable golden examples and are explicitly enumerated by the reference-process test; this includes the current directional-polarity control [`empty-unsigned-number-not-equal-negative.request.json`](../examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json), while the correlation subset is referenced by the current suite.
 
 ### Responsibility and authority
 
@@ -128,7 +128,7 @@ Run `lake exe checkReferenceProcess` to execute the committed request/response p
 
 ## Archived Rust qualification record
 
-The Rust knowledge-transport exercise is complete, and its checked-out profile, result, and one-off source machinery have been retired. The [archived historical record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md) preserves the exact compatibility identity, source and candidate revisions, packet and result hashes, 52/52 verdict distribution, assurance limits, and recovery instructions. These facts answer only what the pinned experiment reported: they do not define current A12 semantics, add kernel evidence, transfer Lean proofs, approve a release, or establish candidate correctness beyond the finite historical profile. A future consumer receives a newly designed qualification identity against the then-current semantics and operational constraints; do not restore the retired machinery for anticipated reuse.
+The Rust knowledge-transport exercise is complete, and its checked-out profile, result, and one-off source machinery have been retired. The archived historical record (`docs/archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md` at `a050f150`) preserves the exact compatibility identity, source and candidate revisions, packet and result hashes, 52/52 verdict distribution, assurance limits, and recovery instructions. These facts answer only what the pinned experiment reported: they do not define current A12 semantics, add kernel evidence, transfer Lean proofs, approve a release, or establish candidate correctness beyond the finite historical profile. A future consumer receives a newly designed qualification identity against the then-current semantics and operational constraints; do not restore the retired machinery for anticipated reuse.
 
 ## Evolution by change type
 

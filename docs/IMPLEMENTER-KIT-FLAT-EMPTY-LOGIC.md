@@ -29,13 +29,13 @@ The supplied material is:
 - the generated current support declaration [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json);
 - the nine-case suite [`flat-validation-empty-logic-v2.conformance.json`](../reference/flat-validation-empty-logic-v2.conformance.json);
 - every request and expected response referenced by that suite under [`examples/reference-cli/`](../examples/reference-cli/);
-- the compact validation [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), its typed [`ValidationProjection.lean`](../A12Kernel/Evidence/ValidationProjection.lean) consumer, and the [archive](archived/VALIDATION-RAW-EVIDENCE.md) for removed raw provenance and recovery;
+- the compact validation [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), its typed [`ValidationProjection.lean`](../A12Kernel/Evidence/ValidationProjection.lean) consumer, and the archive (`docs/archived/VALIDATION-RAW-EVIDENCE.md` at `a050f150`) for removed raw provenance and recovery;
 - the standalone `checkCandidateConformance` runner;
 - the laws, non-laws, evidence qualifications, and open boundaries in this document.
 
 The first eight requests use normalized, already classified Number, Boolean, and Confirm cells. The ninth adds one empty unsigned Number inequality against a negative literal and is the separating directional-polarity case introduced by reference semantics 0.3.0. There is deliberately no second current capability-descriptor file: the generated support manifest and closed suite own the machine-readable boundary.
 
-The historical 0.2.0 cold Rust experiment is not relabeled as V2. Its exact identities, mutation outcome, 52-case differential, and recovery revisions are preserved in the [archived experiment record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md).
+The historical 0.2.0 cold Rust experiment is not relabeled as V2. Its exact identities, mutation outcome, 52-case differential, and recovery revisions are preserved in the archived experiment record (`docs/archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md` at `a050f150`).
 
 ## Language-neutral model
 
@@ -205,7 +205,7 @@ A present Boolean comparison returns `Fired(Value)` while malformed Number compa
 | `number-not-filled-empty-row` | `Fired(Omission)` | Empty-row-eligible OMISSION firing |
 | `number-empty-not-equal-negative-directional` | `Fired(Value)` | Authored VALUE firing under directional fillability |
 
-All nine rows are public records in the compact validation bundle. The candidate process pins that bundle, requires each suite case's exact normalized request to equal the retained input, and requires the externally supported projection of its expected response to equal the retained observation. Its self-test rejects a changed request, changed projected response, or alias to another existing evidence case. Groovy-dynamic and static-Java kernel routes agree on these observations; a12-dmkits is triangulation rather than the oracle. Fired rows externally establish firing and polarity. Silent rows establish only suppression and cannot reveal the kernel's hidden `NotFired`/`Unknown` distinction. The [historical validation record](archived/VALIDATION-RAW-EVIDENCE.md) preserves the removed source projections and exact migration checkpoint.
+All nine rows are public records in the compact validation bundle. The candidate process pins that bundle, requires each suite case's exact normalized request to equal the retained input, and requires the externally supported projection of its expected response to equal the retained observation. Its self-test rejects a changed request, changed projected response, or alias to another existing evidence case. Groovy-dynamic and static-Java kernel routes agree on these observations; a12-dmkits is triangulation rather than the oracle. Fired rows externally establish firing and polarity. Silent rows establish only suppression and cannot reveal the kernel's hidden `NotFired`/`Unknown` distinction. The historical validation record (`docs/archived/VALIDATION-RAW-EVIDENCE.md` at `a050f150`) preserves the removed source projections and exact migration checkpoint.
 
 ## Law and non-law index
 

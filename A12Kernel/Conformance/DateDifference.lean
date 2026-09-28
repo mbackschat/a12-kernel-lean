@@ -118,7 +118,7 @@ private def dated : TemporalComponents :=
 Until this was measured the family answered whether an operand pair is admitted and never which gate
 refused it, so two Kernel codes collapsed onto one unmapped error — a spec clause without an
 executable counterpart. The rows below are a12-dmkits' grid at reviewed `48a24aec9`, both units
-across the Base-Year axis ([`SPEC-2026-09-21-03`](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-21-03)).
+across the Base-Year axis (`SPEC-2026-09-21-03`).
 
 The mixed pair is the separating one: it is the only row where `months` and `years` answer
 *different* grounds on identical operands, and a grid carrying only it reports the mixture's class as

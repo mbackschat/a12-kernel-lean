@@ -26,7 +26,7 @@ A Rust developer receives these project-local artifacts and does not need the ke
 - the generated positive support declaration in [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json);
 - the language-neutral 16-case suite in [`single-group-correlation-v2.conformance.json`](../reference/single-group-correlation-v2.conformance.json);
 - its runnable request/response files under [`examples/reference-cli/`](../examples/reference-cli/), beginning with [`correlation-direction.request.json`](../examples/reference-cli/correlation-direction.request.json);
-- the compact validation [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), its typed [`ValidationProjection.lean`](../A12Kernel/Evidence/ValidationProjection.lean) consumer, and the [archive](archived/VALIDATION-RAW-EVIDENCE.md) for removed raw provenance and recovery;
+- the compact validation [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), its typed [`ValidationProjection.lean`](../A12Kernel/Evidence/ValidationProjection.lean) consumer, and the archive (`docs/archived/VALIDATION-RAW-EVIDENCE.md` at `a050f150`) for removed raw provenance and recovery;
 - the current `a12-kernel-reference` executable for development differentials;
 - the standalone `checkCandidateConformance` runner for any command-line implementation;
 - the theorem and checked-non-law audit links in this document.
@@ -117,7 +117,7 @@ And StockQty(Inner) == StockQty(Outer)
 
 ## Evidence-to-decision map
 
-Every runtime row below is a public record in the compact validation bundle. The candidate process pins that bundle, requires the suite case's exact normalized request to equal the retained input, and requires its expected `firingRows` projection to equal the retained observation. Its self-test rejects a changed request, changed projected response, or alias to another existing evidence case. Groovy-dynamic kernel, static-Java kernel, a12-dmkits, retained external messages, and the Lean projection agree for these exact cases. The public operation exposes only firing membership; richer historical message signatures and polarity are recoverable through the [validation archive](archived/VALIDATION-RAW-EVIDENCE.md), not part of this public response.
+Every runtime row below is a public record in the compact validation bundle. The candidate process pins that bundle, requires the suite case's exact normalized request to equal the retained input, and requires its expected `firingRows` projection to equal the retained observation. Its self-test rejects a changed request, changed projected response, or alias to another existing evidence case. Groovy-dynamic kernel, static-Java kernel, a12-dmkits, retained external messages, and the Lean projection agree for these exact cases. The public operation exposes only firing membership; richer historical message signatures and polarity are recoverable through the validation archive (`docs/archived/VALIDATION-RAW-EVIDENCE.md` at `a050f150`), not part of this public response.
 
 | Case | Decision locked | Expected `firingRows` |
 |---|---|---:|
@@ -245,7 +245,7 @@ Candidate execution has a 10-second invocation deadline, 1-second cleanup deadli
 
 The suite pins exact full responses for its 16 current cases, including diagnostic `at` and `details` objects. A future compatible protocol implementation may add diagnostic detail members for ordinary consumers, as documented in [`PROTOCOL.md`](PROTOCOL.md#responses), but that future version must update the conformance policy or fixtures deliberately; adding details to a candidate claiming this exact suite identity will fail structural comparison.
 
-The historical 0.2.0 documentation audit and its corrections are retained in the [archived experiment record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). It was not an executable V2 candidate qualification.
+The historical 0.2.0 documentation audit and its corrections are retained in the archived experiment record (`docs/archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md` at `a050f150`). It was not an executable V2 candidate qualification.
 
 ## Seeded divergence exercise
 
