@@ -36,6 +36,11 @@ private def evaluate (accumulated : ResolvedNumberEntityAggregateSides)
 
 end ResolvedNumberEntityAggregateSides
 
+/-- The aggregate over an operand that reaches no cell, the same fold every slot runs with nothing
+appended. -/
+def NumericAggregateOp.overNoCells (op : NumericAggregateOp) : NumericOperand :=
+  ({} : ResolvedNumberEntityAggregateSides).evaluate op
+
 namespace CheckedNumberEntityField
 
 /-- Classify one checked direct slot through the declaration-owned Number reader at the caller's phase. -/

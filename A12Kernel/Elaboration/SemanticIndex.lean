@@ -21,7 +21,8 @@ general case and only needs the target's id.
 Two boundaries stay outside deliberately. This project performs no lexing, so an authored literal key
 reaches the surface already decoded into the identity its index field uses, and the Kernel's
 declaration-format check on that token — `MVK_INDEX_VALUE_INVALID`, which rejects `For "250"` against
-a `minFractionalDigits = 2` field — therefore has no representation here. Repeatable field-valued
+a `minFractionalDigits = 2` field — is [`IndexKeyShape`](IndexKeyShape.lean)'s, which this decoded
+surface does not consume. Repeatable field-valued
 keys, nested indices, and concrete syntax also remain outside.
 -/
 

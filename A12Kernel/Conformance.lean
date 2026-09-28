@@ -99,6 +99,7 @@ import A12Kernel.Conformance.OperandAddressingScope
 import A12Kernel.Conformance.CharsetSpec
 import A12Kernel.Conformance.SemanticIndexAdmission
 import A12Kernel.Conformance.IndexKeyShape
+import A12Kernel.Conformance.KeyedStarNumberAggregate
 import A12Kernel.Conformance.EnumerationCategoryConstant
 import A12Kernel.Conformance.ConstructedDateComponents
 import A12Kernel.Conformance.ConstructedDateDay
