@@ -58,13 +58,13 @@ The codes stay usable as refusal-class identities, because the bracketed key is 
 
 The reusable provenance route is the measurement checkout's own `../a12-rulekit-measure/scripts/prepare-dmtool-source.sh` — a12-dmkits' script, not this repository's, and the prefix is load-bearing because `scripts/` here resolves to a directory that has never held it. It accepts only the checkout's exact clean HEAD, reuses or rebuilds the JVM launcher as needed, and verifies its reported revision before returning it. Each retained observation records the actual launcher and kernel versions from that run rather than inheriting the historical 2026-08-06 launcher identity. [`TESTING.md`](TESTING.md#structured-dmtool-probes-and-feedback) owns the probe method and the required persisted-read-back check.
 
-**Two checkouts, and measurement runs in the second one.** `../a12-rulekit` stays the source of truth for reading peer code, findings, and specs, and remains strictly immutable. Observation commands run instead in the owner-approved read-only measurement checkout `../a12-rulekit-measure`, **pinned to a12-dmkits `2304a684939621a8848e1261be9ab8e6278dc532`**, re-pinned 2026-09-22 from `9c86459b352f7989b9dbdae80f71e6dd6cec6066` — deliberately, because `computeResults` and the inline-document fidelity fix land at `526778fa7`, which the previous pin predates, and the [applied-state measurement](sources/evaluation-and-application-routes.md#src-errored-target-applied-state) needs both.
+**Two checkouts, and measurement runs in the second one.** `../a12-rulekit` stays the source of truth for reading peer code, findings, and specs, and remains strictly immutable. Observation commands run instead in the owner-approved read-only measurement checkout `../a12-rulekit-measure`, **pinned to a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`**, re-pinned 2026-09-28 from `2304a684939621a8848e1261be9ab8e6278dc532` at the owner's request, the peer's `main` having advanced by several hundred commits, including the [`-27a` letter's](#inbound-2026-09-27a-provenance) landings, since the previous pin.
 
-The launcher was rebuilt at that pin and reports it clean through the same `prepare-dmtool-source.sh` route, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, catalog verified against 30.8.1; both checkouts read clean before and after. Receipts stamped an earlier pin stay valid as identities of their own bytes and are not comparable with a hash produced after a re-pin. The [2026-09-21 dispositions](#inbound-2026-09-21-corrections) own the previous re-pin.
+The launcher was rebuilt at that pin and reports it clean through the same `prepare-dmtool-source.sh` route, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, catalog verified against 30.8.1; both checkouts read clean before and after. Receipts stamped an earlier pin stay valid as identities of their own bytes and are not comparable with a hash produced after a re-pin. The pin before this one was `2304a6849`, taken 2026-09-22 from `9c86459b3` because `computeResults` and the inline-document fidelity fix land at `526778fa7`, which the [applied-state measurement](sources/evaluation-and-application-routes.md#src-errored-target-applied-state) needs; the [2026-09-21 dispositions](#inbound-2026-09-21-corrections) own the re-pin before that.
 
 The root [`CLAUDE.md`](../CLAUDE.md) carve-out owns the exception's limits, and nothing in it permits editing, staging, or extending either checkout. The reason is availability rather than capability: the primary checkout is normally dirty because a peer session is working it, and the preparation script refuses a dirty tree, which had reduced kernel correspondence to windows lasting under a minute.
 
-The pin before the current one was taken 2026-09-08 from `6a669c56d`, for the reasons its [record](#inbound-2026-09-08-instrument) owns, and was verified there as `dmtool` 0.13.0, source clean, kernel `30.8.1` built and runtime.
+The 2026-09-08 pin, two before the current one, was taken from `6a669c56d` for the reasons its [record](#inbound-2026-09-08-instrument) owns, and was verified there as `dmtool` 0.13.0, source clean, kernel `30.8.1` built and runtime.
 
 Receipts stamped an earlier pin keep their meaning, because a pin is recorded and never rewritten — which is the point of recording it. Re-pin the measurement checkout only deliberately, for an upstream instrument fix this project actually needs, and record the new revision here in the same change.
 
@@ -196,56 +196,64 @@ Moved to [`archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md`](archived/S
 <a id="inbound-2026-09-06a"></a>
 - [Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged](archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md#inbound-2026-09-06a)
 
-### Inbound 2026-09-27 handback
+### Inbound 2026-09-27a handback
+
+<a id="inbound-2026-09-27a-provenance"></a>
+#### Reviewed 2026-09-27a handback — a variant filter drops a field from the default-variant checks but not from the authored model, so the index and sort nominations' invalid classes are reachable, and nine clauses gain measured rows
+
+a12-dmkits `main` at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, read on 2026-09-28; every revision cited below is an ancestor of it. The letter is the peer's `-2026-09-27a`, delivered by the user with SHA-256 `f9e639a37a25dc09f26c680487a3d59dcb66e27ce8aa6bf892ac9db4b328c65e`. The locks named below were read at their landing revisions, not run here. It answers no ledger entry and creates none; its §0 re-reads the ledger, which [`-27`](#inbound-2026-09-27-completed-steps) already recorded.
+
+Its §§2, 4–8, 12–15, 17, 19–24, 26, 28, 31–40.18, 40.21–40.29, 40.31, 40.34–40.37, 40.39–40.40, 40.44–40.45 and 40.50–40.51 report the peer's own parser, report-stream, performance, adoption-registry and interpreter work, recorded as no claim. Its §38 offers the peer's systematic parser and report model for independent judgment; this project models no parser or report stream, so no part is adopted, and the distinctions it relies on that are Kernel behaviour reach `spec/12` through the rows below.
+
+<a id="inbound-2026-09-27a-variant-filter-stages"></a>
+**Claim.** Its §§1, 3 and 25 (`FieldVariantStageLawsTest` at `b74762add`, `193d42268` and `69497f567`), an own-domain `/Order` with String, Enumeration, Number and Date fields, each defect held fixed while the field's filter is absent, `ONLY ["premium"]` or `ALL_EXCEPT ["premium"]`, 139 and then 78 inputs with every unmutated control admitted. The rows are [`spec/01`](../spec/01-data-model.md)'s filter clause, which now names what an `ONLY` field keeps and loses; its §3 corrects the peer's `KF329` as attribution only. The duplicated-enumeration row keeps only the codeless refusal under `ONLY`; the letter's §26 line keeping its value-duplicate class is the peer's checker ledger.
+
+<a id="inbound-2026-09-27a-index-and-sort-lookup"></a>
+Its §27 and §1's last row (`FieldVariantStageLawsTest.orderingLookupRows` at `b75cc6a6c`), `/Order/Key` beside a repeatable `/Order/Items` holding `Key` and `Spare`, each of fifteen scenarios on an index and a sort nomination. The rows are [`spec/03`](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique)'s nomination clause. **They defeat this project's [checkpoint](sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) that the two name-resolution classes are unreachable from DM-JSON**, which searched no variant filter; the peer's explicit request that the bounded lookup and local-type distinctions be taken is met there.
+
+<a id="inbound-2026-09-27a-token-demand"></a>
+Its §§9–11 (`A12ParseTraceTest` at `019a4eb81`, `a365fc3e5` and `9f2d4a524`), §16 (`numericNamesFollowTheirRecognizedRoleAndCompletion` at `22e111786`) and §18 (`operationTypesFollowTheirChildrenAndCompletion` at `9fb8c24f6`), each through the Kernel's parse trace and whole-model admission. The pairs that place a demanded token are [`spec/12`](../spec/12-concrete-syntax.md)'s; §11's marked reads agree with [`spec/07`](../spec/07-repetition-and-iteration.md)'s marked-read clause, §16's unquoted keys with [`spec/08`](../spec/08-paths-and-references.md)'s, and §18's classes with the owning `spec/04`–`spec/07` clauses, its operand-list `Min` rows with the first-operand family rule [`TemporalExtremumOperands`](../A12Kernel/Elaboration/TemporalExtremumOperands.lean) already cites.
+
+<a id="inbound-2026-09-27a-number-literal-whitespace"></a>
+Its §40.15 (`ConformanceFrontierTest.numericTokenBoundariesDistinguishWhitespaceFromComments` at `2d29b728b`), a one-fraction-digit `/Order/Amount` compared with `-2.5` and `2.5`, validated on five documents under dynamic Groovy and generated Java. The rows are [`spec/12`](../spec/12-concrete-syntax.md)'s sign paragraph.
+
+<a id="inbound-2026-09-27a-field-message-render"></a>
+Its §40.30 (`FieldTypeMessageTextLawsTest.aMessageWithoutAPatternDependsOnItsLocaleAndText` at `1a6e7d54f`) and §40.33 (`FieldConstraintFormalDiffTest.fieldTypeMessageRuntimeGrid` at `6e621795b`), the latter nine templates on a String pattern and on an Enumeration's invalid value with labels in `en_US` and `de_DE`, each model admitted before `validateFull` on both strategies. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s field-message clauses; the render rows discharge the assumption [SG25](gaps/strings-and-messages.md#gap-sg25) recorded.
+
+<a id="inbound-2026-09-27a-element-paths"></a>
+Its §§40.20 and 40.22 (`ElementPathStageLawsTest` at `829f87b9c` and `633c959aa`), twenty-four and then six names on a root group, a nested group and a field, each with a plain and a tabbed pattern message under the three filters, 432 and 108 inputs. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s declared-name and path-withholding clauses; the codeless notification beside a path class is recorded with its stage unestablished, as the peer states it.
+
+<a id="inbound-2026-09-27a-current-repetition"></a>
+Its §40.41 (`PathGatePopulation.repetitionRows` at `e975b4258`), `/Policy` with a root `Total`, a fixed `Fixed` and a repeatable `Repeating`, each holding `Amount`, 24 inputs. The cascade is [`spec/08`](../spec/08-paths-and-references.md)'s `CurrentRepetition` clause.
+
+<a id="inbound-2026-09-27a-keyed-lower-lists"></a>
+Its §40.52 (`SemanticIndexWildcardPlacementLawsTest` at `f7d3b75a4`), an indexed `Packages` over a repeatable `Parcels`, twenty-four rows and a six-row group-count control. The rows are [`spec/08`](../spec/08-paths-and-references.md)'s admission paragraph. Its §40.43 (`PatternComparisonOperandLawsTest` at `88ce5b704`) puts a keyed cell under `PatternMatched`, the kind class answering ahead of the pattern on a Number, as `spec/06`'s pattern gates already order them.
+
+<a id="inbound-2026-09-27a-index-key-dialect"></a>
+Its §§40.46–40.51 (`JavaPatternModelPopulation` and `CheckerNearMissSweepTest` at `fd4ac4e02`, `ca9f48a48`, `fcb8ace42`, `4415b2712` and `9940e42da`), a typed `/Policy` whose String index field varies its pattern or length bounds under one keyed `Sum`, a kept key drawing `MVK_PARAMSIZE_INVALIDN` and a refused one `MVK_INDEX_VALUE_INVALID`. The line-terminator rows and the dialect are [`spec/08`](../spec/08-paths-and-references.md)'s String-key sentence.
+
+<a id="inbound-2026-09-27a-keyed-parent-stars"></a>
+Its §40.38 (`KeyedGroupFieldListDiffTest` at `378704305`), a keyed `Packages` whose `P1` holds two weighted `Items`, the Kernel's own firing on both strategies as the expectation. The rows are [`spec/08`](../spec/08-paths-and-references.md)'s selection paragraph.
+
+<a id="inbound-2026-09-27a-consistent"></a>
+Its §§29–30 (`CheckerCompositionSweepTest` at `1152707d0` and `a7e37efe0`) find a left child's failure answering before a right child's inside nested `Abs`, `RoundDown`, `Min` and `Max`, on rules and computations in both languages, as each operation is checked where its production closes in [`spec/12`](../spec/12-concrete-syntax.md); §40.19 (`A12ReportStreamTest.conditionFailuresWithholdOnlyTheMessageContentStage` at `45ef1562a`) finds six more condition classes withholding the message checker's, as [`spec/11`](../spec/11-messages-and-custom.md) states; §40.42 reapplies the peer's measured `KF458` rows.
+
+**Lean.** Corrected docstrings and two locks. [`IndexAndSortDeclaration`](../A12Kernel/Elaboration/IndexAndSortDeclaration.lean) and its [locks](../A12Kernel/Conformance/IndexAndSortDeclaration.lean) no longer call the name-resolution arms unreachable, and `NominatedTarget` now says the default variant's short-name namesake decides; the cascade itself was already total and unchanged. [`StringPatternMessage`](../A12Kernel/Conformance/StringPatternMessage.lean) locks `Cost $$` and `$$` rendering verbatim. No Lean surface carries a variant filter, a parser, a field's name alphabet, a no-pattern message or a keyed lower-star operand, so those rows have none; `CurrentRepetition`'s cascade is [SG19](gaps/paths-and-groups.md#gap-sg19)'s.
+
+### Inbound 2026-09-26o through 2026-09-27 handbacks
+
+Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-27-completed-steps"></a>
-#### Reviewed 2026-09-27 walked-step, comment and count handback — a walked path checks only the steps whose production completed, a comment is a token the grammar places, and the peer confirms `SPEC-2026-09-26-05` on its own fixture
-
-a12-dmkits revision `936bf2c427213122299e7ebbc79cfb49563e579d` on `main`, read on 2026-09-27; the peer reports every row green at its ancestor `45168bd8f340a2aa279c38f544fbe12d1725fb17`, and only two documentation files differ between the two. The letter is the peer's `-2026-09-27`, frozen as sent in the user's exchange directory with SHA-256 `3afdf3bb1b8b37e71d9657e3c57423431a6940508317dd1e0c529369e503248f`. The locks were read at that revision, not run here. Its §1 replaces one sentence of [`-26p`](#inbound-2026-09-26p-walked-path) §1, and its §3 answers [`SPEC-2026-09-26-05`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-26-05). Its §4 offers hypotheses and its §5 the peer's own records, recorded as no claim.
-
-**Claim.** Its §1 (`EntityProductionCloseLawsTest.aWalkedPathChecksEachStepItCompletesEvenWhenItNeverCloses`, the `-26p` fixture), each condition `FieldFilled(Code) And` an operand from `/Policy`. `FieldFilled(Items*/NoSuch.)` draws `MVK_UNEXPECTED_TOKEN` beside `FieldFilled(Items*/NoSuch/)`'s `MVK_INVALID_ENTITY`, `FieldFilled(NoSuch.*/Items/)` and `FieldFilled(NoSuch.*/Items)` draw `MVK_INVALID_ENTITY`, and `FieldFilled(Items.*/Count)` `MVK_POINT_IN_A12_MODEL`. The method is the one `-26p` cited under another name, which stated the broader reading.
-
+- [Reviewed 2026-09-27 walked-step, comment and count handback — a walked path checks only the steps whose production completed, a comment is a token the grammar places, and the peer confirms `SPEC-2026-09-26-05` on its own fixture](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-27-completed-steps)
 <a id="inbound-2026-09-27-comment-placement"></a>
-Its §2 (`ConditionCommentPlacementLawsTest`), `/Policy` with the String `Code` and the Number `Premium`, a comment `;;c` ending at a line feed. It is admitted before a branch after `And`, after a branch before `And`, and before an arithmetic operand after `+`, and draws `MVK_UNEXPECTED_TOKEN` inside `FieldFilled(…)` and before `RoundUpValue`'s place count. The letter calls the grammar sketch consistent with the admitted rows; its `branch` production does not spell the arithmetic-operand position, which `spec/12` now names.
-
+- [Reviewed 2026-09-27 comment-placement rows — a comment is a token the grammar places](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-27-comment-placement)
 <a id="inbound-2026-09-27-count-and-list"></a>
-Its §3, the peer's own fixtures with every class predicted from the entry's delta before the run. `SoleGroupCountPlacementLawsTest`: an error field outside the counted group draws `MVK_NO_WILDCARD`, and seven placements with the error field in the counted group or a child of it, from the group, the root, a fixed group between, an enclosing repeatable group, the second level and a repeatable root, draw `MVK_PARAMSIZE_INVALIDGN`.
-
-`DateRangeOverlapListGateOrderLawsTest`: over a repeatable root `/Contract`, `Term In` `Grace` is admitted, `Term` draws `MVK_DUPLICATE_PARAM1`, `/Contract` `MVK_ROOT_GROUP_REFERENCED`, `Term, /Contract*` `MVK_DUPLICATE_PARAM2`, `Term, Serial` and `Serial` `MVK_VARYING_TYPES_NOT_ALLOWED`, and `Serial, Serial` `MVK_DUPLICATE_PARAM1`. `FieldTypeMessageTextLawsTest`: a non-ASCII letter in a String pattern message's parameter draws `INVALID_PARAMETER`. No row places the error field outside the rule's group or pairs the list with an interpreted scalar, so those two parts of the entry rest on this project's grids alone.
-
-**Lean.** No change. This project models no parser, so §1's and §2's texts have no spelling, and §3's classes are already locked beside this project's own rows.
-
-### Inbound 2026-09-26p handback
-
+- [Reviewed 2026-09-27 count-placement and overlap-list rows — the peer confirms `SPEC-2026-09-26-05` on its own fixture](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-27-count-and-list)
 <a id="inbound-2026-09-26p-walked-path"></a>
-#### Reviewed 2026-09-26p walked-path and field-copy handback — a `$`-marked, up-run-led or starred path raises its class as it is read even when it never closes, and the peer confirms `SPEC-2026-09-26-04` on its own fixture
-
-a12-dmkits revision `4e1a49baf49fa2215c2ec98c7141edd0200d6ab8` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26p`, frozen as sent in the user's exchange directory with SHA-256 `1ced5086aadeddfa217137f139a04845427c9e0ac127cb7b9cbf0a6d80ee5d8f`. The locks were read at that revision, not run here. Its §1 replaces one sentence of `-26o` §1, and its §2 answers [`SPEC-2026-09-26-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-26-04). Its §3 reports the peer's own records and is recorded as no claim.
-
-**Claim.** Its §1 (`EntityProductionCloseLawsTest.aWalkedPathIsResolvedAsItIsReadEvenWhenItNeverCloses`), rule group `/Policy` with the String `Code`, the Number `Premium` and the repeatable `Items` holding the Number `Count`, each condition `FieldFilled(Code) And` an operand. `FieldFilled(Items*/NoSuch/)` and `FieldFilled(NoSuch/Items*/)` draw `MVK_INVALID_ENTITY`, `FieldFilled(/NoRoot/Items*/)` `MVK_INVALID_ROOT_GROUP`, and `FieldFilled(Items/NoSuch/)`, `FieldFilled(/NoRoot/)` and `FieldFilled(Items*/Count/)` `MVK_UNEXPECTED_TOKEN`.
-
-In a `Having` body of `AtLeastOneFieldFilled(Items*/Count Having [Items/Count] == …)`, `[$NoSuch/]` draws `MVK_INVALID_ENTITY`, and `[NoSuch/]` and `[$Items/]` `MVK_UNEXPECTED_TOKEN`. From `/Policy/Claim/Cover`, `FieldFilled(Limit) And FieldFilled(../NoSuch/)` draws `MVK_INVALID_ENTITY`.
-
-Its §2 (`CheckerFieldCopyCrossAgreementTest`), the peer's own eleven declarations and twins, 121 cross cells and six further rows, predicted from the arm order and drawn by the Kernel on all 127. It confirms the arm order and both Enumeration rows of `SPEC-2026-09-26-04`, and adds a limit: the three temporal kinds carry three different formats, so its rows do not separate the kind question from the format question.
-
-**Lean.** No change. For §1 this project models no parser, so no text has a spelling. For §2 the [field-copy locks](../A12Kernel/Conformance/FieldCopyComparison.lean) already hold the confirmed order and rows.
-
-### Inbound 2026-09-26o handback
-
+- [Reviewed 2026-09-26p walked-path and field-copy handback — a `$`-marked, up-run-led or starred path raises its class as it is read even when it never closes, and the peer confirms `SPEC-2026-09-26-04` on its own fixture](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-26p-walked-path)
 <a id="inbound-2026-09-26o-production-close"></a>
-#### Reviewed 2026-09-26o production-close handback — a reference or an arithmetic chain is checked where its production closes, a star after a bare name is that name's, up-steps chain only through `/`, and only `Time()` takes an empty argument list
-
-a12-dmkits revision `2aa289fb803747f75aaa7c3c35f57ba89d846375` on `main`, confirmed an ancestor of that checkout's `main` when read on 2026-09-26. The letter is the peer's `-2026-09-26o`, frozen as sent in the user's exchange directory with SHA-256 `284007dd908c41aff8ced5c21f909470fbdc940cabebac5af7d93f06a0ac1922`. The locks were read at that revision, not run here. It answers no ledger entry and creates none. Its §1 sentence that an open production raises no reference class holds only for an unwalked path; [`-26p`](#inbound-2026-09-26p-walked-path) replaces it. Its §6 names the grammar's closing actions and non-recovering error strategy as source-read and is recorded as no claim.
-
-**Claim.** Its §1 and §4 (`EntityProductionCloseLawsTest`), each condition `FieldFilled(Limit) And` an operand from `/Policy/Claim/Cover`. `FieldFilled(../../Code)` and `FieldFilled(.. / .. / Code)` are admitted, `FieldFilled(NoSuch Code)` draws `MVK_INVALID_ENTITY`, and `FieldFilled(NoSuch/)` and `FieldFilled(NoSuch/And)` `MVK_UNEXPECTED_TOKEN`. `FieldFilled(..)` draws `MVK_NO_GROUPS_ALLOWED`, and `FieldFilled(.. ..)`, `FieldFilled(.. .. / Code)` and `FieldFilled(..../Code)` `MVK_UNEXPECTED_TOKEN`.
-
-Its §2 and §5 (same lock), each condition `FieldFilled(Code) And` a text from `/Policy`. `[Code] * 2 == "ABC"` draws `MVK_NO_NUMBER_FOR_CALC`. `[Code] * == "ABC"`, `[Code] + * "x" == "ABC"`, `[Premium] - == 1`, `[Code] - PatternViolated "[0-9]{5}"`, `MinValue(Items**Count) > 1`, `MinValue(Items*/Count - 1) > 1` and `MinValue(Items*/Count ^ 2) > 1` draw `MVK_UNEXPECTED_TOKEN`, while `[Premium] * Abs([Premium]) > 1` and `MinValue(Items*/Count) > 1` are admitted.
-
-`FieldFilled(Premium * 2)` draws `MVK_INVALID_WILDCARD` and `FieldFilled(NoSuch * 2)` `MVK_INVALID_ENTITY`. `FieldFilled()`, `Abs() > 1`, `MinValue() > 1`, `Today() > 1`, `[Code -> ] == "x"` and `[Code -> And X] == "x"` draw `MVK_UNEXPECTED_TOKEN`, and `Time() == Time()` is admitted.
-
-Its §3 (`ValueListInfixLanguageLawsTest`), `/Policy` with the Strings `Tier` and `Premium`. `ValueNotConsistent(Tier To Premium, "gold")` in English and `WertNichtKonsistent(Tier Zu Premium, "gold")` in German draw `MVK_TABLE_ENUM_EXPECTED` in all three casings, the other language's spelling `MVK_UNEXPECTED_TOKEN`, and `In` is admitted in both.
-
-**Lean.** No change. This project models no parser, so none of these texts has a spelling, and `SurfaceFieldPath` carries no starred single field.
+- [Reviewed 2026-09-26o production-close handback — a reference or an arithmetic chain is checked where its production closes, a star after a bare name is that name's, up-steps chain only through `/`, and only `Time()` takes an empty argument list](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-26o-production-close)
 
 ### Inbound 2026-09-26m and 2026-09-26n handbacks
 

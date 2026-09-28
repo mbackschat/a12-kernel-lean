@@ -118,12 +118,14 @@ example :
 
 /- **The parameters are Java's `split` pieces, whose trailing empty pieces are dropped**: an empty pair at
    the very end, or alone, names no parameter and is admitted, where the same pair at the start is an
-   empty parameter. The admitted pair renders as literal dollars by the assumption the module states,
-   since no row reads its rendering. -/
+   empty parameter. The admitted pair renders verbatim, `Cost $$` and `$$` measured on both runtime
+   strategies ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-field-message-render)). -/
 example :
     stringPatternTemplateError? "capitals only $$" = none ∧
     stringPatternTemplateError? "$$" = none ∧
     stringPatternTemplateError? "$$ capitals only" = some (.invalidParameter "") ∧
+    stringPatternRender? "Cost $$" = some { text := "Cost $$" } ∧
+    stringPatternRender? "$$" = some { text := "$$" } ∧
     stringPatternRender? "capitals only $$" = some { text := "capitals only $$" } ∧
     stringPatternRender? "$field$$$" = some { text := "Code$$" } := by
   native_decide

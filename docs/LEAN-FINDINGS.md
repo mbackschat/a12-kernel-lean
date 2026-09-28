@@ -2577,3 +2577,11 @@ The [computation-arm capacity checkpoint](sources/group-and-iteration-probes.md#
 **When a correction changes which rows an operand denotes, list every route that resolves that operand form before calling it done, and lock them on one document.** A route is a resolver, not an arm: checked-document, reader and partial are three, and each arm may have all of them.
 
 Related: [[LF195]] on owning a production's gate once, [[LF124]] on pinning an unmeasured side.
+
+## LF198 — a declaration class measured unreachable on the authored model can be reached through the variant, because binding and checking read different models
+
+The [index and sort checkpoint](sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) measured that a nomination naming no direct child fails the build, and concluded that `MVK_INVALID_INDEX_FIELD` and `MVK_INVALID_SORT_FIELD` describe a state no loaded model can be in. The peer then reached both from a loaded model ([inbound](SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)): the nomination binds against the model as authored, which the filter does not touch, and is judged against the default variant, which an `ONLY` filter has already emptied of the field. The measurement was right and the negative it supported was not, because its denominator held one model where the Kernel reads two.
+
+**Before writing that a declaration-time class is unreachable, ask whether a variant filter separates the model that resolves the name from the model that runs the check.** The [filter clause](../spec/01-data-model.md) now lists which checks read which; a gate on the authored side and a class on the variant side is exactly the shape to probe.
+
+Related: [[LF120]] on negative existentials over a surface, [[LF121]] on searching for the values a defeater would carry.

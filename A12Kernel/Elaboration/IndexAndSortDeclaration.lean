@@ -4,7 +4,7 @@ A repeatable group may nominate one **index field** — the row key that arms `R
 
 **The disqualifying property is the one [`ValueFormalCheck.lean`](../Semantics/ValueFormalCheck.lean) already owns.** A String declaration that switches value validation off ends the stored-value pipeline before the technical length cap, storing whatever was authored; a field the Kernel never inspects cannot serve as a row key or a sort key, because both need a comparable value. This is that switch's second consumer, and the first one outside the value pipeline.
 
-**Two of the five classes are shadowed rather than live.** The name-resolution arms cannot be reached from a document model in DM-JSON: a nomination that names no direct child field leaves an unresolved reference, and the model does not load at all — the Kernel reports a build failure with no diagnostic class rather than the nomination class. That is measured on both the index and the sort arm. And the table-enumeration arm inherits [`TableEnumeration.lean`](TableEnumeration.lean)'s constant: no A12 enumeration is a table enumeration, so an index field can never be one.
+**The name-resolution arms are live, reached only through the variant.** A nomination is bound against the model as authored, where a name resolving nowhere fails the build with no class, measured on both arms. It is then judged against the default variant by the group's direct child of that short name, so a nominated field filtered `ONLY`, or a relative `../Key` whose local namesake is absent or filtered, reaches `MVK_INVALID_INDEX_FIELD` and `MVK_INVALID_SORT_FIELD`; this module's earlier reading of those arms as unreachable was defeated by that carrier ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)). The table-enumeration arm inherits [`TableEnumeration.lean`](TableEnumeration.lean)'s constant: no A12 enumeration is a table enumeration, so an index field can never be one.
 
 **The asymmetry worth keeping.** A group carries at most one index field and any number of sort fields, so the index cascade runs once and the sort cascade once per nominated field — but the classes stay distinct per role, which is what lets a consumer say *which* nomination is at fault when a group carries both.
 
@@ -49,8 +49,10 @@ def all : List RowFieldRefusal :=
 
 end RowFieldRefusal
 
-/-- What a nomination resolves to. Absence and a non-field both fail the first arm, and they are
-kept apart because only one of them is what an author usually wrote. -/
+/-- What a nomination resolves to: the group's direct child of the nominated short name in the
+default variant, whose declaration decides even when the nomination is a relative path to another
+field. Absence and a non-field both fail the first arm, and they are kept apart because only one of
+them is what an author usually wrote. -/
 inductive NominatedTarget where
   /-- No direct child of that name. -/
   | unresolved

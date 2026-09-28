@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.IndexAndSortDeclaration
 
 /-! # Locks on the index- and sort-field declaration cascade
 
-The cases pin the cascade's order, the one arm on which the two roles differ, and the four catalog keys a consumer switches on. The two value-validation classes and their accepted controls are measured; the name-resolution arms are modelled from the Kernel's check and shadowed in DM-JSON by an earlier model-build failure, which the [checkpoint](../../docs/SOURCES.md#src-index-and-sort-field-declaration) records as measured in its own right.
+The cases pin the cascade's order, the one arm on which the two roles differ, and the four catalog keys a consumer switches on. The two value-validation classes and their accepted controls are measured; the name-resolution arms are reached by a nominated field the default variant drops, measured by the peer ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)), while a name resolving nowhere in the authored model fails the build first, which the [checkpoint](../../docs/SOURCES.md#src-index-and-sort-field-declaration) records.
 -/
 
 namespace A12Kernel.Conformance.IndexAndSortDeclaration

@@ -12,12 +12,10 @@ is written for ([inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-messag
 **The parameters are the pieces Java's `split` returns**, which drops trailing empty pieces: an empty
 dollar pair inside the text or at its start is an invalid parameter, while one at its very end, or
 alone, names no parameter and is admitted (same inbound). That is not the rule path's literal-dollar
-escape. What an admitted trailing pair renders is unmeasured; this module keeps it as literal dollars,
-because the field producers route their text through one runtime transformer that replaces the fixed
-tokens in the raw text (source-read, not measured), and the requiredness producer is measured to render
-`$$` verbatim
-([ledger](../../docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-07-30-01)), an
-assumption [SG25](../../docs/gaps/strings-and-messages.md#gap-sg25) records.
+escape, and an admitted trailing pair renders verbatim: `Cost $$` renders `Cost $$` and `$$` renders `$$`
+on both runtime strategies
+([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-field-message-render)), so this module keeps the
+pair's dollars as literal text.
 
 Rendering lowers caller-selected bytes directly as opaque text: this producer applies neither the rule
 path's provider/label cascade nor its empty-display default, and it never reclassifies the established
