@@ -43,7 +43,7 @@ For every documentation change:
 2. Apply only the exact triggers below; “not triggered” means the document must remain unchanged.
 3. Search the live documentation for detailed copies of the changed fact.
 4. Replace stale copies with the local consequence and a link, or delete them when they add no local consequence.
-5. Delete completed work from volatile owners. Git history is the work log and archive unless an immutable public or reconciliation record has a distinct continuing audience.
+5. Delete completed work from volatile owners. Git history is the work log and archive unless an immutable public or reconciliation record has a distinct continuing audience. An owner nearing its size ceiling deletes its oldest terminal records and leaves each anchor a one-line pointer to the Git revision that last held its text; it never copies them into a new file under `spec/` or `docs/`, and a clause keeps one discriminating row per branch, citing the revision that holds the rest.
 6. Verify links, stable anchors, and the document's query contract before commit.
 
 The capsule closure assessment in [`TESTING.md`](TESTING.md#same-context-capsule-closure-assessment) must reject an unnecessary document touch, a duplicated detailed fact, an appended completed narrative in an open-only owner, and a new paragraph that leaves superseded prose in place.

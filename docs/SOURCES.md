@@ -207,7 +207,7 @@ a12-dmkits `main` at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, read on 2026-09
 
 Source-read and unmeasured: that look-ahead runs no check, that checks run post-order, and where a path's look-ahead resolves between its two written forms. `spec/12` states each of these only beside the measured rows that witness it, and says which part is the peer's account.
 
-**Classification.** Behavioral and inbound: the class rule and the failure positions are new to [`spec/12`](../spec/12-concrete-syntax.md) §3.1, which now also restates its existing class-order clauses around the three events. Every measured row, code span and provenance link of the two paragraphs it replaces is retained, checked by a multiset comparison of their code spans and links, so no distinction is removed and no outbound entry follows.
+**Classification.** Behavioral and inbound: the class rule and the failure positions are new to [`spec/12`](../spec/12-concrete-syntax.md) §3.1, which now also restates its existing class-order clauses around the three events. `7742f8e34b61f6a799ef60ff01034656fb090fc6` restated them keeping every row, code span and link of the two paragraphs it replaced, checked by a multiset comparison; the next commit kept one discriminating row per branch, so that revision holds the full set, no distinction is removed and no outbound entry follows.
 
 **Lean.** No change. This project models no condition parser, so no clause of §3.1 has an executable counterpart.
 
@@ -257,18 +257,18 @@ Its §§29–30 (`CheckerCompositionSweepTest` at `1152707d0` and `a7e37efe0`) f
 
 ### Inbound 2026-09-26o through 2026-09-27 handbacks
 
-Moved to [`archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md`](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md) when this hub neared its size ceiling. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+Deleted from this hub; the records' full text is `docs/SOURCES.md` at `73595edc0671fd49e6fac7ba192c5b22d0010f7f`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-27-completed-steps"></a>
-- [Reviewed 2026-09-27 walked-step, comment and count handback — a walked path checks only the steps whose production completed, a comment is a token the grammar places, and the peer confirms `SPEC-2026-09-26-05` on its own fixture](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-27-completed-steps)
+- Reviewed 2026-09-27 walked-step, comment and count handback — a walked path checks only the steps whose production completed, a comment is a token the grammar places, and the peer confirms `SPEC-2026-09-26-05` on its own fixture
 <a id="inbound-2026-09-27-comment-placement"></a>
-- [Reviewed 2026-09-27 comment-placement rows — a comment is a token the grammar places](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-27-comment-placement)
+- Reviewed 2026-09-27 comment-placement rows — a comment is a token the grammar places
 <a id="inbound-2026-09-27-count-and-list"></a>
-- [Reviewed 2026-09-27 count-placement and overlap-list rows — the peer confirms `SPEC-2026-09-26-05` on its own fixture](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-27-count-and-list)
+- Reviewed 2026-09-27 count-placement and overlap-list rows — the peer confirms `SPEC-2026-09-26-05` on its own fixture
 <a id="inbound-2026-09-26p-walked-path"></a>
-- [Reviewed 2026-09-26p walked-path and field-copy handback — a `$`-marked, up-run-led or starred path raises its class as it is read even when it never closes, and the peer confirms `SPEC-2026-09-26-04` on its own fixture](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-26p-walked-path)
+- Reviewed 2026-09-26p walked-path and field-copy handback — a `$`-marked, up-run-led or starred path raises its class as it is read even when it never closes, and the peer confirms `SPEC-2026-09-26-04` on its own fixture
 <a id="inbound-2026-09-26o-production-close"></a>
-- [Reviewed 2026-09-26o production-close handback — a reference or an arithmetic chain is checked where its production closes, a star after a bare name is that name's, up-steps chain only through `/`, and only `Time()` takes an empty argument list](archived/SOURCES-INBOUND-HANDBACKS-2026-09-26o-THROUGH-2026-09-27.md#inbound-2026-09-26o-production-close)
+- Reviewed 2026-09-26o production-close handback — a reference or an arithmetic chain is checked where its production closes, a star after a bare name is that name's, up-steps chain only through `/`, and only `Time()` takes an empty argument list
 
 ### Inbound 2026-09-26m and 2026-09-26n handbacks
 
