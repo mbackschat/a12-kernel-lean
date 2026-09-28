@@ -1,3 +1,5 @@
+import A12Kernel.Elaboration.Flat.Model
+
 /-! # A repeatable group's index field and sort fields, and the one property that disqualifies both
 
 A repeatable group may nominate one **index field** — the row key that arms `RepetitionNotUnique`, the semantic index, and parallel iteration — and any number of **sort fields** that order its rows for display. Both nominations are checked at code-generation time, and both run the same short cascade: the name must resolve to a direct child field, that field must not switch value validation off, and an index field must additionally not be a table enumeration.
@@ -50,10 +52,8 @@ def all : List RowFieldRefusal :=
 end RowFieldRefusal
 
 /-- What a nomination resolves to: the group's direct child of the nominated short name in the
-default variant. The caller derives it, and nothing here separates that namesake from the field a
-relative nomination binds to, although the peer measures that the namesake's declaration decides.
-Absence and a non-field both fail the first arm, and they are kept apart because only one of them is
-what an author usually wrote. -/
+default variant, which `FlatModel.nominatedTarget` derives. Absence and a non-field both fail the
+first arm, and they are kept apart because only one of them is what an author usually wrote. -/
 inductive NominatedTarget where
   /-- No direct child of that name. -/
   | unresolved
@@ -75,6 +75,35 @@ def rowFieldRefusal (role : RowFieldRole) : NominatedTarget → Option RowFieldR
         | .indexField => some .indexFieldTableEnum
         | .sortField => none
       else none
+
+/-- Why a nomination fails the build before any class is drawn. The Kernel reports no class for
+either; the cause is kept only so a consumer can say which step refused. -/
+inductive NominationBuildFailure where
+  | invalidModel (cause : ResolveError)
+  | unbound (cause : ResolveError)
+  deriving Repr, DecidableEq
+
+/-- Derive a nomination's target the way the Kernel does: bind the authored path against the model
+as authored, then ask the group's direct child of that short name in the default variant.
+
+The two steps can read different fields. `../Key` binds to the parent's `Key`, but the local `Key`
+is judged, so the parent's variant filter or value-validation switch changes nothing while the local
+one's decides ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)).
+`dropped` lists the fields a variant filter `ONLY` removes from the default variant; `ALL_EXCEPT`
+keeps the field, so it is simply not listed. The model must validate, which excludes the peer's two
+same-named siblings told apart only by their filters: this model cannot declare two fields at one
+path. -/
+def FlatModel.nominatedTarget (model : FlatModel) (dropped : List FieldId)
+    (group : GroupPath) (nomination : SurfaceFieldPath) :
+    Except NominationBuildFailure NominatedTarget := do
+  if let .error cause := model.validate then throw (.invalidModel cause)
+  let _ ← model.resolveFieldDeclarationUnchecked group nomination |>.mapError .unbound
+  let name := nomination.field
+  match model.fields.find? fun field =>
+      field.groupPath == group && field.name == name && !dropped.contains field.id with
+  -- No A12 enumeration is a table enumeration (`TableEnumeration.lean`), so the arm stays false.
+  | some field => pure (.field field.isRawString false)
+  | none => pure (if model.hasGroupPath (group ++ [name]) then .group else .unresolved)
 
 /-- A repeatable group's row-key declarations: at most one index nomination, any number of sort
 nominations. -/
