@@ -1,0 +1,23 @@
+A0	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check.	-
+A1	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store$.	-
+A2	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/Store$.	-
+A3	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Beside$.	INVALID_GROUP
+A4	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/Beside$.	INVALID_GROUP
+A5	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/Deep$.	INVALID_GROUP
+A6	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/Store/Deep$.	INVALID_GROUP
+A7	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe$.	-
+B0	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/Deep/Y)	Check.	-
+B1	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/Deep/Y)	Check $#Store$.	-
+B2	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/Deep/Y)	Check $#Store/Deep$.	-
+B3	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/Deep/Y)	Check $#/Probe/Store/Deep$.	-
+B4	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/Deep/Y)	Check $#Deep$.	INVALID_GROUP
+C0	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check.	-
+C1	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#Store$.	INVALID_GROUP
+C2	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#../Store$.	-
+C3	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#../Beside$.	INVALID_GROUP
+C4	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#Deep$.	INVALID_GROUP
+D0	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(Deep/Y)	Check.	-
+D1	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(Deep/Y)	Check $#Deep$.	-
+E0	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(/Probe/Beside/Z)	Check.	-
+E1	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(/Probe/Beside/Z)	Check $#../Beside$.	-
+E2	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(/Probe/Beside/Z)	Check $#/Probe/Beside$.	-

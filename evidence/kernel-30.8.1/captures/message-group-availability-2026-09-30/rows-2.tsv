@@ -1,0 +1,14 @@
+F0	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(/Probe/Beside/Z)	Check.	-
+F1	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#..$.	?
+F2	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(/Probe/Beside/Z)	Check $#..Probe/Beside$.	-
+F3	/Probe/Store/X	/Probe/Store	FieldFilled(X) And FieldFilled(/Probe/Beside/Z)	Check $#..Wrong/Beside$.	?
+F4	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#../Store$.	?
+F5	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/Nope$.	?
+F6	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Nope$.	INVALID_GROUP
+F7	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/$.	MVK_INCOMPLETE_INPUT
+F8	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/Deep/Y)	Check $#Store//Deep$.	MVK_UNEXPECTED_TOKEN
+F9	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#'Store'$.	-
+F10	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/X$.	INVALID_GROUP
+F11	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#../../Probe$.	?
+F12	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#../Store$.	-
+F13	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#'Store$.	MVK_LEXER_STANDARD_ERROR

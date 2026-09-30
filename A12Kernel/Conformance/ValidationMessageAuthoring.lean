@@ -631,10 +631,10 @@ private def headGroupError? (template : String) :
     Option ValidationMessageTemplateError :=
   pathTemplateError? ["Order", "Head"] (bare "Amount") template
 
-/- The **group position** `$#...$`. Measured at kernel 30.8.1, the admitted set is the rule's own group
-together with its ancestors, so containment runs the opposite way from the computation declaring-group
-gate: the *named* group must contain the rule's group. The two keyword shorthands name the endpoints of
-that chain and are admitted here for the same reason, not as separate admissions — but **`RuleGroup`
+/- The **group position** `$#...$`. Measured at kernel 30.8.1, the rule's own group and its ancestors
+are always available, which is the arm these rows exercise; a group the condition reads into is the
+other arm, locked below. The two keyword shorthands name the endpoints of the ancestor chain and are
+admitted here for that reason, not as separate admissions — but **`RuleGroup`
 additionally carries a placement condition**, so that shared reason is not the whole rule: a rule
 sitting directly in the root group may not write `$#RuleGroup$` at all, while `$#RootGroup$` and the
 absolute spelling of that very group are both admitted from the same locus. The rows here are one
@@ -650,10 +650,10 @@ example :
       headGroupOk? "In $#RootGroup$" = some true := by
   native_decide
 
-/- The refused half, and the separator that makes containment the operative gate rather than mere
+/- The refused half, and the separator that makes availability the operative gate rather than mere
 existence: `/Order/Head/Deeper` and `/Order/Side` are groups this model really **declares**, and both
-are refused exactly like the unknown `/Order/Nope`. A descendant is therefore refused for being below
-the rule, not for being absent. -/
+are refused exactly like the unknown `/Order/Nope`, because this condition reads nothing inside either.
+The same two groups are admitted once the condition reads into them, below. -/
 example :
     headGroupError? "In $#/Order/Head/Deeper$" =
         some (.invalidGroupParameter "#/Order/Head/Deeper") ∧
@@ -663,13 +663,75 @@ example :
         some (.invalidGroupParameter "#/Order/Nope") := by
   native_decide
 
-/- The leading separator is **required** rather than conventional. `Head` is the rule's own group and
-`Order` its ancestor, both admitted when spelled absolutely above; spelled relatively neither is, and a
-field name in this position is refused like any other word. -/
+/- A path without the leading separator is **relative to the rule's group**, so a bare word names a
+group *below* it. `Head` is the rule's own group and `Order` its ancestor, both admitted when spelled
+absolutely above, but spelled bare they name `/Order/Head/Head` and `/Order/Head/Order`, which do not
+exist; a bare word is not looked up as the short name of a group elsewhere. A field name in this
+position is refused like any other word
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-availability)). -/
 example :
     headGroupError? "In $#Head$" = some (.invalidGroupParameter "#Head") ∧
       headGroupError? "In $#Order$" = some (.invalidGroupParameter "#Order") ∧
       headGroupError? "In $#Amount$" = some (.invalidGroupParameter "#Amount") := by
+  native_decide
+
+/- A group the condition **reads into** is available whatever its position relative to the rule: the
+root-group rule reading `Head/Deeper/Deep` admits the descendant `Deeper`, and the intermediate `Head`
+that holds no read field directly, in the relative and the absolute spelling alike. The same rule still
+refuses the unread sibling, an unknown relative group, and a relative path naming the read field
+itself; and a bare `Deeper`, which is available by path, is refused because nothing named so sits
+directly below the rule's group
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-availability)). -/
+example :
+    let deep := pathAt (.relative 0) ["Head", "Deeper"] "Deep"
+    pathTemplateOk? ["Order"] deep "In $#Head$" = some true ∧
+      pathTemplateOk? ["Order"] deep "In $#Head/Deeper$" = some true ∧
+      pathTemplateOk? ["Order"] deep "In $#/Order/Head/Deeper$" = some true ∧
+      pathTemplateOk? ["Order"] deep "In $#'Head'$" = some true ∧
+      pathTemplateError? ["Order"] deep "In $#Deeper$" =
+        some (.invalidGroupParameter "#Deeper") ∧
+      pathTemplateError? ["Order"] deep "In $#Side$" =
+        some (.invalidGroupParameter "#Side") ∧
+      pathTemplateError? ["Order"] deep "In $#Head/Nope$" =
+        some (.invalidGroupParameter "#Head/Nope") ∧
+      pathTemplateError? ["Order"] deep "In $#Head/Deeper/Deep$" =
+        some (.invalidGroupParameter "#Head/Deeper/Deep") := by
+  native_decide
+
+/- A **read sibling** is available too, so availability is not containment in either direction. From
+`/Order/Head` reading `/Order/Side/Aside`, the sibling is admitted by a parent walk, by an absolute
+path, and by a walk whose turning point names the group it reaches; a turning point naming another
+group is refused on the Kernel's entity class, not the group one. -/
+example :
+    let aside := pathAt .absolute ["Order", "Side"] "Aside"
+    pathTemplateOk? ["Order", "Head"] aside "In $#../Side$" = some true ∧
+      pathTemplateOk? ["Order", "Head"] aside "In $#/Order/Side$" = some true ∧
+      pathTemplateOk? ["Order", "Head"] aside "In $#..Order/Side$" = some true ∧
+      pathTemplateError? ["Order", "Head"] aside "In $#..Wrong/Side$" =
+        some (.groupTurningPointMismatch "#..Wrong/Side") := by
+  native_decide
+
+/- A parent walk reaches the ancestor arm, and one that climbs past the root group is refused on the
+message route's own above-root class. A bare `..` names the parent itself. -/
+example :
+    headGroupOk? "In $#..$" = some true ∧
+      headGroupOk? "In $#../Head$" = some true ∧
+      headGroupError? "In $#../Side$" = some (.invalidGroupParameter "#../Side") ∧
+      headGroupError? "In $#Deeper$" = some (.invalidGroupParameter "#Deeper") ∧
+      headGroupError? "In $#../../Order$" =
+        some (.groupParameterAboveRoot "#../../Order") ∧
+      pathTemplateError? ["Order"] (bare "Other") "In $#../Head$" =
+        some (.groupParameterAboveRoot "#../Head") := by
+  native_decide
+
+/- A relative spelling meets the same three lexical classes as an absolute one. -/
+example :
+    headGroupError? "In $#Deeper/$" =
+        some (.groupParameterLexical "#Deeper/" .truncated) ∧
+      headGroupError? "In $#Deeper//Deep$" =
+        some (.groupParameterLexical "#Deeper//Deep" .separator) ∧
+      headGroupError? "In $#'Deeper$" =
+        some (.groupParameterLexical "#'Deeper" .quote) := by
   native_decide
 
 /- Two historic terminals are **recognized** in this position and refused on their own class, which the
@@ -706,8 +768,8 @@ the Kernel refuses exactly one of them. A rule sitting directly in the root grou
 from the identical locus
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-rulegroup-root-gate-on-the-rule-carrier)).
 So the gate is on the word, not on the position: the group is nameable there twice over. The group
-below — admitted as the *rule's own* group one row above — is still refused here, so containment
-tracks the rule's position rather than the group's own depth. -/
+below — admitted as the *rule's own* group one row above — is still refused here, because this
+condition reads nothing inside it. -/
 example :
     pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup$" =
         some (.ruleGroupImmediatelyBelowRoot "#RuleGroup") ∧
@@ -735,8 +797,8 @@ example :
 
 /- Quoting is not merely erased, though: it **suppresses** the keyword reading. Each of these three
 words is a terminal in this position unquoted — two admitted, one on the retired class — and quoting
-all three turns them into ordinary group names, which are then refused because a bare name is not an
-absolute path. That is the separator between "quotes are stripped first" and "quotes decide whether the
+all three turns them into ordinary group names, which are then refused because no group of that name
+sits below the rule's group. That is the separator between "quotes are stripped first" and "quotes decide whether the
 word is a terminal at all". -/
 example :
     headGroupError? "In $#'RootGroup'$" =
@@ -748,8 +810,8 @@ example :
 
 /- An absolute path resolves in **two stages**, and the Kernel reports them apart. The first segment
 must name a declared root group; when it does not, the refusal is the root one whatever follows it. A
-declared root followed by an unknown or non-containing group is the ordinary group refusal instead, so
-root existence and containment are separate gates rather than one. -/
+declared root followed by an unknown or unavailable group is the ordinary group refusal instead, so
+root existence and availability are separate gates rather than one. -/
 example :
     headGroupError? "In $#/Nope$" = some (.unknownRootGroup "#/Nope" "Nope") ∧
       headGroupError? "In $#/Nope/Head$" =
@@ -776,7 +838,7 @@ example :
 
 /- The root shorthand names the root of the **rule's own** ancestor chain, not a model-wide root. A
 second root group separates the two readings: a rule under it admits the shorthand while the other
-root, which no longer contains the rule, is refused. -/
+root, which neither contains the rule nor holds a read field, is refused. -/
 example :
     pathTemplateOk? ["Vendor", "Branch"] (bare "Label") "In $#RootGroup$" =
         some true ∧
@@ -791,9 +853,9 @@ example :
    whose rule fires on rows 2 and 3 renders `2` and `3`, which separates the row's own index from a
    firing ordinal
    ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)).
-   Only the nonrepeatable arm is reachable here, and deliberately so: the parameter's containment gate
-   makes the named group a prefix of the rule's row group, and this route's condition spine refuses a
-   repeatable reference, so no repeatable rule host exists to name one. What these cases lock is that
+   Only the nonrepeatable arm is reachable here, and deliberately so: an available group is an
+   ancestor of the rule's row group or holds a field the condition reads, and this route's condition
+   spine refuses a repeatable reference, so neither arm reaches a repeatable group. What these cases lock is that
    the bytes are the **Kernel's constant** rather than the caller's, which is what they used to be. -/
 
 example : render? "[root=$#/Order$]" = some { text := "[root=1]" } := by

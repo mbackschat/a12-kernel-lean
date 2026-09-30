@@ -53,6 +53,11 @@ example : classifyStringPattern compilePattern "[a[b]c]" =
 example : ["a+", "(?=a)a", "(?!a)b", "(?i)abc", "\\R", "\\h", "[a\\[b]", "[a][b]"].all
     (fun source => classifyStringPattern compilePattern source == .admitted) = true := by native_decide
 
+/- Any `]` ends the scan for a nested opener, escaped or not, so an escaped delimiter followed by a
+   class opener is admitted although Java reads the second `[` as nested. Measured by the peer on a
+   declared index-field pattern ([inbound](../../docs/SOURCES.md#inbound-2026-09-30a-regex-operands)). -/
+example : classifyStringPattern compilePattern "[a\\][b]]" = .admitted := by native_decide
+
 /- The document-model branch admits the empty source; semantic empty input is still excluded by the resolved operand classifier. -/
 example : classifyStringPattern compilePattern "" = .admitted := by native_decide
 

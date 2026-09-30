@@ -1,0 +1,225 @@
+[
+ {
+  "id": "A0",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "A1",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "A2",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe/Store$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "A3",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Beside$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "A4",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe/Beside$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "A5",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/Deep$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "A6",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe/Store/Deep$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "A7",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "B0",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/Deep/Y)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "B1",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/Deep/Y)",
+  "message": "Check $#Store$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "B2",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/Deep/Y)",
+  "message": "Check $#Store/Deep$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "B3",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/Deep/Y)",
+  "message": "Check $#/Probe/Store/Deep$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "B4",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/Deep/Y)",
+  "message": "Check $#Deep$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "C0",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "C1",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#Store$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "C2",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#../Store$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "C3",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#../Beside$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "C4",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#Deep$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D0",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(Deep/Y)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "D1",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(Deep/Y)",
+  "message": "Check $#Deep$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "E0",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(/Probe/Beside/Z)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "E1",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(/Probe/Beside/Z)",
+  "message": "Check $#../Beside$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "E2",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(/Probe/Beside/Z)",
+  "message": "Check $#/Probe/Beside$.",
+  "valid": true,
+  "codes": []
+ }
+]

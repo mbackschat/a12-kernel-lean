@@ -196,6 +196,33 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-06a"></a>
 - Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
+### Inbound 2026-09-30a handback
+
+<a id="inbound-2026-09-30a-provenance"></a>
+#### Reviewed 2026-09-30a handback — a message may name a group its condition reads into and reach it by a relative path, a group read makes its fields message members, two independently keyed product operands pair by position, and any `]` ends the pattern gate's nested-opener scan
+
+a12-dmkits `main` at `e2c3be6f6a919489c19165328e4666a32c2ee68f`, read on 2026-09-30; every revision cited below is an ancestor of it. The letter is the peer's `-2026-09-30a`, delivered by the user with SHA-256 `eb31884d3d208c8f3b3248c772521fa62f1f1304bae6ea359259ff22baed3dd2`. It replaces the `-2026-09-30` letter, SHA-256 `96bb8650c4fcefa2162de8f54cdb4dec7a01379915ac67b6d7afb11c79ef99ea`, whose sections it carries forward, so that letter is recorded only here. The locks named below were read at `e2c3be6f6`, not run here. It answers no ledger entry; its §0 re-reads the ledger and finds none pending.
+
+Its §4 disproves a candidate divergence in the peer's own checker, its §3 conversion extension is the peer's adapter, and its §§6–7 report the peer's implementation, mutation, corpus, performance and delivery verification; all are recorded as no claim.
+
+<a id="inbound-2026-09-30a-message-reference-admission"></a>
+**Claim.** Its §1 (`MessageGroupFootprintAgreementTest` at `c43c01cfb`, with the peer's `kf214` and `kf335`) runs 32 complete Library models through the Kernel's consistency check, each beside a plain-message control. A root rule reading `Loans/Book` admits `$#Loans$` and `$#/Library/Loans$` and refuses the unread `Returns` both ways. `GroupFilled(Loans)` beside the `Book` read admits `$Borrower$`, `$Borrower.value$`, `$Details/Note$`, `$#Details$` and `$#/Library/Loans/Details$`, each refused without it, while `../Returns/Book` stays `INVALID_FIELD`, and `GroupFilled(RuleGroup)` reaches the same fields.
+
+The group read clears `PARAM_VALUE_WITH_STARREFERENCE` on a field also read through a star, and it leaves `INVALID_NO_VALUE_VALIDATION` and `FIELD_NO_ENUM` on the fields they belong to. A computation's precondition `GroupFilled(Returns)` admits `../Returns/Book` in that computation's message. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s membership and group-position clauses.
+
+**They defeat this project's [2026-08-29 conclusions](sources/message-and-pointer-probes.md#src-message-group-parameter)** that the group position takes only an absolute path and only the rule's own group or an ancestor, whose fixture read nothing outside the rule's group. This project's [availability grid](sources/message-and-pointer-probes.md#src-message-group-availability) carries the arm onto fixed groups and field reads and adds rows the peer does not hold, filed as [`SPEC-2026-09-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01).
+
+<a id="inbound-2026-09-30a-relative-render"></a>
+Its §2 (`5aeb86f4a`, with the peer's `kf245`) puts a typed `Claim` whose `Lines` amounts 50, 200 and 300 fire on rows 2 and 3, both complete models admitted before either runtime strategy executes. A root-declared `$#Lines$` and a `Lines`-declared `$#../Lines$` each render the firing row's coordinate beside `$#/Claim/Lines$`. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s render clause.
+
+<a id="inbound-2026-09-30a-keyed-products"></a>
+Its §3 runtime rows (`KeyedGroupFieldListDiffTest` at `a8cd48db71153d117a601b2bbaf23553280ec7b9`, `independentlyKeyedProductsRetainBothOperandExtents` and `keyedFieldListsKeepTheirRoleAcrossCollectionConsumers`) use `Order/Packages` indexed by `Code` over a repeatable `Items`, every model admitted, with both Kernel strategies as the expectation. The product rows are [`spec/07`](../spec/07-repetition-and-iteration.md)'s `SumOfProducts` evaluation paragraph, and the membership and uniqueness rows [`spec/08`](../spec/08-paths-and-references.md)'s selection paragraph.
+
+<a id="inbound-2026-09-30a-regex-operands"></a>
+Its §5 (`JavaPatternModelPopulation.operandProvenance` at `f80d8b6ea`) varies a typed indexed String field's pattern under one keyed `Sum`, an admitted key drawing `MVK_PARAMSIZE_INVALIDN` and a refused one `MVK_INDEX_VALUE_INVALID`, each row predicted from the pinned JDK first. Its rows cover intersections with an empty or doubled operand, whitespace, range, Latin-1 and case-folded left operands, a chained intersection, a raw `]` and `}`, a bounded repetition, and `[a\][b]]`. They confirm [`spec/08`](../spec/08-paths-and-references.md)'s String-key sentence. The admitted `[a\][b]]` also fixes [`spec/06`](../spec/06-strings-and-enumerations.md)'s nested-opener line: the scan ends at any `]`, escaped or not, which the Kernel's own source spells. Its repetition-bound rows at `12faea689` concern the peer's JavaScript host and state no Kernel refusal.
+
+**Lean.** Corrected and locked. [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean)'s group position now takes a relative path with the name grammar's parent walk and turning point, and admits a group that is an ancestor of the rule's group or holds a field the condition reads, with its above-root and turning-point refusals kept apart; its [locks](../A12Kernel/Conformance/ValidationMessageAuthoring.lean) carry the availability grid's rows. [`StringPattern`](../A12Kernel/Elaboration/StringPattern.lean)'s nested-opener scan ends at any `]`, locked in [`PatternAdmission`](../A12Kernel/Conformance/PatternAdmission.lean). No Lean surface carries a `GroupFilled` read, a starred message field, a computation message, a repeatable render or a keyed `SumOfProducts`, so those rows have none; the last is [SG29](gaps/paths-and-groups.md#gap-sg29)'s.
+
 ### Inbound 2026-09-28 parse-event account
 
 <a id="inbound-2026-09-28-parse-events"></a>
@@ -1214,6 +1241,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A model may declare more than one root group, and the short-name tier spans them](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
 <a id="src-message-group-parameter"></a>
 - [The rule-message group parameter `$#…$`](sources/message-and-pointer-probes.md#src-message-group-parameter)
+<a id="src-message-group-availability"></a>
+- [A group parameter may name any available group, the rule's own group, an ancestor, or a group holding a field the condition reads, and a path without a leading slash resolves from the rule's group](sources/message-and-pointer-probes.md#src-message-group-availability)
 <a id="src-german-condition-language-terminals"></a>
 - [The group position's keyword set is selected by condition language in both directions, and the retired terminals are not](sources/message-and-pointer-probes.md#src-german-condition-language-terminals)
 

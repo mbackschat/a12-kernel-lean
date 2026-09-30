@@ -100,14 +100,14 @@ private theorem groupPath_isValid_take_one {path : GroupPath}
       exact valid.1
 
 /-- The group position's gates are genuinely applied at its entry point: every admitted absolute
-argument names a declared root group **and** contains the rule's group, so nothing below the rule and
-nothing under an undeclared root is ever reached through it. -/
+argument names a declared root group **and** is available to the rule's message, so nothing under an
+undeclared root, and no group the rule neither lies in nor reads into, is ever reached through it. -/
 theorem checkMessageGroup_absolute_admitted
     {model : FlatModel} {condition : CheckedFlatCondition model}
     {parameter : String} {path : GroupPath}
     {access : CheckedValidationMessageGroup model condition}
     (admitted : checkMessageGroup condition parameter (.absolute path) = .ok access) :
-    GroupPath.isPrefixOf path condition.rowGroup = true ∧
+    messageGroupAvailable model condition path = true ∧
       model.hasGroupPath (path.take 1) = true := by
   cases path with
   | nil => cases admitted
@@ -137,7 +137,7 @@ theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
         (fun access => access.group) = .ok condition.rowGroup := by
   rw [checkMessageGroup]
   simp only [belowRoot, if_false, admitMessageGroup, valid,
-    groupPath_isPrefixOf_self, dite_true]
+    messageGroupAvailable, groupPath_isPrefixOf_self, Bool.true_or, dite_true]
   rfl
 
 /-- The negative direction, and the one a consumer actually needs: at a root locus the shorthand is
@@ -159,7 +159,8 @@ theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     (checkMessageGroup condition parameter .rootGroup).map
         (fun access => access.group) = .ok (condition.rowGroup.take 1) := by
   rw [checkMessageGroup, admitMessageGroup]
-  simp only [groupPath_isValid_take_one valid, groupPath_take_isPrefixOf,
+  simp only [groupPath_isValid_take_one valid, messageGroupAvailable, groupPath_take_isPrefixOf,
+    Bool.true_or,
     dite_true]
   rfl
 

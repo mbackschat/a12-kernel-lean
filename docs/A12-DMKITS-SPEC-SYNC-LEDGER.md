@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-30-01"></a>
+### `SPEC-2026-09-30-01` — a group parameter's condition-reference arm reaches a read sibling and an intermediate group, a bare word is never a short-name group lookup, and a parent walk keeps two classes of its own
+
+- `status`: pending
+- `origin`: locally originated; it extends your `kf214` as corrected at `c43c01cfb`, whose condition-reference arm admits groups below the declaring group, onto a read sibling and an enclosing group that holds no read field directly, and adds the group position's parent-walk classes beside your `kf335` name-position row.
+- `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the group-position bullet.
+- `delta`: on fixed groups and field reads, a group is available when it is the rule's group or an ancestor, or holds a read field at any depth: a `/Probe/Store` rule reading `/Probe/Beside/Z` admits `$#../Beside$`, `$#/Probe/Beside$` and `$#..Probe/Beside$`, and a root rule reading `Store/Deep/Y` admits `$#Store$`. A bare word resolves only below the rule's group, so that root rule refuses `$#Deep$` with `INVALID_GROUP` while admitting `$#Store/Deep$`. A turning point naming another group, `$#..Wrong/Beside$`, draws `INVALID_ENTITY`, and a walk past the root group draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`.
+- `basis`: this project's [availability grid](SOURCES.md#src-message-group-availability), 37 `rule check --message` rows at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, with the model and code-only verdicts retained.
+- `surfaces`: any peer checker, lock doc or finding that limits the condition-reference arm to groups below the declaring group, resolves a bare group word by short name, or reports the group position's turning-point or above-root refusal as `INVALID_GROUP`.
+- `acceptance`: confirm the sibling, intermediate and bare-word rows and the two parent-walk classes, or supply a fixed-group rule whose read field leaves an enclosing group unavailable, or a bare word the Kernel resolves to a group not directly below the rule's group.
+- `limit`: static admission only, fixed groups, one condition language, field reads only; a bare word that is an ambiguous short name of fields elsewhere is unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-26-05"></a>
 ### `SPEC-2026-09-26-05` — the sole count's class is decided by where the error field lies, the overlap operator's `In` list is an entity list of its own ahead of the field walk, and a field message's non-ASCII token is a wrong name
 

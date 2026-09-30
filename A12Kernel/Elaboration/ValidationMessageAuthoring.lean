@@ -53,12 +53,13 @@ measured and modeled exactly.
 
 A parameter written `$#...$` occupies the **group position**, which is a different position from the
 name one and resolves the same words differently: bare `$RootGroup$` is an entity lookup and refused,
-while `$#RootGroup$` is admitted. Its argument is an absolute group path or one of the two keyword
-shorthands for the endpoints of the rule's ancestor chain, and the admitted set is the rule's own group
-together with its ancestors — so containment runs the **opposite** way from the computation
-declaring-group gate: the *named* group must contain the rule's group. A relative spelling is refused
-even when it names a real group. An absolute path resolves in two stages the Kernel reports apart, an
-undeclared root ahead of containment, and its segments take the same quote escape as a name — but
+while `$#RootGroup$` is admitted. Its argument is one of the two keyword shorthands for the endpoints
+of the rule's ancestor chain or a group path, absolute or relative to the rule's group, so a bare word
+names a group directly below it and is never a short-name lookup of a group elsewhere. The named group
+must be **available**: the rule's own group and its ancestors always are, and so is any group holding a
+field the condition reads, which admits a read descendant or sibling and refuses the same group when
+nothing in it is read. An absolute path resolves in two stages the Kernel reports apart, an undeclared
+root ahead of availability, and its segments take the same quote escape as a name — but
 because the keyword match is on the raw argument, quoting a terminal turns it back into an ordinary
 group name. Two historic terminals keep their own refusal class, which the Kernel reports distinctly
 rather than as an unknown group, and quoting removes that reading too.
@@ -129,11 +130,18 @@ inductive ValidationMessageTemplateError where
   /-- The named category is not one this Enumeration declaration declares, or the declaration itself
   is ill-formed. Both arrive through the one existing Enumeration projection gate. -/
   | category (parameter : String) (error : EnumerationOperandError)
-  /-- A group-position argument whose root is declared but which the rule's group does not lie under,
-  or which is not an absolute path at all. A declared descendant, a sibling, an unknown group below a
-  declared root, and every relative spelling share this one refusal, which is the Kernel's own
+  /-- A group-position argument that names no available group: an unknown group below a declared root
+  or below the rule's group, a field, or a declared group that is neither an ancestor of the rule's
+  group nor holds a field the condition reads. They share this one refusal, which is the Kernel's own
   grouping — an **unknown root** is separated onto `unknownRootGroup` instead. -/
   | invalidGroupParameter (parameter : String)
+  /-- A relative group argument whose parent walk climbs past the root group, refused on the message
+  route's own above-root class `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, distinct from the
+  condition parser's. -/
+  | groupParameterAboveRoot (parameter : String)
+  /-- A relative group argument whose turning point does not name the group its parent walk reaches.
+  The Kernel refuses it on its entity class `INVALID_ENTITY`, not on the group class. -/
+  | groupTurningPointMismatch (parameter : String)
   /-- A group argument the parameter grammar refuses before any group is looked up, carrying which of
   the Kernel's three lexical classes the malformed shape falls into. Kept apart from
   `invalidGroupParameter`, which is a group **refusal** on a well-formed spelling. -/
@@ -189,6 +197,9 @@ inductive AuthoredMessageGroup where
   | ruleGroup
   | rootGroup
   | absolute (path : GroupPath)
+  /-- A path from the rule's group: `parents` leading `..` steps, an optional turning point naming the
+  group they reach, then `path` downwards. A bare word is `relative 0 none [word]`. -/
+  | relative (parents : Nat) (turningPoint : Option String) (path : GroupPath)
   deriving Repr, DecidableEq
 
 /-- A key as the author spelled it: a decoded quoted literal, or a path to the keying field. -/
@@ -414,13 +425,14 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
     | [] => none
 
 /-- Decode one group-position argument, with the `#` already stripped. A live keyword is taken before
-the path grammar, a retired terminal keeps its own refusal, and every other spelling must be an
-absolute group path: a relative one is refused even when it names a real group, so the leading
-separator is required rather than conventional. Each segment takes the name grammar's single-quote
+the path grammar, a retired terminal keeps its own refusal, and every other spelling is a group path
+in the name grammar's two forms: absolute after a leading separator, otherwise relative to the rule's
+group with the same `..` up-run and turning point. Each segment takes the name grammar's single-quote
 escape and the quotes are erased before lookup, so quoting reaches the same group — but the keyword
 match above is on the **raw** argument, which is why quoting a terminal turns it back into an ordinary
 group name. A malformed spelling is a parse failure rather than a group refusal, on the Kernel's own
-three lexical classes rather than one; `MessageGroupLexicalFault` owns that split. -/
+three lexical classes rather than one; `MessageGroupLexicalFault` owns that split, and a relative
+spelling meets it exactly as an absolute one does. -/
 private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
     (parameter argument : String) :
     Except ValidationMessageTemplateError AuthoredMessageGroup :=
@@ -436,7 +448,21 @@ private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
         match decodeGroupSegments (first :: rest) with
         | .ok names => .ok (.absolute (names.map (·.text)))
         | .error fault => .error (.groupParameterLexical parameter fault)
-    | _ => .error (.invalidGroupParameter parameter)
+    | [""] => .error (.invalidGroupParameter parameter)
+    | segments =>
+        let (parents, turningPoint, remaining) := splitParentWalk 0 segments
+        -- A nonempty segment that is no name but carries no quote is a word the parameter grammar
+        -- lexes, such as `index(Head)`, which reaches group lookup and is refused there as measured;
+        -- only a quote fault is lexical.
+        let fault := fun (fault : MessageGroupLexicalFault) =>
+          if fault == .quote && !argument.contains '\'' then
+            ValidationMessageTemplateError.invalidGroupParameter parameter
+          else .groupParameterLexical parameter fault
+        match turningPoint.map decodeSegment, decodeGroupSegments remaining with
+        | some none, _ => .error (fault .quote)
+        | _, .error cause => .error (fault cause)
+        | turningPoint, .ok names =>
+            .ok (.relative parents (turningPoint.join.map (·.text)) (names.map (·.text)))
 
 /-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its
 escape; anything else is a path to the keying field, and an unquoted bare word therefore resolves as a
@@ -657,29 +683,41 @@ structure CheckedValidationMessageCategory
     reference.declaration.enumeration = some projection.declaration.declaration
   categorySelected : projection.projectionRef = .category category
 
+/-- Whether a message may name `group` in the group position: it is the rule's own group or one of its
+ancestors, or it holds, at any depth, a field the condition reads. The second arm is why a descendant,
+a sibling, and an intermediate group holding no read field directly are all nameable once the condition
+reads below them, and why the same groups are refused when it does not
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-availability)). A
+field is never available, because its own path is never a prefix of its group's. -/
+def messageGroupAvailable (model : FlatModel) (condition : CheckedFlatCondition model)
+    (group : GroupPath) : Bool :=
+  GroupPath.isPrefixOf group condition.rowGroup ||
+    model.fields.any fun declaration =>
+      condition.core.referencesField declaration.id &&
+        GroupPath.isPrefixOf group declaration.groupPath
+
 /-- One admitted group-position parameter: the group the author named, beside the witnesses that it is
-a representable path and that it **contains** the rule's group. Containment runs opposite to the
-computation declaring-group gate, where the declaring group is the one that must contain the target. -/
+a representable path and that it is **available** to this rule's message. -/
 structure CheckedValidationMessageGroup
     (model : FlatModel) (condition : CheckedFlatCondition model) where
   parameter : String
   group : GroupPath
   valid : GroupPath.isValid group = true
-  containsRuleGroup : GroupPath.isPrefixOf group condition.rowGroup = true
+  available : messageGroupAvailable model condition group = true
 
 /-- Admit one resolved group under the two gates every argument shares: it is a representable path,
-and it **contains** the rule's group. Below the root gate, containment needs no separate existence
-test, because every ancestor of a declared group is itself declared — so a group passing containment
-is declared, and one failing it is refused whether or not the model declares it, which is what a
-**declared** descendant and an unknown group below a declared root sharing one refusal already says. -/
+and it is available. Below the root gate, availability needs no separate existence test, because every
+ancestor of a declared group and every group holding a declared field is itself declared — so a group
+passing it is declared, and one failing it is refused whether or not the model declares it, which is
+what a **declared** unread group and an unknown one sharing one refusal already says. -/
 def admitMessageGroup {model : FlatModel}
     (condition : CheckedFlatCondition model) (parameter : String)
     (group : GroupPath) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageGroup model condition) :=
   if hValid : GroupPath.isValid group = true then
-    if hContains : GroupPath.isPrefixOf group condition.rowGroup = true then
-      .ok { parameter, group, valid := hValid, containsRuleGroup := hContains }
+    if hAvailable : messageGroupAvailable model condition group = true then
+      .ok { parameter, group, valid := hValid, available := hAvailable }
     else
       .error (.invalidGroupParameter parameter)
   else
@@ -687,8 +725,10 @@ def admitMessageGroup {model : FlatModel}
 
 /-- Resolve one group-position argument against the rule's own group. An absolute path resolves in the
 two stages the Kernel reports apart: its first segment must name a declared root group, and only then
-does containment decide. The root gate belongs to the path form alone — a keyword resolves to a group
-derived from the rule's own, which introduces no root the model might not declare. -/
+does availability decide. The root gate belongs to the absolute form alone — a keyword or a relative
+path resolves from the rule's own group, which introduces no root the model might not declare. A
+relative path walks up first, refusing a climb past the root, then checks its turning point against the
+group reached, and only then descends. -/
 def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
     (parameter : String) (authored : AuthoredMessageGroup) :
     Except ValidationMessageTemplateError
@@ -712,6 +752,14 @@ def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mode
         admitMessageGroup condition parameter (root :: rest)
       else
         .error (.unknownRootGroup parameter root)
+  | .relative parents turningPoint path =>
+      match GroupPath.walkUp condition.rowGroup parents with
+      | .error _ => .error (.groupParameterAboveRoot parameter)
+      | .ok base =>
+          if base.matchesTurningPoint turningPoint then
+            admitMessageGroup condition parameter (base ++ path)
+          else
+            .error (.groupTurningPointMismatch parameter)
 
 inductive CheckedValidationMessagePart
     (model : FlatModel) (condition : CheckedFlatCondition model) where

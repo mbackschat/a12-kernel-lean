@@ -1,0 +1,146 @@
+[
+ {
+  "id": "F0",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(/Probe/Beside/Z)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "F1",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#..$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "F2",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(/Probe/Beside/Z)",
+  "message": "Check $#..Probe/Beside$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "F3",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X) And FieldFilled(/Probe/Beside/Z)",
+  "message": "Check $#..Wrong/Beside$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "F4",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#../Store$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "F5",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/Nope$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "F6",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Nope$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "F7",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/$.",
+  "valid": false,
+  "codes": [
+   "MVK_INCOMPLETE_INPUT"
+  ]
+ },
+ {
+  "id": "F8",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/Deep/Y)",
+  "message": "Check $#Store//Deep$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "F9",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#'Store'$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "F10",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/X$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "F11",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#../../Probe$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "F12",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#../Store$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "F13",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#'Store$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ }
+]

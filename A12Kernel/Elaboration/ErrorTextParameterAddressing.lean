@@ -39,10 +39,14 @@ subtracts the written climb from the rule group's level and refuses a negative r
 truncated natural subtraction that test can never fire, so the clause below compares the operands
 directly instead.
 
-**Evidence.** All five classes are **source-derived and unwitnessed**. The two coordinate specifiers are
-old-world spellings whose grammar productions this project's A12-only route does not reach; the value
-suffix's two gates and the relative-path gate are reachable in principle from an A12 model but no probe
-here has written them. Recorded as an explicit block rather than mixed with measured neighbours.
+**Evidence.** The relative-path gate is **witnessed** on the group position: from a root-group rule
+`$#../Store$`, and from a rule one level down `$#../../Probe$`, draw its class, while `$#..$` from that
+second rule is admitted
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-availability)). The
+value suffix's two classes are measured on the A12 route
+([checkpoint](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)). The two
+coordinate specifiers remain **source-derived and unwitnessed**: they are old-world spellings whose
+grammar productions this project's A12-only route does not reach.
 
 This module carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
 -/
