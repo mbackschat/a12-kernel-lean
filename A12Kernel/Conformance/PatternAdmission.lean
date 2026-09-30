@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.StringPattern
 
 /-! # A12Kernel.Conformance.PatternAdmission — two-stage pattern admission locks
 
-These examples inject only the Java-compilation decision. They lock the independently implemented finite kernel source gate, its observed uppercase-`\P` addition, rejection precedence, and delegation to the existing normalized whole-value matcher consumer.
+These examples inject only the Java-compilation decision. They lock the independently implemented finite kernel source gate, rejection precedence, and delegation to the existing normalized whole-value matcher consumer.
 -/
 
 namespace A12Kernel.Conformance.PatternAdmission
@@ -44,8 +44,11 @@ example : classifyStringPattern compilePattern "(?>a)" =
 example : ["\\A", "\\G", "\\Z", "\\z", "\\a", "\\e", "\\p{L}", "\\Q", "\\E"].all
     (fun source => !kernelPatternSourceAllowed source) = true := by native_decide
 
-example : classifyStringPattern compilePattern "\\P{L}" =
-    .rejected .kernelRestriction := by native_decide
+/- The escape set holds `p` and not `P`: bare `\P{L}` is admitted while `\P{L}+` is refused for its
+   `}+` adjacency, not for the escape ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
+example : classifyStringPattern compilePattern "\\P{L}" = .admitted ∧
+    classifyStringPattern compilePattern "\\P{L}+" = .rejected .kernelRestriction := by
+  native_decide
 
 example : classifyStringPattern compilePattern "[a[b]c]" =
     .rejected .kernelRestriction := by native_decide

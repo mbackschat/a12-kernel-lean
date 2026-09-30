@@ -4,7 +4,7 @@ import A12Kernel.Semantics.StringPattern
 
 /-! # A12Kernel.Elaboration.StringPattern — checked two-stage pattern admission
 
-The kernel first requires Java-pattern compilation and then applies a finite source gate. Compilation remains an injected capability that returns the whole-value matcher compiled from the exact source, so checked evaluation cannot accidentally substitute a matcher for another pattern. The source scan below is an original character walk over the canonically documented exclusion families, including the separately observed uppercase-`\P` exclusion. Passing this gate is not a JavaScript-portability claim.
+The kernel first requires Java-pattern compilation and then applies a finite source gate. Compilation remains an injected capability that returns the whole-value matcher compiled from the exact source, so checked evaluation cannot accidentally substitute a matcher for another pattern. The source scan below is an original character walk over the canonically documented exclusion families; its escape set holds `p` and not `P`, since the one uppercase-`\P` refusal once observed was the possessive `}+` adjacency of `\P{L}+` ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). Passing this gate is not a JavaScript-portability claim.
 -/
 
 namespace A12Kernel
@@ -25,7 +25,7 @@ inductive PatternAdmission where
 private def isForbiddenEscapeLetter (character : Char) : Bool :=
   character == 'A' || character == 'G' || character == 'Z' ||
     character == 'z' || character == 'a' || character == 'e' ||
-    character == 'p' || character == 'P' || character == 'Q' ||
+    character == 'p' || character == 'Q' ||
     character == 'E'
 
 /-- Detect the finite adjacent source forms rejected after Java compilation. This is deliberately a character scanner, not a transcription of the kernel's regular expression. -/
