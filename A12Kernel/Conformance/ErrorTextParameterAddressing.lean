@@ -2,9 +2,10 @@ import A12Kernel.Elaboration.ErrorTextParameterAddressing
 
 /-! # Locks on the message parameter's addressing gates
 
-All five classes are source-derived and unwitnessed, which the owning module states as one block rather
-than per class. These cases therefore lock the chosen account's internal shape, not a kernel
-correspondence.
+The owning module states each class's evidence in one block. The relative-path boundary is witnessed
+on the group position and the value suffix's classes are measured; the coordinate specifiers remain
+source-derived. These cases lock the chosen account's internal shape; the group position's own checked
+resolver carries the witnessed rows.
 
 The matrix separates the literal `1` from a numeral of the same value, the bound check from the
 maximum-of-one check, the symbolic specifier's escape, the two coordinates reporting one shape under two

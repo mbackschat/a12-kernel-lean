@@ -724,21 +724,75 @@ example :
         some (.groupParameterAboveRoot "#../Head") := by
   native_decide
 
-/- A relative spelling meets the same three lexical classes as an absolute one. -/
+/- A relative spelling meets the same lexical classes as an absolute one. -/
 example :
     headGroupError? "In $#Deeper/$" =
         some (.groupParameterLexical "#Deeper/" .truncated) ∧
       headGroupError? "In $#Deeper//Deep$" =
         some (.groupParameterLexical "#Deeper//Deep" .separator) ∧
       headGroupError? "In $#'Deeper$" =
-        some (.groupParameterLexical "#'Deeper" .quote) := by
+        some (.groupParameterLexical "#'Deeper" .lexer) := by
+  native_decide
+
+/- The argument is refused in **layers**, and a later layer never answers ahead of an earlier one
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)).
+A character the parameter lexer forms no token for, or a malformed quoted name, is the lexer class
+even before an unknown name; a separator with no name after it is a syntax class even before an
+unknown name; then the path is looked up; and only a path that resolves meets the syntax class for a
+token left after it. -/
+example :
+    let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    deep "In $#Head[1]$" = some (.groupParameterLexical "#Head[1]" .lexer) ∧
+      deep "In $#Head*$" = some (.groupParameterLexical "#Head*" .lexer) ∧
+      deep "In $#Head%$" = some (.groupParameterLexical "#Head%" .lexer) ∧
+      deep "In $#'1Head'$" = some (.groupParameterLexical "#'1Head'" .lexer) ∧
+      deep "In $#Nope[1]$" = some (.groupParameterLexical "#Nope[1]" .lexer) ∧
+      deep "In $#/Order/Head[1]$" = some (.groupParameterLexical "#/Order/Head[1]" .lexer) ∧
+      deep "In $#$" = some (.groupParameterLexical "#" .truncated) ∧
+      deep "In $#Nope/$" = some (.groupParameterLexical "#Nope/" .truncated) ∧
+      deep "In $#/Nope/$" = some (.groupParameterLexical "#/Nope/" .truncated) ∧
+      deep "In $#Side/$" = some (.groupParameterLexical "#Side/" .truncated) ∧
+      deep "In $#Nope//Deeper$" = some (.groupParameterLexical "#Nope//Deeper" .separator) ∧
+      deep "In $#He-ad$" = some (.invalidGroupParameter "#He-ad") ∧
+      deep "In $#/Order/He-ad$" = some (.invalidGroupParameter "#/Order/He-ad") ∧
+      deep "In $#Head-x$" = some (.groupParameterLexical "#Head-x" .unexpected) ∧
+      deep "In $#Head)$" = some (.groupParameterLexical "#Head)" .unexpected) ∧
+      deep "In $#Head x$" = some (.groupParameterLexical "#Head x" .unexpected) ∧
+      deep "In $#/Order/Head-x$" =
+        some (.groupParameterLexical "#/Order/Head-x" .unexpected) ∧
+      headGroupError? "In $#Head/..$" = some (.groupParameterLexical "#Head/.." .unexpected) ∧
+      headGroupError? "In $#...$" = some (.groupParameterLexical "#..." .unexpected) := by
+  native_decide
+
+/- A bare word that names nothing directly below the rule's group is looked up as the **short name of
+a field**, never of a group. `Amount` is declared twice, so from `/Order/Side` it is ambiguous and
+refused on its own class; the unique field `Aside`, reached that way from the root group, is refused
+as a field. A group whose name is unique is not found this way at all, which is what refuses a bare
+`Deeper` from the root group above. -/
+example :
+    pathTemplateError? ["Order", "Side"] (bare "Aside") "In $#Amount$" =
+        some (.groupShortNameNotUnique "#Amount" "Amount") ∧
+      pathTemplateError? ["Order"] (bare "Other") "In $#Aside$" =
+        some (.invalidGroupParameter "#Aside") := by
+  native_decide
+
+/- The descendant arm from a rule below the root, and a parent walk that reaches the root group
+exactly, beside one step more. -/
+example :
+    pathTemplateOk? ["Order", "Head"] (pathAt (.relative 0) ["Deeper"] "Deep") "In $#Deeper$" =
+        some true ∧
+      pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../..$" = some true ∧
+      pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../..$" =
+        some (.groupParameterAboveRoot "#../../..") := by
   native_decide
 
 /- Two historic terminals are **recognized** in this position and refused on their own class, which the
-Kernel reports with a code distinct from an unknown group. Three other words that look like terminals
-of the same vintage are not terminals here at all: they draw the ordinary unknown-group refusal, and so
+Kernel reports with a code distinct from an unknown group. Other words that look like terminals of
+the same vintage are not terminals here at all: they draw the ordinary unknown-group refusal, and so
 does an arbitrary name, so the retired class is exactly two members wide rather than a catch-all for
-old syntax. -/
+old syntax. The Kernel's `$#index(Rows)$` row, measured on a model with no field of that name, is not
+locked here, because this fixture declares a field `index` that the bare word's short-name lookup
+would find. -/
 example :
     headGroupError? "In $#Zeile$" = some (.retiredGroupTerminal "#Zeile" "Zeile") ∧
       headGroupError? "In $#Usb$" = some (.retiredGroupTerminal "#Usb" "Usb") ∧
@@ -746,8 +800,6 @@ example :
         some (.invalidGroupParameter "#Vordruckzeile") ∧
       headGroupError? "In $#Vordruckname$" =
         some (.invalidGroupParameter "#Vordruckname") ∧
-      headGroupError? "In $#index(Head)$" =
-        some (.invalidGroupParameter "#index(Head)") ∧
       headGroupError? "In $#NotATerminal$" =
         some (.invalidGroupParameter "#NotATerminal") := by
   native_decide
@@ -831,9 +883,9 @@ example :
       headGroupError? "In $#//Order$" =
         some (.groupParameterLexical "#//Order" .separator) ∧
       headGroupError? "In $#/'Order/Head$" =
-        some (.groupParameterLexical "#/'Order/Head" .quote) ∧
+        some (.groupParameterLexical "#/'Order/Head" .lexer) ∧
       headGroupError? "In $#/''$" =
-        some (.groupParameterLexical "#/''" .quote) := by
+        some (.groupParameterLexical "#/''" .lexer) := by
   native_decide
 
 /- The root shorthand names the root of the **rule's own** ancestor chain, not a model-wide root. A

@@ -104,24 +104,44 @@ argument names a declared root group **and** is available to the rule's message,
 undeclared root, and no group the rule neither lies in nor reads into, is ever reached through it. -/
 theorem checkMessageGroup_absolute_admitted
     {model : FlatModel} {condition : CheckedFlatCondition model}
-    {parameter : String} {path : GroupPath}
+    {parameter : String} {path : GroupPath} {trailing : Bool}
     {access : CheckedValidationMessageGroup model condition}
-    (admitted : checkMessageGroup condition parameter (.absolute path) = .ok access) :
+    (admitted : checkMessageGroup condition parameter (.absolute path) trailing = .ok access) :
     messageGroupAvailable model condition path = true ∧
       model.hasGroupPath (path.take 1) = true := by
   cases path with
-  | nil => cases admitted
+  | nil => simp [checkMessageGroup, resolveMessageGroup] at admitted
   | cons root rest =>
-      rw [checkMessageGroup] at admitted
-      split at admitted
-      case isFalse => cases admitted
-      case isTrue hRoot =>
-        rw [admitMessageGroup] at admitted
-        split at admitted
-        · split at admitted
-          · exact ⟨by assumption, hRoot⟩
-          · cases admitted
-        · cases admitted
+      unfold checkMessageGroup resolveMessageGroup at admitted
+      by_cases hRoot : model.hasGroupPath [root] = true
+      · by_cases hDeclared : model.declaresEntityPath (root :: rest) = true
+        · simp only [hRoot, hDeclared, Bool.not_true, Bool.false_eq_true, if_false,
+            if_true] at admitted
+          cases trailing with
+          | true => cases admitted
+          | false =>
+              simp only [Bool.false_eq_true, if_false, admitMessageGroup] at admitted
+              split at admitted
+              · split at admitted
+                · exact ⟨by assumption, hRoot⟩
+                · cases admitted
+              · cases admitted
+        · simp [hRoot, hDeclared] at admitted
+      · simp [hRoot] at admitted
+
+/-- A relative argument is admitted only when its parent walk stays at or below the root group, so a
+climb past the root is never reached through the relative form, whatever path follows it. -/
+theorem checkMessageGroup_relative_walkWithinRoot
+    {model : FlatModel} {condition : CheckedFlatCondition model}
+    {parameter : String} {parents : Nat} {turningPoint : Option String} {path : GroupPath}
+    {trailing : Bool} {access : CheckedValidationMessageGroup model condition}
+    (admitted : checkMessageGroup condition parameter
+      (.relative parents turningPoint path) trailing = .ok access) :
+    parents < condition.rowGroup.length := by
+  by_cases hWithin : parents < condition.rowGroup.length
+  · exact hWithin
+  · unfold checkMessageGroup resolveMessageGroup GroupPath.walkUp at admitted
+    simp [hWithin] at admitted
 
 /-- The rule-group shorthand resolves to the rule's own group — **once its placement admits it**. The
 extra hypothesis is the whole difference between the two shorthands: `RootGroup` needs only a
@@ -135,9 +155,9 @@ theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
     (belowRoot : ¬ condition.rowGroup.length ≤ 1) :
     (checkMessageGroup condition parameter .ruleGroup).map
         (fun access => access.group) = .ok condition.rowGroup := by
-  rw [checkMessageGroup]
-  simp only [belowRoot, if_false, admitMessageGroup, valid,
-    messageGroupAvailable, groupPath_isPrefixOf_self, Bool.true_or, dite_true]
+  simp only [checkMessageGroup, resolveMessageGroup, belowRoot, if_false, Bool.false_eq_true,
+    admitMessageGroup, valid, messageGroupAvailable, groupPath_isPrefixOf_self, Bool.true_or,
+    dite_true]
   rfl
 
 /-- The negative direction, and the one a consumer actually needs: at a root locus the shorthand is
@@ -149,8 +169,7 @@ theorem checkMessageGroup_ruleGroup_refusedAtRootLocus
     (atRoot : condition.rowGroup.length ≤ 1) :
     checkMessageGroup condition parameter .ruleGroup =
       .error (.ruleGroupImmediatelyBelowRoot parameter) := by
-  rw [checkMessageGroup]
-  simp only [atRoot, if_true]
+  simp only [checkMessageGroup, resolveMessageGroup, atRoot, if_true]
 
 theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     {model : FlatModel} {condition : CheckedFlatCondition model}
@@ -158,10 +177,9 @@ theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     (valid : GroupPath.isValid condition.rowGroup = true) :
     (checkMessageGroup condition parameter .rootGroup).map
         (fun access => access.group) = .ok (condition.rowGroup.take 1) := by
-  rw [checkMessageGroup, admitMessageGroup]
-  simp only [groupPath_isValid_take_one valid, messageGroupAvailable, groupPath_take_isPrefixOf,
-    Bool.true_or,
-    dite_true]
+  simp only [checkMessageGroup, resolveMessageGroup, Bool.false_eq_true, if_false,
+    admitMessageGroup, groupPath_isValid_take_one valid, messageGroupAvailable,
+    groupPath_take_isPrefixOf, Bool.true_or, dite_true]
   rfl
 
 end A12Kernel

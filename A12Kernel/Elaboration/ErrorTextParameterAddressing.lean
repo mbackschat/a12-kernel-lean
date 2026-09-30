@@ -39,10 +39,14 @@ subtracts the written climb from the rule group's level and refuses a negative r
 truncated natural subtraction that test can never fire, so the clause below compares the operands
 directly instead.
 
-**Evidence.** The relative-path gate is **witnessed** on the group position: from a root-group rule
-`$#../Store$`, and from a rule one level down `$#../../Probe$`, draw its class, while `$#..$` from that
-second rule is admitted
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-availability)). The
+**Evidence.** The relative-path gate's class and boundary are **witnessed** on the group position,
+whose checked resolver walks with `GroupPath.walkUp` rather than calling this clause: from a rule two
+levels below the root, `$#../..$` reaches the root group and is admitted while `$#../../..$` draws the
+class, and from one level below `$#../../Probe$` draws it
+([availability](../../docs/sources/message-and-pointer-probes.md#src-message-group-availability),
+[layers](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)). A single
+up-step past the root, `$#../Store$` from a root-group rule, draws the same class; which Kernel step
+produces it is not separated. The
 value suffix's two classes are measured on the A12 route
 ([checkpoint](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)). The two
 coordinate specifiers remain **source-derived and unwitnessed**: they are old-world spellings whose

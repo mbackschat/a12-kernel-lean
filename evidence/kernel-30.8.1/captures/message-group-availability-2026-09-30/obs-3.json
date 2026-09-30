@@ -1,0 +1,308 @@
+[
+ {
+  "id": "J0",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "J1",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Nope/$.",
+  "valid": false,
+  "codes": [
+   "MVK_INCOMPLETE_INPUT"
+  ]
+ },
+ {
+  "id": "J2",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Nope//Deep$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "J3",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Nope/$.",
+  "valid": false,
+  "codes": [
+   "MVK_INCOMPLETE_INPUT"
+  ]
+ },
+ {
+  "id": "J4",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Beside/$.",
+  "valid": false,
+  "codes": [
+   "MVK_INCOMPLETE_INPUT"
+  ]
+ },
+ {
+  "id": "J5",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store[1]$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "J6",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store*$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "J7",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store%$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "J8",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#'1Store'$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "J9",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Sto-re$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "J10",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store-x$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "J11",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store)$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "J12",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#$.",
+  "valid": false,
+  "codes": [
+   "MVK_INCOMPLETE_INPUT"
+  ]
+ },
+ {
+  "id": "J13",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe/Sto-re$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "J14",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe/Store-x$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "J15",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Nope[1]$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "J16",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe/Store[1]$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "J17",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store x$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "J18",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#Store/..$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "J19",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#...$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "J20",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../..$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "J21",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../..$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "K0",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "K1",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#X$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+  ]
+ },
+ {
+  "id": "K2",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Z$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "K3",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $X$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+  ]
+ }
+]

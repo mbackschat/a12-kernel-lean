@@ -21,9 +21,10 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .fieldNotReferenced _ _ => some .messageFieldNotReferenced
   | .missingCategoryName _ => some .missingMessageCategory
   | .parameterCharacter _ _ => some .lexerStandardError
-  | .groupParameterLexical _ .quote => some .lexerStandardError
+  | .groupParameterLexical _ .lexer => some .lexerStandardError
   | .groupParameterLexical _ .truncated => some .incompleteInput
   | .groupParameterLexical _ .separator => some .unexpectedToken
+  | .groupParameterLexical _ .unexpected => some .unexpectedToken
   | .unsupportedCharacterWithError _ cause => cause.namedRuleDiagnostic?
   | _ => none
 

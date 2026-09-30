@@ -1,0 +1,26 @@
+J0	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check.	-
+J1	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Nope/$.	?
+J2	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Nope//Deep$.	?
+J3	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Nope/$.	?
+J4	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Beside/$.	?
+J5	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store[1]$.	?
+J6	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store*$.	?
+J7	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store%$.	?
+J8	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#'1Store'$.	?
+J9	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Sto-re$.	?
+J10	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store-x$.	?
+J11	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store)$.	?
+J12	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#$.	?
+J13	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/Sto-re$.	?
+J14	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/Store-x$.	?
+J15	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Nope[1]$.	?
+J16	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/Store[1]$.	?
+J17	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store x$.	?
+J18	GroupAvail_DM.json	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#Store/..$.	?
+J19	GroupAvail_DM.json	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#...$.	?
+J20	GroupAvail_DM.json	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../..$.	-
+J21	GroupAvail_DM.json	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../..$.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+K0	GroupAvailTwin_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check.	-
+K1	GroupAvailTwin_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#X$.	?
+K2	GroupAvailTwin_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Z$.	INVALID_GROUP
+K3	GroupAvailTwin_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $X$.	?

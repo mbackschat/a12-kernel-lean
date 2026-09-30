@@ -55,7 +55,9 @@ A parameter written `$#...$` occupies the **group position**, which is a differe
 name one and resolves the same words differently: bare `$RootGroup$` is an entity lookup and refused,
 while `$#RootGroup$` is admitted. Its argument is one of the two keyword shorthands for the endpoints
 of the rule's ancestor chain or a group path, absolute or relative to the rule's group, so a bare word
-names a group directly below it and is never a short-name lookup of a group elsewhere. The named group
+names a group directly below it, falling back to a field's short name and never to a group's. The
+argument is refused in the Kernel's layers: lexer and separator faults before the lookup, a token left
+after the path only once the path resolves. The named group
 must be **available**: the rule's own group and its ancestors always are, and so is any group holding a
 field the condition reads, which admits a read descendant or sibling and refuses the same group when
 nothing in it is read. An absolute path resolves in two stages the Kernel reports apart, an undeclared
@@ -83,24 +85,29 @@ value validation" flag has no representation here.
 
 namespace A12Kernel
 
-/-- Which lexical class a malformed group argument falls into. The Kernel reports three distinct
-codes among these shapes rather than one parse class, and the class follows the malformed shape, so
-this fragment reproduces it. What it does not reproduce is the character **position** the lexer code
-additionally carries, which is a payload rather than a class.
+/-- Which lexical or syntax class a malformed group argument falls into. The Kernel reports three
+distinct codes among these shapes rather than one parse class, and the class follows the malformed
+shape, so this fragment reproduces it. What it does not reproduce is the character **position** the
+lexer code additionally carries, which is a payload rather than a class.
 
 Measured at the [group-parameter resolution
-checkpoint](../../docs/SOURCES.md#src-message-group-parameter-resolution): an unbalanced quote and an
-empty quoted segment draw `MVK_LEXER_STANDARD_ERROR`, a trailing separator `MVK_INCOMPLETE_INPUT`,
-and a doubled separator `MVK_UNEXPECTED_TOKEN`. The last two are the pair that shows the empty
-segment's **position** decides, since neither is distinguishable from the other by its characters
-alone. -/
+checkpoint](../../docs/SOURCES.md#src-message-group-parameter-resolution) and the [argument-layer
+checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers): an
+unbalanced quote, an empty or digit-first quoted name, and a character such as `[`, `*` or `%` draw
+`MVK_LEXER_STANDARD_ERROR`, a trailing separator `MVK_INCOMPLETE_INPUT`, and a doubled separator or a
+token left after a path `MVK_UNEXPECTED_TOKEN`. The trailing and doubled separators are the pair that
+shows the empty segment's **position** decides. -/
 inductive MessageGroupLexicalFault where
-  /-- An unbalanced quote, or a quoted segment whose body is not a bare name. `MVK_LEXER_STANDARD_ERROR`. -/
-  | quote
+  /-- A character the parameter lexer forms no token from, a quoted name's first character among
+  them. `MVK_LEXER_STANDARD_ERROR`. -/
+  | lexer
   /-- An empty final segment: the argument ends on its separator. `MVK_INCOMPLETE_INPUT`. -/
   | truncated
   /-- An empty non-final segment: two separators with nothing between them. `MVK_UNEXPECTED_TOKEN`. -/
   | separator
+  /-- A token where a separator must be followed by a name, or one left after a complete path.
+  `MVK_UNEXPECTED_TOKEN`. A token left after a path is reported only once the path resolves. -/
+  | unexpected
   deriving Repr, DecidableEq
 
 inductive ValidationMessageTemplateError where
@@ -133,8 +140,13 @@ inductive ValidationMessageTemplateError where
   /-- A group-position argument that names no available group: an unknown group below a declared root
   or below the rule's group, a field, or a declared group that is neither an ancestor of the rule's
   group nor holds a field the condition reads. They share this one refusal, which is the Kernel's own
-  grouping — an **unknown root** is separated onto `unknownRootGroup` instead. -/
+  grouping — an **unknown root** is separated onto `unknownRootGroup`, and an ambiguous bare word onto
+  `groupShortNameNotUnique`. -/
   | invalidGroupParameter (parameter : String)
+  /-- A bare group word that names nothing directly below the rule's group and is the short name of
+  more than one field, refused `ERROR_TEXT_FIELDNAME_NOT_UNIQUE`. The lookup covers fields only, so a
+  group's short name is never found this way. -/
+  | groupShortNameNotUnique (parameter name : String)
   /-- A relative group argument whose parent walk climbs past the root group, refused on the message
   route's own above-root class `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, distinct from the
   condition parser's. -/
@@ -142,13 +154,14 @@ inductive ValidationMessageTemplateError where
   /-- A relative group argument whose turning point does not name the group its parent walk reaches.
   The Kernel refuses it on its entity class `INVALID_ENTITY`, not on the group class. -/
   | groupTurningPointMismatch (parameter : String)
-  /-- A group argument the parameter grammar refuses before any group is looked up, carrying which of
-  the Kernel's three lexical classes the malformed shape falls into. Kept apart from
-  `invalidGroupParameter`, which is a group **refusal** on a well-formed spelling. -/
+  /-- A group argument the parameter grammar refuses, carrying which of the Kernel's lexical and syntax
+  classes the malformed shape falls into. Every fault but a token left after a complete path is
+  reported before any group is looked up. Kept apart from `invalidGroupParameter`, which is a group
+  **refusal** on a well-formed spelling. -/
   | groupParameterLexical (parameter : String) (fault : MessageGroupLexicalFault)
   /-- The first segment of an absolute group argument names no declared root group. Root existence is
-  a gate of its own, ahead of containment and reported apart from it, so it fires whatever follows the
-  root and regardless of whether the rest could ever have contained the rule.
+  a gate of its own, ahead of the lookup below it and of availability, and reported apart from both,
+  so it fires whatever follows the root.
 
   A root the model declares but leaves **empty** would be reported by the Kernel on the ordinary group
   class instead. `FlatModel` cannot express such a group, so no input reaching here separates the two;
@@ -222,7 +235,7 @@ private inductive ParsedValidationMessagePart where
       (reference : AuthoredFieldPath) (category : String)
   | baseYear (offset : Int)
   /-- A group-position argument, beside the authored spelling a diagnostic quotes. -/
-  | group (parameter : String) (authored : AuthoredMessageGroup)
+  | group (parameter : String) (authored : AuthoredMessageGroup) (trailing : Bool)
   /-- A form-pointer parameter. It shares the name position's entity spec and nothing else: its one
   gate resolves that entity to a field, and the condition-membership requirement every other field
   form carries does not apply. -/
@@ -335,19 +348,118 @@ private def decodeSegment (segment : String) : Option AuthoredPathName :=
       | _ => none
   | _ => if isBareName segment then some { text := segment } else none
 
-/-- Decode a group argument's segments, classifying the first malformed one rather than collapsing
-every shape onto one parse class. The walk is single-pass, so the failing segment's position — which
-is what separates a trailing separator from a doubled one — is available exactly where it is decided. -/
-private def decodeGroupSegments :
-    List String → Except MessageGroupLexicalFault (List AuthoredPathName)
-  | [] => .ok []
-  | segment :: rest =>
-      match decodeSegment segment with
-      | some name => (decodeGroupSegments rest).map (name :: ·)
-      | none =>
-          if !segment.isEmpty then .error .quote
-          else if rest.isEmpty then .error .truncated
-          else .error .separator
+/-- One token of a group argument as the parameter grammar's lexer forms it, whitespace dropped as the
+lexer hides it. A quoted name is a name with its quotes erased; every token the path grammar has no
+use for is `other`. -/
+private inductive GroupToken where
+  | name (text : String)
+  | slash
+  | up
+  | other
+  deriving Repr, DecidableEq
+
+private def isNameStartCharacter (character : Char) : Bool :=
+  isBareNameCharacter character && !character.isDigit
+
+/-- The longest run of name characters, beside what follows it. -/
+private def spanNameCharacters : List Char → List Char × List Char
+  | character :: rest =>
+      if isBareNameCharacter character then
+        let (run, after) := spanNameCharacters rest
+        (character :: run, after)
+      else ([], character :: rest)
+  | [] => ([], [])
+
+/-- What follows a string literal's closing quote, with `""` as its escape, or `none` when unclosed. -/
+private def afterStringLiteral : List Char → Option (List Char)
+  | '"' :: '"' :: rest => afterStringLiteral rest
+  | '"' :: rest => some rest
+  | _ :: rest => afterStringLiteral rest
+  | [] => none
+
+/-- Tokenize a group argument, or `none` where the lexer forms no token. The token set is read from the
+Kernel's parameter lexer, and the rows the [argument-layer
+checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers) and the
+[token-alphabet checkpoint](../../docs/SOURCES.md#src-parameter-token-versus-group-declaration-alphabet)
+measure agree with it: a quoted name must open on a letter, a run of digits alone is a number rather
+than a name, and `-`, `(`, `)` and whitespace form tokens while `[`, `*` and `%` do not. `fuel` bounds
+the walk, since every step consumes a character. -/
+private def tokenizeGroupArgument : Nat → List Char → Option (List GroupToken)
+  | 0, _ => none
+  | _ + 1, [] => some []
+  | fuel + 1, character :: rest =>
+      if character == ' ' || character == '\t' || character == '\r' || character == '\n' ||
+          character == '\x0C' then
+        tokenizeGroupArgument fuel rest
+      else if character == '/' then
+        (GroupToken.slash :: ·) <$> tokenizeGroupArgument fuel rest
+      else if character == '.' then
+        match rest with
+        | '.' :: after => (GroupToken.up :: ·) <$> tokenizeGroupArgument fuel after
+        | _ => (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel rest
+      else if character == '\'' then
+        match spanNameCharacters rest with
+        | (first :: body, '\'' :: after) =>
+            if isNameStartCharacter first then
+              (GroupToken.name (String.ofList (first :: body)) :: ·) <$>
+                tokenizeGroupArgument fuel after
+            else none
+        | _ => none
+      else if character == '"' then
+        (afterStringLiteral rest).bind fun after =>
+          (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel after
+      else if character == '-' then
+        match rest with
+        | '>' :: after => (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel after
+        | _ => (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel rest
+      else if character == '+' || character == '(' || character == ')' || character == '#' then
+        (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel rest
+      else if isBareNameCharacter character then
+        let (run, after) := spanNameCharacters rest
+        let token :=
+          if (character :: run).all Char.isDigit then GroupToken.other
+          else .name (String.ofList (character :: run))
+        (token :: ·) <$> tokenizeGroupArgument fuel after
+      else none
+
+/-- Names after a separator, each separator demanding a name, beside the tokens left after the path. -/
+private def parseGroupNamesAfterSlash :
+    List GroupToken → Except MessageGroupLexicalFault (List String × List GroupToken)
+  | .name name :: .slash :: rest => do
+      let (names, left) ← parseGroupNamesAfterSlash rest
+      pure (name :: names, left)
+  | .name name :: left => pure ([name], left)
+  | [] => throw .truncated
+  | .slash :: _ => throw .separator
+  | _ => throw .unexpected
+
+/-- The rest of a relative path after `parents` up-steps: another up-step after a separator, a turning
+point written directly after the last up-step, then names after a separator. -/
+private def parseGroupUpRun (parents : Nat) :
+    List GroupToken → Except MessageGroupLexicalFault (AuthoredMessageGroup × List GroupToken)
+  | .slash :: .up :: rest => parseGroupUpRun (parents + 1) rest
+  | .slash :: rest => do
+      let (names, left) ← parseGroupNamesAfterSlash rest
+      pure (.relative parents none names, left)
+  | .name turningPoint :: .slash :: rest => do
+      let (names, left) ← parseGroupNamesAfterSlash rest
+      pure (.relative parents (some turningPoint) names, left)
+  | .name turningPoint :: left => pure (.relative parents (some turningPoint) [], left)
+  | left => pure (.relative parents none [], left)
+
+/-- Parse a tokenized group argument into a path and the tokens left after it. -/
+private def parseGroupTokens :
+    List GroupToken → Except MessageGroupLexicalFault (AuthoredMessageGroup × List GroupToken)
+  | [] => throw .truncated
+  | .slash :: rest => do
+      let (names, left) ← parseGroupNamesAfterSlash rest
+      pure (.absolute names, left)
+  | .name name :: .slash :: rest => do
+      let (names, left) ← parseGroupNamesAfterSlash rest
+      pure (.relative 0 none (name :: names), left)
+  | .name name :: left => pure (.relative 0 none [name], left)
+  | .up :: rest => parseGroupUpRun 1 rest
+  | _ => throw .unexpected
 
 /-- Decode a list of authored segments, failing as a whole if any segment is malformed. -/
 private def decodeSegments : List String → Option (List AuthoredPathName)
@@ -424,45 +536,30 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
           | _ => none
     | [] => none
 
-/-- Decode one group-position argument, with the `#` already stripped. A live keyword is taken before
-the path grammar, a retired terminal keeps its own refusal, and every other spelling is a group path
-in the name grammar's two forms: absolute after a leading separator, otherwise relative to the rule's
-group with the same `..` up-run and turning point. Each segment takes the name grammar's single-quote
-escape and the quotes are erased before lookup, so quoting reaches the same group — but the keyword
-match above is on the **raw** argument, which is why quoting a terminal turns it back into an ordinary
-group name. A malformed spelling is a parse failure rather than a group refusal, on the Kernel's own
-three lexical classes rather than one; `MessageGroupLexicalFault` owns that split, and a relative
-spelling meets it exactly as an absolute one does. -/
+/-- Decode one group-position argument, with the `#` already stripped, into its path and whether a
+token is left after it. A live keyword is taken before the path grammar, a retired terminal keeps its
+own refusal, and every other spelling is a group path in the name grammar's two forms: absolute after a
+leading separator, otherwise relative to the rule's group with the same `..` up-run and turning point.
+A quoted name reaches the same group as its bare spelling — but the keyword match above is on the
+**raw** argument, which is why quoting a terminal turns it back into an ordinary group name. The
+lexer's refusal comes first and the path's separator faults next, both before any lookup; a token left
+after the path is only reported once the path resolves, so it travels as a flag. -/
 private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
     (parameter argument : String) :
-    Except ValidationMessageTemplateError AuthoredMessageGroup :=
+    Except ValidationMessageTemplateError (AuthoredMessageGroup × Bool) :=
   if argument == profile.ruleGroupTerminal then
-    .ok .ruleGroup
+    .ok (.ruleGroup, false)
   else if argument == profile.rootGroupTerminal then
-    .ok .rootGroup
+    .ok (.rootGroup, false)
   else if profile.retiredGroupTerminals.contains argument then
     .error (.retiredGroupTerminal parameter argument)
   else
-    match argument.splitOn "/" with
-    | "" :: first :: rest =>
-        match decodeGroupSegments (first :: rest) with
-        | .ok names => .ok (.absolute (names.map (·.text)))
+    match tokenizeGroupArgument (argument.length + 1) argument.toList with
+    | none => .error (.groupParameterLexical parameter .lexer)
+    | some tokens =>
+        match parseGroupTokens tokens with
         | .error fault => .error (.groupParameterLexical parameter fault)
-    | [""] => .error (.invalidGroupParameter parameter)
-    | segments =>
-        let (parents, turningPoint, remaining) := splitParentWalk 0 segments
-        -- A nonempty segment that is no name but carries no quote is a word the parameter grammar
-        -- lexes, such as `index(Head)`, which reaches group lookup and is refused there as measured;
-        -- only a quote fault is lexical.
-        let fault := fun (fault : MessageGroupLexicalFault) =>
-          if fault == .quote && !argument.contains '\'' then
-            ValidationMessageTemplateError.invalidGroupParameter parameter
-          else .groupParameterLexical parameter fault
-        match turningPoint.map decodeSegment, decodeGroupSegments remaining with
-        | some none, _ => .error (fault .quote)
-        | _, .error cause => .error (fault cause)
-        | turningPoint, .ok names =>
-            .ok (.relative parents (turningPoint.join.map (·.text)) (names.map (·.text)))
+        | .ok (group, left) => .ok (group, !left.isEmpty)
 
 /-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its
 escape; anything else is a path to the keying field, and an unquoted bare word therefore resolves as a
@@ -515,7 +612,7 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
   -- The position marker is read first, because it selects a different grammar rather than a different
   -- form inside the name grammar. Nothing in the name grammar can begin with it.
   if parameter.startsWith "#" then
-    (ParsedValidationMessagePart.group parameter ·) <$>
+    (fun (authored, trailing) => ParsedValidationMessagePart.group parameter authored trailing) <$>
       parseMessageGroup profile parameter (parameter.drop 1).toString
   else
   -- The Base Year terminal is checked first: it is a terminal, so an unquoted occurrence is never a
@@ -723,43 +820,73 @@ def admitMessageGroup {model : FlatModel}
   else
     .error (.invalidGroupParameter parameter)
 
-/-- Resolve one group-position argument against the rule's own group. An absolute path resolves in the
-two stages the Kernel reports apart: its first segment must name a declared root group, and only then
-does availability decide. The root gate belongs to the absolute form alone — a keyword or a relative
-path resolves from the rule's own group, which introduces no root the model might not declare. A
-relative path walks up first, refusing a climb past the root, then checks its turning point against the
-group reached, and only then descends. -/
-def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
-    (parameter : String) (authored : AuthoredMessageGroup) :
-    Except ValidationMessageTemplateError
-      (CheckedValidationMessageGroup model condition) :=
-  match authored with
+/-- Whether a path names a declared group or field. -/
+def FlatModel.declaresEntityPath (model : FlatModel) (path : GroupPath) : Bool :=
+  model.hasGroupPath path || model.fields.any (·.path == path)
+
+/-- Look one group-position argument up against the rule's own group, before its availability is
+asked. An absolute path resolves in the two stages the Kernel reports apart: its first segment must
+name a declared root group, and then the whole path must name an entity. The root gate belongs to the
+absolute form alone — a keyword or a relative path resolves from the rule's own group, which
+introduces no root the model might not declare. A relative path walks up first, refusing a climb past
+the root, then checks its turning point against the group reached, and only then descends. A single
+bare word that names nothing below the rule's group falls back to the short name of a **field**, the
+only kind that lookup covers
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)). -/
+def resolveMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+    (parameter : String) : AuthoredMessageGroup → Except ValidationMessageTemplateError GroupPath
   -- The root shorthand is the top of the *rule's own* ancestor chain rather than a model-wide root.
   -- A model with two roots separates the two readings, and the rule's own chain is what the Kernel
   -- admits: under the second root the shorthand is accepted while the first root is refused.
   -- The shorthand carries a placement condition the other two spellings do not: a rule sitting
   -- directly in a root group may not use it. Measured on both carriers, and it is the gate the
-  -- containment test below cannot express, because a root group trivially contains itself.
+  -- availability test cannot express, because a root group is trivially its own ancestor.
   | .ruleGroup =>
       if condition.rowGroup.length ≤ 1 then
         .error (.ruleGroupImmediatelyBelowRoot parameter)
       else
-        admitMessageGroup condition parameter condition.rowGroup
-  | .rootGroup => admitMessageGroup condition parameter (condition.rowGroup.take 1)
+        .ok condition.rowGroup
+  | .rootGroup => .ok (condition.rowGroup.take 1)
   | .absolute [] => .error (.invalidGroupParameter parameter)
   | .absolute (root :: rest) =>
-      if model.hasGroupPath [root] then
-        admitMessageGroup condition parameter (root :: rest)
-      else
+      if !model.hasGroupPath [root] then
         .error (.unknownRootGroup parameter root)
+      else if model.declaresEntityPath (root :: rest) then
+        .ok (root :: rest)
+      else
+        .error (.invalidGroupParameter parameter)
   | .relative parents turningPoint path =>
       match GroupPath.walkUp condition.rowGroup parents with
       | .error _ => .error (.groupParameterAboveRoot parameter)
       | .ok base =>
-          if base.matchesTurningPoint turningPoint then
-            admitMessageGroup condition parameter (base ++ path)
-          else
+          if !base.matchesTurningPoint turningPoint then
             .error (.groupTurningPointMismatch parameter)
+          else if model.declaresEntityPath (base ++ path) then
+            .ok (base ++ path)
+          else
+            match parents, path with
+            | 0, [name] =>
+                match model.fields.filter (·.name == name) with
+                | [declaration] => .ok declaration.path
+                | [] => .error (.invalidGroupParameter parameter)
+                | _ => .error (.groupShortNameNotUnique parameter name)
+            | _, _ => .error (.invalidGroupParameter parameter)
+
+/-- Check one group-position argument: look it up, then refuse a token left after the path, then accept
+the group only if it is available. A token left after a path that fails its lookup is never reached,
+which is the Kernel's order: `$#He-ad$` draws the group class and `$#Head-x$` the syntax class
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)).
+Whether availability or a trailing token answers first, on a path that resolves to an unavailable group,
+is unmeasured; the Kernel's source asks availability once the parameter has parsed. -/
+def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+    (parameter : String) (authored : AuthoredMessageGroup) (trailing : Bool := false) :
+    Except ValidationMessageTemplateError
+      (CheckedValidationMessageGroup model condition) :=
+  match resolveMessageGroup condition parameter authored with
+  | .error error => .error error
+  | .ok group =>
+      if trailing then .error (.groupParameterLexical parameter .unexpected)
+      else admitMessageGroup condition parameter group
 
 inductive CheckedValidationMessagePart
     (model : FlatModel) (condition : CheckedFlatCondition model) where
@@ -888,8 +1015,8 @@ private def checkMessageParts (model : FlatModel)
           pure (.baseYear offset (base + offset) (by
             rw [hDeclared, Int.add_sub_cancel]) ::
             (← checkMessageParts model profile condition rest))
-  | .group parameter authored :: rest => do
-      pure (.group (← checkMessageGroup condition parameter authored) ::
+  | .group parameter authored trailing :: rest => do
+      pure (.group (← checkMessageGroup condition parameter authored trailing) ::
         (← checkMessageParts model profile condition rest))
   | .formPointer parameter reference pointer :: rest => do
       -- `resolveMessageEntity`, not `resolveMessageReference`: this is the one field form the Kernel
