@@ -109,8 +109,14 @@ inductive ValidationMessageTemplateError where
   /-- A name-position path that names a declared group rather than a field. The Kernel resolves the
   group and refuses it on the class of a field the condition does not read, `INVALID_FIELD`, even when
   the condition reads inside the group
-  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)). -/
+  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)),
+  and a value or category suffix keeps that class
+  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
   | groupInNamePosition (parameter : String) (group : GroupPath)
+  /-- A form pointer whose entity names a declared group. The pointer skips the membership gate, so its
+  refusal is the field requirement's own, `INVALID_FIELD_IN_PARAMETER`, and not the unread field's
+  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
+  | groupInFormPointer (parameter : String) (group : GroupPath)
   | fieldNotReferenced (parameter : String) (field : FieldId)
   /-- A category suffix was written with no category name after the arrow. -/
   | missingCategoryName (parameter : String)
@@ -355,14 +361,15 @@ private def parseMessagePath (parameter spec : String) :
   | [] => malformed
   | first :: rest =>
       if first.isEmpty then
-        -- A leading separator is the absolute form, which needs at least one group and a field.
+        -- A leading separator is the absolute form. A lone segment is still an entity spec, so it is
+        -- resolved rather than refused here: it names a root group or an undeclared one.
         match rest.reverse with
-        | field :: group :: groups =>
-            match decodeSegments (field :: group :: groups) with
+        | field :: groups =>
+            match decodeSegments (field :: groups) with
             | some (field :: groups) =>
                 .ok { base := .absolute, groups := groups.reverse, field }
             | _ => malformed
-        | _ => malformed
+        | [] => malformed
       else
         let (parents, turningPoint, remaining) := splitParentWalk 0 segments
         match remaining.reverse, turningPoint with
@@ -586,6 +593,13 @@ private def parseValidationMessageTemplate
   checkRuleMessageParameterBodies segments
   parseSegments profile segments
 
+/-- The model a message parameter's name resolves in: the same declarations with the short-name tier
+always on. Measured, a model whose flag is off still answers a bare message name by its model-wide
+short name, both an ambiguous one and a unique unread one, while its conditions keep the flag
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
+def FlatModel.messageNameModel (model : FlatModel) : FlatModel :=
+  { model with fieldRefByShortNameAllowed := true }
+
 /-- One checked field reference of a message parameter. `parameter` retains the authored spelling for
 Explain, including any value suffix; `reference` is its decoded path, which is what resolved. -/
 structure CheckedValidationMessageReference
@@ -594,7 +608,7 @@ structure CheckedValidationMessageReference
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
   resolved :
-    model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+    model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
       .ok declaration
   conditionReferenced :
     condition.core.referencesField declaration.id = true
@@ -610,7 +624,7 @@ structure CheckedValidationMessageFormPointer
   declaration : FlatFieldDecl
   pointer : MessageFormPointer
   resolved :
-    model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+    model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
       .ok declaration
 
 /-- One checked category access: the field reference beside the resolved projection, with witnesses
@@ -781,18 +795,19 @@ private structure ResolvedMessageEntity
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
   resolved :
-    model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+    model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
       .ok declaration
 
-/-- Resolve one name-bearing parameter position to a declaration. This is the part a keyed parameter
-shares with an unkeyed one: measured, an unresolvable name is refused for both, while only the unkeyed
-form additionally requires the condition to name the field. -/
+/-- Resolve one name-bearing parameter position to a declaration, or to the declared group it names.
+This is the part a keyed parameter shares with an unkeyed one: measured, an unresolvable name is
+refused for both, while a group is an entity each form refuses on its own class or not at all
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
 private def resolveMessageEntity (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model)
     (parameter : String) (authored : AuthoredFieldPath) :
     Except ValidationMessageTemplateError
-      (ResolvedMessageEntity model condition) := do
+      (ResolvedMessageEntity model condition ⊕ GroupPath) := do
   -- Every name-bearing position is checked, because a terminal may sit at any path level.
   let reference ← match ({ authored with
       turningPoint := authored.turningPoint.map (exemptQuoting profile)
@@ -802,12 +817,12 @@ private def resolveMessageEntity (model : FlatModel)
     | .ok reference => pure reference
     | .error (.unquotedKeyword name) => throw (.unquotedTerminalName name)
   match hResolved :
-      model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
+      model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
   | .error error =>
       match error.isGroupDisplaceableMiss, model.groupNamedBy? condition.rowGroup reference with
-      | true, some group => throw (.groupInNamePosition parameter group)
+      | true, some group => pure (.inr group)
       | _, _ => throw (.reference parameter error)
-  | .ok declaration => pure { reference, declaration, resolved := hResolved }
+  | .ok declaration => pure (.inl { reference, declaration, resolved := hResolved })
 
 private def resolveMessageReference (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
@@ -815,7 +830,9 @@ private def resolveMessageReference (model : FlatModel)
     (parameter : String) (authored : AuthoredFieldPath) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageReference model condition) := do
-  let entity ← resolveMessageEntity model profile condition parameter authored
+  let entity ← match ← resolveMessageEntity model profile condition parameter authored with
+    | .inl entity => pure entity
+    | .inr group => throw (.groupInNamePosition parameter group)
   if hReferenced :
       condition.core.referencesField entity.declaration.id = true then
     pure {
@@ -891,8 +908,9 @@ private def checkMessageParts (model : FlatModel)
       -- `resolveMessageEntity`, not `resolveMessageReference`: this is the one field form the Kernel
       -- admits on a field the condition never references, measured on six admitted spellings against
       -- the same model's own membership refusals.
-      let entity ←
-        resolveMessageEntity model profile condition parameter reference
+      let entity ← match ← resolveMessageEntity model profile condition parameter reference with
+        | .inl entity => pure entity
+        | .inr group => throw (.groupInFormPointer parameter group)
       pure (.formPointer {
           parameter
           reference := entity.reference
@@ -906,7 +924,8 @@ private def checkMessageParts (model : FlatModel)
       -- but its own admitted set is only the condition's keyed field plus the group's declared index
       -- field — not any field of the keyed group. Both name-bearing positions are still resolved as
       -- entities, because an unresolvable name is refused there rather than at the index gate — so
-      -- these resolutions are kept for their refusals, and their results are unusable here. The
+      -- these resolutions are kept for their refusals, and their results are unusable here. A group
+      -- is an entity here and passes to the index gate, measured on either position. The
       -- decoded suffix is likewise unusable, since no part this fragment can build carries a key.
       discard <| resolveMessageEntity model profile condition parameter reference
       match key with

@@ -980,6 +980,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)
 <a id="src-message-name-position-refusals"></a>
 - [The name position's path refusals carry their own classes, and a name that resolves to a group is refused as no read field](sources/message-and-pointer-probes.md#src-message-name-position-refusals)
+<a id="src-message-name-position-carriers"></a>
+- [A group in a form pointer draws its own class, a keyed form passes a group to the index gate, the message's short-name tier ignores the model flag, and a lone absolute segment resolves](sources/message-and-pointer-probes.md#src-message-name-position-carriers)
 
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)

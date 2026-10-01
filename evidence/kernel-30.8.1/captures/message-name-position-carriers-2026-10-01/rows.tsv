@@ -1,0 +1,20 @@
+C0	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store/X$.	-
+P1	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store.Vordruckzeile$.	INVALID_FIELD_IN_PARAMETER
+P2	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $/Probe/Store.Vordruckname$.	INVALID_FIELD_IN_PARAMETER
+P3	twin	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $Store.Vordruckzeile$.	INVALID_ENTITY
+P4	twin	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $Deep.Vordruckzeile$.	INVALID_FIELD_IN_PARAMETER
+P5	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Beside/Z.Vordruckzeile$.	-
+V1	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store.value$.	INVALID_FIELD
+V2	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store->Cat$.	INVALID_FIELD
+K1	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store For "k"$.	MVK_INDEX_FOR_ERROR_TEXT_INVALID
+K2	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Top For Store$.	MVK_INDEX_FOR_ERROR_TEXT_INVALID
+K3	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store For Nope$.	INVALID_ENTITY
+M1	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $X/Foo$.	INVALID_ENTITY
+M2	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Y/Foo$.	INVALID_ENTITY
+M3	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $X/Foo.value$.	INVALID_ENTITY
+S0	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store/X$.	-
+S1	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $X$.	ERROR_TEXT_FIELDNAME_NOT_UNIQUE
+S2	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Z$.	INVALID_FIELD
+S3	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Y$.	INVALID_FIELD
+A1	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $/Probe$.	INVALID_FIELD
+A2	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $/Nope$.	INVALID_ROOT_GROUP

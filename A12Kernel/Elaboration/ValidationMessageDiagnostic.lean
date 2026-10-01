@@ -9,7 +9,7 @@ The [retained rule-message checks](../../docs/SOURCES.md#src-message-template-ch
 and [group lexical checks](../../docs/SOURCES.md#src-message-group-parameter-resolution) fix these
 classes, and the group position's model classes and the name position's path classes are measured at
 the [group-argument checkpoints](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)
-and the [name-position checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals). This projection is for the rule producer; the shared error type alone supplies no evidence
+and the [name-position](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals) and [carrier](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers) checkpoints. This projection is for the rule producer; the shared error type alone supplies no evidence
 for a String-pattern or computation-message carrier. A codeless repertoire finding remains in the
 original error, beside any named cause. `none` means no established named class, never acceptance;
 in particular the fragment's generic parse and semantic-index refusals stay unmapped. -/
@@ -34,6 +34,7 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .reference _ (.aboveRoot _) => some .parameterTooManyParentGroups
   | .reference _ (.shortNameNotUnique _) => some .messageFieldNameNotUnique
   | .groupInNamePosition _ _ => some .messageFieldNotReferenced
+  | .groupInFormPointer _ _ => some .invalidFieldInParameter
   | .invalidGroupParameter _ => some .invalidGroupInParameter
   | .groupShortNameNotUnique _ _ => some .messageFieldNameNotUnique
   | .groupParameterAboveRoot _ => some .parameterTooManyParentGroups

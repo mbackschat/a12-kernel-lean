@@ -49,16 +49,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-01-03"></a>
-### `SPEC-2026-10-01-03` — the name position's relative and bare refusals carry their own classes, and a name that resolves to a group is refused as no read field
+### `SPEC-2026-10-01-03` — the name position's relative and bare refusals carry their own classes, a name that resolves to a group is refused as no read field, and each form that carries a name refuses a group on its own class
 
 - `status`: pending
 - `origin`: locally originated; it extends this project's root-gate rows, which read absolute paths only, onto bare and relative names, and adds a group named in the name position. The short-name row reproduces your `$Book$` row at `98525518a` and asks nothing of you.
-- `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the root-gate bullet's last two sentences.
-- `delta`: from a root rule reading `Store/X`, `$Nope$` and `$Nope/X$` draw `INVALID_ENTITY` and `$Store$` draws `INVALID_FIELD` while `$Store/X$` is admitted. From `/Probe/Store`, `$../../X$` draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS` and `$..Wrong/X$` `INVALID_ENTITY`.
-- `basis`: this project's [name-position grid](SOURCES.md#src-message-name-position-refusals), 11 `rule check --message` rows at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, with each row's prediction and the code-only verdicts retained; 9 of 10 non-control predictions held, the group-named row predicted `INVALID_ENTITY`.
-- `surfaces`: any peer checker, lock doc or finding that refuses a group named in the name position as an unknown entity, or the name position's walk past the root on the condition parser's `MVK_` class.
+- `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the root-gate bullet's last sentences and the form-pointer bullet's gate sentence.
+- `delta`: from a root rule reading `Store/X`, `$Nope$` draws `INVALID_ENTITY` and `$Store$` draws `INVALID_FIELD` while `$Store/X$` is admitted. From `/Probe/Store`, `$../../X$` draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS` and `$..Wrong/X$` and `$Nope/X$` `INVALID_ENTITY`. On a group, `$Store.value$` and `$Store->Cat$` keep `INVALID_FIELD`, a form pointer `$Store.Vordruckzeile$` draws `INVALID_FIELD_IN_PARAMETER` where spec/11 had `INVALID_ENTITY`, and the keyed `$Store For "k"$` and `$Top For Store$` draw `MVK_INDEX_FOR_ERROR_TEXT_INVALID`. An ambiguous first segment draws `ERROR_TEXT_FIELDNAME_NOT_UNIQUE` with more path after it, a model with short names off still answers a bare message name by its short name, and `$/Probe$` and `$/Nope$` resolve as entity specs, drawing `INVALID_FIELD` and `INVALID_ROOT_GROUP`.
+- `basis`: this project's [name-position grid](SOURCES.md#src-message-name-position-refusals), 11 `rule check --message` rows, and its [carrier grid](SOURCES.md#src-message-name-position-carriers), 20 more, at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, with each row's prediction and the code-only verdicts retained; 9 of 10 and 16 of 18 non-control predictions held, the misses being the group-named row and the two multi-segment ambiguity rows.
+- `surfaces`: any peer checker, lock doc or finding that refuses a group named in the name position or a form pointer as an unknown entity, gates a message name's short-name tier on the model flag, or refuses the name position's walk past the root on the condition parser's `MVK_` class.
 - `acceptance`: confirm the group-named row and the relative rows, or supply a name-position path whose class this account does not predict.
-- `limit`: static admission only, fixed groups, field reads, the bare name form and an English condition language. A group named with a suffix, a key or a form-pointer terminal is not measured.
+- `limit`: static admission only, fixed groups, field reads and an English condition language.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-01-02"></a>

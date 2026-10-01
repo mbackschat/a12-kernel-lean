@@ -401,8 +401,9 @@ inductive KernelStaticDiagnostic where
   /-- A name-position path that resolves to no entity below its root, or a turning point naming another
   group in either position. The condition parser's class is `invalidEntity`. -/
   | messageInvalidEntity
-  /-- A bare message parameter that falls back to a field short name two fields share. The condition
-  parser's class is `fieldNameNotUnique`. -/
+  /-- A message parameter whose bare name or relative first segment falls back to a field short name
+  two fields share, whatever path follows it and whatever the model's short-name flag says. The
+  condition parser's class is `fieldNameNotUnique`. -/
   | messageFieldNameNotUnique
   /-- The rule-group shorthand in a rule declared directly in the root group. -/
   | ruleGroupImmediatelyBelowRoot

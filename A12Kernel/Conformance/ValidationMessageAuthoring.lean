@@ -162,12 +162,11 @@ example :
             field := "Amount" })) := by
   native_decide
 
-/- Malformed specs are the Kernel's single parse class, not a family of shape classes: an absolute
-path with no group, an empty segment, and a bare parent walk with no field. -/
+/- Malformed specs are the Kernel's single parse class, not a family of shape classes: an empty
+segment and a bare parent walk with no field. A lone absolute segment is not malformed; it resolves
+like any other entity spec. -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head"] "Amount")
-        "See $/Amount$" = some (.invalidParameter "/Amount") ∧
-      pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head"] "Amount")
         "See $Head//Amount$" = some (.invalidParameter "Head//Amount") ∧
       pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head"] "Amount")
         "See $..$" = some (.invalidParameter "..") := by
@@ -409,6 +408,32 @@ example :
         some (some "INVALID_ENTITY") ∧
       namedClassOn? shortNames ["Order", "Side"] (bare "Aside") "See $Amount$" =
         some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") := by
+  native_decide
+
+/- The forms that carry a name keep its resolution but not always its group class
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). A
+form pointer naming a group draws its own class, as does a group's lone absolute segment, while the
+suffixed forms keep the membership one. A keyed form resolves a group as an entity and leaves it to the
+index gate, which this fragment does not decide, so only a key that names nothing is classed. The
+message's short-name tier answers with the model's flag off, which is this fixture's default, and an
+ambiguous first segment answers even when more path follows it. -/
+example :
+    let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    let side := namedClassOn? model ["Order", "Side"] (bare "Aside")
+    root "See $Head.Vordruckzeile$" = some (some "INVALID_FIELD_IN_PARAMETER") ∧
+      root "See $/Order/Head.Vordruckname$" = some (some "INVALID_FIELD_IN_PARAMETER") ∧
+      namedClassOn? model ["Order", "Head"] (bare "Amount") "See $Head.Vordruckzeile$" =
+        some (some "INVALID_ENTITY") ∧
+      root "See $Head.value$" = some (some "INVALID_FIELD") ∧
+      root "See $Head For \"k\"$" = some none ∧
+      root "See $Amount For Head$" = some none ∧
+      root "See $Head For Nope$" = some (some "INVALID_ENTITY") ∧
+      root "See $/Order$" = some (some "INVALID_FIELD") ∧
+      root "See $/Nope$" = some (some "INVALID_ROOT_GROUP") ∧
+      side "See $Amount$" = some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") ∧
+      side "See $Amount/Foo$" = some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") ∧
+      side "See $Deep/Foo$" = some (some "INVALID_ENTITY") ∧
+      side "See $Deep$" = some (some "INVALID_FIELD") := by
   native_decide
 
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/

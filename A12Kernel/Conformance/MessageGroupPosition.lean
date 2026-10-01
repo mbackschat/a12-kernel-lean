@@ -4,10 +4,11 @@ import A12Kernel.Conformance.ValidationMessageAuthoring
 
 The group position `$#…$` checked inside a whole rule-message template: which groups are available
 to the rule's message, how a decoded argument resolves against the rule's group, which class each
-refused spelling draws once the model is consulted, and what an admitted group renders. Every
-expected value is a Kernel 30.8.1 class or rendering measured at the checkpoints each case cites, on
-spellings translated to the shared fixture's `Order`, `Head`, `Deeper`, `Base`, `Side` and
-`Vendor` groups. The decoder's model-free decisions are locked in
+refused spelling draws once the model is consulted, and what an admitted group renders, on spellings
+translated to the shared fixture's `Order`, `Head`, `Deeper`, `Base`, `Side` and `Vendor` groups. A
+case cites its checkpoint where one settles it; an uncited case locks this module's account of the
+group position, whose Kernel 30.8.1 measurements the group-position checkpoints in
+`docs/sources/message-and-pointer-probes.md` own. The decoder's model-free decisions are locked in
 `Conformance/MessageGroupArgument.lean`.
 -/
 

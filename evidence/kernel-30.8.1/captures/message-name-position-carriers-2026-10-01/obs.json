@@ -1,0 +1,256 @@
+[
+ {
+  "id": "C0",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store/X$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "P1",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store.Vordruckzeile$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD_IN_PARAMETER"
+  ]
+ },
+ {
+  "id": "P2",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $/Probe/Store.Vordruckname$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD_IN_PARAMETER"
+  ]
+ },
+ {
+  "id": "P3",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $Store.Vordruckzeile$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "P4",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $Deep.Vordruckzeile$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD_IN_PARAMETER"
+  ]
+ },
+ {
+  "id": "P5",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Beside/Z.Vordruckzeile$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "V1",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store.value$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "V2",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store->Cat$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "K1",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store For \"k\"$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+  ]
+ },
+ {
+  "id": "K2",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Top For Store$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+  ]
+ },
+ {
+  "id": "K3",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store For Nope$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "M1",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $X/Foo$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+  ]
+ },
+ {
+  "id": "M2",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Y/Foo$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "M3",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $X/Foo.value$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+  ]
+ },
+ {
+  "id": "S0",
+  "model": "GroupAvailTwinNoShort_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store/X$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "S1",
+  "model": "GroupAvailTwinNoShort_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $X$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+  ]
+ },
+ {
+  "id": "S2",
+  "model": "GroupAvailTwinNoShort_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Z$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "S3",
+  "model": "GroupAvailTwinNoShort_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Y$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "A1",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $/Probe$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "A2",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $/Nope$.",
+  "verification": "KERNEL_CONFIRMED",
+  "valid": false,
+  "codes": [
+   "INVALID_ROOT_GROUP"
+  ]
+ }
+]
