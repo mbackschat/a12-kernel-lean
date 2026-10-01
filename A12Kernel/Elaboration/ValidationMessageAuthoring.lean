@@ -111,7 +111,8 @@ inductive MessageGroupLexicalFault where
   /-- An empty non-final segment: two separators with nothing between them. `MVK_UNEXPECTED_TOKEN`. -/
   | separator
   /-- A token where a separator must be followed by a name, or one left after a complete path.
-  `MVK_UNEXPECTED_TOKEN`. A token left after a path is reported only once the path resolves. -/
+  `MVK_UNEXPECTED_TOKEN`. A token left after a path is reported only once the path resolves to an
+  available group. -/
   | unexpected
   deriving Repr, DecidableEq
 
@@ -358,11 +359,13 @@ private def decodeSegment (segment : String) : Option AuthoredPathName :=
 
 /-- One token of a group argument as the parameter grammar's lexer forms it, whitespace dropped as the
 lexer hides it. A quoted name is a name with its quotes erased, and `quoted` keeps whether it could
-still be read as a keyword. A run of digits is a `number`, which the path grammar takes as a name and a
+still be read as a keyword. An unquoted reserved word outside the exempt set is a `keyword`, which no
+name position accepts. A run of digits is a `number`, which the path grammar takes as a name and a
 retired terminal's offset as its digits. `bad` stands where the lexer forms no token. Every other token
 the path grammar has no use for is `other`. -/
 private inductive GroupToken where
   | name (text : String) (quoted : Bool)
+  | keyword (text : String)
   | number (digits : String)
   | slash
   | up
@@ -397,45 +400,53 @@ checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-a
 [token-alphabet checkpoint](../../docs/SOURCES.md#src-parameter-token-versus-group-declaration-alphabet)
 measure agree with it: a quoted name must open on a letter, the longest run of name characters is one
 token, so `1x` is a digit-initial name while `1` alone is a number, and `-`, `+`, `(`, `)` and
-whitespace form tokens while `[`, `*` and `%` do not. `fuel` bounds the walk, since every step consumes
-a character. -/
-private def tokenizeGroupArgument : Nat → List Char → List GroupToken
+whitespace form tokens while `[`, `*` and `%` do not. A word is a keyword exactly when it is reserved
+and not exempt from quoting, so `RuleGroup`, `For` and `BaseYear` are keywords in English while
+`RootGroup`, `Zeile`, `Usb`, `index` and `value` are names, which the [argument-event
+checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events) measures
+in both directions. `fuel` bounds the walk, since every step consumes a character. -/
+private def tokenizeGroupArgument (profile : ValidationMessageKeywordProfile) :
+    Nat → List Char → List GroupToken
   | 0, _ => [.bad]
   | _ + 1, [] => []
   | fuel + 1, character :: rest =>
       if character == ' ' || character == '\t' || character == '\r' || character == '\n' ||
           character == '\x0C' then
-        tokenizeGroupArgument fuel rest
+        tokenizeGroupArgument profile fuel rest
       else if character == '/' then
-        .slash :: tokenizeGroupArgument fuel rest
+        .slash :: tokenizeGroupArgument profile fuel rest
       else if character == '.' then
         match rest with
-        | '.' :: after => .up :: tokenizeGroupArgument fuel after
-        | _ => .other :: tokenizeGroupArgument fuel rest
+        | '.' :: after => .up :: tokenizeGroupArgument profile fuel after
+        | _ => .other :: tokenizeGroupArgument profile fuel rest
       else if character == '\'' then
         match spanNameCharacters rest with
         | (first :: body, '\'' :: after) =>
             if isNameStartCharacter first then
-              .name (String.ofList (first :: body)) true :: tokenizeGroupArgument fuel after
+              .name (String.ofList (first :: body)) true :: tokenizeGroupArgument profile fuel after
             else [.bad]
         | _ => [.bad]
       else if character == '"' then
         match afterStringLiteral rest with
-        | some after => .other :: tokenizeGroupArgument fuel after
+        | some after => .other :: tokenizeGroupArgument profile fuel after
         | none => [.bad]
       else if character == '-' then
         match rest with
-        | '>' :: after => .other :: tokenizeGroupArgument fuel after
-        | _ => .sign :: tokenizeGroupArgument fuel rest
+        | '>' :: after => .other :: tokenizeGroupArgument profile fuel after
+        | _ => .sign :: tokenizeGroupArgument profile fuel rest
       else if character == '+' then
-        .sign :: tokenizeGroupArgument fuel rest
+        .sign :: tokenizeGroupArgument profile fuel rest
       else if character == '(' || character == ')' || character == '#' then
-        .other :: tokenizeGroupArgument fuel rest
+        .other :: tokenizeGroupArgument profile fuel rest
       else if isBareNameCharacter character then
         let (run, after) := spanNameCharacters rest
         let text := String.ofList (character :: run)
-        (if (character :: run).all Char.isDigit then .number text else .name text false) ::
-          tokenizeGroupArgument fuel after
+        let token :=
+          if (character :: run).all Char.isDigit then .number text
+          else if profile.path.reserved.contains text &&
+              !profile.unquotedTerminals.contains text then .keyword text
+          else .name text false
+        token :: tokenizeGroupArgument profile fuel after
       else [.bad]
 
 /-- Names after a separator, each separator demanding a name, beside the tokens left after the path.
@@ -576,17 +587,21 @@ private def groupKeyword? (profile : ValidationMessageKeywordProfile) (word : St
 
 /-- Choose a group argument's alternative from its tokens, as the parameter grammar does, and fail at
 the first token no alternative continues. Only an unquoted word can open a keyword alternative, which
-is why quoting a terminal turns it back into a group name. A keyword that is **not** also a name, such
-as `RuleGroup` in English, opens its own alternative whatever follows it. A keyword that is also a name
-— one of `unquotedTerminals`, which `RootGroup`, `Zeile` and `Usb` are in English — is the keyword at
-the end of the text, the first segment of a path before a separator, and an offset terminal's
-alternative before a sign; before any other token neither reading continues, and that is a syntax
-refusal before any check. The Kernel's classes on each branch are measured at the [argument-event
+is why quoting a terminal turns it back into a group name. A `keyword` token, such as `RuleGroup` in
+English, opens its own alternative whatever follows it, and one that is no group terminal opens none.
+A group terminal that is also a name, which `RootGroup`, `Zeile` and `Usb` are in English, is the
+keyword at the end of the text, the first segment of a path before a separator, and an offset
+terminal's alternative before a sign; before any other token neither reading continues, and that is a
+syntax refusal before any check. The Kernel's classes on each branch are measured at the [argument-event
 checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events). -/
 private def parseGroupArgument (profile : ValidationMessageKeywordProfile) :
     List GroupToken → Except MessageGroupLexicalFault (ParsedGroupArgument × List GroupToken)
   | [] => throw .truncated
   | .bad :: _ => throw .lexer
+  | .keyword word :: rest =>
+      match groupKeyword? profile word with
+      | some keyword => pure (keyword, rest)
+      | none => throw .unexpected
   | .name word false :: rest =>
       let path := do
         let (group, left) ← parseGroupPath (.name word false :: rest)
@@ -594,21 +609,19 @@ private def parseGroupArgument (profile : ValidationMessageKeywordProfile) :
       match groupKeyword? profile word with
       | none => path
       | some keyword =>
-          if !profile.unquotedTerminals.contains word then pure (keyword, rest)
-          else
-            match rest with
-            | [] => pure (keyword, [])
-            | .slash :: _ => path
-            | .sign :: after =>
-                if profile.offsetGroupTerminals.contains word then
-                  match after with
-                  | .number _ :: left => pure (keyword, left)
-                  | [] => throw .expectedToken
-                  | .bad :: _ => throw .lexer
-                  | _ => throw .unexpected
-                else throw .unexpected
-            | .bad :: _ => throw .lexer
-            | _ => throw .unexpected
+          match rest with
+          | [] => pure (keyword, [])
+          | .slash :: _ => path
+          | .sign :: after =>
+              if profile.offsetGroupTerminals.contains word then
+                match after with
+                | .number _ :: left => pure (keyword, left)
+                | [] => throw .expectedToken
+                | .bad :: _ => throw .lexer
+                | _ => throw .unexpected
+              else throw .unexpected
+          | .bad :: _ => throw .lexer
+          | _ => throw .unexpected
   | tokens => do
       let (group, left) ← parseGroupPath tokens
       pure (.group group, left)
@@ -624,7 +637,7 @@ private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
     (parameter argument : String) :
     Except ValidationMessageTemplateError (AuthoredMessageGroup × Bool) :=
   match parseGroupArgument profile
-      (tokenizeGroupArgument (argument.length + 1) argument.toList) with
+      (tokenizeGroupArgument profile (argument.length + 1) argument.toList) with
   | .error fault => .error (.groupParameterLexical parameter fault)
   | .ok (_, .bad :: _) => .error (.groupParameterLexical parameter .lexer)
   | .ok (.retired terminal, _) => .error (.retiredGroupTerminal parameter terminal)

@@ -1,0 +1,214 @@
+[
+ {
+  "id": "C1",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/RuleGroup$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C2",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#/Probe/RuleGroup$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C3",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#For$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C4",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/For$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C5",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#BaseYear$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C6",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/BaseYear$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C7",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Beside x%$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "C8",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Zeile-1 x$.",
+  "valid": false,
+  "codes": [
+   "PARAM_INVALID_IN_NEW_WORLD"
+  ]
+ },
+ {
+  "id": "C9",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Usb-$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C10",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Zeile+$.",
+  "valid": false,
+  "codes": [
+   "MVK_EXPECTED_TOKEN_NOT_FOUND"
+  ]
+ },
+ {
+  "id": "C11",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#'Zeile'-1$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "C12",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#..RootGroup$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "C13",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#..RuleGroup$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "C14",
+  "model": "GroupAvail_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store/value$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "K20",
+  "model": "GroupKw_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "K21",
+  "model": "GroupKw_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top)",
+  "message": "Check $#RootGroup$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "K22",
+  "model": "GroupKw_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top)",
+  "message": "Check $#'RootGroup'$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "K23",
+  "model": "GroupKw_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top)",
+  "message": "Check $#RootGroup/Inner$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ }
+]

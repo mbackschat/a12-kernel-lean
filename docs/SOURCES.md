@@ -1267,7 +1267,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-message-group-availability"></a>
 - [A group parameter may name any available group, the rule's own group, an ancestor, or a group holding a field the condition reads, and a path without a leading slash resolves from the rule's group](sources/message-and-pointer-probes.md#src-message-group-availability)
 <a id="src-message-group-argument-layers"></a>
-- [A group argument is refused in layers, lexer faults first, then separator faults, then the lookup with its field short-name fallback, then a token left after the path](sources/message-and-pointer-probes.md#src-message-group-argument-layers)
+- [A group argument is refused in layers, a lexer or separator fault before the lookup with its field short-name fallback, then a token left after the path](sources/message-and-pointer-probes.md#src-message-group-argument-layers)
 <a id="src-message-group-argument-events"></a>
 - [A group argument's classes follow its parser's events, and a keyword that is also a name is decided by the token after it](sources/message-and-pointer-probes.md#src-message-group-argument-events)
 <a id="src-german-condition-language-terminals"></a>

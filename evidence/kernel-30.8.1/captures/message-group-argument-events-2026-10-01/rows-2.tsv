@@ -1,0 +1,18 @@
+C1	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/RuleGroup$.	MVK_UNEXPECTED_TOKEN
+C2	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/RuleGroup$.	MVK_UNEXPECTED_TOKEN
+C3	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#For$.	MVK_UNEXPECTED_TOKEN
+C4	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/For$.	MVK_UNEXPECTED_TOKEN
+C5	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#BaseYear$.	MVK_UNEXPECTED_TOKEN
+C6	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/BaseYear$.	MVK_UNEXPECTED_TOKEN
+C7	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Beside x%$.	INVALID_GROUP
+C8	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile-1 x$.	PARAM_INVALID_IN_NEW_WORLD
+C9	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Usb-$.	MVK_UNEXPECTED_TOKEN
+C10	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile+$.	MVK_EXPECTED_TOKEN_NOT_FOUND
+C11	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#'Zeile'-1$.	INVALID_GROUP
+C12	GroupAvail_DM.json	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#..RootGroup$.	INVALID_ENTITY
+C13	GroupAvail_DM.json	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#..RuleGroup$.	MVK_UNEXPECTED_TOKEN
+C14	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/value$.	INVALID_GROUP
+K20	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top)	Check.	-
+K21	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top)	Check $#RootGroup$.	-
+K22	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top)	Check $#'RootGroup'$.	INVALID_GROUP
+K23	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top)	Check $#RootGroup/Inner$.	INVALID_GROUP
