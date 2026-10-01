@@ -230,7 +230,8 @@ example :
 /- A Number operation reading its own target draws the reference class whatever its shape, a bare
 copy, a wrapper, an operand-list call, a rounded division, a power, and both sides at once, which the
 Kernel reports once per occurrence. The class is asked after the authoring and scale gates on every
-shape, so a mismatched scale draws the scale class and too many divisions their own refusal instead
+shape, so a mismatched scale draws the scale class, and too many divisions or a power over a power
+draw their own class, as each does beside a control without the self-read
 ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
 example :
     let selfRead := surfaceField ["Root"] "Target"
@@ -248,8 +249,19 @@ example :
         .binary .multiply selfRead (.literal { value := 3 / 2, authoredScale := 1 })].map
           (fun expression => (fractionDecision expression).kernelCode?) =
       List.replicate 6 (some "MVK_INVALID_COMPARE_DEC_PLACES") ∧
-    fractionDecision (.binary .divide (.binary .divide selfRead other) frac) =
-      .numberRefusal (.authoring .tooManyDivisions) := by
+    (fractionDecision (.binary .divide (.binary .divide selfRead other)
+        (surfaceField ["Root"] "Later"))).kernelCode? = some "MVK_TOO_MANY_DIV_FOR_CALC" ∧
+    [selfRead, other].map (fun base =>
+        (fractionDecision (.power (.power base (.literal { value := 2, authoredScale := 0 }))
+          (.literal { value := 2, authoredScale := 0 }))).kernelCode?) =
+      List.replicate 2 (some "MVK_TOO_MANY_POW_FOR_CALC") ∧
+    [surfaceAggregate .sum "Target" ["Source"], surfaceAggregate .sum "Target" ["Frac"],
+        .binary .multiply (surfaceAggregate .sum "Target" ["Source"]) frac,
+        surfaceAggregate .sum "Source" ["Later"]].map (fun expression =>
+          (fractionDecision expression).kernelCode?) =
+      [some "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", some "MVK_INVALID_COMPARE_DEC_PLACES",
+        some "MVK_INVALID_COMPARE_DEC_PLACES", none] ∧
+    fractionDecision (surfaceAggregate .sum "Source" ["Later"]) = .accepted := by
   native_decide
 
 /- Explain keeps an uncovered String target read as its exact local refusal. Its missing external

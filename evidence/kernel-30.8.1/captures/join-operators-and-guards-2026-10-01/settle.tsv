@@ -1,0 +1,30 @@
+# row	computation on Settle_DM	kernel-codes
+A01	T3: [T3] * 2 if FieldFilled(Gate1); [Base1] * 1.5 if FieldFilled(Gate2)	MVK_INVALID_COMPARE_DEC_PLACES
+A02	T3: [Base1] * 1.5 if FieldFilled(Gate1); [T3] * 2 if FieldFilled(Gate2)	MVK_INVALID_COMPARE_DEC_PLACES
+A03	T3: [T3] if FieldFilled(Gate1); [Frac] if FieldFilled(Gate2)	MVK_INVALID_COMPARE_DEC_PLACES
+A04	T3: [Frac] if FieldFilled(Gate1); [T3] if FieldFilled(Gate2)	MVK_INVALID_COMPARE_DEC_PLACES
+A05	T3: [T3] if FieldFilled(Gate1); [Base2] if FieldFilled(Gate2)	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+A06	T3: [T3] if FieldFilled(Gate1); [Base1] / [Base2] / [Base3] if FieldFilled(Gate2)	MVK_TOO_MANY_DIV_FOR_CALC
+A07	T3: [Base1] / [Base2] / [Base3] if FieldFilled(Gate1); [T3] if FieldFilled(Gate2)	MVK_TOO_MANY_DIV_FOR_CALC
+A08	T3: [Base1] if FieldFilled(Gate1); [Frac] if FieldFilled(Gate2)	MVK_INVALID_COMPARE_DEC_PLACES
+A09	T3: [Base1] if FieldFilled(T3); [Frac] if FieldFilled(Gate2)	MVK_INVALID_COMPARE_DEC_PLACES
+A10	T3: [T3] if FieldFilled(Gate1); [Nope] if FieldFilled(Gate2)	MVK_INVALID_ENTITY
+W01	T3: Sum(T3, Base1)	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+W02	T3: Sum(T3, Frac)	MVK_INVALID_COMPARE_DEC_PLACES
+W03	T3: Sum(T3, Base1) * [Frac]	MVK_INVALID_COMPARE_DEC_PLACES
+W04	T3: FirstFilledValue(T3, Base1)	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+W05	T3: FirstFilledValue(T3, Frac)	MVK_INVALID_COMPARE_DEC_PLACES
+W06	T3: Sum(Base1, Base2)	admitted
+W07	S1/GT: NumberOfFilledGroups(/Join/S1, /Join/S2)	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+W08	S1/GT: NumberOfFilledGroups(/Join/S2, /Join/S1)	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+W09	S1/GT: NumberOfFilledGroups(/Join/S1, /Join/S2) * 1.5	MVK_INVALID_COMPARE_DEC_PLACES
+W10	T3: NumberOfFilledGroups(/Join/S1, /Join/S2)	admitted
+P01	T3: [T3] ^ 2 ^ 2	MVK_TOO_MANY_POW_FOR_CALC
+P02	T3: [Base1] ^ 2 ^ 2	MVK_TOO_MANY_POW_FOR_CALC
+P03	T3: Abs(2) + [T3]	MVK_NO_CONST
+P04	T3: Abs(2) + [Base1]	MVK_NO_CONST
+P05	T3: [T3] ^ 0.5	MVK_INVALID_NUMBER_FOR_EXP
+P06	T3: [Base1] ^ 0.5	MVK_INVALID_NUMBER_FOR_EXP
+P07	T3: [T3] + [Gate1]	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+P08	T3: [Base1] + [Gate1]	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+P09	T3: [T3] * [Gate1]	MVK_NO_NUMBER_FOR_CALC

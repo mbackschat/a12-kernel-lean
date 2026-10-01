@@ -157,7 +157,7 @@ private def inputs (base1 : Option ClassifiedCellInput := some (numberCell base1
     (if gate2 then [stringCell gate2Id "x"] else [])
 
 /- Every source readable: each operator reads both fresh producers, the String gate holds, and the
-   guard on a filled computed target holds while the one on a filled target does not. -/
+   filled guard on the filled `P1` holds while the not-filled guard on the filled `P2` does not. -/
 example :
     values? (inputs) = some ["7", "5", "2", "35", "7", "12", "2", "-", "1.4"] ∧
     values? (inputs (base1 := some (numberCell base1Id (-3)))) =

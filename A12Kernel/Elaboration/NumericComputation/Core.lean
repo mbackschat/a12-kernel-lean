@@ -131,13 +131,18 @@ def groupCountDiagnostic? :
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | _ => none
 
-/-- Project the measured computed Number target-scale rejection, a read of the target, which
-every measured shape reaches only past the authoring and scale gates, and a copied field the
-generated comparison refuses. An aggregate or group-count read of the target takes the same order
-unmeasured. Other computation failures remain unmapped. -/
+/-- Project the measured computed Number target-scale rejection, a second unbraced division and a
+power over a power, a read of the target, which every measured shape reaches only past those gates,
+aggregates, `FirstFilledValue` and group counts included, and a copied field the generated comparison
+refuses ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+The class is one operation's: a computation of several alternatives asks every alternative's other
+gates before any read of the target. The two authoring failures together, and other computation
+failures, remain unmapped. -/
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
+  | .authoring .tooManyDivisions => some .tooManyDivisionsInRegion
+  | .authoring .directLeftNestedPower => some .nestedPowerOnLeft
   | .copyComparison _ _ refusal => some refusal.diagnostic
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | _ => none

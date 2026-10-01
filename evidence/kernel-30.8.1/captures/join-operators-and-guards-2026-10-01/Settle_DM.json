@@ -1,0 +1,402 @@
+{
+  "header" : {
+    "id" : "Join2_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Join2_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Join",
+        "name" : "Join",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Join/Base1",
+            "name" : "Base1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Base2",
+            "name" : "Base2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Base3",
+            "name" : "Base3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/P1",
+            "name" : "P1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/P2",
+            "name" : "P2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Sub",
+            "name" : "Sub",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Mul",
+            "name" : "Mul",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Mx",
+            "name" : "Mx",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/G",
+            "name" : "G",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/H",
+            "name" : "H",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/HN",
+            "name" : "HN",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Div",
+            "name" : "Div",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Gate1",
+            "name" : "Gate1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Gate2",
+            "name" : "Gate2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/SubComp",
+            "name" : "SubComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Sub",
+              "computationAlternatives" : [ {
+                "operation" : "[P1] - [P2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/MulComp",
+            "name" : "MulComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Mul",
+              "computationAlternatives" : [ {
+                "operation" : "[P1] * [P2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/MxComp",
+            "name" : "MxComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Mx",
+              "computationAlternatives" : [ {
+                "operation" : "Max([P1], [P2])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/GComp",
+            "name" : "GComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../G",
+              "computationAlternatives" : [ {
+                "operation" : "[P1] + [P2]",
+                "precondition" : "FieldFilled(Gate1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/HComp",
+            "name" : "HComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../H",
+              "computationAlternatives" : [ {
+                "operation" : "[Base3]",
+                "precondition" : "FieldFilled(P1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/HNComp",
+            "name" : "HNComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../HN",
+              "computationAlternatives" : [ {
+                "operation" : "[Base3]",
+                "precondition" : "FieldNotFilled(P2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/P1Comp",
+            "name" : "P1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P1",
+              "computationAlternatives" : [ {
+                "operation" : "[Base1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/P2Comp",
+            "name" : "P2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P2",
+              "computationAlternatives" : [ {
+                "operation" : "[Base2]",
+                "precondition" : "FieldFilled(Gate2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Join/DivComp",
+            "name" : "DivComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Div",
+              "computationAlternatives" : [ {
+                "operation" : "RoundAccounting([P1] / [P2], 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/T3",
+            "name" : "T3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Join/Frac",
+            "name" : "Frac",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Join/S1",
+            "name" : "S1",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Join/S1/GT",
+                "name" : "GT",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Join/S1/A1",
+                "name" : "A1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Join/S2",
+            "name" : "S2",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Join/S2/A2",
+                "name" : "A2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

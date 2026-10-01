@@ -59,8 +59,9 @@ example :
         some (.targetSelfReference targetId) := by
   native_decide
 
-/- The measured arithmetic forms reach scale comparison before the target-reference refusal. The same-scale field form is a separate positive
-branch from the literal mismatch and suppression branches. -/
+/- The measured arithmetic forms reach scale comparison before the target-reference refusal. The
+same-scale field form is a separate positive branch from the literal mismatch and suppression
+branches. -/
 example :
     let targetField := surfaceField ["Root"] "Target"
     let sourceField := surfaceField ["Root"] "Source"
@@ -319,8 +320,9 @@ example :
           { unscaled := 11, scale := 1 } .suppressedScaleMismatch)) := by
   native_decide
 
-/- Every reached scale mismatch and target reference project to their measured Kernel classes.
-Unrelated authoring failures remain explicitly unmapped. -/
+/- Every reached scale mismatch and target reference project to their measured Kernel classes, and so
+do a second unbraced division and a power over a power on its left. Their combination and an
+expression outside the fragment stay unmapped. -/
 example :
     let scaleOne :=
       AuthoredNumericExpr.literal
@@ -333,7 +335,11 @@ example :
         (.targetSelfReference targetId) =
           some .errorReferenceToCalculatedField ∧
       NumericComputationElabError.targetDiagnostic?
-        (.authoring .tooManyDivisions) = none ∧
+        (.authoring .tooManyDivisions) = some .tooManyDivisionsInRegion ∧
+      NumericComputationElabError.targetDiagnostic?
+        (.authoring .directLeftNestedPower) = some .nestedPowerOnLeft ∧
+      NumericComputationElabError.targetDiagnostic?
+        (.authoring .tooManyDivisionsAndDirectLeftNestedPower) = none ∧
       NumericComputationElabError.targetDiagnostic? .unsupportedExpression = none ∧
       KernelStaticDiagnostic.kernelCode .invalidCompareDecimalPlaces =
         "MVK_INVALID_COMPARE_DEC_PLACES" ∧
