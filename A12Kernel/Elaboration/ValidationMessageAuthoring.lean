@@ -101,10 +101,6 @@ inductive ValidationMessageTemplateError where
   | oddDollarCount
   /-- A parameter alternative this fragment does not model, `index(...)`. -/
   | invalidParameter (parameter : String)
-  /-- A name colliding with a terminal was written without the grammar's quote escape. The parameter
-  lexer forms such a word as a keyword rather than a name, so the decoder refuses it as a syntax fault
-  first; this is the shared path lowering's own refusal. -/
-  | unquotedTerminalName (name : String)
   | reference (parameter : String) (error : ResolveError)
   /-- A name-position path that names a declared group rather than a field. The Kernel resolves the
   group and refuses it on the class of a field the condition does not read, `INVALID_FIELD`, even when
@@ -457,30 +453,37 @@ then refuse a token left after the path. The lookup and availability are the alt
 which the Kernel runs before it meets the end of the text: `$#He-ad$` and the unavailable `$#Side-x$`
 draw the group class, and only `$#Head-x$` the syntax class
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)). A
-fault met after a complete parent walk waits only for the walk's check, so `$#..Wrong/$` draws the
-turning-point class rather than the truncated one. -/
+fault met after a complete parent walk waits for the walk's check and the lookup of the names consumed
+before it, so `$#..Wrong/$` draws the turning-point class and `$#../Nope/$` the group class rather than
+the truncated one. `keyCheck` is the outcome of a key's events, which the caller resolves on this
+position's classes. -/
 def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
     (parameter : String) (authored : AuthoredMessageGroup)
-    (remainder : MessageGroupRemainder := .none) :
+    (remainder : MessageGroupRemainder := .none)
+    (keyCheck : Except ValidationMessageTemplateError Unit := .ok ()) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageGroup model condition) :=
   match remainder, authored with
-  | .afterWalk fault, .relative parents turningPoint _ =>
+  | .afterWalk fault, .relative parents turningPoint names =>
       match walkMessageGroup condition parameter parents turningPoint with
       | .error error => .error error
-      | .ok _ => .error (.parameterSyntax parameter fault)
+      | .ok _ =>
+          if names.isEmpty then .error (.parameterSyntax parameter fault)
+          else
+            match resolveMessageGroup condition parameter authored with
+            | .error error => .error error
+            | .ok _ => .error (.parameterSyntax parameter fault)
   | .afterWalk fault, _ => .error (.parameterSyntax parameter fault)
   -- The group's own lookup runs as its names end, the key's events after it, and the key's gate last:
   -- no flat condition reads a group under a key, so a keyed group that survives its key is refused
   -- `INVALID_GROUP` whatever its availability, measured on an admitted group.
-  | .keyed events, _ =>
+  | .keyed _, _ =>
       match resolveMessageGroup condition parameter authored with
       | .error error => .error error
       | .ok _ =>
-          match events.find? fun event => event matches .nestedKey | .fault _ with
-          | some .nestedKey => .error (.nestedSemanticIndex parameter)
-          | some (.fault fault) => .error (.parameterSyntax parameter fault)
-          | _ => .error (.invalidGroupParameter parameter)
+          match keyCheck with
+          | .error error => .error error
+          | .ok () => .error (.invalidGroupParameter parameter)
   | _, _ =>
       match resolveMessageGroup condition parameter authored with
       | .error error => .error error
@@ -538,7 +541,9 @@ private def resolveMessageEntity (model : FlatModel)
       field := exemptQuoting profile authored.field
     } : AuthoredFieldPath).lower profile.path with
     | .ok reference => pure reference
-    | .error (.unquotedKeyword name) => throw (.unquotedTerminalName name)
+    -- The lexer forms an unquoted reserved word as a keyword, which no name slot takes, so the
+    -- decoder has already refused it as this token; the lowering's own refusal agrees.
+    | .error (.unquotedKeyword _) => throw (.parameterSyntax parameter .unexpected)
   match hResolved :
       model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
   | .error error =>
@@ -616,15 +621,24 @@ private def resolveMessageCategory
               else
                 throw (.category parameter (.unknownCategory category))
 
-/-- Run a name-position parameter's events in the parser's order, stopping at the first that fails. -/
-private def runMessageNameEvents (model : FlatModel)
+/-- Run a parameter's events in the parser's order, stopping at the first that fails. A name inside a
+group-position key is looked up by the same check as anywhere else, but an unresolved one draws the
+group class there, and the rule-group terminal as such a key fails inside the Kernel, which this
+fragment leaves unclassed; a root, a parent walk and a turning point keep their classes
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
+private def runMessageEvents (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (parameter : String) :
+    (condition : CheckedFlatCondition model) (parameter : String) (inGroupKey : Bool) :
     List MessageParameterEvent → Except ValidationMessageTemplateError Unit
   | [] => pure ()
   | .resolve spec :: rest => do
-      discard <| resolveMessageSpec model profile condition parameter spec
-      runMessageNameEvents model profile condition parameter rest
+      if inGroupKey && spec == .ruleGroup then throw (.ruleGroupUnresolved parameter)
+      match resolveMessageSpec model profile condition parameter spec with
+      | .ok _ => pure ()
+      | .error error =>
+          throw (if inGroupKey && error matches .reference _ (.invalidEntity _) then
+            .invalidGroupParameter parameter else error)
+      runMessageEvents model profile condition parameter inGroupKey rest
   | .nestedKey :: _ => throw (.nestedSemanticIndex parameter)
   | .fault fault :: _ => throw (.parameterSyntax parameter fault)
 
@@ -654,7 +668,7 @@ private def checkMessageName (model : FlatModel)
     (condition : CheckedFlatCondition model) (parameter : String)
     (decoded : DecodedMessageName) :
     Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) := do
-  runMessageNameEvents model profile condition parameter decoded.events
+  runMessageEvents model profile condition parameter false decoded.events
   let part ← match decoded.form with
     | none => throw (.invalidParameter parameter)
     | some (.field entity suffix key) =>
@@ -695,7 +709,10 @@ private def checkMessageParameter (model : FlatModel)
       | .error (.syntax fault) => .error (.parameterSyntax parameter fault)
       | .error (.retired terminal) => .error (.retiredGroupTerminal parameter terminal)
       | .ok (authored, remainder) =>
-          .group <$> checkMessageGroup condition parameter authored remainder
+          let keyCheck := match remainder with
+            | .keyed events => runMessageEvents model profile condition parameter true events
+            | _ => .ok ()
+          .group <$> checkMessageGroup condition parameter authored remainder keyCheck
   | tokens =>
       checkMessageName model profile condition parameter
         (decodeMessageName keywords profile.nameTerminals tokens)

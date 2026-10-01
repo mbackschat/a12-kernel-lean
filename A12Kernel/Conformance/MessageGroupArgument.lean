@@ -126,7 +126,7 @@ example :
       decoded "../" = some (.relative 1 none [], .afterWalk .truncated) ∧
       decoded "../RuleGroup" = some (.relative 1 none [], .afterWalk .unexpected) ∧
       decoded "../../Head" = some (.relative 2 none ["Head"], .none) ∧
-      decoded "../../Head//%" = some (.relative 2 none [], .afterWalk .separator) ∧
+      decoded "../../Head//%" = some (.relative 2 none ["Head"], .afterWalk .separator) ∧
       syntaxFault "../../%" .lexer = true ∧
       decoded "../../-x" = some (.relative 3 none [], .afterWalk .unexpected) ∧
       decoded "../../123" = some (.relative 2 none ["123"], .none) ∧

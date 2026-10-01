@@ -60,13 +60,17 @@ private def armDiagnostic? : ElabError → Option KernelStaticDiagnostic
 end ElabError
 
 /-- Whether every comparison in a condition has a shape the class grid measured: a comparison or a
-point-in-time or Base Year partner under `==`, and `Length` under `>` or `==`. A value list, a
+point-in-time or Base Year partner under `==`, a field pair in either spelling under `==`, and
+`Length` under `>` or `==`. A value list, a
 membership, the category-read and alternative Enumeration surfaces, and every other operator fall
 outside, since each either draws a class the arms below would misname or has no retained row. -/
 def SurfaceCondition.hasMeasuredClassShape : SurfaceCondition → Bool
   | .compare op _ _ | .compareFields op _ _ | .compareToday op _ _ | .compareNow op _ _
   | .compareBaseYear op _ _ | .compareBaseYearRange op _ _ _ => op == .equal
   | .lengthCompare op _ _ => op == .greater || op == .equal
+  -- Two direct reads are the measured field pair spelled in the text-field form; a category read on
+  -- either side is unmeasured here.
+  | .compareTextFields op (.direct _) (.direct _) => op == .equal
   | .fieldFilled _ | .fieldNotFilled _ => true
   | .and left right | .or left right => left.hasMeasuredClassShape && right.hasMeasuredClassShape
   | _ => false

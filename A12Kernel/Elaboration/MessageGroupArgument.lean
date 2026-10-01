@@ -24,8 +24,9 @@ inductive MessageGroupRemainder where
   an available group. -/
   | trailing
   /-- A fault the parser met after completing a parent walk. The walk's own check, a climb past the root
-  and then the turning point, answers first, and no name after the walk is looked up. The decoded
-  argument then carries the walk alone. -/
+  and then the turning point, answers first, then the lookup of the names the parser consumed before
+  the fault, each before the token after it. The decoded argument then carries the walk and those
+  names. -/
   | afterWalk (fault : MessageParameterFault)
   /-- A semantic-index key after the argument, with the events its decoding meets in order. The group's
   own lookup answers before them, and in this fragment the key's own gate refuses after them, since no
@@ -46,21 +47,23 @@ inductive AuthoredMessageGroup where
 
 /-- Names after a separator, each separator demanding a name, beside the tokens left after the path.
 The token after the last name is left for the caller, which meets a lexer fault there before running
-any check. -/
+any check. A fault returns the names consumed before it, each followed by its separator. -/
 private def parseGroupNamesAfterSlash :
-    List ParameterToken → Except MessageParameterFault (List String × List ParameterToken)
-  | [] => throw .truncated
+    List ParameterToken →
+      Except (List String × MessageParameterFault) (List String × List ParameterToken)
+  | [] => throw ([], .truncated)
   | token :: rest =>
       match token.name?, rest with
-      | some (_, name), .slash :: more => do
-          let (names, left) ← parseGroupNamesAfterSlash more
-          pure (name :: names, left)
+      | some (_, name), .slash :: more =>
+          match parseGroupNamesAfterSlash more with
+          | .ok (names, left) => pure (name :: names, left)
+          | .error (read, fault) => throw (name :: read, fault)
       | some (_, name), left => pure ([name], left)
       | none, _ =>
           match token with
-          | .bad => throw .lexer
-          | .slash => throw .separator
-          | _ => throw .unexpected
+          | .bad => throw ([], .lexer)
+          | .slash => throw ([], .separator)
+          | _ => throw ([], .unexpected)
 
 /-- What is left after a path whose check runs when the parser meets the end of the argument: nothing,
 a semantic-index key, or a token refused after it, a lexer fault answering at once. -/
@@ -76,7 +79,11 @@ private def remainderAfterPath (keywords : MessageParameterKeywords) :
 
 /-- The names after a complete parent walk. Every fault among them, a lexer fault included, answers
 only after the walk's check, which runs when the walk's own rule ends
-([inbound](../../docs/SOURCES.md#inbound-2026-10-01a-parent-walk-and-dotted-names)). -/
+([inbound](../../docs/SOURCES.md#inbound-2026-10-01a-parent-walk-and-dotted-names)), and after the
+lookup of every name the parser consumed before it: a walk opens no choice that reads ahead, so
+`$#../Nope/$` draws the group class
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). A name
+the lexer fault directly follows is not yet consumed. -/
 private def parseNamesAfterWalk (keywords : MessageParameterKeywords) (parents : Nat)
     (turningPoint : Option String) (tokens : List ParameterToken) :
     AuthoredMessageGroup × MessageGroupRemainder :=
@@ -84,8 +91,8 @@ private def parseNamesAfterWalk (keywords : MessageParameterKeywords) (parents :
   | .ok (names, left) =>
       match remainderAfterPath keywords left with
       | .ok remainder => (.relative parents turningPoint names, remainder)
-      | .error fault => (.relative parents turningPoint [], .afterWalk fault)
-  | .error fault => (.relative parents turningPoint [], .afterWalk fault)
+      | .error fault => (.relative parents turningPoint names.dropLast, .afterWalk fault)
+  | .error (read, fault) => (.relative parents turningPoint read, .afterWalk fault)
 
 /-- The rest of a relative path after `parents` up-steps: another up-step after a separator, a turning
 point written directly after the last up-step, then names after a separator.
@@ -122,11 +129,11 @@ private def parseGroupUpRun (keywords : MessageParameterKeywords) (parents : Nat
 private def parseGroupPath (keywords : MessageParameterKeywords) :
     List ParameterToken → Except MessageParameterFault (AuthoredMessageGroup × MessageGroupRemainder)
   | .slash :: rest => do
-      let (names, left) ← parseGroupNamesAfterSlash rest
+      let (names, left) ← parseGroupNamesAfterSlash rest |>.mapError (·.2)
       pure (.absolute names, ← remainderAfterPath keywords left)
   | .up :: rest => parseGroupUpRun keywords 1 rest
   | tokens => do
-      let (names, left) ← parseGroupNamesAfterSlash tokens
+      let (names, left) ← parseGroupNamesAfterSlash tokens |>.mapError (·.2)
       pure (.relative 0 none names, ← remainderAfterPath keywords left)
 
 /-- A group argument's alternative: a group, by keyword or path, or a retired terminal, which the

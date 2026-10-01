@@ -16,13 +16,41 @@ namespace A12Kernel.Conformance.MessageParameterDecoder
 open A12Kernel
 open A12Kernel.Conformance.ValidationMessageAuthoring (keywordProfile)
 
+private def str (id : Nat) (group : List String) (name : String) (scope : List Nat := []) :
+    FlatFieldDecl :=
+  { id, groupPath := group, name, policy := { kind := .string }, repeatableScope := scope }
+
+private def num (id : Nat) (group : List String) (name : String) (scope : List Nat := []) :
+    FlatFieldDecl :=
+  { id, groupPath := group, name, policy := { kind := .number { scale := 0, signed := true } },
+    repeatableScope := scope }
+
+/-- The retained flat model, whose second `Grade` under the repeatable `Cases2` makes that short name
+ambiguous outside `Cases`. -/
 private def model : FlatModel := {
   fieldRefByShortNameAllowed := true
   fields := [
-    { id := 0, groupPath := ["Probe", "Cases"], name := "Score", policy := { kind := .number { scale := 0, signed := true } } },
-    { id := 1, groupPath := ["Probe", "Cases"], name := "Grade", policy := { kind := .enumeration },
-      enumeration := some { storedTokens := ["A", "B"], categories := [{ name := "Band", tokens := ["A", "B"] }] } },
-    { id := 2, groupPath := ["Probe"], name := "Anchor", policy := { kind := .string } }] }
+    str 0 ["Probe"] "Anchor", str 1 ["Probe"] "Alpha", str 2 ["Probe"] "Beta",
+    num 3 ["Probe"] "Amount", num 4 ["Probe"] "Total",
+    str 5 ["Probe", "Claims"] "ClaimNo" [1], str 6 ["Probe", "Claims"] "Note" [1],
+    num 7 ["Probe", "Claims"] "Payout" [1],
+    num 8 ["Probe", "Cases"] "Score",
+    { id := 9, groupPath := ["Probe", "Cases"], name := "Grade", policy := { kind := .enumeration },
+      enumeration := some { storedTokens := ["A", "B"], categories := [{ name := "Band", tokens := ["Hi", "Lo"] }] } },
+    str 10 ["Probe", "Notes"] "Head" [2], str 11 ["Probe", "Notes"] "Tail" [2],
+    str 12 ["Probe", "Outer"] "Key" [3], num 13 ["Probe", "Outer"] "OuterVal" [3],
+    str 14 ["Probe", "Outer", "Inner"] "Key" [3, 4], str 15 ["Probe", "Outer", "Inner"] "Other" [3, 4],
+    num 16 ["Probe", "Outer", "Inner"] "InnerVal" [3, 4],
+    { id := 17, groupPath := ["Probe", "Cases2"], name := "Grade", policy := { kind := .enumeration },
+      repeatableScope := [5],
+      enumeration := some { storedTokens := ["X", "Y"], categories := [{ name := "Band", tokens := ["Hi", "Lo"] }] } },
+    num 18 ["Probe", "Cases2"] "Score2" [5]]
+  repeatableGroups := [
+    { level := 1, path := ["Probe", "Claims"], repeatability := some 10, indexField := some 5 },
+    { level := 2, path := ["Probe", "Notes"], repeatability := some 10, indexField := some 10 },
+    { level := 3, path := ["Probe", "Outer"], repeatability := some 10, indexField := some 12 },
+    { level := 4, path := ["Probe", "Outer", "Inner"], repeatability := some 10, indexField := some 14 },
+    { level := 5, path := ["Probe", "Cases2"], repeatability := some 10, indexField := some 17 }] }
 
 private def bare (field : String) : SurfaceFieldPath := { base := .relative 0, groups := [], field }
 
@@ -142,6 +170,44 @@ example :
     ("Check $Nope For é$.", ["INVALID_ENTITY"]),
     ("Check $Grade->Nope é$.", ["MVK_LEXER_STANDARD_ERROR"]),
     ("Check $Nope é$.", ["MVK_LEXER_STANDARD_ERROR"])
+    ].all (fun (template, kernel) => classes template == kernel) := by
+  native_decide
+
+/- A spec opening on a name or a separator is read whole before any of its names is looked up, in a
+key as in the name position, while one opening on a parent walk looks each name up as the parser
+consumes it, in a key and in the group position alike. A turning point is compared by its first word,
+and a category name is one token, so a dot after it is refused without reading on. A group-position
+key's names are looked up on the group position's classes before its nesting and its gate
+([settling batch](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
+example :
+    [
+    ("Check $Score For Nope/$.", ["MVK_INCOMPLETE_INPUT"]),
+    ("Check $Score For Nope//x$.", ["MVK_UNEXPECTED_TOKEN"]),
+    ("Check $Score For Nope/%$.", ["MVK_LEXER_STANDARD_ERROR"]),
+    ("Check $Score For /Nope/$.", ["MVK_INCOMPLETE_INPUT"]),
+    ("Check $Score For Nope$.", ["INVALID_ENTITY"]),
+    ("Check $Score For ../Nope/$.", ["INVALID_ENTITY"]),
+    ("Check $#../Nope/$.", ["INVALID_GROUP"]),
+    ("Check $#../Nope//x$.", ["INVALID_GROUP"]),
+    ("Check $#../Nope/%$.", ["INVALID_GROUP"]),
+    ("Check $#../Nope$.", ["INVALID_GROUP"]),
+    ("Check $..Probe.x$.", ["INVALID_FIELD"]),
+    ("Check $..Probe.x/Anchor$.", ["INVALID_FIELD"]),
+    ("Check $Score For ..Probe.x$.", ["MVK_INDEX_FOR_ERROR_TEXT_INVALID"]),
+    ("Check $#..Probe.x$.", []),
+    ("Check $Grade->Nope.%$.", ["INVALID_CATEGORY"]),
+    ("Check $Grade->Band.%$.", ["MVK_UNEXPECTED_TOKEN"]),
+    ("Check $Grade->Band. %$.", ["MVK_UNEXPECTED_TOKEN"]),
+    ("Check $#/Probe/Cases For Nope For \"k\"$.", ["INVALID_GROUP"]),
+    ("Check $#/Probe/Cases For Score For Nope$.", ["INVALID_GROUP"]),
+    ("Check $#/Probe/Cases For /Nope$.", ["INVALID_ROOT_GROUP"]),
+    ("Check $#/Probe/Cases For /Nope For \"k\"$.", ["INVALID_ROOT_GROUP"]),
+    ("Check $#/Probe/Cases For ../../..$.", ["ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"]),
+    ("Check $#/Probe/Cases For ..Wrong$.", ["INVALID_ENTITY"]),
+    ("Check $#/Probe/Cases For RuleGroup$.", ["none:ruleGroupUnresolved"]),
+    ("Check $#/Probe/Cases For Nope$.", ["INVALID_GROUP"]),
+    ("Check $Nope->Band x$.", ["INVALID_ENTITY"]),
+    ("Check $Nope->Band$.", ["INVALID_ENTITY"])
     ].all (fun (template, kernel) => classes template == kernel) := by
   native_decide
 

@@ -213,6 +213,9 @@ is complete. Deciding whether a name continues past a dot reads the token after 
 fault there ends the list right after the name and answers before any check the name waits for:
 `$#Store.%$` draws the lexer class, `$#Zeile-1.x$` the retired one
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)).
+A category name after an arrow is one token with no continuation, so nothing past a dot after it is
+read: `$Grade->Nope.%$` draws the category class
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)).
 `fuel` bounds the walk, since every step consumes a token. -/
 def joinDottedNames (keywords : MessageParameterKeywords) :
     Nat → List ParameterToken → List ParameterToken
@@ -220,6 +223,7 @@ def joinDottedNames (keywords : MessageParameterKeywords) :
   | _ + 1, [] => []
   | fuel + 1, .sign negative :: .number digits :: rest =>
       .sign negative :: .number digits :: joinDottedNames keywords fuel rest
+  | fuel + 1, .arrow :: token :: rest => .arrow :: token :: joinDottedNames keywords fuel rest
   | fuel + 1, token :: rest =>
       let joined (first : String) :=
         let (name, after) :=
@@ -301,20 +305,25 @@ private def parseSegmentsAfterSlash :
 
 /-- The up-run of a relative entity spec after its first `..`: further `../` steps, then a turning
 point written directly after the last step, then segments after a separator. Returns the number of
-parents, the turning point and the tokens after them. -/
+parents, the turning point and the tokens after them. A turning point is compared by its first word
+alone, in this position as in the group position, so `$..Probe.x$` names `Probe`. -/
 private def parseUpRun (parents : Nat) :
     List ParameterToken → Nat × Option AuthoredPathName × List ParameterToken
   | .slash :: .up :: rest => parseUpRun (parents + 1) rest
+  | .dotted first _ :: rest => (parents, some { text := first }, rest)
   | token :: rest =>
       match token.segment? with
       | some turningPoint => (parents, some turningPoint, rest)
       | none => (parents, none, token :: rest)
   | [] => (parents, none, [])
 
-/-- Decode one entity spec in place, as an in-rule parse meets it. A name ends where the next token
-continues no path, and the parser resolves each completed name before it consumes the next token, so a
-fault returns the spec its names read so far beside the fault. The parent walk's own fault classes on
-an in-rule key are unmeasured; a fault there takes its position's class. -/
+/-- Decode one entity spec in place, as an in-rule parse meets it. The spec's two grammar alternatives
+share their path syntax, so the parser's choice between them reads a spec opening on a name or a
+separator to its end before any of its names is looked up, and a fault inside it returns no names. A
+spec opening on a parent walk has no such choice: the parser looks each completed name up before it
+consumes the next token, so a fault returns the spec its names read so far, `$Score For ../Nope/$`
+drawing the entity class where `$Score For Nope/$` draws the truncated one
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
 def parseMessageEntitySpec (keywords : MessageParameterKeywords) :
     List ParameterToken →
       Except (Option MessageEntitySpec × MessageParameterFault)
@@ -331,7 +340,7 @@ def parseMessageEntitySpec (keywords : MessageParameterKeywords) :
           match MessageEntitySpec.ofSegments .absolute none segments with
           | some spec => .ok (spec, after)
           | none => .error (none, .truncated)
-      | .error (read, fault) => .error (MessageEntitySpec.ofSegments .absolute none read, fault)
+      | .error (_, fault) => .error (none, fault)
   | .up :: rest =>
       let (parents, turningPoint, after) := parseUpRun 1 rest
       let walk := MessageEntitySpec.walk parents turningPoint
@@ -353,7 +362,7 @@ def parseMessageEntitySpec (keywords : MessageParameterKeywords) :
           match MessageEntitySpec.ofSegments (.relative 0) none segments with
           | some spec => .ok (spec, after)
           | none => .error (none, .truncated)
-      | .error (read, fault) => .error (MessageEntitySpec.ofSegments (.relative 0) none read, fault)
+      | .error (_, fault) => .error (none, fault)
 
 /-- One check or fault in the order the parser meets it. -/
 inductive MessageParameterEvent where
@@ -408,8 +417,7 @@ structure MessageNameTerminals where
   formName : String
   deriving Repr, DecidableEq
 
-/-- What a name-position field carries after its entity spec. A category name is one token, so a
-dotted word after the arrow names its first word and leaves the rest. -/
+/-- What a name-position field carries after its entity spec. A category name is one token. -/
 inductive MessageFieldSuffix where
   | none
   | value
@@ -515,12 +523,9 @@ where
         match after with
         | .bad :: _ => { events := [.resolve entity, .fault .lexer], form := none }
         | token :: rest =>
-            match token, token.name? with
-            | .dotted first _, _ =>
-                { events := [.resolve entity], form := some (.field entity (.category first) none),
-                  trailing := some .unexpected }
-            | _, some (name, _) => decodeFieldTail keywords entity (.category name) rest
-            | _, none => decodeFieldTail keywords entity (.category "") (token :: rest)
+            match token.name? with
+            | some (name, _) => decodeFieldTail keywords entity (.category name) rest
+            | none => decodeFieldTail keywords entity (.category "") (token :: rest)
         | [] => decodeFieldTail keywords entity (.category "") []
     | .dot :: .name word false :: after =>
         if word == terminals.valueSuffix then

@@ -1,0 +1,72 @@
+[
+ {
+  "id": "Y01",
+  "verb": "rule",
+  "args": ["check", "--code", "Y01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y02",
+  "verb": "rule",
+  "args": ["check", "--code", "Y02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y03",
+  "verb": "rule",
+  "args": ["check", "--code", "Y03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y04",
+  "verb": "rule",
+  "args": ["check", "--code", "Y04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y05",
+  "verb": "rule",
+  "args": ["check", "--code", "Y05", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y06",
+  "verb": "rule",
+  "args": ["check", "--code", "Y06", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y07",
+  "verb": "rule",
+  "args": ["check", "--code", "Y07", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y08",
+  "verb": "rule",
+  "args": ["check", "--code", "Y08", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y09",
+  "verb": "rule",
+  "args": ["check", "--code", "Y09", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And EndOfDateRange(BaseYear) == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y10",
+  "verb": "rule",
+  "args": ["check", "--code", "Y10", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And EndOfDateRange(BaseYear) == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y11",
+  "verb": "rule",
+  "args": ["check", "--code", "Y11", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And EndOfDateRange(BaseYear) == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y12",
+  "verb": "rule",
+  "args": ["check", "--code", "Y12", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And StartOfDateRange(BaseYear) == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y13",
+  "verb": "rule",
+  "args": ["check", "--code", "Y13", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == StartOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "Y14",
+  "verb": "rule",
+  "args": ["check", "--code", "Y14", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And EndOfDateRange(BaseYear) == [/Order/Due]", "--message", "en_US=Check."]
+ }
+]

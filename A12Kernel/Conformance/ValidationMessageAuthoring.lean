@@ -728,7 +728,7 @@ Each language sits on **both** sides here, which is what distinguishes a paramet
 that happens to accept both words: under the English profile `.value` selects the value part while
 `.Wert` is not recognized as the suffix at all but continues the name, which then resolves nowhere —
 and under a German profile, which reserves `Wert` in place of `value`, the two swap. So the other language's word
-fails as a *parse*, not at the unquoted-terminal gate. This locks *this fragment's* parametricity;
+fails at the lookup of the name it continues, not as a suffix. This locks *this fragment's* parametricity;
 the spellings themselves are the caller's data, and no row here claims which word a given Kernel
 model takes. -/
 example :

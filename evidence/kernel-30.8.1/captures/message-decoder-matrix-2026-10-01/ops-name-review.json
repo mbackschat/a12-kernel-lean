@@ -1,0 +1,12 @@
+[
+ {
+  "id": "N30",
+  "verb": "rule",
+  "args": ["check", "--code", "N30", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Nope->Band x$."]
+ },
+ {
+  "id": "N31",
+  "verb": "rule",
+  "args": ["check", "--code", "N31", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Nope->Band$."]
+ }
+]

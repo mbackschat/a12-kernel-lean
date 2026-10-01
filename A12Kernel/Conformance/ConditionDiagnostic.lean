@@ -187,4 +187,36 @@ example :
         "none:literalKindMismatch"] := by
   native_decide
 
+/- The [settling rows](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)
+for the remaining partner positions: `BaseYear` on the left opposite a Time, a Confirm, a scale-2 Number
+and an Enumeration, an Enumeration on either side, and both endpoints on the left opposite a String, a
+Number and an Enumeration, each beside an admitted Date or scale-0 Number control. -/
+example :
+    let year := classOn { model with baseYear := some 2024 }
+    [year (.compareBaseYear .equal .left (onOrder "At")), year (.compareBaseYear .equal .left (onOrder "Signed")),
+      year (.compareBaseYear .equal .left (onOrder "Amount")), year (.compareBaseYear .equal .left (onOrder "Plain")),
+      year (.compareBaseYear .equal .right (onOrder "Plain")), year (.compareBaseYear .equal .right (onOrder "Labelled")),
+      year (.compareBaseYear .equal .left (onOrder "Due")), year (.compareBaseYear .equal .left (onOrder "Qty")),
+      year (.compareBaseYearRange .equal .left .finish (onOrder "Note")),
+      year (.compareBaseYearRange .equal .left .finish (onOrder "Qty")),
+      year (.compareBaseYearRange .equal .left .finish (onOrder "Plain")),
+      year (.compareBaseYearRange .equal .left .start (onOrder "Plain")),
+      year (.compareBaseYearRange .equal .right .start (onOrder "Plain")),
+      year (.compareBaseYearRange .equal .left .finish (onOrder "Due"))] =
+      ["TO_DATE", "TO_YES", "DEC_PLACES", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING",
+        "admitted", "admitted", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE", "admitted"] := by
+  native_decide
+
+/- The text-field form over two direct reads is the same measured pair as the field-pair form, so it
+draws the same class, while a category read on either side stays outside the measured shapes. -/
+example :
+    let pairs := [("Note", "Labelled"), ("Plain", "Labelled"), ("Labelled", "Note"), ("Note", "Plain")]
+    pairs.map (fun (left, right) =>
+        classOf (.compareTextFields .equal (.direct (onOrder left)) (.direct (onOrder right)))) =
+      pairs.map (fun (left, right) => classOf (.compareFields .equal (onOrder left) (onOrder right))) ∧
+    classOf (.compareTextFields .equal (.direct (onOrder "Note")) (.direct (onOrder "Labelled"))) =
+      "ENUM_TO_STRING" ∧
+    (classOf (.compareTextFields .equal (.category (onOrder "Plain") "Band") (.direct (onOrder "Note")))).startsWith "none:" := by
+  native_decide
+
 end A12Kernel.Conformance.ConditionDiagnostic
