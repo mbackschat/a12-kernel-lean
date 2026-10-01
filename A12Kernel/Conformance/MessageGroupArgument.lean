@@ -12,7 +12,7 @@ checkpoints or in the peer's grids ([inbound](../../docs/SOURCES.md#inbound-2026
 [inbound](../../docs/SOURCES.md#inbound-2026-10-01a-provenance)),
 on spellings translated to this fixture's `Order`, `Head`, `Deeper` and `Side`. What a decoded group
 then resolves to, and the classes its lookup and availability draw, are locked with the message
-template in `Conformance/ValidationMessageAuthoring.lean`.
+template in `Conformance/MessageGroupPosition.lean`.
 -/
 
 namespace A12Kernel.Conformance.MessageGroupArgument
