@@ -240,91 +240,54 @@ Its §2 (`AbsentKeyedProductDiffTest.anAbsentKeyMakesTheMixedProductZeroInEither
 
 ### Inbound 2026-09-30a handback
 
+Deleted from this hub; the records' full text is `docs/SOURCES.md` at `a5aac437de724678adf5e96bb9681892abdb0a9d`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+
 <a id="inbound-2026-09-30a-provenance"></a>
-#### Reviewed 2026-09-30a handback — a message may name a group its condition reads into and reach it by a relative path, a group read makes its fields message members, two independently keyed product operands pair by position, and any `]` ends the pattern gate's nested-opener scan
-
-a12-dmkits `main` at `e2c3be6f6a919489c19165328e4666a32c2ee68f`, read on 2026-09-30; every revision cited below is an ancestor of it. The letter is the peer's `-2026-09-30a`, delivered by the user with SHA-256 `eb31884d3d208c8f3b3248c772521fa62f1f1304bae6ea359259ff22baed3dd2`. It replaces the `-2026-09-30` letter, SHA-256 `96bb8650c4fcefa2162de8f54cdb4dec7a01379915ac67b6d7afb11c79ef99ea`, whose sections it carries forward, so that letter is recorded only here. The locks named below were read at `e2c3be6f6`, not run here. It answers no ledger entry; its §0 re-reads the ledger and finds none pending.
-
-Its §4 disproves a candidate divergence in the peer's own checker, its §3 conversion extension is the peer's adapter, and its §§6–7 report the peer's implementation, mutation, corpus, performance and delivery verification; all are recorded as no claim.
-
+- Reviewed 2026-09-30a handback — a message may name a group its condition reads into and reach it by a relative path, a group read makes its fields message members, two independently keyed product operands pair by position, and any `]` ends the pattern gate's nested-opener scan
 <a id="inbound-2026-09-30a-message-reference-admission"></a>
-**Claim.** Its §1 (`MessageGroupFootprintAgreementTest` at `c43c01cfb`, with the peer's `kf214` and `kf335`) runs 32 complete Library models through the Kernel's consistency check, each beside a plain-message control. A root rule reading `Loans/Book` admits `$#Loans$` and `$#/Library/Loans$` and refuses the unread `Returns` both ways. `GroupFilled(Loans)` beside the `Book` read admits `$Borrower$`, `$Borrower.value$`, `$Details/Note$`, `$#Details$` and `$#/Library/Loans/Details$`, each refused without it, while `../Returns/Book` stays `INVALID_FIELD`, and `GroupFilled(RuleGroup)` reaches the same fields.
-
-The group read clears `PARAM_VALUE_WITH_STARREFERENCE` on a field also read through a star, and it leaves `INVALID_NO_VALUE_VALIDATION` and `FIELD_NO_ENUM` on the fields they belong to. A computation's precondition `GroupFilled(Returns)` admits `../Returns/Book` in that computation's message. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s membership and group-position clauses.
-
-**They defeat this project's [2026-08-29 conclusions](sources/message-and-pointer-probes.md#src-message-group-parameter)** that the group position takes only an absolute path and only the rule's own group or an ancestor, whose fixture read nothing outside the rule's group. This project's [availability grid](sources/message-and-pointer-probes.md#src-message-group-availability) carries the arm onto fixed groups and field reads and adds rows the peer does not hold, filed as [`SPEC-2026-09-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01).
-
+- Reviewed 2026-09-30a message-reference handback — a message may name a group its condition reads into, and a group read makes its fields message members
 <a id="inbound-2026-09-30a-relative-render"></a>
-Its §2 (`5aeb86f4a`, with the peer's `kf245`) puts a typed `Claim` whose `Lines` amounts 50, 200 and 300 fire on rows 2 and 3, both complete models admitted before either runtime strategy executes. A root-declared `$#Lines$` and a `Lines`-declared `$#../Lines$` each render the firing row's coordinate beside `$#/Claim/Lines$`. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s render clause.
-
+- Reviewed 2026-09-30a relative-render handback — a relative group parameter renders the firing row's coordinate
 <a id="inbound-2026-09-30a-keyed-products"></a>
-Its §3 runtime rows (`KeyedGroupFieldListDiffTest` at `a8cd48db71153d117a601b2bbaf23553280ec7b9`, `independentlyKeyedProductsRetainBothOperandExtents` and `keyedFieldListsKeepTheirRoleAcrossCollectionConsumers`) use `Order/Packages` indexed by `Code` over a repeatable `Items`, every model admitted, with both Kernel strategies as the expectation. The product rows are [`spec/07`](../spec/07-repetition-and-iteration.md)'s `SumOfProducts` evaluation paragraph, and the membership and uniqueness rows [`spec/08`](../spec/08-paths-and-references.md)'s selection paragraph.
-
+- Reviewed 2026-09-30a keyed-product handback — two independently keyed product operands pair by position
 <a id="inbound-2026-09-30a-regex-operands"></a>
-Its §5 (`JavaPatternModelPopulation.operandProvenance` at `f80d8b6ea`) varies a typed indexed String field's pattern under one keyed `Sum`, an admitted key drawing `MVK_PARAMSIZE_INVALIDN` and a refused one `MVK_INDEX_VALUE_INVALID`, each row predicted from the pinned JDK first. Its rows cover intersections with an empty or doubled operand, whitespace, range, Latin-1 and case-folded left operands, a chained intersection, a raw `]` and `}`, a bounded repetition, and `[a\][b]]`. They confirm [`spec/08`](../spec/08-paths-and-references.md)'s String-key sentence. The admitted `[a\][b]]` also fixes [`spec/06`](../spec/06-strings-and-enumerations.md)'s nested-opener line: the scan ends at any `]`, escaped or not, which the Kernel's own source spells. Its repetition-bound rows at `12faea689` concern the peer's JavaScript host and state no Kernel refusal.
-
-**Lean.** Corrected and locked. [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean)'s group position now takes a relative path with the name grammar's parent walk and turning point, and admits a group that is an ancestor of the rule's group or holds a field the condition reads, with its above-root and turning-point refusals kept apart, and refuses its argument in the Kernel's measured [layers](sources/message-and-pointer-probes.md#src-message-group-argument-layers); its [locks](../A12Kernel/Conformance/ValidationMessageAuthoring.lean) carry the availability grid's rows.
-
-[`StringPattern`](../A12Kernel/Elaboration/StringPattern.lean)'s nested-opener scan ends at any `]`, locked in [`PatternAdmission`](../A12Kernel/Conformance/PatternAdmission.lean). No Lean surface carries a `GroupFilled` read, a starred message field, a computation message, a repeatable render or a keyed `SumOfProducts`, so those rows have none; the last is [SG29](gaps/paths-and-groups.md#gap-sg29)'s.
+- Reviewed 2026-09-30a pattern-operand handback — any `]` ends the pattern gate's nested-opener scan
 
 ### Inbound 2026-09-28 parse-event account
 
+Deleted from this hub; the records' full text is `docs/SOURCES.md` at `a5aac437de724678adf5e96bb9681892abdb0a9d`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+
 <a id="inbound-2026-09-28-parse-events"></a>
-#### Reviewed 2026-09-28 parse-event account — a refused text's class follows lexing on demand, look-ahead without checks and checks at completion, and a syntax failure's class is what failed crossed with whether the text had ended
-
-a12-dmkits `main` at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, read on 2026-09-28. Taken on the owner's direction after the [`-27a` letter](#inbound-2026-09-27a-provenance)'s §38 offered the peer's parser model for independent judgment. The peer's `KF493` landed at `bcb948771` and was corrected in place before that revision; its lock is `adapter.A12ParseTraceTest`, which traces the Kernel's own condition parser at the moment of failure. The peer's source-read model is its archived checker-reconstruction proposal §2 and Appendices A and B, retired at `e9353bd77`. `KF311` and `KF491` were read at the same revision. The locks were read, not run here.
-
-**Claim.** Measured by the trace over the peer's near-miss population of 9,063 conditions: every syntax failure in it is a failed required match or a failed choice between productions, drawing `MVK_EXPECTED_TOKEN_NOT_FOUND` or `MVK_INCOMPLETE_INPUT` at the end of the text and `MVK_UNEXPECTED_TOKEN` at a real token; a match fails at the cursor, a choice whose productions share no opening at its first token, and one whose productions share an opening where none continues, the reference's choice up to nine tokens past its start. `FieldFilled(Lines/Qty). And …` fails at the `.` on the match that ends the condition. The trace records failures only, and the order of the checks is not measured there.
-
-Source-read and unmeasured: that look-ahead runs no check, that checks run post-order, and where a path's look-ahead resolves between its two written forms. `spec/12` states each of these only beside the measured rows that witness it, and says which part is the peer's account.
-
-**Classification.** Behavioral and inbound: the class rule and the failure positions are new to [`spec/12`](../spec/12-concrete-syntax.md) §3.1, which now also restates its existing class-order clauses around the three events. `7742f8e34b61f6a799ef60ff01034656fb090fc6` restated them keeping every row, code span and link of the two paragraphs it replaced, checked by a multiset comparison; the next commit kept one discriminating row per branch, so that revision holds the full set, no distinction is removed and no outbound entry follows.
-
-**Lean.** No change. This project models no condition parser, so no clause of §3.1 has an executable counterpart.
+- Reviewed 2026-09-28 parse-event account — a refused text's class follows lexing on demand, look-ahead without checks and checks at completion, and a syntax failure's class is what failed crossed with whether the text had ended
 
 ### Inbound 2026-09-27a handback
 
+Deleted from this hub; the records' full text is `docs/SOURCES.md` at `a5aac437de724678adf5e96bb9681892abdb0a9d`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+
 <a id="inbound-2026-09-27a-provenance"></a>
-#### Reviewed 2026-09-27a handback — a variant filter drops a field from the default-variant checks but not from the authored model, so the index and sort nominations' invalid classes are reachable, and nine clauses gain measured rows
-
-a12-dmkits `main` at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, read on 2026-09-28; every revision cited below is an ancestor of it. The letter is the peer's `-2026-09-27a`, delivered by the user with SHA-256 `f9e639a37a25dc09f26c680487a3d59dcb66e27ce8aa6bf892ac9db4b328c65e`. The locks named below were read at their landing revisions, not run here. It answers no ledger entry and creates none; its §0 re-reads the ledger, which [`-27`](#inbound-2026-09-27-completed-steps) already recorded.
-
-Its §§2, 4–8, 12–15, 17, 19–24, 26, 28, 33–36, 39–40.14, 40.16–40.18, 40.21, 40.23–40.29, 40.31–40.32, 40.34–40.37, 40.39–40.40 and 40.44–40.45 report the peer's own parser, performance, adoption-registry and interpreter work, recorded as no claim; §§31, 32 and 37 measure the Kernel's raw and public report streams, which this project does not model. Its §38 offers the peer's systematic parser and report model for independent judgment; this project models no parser or report stream, so no part is adopted, and the distinctions it relies on that are Kernel behaviour reach `spec/12` through the rows below.
-
+- Reviewed 2026-09-27a handback — a variant filter drops a field from the default-variant checks but not from the authored model, so the index and sort nominations' invalid classes are reachable, and nine clauses gain measured rows
 <a id="inbound-2026-09-27a-variant-filter-stages"></a>
-**Claim.** Its §§1, 3 and 25 (`FieldVariantStageLawsTest` at `b74762add`, `193d42268` and `69497f567`), an own-domain `/Order` with String, Enumeration, Number and Date fields, each defect held fixed while the field's filter is absent, `ONLY ["premium"]` or `ALL_EXCEPT ["premium"]`, 139 and then 78 inputs with every unmutated control admitted. The rows are [`spec/01`](../spec/01-data-model.md)'s filter clause, which now names what an `ONLY` field keeps and loses; its §3 corrects the peer's `KF329` as attribution only. The duplicated-enumeration row keeps only the codeless refusal under `ONLY`; the letter's §26 line keeping its value-duplicate class is the peer's checker ledger.
-
+- Reviewed 2026-09-27a variant-filter handback — a variant filter drops a field from the default-variant checks but not from every stage
 <a id="inbound-2026-09-27a-index-and-sort-lookup"></a>
-Its §27 and §1's last row (`FieldVariantStageLawsTest.orderingLookupRows` at `b75cc6a6c`), `/Order/Key` beside a repeatable `/Order/Items` holding `Key` and `Spare`, each of fifteen scenarios on an index and a sort nomination. The rows are [`spec/03`](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique)'s nomination clause. **They defeat this project's [checkpoint](sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) that the two name-resolution classes are unreachable from DM-JSON**, which searched no variant filter; the peer's explicit request that the bounded lookup and local-type distinctions be taken is met there.
-
+- Reviewed 2026-09-27a index-and-sort handback — an index or sort nomination's name-resolution classes are reachable under a variant filter
 <a id="inbound-2026-09-27a-token-demand"></a>
-Its §§9–11 (`A12ParseTraceTest` at `019a4eb81`, `a365fc3e5` and `9f2d4a524`), §16 (`numericNamesFollowTheirRecognizedRoleAndCompletion` at `22e111786`) and §18 (`operationTypesFollowTheirChildrenAndCompletion` at `9fb8c24f6`), each through the Kernel's parse trace and whole-model admission. The pairs that place a demanded token are [`spec/12`](../spec/12-concrete-syntax.md)'s; §11's marked reads agree with [`spec/07`](../spec/07-repetition-and-iteration.md)'s marked-read clause, §16's unquoted keys with [`spec/08`](../spec/08-paths-and-references.md)'s, and §18's classes with the owning `spec/04`–`spec/07` clauses, its operand-list `Min` rows with the first-operand family rule [`TemporalExtremumOperands`](../A12Kernel/Elaboration/TemporalExtremumOperands.lean) already cites.
-
+- Reviewed 2026-09-27a token-demand handback — a refused text's class follows the tokens the parser demands
 <a id="inbound-2026-09-27a-number-literal-whitespace"></a>
-Its §40.15 (`ConformanceFrontierTest.numericTokenBoundariesDistinguishWhitespaceFromComments` at `2d29b728b`), a one-fraction-digit `/Order/Amount` compared with `-2.5` and `2.5`, validated on five documents under dynamic Groovy and generated Java. The rows are [`spec/12`](../spec/12-concrete-syntax.md)'s sign paragraph.
-
+- Reviewed 2026-09-27a number-literal handback — a signed number literal's token boundary under whitespace and comments
 <a id="inbound-2026-09-27a-field-message-render"></a>
-Its §40.30 (`FieldTypeMessageTextLawsTest.aMessageWithoutAPatternDependsOnItsLocaleAndText` at `1a6e7d54f`) and §40.33 (`FieldConstraintFormalDiffTest.fieldTypeMessageRuntimeGrid` at `6e621795b`), the latter nine templates on a String pattern and on an Enumeration's invalid value with labels in `en_US` and `de_DE`, each model admitted before `validateFull` on both strategies. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s field-message clauses; the render rows discharge the assumption [SG25](gaps/strings-and-messages.md#gap-sg25) recorded.
-
+- Reviewed 2026-09-27a field-message handback — a field message without a pattern depends on its locale and text
 <a id="inbound-2026-09-27a-element-paths"></a>
-Its §§40.20 and 40.22 (`ElementPathStageLawsTest` at `829f87b9c` and `633c959aa`), twenty-four and then six names on a root group, a nested group and a field, each with a plain and a tabbed pattern message under the three filters, 432 and 108 inputs. The rows are [`spec/11`](../spec/11-messages-and-custom.md)'s declared-name and path-withholding clauses; the codeless notification beside a path class is recorded with its stage unestablished, as the peer states it.
-
+- Reviewed 2026-09-27a element-path handback — declared element names, and the path classes that withhold a field's message
 <a id="inbound-2026-09-27a-current-repetition"></a>
-Its §40.41 (`PathGatePopulation.repetitionRows` at `e975b4258`), `/Policy` with a root `Total`, a fixed `Fixed` and a repeatable `Repeating`, each holding `Amount`, 24 inputs. The cascade is [`spec/08`](../spec/08-paths-and-references.md)'s `CurrentRepetition` clause.
-
+- Reviewed 2026-09-27a repetition handback — the `CurrentRepetition` operand rows on fixed and repeatable groups
 <a id="inbound-2026-09-27a-keyed-lower-lists"></a>
-Its §40.52 (`SemanticIndexWildcardPlacementLawsTest` at `f7d3b75a4`), an indexed `Packages` over a repeatable `Parcels`, twenty-four rows and a six-row group-count control. The rows are [`spec/08`](../spec/08-paths-and-references.md)'s admission paragraph. Its §40.43 (`PatternComparisonOperandLawsTest` at `88ce5b704`) puts a keyed cell under `PatternMatched`, the kind class answering ahead of the pattern on a Number, as `spec/06`'s pattern gates already order them.
-
+- Reviewed 2026-09-27a keyed-star handback — where a star may stand below a keyed group, and a keyed cell under `PatternMatched`
 <a id="inbound-2026-09-27a-index-key-dialect"></a>
-Its §§40.46–40.51 (`JavaPatternModelPopulation`, `IndexKeyNormalizationPopulation` for the line-terminator rows, and `CheckerNearMissSweepTest` at `fd4ac4e02`, `ca9f48a48`, `fcb8ace42`, `4415b2712` and `9940e42da`), a typed `/Policy` whose String index field varies its pattern or length bounds under one keyed `Sum`, a kept key drawing `MVK_PARAMSIZE_INVALIDN` and a refused one `MVK_INDEX_VALUE_INVALID`. The line-terminator rows and the dialect are [`spec/08`](../spec/08-paths-and-references.md)'s String-key sentence.
-
+- Reviewed 2026-09-27a index-key handback — a String index key is kept or refused by its index field's pattern and length bounds
 <a id="inbound-2026-09-27a-keyed-parent-stars"></a>
-Its §40.38 (`KeyedGroupFieldListDiffTest` at `378704305`), a keyed `Packages` whose `P1` holds two weighted `Items`, the Kernel's own firing on both strategies as the expectation. The rows are [`spec/08`](../spec/08-paths-and-references.md)'s selection paragraph.
-
+- Reviewed 2026-09-27a keyed-parent handback — a keyed parent's selection over its weighted child rows
 <a id="inbound-2026-09-27a-consistent"></a>
-Its §§29–30 (`CheckerCompositionSweepTest` at `1152707d0` and `a7e37efe0`) find a left child's failure answering before a right child's inside nested `Abs`, `RoundDown`, `Min` and `Max`, on rules and computations in both languages, as each operation is checked where its production closes in [`spec/12`](../spec/12-concrete-syntax.md); §40.19 (`A12ReportStreamTest.conditionFailuresWithholdOnlyTheMessageContentStage` at `45ef1562a`) finds six more condition classes withholding the message checker's, as [`spec/11`](../spec/11-messages-and-custom.md) states; §40.42 reapplies the peer's measured `KF458` rows.
-
-**Lean.** Corrected docstrings and two locks. [`IndexAndSortDeclaration`](../A12Kernel/Elaboration/IndexAndSortDeclaration.lean) and its [locks](../A12Kernel/Conformance/IndexAndSortDeclaration.lean) no longer call the name-resolution arms unreachable, and `NominatedTarget` now says the default variant's short-name namesake decides; the cascade itself was already total and unchanged. [`StringPatternMessage`](../A12Kernel/Conformance/StringPatternMessage.lean) locks `Cost $$` and `$$` rendering verbatim. No Lean surface carries a variant filter, a parser, a field's name alphabet, a no-pattern message or a keyed lower-star operand, so those rows have none; `CurrentRepetition`'s cascade is [SG19](gaps/paths-and-groups.md#gap-sg19)'s.
+- Reviewed 2026-09-27a composition handback — a left child's failure answers before a right child's inside nested operations
 
 ### Inbound 2026-09-26o through 2026-09-27 handbacks
 
