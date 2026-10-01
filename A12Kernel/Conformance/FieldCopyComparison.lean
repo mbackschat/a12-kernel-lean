@@ -57,7 +57,8 @@ private def swapped :=
 private def wide :=
   decl 41 "Wide" .enumeration (some { storedTokens := ["OPEN", "CLOSED", "PENDING"] })
 
-private def model : FlatModel := { fields := declarations ++ [swapped, wide] }
+/-- The measured eleven-kind model, shared with the [condition-class locks](ConditionDiagnostic.lean). -/
+def model : FlatModel := { fields := declarations ++ [swapped, wide] }
 
 private def idOf (name : String) : FieldId :=
   (model.fields.find? (·.name == name)).map (·.id) |>.getD 0

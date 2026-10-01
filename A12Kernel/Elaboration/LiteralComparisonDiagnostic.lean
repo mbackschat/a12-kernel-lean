@@ -185,6 +185,15 @@ def copyComparisonKindArm? : SurfaceScalarKind → SurfaceScalarKind → Option 
   | .string, .number | .enumeration, .number | .number, .string | .number, .enumeration => some .text
   | _, _ => none
 
+/-- The kind arm a rule comparison of two operands meets: the copied field's walk in either order,
+except that two Confirm operands are refused, where a copy of one into the other is admitted. Measured
+over every ordered pair of eleven declarations and against `Today`, `Now`, and `BaseYear` as partners
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)). -/
+def ruleComparisonKindArm? (left right : SurfaceScalarKind) : Option CopyComparisonKindArm :=
+  match left, right with
+  | .confirm, .confirm => some .confirm
+  | _, _ => copyComparisonKindArm? left right
+
 /-- Why a computation's generated comparison refuses a directly copied field: a kind arm, or the
 display arm between a String and an Enumeration or two Enumerations. -/
 inductive CopyComparisonRefusal where

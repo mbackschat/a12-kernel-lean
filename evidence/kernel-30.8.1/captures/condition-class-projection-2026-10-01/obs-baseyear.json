@@ -1,0 +1,66 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "40d1f80f73746385cb317ce4c86579636bf6e0f26526f64b70bbd377ad87153a",
+  "observations" : [ {
+    "id" : "B01",
+    "inputHash" : "66b8cce605fc3044dec6f149b43b0f0456440ab89fcdf922b337b0f35c68a02b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "B02",
+    "inputHash" : "5615255ced86b69b58416d3ba0cfc9415b3aa258d6403fd20fc3c76c9aa65e6e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "B03",
+    "inputHash" : "17f7b6bb4727fca0724b5c929f179f88052f9665b1aae51d3dd7e93ac3a7a811",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "B04",
+    "inputHash" : "d5dd1ee4bce1f59ff2fad884f114f5b653a703f64b110c233ce5baf9a283bfdf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "B05",
+    "inputHash" : "3b54006b57b884ccfae3a031cbc40141ab251d1d06f0f8f1eb4835cc3881c594",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "B06",
+    "inputHash" : "396b5f35db54741093b2b9365021026d58323fa1b38a3328d7fddfd0fc82f71d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "B07",
+    "inputHash" : "e46e3bee6b2fd2dba54d6fc15effee50b02b60c1758341ea3940dff129ecfc94",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "B08",
+    "inputHash" : "0500f980229f2905a5a36f28d27da60eb6c71d5542abb6bbc54421d220f9af31",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "B09",
+    "inputHash" : "60e36169030c6152ae3389283bb81f7db2c11c52bfdb8eeedf9ba70b33da168f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  } ]
+}

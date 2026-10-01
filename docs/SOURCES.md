@@ -840,6 +840,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A starred path is judged segment by segment, so a star on a nonrepeatable segment outranks a later miss and a miss outranks its own star](sources/path-resolution-class-probes.md#src-starred-path-segment-order)
 <a id="src-resolver-failure-classes-every-carrier"></a>
 - [A field name that does not resolve draws one of three classes on every carrier asked, and the root class turns on the first segment](sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)
+<a id="src-condition-class-projection"></a>
+- [A rule condition's comparison refusals follow one kind arm for field pairs and point-in-time partners, with `BaseYear` met as a Number](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)
 <a id="src-field-copy-comparison-grid"></a>
 - [A field copied into a field of another kind draws the comparison walk's arm order on every pair of nine kinds, a temporal pair meets the format question, and the display arm answers ahead of the Enumeration calculation](sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
 <a id="src-entity-list-kind-empty-and-root-carriers"></a>

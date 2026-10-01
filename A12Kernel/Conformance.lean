@@ -189,6 +189,7 @@ import A12Kernel.Conformance.EnumerationFirstFilledComputation
 import A12Kernel.Conformance.EnumerationRepetitionNotUnique
 import A12Kernel.Conformance.EnumerationValueList
 import A12Kernel.Conformance.FieldCopyComparison
+import A12Kernel.Conformance.ConditionDiagnostic
 import A12Kernel.Conformance.FieldEntityGroupOperand
 import A12Kernel.Conformance.FieldEntityRootGroup
 import A12Kernel.Conformance.FieldValueReadCarriers

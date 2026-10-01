@@ -1,0 +1,364 @@
+{
+  "header" : {
+    "id" : "Order_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Order_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Order/Note",
+            "name" : "Note",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Qty",
+            "name" : "Qty",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Amount",
+            "name" : "Amount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2,
+                  "minFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Due",
+            "name" : "Due",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/At",
+            "name" : "At",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Window",
+            "name" : "Window",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "dd.MM.yyyy",
+                  "rangeSeparator" : "-"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Flag",
+            "name" : "Flag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Signed",
+            "name" : "Signed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Plain",
+            "name" : "Plain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "OPEN"
+                  }, {
+                    "value" : "CLOSED"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Labelled",
+            "name" : "Labelled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "OPEN",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Open"
+                    } ]
+                  }, {
+                    "value" : "CLOSED",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Closed"
+                    } ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Note2",
+            "name" : "Note2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Qty2",
+            "name" : "Qty2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Amount2",
+            "name" : "Amount2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2,
+                  "minFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Due2",
+            "name" : "Due2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/At2",
+            "name" : "At2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Window2",
+            "name" : "Window2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "dd.MM.yyyy",
+                  "rangeSeparator" : "-"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Flag2",
+            "name" : "Flag2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Signed2",
+            "name" : "Signed2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Plain2",
+            "name" : "Plain2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "OPEN"
+                  }, {
+                    "value" : "CLOSED"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Labelled2",
+            "name" : "Labelled2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "OPEN",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Open"
+                    } ]
+                  }, {
+                    "value" : "CLOSED",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Closed"
+                    } ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Stamp2",
+            "name" : "Stamp2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Swapped",
+            "name" : "Swapped",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "OPEN",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Closed"
+                    } ]
+                  }, {
+                    "value" : "CLOSED",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Open"
+                    } ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Wide",
+            "name" : "Wide",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "OPEN"
+                  }, {
+                    "value" : "CLOSED"
+                  }, {
+                    "value" : "PENDING"
+                  } ]
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

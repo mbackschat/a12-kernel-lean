@@ -1,0 +1,42 @@
+[
+ {
+  "id": "R01",
+  "verb": "rule",
+  "args": ["check", "--code", "R01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == StartOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "R02",
+  "verb": "rule",
+  "args": ["check", "--code", "R02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == StartOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "R03",
+  "verb": "rule",
+  "args": ["check", "--code", "R03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == StartOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "R04",
+  "verb": "rule",
+  "args": ["check", "--code", "R04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "R05",
+  "verb": "rule",
+  "args": ["check", "--code", "R05", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == StartOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "R06",
+  "verb": "rule",
+  "args": ["check", "--code", "R06", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == StartOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "R07",
+  "verb": "rule",
+  "args": ["check", "--code", "R07", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == StartOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "R08",
+  "verb": "rule",
+  "args": ["check", "--code", "R08", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ }
+]

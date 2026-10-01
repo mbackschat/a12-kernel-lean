@@ -329,6 +329,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [The wrong-kind constant assignment's diagnostic ladder](implementation/computations.md#cap-constant-assignment-diagnostic-ladder)
 <a id="cap-field-copy-comparison"></a>
 - [A field copied into a field of another kind](implementation/computations.md#cap-field-copy-comparison)
+<a id="cap-rule-condition-class-projection"></a>
+- [A flat rule condition's refusal classes](implementation/computations.md#cap-rule-condition-class-projection)
 <a id="cap-boolean-confirm-constant-computation-target-admission"></a>
 - [Boolean/Confirm constant computation target and result/application](implementation/computations.md#cap-boolean-confirm-constant-computation-target-admission)
 <a id="cap-first-selected-tables"></a>

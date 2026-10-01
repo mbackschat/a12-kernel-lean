@@ -211,6 +211,10 @@ inductive KernelStaticDiagnostic where
   | indexFieldCategoryUnknown
   /-- A message parameter's semantic-index key that is a keyed entity in its own right. -/
   | illegalSemanticIndex
+  /-- A rule condition reads `BaseYear` in a model that declares none. Distinct from a message's `NO_BASE_YEAR`. -/
+  | conditionNoBaseYear
+  /-- `Length` over an operand that is not a String. -/
+  | noString
   /-- Two referenced index fields declare different value sets, or the same values in a different order. The one class both suffixes can raise. -/
   | indexFieldEnumValuesDiffer
   /-- Two referenced index fields agree on values but map them to different category values. The category suffix alone reads this. -/
@@ -530,6 +534,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .indexFieldNoEnumeration => "FIELD_NO_ENUM"
   | .indexFieldCategoryUnknown => "INVALID_CATEGORY"
   | .illegalSemanticIndex => "ILLEGAL_SEMANTIC_INDEX"
+  | .conditionNoBaseYear => "MVK_NO_BASE_YEAR"
+  | .noString => "MVK_NO_STRING"
   | .indexFieldEnumValuesDiffer => "INVALID_INDEX_FIELD_ENUM_XML_VALUES"
   | .indexFieldCategoryMappingDiffers => "INVALID_INDEX_FIELD_ENUM_XML_TO_CAT"
   | .indexFieldDisplayMappingDiffers => "INVALID_INDEX_FIELD_ENUM_XML_TO_DISPLAY"
@@ -720,7 +726,7 @@ def all : List KernelStaticDiagnostic :=
     .paramSizeInvalidTwo, .pointInA12Model,
     .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed,
     .indexTypeInconsistent,
-    .invalidFieldInParameter, .illegalSemanticIndex,
+    .invalidFieldInParameter, .illegalSemanticIndex, .conditionNoBaseYear, .noString,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,
     .invalidConst, .noStringOrEnum,
     .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,

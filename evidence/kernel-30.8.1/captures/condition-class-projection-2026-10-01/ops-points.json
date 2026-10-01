@@ -1,0 +1,57 @@
+[
+ {
+  "id": "T01",
+  "verb": "rule",
+  "args": ["check", "--code", "T01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == Now", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T02",
+  "verb": "rule",
+  "args": ["check", "--code", "T02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Today == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T03",
+  "verb": "rule",
+  "args": ["check", "--code", "T03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Now == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T04",
+  "verb": "rule",
+  "args": ["check", "--code", "T04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == Today", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T05",
+  "verb": "rule",
+  "args": ["check", "--code", "T05", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == Today", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T06",
+  "verb": "rule",
+  "args": ["check", "--code", "T06", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == Today", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T07",
+  "verb": "rule",
+  "args": ["check", "--code", "T07", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == Now", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T08",
+  "verb": "rule",
+  "args": ["check", "--code", "T08", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == Today", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T09",
+  "verb": "rule",
+  "args": ["check", "--code", "T09", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == Now", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T10",
+  "verb": "rule",
+  "args": ["check", "--code", "T10", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == Now", "--message", "en_US=Check."]
+ },
+ {
+  "id": "T11",
+  "verb": "rule",
+  "args": ["check", "--code", "T11", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == Today", "--message", "en_US=Check."]
+ }
+]

@@ -1,0 +1,47 @@
+[
+ {
+  "id": "B01",
+  "verb": "rule",
+  "args": ["check", "--code", "B01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B02",
+  "verb": "rule",
+  "args": ["check", "--code", "B02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B03",
+  "verb": "rule",
+  "args": ["check", "--code", "B03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B04",
+  "verb": "rule",
+  "args": ["check", "--code", "B04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B05",
+  "verb": "rule",
+  "args": ["check", "--code", "B05", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B06",
+  "verb": "rule",
+  "args": ["check", "--code", "B06", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B07",
+  "verb": "rule",
+  "args": ["check", "--code", "B07", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B08",
+  "verb": "rule",
+  "args": ["check", "--code", "B08", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "B09",
+  "verb": "rule",
+  "args": ["check", "--code", "B09", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == BaseYear", "--message", "en_US=Check."]
+ }
+]

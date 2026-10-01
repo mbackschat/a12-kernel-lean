@@ -484,11 +484,13 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       | kind =>
           match position with
           | .left =>
+              -- The Kernel's kind arm meets the year as a Number partner, not a date: a String draws
+              -- the text class and a DateRange its own ([checkpoint](../../../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)).
               throw (.temporalOperandKindMismatch ["<BaseYear>"] declaration.path
-                (.temporal .date) kind.surfaceKind)
+                .number kind.surfaceKind)
           | .right =>
               throw (.temporalOperandKindMismatch declaration.path ["<BaseYear>"]
-                kind.surfaceKind (.temporal .date))
+                kind.surfaceKind .number)
   | .compareBaseYearRange op position endpoint reference => do
       let year ← match model.baseYear with
         | some year => pure year

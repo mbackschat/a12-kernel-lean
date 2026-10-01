@@ -1,0 +1,750 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "2a28a44b90e0e0c80ef399060cc326a7a509443c6a7256eaa5e0f4406fa4ed39",
+  "observations" : [ {
+    "id" : "FNotexNote",
+    "inputHash" : "b5bb433aa05b694fa05e9b58ecc442c09de7f1501c1d127d1c0a9dfd39f45dfb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FNotexQty",
+    "inputHash" : "c93ed4f98d411bfac89cfc436435a0778a3c6d9ee9abe380966dc51424902ba6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FNotexAmount",
+    "inputHash" : "2ba92279b1a229304ad648ed67de3c3614386ec30c33c3c24fef53c3072162a8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FNotexDue",
+    "inputHash" : "58735a9a469874e8054941df191b3a59bef8fd919fdffa463c5f1a6b3f42a0d6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FNotexAt",
+    "inputHash" : "389a667d12c68ca5685323c75c96532df5bf8c5511327d301ec7bfc9091954bb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FNotexStamp",
+    "inputHash" : "abb73b5dd6be7536dc62f6a808cec1310a716f6b7f7bb856e9fa078227665922",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FNotexWindow",
+    "inputHash" : "7c28e6ec31e1b3cc97999a4b6db3d21150171880ea5e3fc74d7ad17577c21ec4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FNotexFlag",
+    "inputHash" : "6c44972b0be6e40b432e037f14fe17432b289529b90b212f1763e96feb892faa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FNotexSigned",
+    "inputHash" : "06f041ad8df3fcf00e9c1079b682651254416d9d2c8739c7009c6feaf3291297",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FNotexPlain",
+    "inputHash" : "fc06bb58a39e19d58749a924f32a65d6aea245ddde0f047a7d280e7d1200701f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FNotexLabelled",
+    "inputHash" : "43ecc2d110365f2f95434088a890fc361abbca945ae364bcb0d10b225b11af11",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_ENUM_TO_STRING" ]
+  }, {
+    "id" : "FQtyxNote",
+    "inputHash" : "34ad082b919d680b13caad09644e11310d48ed00866040036b5a5eef19dd067d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FQtyxQty",
+    "inputHash" : "bb396c2432c0a1b01eb3a7f9572380afe4490218f601dd041ed9079b09d484e2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FQtyxAmount",
+    "inputHash" : "558689da9601b512f73e6c69a400d7a37f4dffb83ed9abb4d42ec2d1a2fa4d1f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "FQtyxDue",
+    "inputHash" : "512f6de7540a5b7465636569827815e6dde23ff6f971f09e7fb13ac336f7160d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FQtyxAt",
+    "inputHash" : "1803df9171dcc28e679d3c451dcb0b8a43d84f43721505a19c657da3670ca667",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FQtyxStamp",
+    "inputHash" : "a4591c817fec9a1cd84c01f7cc8ff8260bef9cdcdcd11c9e5f2adea7821ac982",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FQtyxWindow",
+    "inputHash" : "8d96dbcdef2249f5fb9b86cf7db007006ab07c1a8695479620019a7268901630",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FQtyxFlag",
+    "inputHash" : "c015328f303c878cbca2b29f680bf870c3bac38727ff8286c3999c5a7e763c0b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FQtyxSigned",
+    "inputHash" : "8d1bda6e20dc94d9e52ccc6f3fb12f0891a95d23f8508d2aa7ecd4aafc9f452b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FQtyxPlain",
+    "inputHash" : "1c425f71895ba358da503acbfa97405fff73d1e064e8dfd0295890f3754d11b7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FQtyxLabelled",
+    "inputHash" : "d9fcf0729c2c78e54d0cf525151c9ea693c0fc5d29f73db452b7c6b13815dff3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FAmountxNote",
+    "inputHash" : "f369a34b5ef6a2370ce927ea389bf6cc1cb7200e03d8cbb29f85bab8446a381e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FAmountxQty",
+    "inputHash" : "b64a6a740afa28197811cf1bb3a260723c46f299bf8a1eebc8b46e3d01f3aea3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "FAmountxAmount",
+    "inputHash" : "9acb4c04df271a75c9b5e55535baf8177a1becc0723f5e0327120c78058da9c4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FAmountxDue",
+    "inputHash" : "77916b77a3c16ef52402265d0a27c9e6e678530bca7f1e10317406e315606e37",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAmountxAt",
+    "inputHash" : "23d412d4d014eec0e2beee8a1f389f14abaef58f120fe2f03485499f3cded4fc",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAmountxStamp",
+    "inputHash" : "a69411b545e87b7b14b528865bec55cf9343e662ad8689d198a27f6db5941589",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAmountxWindow",
+    "inputHash" : "94eedf94f927225260977b28ad9bc8a723269ec75213c7ad6a7f904fb16f97eb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FAmountxFlag",
+    "inputHash" : "f7cf622a9b536bbdcce70ac1d2c9d98e0f34789a6746a8ae5b9be38ebe355610",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FAmountxSigned",
+    "inputHash" : "b81faf710976915e88269afcd0101601f825e31671ad91516b43dd21da7d42fd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FAmountxPlain",
+    "inputHash" : "c0ba86ab6a39188dbb624204d44a4422c078dae541157c868d597425809643be",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FAmountxLabelled",
+    "inputHash" : "0038a3c7a5db5026c4a9423edd3a3d7bb5c462e1182bc3b162bd6cca019d14b9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FDuexNote",
+    "inputHash" : "42a7fd1b978c2a014cbde2b5301bb51c0ea26af84612a455f476d49ed6df2c8d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FDuexQty",
+    "inputHash" : "d7ba0a596e1699912d1fc31f4d707a52f4173c98e05f0dbfda85bee182b271a5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FDuexAmount",
+    "inputHash" : "3dc9a78cf8a338561f0e0ef20fa99b1d54938a63b48a354eacc88b4fecc875e7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FDuexDue",
+    "inputHash" : "310fe37cc6417723a557d6b8e9a74cfb78cfae3795f133868446857a4287e3f6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FDuexAt",
+    "inputHash" : "d75ec512121c7577a92283e13f5aac49fc0c3d6af6bcb3e28f39417afdb21ff5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FDuexStamp",
+    "inputHash" : "23c196d82689f999a134c5dac6cb3a99bf20713db3f90e3513192cf6a101a29e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FDuexWindow",
+    "inputHash" : "310445c8723cd1676d2d235565e15edad7a310c3d1041b9ea17b93e0e6b11497",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FDuexFlag",
+    "inputHash" : "3bed2008cb82238e3fc309baa5a48cfbdec064a091593ad01855d126c9723e15",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FDuexSigned",
+    "inputHash" : "d4b196246cd68959bd4be98892ac155908cc6ca9bf828f9bf7fba5ff5138264b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FDuexPlain",
+    "inputHash" : "a972f8d7568af3931c3688da626b8c30925e02e9bde160012e807e99744c2dac",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FDuexLabelled",
+    "inputHash" : "b437b0bd2290a7042b6e4e4b0648daf7812357579b99ed6cf39408ea026216ab",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxNote",
+    "inputHash" : "4b54ee9d462d31535ef8d5c982427d8c95c15555014ee1318c4618ce11efd4f0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxQty",
+    "inputHash" : "137ed60ec0a08867872c7e309594483e13eec142bba1be361492c3e56649fe4e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxAmount",
+    "inputHash" : "e7e79e718c531263e55c5a716be6a08ef71d523444062acc66213f9ee103fd18",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxDue",
+    "inputHash" : "1cdc6a43e0a45b1c9d9b2e5ead438de6415a8e6f98a3b30e055414c0162206ac",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxAt",
+    "inputHash" : "de0f52c59b4d81b8444615d6c44b134b07961f4bceb6a228340b2ab471f66678",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FAtxStamp",
+    "inputHash" : "5d5083f6a431f4836093568b5ca5390c6e4941498bd99cd88ec2a0a0e0c5def9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxWindow",
+    "inputHash" : "d2cad804c0416bb01d18f740b876ea7bcceb12cf42806fbcd3d81940a7e69217",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxFlag",
+    "inputHash" : "121c05861d0230277b03ffef41277ec7c774bdf462937e69c8481147a7fef92f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FAtxSigned",
+    "inputHash" : "91643e0e6334572500533e4b0de7fe3771610519a90594027e761945e0e22e57",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FAtxPlain",
+    "inputHash" : "e1d85065f2f19c0df7558bf08c2d0dbbd084b1d17f47ad2f985b24c686419300",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FAtxLabelled",
+    "inputHash" : "9ba8d70e9543bfab272b303879cf9b33229d0e58e74c4d5fe75cb85da30105c6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxNote",
+    "inputHash" : "cd064fa6bc6ccb3e9d5c10ee9b3cdea982d8fb41807848114f3bcb42bf8e7998",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxQty",
+    "inputHash" : "12ec3232a29986d8a20591657e7bfb997c871c9224949c6509f9742cfb3c6263",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxAmount",
+    "inputHash" : "3ef695792c5f8e85f43a7eed4964b22fa28d751ba2a0ccc04e18a1866bec2068",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxDue",
+    "inputHash" : "a9276953399a73345c7882e2b41591a4281f6a8d63965ca7bd9b9d6e27af934b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxAt",
+    "inputHash" : "8823a269171378984d866bc49fd1d30aa0efff76c9639f4415b48a298e492a68",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxStamp",
+    "inputHash" : "01a318bf9943e5d6c9aa8c4ce5a5e65b650ded296d7d1d9e97e42fc86175f245",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FStampxWindow",
+    "inputHash" : "f990ed8fb82956416fa6db52b23bff5c0c819b4742ab57149bc5ff806d943875",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxFlag",
+    "inputHash" : "5a7e0852d527b403ff8b606bc0d97d7d786ec2a624cdddbae1bfbd020bf47641",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FStampxSigned",
+    "inputHash" : "79a02a8024f2ae67222734fe2316451e95432a9334f06927b48630a988707e15",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FStampxPlain",
+    "inputHash" : "399eb0fa66a118b097b4bcaa1b15d4a491d9aab53ee7f7a0d789f48e599909a9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FStampxLabelled",
+    "inputHash" : "04f1d9decef56cb472261fbcfa69bd9b0f9862bf89aa6bad599260e42f478804",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FWindowxNote",
+    "inputHash" : "56d6f462e597b6f323657920435a4086d1d83dfbe57157f1d5317197c1205096",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FWindowxQty",
+    "inputHash" : "ac71f9da35350047c6a54bac0b58c52e2075d1a0a39b3ecf867d1527df7d5624",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FWindowxAmount",
+    "inputHash" : "479906baac08f114f030dc828b03c7317519898a93a25890b8dc68fb3c134682",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FWindowxDue",
+    "inputHash" : "1cd2aa7c654668abde3d981819288bd01b65b58c5ee67bbdcb5d8a6db920b4d6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FWindowxAt",
+    "inputHash" : "adc6468c6604bb1fa19732de3517032aa52731d3eea930b0122110503d3cc987",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FWindowxStamp",
+    "inputHash" : "4d8d4bee00d5b25c5144792060dad2f5d46cbe5fe68220acb03c27af48239b0d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FWindowxWindow",
+    "inputHash" : "9fcb059b902a9715261c9a75e3f2420da8314f29954b7c7b39d3866305d10ecd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FWindowxFlag",
+    "inputHash" : "18b67dd1f6ce6cdc7f0922e682fbec07f413cf6015e5fb35a23f1dce2a56bf91",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FWindowxSigned",
+    "inputHash" : "7ab83a486a28878c6e672957c43259f39e05d8f1930ff1794f622f1875156e68",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FWindowxPlain",
+    "inputHash" : "3b799e770479db1dfc36572bd5ef91b1efc5c79b67d96e5a8ec41eaefae12b6d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FWindowxLabelled",
+    "inputHash" : "e7760563efc41e9d2209c6ec46e138dfb760901a85f2b28f22c03ababda24f88",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FFlagxNote",
+    "inputHash" : "1f3c9eaca8205ee89c9ffb738b68e4290cb50e5ff9b0dec6afcaee164ac73672",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxQty",
+    "inputHash" : "c418a55d91de4c71efa89725f915e0e47cc3fe5a5ad7b29d18f2ff86598a55b5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxAmount",
+    "inputHash" : "ce7012b99a77723c4a07755ba9c009bf50535b799d1afbe4180da82e540048f2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxDue",
+    "inputHash" : "ec4bdd007ed05331b825e02be126d6d538eefa335bb4808ebaf5f030d62e9cfe",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxAt",
+    "inputHash" : "9b22c5436a0e95a6436f539057247c5f2f41c21faa246537c2a5e3f066b98271",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxStamp",
+    "inputHash" : "86ed0ff0a9d21c604060dfa5f163979da159eca1b26228ad99623580ce4bc903",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxWindow",
+    "inputHash" : "a1bb19174d5d80d40f30103b1bbc93f65e1578736393c0f31889bacd4e507f1b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxFlag",
+    "inputHash" : "62c9d4f4d48313c3e7dbef135849ff50236af59931fd6db5287ad1bc9f37db30",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FFlagxSigned",
+    "inputHash" : "5dc79a16af06a4cbbf0216c686377b912b2cf80d485c6b789be121ae5cae1c08",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FFlagxPlain",
+    "inputHash" : "81d6555c30e47a7abf824941710a1ae4c388a7fbb02924ab9b321cbc9336f941",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FFlagxLabelled",
+    "inputHash" : "c80a0c78bd5c7adba8c44f68b5d94f6977ddcab68e9cc058988df62e80663a72",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FSignedxNote",
+    "inputHash" : "b174ecddea261eb10a0c5a88ee33419b5e77eb27e6880f53f22ec6ec1ede8f8b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxQty",
+    "inputHash" : "e5e0c8c316c60b8bfd98d86e803202e9abe7bbf692620e9d22b69d63e206b88a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxAmount",
+    "inputHash" : "13a0b4193968ab143d3cb24939ed849b40d5d318b1f183aaecdd472c22307362",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxDue",
+    "inputHash" : "2bcaf1614e36aa808ac7a224d40cd6c006951277f3d52a1c725860a834139350",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxAt",
+    "inputHash" : "0f3499a9fb35c06515e3eb298f240ba6547855bdc68b204255ca781e94bc3c5b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxStamp",
+    "inputHash" : "1665326d70036eb2092146bd1b062a82ca9ee02ad7f7b03eb83f9e3ad3729697",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxWindow",
+    "inputHash" : "7b10981575a0122e28a993f0c16e13773a1c7c6910504bc0824c9d960c17d866",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxFlag",
+    "inputHash" : "f8d7e9b022e8d049437fb1ec86be18cc1e8ddce140ba4c9550adc46c30095f7e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxSigned",
+    "inputHash" : "662c4832ac91441921845069f6aaccd197d70a6547e2b11fb09900d84c6e66c6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxPlain",
+    "inputHash" : "92cc1a800ed37d251334f3e598a868230513b278c7650c4d15a9eb3193af978c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FSignedxLabelled",
+    "inputHash" : "8ab291c768b524adda65e2b6d4be145d390c9d9c76271ec8564968ca5cdc9baa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FPlainxNote",
+    "inputHash" : "326f258357a08556ebf9f1f58e3a314b92a1290c3d42b290c337f9e9bf5777dc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FPlainxQty",
+    "inputHash" : "3971f7e774310f29f5e135d6bd9dee362a71bea457f4942a26efb2257dcd740e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FPlainxAmount",
+    "inputHash" : "f6e035933014a463b5126a1fad4ac595d43df0f980455eb7f95aa23bde2afade",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FPlainxDue",
+    "inputHash" : "f4c7d04ebc80e5e06938e87041750a1c96ac289890b40e5c55d676cd889ff92a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FPlainxAt",
+    "inputHash" : "516305811affa545703fb8fc28c73bfff95b7bbdd47ca9c6e46988767914605c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FPlainxStamp",
+    "inputHash" : "1118842c6133cffaa257b3f39b24eca58fc0d847b4b7c8bfb3ae3422f0a8d410",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FPlainxWindow",
+    "inputHash" : "28a4f502d6dcc6c6d4bdc2350561b387ddfd007c7c3c4d7be2c1684cbba436e9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FPlainxFlag",
+    "inputHash" : "ce274504de2ae210e1d8760051faba38e1f2fb3d9ce31a49763e0c739bb91b4e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FPlainxSigned",
+    "inputHash" : "5cb2d30cbc30a63f86265e8b23458dcdea4d19904de5f9b803f796ffaf541941",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FPlainxPlain",
+    "inputHash" : "8ef278a07b98ec0bbbd905c16f74e35edcca48d4a1a262b296978a9c992f5fe0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FPlainxLabelled",
+    "inputHash" : "a511707c4215b789a8e6f323094568ec0b2a24f0abc5a644fd0f7593331dd6d6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_ENUM_TO_STRING" ]
+  }, {
+    "id" : "FLabelledxNote",
+    "inputHash" : "44aa9a2f325c554b89722e1e8a9ba7aaa2d82b316dddcf09b9f739c4550af192",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_ENUM_TO_STRING" ]
+  }, {
+    "id" : "FLabelledxQty",
+    "inputHash" : "867d1553012c0773b211dd0d4db9b6e1da906df99cb3199edb99778d8f52adb7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FLabelledxAmount",
+    "inputHash" : "2a2b9a5f371cf5457012246283d4118a4593d3da6ba3081b93691da48bc84472",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "FLabelledxDue",
+    "inputHash" : "acb78cea03e3af4294a4ddd2fcf035b26bde25d45fa9b482d71f7a551858167b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FLabelledxAt",
+    "inputHash" : "a06f68190e5a827d9f1476ef90d2f5b6128bae41dd67aaf6c1a8333f6473d70c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FLabelledxStamp",
+    "inputHash" : "1a632b5851a540967541d80f6654d0129969737e1844f0391208ee5f26916c3f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "FLabelledxWindow",
+    "inputHash" : "c4c61d26c7494d49c4bd66784007fcdaa7ad5d6c65dccdaa920e135d097777b4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "FLabelledxFlag",
+    "inputHash" : "ac8d93b16d67ab8fa1743919d8c640c795bf4921c59420153b705fd4474d397f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "FLabelledxSigned",
+    "inputHash" : "42285a7830c400efe7b11663fd57ecdf0ce1d52e07426c609f003a609c11d9d4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "FLabelledxPlain",
+    "inputHash" : "f6b88535f6de0b0e5f90d3606e7721e3c49af040ea88b29e33be04d0f0b12951",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_ENUM_TO_STRING" ]
+  }, {
+    "id" : "FLabelledxLabelled",
+    "inputHash" : "54d390818aa7c5932aaaff4a8fd88412a4d1377621bd7b9151dc6bf912b69d14",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "O08b",
+    "inputHash" : "3853438f3b967c3ef61aaea25f4169a9ae6213b20462ed77374b7a26adc26243",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_STRING" ]
+  }, {
+    "id" : "O09b",
+    "inputHash" : "67570480e79d9d8e16f87f9c80dd18663cf27795dc8cc083cad5fd4d33401f54",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

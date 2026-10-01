@@ -1,0 +1,504 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "2a28a44b90e0e0c80ef399060cc326a7a509443c6a7256eaa5e0f4406fa4ed39",
+  "observations" : [ {
+    "id" : "LNotes",
+    "inputHash" : "fe45a0546ea0729dd7dfac798a3ea45dd86403b4cd98301a3b3639112b5fe8c4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LNoten",
+    "inputHash" : "293799419f77bf428863e8ecc1c23979755d068e0d936509ebba583bc3737a86",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LNoted",
+    "inputHash" : "d8133a3fc4aa09a7b3e83abcddd127f8b9e10234b8dc29da05d8e6ee1cfe47b0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LNotet",
+    "inputHash" : "f040035806988ec19123ba20fa5d462cf4b0b5ec6666d8e7e3fccefa0f06d226",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LNotebt",
+    "inputHash" : "c14699a5bec9223099f8ddc7b33442c28a581aeea698b01f66739d58f00cb529",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LNotebf",
+    "inputHash" : "2cddd9a4f1d33cdfb34ec3f1a9cbfe50e4bb637d7cc01b607d29df7e612fd321",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LQtys",
+    "inputHash" : "6efea93ca8444af030e7029ccf33108c47b0dffe7ea97b1a437acb68bafe823d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LQtyn",
+    "inputHash" : "f1a12319f7d1e61b1fb9a788a1edcd943418c4affd2599075182aaf5fab9a54c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LQtyd",
+    "inputHash" : "99a077038d6c8953b998c22e00f71f80901525217c68e395eed2fffdb5574354",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LQtyt",
+    "inputHash" : "cab8b4011794c68112ee4373e15391c73fa08066f4e47e7a94e27d4ad135704e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LQtybt",
+    "inputHash" : "5c4ebb198e5100df3bb00d6d5a328f3bd56adb9bf935bbe9356443275574c528",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCONSISTENT_TYPES_COMPARED" ]
+  }, {
+    "id" : "LQtybf",
+    "inputHash" : "2d28cc954ae697766e521c06f854bb8ac02c119a4f469469fe8499875a7ddef5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCONSISTENT_TYPES_COMPARED" ]
+  }, {
+    "id" : "LAmounts",
+    "inputHash" : "e2d24b0daf6fb2942ad1b91b4b37efd4819371e9a01091d5622799b141099435",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LAmountn",
+    "inputHash" : "e8844ab812f8426d0bef5da21d7f4720d81bc994fa44bf7da5f079e30be4e0db",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LAmountd",
+    "inputHash" : "11d8a3c8f6a9ff35f8cf8b5b0df1fb6b974d7abfbd128abf2881199f2a0cdb6f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LAmountt",
+    "inputHash" : "d0155f17f3fbcf45f13f715897187d0252e7193eb8a81518629553735e5b0be2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LAmountbt",
+    "inputHash" : "e6d3c4c5287597e1a2fa5edd1f17fd4c6f247fd35be613262eb8cb90b62e324c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCONSISTENT_TYPES_COMPARED" ]
+  }, {
+    "id" : "LAmountbf",
+    "inputHash" : "69c917118f5f7aab85fe88728e61e145f8bf61d8367a4f48a91b3ec28cc36589",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCONSISTENT_TYPES_COMPARED" ]
+  }, {
+    "id" : "LDues",
+    "inputHash" : "b261132bacb1caf3ce06b527dfd34e68e4e32ea54d97125975ccfebd04b1b484",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LDuen",
+    "inputHash" : "2c210ffb945f3d7220d38db44c667817543d9445083c73e82b37bb7a4abc63a2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LDued",
+    "inputHash" : "9c5c3fb0d6b57e918a302db0fff095f15e69a32151f036219edaac02a956d014",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LDuet",
+    "inputHash" : "cc0658bc66877333ef6ea5ab610885768631e84d99e409a379378a6d7e549bf9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LDuebt",
+    "inputHash" : "84032da039c8cbb2038df3fae59dee928d0dfaeae4d99a47b8194d2b1b15d252",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LDuebf",
+    "inputHash" : "6840f23089e19047afa6ea14d42da0d58d4589e1032e4715f66830c44a60a241",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LAts",
+    "inputHash" : "567d2af320f935c719e2e7f3579b7a57b2d975582c375b3ec133cb4258173438",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LAtn",
+    "inputHash" : "d77d6a6c5bafba48f5758dc41528a66a650489efc09156248e814ff26c9cb0a7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LAtd",
+    "inputHash" : "cf62c82925be4bfa5f35d26215bf7661c1a2a790dc32f2a2348c0412db88211c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LAtt",
+    "inputHash" : "81309b07b9b781d35d6b622acd9a9a5050d58dfe8b9a1a201d075f60492954d7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LAtbt",
+    "inputHash" : "f608e93060fd69e81e61beeb9f33f60aac2ef13dfb41a23879ff9c3649e0abfa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LAtbf",
+    "inputHash" : "05e6b69340fa864d4665f4efc1030527b37eba1ead0e09e53e51d309e9f2a5c9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LStamps",
+    "inputHash" : "7bdfe72ccc094d7954cc7fe92c214fade6b18c91ec4e07564067d995590496b8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LStampn",
+    "inputHash" : "420c7222da564255f1e99f621e55176fc2064f62cde7823c2768f8d650f02f54",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LStampd",
+    "inputHash" : "8684120ef42ae3f6c3a315e88bd9151497eeaae1efb0896c6f39370f918600bd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LStampt",
+    "inputHash" : "2ecc7ad8fde0aacb4990a231b320a82527fb035700bf08bcd85e93adb71dda0e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LStampbt",
+    "inputHash" : "65526c22df962e03d0c6d3dfae3f0d4139e6e38e3906b0c77a2a3fe6a7cf456e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LStampbf",
+    "inputHash" : "fafd15c7a17b822d44c062fa9be7f9eb40e1b22082680718926a7b5728d94205",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LWindows",
+    "inputHash" : "ab3e6470c84126bb9716637ecac269637d6929b9f99de0fceb4fcdc3bd62be01",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "LWindown",
+    "inputHash" : "94590185e1c3d15615aac916f6fb59729056a95244e7b929a2df1e77e64ec8d7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "LWindowd",
+    "inputHash" : "200fba9e2364dee456b0537362149be58ffba57248748428d9170d880babccd8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LWindowt",
+    "inputHash" : "28b47eed68c736ce85464270b2277bf2b522462f996b30cdde3d29773ecad35e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LWindowbt",
+    "inputHash" : "83eeab767743a757aacff540c070322637486237f6b191d1194945d8bee2a879",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "LWindowbf",
+    "inputHash" : "71f010ceacacbda142336b4c970865c4bb25e8b7aa0ca85de4c5e4f11809c284",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  }, {
+    "id" : "LFlags",
+    "inputHash" : "eaf1a2d64213e5866a9f903b4b4a20cd92b0abb45b20dd4c6625da4962ed82ee",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "LFlagn",
+    "inputHash" : "1c2976b00661e429892ce8820c55e6d1d00455d4d85a2890538bc820c8372fdf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "LFlagd",
+    "inputHash" : "ee91843df29ec180ac0e8b5a507ae8d3175fc4bb436392c0f14a8e310e2d6f7b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "LFlagt",
+    "inputHash" : "0c35f084482c6798a68aec306c2cc1c15aaf7aeab7adf7644655bca57eb9af92",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YESNO" ]
+  }, {
+    "id" : "LFlagbt",
+    "inputHash" : "5541abfd690baffd3942161d7761221812cf73c585ed7d420721cfc63643b41b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LFlagbf",
+    "inputHash" : "ea9e32d84a29aed9bc60452a44b54c3d4b74faeca7e0f3973925564b7dced829",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LSigneds",
+    "inputHash" : "dbbbf14254cc700c54a5185b98e7e5f941746b507ed8cae368b492b5004893a4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "LSignedn",
+    "inputHash" : "efd50352d3fde17026e0ea21d738a4cf5960d90922b044cd7e5c071295997091",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "LSignedd",
+    "inputHash" : "202f4006e07f942895bb8cf0c6f1730cbcd701d99230a42118a2ec1acef60e82",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "LSignedt",
+    "inputHash" : "cdae56b8ec67f2cc0800787c84d7b2af37d0c62c760bfdfed06fa12fa406219c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "LSignedbt",
+    "inputHash" : "94ecf7b814d53992afdee01bc43b8f659916165252e0c112a540747a73b389d5",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "LSignedbf",
+    "inputHash" : "05f46c8e94050f18f680f5ce483abcf79a386aa75f5fb355496d8ed0f71e4076",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "LPlains",
+    "inputHash" : "f4b509d2a941e0438a8a5b44af47787eb8e7028dfc0091e15fe6fcd452037e19",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON" ]
+  }, {
+    "id" : "LPlainn",
+    "inputHash" : "217e98db7c5c3d32205e275e9931e3a4aa11b09b588341d11974d9006b8e1171",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LPlaind",
+    "inputHash" : "107976f261f466fd0525f4318c32081c4e0d3154082c4db0f657ef6fe4c54014",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LPlaint",
+    "inputHash" : "6a495e48b9377da9993d205ad693a61d1002bf840367af5ded401cfd21a7990b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LPlainbt",
+    "inputHash" : "68e9bc3493e7040f86a4c2ad87fa8868eb00b7f2bb57f6edcc1b0fef2de7d760",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LPlainbf",
+    "inputHash" : "89b0248859a4d4fe7bfb1e08f5f59807ceb14dbfda0e81c05f6f970ee2dc3bd8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LLabelleds",
+    "inputHash" : "bb93d45c30b90aad50ccd6f7ff54e826b735e9cf12a9e9c354811c4cbd4bec94",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON" ]
+  }, {
+    "id" : "LLabelledn",
+    "inputHash" : "8a1aa1ffb1fec065b5b0c454b9df3e455b4becd3ce024af2c157a86ad77f579f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LLabelledd",
+    "inputHash" : "ad911f2cf2c90bf5fdefc66eda84af5829f7e6d5f205abef73b4f883e51bb0c6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LLabelledt",
+    "inputHash" : "374d568a6d8a80cd4d44b1db650a3433f74663f250dab0669b6afbd67b778b5c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "LLabelledbt",
+    "inputHash" : "81463c581bed3ced93c9eca3a21a3a8b3bba0ccc7efc92497953af961875fdc1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "LLabelledbf",
+    "inputHash" : "0d3517741333bcfa794ba2cfec54704bd9b489e5e640a34b3ea11da74150b345",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "O01",
+    "inputHash" : "0fa59968251fdc6757e05e11ba3089a59f53940b9fec9222dad212a833cedf64",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_YES" ]
+  }, {
+    "id" : "O02",
+    "inputHash" : "b0af00f0563f9213b559c81561b528960daef89d8a8ddd09ccd223530d8b127b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "O03",
+    "inputHash" : "1ffe5afc7f4f970f4d322e49cdb73a964224178cf3172c8a8b745e96f0b7be6c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "O04",
+    "inputHash" : "65b8576230cf1af871ba018c31103f3548ca337abe2297cd7e8858ecd3e6e155",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "O05",
+    "inputHash" : "0b419f387dab8e50ee6e6560f881bcede79618d5361f598bf62e227371fd7077",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "O06",
+    "inputHash" : "287bd4881145dbd62f1378936e4ce3d384c86434e4d7be6337f8e1ce0cec2877",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_BASE_YEAR" ]
+  }, {
+    "id" : "O07",
+    "inputHash" : "b9e8c2d44a4b95c50d2993c79fbea3041ed3606a6e610e4460d868046ee1b4a3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_BASE_YEAR" ]
+  }, {
+    "id" : "O08",
+    "inputHash" : "51492fbdd0f16524d6aff9112e4cf1445edb3bb6449d7cff84c73a05001dbc23",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "O09",
+    "inputHash" : "c4a7d61801e617fba20604b77a3ebe7d97fdb9232e59c25de447d7763f9676aa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "O10",
+    "inputHash" : "434ca5b896f6079f55e283512d1555040feac31fbc03507e05cd487ae73bf989",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING" ]
+  }, {
+    "id" : "O11",
+    "inputHash" : "f9c9b0ba2570d45f1b17a6833050dccccc63678f6b090f5954c8035869227b3e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "O12",
+    "inputHash" : "fb3800efa967a5a03c3036429eb76b99a0c26573a67b649bcfe8ed2c80557fd8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_ENUM_TO_STRING" ]
+  }, {
+    "id" : "O13",
+    "inputHash" : "a14e52bcc67423d00db3dc7a9541a011cb76a3aec1954651187b2d190364bcfc",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON" ]
+  }, {
+    "id" : "O14",
+    "inputHash" : "0acada421a20c71dd453e6653550c845948985d63fc0a3e95672ce8fde456ea7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "O15",
+    "inputHash" : "c3854997a098874b6e96371660e18f7a55eee55ffe5f56fb46332afc80a93602",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "O16",
+    "inputHash" : "b97f3254bc8221678caf0ca825e6793e7ea33c4fd5f613ac8cbf8d1777c24db9",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

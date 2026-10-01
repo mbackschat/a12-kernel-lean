@@ -1,0 +1,412 @@
+[
+ {
+  "id": "LNotes",
+  "verb": "rule",
+  "args": ["check", "--code", "LNotes", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LNoten",
+  "verb": "rule",
+  "args": ["check", "--code", "LNoten", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LNoted",
+  "verb": "rule",
+  "args": ["check", "--code", "LNoted", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LNotet",
+  "verb": "rule",
+  "args": ["check", "--code", "LNotet", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LNotebt",
+  "verb": "rule",
+  "args": ["check", "--code", "LNotebt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LNotebf",
+  "verb": "rule",
+  "args": ["check", "--code", "LNotebf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LQtys",
+  "verb": "rule",
+  "args": ["check", "--code", "LQtys", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LQtyn",
+  "verb": "rule",
+  "args": ["check", "--code", "LQtyn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LQtyd",
+  "verb": "rule",
+  "args": ["check", "--code", "LQtyd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LQtyt",
+  "verb": "rule",
+  "args": ["check", "--code", "LQtyt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LQtybt",
+  "verb": "rule",
+  "args": ["check", "--code", "LQtybt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LQtybf",
+  "verb": "rule",
+  "args": ["check", "--code", "LQtybf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAmounts",
+  "verb": "rule",
+  "args": ["check", "--code", "LAmounts", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAmountn",
+  "verb": "rule",
+  "args": ["check", "--code", "LAmountn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAmountd",
+  "verb": "rule",
+  "args": ["check", "--code", "LAmountd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAmountt",
+  "verb": "rule",
+  "args": ["check", "--code", "LAmountt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAmountbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LAmountbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAmountbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LAmountbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LDues",
+  "verb": "rule",
+  "args": ["check", "--code", "LDues", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LDuen",
+  "verb": "rule",
+  "args": ["check", "--code", "LDuen", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LDued",
+  "verb": "rule",
+  "args": ["check", "--code", "LDued", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LDuet",
+  "verb": "rule",
+  "args": ["check", "--code", "LDuet", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LDuebt",
+  "verb": "rule",
+  "args": ["check", "--code", "LDuebt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LDuebf",
+  "verb": "rule",
+  "args": ["check", "--code", "LDuebf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAts",
+  "verb": "rule",
+  "args": ["check", "--code", "LAts", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAtn",
+  "verb": "rule",
+  "args": ["check", "--code", "LAtn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAtd",
+  "verb": "rule",
+  "args": ["check", "--code", "LAtd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAtt",
+  "verb": "rule",
+  "args": ["check", "--code", "LAtt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAtbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LAtbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LAtbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LAtbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LStamps",
+  "verb": "rule",
+  "args": ["check", "--code", "LStamps", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LStampn",
+  "verb": "rule",
+  "args": ["check", "--code", "LStampn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LStampd",
+  "verb": "rule",
+  "args": ["check", "--code", "LStampd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LStampt",
+  "verb": "rule",
+  "args": ["check", "--code", "LStampt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LStampbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LStampbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LStampbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LStampbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LWindows",
+  "verb": "rule",
+  "args": ["check", "--code", "LWindows", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LWindown",
+  "verb": "rule",
+  "args": ["check", "--code", "LWindown", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LWindowd",
+  "verb": "rule",
+  "args": ["check", "--code", "LWindowd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LWindowt",
+  "verb": "rule",
+  "args": ["check", "--code", "LWindowt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LWindowbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LWindowbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LWindowbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LWindowbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LFlags",
+  "verb": "rule",
+  "args": ["check", "--code", "LFlags", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LFlagn",
+  "verb": "rule",
+  "args": ["check", "--code", "LFlagn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LFlagd",
+  "verb": "rule",
+  "args": ["check", "--code", "LFlagd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LFlagt",
+  "verb": "rule",
+  "args": ["check", "--code", "LFlagt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LFlagbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LFlagbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LFlagbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LFlagbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LSigneds",
+  "verb": "rule",
+  "args": ["check", "--code", "LSigneds", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LSignedn",
+  "verb": "rule",
+  "args": ["check", "--code", "LSignedn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LSignedd",
+  "verb": "rule",
+  "args": ["check", "--code", "LSignedd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LSignedt",
+  "verb": "rule",
+  "args": ["check", "--code", "LSignedt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LSignedbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LSignedbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LSignedbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LSignedbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LPlains",
+  "verb": "rule",
+  "args": ["check", "--code", "LPlains", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LPlainn",
+  "verb": "rule",
+  "args": ["check", "--code", "LPlainn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LPlaind",
+  "verb": "rule",
+  "args": ["check", "--code", "LPlaind", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LPlaint",
+  "verb": "rule",
+  "args": ["check", "--code", "LPlaint", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LPlainbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LPlainbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LPlainbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LPlainbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LLabelleds",
+  "verb": "rule",
+  "args": ["check", "--code", "LLabelleds", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == \"x\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LLabelledn",
+  "verb": "rule",
+  "args": ["check", "--code", "LLabelledn", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == 5", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LLabelledd",
+  "verb": "rule",
+  "args": ["check", "--code", "LLabelledd", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == \"05.03.2024\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LLabelledt",
+  "verb": "rule",
+  "args": ["check", "--code", "LLabelledt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == \"10:15:00\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LLabelledbt",
+  "verb": "rule",
+  "args": ["check", "--code", "LLabelledbt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == True", "--message", "en_US=Check."]
+ },
+ {
+  "id": "LLabelledbf",
+  "verb": "rule",
+  "args": ["check", "--code", "LLabelledbf", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O01",
+  "verb": "rule",
+  "args": ["check", "--code", "O01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == False", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O02",
+  "verb": "rule",
+  "args": ["check", "--code", "O02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O03",
+  "verb": "rule",
+  "args": ["check", "--code", "O03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O04",
+  "verb": "rule",
+  "args": ["check", "--code", "O04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == Today", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O05",
+  "verb": "rule",
+  "args": ["check", "--code", "O05", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == Now", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O06",
+  "verb": "rule",
+  "args": ["check", "--code", "O06", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O07",
+  "verb": "rule",
+  "args": ["check", "--code", "O07", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == BaseYear", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O08",
+  "verb": "rule",
+  "args": ["check", "--code", "O08", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length([/Order/Qty]) > 2", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O09",
+  "verb": "rule",
+  "args": ["check", "--code", "O09", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length([/Order/Note]) > 2", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O10",
+  "verb": "rule",
+  "args": ["check", "--code", "O10", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O11",
+  "verb": "rule",
+  "args": ["check", "--code", "O11", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Wide]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O12",
+  "verb": "rule",
+  "args": ["check", "--code", "O12", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Swapped]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O13",
+  "verb": "rule",
+  "args": ["check", "--code", "O13", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == \"PENDING\"", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O14",
+  "verb": "rule",
+  "args": ["check", "--code", "O14", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == Today", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O15",
+  "verb": "rule",
+  "args": ["check", "--code", "O15", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == Now", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O16",
+  "verb": "rule",
+  "args": ["check", "--code", "O16", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Note]", "--message", "en_US=Check."]
+ }
+]

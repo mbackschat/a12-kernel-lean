@@ -42,6 +42,16 @@ The scalar, fixed, and nonrepeatable half. Exact-address repeatable families liv
 - `assurance`: E locks every carrier against all 126 field-to-field grid rows, each answering a row's measured verdict or claiming no class, with its classless rows pinned by a domain predicate and named exceptions; the category read's calculation class is locked on the Enumeration carrier. P proves the arm symmetric and total on refusals. L is the 127-row grid, retained. C/X/Q none.
 - `remains`: a copy inside a wider expression, the addressed repeatable carriers, a category read into a target of another kind, a partially known target's read class, and an unlabelled Enumeration into a String, which the Kernel admits and no carrier here can represent: [SG15](../gaps/targets-and-derivation.md#gap-sg15)
 
+<a id="cap-rule-condition-class-projection"></a>
+#### A flat rule condition's refusal classes
+
+- `boundary`: `ElabError.diagnostic?` projects the flat condition elaborator's refusals by delegating to the owners that already carry the measured tables: the resolver's classes, the literal ladder, the rule comparison's kind arm and the Enumeration display arm. `ruleComparisonKindArm?` is the [copy walk](#cap-field-copy-comparison) over the two operand kinds plus one measured departure, two Confirm operands refused; `Today`, `Now` and a Base Year range endpoint meet it as a date partner, `BaseYear` as a Number.
+- `boundary`: it claims nothing for a same-kind Number, DateRange or Boolean field pair or a scale-mismatched Number pair, which this flat route does not admit, nor for a clock literal, whose class depends on the field the date-literal gate meets; the remaining arms are named as unmeasured or routing.
+- `owner`: [`ConditionDiagnostic.lean`](../../A12Kernel/Elaboration/ConditionDiagnostic.lean) and [cases](../../A12Kernel/Conformance/ConditionDiagnostic.lean), sharing the field-copy grid's fixture.
+- `spec-and-source`: [§5 constant typing](../../spec/05-dates-and-time.md) and the [condition-class checkpoint](../SOURCES.md#src-condition-class-projection).
+- `assurance`: E locks the literal ladder's 55 cells, all 121 ordered field pairs, the `Today`, `Now`, `BaseYear` and range-endpoint rows, the undeclared Base Year, `Length` and two Enumeration rows against the retained verdicts; L is that checkpoint's raw evidence, which establishes neither `L` nor `C`.
+- `remains`: value-list arms, `!=` and ordering operators, the German condition language, and the same-kind field pairs this route does not admit.
+
 <a id="cap-boolean-confirm-constant-computation-target-admission"></a>
 #### Boolean/Confirm constant computation target and result/application
 

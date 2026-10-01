@@ -1,0 +1,617 @@
+[
+ {
+  "id": "FNotexNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Note2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FNotexLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FNotexLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Qty2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FQtyxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FQtyxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Amount2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAmountxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FAmountxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Amount] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Due2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FDuexLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FDuexLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/At2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FAtxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FAtxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Stamp2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FStampxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FStampxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Stamp] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Window2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FWindowxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FWindowxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Flag2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FFlagxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FFlagxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Signed2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FSignedxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FSignedxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Signed] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Plain2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FPlainxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FPlainxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Plain] == [/Order/Labelled]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxNote",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxNote", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxQty",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxQty", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxAmount",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxAmount", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Amount]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxDue",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxDue", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Due]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxAt",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxAt", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/At]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxStamp",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxStamp", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Stamp]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxWindow",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxWindow", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxFlag",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxFlag", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxSigned",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxSigned", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Signed]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxPlain",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxPlain", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "FLabelledxLabelled",
+  "verb": "rule",
+  "args": ["check", "--code", "FLabelledxLabelled", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Labelled] == [/Order/Labelled2]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O08b",
+  "verb": "rule",
+  "args": ["check", "--code", "O08b", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length(/Order/Qty) > 2", "--message", "en_US=Check."]
+ },
+ {
+  "id": "O09b",
+  "verb": "rule",
+  "args": ["check", "--code", "O09b", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length(/Order/Note) > 2", "--message", "en_US=Check."]
+ }
+]
