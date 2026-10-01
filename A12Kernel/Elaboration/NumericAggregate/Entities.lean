@@ -194,8 +194,9 @@ def resolvedComputationAggregateSide
     A plain or filtered **star** and a **group** operand each narrow to their declared-capacity extent:
     a row beyond its group's declared repeatability is not in the domain the operand denotes, so its
     selected value cell is neither aggregated nor able to make the aggregate unavailable. A direct
-    field keeps the complete formal-cell view. The filtered Number branch's extent is measured on both
-    arms ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)).
+    field keeps the complete formal-cell view. The filtered Number branch's `Sum` extent is measured
+    on both arms ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms))
+    and its other operators on this arm by the peer's `kf230`.
 
     One resolver serves every validation aggregate consumer — `Sum`, the extrema, the distinct count,
     and the value count. `Sum` and the group form were measured first, and the remaining consumers

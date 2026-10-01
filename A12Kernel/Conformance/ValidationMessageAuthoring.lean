@@ -445,8 +445,7 @@ refused, then the index gate answers
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)).
 So a name that resolves nowhere answers first in any position, a keyed field or group key draws the
 nesting class, and a literal followed by a key reaches the index gate, which this fragment leaves
-unprojected. The category suffix's two declaration gates carry their own classes
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-rule-message-parameter-grammar)). -/
+unprojected. -/
 example :
     let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     root "See $Deep For Head/Deeper/Deep For \"k\"$" = some (some "ILLEGAL_SEMANTIC_INDEX") ∧
@@ -456,10 +455,11 @@ example :
       root "See $Deep For Nope For \"k\"$" = some (some "INVALID_ENTITY") ∧
       root "See $Nope For Head/Deeper/Deep For \"k\"$" = some (some "INVALID_ENTITY") ∧
       root "See $Deep For Head/Deeper/Deep For Nope$" = some (some "INVALID_ENTITY") ∧
-      namedClassOn? model ["Order"] (bare "Status") "See $Status->Nope$" =
-        some (some "INVALID_CATEGORY") ∧
-      namedClassOn? model ["Order"] (bare "Amount") "See $Amount->Group$" =
-        some (some "FIELD_NO_ENUM") := by
+      -- The category suffix's declaration gates stay unprojected: the decoder takes everything after
+      -- the arrow as the name, so a spacing or trailing token the grammar treats otherwise would carry
+      -- a wrong class ([`LF201`](../../docs/LEAN-FINDINGS.md)).
+      namedClassOn? model ["Order"] (bare "Status") "See $Status->Nope$" = some none ∧
+      root "See $#Head For \"k\"$" = some none := by
   native_decide
 
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/

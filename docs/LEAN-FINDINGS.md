@@ -2608,4 +2608,6 @@ On 2026-10-01 the rule-message parameter checker took five corrections in one da
 
 **When a review round on one checker again finds a crossing the last fix did not measure, stop patching: model the grammar once, put every form's gates in one ordered pipeline, and replay every retained row against it before measuring the next shape.**
 
+The same day showed the corollary. A class projected onto a splitter's error turns an honest `none` into a named wrong class on every spelling the splitter misreads: the category suffix's two measured classes, projected while the decoder still took everything after the arrow as the name, answered `INVALID_CATEGORY` for a spacing the grammar ignores, and had to be withdrawn. Project a decoder's refusals only once it reads the shapes the grammar accepts.
+
 Related: [[LF199]] on fitting a fix to a mechanism rather than to the rows, [[LF153]] on crossing a batch instead of sampling it.

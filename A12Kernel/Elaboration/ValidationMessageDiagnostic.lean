@@ -35,8 +35,6 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .reference _ (.shortNameNotUnique _) => some .messageFieldNameNotUnique
   | .groupInNamePosition _ _ => some .messageFieldNotReferenced
   | .groupInFormPointer _ _ => some .invalidFieldInParameter
-  | .categoryFieldNotEnumeration _ _ => some .indexFieldNoEnumeration
-  | .category _ (.unknownCategory _) => some .indexFieldCategoryUnknown
   | .nestedSemanticIndex _ => some .illegalSemanticIndex
   | .invalidGroupParameter _ => some .invalidGroupInParameter
   | .groupShortNameNotUnique _ _ => some .messageFieldNameNotUnique

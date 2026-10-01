@@ -170,8 +170,9 @@ inductive ValidationMessageTemplateError where
   the parameter has resolved
   ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
   | nestedSemanticIndex (parameter : String)
-  /-- A **well-formed** keyed parameter, refused because this fragment's model is nonrepeatable and so
-  declares no semantic index for the key to name. This is the fragment's own boundary, not the
+  /-- A keyed parameter — in the name position or the group position, or a literal key followed by a
+  further key, whose class the Kernel draws from the same index gate — refused because this fragment's
+  model is nonrepeatable and so declares no semantic index for the key to name. This is the fragment's own boundary, not the
   Kernel's pairing class: the Kernel gates a keyed parameter on whether the **condition uses that same
   semantic index** *and* on the displayed field being either the condition's keyed field or the
   group's index field, neither of which a flat condition spine can pose. -/
@@ -481,11 +482,17 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
   -- The position marker is read first, because it selects a different grammar rather than a different
   -- form inside the name grammar. Nothing in the name grammar can begin with it.
   if parameter.startsWith "#" then
+    -- The grammar's group position takes the same recursive key as a field, which the group decoder
+    -- does not read; refusing it here as the keyed fragment keeps the decoder from reporting the
+    -- key's first word as an unexpected token, a class the Kernel does not draw for it.
+    if (splitMessageKey profile parameter).2.isSome then
+      .error (.semanticIndexUnsupported parameter)
+    else
     (fun (authored, remainder) => ParsedValidationMessagePart.group parameter authored remainder) <$>
       parseMessageGroup profile parameter (parameter.drop 1).toString
   else
-  -- The Base Year terminal is checked first: it is a terminal, so an unquoted occurrence is never a
-  -- field name, and its offset syntax is not part of any path.
+  -- A key is split off first, because it ends the parameter; the Base Year terminal is then checked
+  -- before any path, being a terminal whose offset syntax is not part of a path.
   match splitMessageKey profile parameter with
   | (spec, some keyText) => do
         let key ← parseMessageKeyChain parameter

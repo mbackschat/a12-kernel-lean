@@ -521,9 +521,10 @@ def rowLess (left right : String) : SurfaceCorrelatedHaving :=
 
 /- A filtered star answers from its declared-capacity rows on every route, so an over-limit fourth row
    neither contributes nor poisons, and the reversed rows show that the in-capacity rows are what is
-   summed. On the validation routes only the reflexive filter separates that from the complete rows,
-   because an over-limit filter read there is unknown and drops the row either way; on the
-   computation routes every filter does. Measured on both arms and both codegen
+   summed. Against Lean's former complete-rows account, only the reflexive conjuncts fail on the
+   validation routes, because that account read an over-limit row's filter as unknown and so dropped
+   the row under the keeping and dropping filters alike; on the computation routes every conjunct
+   fails. The Kernel rows separate all three filters either way. Measured on both arms and both codegen
    strategies ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)).
    The measured keep and drop filters compare `V` with the constant `6`, which this filter fragment
    cannot write, so the same split is reached through a same-row `FilterLeft` holding `6`. -/

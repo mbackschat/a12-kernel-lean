@@ -205,9 +205,9 @@ inductive KernelStaticDiagnostic where
   | pathSpecNotAllowed
   /-- An `index(...)` parameter written with neither suffix. The Kernel treats a bare index reference as meaningless rather than defaulting it. -/
   | indexFieldSuffixMissing
-  /-- Under a message parameter's category suffix, the referenced field — an `index(...)` field or an ordinary field reference — is not an Enumeration. Reachable from that suffix only: the value suffix admits a wholly non-Enumeration set instead. -/
+  /-- Under the category suffix, a referenced index field is not an Enumeration. Reachable from that suffix only: the value suffix admits a wholly non-Enumeration set instead. -/
   | indexFieldNoEnumeration
-  /-- Under a message parameter's category suffix, the referenced field's Enumeration — an `index(...)` field's or an ordinary field reference's — does not declare the named category. Distinct from the enumeration-category *constant* class, which is the condition's own vocabulary. -/
+  /-- Under the category suffix, a referenced index field's Enumeration does not declare the named category. Distinct from the enumeration-category *constant* class, which is the condition's own vocabulary. -/
   | indexFieldCategoryUnknown
   /-- A message parameter's semantic-index key that is a keyed entity in its own right. -/
   | illegalSemanticIndex
