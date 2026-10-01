@@ -223,19 +223,28 @@ private def takeDottedContinuation (keywords : MessageGroupKeywords) :
       | none => ([], .dot :: token :: rest)
   | tokens => ([], tokens)
 
-/-- Join every name with its dotted continuation into one `dotted` token. A dot appears in the group
-position only inside a name, so this needs no parsing context. `fuel` bounds the walk, since every step
-consumes a token. -/
+/-- Join every name with its dotted continuation into one `dotted` token. A retired offset's digits
+are no name, so a dot after them is left for the parser, which meets it after the offset alternative
+is complete. Deciding whether a name continues past a dot reads the token after the dot, so a lexer
+fault there ends the list right after the name and answers before any check the name waits for:
+`$#Store.%$` draws the lexer class, `$#Zeile-1.x$` the retired one
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)).
+`fuel` bounds the walk, since every step consumes a token. -/
 private def joinDottedNames (keywords : MessageGroupKeywords) :
     Nat → List GroupToken → List GroupToken
   | 0, tokens => tokens
   | _ + 1, [] => []
+  | fuel + 1, .sign :: .number digits :: rest =>
+      .sign :: .number digits :: joinDottedNames keywords fuel rest
   | fuel + 1, token :: rest =>
       let joined (first : String) :=
-        match takeDottedContinuation keywords rest with
-        | ([], _) => token :: joinDottedNames keywords fuel rest
-        | (more, after) =>
-            .dotted first (".".intercalate (first :: more)) :: joinDottedNames keywords fuel after
+        let (name, after) :=
+          match takeDottedContinuation keywords rest with
+          | ([], _) => (token, rest)
+          | (more, after) => (.dotted first (".".intercalate (first :: more)), after)
+        match after with
+        | .dot :: .bad :: _ => [name, .bad]
+        | _ => name :: joinDottedNames keywords fuel after
       match token with
       | .name text _ => joined text
       | .number text => joined text

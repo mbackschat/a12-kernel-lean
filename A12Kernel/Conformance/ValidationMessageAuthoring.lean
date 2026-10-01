@@ -973,6 +973,30 @@ example :
         deep s!"In $#{argument}$" = some (.invalidGroupParameter s!"#{argument}")) = true := by
   native_decide
 
+/- The cold review's rows, each measured: a retired offset's digits are no name, so a dot after them is
+a token after the retired alternative; a lexer fault right after a dot answers before the check its
+name waits for; a turning point's first word is still compared; any token after the last separator
+that continues no name extends the run, while a run of digits or a quoted name ends it; and an exempt
+word may stand inside a dotted name ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)). -/
+example :
+    let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    let head := pathTemplateError? ["Order", "Head"] (bare "Amount")
+    let deeper := pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep")
+    pathTemplateError? ["Order"] (bare "Other") "In $#Zeile-1.x$" =
+        some (.retiredGroupTerminal "#Zeile-1.x" "Zeile") ∧
+      deep "In $#Head.%$" = some (.groupParameterLexical "#Head.%" .lexer) ∧
+      deep "In $#Head.'x$" = some (.groupParameterLexical "#Head.'x" .lexer) ∧
+      head "In $#..Wrong.%$" = some (.groupParameterLexical "#..Wrong.%" .lexer) ∧
+      head "In $#..Wrong.x$" = some (.groupTurningPointMismatch "#..Wrong.x") ∧
+      head "In $#..Wrong/..$" = some (.groupTurningPointMismatch "#..Wrong/..") ∧
+      deeper "In $#../../-x$" = some (.groupParameterAboveRoot "#../../-x") ∧
+      deeper "In $#../../($" = some (.groupParameterAboveRoot "#../../(") ∧
+      deeper "In $#../../123$" = some (.invalidGroupParameter "#../../123") ∧
+      pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../'Head'$" = some true ∧
+      (["Head.Vordruckname.x", "Head.Usb.x", "Head.RootGroup.x"].all fun argument =>
+        deep s!"In $#{argument}$" = some (.invalidGroupParameter s!"#{argument}")) = true := by
+  native_decide
+
 /- The peer's turning-point rows on this fixture: the turning point is checked before the child below
 it ([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)). -/
 example :

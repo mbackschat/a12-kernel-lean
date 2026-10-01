@@ -5,9 +5,11 @@ import A12Kernel.Elaboration.MessageGroupArgument
 What the group argument's decoder decides before any model is consulted: the lexical or syntax class
 of a refused spelling, the retired class, and which alternative and authored path an admitted
 spelling decodes to. Every expected value is a Kernel 30.8.1 class measured at the
-[argument-layer](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)
-and [argument-event](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)
-checkpoints or in the peer's grid ([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)),
+[argument-layer](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers),
+[argument-event](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)
+and [walk and dotted-name](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)
+checkpoints or in the peer's grids ([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments),
+[inbound](../../docs/SOURCES.md#inbound-2026-10-01a-provenance)),
 on spellings translated to this fixture's `Order`, `Head`, `Deeper` and `Side`. What a decoded group
 then resolves to, and the classes its lookup and availability draw, are locked with the message
 template in `Conformance/ValidationMessageAuthoring.lean`.
@@ -56,7 +58,8 @@ example :
 
 /- A fault answers where the parser meets it: a doubled separator before a later lexer fault, a
 lexer fault right after a separator or a complete alternative first. A message punctuation character
-is no token, and an up-step after a name, a turning point or a leading separator is a syntax fault. -/
+is no token, and an up-step after a name or a leading separator is a syntax fault; after a turning
+point it is a fault the walk's check precedes. -/
 example :
     syntaxFault "Head//%" .separator = true ∧
       (["Head/%", "Side%", "%Head", "RuleGroup%", "Zeile-1%"].all (syntaxFault · .lexer)) = true ∧
@@ -125,6 +128,11 @@ example :
       decoded "../../Head" = some (.relative 2 none ["Head"], .none) ∧
       decoded "../../Head//%" = some (.relative 2 none [], .afterWalk .separator) ∧
       syntaxFault "../../%" .lexer = true ∧
+      decoded "../../-x" = some (.relative 3 none [], .afterWalk .unexpected) ∧
+      decoded "../../123" = some (.relative 2 none ["123"], .none) ∧
+      decoded "..Wrong/.." = some (.relative 1 (some "Wrong") [], .afterWalk .unexpected) ∧
+      refused "Zeile-1.x" = some (.retired "Zeile") ∧
+      (["Head.%", "Head.'x", "..Wrong.%"].all (syntaxFault · .lexer)) = true ∧
       decoded "..Wrong/" = some (.relative 1 (some "Wrong") [], .afterWalk .truncated) ∧
       decoded "..Wrong/%" = some (.relative 1 (some "Wrong") [], .afterWalk .lexer) ∧
       decoded "..Order.x" = some (.relative 1 (some "Order") [], .none) := by
@@ -135,12 +143,13 @@ it is the value suffix or a form-pointer terminal; a keyword, a number or a digi
 continues none and is left after the name. Quoted or keyword-and-name, the first word joins too. -/
 example :
     decoded "Head.x.y" = some (.relative 0 none ["Head.x.y"], .none) ∧
-      decoded "Head.'x'/Deeper" = some (.relative 0 none ["Head.x", "Deeper"], .none) ∧
+      decoded "Head.x/Deeper" = some (.relative 0 none ["Head.x", "Deeper"], .none) ∧
+      decoded "Head.'x'" = some (.relative 0 none ["Head.x"], .none) ∧
       decoded "Head.Zeile" = some (.relative 0 none ["Head.Zeile"], .none) ∧
       decoded "Head.value.x" = some (.relative 0 none ["Head.value.x"], .none) ∧
       decoded "RootGroup.x" = some (.relative 0 none ["RootGroup.x"], .none) ∧
       decoded "'Zeile'.x" = some (.relative 0 none ["Zeile.x"], .none) ∧
-      (["Head.value", "Head.Vordruckzeile", "Head.RuleGroup", "Head.1", "Head.1x", "Head."].all
+      (["Head.value", "Head.Vordruckzeile", "Head.RuleGroup", "Head.1", "Head."].all
         fun argument => decoded argument = some (.relative 0 none ["Head"], .trailing)) = true := by
   native_decide
 

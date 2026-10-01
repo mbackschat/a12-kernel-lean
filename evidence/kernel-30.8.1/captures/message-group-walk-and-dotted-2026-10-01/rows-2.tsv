@@ -1,0 +1,14 @@
+X0	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check.	-
+X1	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile-1.x$.	PARAM_INVALID_IN_NEW_WORLD
+X2	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.%$.	MVK_LEXER_STANDARD_ERROR
+X3	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.'x$.	MVK_LEXER_STANDARD_ERROR
+X4	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#..Wrong.%$.	MVK_LEXER_STANDARD_ERROR
+X5	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#..Wrong.x$.	INVALID_ENTITY
+X6	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../-x$.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+X7	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../123$.	INVALID_GROUP
+X8	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../'Store'$.	-
+X9	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../($.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+X10	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#..Wrong/..$.	INVALID_ENTITY
+X11	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.Vordruckname.x$.	INVALID_GROUP
+X12	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.Usb.x$.	INVALID_GROUP
+X13	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.RootGroup.x$.	INVALID_GROUP

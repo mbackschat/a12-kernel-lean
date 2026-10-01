@@ -1,0 +1,168 @@
+[
+ {
+  "id": "X0",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "X1",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Zeile-1.x$.",
+  "valid": false,
+  "codes": [
+   "PARAM_INVALID_IN_NEW_WORLD"
+  ]
+ },
+ {
+  "id": "X2",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.%$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "X3",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.'x$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "X4",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#..Wrong.%$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "X5",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#..Wrong.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "X6",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../-x$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "X7",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../123$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "X8",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../'Store'$.",
+  "valid": true,
+  "codes": [
+   "RK_INVERTED_REQUIREDNESS"
+  ]
+ },
+ {
+  "id": "X9",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../($.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "X10",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#..Wrong/..$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "X11",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.Vordruckname.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "X12",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.Usb.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "X13",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.RootGroup.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ }
+]
