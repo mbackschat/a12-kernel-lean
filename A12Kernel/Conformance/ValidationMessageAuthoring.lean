@@ -86,6 +86,7 @@ private def keywordProfile : ValidationMessageKeywordProfile := {
   formLineTerminal := "Vordruckzeile"
   formNameTerminal := "Vordruckname"
   retiredGroupTerminals := ["Zeile", "Usb"]
+  offsetGroupTerminals := ["Zeile"]
 }
 
 private def condition? : Option (CheckedFlatCondition model) :=
@@ -836,6 +837,93 @@ example :
 example :
     pathTemplateOk? ["Order", "Head"] (bare "Amount") "In $#RuleGroup$" =
       some true := by
+  native_decide
+
+/- A keyword followed by a token is still the keyword, so its own gate answers before the token left
+after it, exactly as a resolving path's lookup does. From the root group `RuleGroup` draws its
+placement refusal with a separator or a `-` after it; one level down it resolves, and the token left
+after it draws the syntax class. `RootGroup` with a `-` after it resolves the same way, but with a
+separator after it the argument is a path whose first segment names no group below the rule's group
+(a12-dmkits `MessageGroupArgumentAgreementTest` at `c785a4b6f`, Kernel 30.8.1,
+[inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)). -/
+example :
+    let aside := pathAt .absolute ["Order", "Side"] "Aside"
+    let deep := pathAt (.relative 0) ["Head", "Deeper"] "Deep"
+    pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup/Head$" =
+        some (.ruleGroupImmediatelyBelowRoot "#RuleGroup/Head") ∧
+      pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup-x$" =
+        some (.ruleGroupImmediatelyBelowRoot "#RuleGroup-x") ∧
+      pathTemplateError? ["Order", "Head"] aside "In $#RuleGroup/Deeper$" =
+        some (.groupParameterLexical "#RuleGroup/Deeper" .unexpected) ∧
+      pathTemplateError? ["Order", "Head"] aside "In $#RuleGroup-x$" =
+        some (.groupParameterLexical "#RuleGroup-x" .unexpected) ∧
+      pathTemplateError? ["Order"] deep "In $#RootGroup/Head$" =
+        some (.invalidGroupParameter "#RootGroup/Head") ∧
+      pathTemplateError? ["Order"] deep "In $#RootGroup-x$" =
+        some (.groupParameterLexical "#RootGroup-x" .unexpected) := by
+  native_decide
+
+/- Each fault answers where the parser meets it, and a check runs once its alternative is complete
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)).
+`Zeile` takes a signed offset, so `$#Zeile-1$` completes the retired alternative and draws its class,
+while `$#Zeile-$` fails the one token the sign requires and `$#Zeile-1x$` meets the digit-initial
+name the lexer forms there. A keyword that is also a name meets a token continuing neither reading
+before any check, and one followed by a separator is a path's first segment. A doubled separator
+answers before a later lexer fault, and a lexer fault right after the separator answers first. A run
+of digits is a name. A path that resolves to an unavailable group draws the group class before the
+token left after it. -/
+example :
+    let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    deep "In $#Zeile-1$" = some (.retiredGroupTerminal "#Zeile-1" "Zeile") ∧
+      deep "In $#Zeile+1$" = some (.retiredGroupTerminal "#Zeile+1" "Zeile") ∧
+      deep "In $#Zeile-$" = some (.groupParameterLexical "#Zeile-" .expectedToken) ∧
+      deep "In $#Zeile-1x$" = some (.groupParameterLexical "#Zeile-1x" .unexpected) ∧
+      deep "In $#Zeile-1%$" = some (.groupParameterLexical "#Zeile-1%" .lexer) ∧
+      deep "In $#Zeile-x$" = some (.groupParameterLexical "#Zeile-x" .unexpected) ∧
+      deep "In $#Zeile x$" = some (.groupParameterLexical "#Zeile x" .unexpected) ∧
+      deep "In $#Usb-1$" = some (.groupParameterLexical "#Usb-1" .unexpected) ∧
+      deep "In $#Usb x$" = some (.groupParameterLexical "#Usb x" .unexpected) ∧
+      deep "In $#RootGroup+1$" = some (.groupParameterLexical "#RootGroup+1" .unexpected) ∧
+      deep "In $#Zeile/Head$" = some (.invalidGroupParameter "#Zeile/Head") ∧
+      deep "In $#Usb/Head$" = some (.invalidGroupParameter "#Usb/Head") ∧
+      deep "In $#Head//%$" = some (.groupParameterLexical "#Head//%" .separator) ∧
+      deep "In $#Head/%$" = some (.groupParameterLexical "#Head/%" .lexer) ∧
+      deep "In $#123$" = some (.invalidGroupParameter "#123") ∧
+      deep "In $#Head/123$" = some (.invalidGroupParameter "#Head/123") ∧
+      deep "In $#Side-x$" = some (.invalidGroupParameter "#Side-x") ∧
+      deep "In $#/Order/Side-x$" = some (.invalidGroupParameter "#/Order/Side-x") ∧
+      deep "In $#Side)$" = some (.invalidGroupParameter "#Side)") ∧
+      deep "In $#Side%$" = some (.groupParameterLexical "#Side%" .lexer) ∧
+      deep "In $#Head x%$" = some (.groupParameterLexical "#Head x%" .unexpected) ∧
+      pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup+1$" =
+        some (.ruleGroupImmediatelyBelowRoot "#RuleGroup+1") ∧
+      pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup%$" =
+        some (.groupParameterLexical "#RuleGroup%" .lexer) := by
+  native_decide
+
+/-- A model whose root holds a group literally named `RootGroup`, so a path through it can resolve. -/
+private def keywordGroupModel : FlatModel :=
+  { fields := [other,
+      { id := 2, groupPath := ["Order", "RootGroup", "Inner"], name := "W",
+        policy := { kind := .string } }] }
+
+private def keywordGroupOk? (group : GroupPath) (reference : SurfaceFieldPath)
+    (template : String) : Option Bool := do
+  let condition ← (elaborate keywordGroupModel group (.fieldFilled reference)).toOption
+  pure (elaborateValidationMessageTemplate keywordGroupModel keywordProfile condition
+    template).toOption.isSome
+
+/- Followed by a separator, `RootGroup` is the first segment of a path that resolves to the group of
+that name, while alone it still names the root; quoted, it is that group too. -/
+example :
+    let w := pathAt (.relative 0) ["RootGroup", "Inner"] "W"
+    keywordGroupOk? ["Order"] w "In $#RootGroup/Inner$" = some true ∧
+      keywordGroupOk? ["Order"] w "In $#RootGroup$" = some true ∧
+      keywordGroupOk? ["Order"] w "In $#'RootGroup'$" = some true ∧
+      keywordGroupOk? ["Order"] w "In $#'RootGroup'/Inner$" = some true ∧
+      keywordGroupOk? ["Order"] w "In $#/Order/RootGroup/Inner$" = some true ∧
+      keywordGroupOk? ["Order", "RootGroup", "Inner"] (bare "W") "In $#..RootGroup$" =
+        some true := by
   native_decide
 
 /- The group argument takes the name grammar's **single-quote escape** at any segment, and the quotes

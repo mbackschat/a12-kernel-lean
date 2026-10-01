@@ -2585,3 +2585,11 @@ The [index and sort checkpoint](sources/model-structure-and-declaration-probes.m
 **Before writing that a declaration-time class is unreachable, ask whether the name that must resolve and the thing the check reads can come apart** — through a relative spelling, through a variant filter, or through anything else that makes binding and checking read different elements.
 
 Related: [[LF120]] on negative existentials over a surface, [[LF121]] on searching for the values a defeater would carry.
+
+## LF199 — a fix fitted to the measured rows of one keyword can be a special case of a mechanism that also decides others
+
+The peer's keyword rows showed `$#RootGroup-x$` drawing the syntax class while `$#RootGroup/Loans$` draws the group class ([inbound](SOURCES.md#inbound-2026-10-01-group-arguments)). The first correction fit them with a rule keyed on which keyword it was: `RootGroup` is a path before a separator, `RuleGroup` never is. It passed every measured row. Reading the Kernel's parameter grammar showed instead that `RootGroup`, `Zeile` and `Usb` are each a keyword that may also be a path segment, decided by the token after them, and it predicted four further divergences on words no row had varied. The [argument-event grid](sources/message-and-pointer-probes.md#src-message-group-argument-events) confirmed every firm prediction, and the Lean decoder now follows the grammar's event order instead.
+
+**When a correction branches on the identity of a terminal, operator or carrier, ask what property of it the branch stands for, and predict a row for another member that shares or lacks that property before landing the branch.** A branch on identity cannot be wrong on the rows that produced it, so they are no test of it.
+
+Related: [[LF116]] on reusing a mechanism across a boundary, [[LF84]] on outcomes that do not discharge a mechanism.

@@ -23,6 +23,7 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .parameterCharacter _ _ => some .lexerStandardError
   | .groupParameterLexical _ .lexer => some .lexerStandardError
   | .groupParameterLexical _ .truncated => some .incompleteInput
+  | .groupParameterLexical _ .expectedToken => some .expectedTokenNotFound
   | .groupParameterLexical _ .separator => some .unexpectedToken
   | .groupParameterLexical _ .unexpected => some .unexpectedToken
   | .unsupportedCharacterWithError _ cause => cause.namedRuleDiagnostic?

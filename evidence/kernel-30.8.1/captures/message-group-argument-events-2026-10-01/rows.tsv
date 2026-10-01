@@ -1,0 +1,36 @@
+A0	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check.	-
+A1	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile$.	PARAM_INVALID_IN_NEW_WORLD
+A2	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile-1$.	PARAM_INVALID_IN_NEW_WORLD
+A3	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile+1$.	PARAM_INVALID_IN_NEW_WORLD
+A4	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile-x$.	MVK_UNEXPECTED_TOKEN
+A5	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile/Store$.	INVALID_GROUP
+A6	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile x$.	?
+A7	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Usb-1$.	?MVK_UNEXPECTED_TOKEN
+A8	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Usb/Store$.	INVALID_GROUP
+A9	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Usb x$.	?MVK_UNEXPECTED_TOKEN
+A10	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#RootGroup+1$.	MVK_UNEXPECTED_TOKEN
+A11	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#index/Store$.	INVALID_GROUP
+A12	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#RuleGroup+1$.	RULEGROUP_IMMEDIATELY_BELOW_ROOT
+A13	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store//%$.	?
+A14	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/%$.	?
+A15	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#%Store$.	MVK_LEXER_STANDARD_ERROR
+A16	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Beside-x$.	INVALID_GROUP
+A17	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#/Probe/Beside-x$.	INVALID_GROUP
+A18	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Beside)$.	INVALID_GROUP
+A19	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Usb$.	PARAM_INVALID_IN_NEW_WORLD
+B1	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#123$.	INVALID_GROUP
+B2	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile-$.	MVK_INCOMPLETE_INPUT
+B3	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#RuleGroup%$.	MVK_LEXER_STANDARD_ERROR
+B4	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile-1x$.	PARAM_INVALID_IN_NEW_WORLD
+B5	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile-1%$.	MVK_LEXER_STANDARD_ERROR
+B6	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store x%$.	MVK_UNEXPECTED_TOKEN
+B7	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Beside%$.	MVK_LEXER_STANDARD_ERROR
+B8	GroupAvail_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store/123$.	INVALID_GROUP
+K0	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(RootGroup/Inner/W)	Check.	-
+K1	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(RootGroup/Inner/W)	Check $#RootGroup/Inner$.	-
+K2	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(RootGroup/Inner/W)	Check $#RootGroup$.	-
+K3	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(RootGroup/Inner/W)	Check $#'RootGroup'$.	-
+K4	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(RootGroup/Inner/W)	Check $#/Probe/RootGroup/Inner$.	-
+K6	GroupKw_DM.json	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(RootGroup/Inner/W)	Check $#'RootGroup'/Inner$.	-
+K10	GroupKw_DM.json	/Probe/RootGroup/Inner/W	/Probe/RootGroup/Inner	FieldFilled(W)	Check.	-
+K5	GroupKw_DM.json	/Probe/RootGroup/Inner/W	/Probe/RootGroup/Inner	FieldFilled(W)	Check $#..RootGroup$.	-

@@ -196,6 +196,27 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-06a"></a>
 - Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
+### Inbound 2026-10-01 handback
+
+<a id="inbound-2026-10-01-provenance"></a>
+#### Reviewed 2026-10-01 handback — the group argument's availability, fallback and refusal layers hold on the peer's own model, a keyword followed by a token is still the keyword, and an absent key makes a mixed product zero in either operand order
+
+a12-dmkits `main` at `c785a4b6fa6ccfde4458ae2432dd951c992d6a1d`, read on 2026-10-01, with `2743a7aab` its parent. The letter is the peer's `-2026-10-01`, delivered by the user with SHA-256 `6a6ef916712aa30a3e197c982a3b964bab8a72fa9e499e93f1cd5653a73cd94b`; it replaces its `-2026-09-30a` letter as the current handback and answers this project's 2026-09-30 reply. The locks named below were read at that revision, not run here. Its §3 reports the peer's checker, mutation, performance and delivery verification and is recorded as no claim.
+
+<a id="inbound-2026-10-01-group-arguments"></a>
+**Claim.** Its §1 (`MessageGroupArgumentAgreementTest.groupArgumentsPreserveMeasuredClassesAndExplicitSilence` at `c785a4b6f`, with the peer's `kf214`) runs 77 rule messages through the Kernel's consistency check on an independently typed Library model with fixed `Loans/Details` and `Returns` groups, each condition and model beside a plain-message control. Its rows confirm every delta row of [`SPEC-2026-09-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01), which is accepted on them.
+
+Its review controls add rows this project did not hold, all in [`spec/11`](../spec/11-messages-and-custom.md)'s group-position clauses. A `,`, `{`, `}`, `@`, `=` or `^` after a known or an unknown name draws `MVK_LEXER_STANDARD_ERROR`. From `Loans` reading `../Returns/Borrower`, `$#..Wrong/Missing$` draws `INVALID_ENTITY` and `$#..Library/Missing$` `INVALID_GROUP`, so the turning point is checked before the child below it. `$#..Library/..$`, `$#/..$` and `$#/../Loans$` draw `MVK_UNEXPECTED_TOKEN`.
+
+The keyword rows answer this project's [argument-layer](sources/message-and-pointer-probes.md#src-message-group-argument-layers) limit on a keyword followed by a token. From a root-declared rule `$#RuleGroup/Loans$` and `$#RuleGroup-x$` draw `RULEGROUP_IMMEDIATELY_BELOW_ROOT`; from `Loans`, `$#RuleGroup/Details$` and `$#RuleGroup-x$` draw `MVK_UNEXPECTED_TOKEN`. `$#RootGroup-x$` draws `MVK_UNEXPECTED_TOKEN` and `$#RootGroup/Loans$` `INVALID_GROUP`. The peer's checker declines these six rows. This project's [argument-event grid](sources/message-and-pointer-probes.md#src-message-group-argument-events) then named the mechanism behind them and measured it on retired terminals, a group named `RootGroup` and the fault order, outbound as [`SPEC-2026-10-01-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01).
+
+**Classification.** Behavioral and inbound from a committed, reviewed revision, so no outbound entry follows. The keyword rows narrow `spec/11`'s sentence that the terminal match is on the raw argument.
+
+**Lean.** Corrected and locked. [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean) matched a group keyword only as the whole argument and asked a trailing token before availability, so five of the six keyword rows drew the group class. Its group argument is now decoded in the parser's event order that the argument-event grid measures, and its [locks](../A12Kernel/Conformance/ValidationMessageAuthoring.lean) carry the six keyword rows and that grid's. The punctuation, turning-point and up-step rows already agreed with Lean when replayed on this project's fixture.
+
+<a id="inbound-2026-10-01-mixed-absent-product"></a>
+Its §2 (`AbsentKeyedProductDiffTest.anAbsentKeyMakesTheMixedProductZeroInEitherOperandOrder` at `2743a7aab`, with the peer's `kf475`) answers this project's provenance request on the [keyed products](#inbound-2026-09-30a-keyed-products). On a parcel model with `P1` weights 2 and 5 and no `P3` row, `SumOfProducts` of `P1` against `P3` and of `P3` against `P1` compared with 0 each fire one omission at the root guard on both Kernel strategies, while the comparison with 1 stays silent. The rows are [`spec/07`](../spec/07-repetition-and-iteration.md)'s `SumOfProducts` evaluation paragraph, and they have no Lean carrier, as [SG29](gaps/paths-and-groups.md#gap-sg29) records.
+
 ### Inbound 2026-09-30a handback
 
 <a id="inbound-2026-09-30a-provenance"></a>
@@ -1247,6 +1268,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A group parameter may name any available group, the rule's own group, an ancestor, or a group holding a field the condition reads, and a path without a leading slash resolves from the rule's group](sources/message-and-pointer-probes.md#src-message-group-availability)
 <a id="src-message-group-argument-layers"></a>
 - [A group argument is refused in layers, lexer faults first, then separator faults, then the lookup with its field short-name fallback, then a token left after the path](sources/message-and-pointer-probes.md#src-message-group-argument-layers)
+<a id="src-message-group-argument-events"></a>
+- [A group argument's classes follow its parser's events, and a keyword that is also a name is decided by the token after it](sources/message-and-pointer-probes.md#src-message-group-argument-events)
 <a id="src-german-condition-language-terminals"></a>
 - [The group position's keyword set is selected by condition language in both directions, and the retired terminals are not](sources/message-and-pointer-probes.md#src-german-condition-language-terminals)
 

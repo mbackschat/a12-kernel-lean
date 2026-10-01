@@ -56,15 +56,16 @@ name one and resolves the same words differently: bare `$RootGroup$` is an entit
 while `$#RootGroup$` is admitted. Its argument is one of the two keyword shorthands for the endpoints
 of the rule's ancestor chain or a group path, absolute or relative to the rule's group, so a bare word
 names a group directly below it, falling back to a field's short name and never to a group's. The
-argument is refused in the Kernel's layers: lexer and separator faults before the lookup, a token left
-after the path only once the path resolves. The named group
+argument is refused in the order the Kernel's parser meets it: each lexer or syntax fault where it
+stands, a keyword or path's check once that alternative is complete, and a token left after it only
+then. The named group
 must be **available**: the rule's own group and its ancestors always are, and so is any group holding a
 field the condition reads, which admits a read descendant or sibling and refuses the same group when
 nothing in it is read. An absolute path resolves in two stages the Kernel reports apart, an undeclared
-root ahead of availability, and its segments take the same quote escape as a name — but
-because the keyword match is on the raw argument, quoting a terminal turns it back into an ordinary
-group name. Two historic terminals keep their own refusal class, which the Kernel reports distinctly
-rather than as an unknown group, and quoting removes that reading too.
+root ahead of availability, and its segments take the same quote escape as a name — but only an
+unquoted word opens a keyword alternative, so quoting a terminal turns it back into an ordinary group
+name. Two historic terminals keep their own refusal class, which the Kernel reports distinctly rather
+than as an unknown group, and quoting removes that reading too.
 
 One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
@@ -103,6 +104,10 @@ inductive MessageGroupLexicalFault where
   | lexer
   /-- An empty final segment: the argument ends on its separator. `MVK_INCOMPLETE_INPUT`. -/
   | truncated
+  /-- The argument ends where one specific token is required: a retired terminal's offset sign with no
+  digits after it. `MVK_EXPECTED_TOKEN_NOT_FOUND`, the class `spec/12` §3.1 gives a failed required
+  match at the end of the text, where a failed choice there is `truncated`. -/
+  | expectedToken
   /-- An empty non-final segment: two separators with nothing between them. `MVK_UNEXPECTED_TOKEN`. -/
   | separator
   /-- A token where a separator must be followed by a name, or one left after a complete path.
@@ -325,6 +330,9 @@ structure ValidationMessageKeywordProfile where
   modern route. Measured under the English condition language the set is `Zeile` and `Usb`; whether it
   is selected by language at all is unmeasured, so the caller supplies it like the other terminals. -/
   retiredGroupTerminals : List String := []
+  /-- The retired group terminals that take a signed offset, `$#Zeile-1$`. Measured on `Zeile` under the
+  English condition language, where `Usb` takes none. -/
+  offsetGroupTerminals : List String := []
   deriving Repr, DecidableEq
 
 /-- Treat an exempt terminal as if the author had quoted it, then reuse the one existing
@@ -349,12 +357,17 @@ private def decodeSegment (segment : String) : Option AuthoredPathName :=
   | _ => if isBareName segment then some { text := segment } else none
 
 /-- One token of a group argument as the parameter grammar's lexer forms it, whitespace dropped as the
-lexer hides it. A quoted name is a name with its quotes erased; every token the path grammar has no
-use for is `other`. -/
+lexer hides it. A quoted name is a name with its quotes erased, and `quoted` keeps whether it could
+still be read as a keyword. A run of digits is a `number`, which the path grammar takes as a name and a
+retired terminal's offset as its digits. `bad` stands where the lexer forms no token. Every other token
+the path grammar has no use for is `other`. -/
 private inductive GroupToken where
-  | name (text : String)
+  | name (text : String) (quoted : Bool)
+  | number (digits : String)
   | slash
   | up
+  | sign
+  | bad
   | other
   deriving Repr, DecidableEq
 
@@ -377,59 +390,69 @@ private def afterStringLiteral : List Char → Option (List Char)
   | _ :: rest => afterStringLiteral rest
   | [] => none
 
-/-- Tokenize a group argument, or `none` where the lexer forms no token. The token set is read from the
-Kernel's parameter lexer, and the rows the [argument-layer
+/-- Tokenize a group argument up to its first lexer fault, which ends the list as `bad`: the parser
+meets that fault when it reaches the token, so nothing after it can answer first. The token set is
+read from the Kernel's parameter lexer, and the rows the [argument-layer
 checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers) and the
 [token-alphabet checkpoint](../../docs/SOURCES.md#src-parameter-token-versus-group-declaration-alphabet)
-measure agree with it: a quoted name must open on a letter, a run of digits alone is a number rather
-than a name, and `-`, `(`, `)` and whitespace form tokens while `[`, `*` and `%` do not. `fuel` bounds
-the walk, since every step consumes a character. -/
-private def tokenizeGroupArgument : Nat → List Char → Option (List GroupToken)
-  | 0, _ => none
-  | _ + 1, [] => some []
+measure agree with it: a quoted name must open on a letter, the longest run of name characters is one
+token, so `1x` is a digit-initial name while `1` alone is a number, and `-`, `+`, `(`, `)` and
+whitespace form tokens while `[`, `*` and `%` do not. `fuel` bounds the walk, since every step consumes
+a character. -/
+private def tokenizeGroupArgument : Nat → List Char → List GroupToken
+  | 0, _ => [.bad]
+  | _ + 1, [] => []
   | fuel + 1, character :: rest =>
       if character == ' ' || character == '\t' || character == '\r' || character == '\n' ||
           character == '\x0C' then
         tokenizeGroupArgument fuel rest
       else if character == '/' then
-        (GroupToken.slash :: ·) <$> tokenizeGroupArgument fuel rest
+        .slash :: tokenizeGroupArgument fuel rest
       else if character == '.' then
         match rest with
-        | '.' :: after => (GroupToken.up :: ·) <$> tokenizeGroupArgument fuel after
-        | _ => (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel rest
+        | '.' :: after => .up :: tokenizeGroupArgument fuel after
+        | _ => .other :: tokenizeGroupArgument fuel rest
       else if character == '\'' then
         match spanNameCharacters rest with
         | (first :: body, '\'' :: after) =>
             if isNameStartCharacter first then
-              (GroupToken.name (String.ofList (first :: body)) :: ·) <$>
-                tokenizeGroupArgument fuel after
-            else none
-        | _ => none
+              .name (String.ofList (first :: body)) true :: tokenizeGroupArgument fuel after
+            else [.bad]
+        | _ => [.bad]
       else if character == '"' then
-        (afterStringLiteral rest).bind fun after =>
-          (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel after
+        match afterStringLiteral rest with
+        | some after => .other :: tokenizeGroupArgument fuel after
+        | none => [.bad]
       else if character == '-' then
         match rest with
-        | '>' :: after => (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel after
-        | _ => (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel rest
-      else if character == '+' || character == '(' || character == ')' || character == '#' then
-        (GroupToken.other :: ·) <$> tokenizeGroupArgument fuel rest
+        | '>' :: after => .other :: tokenizeGroupArgument fuel after
+        | _ => .sign :: tokenizeGroupArgument fuel rest
+      else if character == '+' then
+        .sign :: tokenizeGroupArgument fuel rest
+      else if character == '(' || character == ')' || character == '#' then
+        .other :: tokenizeGroupArgument fuel rest
       else if isBareNameCharacter character then
         let (run, after) := spanNameCharacters rest
-        let token :=
-          if (character :: run).all Char.isDigit then GroupToken.other
-          else .name (String.ofList (character :: run))
-        (token :: ·) <$> tokenizeGroupArgument fuel after
-      else none
+        let text := String.ofList (character :: run)
+        (if (character :: run).all Char.isDigit then .number text else .name text false) ::
+          tokenizeGroupArgument fuel after
+      else [.bad]
 
-/-- Names after a separator, each separator demanding a name, beside the tokens left after the path. -/
+/-- Names after a separator, each separator demanding a name, beside the tokens left after the path.
+A digit run is a name here. The token after the last name is left for the caller, which meets a lexer
+fault there before running any check. -/
 private def parseGroupNamesAfterSlash :
     List GroupToken → Except MessageGroupLexicalFault (List String × List GroupToken)
-  | .name name :: .slash :: rest => do
+  | .name name _ :: .slash :: rest => do
       let (names, left) ← parseGroupNamesAfterSlash rest
       pure (name :: names, left)
-  | .name name :: left => pure ([name], left)
+  | .number name :: .slash :: rest => do
+      let (names, left) ← parseGroupNamesAfterSlash rest
+      pure (name :: names, left)
+  | .name name _ :: left => pure ([name], left)
+  | .number name :: left => pure ([name], left)
   | [] => throw .truncated
+  | .bad :: _ => throw .lexer
   | .slash :: _ => throw .separator
   | _ => throw .unexpected
 
@@ -441,25 +464,26 @@ private def parseGroupUpRun (parents : Nat) :
   | .slash :: rest => do
       let (names, left) ← parseGroupNamesAfterSlash rest
       pure (.relative parents none names, left)
-  | .name turningPoint :: .slash :: rest => do
+  | .name turningPoint _ :: .slash :: rest => do
       let (names, left) ← parseGroupNamesAfterSlash rest
       pure (.relative parents (some turningPoint) names, left)
-  | .name turningPoint :: left => pure (.relative parents (some turningPoint) [], left)
+  | .number turningPoint :: .slash :: rest => do
+      let (names, left) ← parseGroupNamesAfterSlash rest
+      pure (.relative parents (some turningPoint) names, left)
+  | .name turningPoint _ :: left => pure (.relative parents (some turningPoint) [], left)
+  | .number turningPoint :: left => pure (.relative parents (some turningPoint) [], left)
   | left => pure (.relative parents none [], left)
 
-/-- Parse a tokenized group argument into a path and the tokens left after it. -/
-private def parseGroupTokens :
+/-- Parse a tokenized group path into its authored form and the tokens left after it. -/
+private def parseGroupPath :
     List GroupToken → Except MessageGroupLexicalFault (AuthoredMessageGroup × List GroupToken)
-  | [] => throw .truncated
   | .slash :: rest => do
       let (names, left) ← parseGroupNamesAfterSlash rest
       pure (.absolute names, left)
-  | .name name :: .slash :: rest => do
-      let (names, left) ← parseGroupNamesAfterSlash rest
-      pure (.relative 0 none (name :: names), left)
-  | .name name :: left => pure (.relative 0 none [name], left)
   | .up :: rest => parseGroupUpRun 1 rest
-  | _ => throw .unexpected
+  | tokens => do
+      let (names, left) ← parseGroupNamesAfterSlash tokens
+      pure (.relative 0 none names, left)
 
 /-- Decode a list of authored segments, failing as a whole if any segment is malformed. -/
 private def decodeSegments : List String → Option (List AuthoredPathName)
@@ -536,30 +560,75 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
           | _ => none
     | [] => none
 
-/-- Decode one group-position argument, with the `#` already stripped, into its path and whether a
-token is left after it. A live keyword is taken before the path grammar, a retired terminal keeps its
-own refusal, and every other spelling is a group path in the name grammar's two forms: absolute after a
-leading separator, otherwise relative to the rule's group with the same `..` up-run and turning point.
-A quoted name reaches the same group as its bare spelling — but the keyword match above is on the
-**raw** argument, which is why quoting a terminal turns it back into an ordinary group name. The
-lexer's refusal comes first and the path's separator faults next, both before any lookup; a token left
-after the path is only reported once the path resolves, so it travels as a flag. -/
+/-- A group argument's alternative: a group, by keyword or path, or a retired terminal, which the
+Kernel recognizes in order to refuse it. -/
+private inductive ParsedGroupArgument where
+  | group (authored : AuthoredMessageGroup)
+  | retired (terminal : String)
+
+/-- The keyword alternative a word opens, if it is one of the group position's terminals. -/
+private def groupKeyword? (profile : ValidationMessageKeywordProfile) (word : String) :
+    Option ParsedGroupArgument :=
+  if word == profile.ruleGroupTerminal then some (.group .ruleGroup)
+  else if word == profile.rootGroupTerminal then some (.group .rootGroup)
+  else if profile.retiredGroupTerminals.contains word then some (.retired word)
+  else none
+
+/-- Choose a group argument's alternative from its tokens, as the parameter grammar does, and fail at
+the first token no alternative continues. Only an unquoted word can open a keyword alternative, which
+is why quoting a terminal turns it back into a group name. A keyword that is **not** also a name, such
+as `RuleGroup` in English, opens its own alternative whatever follows it. A keyword that is also a name
+— one of `unquotedTerminals`, which `RootGroup`, `Zeile` and `Usb` are in English — is the keyword at
+the end of the text, the first segment of a path before a separator, and an offset terminal's
+alternative before a sign; before any other token neither reading continues, and that is a syntax
+refusal before any check. The Kernel's classes on each branch are measured at the [argument-event
+checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events). -/
+private def parseGroupArgument (profile : ValidationMessageKeywordProfile) :
+    List GroupToken → Except MessageGroupLexicalFault (ParsedGroupArgument × List GroupToken)
+  | [] => throw .truncated
+  | .bad :: _ => throw .lexer
+  | .name word false :: rest =>
+      let path := do
+        let (group, left) ← parseGroupPath (.name word false :: rest)
+        pure (ParsedGroupArgument.group group, left)
+      match groupKeyword? profile word with
+      | none => path
+      | some keyword =>
+          if !profile.unquotedTerminals.contains word then pure (keyword, rest)
+          else
+            match rest with
+            | [] => pure (keyword, [])
+            | .slash :: _ => path
+            | .sign :: after =>
+                if profile.offsetGroupTerminals.contains word then
+                  match after with
+                  | .number _ :: left => pure (keyword, left)
+                  | [] => throw .expectedToken
+                  | .bad :: _ => throw .lexer
+                  | _ => throw .unexpected
+                else throw .unexpected
+            | .bad :: _ => throw .lexer
+            | _ => throw .unexpected
+  | tokens => do
+      let (group, left) ← parseGroupPath tokens
+      pure (.group group, left)
+
+/-- Decode one group-position argument, with the `#` already stripped, into its alternative and whether
+a token is left after it. The parser meets each token in order, so a lexer fault answers where it
+stands and a syntax fault answers before any later token. The token right after a complete
+alternative is met before that alternative's check, which is why `$#Store%$` draws the lexer class
+and `$#RuleGroup%$` draws it ahead of the root-placement gate. A retired terminal's check is its
+refusal; a group's lookup and availability follow in `checkMessageGroup`, and a token left after a
+group that passes them travels as a flag. -/
 private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
     (parameter argument : String) :
     Except ValidationMessageTemplateError (AuthoredMessageGroup × Bool) :=
-  if argument == profile.ruleGroupTerminal then
-    .ok (.ruleGroup, false)
-  else if argument == profile.rootGroupTerminal then
-    .ok (.rootGroup, false)
-  else if profile.retiredGroupTerminals.contains argument then
-    .error (.retiredGroupTerminal parameter argument)
-  else
-    match tokenizeGroupArgument (argument.length + 1) argument.toList with
-    | none => .error (.groupParameterLexical parameter .lexer)
-    | some tokens =>
-        match parseGroupTokens tokens with
-        | .error fault => .error (.groupParameterLexical parameter fault)
-        | .ok (group, left) => .ok (group, !left.isEmpty)
+  match parseGroupArgument profile
+      (tokenizeGroupArgument (argument.length + 1) argument.toList) with
+  | .error fault => .error (.groupParameterLexical parameter fault)
+  | .ok (_, .bad :: _) => .error (.groupParameterLexical parameter .lexer)
+  | .ok (.retired terminal, _) => .error (.retiredGroupTerminal parameter terminal)
+  | .ok (.group group, left) => .ok (group, !left.isEmpty)
 
 /-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its
 escape; anything else is a path to the keying field, and an unquoted bare word therefore resolves as a
@@ -872,12 +941,11 @@ def resolveMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mo
                 | _ => .error (.groupShortNameNotUnique parameter name)
             | _, _ => .error (.invalidGroupParameter parameter)
 
-/-- Check one group-position argument: look it up, then refuse a token left after the path, then accept
-the group only if it is available. A token left after a path that fails its lookup is never reached,
-which is the Kernel's order: `$#He-ad$` draws the group class and `$#Head-x$` the syntax class
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)).
-Whether availability or a trailing token answers first, on a path that resolves to an unavailable group,
-is unmeasured; the Kernel's source asks availability once the parameter has parsed. -/
+/-- Check one group-position argument: look it up, accept the group only if it is available, and only
+then refuse a token left after the path. The lookup and availability are the alternative's check,
+which the Kernel runs before it meets the end of the text: `$#He-ad$` and the unavailable `$#Side-x$`
+draw the group class, and only `$#Head-x$` the syntax class
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)). -/
 def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
     (parameter : String) (authored : AuthoredMessageGroup) (trailing : Bool := false) :
     Except ValidationMessageTemplateError
@@ -885,8 +953,10 @@ def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mode
   match resolveMessageGroup condition parameter authored with
   | .error error => .error error
   | .ok group =>
-      if trailing then .error (.groupParameterLexical parameter .unexpected)
-      else admitMessageGroup condition parameter group
+      match admitMessageGroup condition parameter group with
+      | .error error => .error error
+      | .ok access =>
+          if trailing then .error (.groupParameterLexical parameter .unexpected) else .ok access
 
 inductive CheckedValidationMessagePart
     (model : FlatModel) (condition : CheckedFlatCondition model) where

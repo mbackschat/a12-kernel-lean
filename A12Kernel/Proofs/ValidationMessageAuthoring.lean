@@ -116,16 +116,12 @@ theorem checkMessageGroup_absolute_admitted
       by_cases hRoot : model.hasGroupPath [root] = true
       · by_cases hDeclared : model.declaresEntityPath (root :: rest) = true
         · simp only [hRoot, hDeclared, Bool.not_true, Bool.false_eq_true, if_false,
-            if_true] at admitted
-          cases trailing with
-          | true => cases admitted
-          | false =>
-              simp only [Bool.false_eq_true, if_false, admitMessageGroup] at admitted
-              split at admitted
-              · split at admitted
-                · exact ⟨by assumption, hRoot⟩
-                · cases admitted
-              · cases admitted
+            if_true, admitMessageGroup] at admitted
+          by_cases hValid : GroupPath.isValid (root :: rest) = true
+          · by_cases hAvailable : messageGroupAvailable model condition (root :: rest) = true
+            · exact ⟨hAvailable, hRoot⟩
+            · simp [hValid, hAvailable] at admitted
+          · simp [hValid] at admitted
         · simp [hRoot, hDeclared] at admitted
       · simp [hRoot] at admitted
 

@@ -409,6 +409,7 @@ inductive KernelStaticDiagnostic where
   | missingMessageCategory
   | lexerStandardError
   | incompleteInput
+  | expectedTokenNotFound
   | unexpectedToken
   deriving Repr, DecidableEq
 
@@ -624,6 +625,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .missingMessageCategory => "NO_CATEGORY"
   | .lexerStandardError => "MVK_LEXER_STANDARD_ERROR"
   | .incompleteInput => "MVK_INCOMPLETE_INPUT"
+  | .expectedTokenNotFound => "MVK_EXPECTED_TOKEN_NOT_FOUND"
   | .unexpectedToken => "MVK_UNEXPECTED_TOKEN"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
@@ -707,7 +709,7 @@ def all : List KernelStaticDiagnostic :=
     .invalidMessageParameter, .errorMessageAndPatternInvalid, .errorMessageAndNoPattern,
     .errorMessageForLanguageMissing,
     .missingMessageCategory,
-    .lexerStandardError, .incompleteInput, .unexpectedToken]
+    .lexerStandardError, .incompleteInput, .expectedTokenNotFound, .unexpectedToken]
 
 end KernelStaticDiagnostic
 
