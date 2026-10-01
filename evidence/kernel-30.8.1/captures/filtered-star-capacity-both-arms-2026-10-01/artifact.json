@@ -1,0 +1,1088 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FilterCap_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CDropComp",
+              "field" : "Probe/CDrop",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CDrop",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ]
+            },
+            {
+              "code" : "CKeepComp",
+              "field" : "Probe/CKeep",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CKeep",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ]
+            },
+            {
+              "code" : "CPlainComp",
+              "field" : "Probe/CPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CPlain",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CReflComp",
+              "field" : "Probe/CRefl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CRefl",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ]
+            },
+            {
+              "code" : "VD15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VD15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VK0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VK0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VP15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "VP15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VR15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VR15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/V",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]/V"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/CDrop",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CKeep",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/CPlain",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CRefl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[4]/V",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]/V"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CDropComp",
+              "field" : "Probe/CDrop",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CDrop",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ]
+            },
+            {
+              "code" : "CKeepComp",
+              "field" : "Probe/CKeep",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CKeep",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ]
+            },
+            {
+              "code" : "CPlainComp",
+              "field" : "Probe/CPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CPlain",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CReflComp",
+              "field" : "Probe/CRefl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CRefl",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ]
+            },
+            {
+              "code" : "VD15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VD15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VK0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VK0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VP15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "VP15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VR15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VR15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/V",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]/V"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/CDrop",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CKeep",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/CPlain",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CRefl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[4]/V",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]/V"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "ctrl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CDropComp",
+              "field" : "Probe/CDrop",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CDrop",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ]
+            },
+            {
+              "code" : "CKeepComp",
+              "field" : "Probe/CKeep",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CKeep",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ]
+            },
+            {
+              "code" : "CPlainComp",
+              "field" : "Probe/CPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CPlain",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CReflComp",
+              "field" : "Probe/CRefl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CRefl",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ]
+            },
+            {
+              "code" : "VD15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VD15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VK0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VK0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VP15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "VP15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VR15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VR15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/CDrop",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CKeep",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/CPlain",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CRefl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CDropComp",
+              "field" : "Probe/CDrop",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CDrop",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ]
+            },
+            {
+              "code" : "CKeepComp",
+              "field" : "Probe/CKeep",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CKeep",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ]
+            },
+            {
+              "code" : "CPlainComp",
+              "field" : "Probe/CPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CPlain",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CReflComp",
+              "field" : "Probe/CRefl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CRefl",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ]
+            },
+            {
+              "code" : "VD15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VD15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VK0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VK0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VP15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "VP15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VR15",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VR15",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/CDrop",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CKeep",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/CPlain",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Probe/CRefl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "rev",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CDropComp",
+              "field" : "Probe/CDrop",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CDrop",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ]
+            },
+            {
+              "code" : "CKeepComp",
+              "field" : "Probe/CKeep",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CKeep",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ]
+            },
+            {
+              "code" : "CPlainComp",
+              "field" : "Probe/CPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CPlain",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CReflComp",
+              "field" : "Probe/CRefl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CRefl",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ]
+            },
+            {
+              "code" : "VD10",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VD10",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VK7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VK7",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VP17",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "VP17",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VR17",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VR17",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/V",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]/V"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/CDrop",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10"
+              },
+              {
+                "field" : "Probe/CKeep",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Probe/CPlain",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "17"
+              },
+              {
+                "field" : "Probe/CRefl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "17"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[4]/V",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]/V"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CDropComp",
+              "field" : "Probe/CDrop",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CDrop",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CDrop"
+              ]
+            },
+            {
+              "code" : "CKeepComp",
+              "field" : "Probe/CKeep",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CKeep",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CKeep"
+              ]
+            },
+            {
+              "code" : "CPlainComp",
+              "field" : "Probe/CPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CPlain",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CReflComp",
+              "field" : "Probe/CRefl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CRefl",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/CRefl"
+              ]
+            },
+            {
+              "code" : "VD10",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VD10",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VK7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VK7",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "VP17",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "VP17",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VR17",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "VR17",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/V",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/V"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/V",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]/V"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/CDrop",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10"
+              },
+              {
+                "field" : "Probe/CKeep",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Probe/CPlain",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "17"
+              },
+              {
+                "field" : "Probe/CRefl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "17"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[4]/V",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]/V"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

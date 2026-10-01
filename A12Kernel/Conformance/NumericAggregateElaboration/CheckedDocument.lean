@@ -478,6 +478,67 @@ example :
       plainCapacitySums [some 5, some 5, none] = some (List.replicate 4 unavailable) := by
   native_decide
 
+/-- One filtered Number star over rows holding `values`, each row's `FilterLeft` holding `6`. -/
+def filteredCapacityFixture (having : SurfaceCorrelatedHaving) (values : List Nat) :
+    Option (CheckedNumberEntitySource model × CheckedDocument model) := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource (.starHaving aggregateStar having) [])).toOption
+  let rows := values.mapIdx fun index _ => { group := 10, path := [index + 1] }
+  let cells := (values.mapIdx fun index value => [
+    { address := { field := repeated.id, path := [index + 1] }
+      stored := toString value, raw := .parsed (.num value) },
+    { address := { field := filterLeft.id, path := [index + 1] }
+      stored := "6", raw := .parsed (.num 6) }]).flatten
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  pure (source, document)
+
+/-- The filtered star's `Sum` on the four routes: checked validation, checked computation, reader
+validation and reader computation. -/
+def filteredCapacitySums (having : SurfaceCorrelatedHaving) (values : List Nat) :
+    Option (List (Option NumericOperand)) := do
+  let (source, document) ← filteredCapacityFixture having values
+  let read := fun environment field =>
+    match document.checkedCellWithRead document.read environment field with
+    | .ok cell => cell
+    | .error _ => malformedCheckedCell
+  pure [
+    (source.evaluateCheckedDocumentValidationAggregate .sum document []).toOption,
+    (source.evaluateCheckedDocumentComputationAggregate .sum document []).toOption,
+    (source.evaluateValidationAggregateIn .sum document.source.toDocument []
+      document.flatContext read).toOption,
+    (source.evaluateComputationAggregate .sum document.source.toDocument []
+      document.flatContext.read read read).toOption]
+
+/-- `left < right` between two fields of the same row. -/
+def rowLess (left right : String) : SurfaceCorrelatedHaving :=
+  .compareNumbers .less
+    { origin := .inner, field := absolute ["Form", "Rows"] left }
+    { origin := .inner, field := absolute ["Form", "Rows"] right }
+
+/- A filtered star answers from its declared-capacity rows on every route, so an over-limit fourth row
+   neither contributes nor poisons, whether the filter would keep it or drop it, and the reversed
+   rows show that the in-capacity rows are what is summed. Measured on both arms and both codegen
+   strategies ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)).
+   The measured keep and drop filters compare `V` with the constant `6`, which this filter fragment
+   cannot write, so the same split is reached through a same-row `FilterLeft` holding `6`. -/
+example :
+    let all (n : Rat) := some (List.replicate 4
+      (some (NumericOperand.value n { canGrow := true, canShrink := true })))
+    let keep := rowLess "FilterLeft" "Amount"
+    let drop := rowLess "Amount" "FilterLeft"
+    filteredCapacitySums aggregateCapacityHaving [5, 5, 5, 7] = all 15 ∧
+      filteredCapacitySums aggregateCapacityHaving [7, 5, 5, 5] = all 17 ∧
+      filteredCapacitySums keep [5, 5, 5, 7] = all 0 ∧
+      filteredCapacitySums keep [7, 5, 5, 5] = all 7 ∧
+      filteredCapacitySums drop [5, 5, 5, 7] = all 15 ∧
+      filteredCapacitySums drop [7, 5, 5, 5] = all 10 ∧
+      filteredCapacitySums drop [5, 5, 5] = all 15 := by
+  native_decide
+
 /- Partial checked-document evaluation preserves concrete direct relevance, wildcard star extent, and rule-level filter skip for both accumulators. -/
 example :
     let relevant := ValidationRelevanceScope.partialSet [

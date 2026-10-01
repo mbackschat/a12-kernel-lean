@@ -137,7 +137,7 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
       source.resolvedValueSide document outer filterRead starRead
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
-/-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. A plain star narrows to its declared-capacity extent, as the checked-document route does. -/
+/-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. A plain or filtered star narrows to its declared-capacity extent, as the checked-document route does; a filter is applied only to in-capacity rows, so an over-limit row is never kept, whichever way the filter would judge it, and cannot make the filter unknown ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/
 def resolvedValidationAggregateSideIn
     (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -150,13 +150,13 @@ def resolvedValidationAggregateSideIn
       let resolved ← source.source.path.resolveInCapacity document outer
       pure (resolved.toResolvedSide
         (source.checkedValueListCellAt .validation read))
-  | .starHaving source =>
-      source.source.source.resolvedValidationHavingValueListSide
-        document outer source.having read
-        (source.source.checkedValueListCellAt .validation read)
+  | .starHaving source => do
+      let resolved ← source.source.source.path.resolveInCapacity document outer
+      pure (source.source.source.selectedValidationHavingValueListSide resolved
+        source.having read outer (source.source.checkedValueListCellAt .validation read))
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
-/-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. A plain star narrows to its declared-capacity extent, which the Kernel applies on the computation arm too, so an over-limit row neither contributes nor poisons ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)). -/
+/-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. A plain or filtered star narrows to its declared-capacity extent, which the Kernel applies on the computation arm too, so an over-limit row neither contributes nor poisons ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm); filtered: [checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/
 def resolvedComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -171,7 +171,7 @@ def resolvedComputationAggregateSide
       pure (.inl (resolved.toResolvedSide
         (source.checkedValueListCellAt .computation starRead)))
   | .starHaving source => do
-      let resolved ← source.source.source.path.resolve document outer
+      let resolved ← source.source.source.path.resolveInCapacity document outer
       let filterContext : CorrelationContext := { read := filterRead }
       let consume := fun cells environment =>
         match source.source.checkedValueListCellAt .computation
@@ -227,14 +227,16 @@ def resolvedCheckedDocumentValidationAggregateSide
 
 /-- Resolve one computation aggregate slot from the same checked document. A filtered slot retains one-kept-successor lookahead and keeps structural target/filter failure outside formal poison.
 
-    A plain **star** and a **group** operand narrow to their declared-capacity extent here exactly as
+    A plain or filtered **star** and a **group** operand narrow to their declared-capacity extent here exactly as
     on the full-validation arm, and for the same reason: the over-limit row is not in the domain the
     operand denotes, so it is neither aggregated nor able to poison the computation. The arm boundary
     was measured rather than inherited — the same eight documents observed through `compute` answered
     from the in-capacity domain on both codegen strategies
     ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)),
     and the kernel reported the over-limit index as a formal error in the operand while still
-    producing an uncleared computed value.
+    producing an uncleared computed value. A filtered star answered the same way: the over-limit row was never
+    kept, whichever way its filter would have judged it
+    ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)).
 
     The star once resolved its own environments here instead of going through the shared operand
     core. Both routes agreed on every retained computation case, so the capacity projection is the
@@ -251,7 +253,7 @@ def resolvedCheckedDocumentComputationAggregateSide
         [[]] false false
   | .starHaving source => do
       let resolved ←
-        (source.source.source.path.resolve document.source.toDocument outer)
+        (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       let consume := fun cells environment => do
         match ← document.numberValueListCellAt .computation environment

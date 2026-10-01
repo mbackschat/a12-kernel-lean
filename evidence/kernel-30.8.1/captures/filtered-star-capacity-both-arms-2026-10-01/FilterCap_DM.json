@@ -1,0 +1,313 @@
+{
+  "header" : {
+    "id" : "FilterCap_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FilterCap_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/Err",
+            "name" : "Err",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/V",
+                "name" : "V",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CPlain",
+            "name" : "CPlain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CRefl",
+            "name" : "CRefl",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CKeep",
+            "name" : "CKeep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CDrop",
+            "name" : "CDrop",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CPlainComp",
+            "name" : "CPlainComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CPlain",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(/Probe/Rows*/V)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CPlain"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CReflComp",
+            "name" : "CReflComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CRefl",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(/Probe/Rows*/V Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CRefl"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CKeepComp",
+            "name" : "CKeepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CKeep",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(/Probe/Rows*/V Having [/Probe/Rows/V] > 6)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CKeep"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CDropComp",
+            "name" : "CDropComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CDrop",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(/Probe/Rows*/V Having [/Probe/Rows/V] < 6)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CDrop"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VD10",
+            "name" : "VD10",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VD10",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V Having [/Probe/Rows/V] < 6) == 10",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VD10"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VD15",
+            "name" : "VD15",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VD15",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V Having [/Probe/Rows/V] < 6) == 15",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VD15"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VK0",
+            "name" : "VK0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VK0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V Having [/Probe/Rows/V] > 6) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VK0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VK7",
+            "name" : "VK7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VK7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V Having [/Probe/Rows/V] > 6) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VK7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VP15",
+            "name" : "VP15",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VP15",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V) == 15",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VP15"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VP17",
+            "name" : "VP17",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VP17",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V) == 17",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VP17"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VP22",
+            "name" : "VP22",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VP22",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V) == 22",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VP22"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VR15",
+            "name" : "VR15",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VR15",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 15",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VR15"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VR17",
+            "name" : "VR17",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VR17",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 17",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VR17"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/VR22",
+            "name" : "VR22",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "VR22",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Rows*/V Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 22",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "VR22"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

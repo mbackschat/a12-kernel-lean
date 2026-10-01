@@ -1,0 +1,38 @@
+{
+ "over": {
+  "CPlain": 15,
+  "CRefl": 15,
+  "CKeep": 0,
+  "CDrop": 15,
+  "fires": [
+   "VP15",
+   "VR15",
+   "VK0",
+   "VD15"
+  ]
+ },
+ "ctrl": {
+  "CPlain": 15,
+  "CRefl": 15,
+  "CKeep": 0,
+  "CDrop": 15,
+  "fires": [
+   "VP15",
+   "VR15",
+   "VK0",
+   "VD15"
+  ]
+ },
+ "rev": {
+  "CPlain": 17,
+  "CRefl": 17,
+  "CKeep": 7,
+  "CDrop": 10,
+  "fires": [
+   "VP17",
+   "VR17",
+   "VK7",
+   "VD10"
+  ]
+ }
+}
