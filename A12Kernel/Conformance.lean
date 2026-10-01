@@ -364,6 +364,7 @@ import A12Kernel.Conformance.ValueFormalCheck
 import A12Kernel.Conformance.ValidationCondition
 import A12Kernel.Conformance.ValidationCondition.CurrentRepetition
 import A12Kernel.Conformance.ValidationFillQuantifier
+import A12Kernel.Conformance.MessageGroupArgument
 import A12Kernel.Conformance.ValidationMessageAuthoring
 import A12Kernel.Conformance.ValidationRule
 import A12Kernel.Conformance.ValueAsDate

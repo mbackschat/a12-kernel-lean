@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationMessageDiagnostic
+import A12Kernel.Conformance.MessageGroupArgument
 
 /-! # Checked validation-message authoring conformance locks -/
 
@@ -68,16 +69,8 @@ private def bare (field : String) : SurfaceFieldPath :=
 with the seven this producer historically accepts unquoted inside an entity name. Only `For`,
 `RuleGroup`, and `BaseYear` therefore need the quote escape here. -/
 private def keywordProfile : ValidationMessageKeywordProfile := {
-  path := {
-    reserved := [
-      "For", "index", "RootGroup", "RuleGroup", "Usb", "Vordruckname",
-      "Vordruckzeile", "BaseYear", "value", "Zeile"
-    ]
-  }
-  unquotedTerminals := [
-    "value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile",
-    "Vordruckname"
-  ]
+  path := { reserved := MessageGroupArgument.englishReservedTerminals }
+  unquotedTerminals := MessageGroupArgument.englishUnquotedTerminals
   baseYearTerminal := "BaseYear"
   forTerminal := "For"
   valueSuffixTerminal := "value"
@@ -727,36 +720,16 @@ example :
         some (.groupParameterAboveRoot "#../Head") := by
   native_decide
 
-/- A relative spelling meets the same lexical classes as an absolute one. -/
-example :
-    headGroupError? "In $#Deeper/$" =
-        some (.groupParameterLexical "#Deeper/" .truncated) ∧
-      headGroupError? "In $#Deeper//Deep$" =
-        some (.groupParameterLexical "#Deeper//Deep" .separator) ∧
-      headGroupError? "In $#'Deeper$" =
-        some (.groupParameterLexical "#'Deeper" .lexer) := by
-  native_decide
-
-/- The argument is refused in **layers** before its lookup
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)).
-A character the parameter lexer forms no token for, or a malformed quoted name, is the lexer class
-even before an unknown name; a separator with no name after it is a syntax class even before an
-unknown name; then the path is looked up; and only a path that resolves meets the syntax class for a
-token left after it. Which of a lexer and a syntax fault answers is decided by which the parser meets
-first, locked below. -/
+/- The argument is refused in **layers**
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)). Its
+decoder's lexer and syntax classes, locked in `Conformance/MessageGroupArgument.lean`, answer before
+the lookup even on an unknown name, which the first two rows witness through the whole template;
+then the path is looked up, and only a path that resolves meets the syntax class for a token left
+after it. -/
 example :
     let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
-    deep "In $#Head[1]$" = some (.groupParameterLexical "#Head[1]" .lexer) ∧
-      deep "In $#Head*$" = some (.groupParameterLexical "#Head*" .lexer) ∧
-      deep "In $#Head%$" = some (.groupParameterLexical "#Head%" .lexer) ∧
-      deep "In $#'1Head'$" = some (.groupParameterLexical "#'1Head'" .lexer) ∧
-      deep "In $#Nope[1]$" = some (.groupParameterLexical "#Nope[1]" .lexer) ∧
-      deep "In $#/Order/Head[1]$" = some (.groupParameterLexical "#/Order/Head[1]" .lexer) ∧
-      deep "In $#$" = some (.groupParameterLexical "#" .truncated) ∧
+    deep "In $#Nope[1]$" = some (.groupParameterLexical "#Nope[1]" .lexer) ∧
       deep "In $#Nope/$" = some (.groupParameterLexical "#Nope/" .truncated) ∧
-      deep "In $#/Nope/$" = some (.groupParameterLexical "#/Nope/" .truncated) ∧
-      deep "In $#Side/$" = some (.groupParameterLexical "#Side/" .truncated) ∧
-      deep "In $#Nope//Deeper$" = some (.groupParameterLexical "#Nope//Deeper" .separator) ∧
       deep "In $#He-ad$" = some (.invalidGroupParameter "#He-ad") ∧
       deep "In $#/Order/He-ad$" = some (.invalidGroupParameter "#/Order/He-ad") ∧
       deep "In $#Head-x$" = some (.groupParameterLexical "#Head-x" .unexpected) ∧
@@ -764,7 +737,6 @@ example :
       deep "In $#Head x$" = some (.groupParameterLexical "#Head x" .unexpected) ∧
       deep "In $#/Order/Head-x$" =
         some (.groupParameterLexical "#/Order/Head-x" .unexpected) ∧
-      headGroupError? "In $#Head/..$" = some (.groupParameterLexical "#Head/.." .unexpected) ∧
       headGroupError? "In $#...$" = some (.groupParameterLexical "#..." .unexpected) := by
   native_decide
 
@@ -867,38 +839,27 @@ example :
         some (.groupParameterLexical "#RootGroup-x" .unexpected) := by
   native_decide
 
-/- Each fault answers where the parser meets it, and a check runs once its alternative is complete
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)).
-`Zeile` takes a signed offset, so `$#Zeile-1$` completes the retired alternative and draws its class,
-while `$#Zeile-$` fails the one token the sign requires and `$#Zeile-1x$` meets the digit-initial
-name the lexer forms there. A keyword that is also a name meets a token continuing neither reading
-before any check, and one followed by a separator is a path's first segment. A doubled separator
-answers before a later lexer fault, and a lexer fault right after the separator answers first. A run
-of digits is a name. A path that resolves to an unavailable group draws the group class before the
-token left after it. -/
+/- The decoder's event order, locked in `Conformance/MessageGroupArgument.lean`, meets the lookup and
+availability here ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)).
+A retired offset alternative draws its class through the whole template. A keyword-and-name word before
+a separator, and a run of digits, are path segments the lookup refuses. A lexer fault right after a
+complete alternative answers before its availability and before the root-placement gate, while a path
+that resolves to an unavailable group draws the group class before the token left after it. -/
 example :
     let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     deep "In $#Zeile-1$" = some (.retiredGroupTerminal "#Zeile-1" "Zeile") ∧
-      deep "In $#Zeile+1$" = some (.retiredGroupTerminal "#Zeile+1" "Zeile") ∧
-      deep "In $#Zeile-$" = some (.groupParameterLexical "#Zeile-" .expectedToken) ∧
-      deep "In $#Zeile-1x$" = some (.groupParameterLexical "#Zeile-1x" .unexpected) ∧
-      deep "In $#Zeile-1%$" = some (.groupParameterLexical "#Zeile-1%" .lexer) ∧
-      deep "In $#Zeile-x$" = some (.groupParameterLexical "#Zeile-x" .unexpected) ∧
-      deep "In $#Zeile x$" = some (.groupParameterLexical "#Zeile x" .unexpected) ∧
-      deep "In $#Usb-1$" = some (.groupParameterLexical "#Usb-1" .unexpected) ∧
-      deep "In $#Usb x$" = some (.groupParameterLexical "#Usb x" .unexpected) ∧
-      deep "In $#RootGroup+1$" = some (.groupParameterLexical "#RootGroup+1" .unexpected) ∧
       deep "In $#Zeile/Head$" = some (.invalidGroupParameter "#Zeile/Head") ∧
       deep "In $#Usb/Head$" = some (.invalidGroupParameter "#Usb/Head") ∧
-      deep "In $#Head//%$" = some (.groupParameterLexical "#Head//%" .separator) ∧
-      deep "In $#Head/%$" = some (.groupParameterLexical "#Head/%" .lexer) ∧
       deep "In $#123$" = some (.invalidGroupParameter "#123") ∧
       deep "In $#Head/123$" = some (.invalidGroupParameter "#Head/123") ∧
+      deep "In $#RootGroup+1$" = some (.groupParameterLexical "#RootGroup+1" .unexpected) ∧
+      deep "In $#Side%$" = some (.groupParameterLexical "#Side%" .lexer) ∧
       deep "In $#Side-x$" = some (.invalidGroupParameter "#Side-x") ∧
       deep "In $#/Order/Side-x$" = some (.invalidGroupParameter "#/Order/Side-x") ∧
       deep "In $#Side)$" = some (.invalidGroupParameter "#Side)") ∧
-      deep "In $#Side%$" = some (.groupParameterLexical "#Side%" .lexer) ∧
+      deep "In $#Side x%$" = some (.invalidGroupParameter "#Side x%") ∧
       deep "In $#Head x%$" = some (.groupParameterLexical "#Head x%" .unexpected) ∧
+      deep "In $#'Zeile'-1$" = some (.invalidGroupParameter "#'Zeile'-1") ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup+1$" =
         some (.ruleGroupImmediatelyBelowRoot "#RuleGroup+1") ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup%$" =
@@ -938,18 +899,12 @@ example :
       keywordGroupOk? ["Order"] (bare "Other") "In $#RootGroup/Inner$" = some false := by
   native_decide
 
-/- An unquoted reserved word outside the exempt set is a keyword token and never a name, so it is a
-syntax fault wherever a name is required, a turning point included, while an exempt word is a name.
-After a turning point's parent walk resolves, `RuleGroup` is a token left after the path. -/
+/- A reserved word outside the quoting-exempt set refuses a segment through the whole template, an
+exempt word is a name the lookup refuses, and after a parent walk `RuleGroup` is a token left after
+the resolved parent while `RootGroup` is a turning point naming another group. -/
 example :
     let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     deep "In $#Head/RuleGroup$" = some (.groupParameterLexical "#Head/RuleGroup" .unexpected) ∧
-      deep "In $#/Order/RuleGroup$" =
-        some (.groupParameterLexical "#/Order/RuleGroup" .unexpected) ∧
-      deep "In $#For$" = some (.groupParameterLexical "#For" .unexpected) ∧
-      deep "In $#Head/For$" = some (.groupParameterLexical "#Head/For" .unexpected) ∧
-      deep "In $#BaseYear$" = some (.groupParameterLexical "#BaseYear" .unexpected) ∧
-      deep "In $#Head/BaseYear$" = some (.groupParameterLexical "#Head/BaseYear" .unexpected) ∧
       deep "In $#Head/value$" = some (.invalidGroupParameter "#Head/value") ∧
       deep "In $#index/Head$" = some (.invalidGroupParameter "#index/Head") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..RuleGroup$" =
@@ -958,41 +913,14 @@ example :
         some (.groupTurningPointMismatch "#..RootGroup") := by
   native_decide
 
-/- The remaining measured shapes: a leading lexer character, an offset with a token after it, which
-the retired check answers first, a sign with no offset, a quoted terminal before a sign, and an
-unavailable path before a later lexer fault. -/
-example :
-    let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
-    deep "In $#%Head$" = some (.groupParameterLexical "#%Head" .lexer) ∧
-      deep "In $#Zeile-1 x$" = some (.retiredGroupTerminal "#Zeile-1 x" "Zeile") ∧
-      deep "In $#Usb-$" = some (.groupParameterLexical "#Usb-" .unexpected) ∧
-      deep "In $#Zeile+$" = some (.groupParameterLexical "#Zeile+" .expectedToken) ∧
-      deep "In $#'Zeile'-1$" = some (.invalidGroupParameter "#'Zeile'-1") ∧
-      deep "In $#Side x%$" = some (.invalidGroupParameter "#Side x%") := by
-  native_decide
-
-/- The peer's review rows on this fixture: a message punctuation character after a known or an
-unknown name is a lexer fault, a turning point is checked before the child below it, and an up-step
-after a turning point or a leading separator is a syntax fault
-([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)). -/
+/- The peer's turning-point rows on this fixture: the turning point is checked before the child below
+it ([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)). -/
 example :
     let aside := pathAt .absolute ["Order", "Side"] "Aside"
-    let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
-    ([",", "{", "}", "@", "=", "^"].all fun suffix =>
-        deep s!"In $#Head{suffix}$" =
-            some (.groupParameterLexical s!"#Head{suffix}" .lexer) &&
-          deep s!"In $#Nope{suffix}$" =
-            some (.groupParameterLexical s!"#Nope{suffix}" .lexer)) = true ∧
-      pathTemplateError? ["Order", "Head"] aside "In $#..Wrong/Missing$" =
+    pathTemplateError? ["Order", "Head"] aside "In $#..Wrong/Missing$" =
         some (.groupTurningPointMismatch "#..Wrong/Missing") ∧
       pathTemplateError? ["Order", "Head"] aside "In $#..Order/Missing$" =
-        some (.invalidGroupParameter "#..Order/Missing") ∧
-      pathTemplateError? ["Order", "Head"] aside "In $#..Order/..$" =
-        some (.groupParameterLexical "#..Order/.." .unexpected) ∧
-      pathTemplateError? ["Order", "Head"] aside "In $#/..$" =
-        some (.groupParameterLexical "#/.." .unexpected) ∧
-      pathTemplateError? ["Order", "Head"] aside "In $#/../Head$" =
-        some (.groupParameterLexical "#/../Head" .unexpected) := by
+        some (.invalidGroupParameter "#..Order/Missing") := by
   native_decide
 
 /- The group argument takes the name grammar's **single-quote escape** at any segment, and the quotes
@@ -1027,22 +955,6 @@ example :
         some (.unknownRootGroup "#/Nope/Head" "Nope") ∧
       headGroupError? "In $#/Order/Nope$" =
         some (.invalidGroupParameter "#/Order/Nope") := by
-  native_decide
-
-/- A malformed **spelling** is a parse failure rather than a group refusal, and the Kernel separates
-three lexical classes among these shapes rather than reporting one. The class follows the malformed
-shape, so it is decidable here; only the character position the lexer code additionally carries is not.
-A trailing separator and a doubled one are the pair that shows the position of the empty segment
-decides, since neither is distinguishable from the other by its characters alone. -/
-example :
-    headGroupError? "In $#/Order/$" =
-        some (.groupParameterLexical "#/Order/" .truncated) ∧
-      headGroupError? "In $#//Order$" =
-        some (.groupParameterLexical "#//Order" .separator) ∧
-      headGroupError? "In $#/'Order/Head$" =
-        some (.groupParameterLexical "#/'Order/Head" .lexer) ∧
-      headGroupError? "In $#/''$" =
-        some (.groupParameterLexical "#/''" .lexer) := by
   native_decide
 
 /- The root shorthand names the root of the **rule's own** ancestor chain, not a model-wide root. A
