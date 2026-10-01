@@ -215,9 +215,10 @@ structure ValidationMessageKeywordProfile where
   /-- The selected language's spelling of the semantic-index key terminal. -/
   forTerminal : String
   /-- The selected language's spelling of the **value suffix**, without the grammar's leading dot.
-  It is data for the same reason the terminals around it are: the Kernel's own terminal tables give
-  `value` under an English condition language and `Wert` under German, and each draws a lexer refusal
-  in the other's model ([checkpoint](../../docs/SOURCES.md#src-index-terminal-admitting-spelling)).
+  It is data for the same reason the terminals around it are: the Kernel takes `value` under an
+  English condition language and `Wert` under German, whatever the message's locale, and each draws a
+  lexer refusal in the other's model on the `index(...)` terminal
+  ([checkpoint](../../docs/SOURCES.md#src-index-german-suffix)).
   This was the one suffix the parser matched as a literal while every sibling was supplied, so a
   German model would have been read with the English word. -/
   valueSuffixTerminal : String

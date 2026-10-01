@@ -873,6 +873,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-index-terminal-admitting-spelling"></a>
 - [`index(...)` **is** admissible — a bare index-field short name plus the mandatory lowercase `.value` suffix, with the index field on the error field's own path — refuting the earlier no-witness row](sources/message-and-pointer-probes.md#src-index-terminal-admitting-spelling)
 
+<a id="src-index-german-suffix"></a>
+- [The `index(...)` value suffix follows the condition language and not the message locale, `Wert` under German and `value` under English, each refusing the other](sources/message-and-pointer-probes.md#src-index-german-suffix)
+
 <a id="src-value-list-base-type-cross-pairs"></a>
 - [Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, the token families in both orders on both sides and the boolean kinds in both orders against a literal](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)
 <a id="src-field-value-read-grid"></a>

@@ -1,0 +1,53 @@
+[
+ {
+  "id": "dm-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad",
+   "--message",
+   "de_DE=Zeile bad"
+  ]
+ },
+ {
+  "id": "dm-wert",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad",
+   "--message",
+   "de_DE=Zeile $index(Key).Wert$ bad"
+  ]
+ },
+ {
+  "id": "dm-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad",
+   "--message",
+   "de_DE=Zeile $index(Key).value$ bad"
+  ]
+ }
+]

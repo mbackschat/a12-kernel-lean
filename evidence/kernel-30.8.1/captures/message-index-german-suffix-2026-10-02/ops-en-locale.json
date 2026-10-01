@@ -1,0 +1,53 @@
+[
+ {
+  "id": "em-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad",
+   "--message",
+   "de_DE=Zeile bad"
+  ]
+ },
+ {
+  "id": "em-wert",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad",
+   "--message",
+   "de_DE=Zeile $index(Key).Wert$ bad"
+  ]
+ },
+ {
+  "id": "em-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad",
+   "--message",
+   "de_DE=Zeile $index(Key).value$ bad"
+  ]
+ }
+]

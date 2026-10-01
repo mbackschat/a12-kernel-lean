@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "010ddcbf7db7a8de35b6c462c0a4b07f6e60429703230925960dae42d157eadd",
+  "observations" : [ {
+    "id" : "em-ctl",
+    "inputHash" : "3b850c9b95a97bf30ab38fffdfd24e7bdf3c5e1d8904daac5d258b0774897fbe",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "em-wert",
+    "inputHash" : "ef86a6c35e0bda79ec891138d9561080a4c37c77d392ecc3335f96a75d92ca7f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "em-value",
+    "inputHash" : "d965e9219d49327d0488e3f5b6c78b357734c259773788323642a702fd999b8b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

@@ -1,0 +1,92 @@
+[
+ {
+  "id": "g-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad"
+  ]
+ },
+ {
+  "id": "g-wert",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key).Wert$ bad"
+  ]
+ },
+ {
+  "id": "g-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key).value$ bad"
+  ]
+ },
+ {
+  "id": "g-Index-wert",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $Index(Key).Wert$ bad"
+  ]
+ },
+ {
+  "id": "g-no-suffix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FeldAngegeben(Amount) Und [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row $index(Key)$ bad"
+  ]
+ },
+ {
+  "id": "g-en-cond",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Kf/Rows/Amount",
+   "--condition",
+   "FieldFilled(Amount) And [Amount] > 0",
+   "--code",
+   "K1",
+   "--message",
+   "en_US=row bad"
+  ]
+ }
+]

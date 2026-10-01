@@ -1,0 +1,48 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "9a219c514cfa37c534f977613c5721dd47779ccbb0254f7543dc5c466d8f6307",
+  "observations" : [ {
+    "id" : "g-ctl",
+    "inputHash" : "9a1488570426e34f639860207968ca5c1397ace1dd16959c07623fc5fcbf6b9a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "g-wert",
+    "inputHash" : "645db5cbbfef420108391b4b5ebc8bba66b6ec32439d0e5482b31968f47c08ec",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "g-value",
+    "inputHash" : "70c6ee1a832013de627db684a6dade472bf6754ef0b4ddcd24768ee59702e49a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "g-Index-wert",
+    "inputHash" : "69699f39a9f0333d6ad5df5ece5ee5abde0c6418f60d1c2158abab5bf262c5d5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "g-no-suffix",
+    "inputHash" : "d50c00d1bfe7e3b2c62d7996ba67b56ce5c6dbabb6cd900035a2c8d22f1169dd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_PARAMETER" ]
+  }, {
+    "id" : "g-en-cond",
+    "inputHash" : "e0f4b35b4fb6b02bde11ec5dd87615b403cf05e9fe5156c2c48a06d73762439d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  } ]
+}
