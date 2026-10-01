@@ -1,0 +1,734 @@
+{
+ "header": {
+  "id": "Fam2_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Fam2_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Fam",
+     "name": "Fam",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Fam/D0",
+        "name": "D0",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/DC",
+        "name": "DC",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/T0",
+        "name": "T0",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/TC",
+        "name": "TC",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/E0",
+        "name": "E0",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/EC",
+        "name": "EC",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/N0",
+        "name": "N0",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/ND",
+        "name": "ND",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/NE",
+        "name": "NE",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/NT",
+        "name": "NT",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/KE",
+        "name": "KE",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/KNE",
+        "name": "KNE",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/DC2",
+        "name": "DC2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/DCG",
+        "name": "DCG",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy",
+           "youngerThan1900Check": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/NDG",
+        "name": "NDG",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/KDG",
+        "name": "KDG",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/KNDG",
+        "name": "KNDG",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/ND2",
+        "name": "ND2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/NH",
+        "name": "NH",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "maxIntegerDigits": 2,
+           "minValue": 0,
+           "maxValue": 23
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/TC2",
+        "name": "TC2",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/NT2",
+        "name": "NT2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/EC2",
+        "name": "EC2",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fam/NE2",
+        "name": "NE2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/NDComp",
+        "name": "NDComp",
+        "Computation": {
+         "computedFieldRelPath": "../ND",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(D0, DC)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/NEComp",
+        "name": "NEComp",
+        "Computation": {
+         "computedFieldRelPath": "../NE",
+         "computationAlternatives": [
+          {
+           "operation": "FieldValueAsNumber(EC)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/NTComp",
+        "name": "NTComp",
+        "Computation": {
+         "computedFieldRelPath": "../NT",
+         "computationAlternatives": [
+          {
+           "operation": "HoursFromTime(TC)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/KEComp",
+        "name": "KEComp",
+        "Computation": {
+         "computedFieldRelPath": "../KE",
+         "computationAlternatives": [
+          {
+           "operation": "[N0]",
+           "precondition": "FieldFilled(EC)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/KNEComp",
+        "name": "KNEComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNE",
+         "computationAlternatives": [
+          {
+           "operation": "[N0]",
+           "precondition": "FieldNotFilled(EC)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/DCComp",
+        "name": "DCComp",
+        "Computation": {
+         "computedFieldRelPath": "../DC",
+         "computationAlternatives": [
+          {
+           "operation": "[D0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/TCComp",
+        "name": "TCComp",
+        "Computation": {
+         "computedFieldRelPath": "../TC",
+         "computationAlternatives": [
+          {
+           "operation": "Time(HoursFromTime(T0), MinutesFromTime(T0))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/ECComp",
+        "name": "ECComp",
+        "Computation": {
+         "computedFieldRelPath": "../EC",
+         "computationAlternatives": [
+          {
+           "operation": "[E0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/DC2Comp",
+        "name": "DC2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../DC2",
+         "computationAlternatives": [
+          {
+           "operation": "[DC]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/DCGComp",
+        "name": "DCGComp",
+        "Computation": {
+         "computedFieldRelPath": "../DCG",
+         "computationAlternatives": [
+          {
+           "operation": "[D0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/NDGComp",
+        "name": "NDGComp",
+        "Computation": {
+         "computedFieldRelPath": "../NDG",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(D0, DCG)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/KDGComp",
+        "name": "KDGComp",
+        "Computation": {
+         "computedFieldRelPath": "../KDG",
+         "computationAlternatives": [
+          {
+           "operation": "[N0]",
+           "precondition": "FieldFilled(DCG)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/KNDGComp",
+        "name": "KNDGComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNDG",
+         "computationAlternatives": [
+          {
+           "operation": "[N0]",
+           "precondition": "FieldNotFilled(DCG)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/ND2Comp",
+        "name": "ND2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../ND2",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(D0, DC2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/NHComp",
+        "name": "NHComp",
+        "Computation": {
+         "computedFieldRelPath": "../NH",
+         "computationAlternatives": [
+          {
+           "operation": "HoursFromTime(T0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/TC2Comp",
+        "name": "TC2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../TC2",
+         "computationAlternatives": [
+          {
+           "operation": "Time(NH, MinutesFromTime(T0))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/NT2Comp",
+        "name": "NT2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../NT2",
+         "computationAlternatives": [
+          {
+           "operation": "HoursFromTime(TC2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/EC2Comp",
+        "name": "EC2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../EC2",
+         "computationAlternatives": [
+          {
+           "operation": "[EC]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fam/NE2Comp",
+        "name": "NE2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../NE2",
+         "computationAlternatives": [
+          {
+           "operation": "FieldValueAsNumber(EC2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

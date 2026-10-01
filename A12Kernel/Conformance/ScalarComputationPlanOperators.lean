@@ -139,7 +139,7 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .number target (.accepted value) => some (target, amount value)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .number target (.invalidNoValue .calculationValue) => some (target, "domain")
-  | .number _ (.rejected _ _) | .string _ _ | .dateTime _ _ => none
+  | .number _ (.rejected _ _) | .string _ _ | .document _ _ => none
 
 private def values? (cells : List ClassifiedCellInput) : Option (List String) := do
   let input ← (checkDocument prepared "en_US"

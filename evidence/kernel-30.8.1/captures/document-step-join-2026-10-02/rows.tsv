@@ -1,0 +1,188 @@
+# row	field	outcome	value
+f01-clean	Fam/DC	value	10.03.2024
+f01-clean	Fam/EC	value	1
+f01-clean	Fam/KE	value	5
+f01-clean	Fam/KNE	cleared	
+f01-clean	Fam/ND	value	0
+f01-clean	Fam/NE	value	1
+f01-clean	Fam/NT	value	10
+f01-clean	Fam/TC	value	10:30:00
+f02-d0-malformed	Fam/DC	cleared	
+f02-d0-malformed	Fam/EC	value	1
+f02-d0-malformed	Fam/KE	value	5
+f02-d0-malformed	Fam/KNE	cleared	
+f02-d0-malformed	Fam/ND	cleared	
+f02-d0-malformed	Fam/NE	value	1
+f02-d0-malformed	Fam/NT	value	10
+f02-d0-malformed	Fam/TC	value	10:30:00
+f03-t0-malformed	Fam/DC	value	10.03.2024
+f03-t0-malformed	Fam/EC	value	1
+f03-t0-malformed	Fam/KE	value	5
+f03-t0-malformed	Fam/KNE	cleared	
+f03-t0-malformed	Fam/ND	value	0
+f03-t0-malformed	Fam/NE	value	1
+f03-t0-malformed	Fam/NT	cleared	
+f03-t0-malformed	Fam/TC	cleared	
+f04-e0-absent	Fam/DC	value	10.03.2024
+f04-e0-absent	Fam/EC	cleared	
+f04-e0-absent	Fam/KE	cleared	
+f04-e0-absent	Fam/KNE	value	5
+f04-e0-absent	Fam/ND	value	0
+f04-e0-absent	Fam/NE	value	0
+f04-e0-absent	Fam/NT	value	10
+f04-e0-absent	Fam/TC	value	10:30:00
+f05-e0-outside-domain	Fam/DC	value	10.03.2024
+f05-e0-outside-domain	Fam/EC	cleared	
+f05-e0-outside-domain	Fam/KE	cleared	
+f05-e0-outside-domain	Fam/KNE	cleared	
+f05-e0-outside-domain	Fam/ND	value	0
+f05-e0-outside-domain	Fam/NE	cleared	
+f05-e0-outside-domain	Fam/NT	value	10
+f05-e0-outside-domain	Fam/TC	value	10:30:00
+f06-d0-absent	Fam/DC	cleared	
+f06-d0-absent	Fam/EC	value	1
+f06-d0-absent	Fam/KE	value	5
+f06-d0-absent	Fam/KNE	cleared	
+f06-d0-absent	Fam/ND	value	0
+f06-d0-absent	Fam/NE	value	1
+f06-d0-absent	Fam/NT	value	10
+f06-d0-absent	Fam/TC	value	10:30:00
+f07-t0-absent	Fam/DC	value	10.03.2024
+f07-t0-absent	Fam/EC	value	1
+f07-t0-absent	Fam/KE	value	5
+f07-t0-absent	Fam/KNE	cleared	
+f07-t0-absent	Fam/ND	value	0
+f07-t0-absent	Fam/NE	value	1
+f07-t0-absent	Fam/NT	value	0
+f07-t0-absent	Fam/TC	cleared	
+g01-clean	Fam/DC	value	10.03.2024
+g01-clean	Fam/DC2	value	10.03.2024
+g01-clean	Fam/DCG	value	10.03.2024
+g01-clean	Fam/EC	value	1
+g01-clean	Fam/EC2	value	1
+g01-clean	Fam/KDG	value	5
+g01-clean	Fam/KE	value	5
+g01-clean	Fam/KNDG	cleared	
+g01-clean	Fam/KNE	cleared	
+g01-clean	Fam/ND	value	0
+g01-clean	Fam/ND2	value	0
+g01-clean	Fam/NDG	value	0
+g01-clean	Fam/NE	value	1
+g01-clean	Fam/NE2	value	1
+g01-clean	Fam/NH	value	10
+g01-clean	Fam/NT	value	10
+g01-clean	Fam/NT2	value	10
+g01-clean	Fam/TC	value	10:30:00
+g01-clean	Fam/TC2	value	10:30:00
+g02-d0-pre-1900	Fam/DC	value	31.12.1899
+g02-d0-pre-1900	Fam/DC2	value	31.12.1899
+g02-d0-pre-1900	Fam/DCG	errored	31.12.1899
+g02-d0-pre-1900	Fam/EC	value	1
+g02-d0-pre-1900	Fam/EC2	value	1
+g02-d0-pre-1900	Fam/KDG	cleared	
+g02-d0-pre-1900	Fam/KE	value	5
+g02-d0-pre-1900	Fam/KNDG	cleared	
+g02-d0-pre-1900	Fam/KNE	cleared	
+g02-d0-pre-1900	Fam/ND	value	0
+g02-d0-pre-1900	Fam/ND2	value	0
+g02-d0-pre-1900	Fam/NDG	cleared	
+g02-d0-pre-1900	Fam/NE	value	1
+g02-d0-pre-1900	Fam/NE2	value	1
+g02-d0-pre-1900	Fam/NH	value	10
+g02-d0-pre-1900	Fam/NT	value	10
+g02-d0-pre-1900	Fam/NT2	value	10
+g02-d0-pre-1900	Fam/TC	value	10:30:00
+g02-d0-pre-1900	Fam/TC2	value	10:30:00
+g03-e0-two	Fam/DC	value	10.03.2024
+g03-e0-two	Fam/DC2	value	10.03.2024
+g03-e0-two	Fam/DCG	value	10.03.2024
+g03-e0-two	Fam/KDG	value	5
+g03-e0-two	Fam/KE	value	5
+g03-e0-two	Fam/KNDG	cleared	
+g03-e0-two	Fam/KNE	cleared	
+g03-e0-two	Fam/ND	value	0
+g03-e0-two	Fam/ND2	value	0
+g03-e0-two	Fam/NDG	value	0
+g03-e0-two	Fam/NE	value	2
+g03-e0-two	Fam/NE2	value	2
+g03-e0-two	Fam/NH	value	10
+g03-e0-two	Fam/NT	value	10
+g03-e0-two	Fam/NT2	value	10
+g03-e0-two	Fam/TC	value	10:30:00
+g03-e0-two	Fam/TC2	value	10:30:00
+g04-t0-late	Fam/DC	value	10.03.2024
+g04-t0-late	Fam/DC2	value	10.03.2024
+g04-t0-late	Fam/DCG	value	10.03.2024
+g04-t0-late	Fam/EC	value	1
+g04-t0-late	Fam/EC2	value	1
+g04-t0-late	Fam/KDG	value	5
+g04-t0-late	Fam/KE	value	5
+g04-t0-late	Fam/KNDG	cleared	
+g04-t0-late	Fam/KNE	cleared	
+g04-t0-late	Fam/ND	value	0
+g04-t0-late	Fam/ND2	value	0
+g04-t0-late	Fam/NDG	value	0
+g04-t0-late	Fam/NE	value	1
+g04-t0-late	Fam/NE2	value	1
+g04-t0-late	Fam/NH	value	23
+g04-t0-late	Fam/NT	value	23
+g04-t0-late	Fam/NT2	value	23
+g04-t0-late	Fam/TC	value	23:59:00
+g04-t0-late	Fam/TC2	value	23:59:00
+g05-d0-absent	Fam/DC	cleared	
+g05-d0-absent	Fam/DC2	cleared	
+g05-d0-absent	Fam/DCG	cleared	
+g05-d0-absent	Fam/EC	value	1
+g05-d0-absent	Fam/EC2	value	1
+g05-d0-absent	Fam/KDG	cleared	
+g05-d0-absent	Fam/KE	value	5
+g05-d0-absent	Fam/KNDG	value	5
+g05-d0-absent	Fam/KNE	cleared	
+g05-d0-absent	Fam/ND	value	0
+g05-d0-absent	Fam/ND2	value	0
+g05-d0-absent	Fam/NDG	value	0
+g05-d0-absent	Fam/NE	value	1
+g05-d0-absent	Fam/NE2	value	1
+g05-d0-absent	Fam/NH	value	10
+g05-d0-absent	Fam/NT	value	10
+g05-d0-absent	Fam/NT2	value	10
+g05-d0-absent	Fam/TC	value	10:30:00
+g05-d0-absent	Fam/TC2	value	10:30:00
+g06-e0-outside-domain	Fam/DC	value	10.03.2024
+g06-e0-outside-domain	Fam/DC2	value	10.03.2024
+g06-e0-outside-domain	Fam/DCG	value	10.03.2024
+g06-e0-outside-domain	Fam/EC	cleared	
+g06-e0-outside-domain	Fam/EC2	cleared	
+g06-e0-outside-domain	Fam/KDG	value	5
+g06-e0-outside-domain	Fam/KE	cleared	
+g06-e0-outside-domain	Fam/KNDG	cleared	
+g06-e0-outside-domain	Fam/KNE	cleared	
+g06-e0-outside-domain	Fam/ND	value	0
+g06-e0-outside-domain	Fam/ND2	value	0
+g06-e0-outside-domain	Fam/NDG	value	0
+g06-e0-outside-domain	Fam/NE	cleared	
+g06-e0-outside-domain	Fam/NE2	cleared	
+g06-e0-outside-domain	Fam/NH	value	10
+g06-e0-outside-domain	Fam/NT	value	10
+g06-e0-outside-domain	Fam/NT2	value	10
+g06-e0-outside-domain	Fam/TC	value	10:30:00
+g06-e0-outside-domain	Fam/TC2	value	10:30:00
+g07-t0-malformed	Fam/DC	value	10.03.2024
+g07-t0-malformed	Fam/DC2	value	10.03.2024
+g07-t0-malformed	Fam/DCG	value	10.03.2024
+g07-t0-malformed	Fam/EC	value	1
+g07-t0-malformed	Fam/EC2	value	1
+g07-t0-malformed	Fam/KDG	value	5
+g07-t0-malformed	Fam/KE	value	5
+g07-t0-malformed	Fam/KNDG	cleared	
+g07-t0-malformed	Fam/KNE	cleared	
+g07-t0-malformed	Fam/ND	value	0
+g07-t0-malformed	Fam/ND2	value	0
+g07-t0-malformed	Fam/NDG	value	0
+g07-t0-malformed	Fam/NE	value	1
+g07-t0-malformed	Fam/NE2	value	1
+g07-t0-malformed	Fam/NH	cleared	
+g07-t0-malformed	Fam/NT	cleared	
+g07-t0-malformed	Fam/NT2	cleared	
+g07-t0-malformed	Fam/TC	cleared	
+g07-t0-malformed	Fam/TC2	cleared	

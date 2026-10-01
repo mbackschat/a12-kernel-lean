@@ -90,36 +90,14 @@ theorem scalarComputationRun_evaluateStep_target
           cases evaluated
           exact checkedNumericComputationTable_evaluateCompletion_target
             table (run.numberContext world state input) numberCompletion result
-  | dateTimeDayShift operation _ =>
-      cases result : operation.evaluateOutcome (run.documentFor state input) with
+  | document step =>
+      cases result : step.run world (run.documentFor state input) with
       | error fault =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
-      | ok outcome =>
-          cases cell : CheckedScalarComputationRun.dateTimeDependencyCell model
-              operation.target.checked.target.id outcome with
-          | error fault =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
-          | ok readCell =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
-              cases evaluated
-              rfl
-  | dateTimeSubdayShift operation _ =>
-      cases result : operation.evaluateOutcome (run.documentFor state input) with
-      | error fault =>
+      | ok computed =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
-      | ok outcome =>
-          cases cell : CheckedScalarComputationRun.dateTimeDependencyCell model
-              operation.target.checked.target.id outcome with
-          | error fault =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
-          | ok readCell =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
-              cases evaluated
-              rfl
+          cases evaluated
+          rfl
 
 private theorem checkedScalarComputationStep_excludes_target
     (step : CheckedScalarComputationStep model) :
@@ -127,9 +105,7 @@ private theorem checkedScalarComputationStep_excludes_target
   cases step with
   | string table => exact checkedStringComputationTable_excludes_target table
   | number table => exact checkedNumericComputationTable_excludes_target table
-  | dateTimeDayShift operation excludes | dateTimeSubdayShift operation excludes =>
-      simp [CheckedScalarComputationStep.referencesField, CheckedScalarComputationStep.targetField,
-        operation.sourceDistinct, excludes]
+  | document step => exact step.excludesTarget
 
 private theorem scalarComputationRun_step_ready_after_seed
     (run : CheckedScalarComputationRun model)

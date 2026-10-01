@@ -2155,6 +2155,8 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationRun_numberRead_pending
 #print axioms A12Kernel.scalarComputationRun_numberRead_completed
 #print axioms A12Kernel.scalarComputationRun_numberRead_input
+#print axioms A12Kernel.scalarComputationRun_documentFor_find_listed
+#print axioms A12Kernel.scalarComputationRun_documentFor_read
 #print axioms A12Kernel.scalarComputationRun_numberContext_world
 #print axioms A12Kernel.scalarComputationRun_evaluateStringStep
 #print axioms A12Kernel.scalarComputationRun_evaluateNumberStep
@@ -2185,7 +2187,8 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationOutcomePartitions_count
 #print axioms A12Kernel.scalarComputationOutcomePartitions_string_mem_iff
 #print axioms A12Kernel.scalarComputationOutcomePartitions_number_mem_iff
-#print axioms A12Kernel.scalarComputationOutcomePartitions_dateTime_mem_iff
+#print axioms A12Kernel.scalarComputationOutcomePartitions_document_mem_iff
+#print axioms A12Kernel.scalarComputationRun_execute_noDocument
 #print axioms A12Kernel.scalarComputationRun_executeResult_routesFamilies
 #print axioms A12Kernel.scalarComputationRun_formalInputOperations_targets
 #print axioms A12Kernel.scalarComputationRun_executeResultWithFormalInputs_exact
@@ -2260,6 +2263,11 @@ run_cmd do
 #print axioms A12Kernel.repeatableAncestorRowsFor_singleton
 #print axioms A12Kernel.repeatableAncestorRowsFor_pair
 #print axioms A12Kernel.checkedDocument_actualRowEnvironments_nodup
+#print axioms A12Kernel.checkedDocument_overlay_read_found
+#print axioms A12Kernel.checkedDocument_overlay_read_absent
+#print axioms A12Kernel.checkedDocument_overlay_find_unlisted
+#print axioms A12Kernel.checkedDocument_overlay_find_listed
+#print axioms A12Kernel.checkedDocument_overlay_read_congr
 #print axioms A12Kernel.checkedDocument_actualRowEnvironment_scope
 #print axioms A12Kernel.checkedDocument_inCapacityRowEnvironments_sublist
 #print axioms A12Kernel.checkedDocument_inCapacityRowEnvironments_nodup

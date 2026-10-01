@@ -11,7 +11,7 @@ namespace A12Kernel
 theorem scalarComputationOutcomePartitions_count
     (outcomes : List ScalarComputationOutcome) :
     let partitioned := ScalarComputationOutcomePartitions.ofOutcomes outcomes
-    partitioned.string.length + partitioned.number.length + partitioned.dateTime.length =
+    partitioned.string.length + partitioned.number.length + partitioned.document.length =
       outcomes.length := by
   induction outcomes with
   | nil =>
@@ -53,13 +53,13 @@ theorem scalarComputationOutcomePartitions_number_mem_iff
         simp [ScalarComputationOutcomePartitions.ofOutcomes,
           inductionHypothesis]
 
-/-- DateTime membership is preserved exactly by the DateTime partition. -/
-theorem scalarComputationOutcomePartitions_dateTime_mem_iff
+/-- Whole-document membership is preserved exactly by the whole-document partition. -/
+theorem scalarComputationOutcomePartitions_document_mem_iff
     (outcomes : List ScalarComputationOutcome)
-    (target : FieldId) (outcome : DateTimeTargetOutcome) :
+    (target : FieldId) (outcome : DocumentTargetOutcome) :
     (target, outcome) ∈
-        (ScalarComputationOutcomePartitions.ofOutcomes outcomes).dateTime ↔
-      ScalarComputationOutcome.dateTime target outcome ∈ outcomes := by
+        (ScalarComputationOutcomePartitions.ofOutcomes outcomes).document ↔
+      ScalarComputationOutcome.document target outcome ∈ outcomes := by
   induction outcomes with
   | nil =>
       simp [ScalarComputationOutcomePartitions.ofOutcomes]
@@ -67,6 +67,83 @@ theorem scalarComputationOutcomePartitions_dateTime_mem_iff
       cases head <;>
         simp [ScalarComputationOutcomePartitions.ofOutcomes,
           inductionHypothesis]
+
+private theorem scalarComputationRun_executeSteps_noDocument
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (steps : List (CheckedScalarComputationStep model))
+    (state final : ScalarComputationRunState)
+    (noDocumentStep : ∀ step ∈ steps, ∀ document, step ≠ .document document)
+    (noDocumentYet : ∀ completion ∈ state.completed, ∀ target outcome cell,
+      completion ≠ .document target outcome cell)
+    (executed : run.executeSteps world patterns input steps state = .ok final) :
+    ∀ completion ∈ final.completed, ∀ target outcome cell,
+      completion ≠ .document target outcome cell := by
+  induction steps generalizing state with
+  | nil =>
+      simp only [CheckedScalarComputationRun.executeSteps] at executed
+      cases executed
+      exact noDocumentYet
+  | cons step remaining inductionHypothesis =>
+      cases evaluation : run.evaluateStep world patterns input state step with
+      | error cause =>
+          rw [CheckedScalarComputationRun.executeSteps, evaluation] at executed
+          cases executed
+      | ok completion =>
+          rw [CheckedScalarComputationRun.executeSteps, evaluation] at executed
+          refine inductionHypothesis { completed := state.completed ++ [completion] }
+            (fun step member => noDocumentStep step (List.mem_cons_of_mem _ member)) ?_ executed
+          intro candidate member target outcome cell
+          rcases List.mem_append.mp member with earlier | added
+          · exact noDocumentYet candidate earlier target outcome cell
+          · simp only [List.mem_singleton] at added
+            subst added
+            cases step with
+            | string table =>
+                cases result : table.evaluateCompletion patterns (run.stringContext state input) <;>
+                  simp [CheckedScalarComputationRun.evaluateStep, result] at evaluation
+                subst evaluation
+                simp
+            | number table =>
+                cases result : table.evaluateCompletion (run.numberContext world state input) <;>
+                  simp [CheckedScalarComputationRun.evaluateStep, result] at evaluation
+                subst evaluation
+                simp
+            | document document =>
+                exact absurd rfl (noDocumentStep (.document document) (by simp) document)
+
+/-- A run with no whole-document step computes no whole-document outcome, which discharges the routing
+law's `noDocument` hypothesis for every String-and-Number run. -/
+theorem scalarComputationRun_execute_noDocument
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (outcomes : List ScalarComputationOutcome)
+    (noDocumentStep : ∀ step ∈ run.steps, ∀ document, step ≠ .document document)
+    (executed : run.execute world patterns input = .ok outcomes) :
+    (ScalarComputationOutcomePartitions.ofOutcomes outcomes).document = [] := by
+  cases result : run.executeSteps world patterns input run.steps {} with
+  | error cause =>
+      rw [CheckedScalarComputationRun.execute, result] at executed
+      cases executed
+  | ok final =>
+      rw [CheckedScalarComputationRun.execute, result] at executed
+      cases executed
+      have noDocument := scalarComputationRun_executeSteps_noDocument run world patterns input
+        run.steps {} final noDocumentStep (by simp) result
+      rw [List.eq_nil_iff_forall_not_mem]
+      intro ⟨target, outcome⟩ member
+      rw [scalarComputationOutcomePartitions_document_mem_iff] at member
+      simp only [ScalarComputationRunState.outcomes, List.mem_map] at member
+      obtain ⟨completion, completed, projected⟩ := member
+      cases completion with
+      | string completion => simp [ScalarComputationCompletion.outcome] at projected
+      | number completion => simp [ScalarComputationCompletion.outcome] at projected
+      | document target' outcome' cell =>
+          exact noDocument _ completed target' outcome' cell rfl
 
 /-- Successful mixed result projection delegates the exact constructor partitions to the two existing family owners. -/
 theorem scalarComputationRun_executeResult_routesFamilies
@@ -82,7 +159,7 @@ theorem scalarComputationRun_executeResult_routesFamilies
       NumericComputationRunView
         (ComputationFormalMessage NumberPayload))
     (executed : run.execute world patterns input = .ok outcomes)
-    (noDateTime : (ScalarComputationOutcomePartitions.ofOutcomes outcomes).dateTime = [])
+    (noDocument : (ScalarComputationOutcomePartitions.ofOutcomes outcomes).document = [])
     (numberProjected :
       NumericComputationRunView.fromOutcomes input numberPayloadAt
         numberMessages
@@ -98,6 +175,6 @@ theorem scalarComputationRun_executeResult_routesFamilies
       } := by
   unfold CheckedScalarComputationRun.executeResult
   rw [executed]
-  simp [noDateTime, numberProjected, Except.mapError, bind, Except.bind, pure, Except.pure]
+  simp [noDocument, numberProjected, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 end A12Kernel

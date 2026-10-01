@@ -505,4 +505,109 @@ theorem checkedDocument_computationOverRepetitionFindings_mono
   · rcases List.any_eq_true.mp held with ⟨candidate, member, hit⟩
     exact List.any_eq_true.mpr ⟨candidate, covers candidate member, hit⟩
 
+/-- An overlay read at a valid address returns the placement the overlay finds there. -/
+theorem checkedDocument_overlay_read_found
+    (checked : CheckedDocument model) (placements : List (FieldId × Option CheckedCellPlacement))
+    (address : CellAddr) (placement : CheckedCellPlacement)
+    (valid : ∃ cell, checked.read address = .ok cell)
+    (found : (checked.overlayNonrepeatableCells placements).checkedCells.find?
+        (fun candidate => candidate.address == address) = some placement) :
+    (checked.overlayNonrepeatableCells placements).read address = .ok placement.cell := by
+  obtain ⟨cell, read⟩ := valid
+  unfold CheckedDocument.read at read ⊢
+  rw [found]
+  simp only [CheckedDocument.overlayNonrepeatableCells] at read ⊢
+  revert read
+  simp only [bind, Except.bind]
+  split <;> (try split) <;> intro read <;>
+    simp_all [throw, throwThe, MonadExceptOf.throw, pure, Except.pure]
+
+/-- An overlay read at a valid nonrepeatable address with no placement there is the absent cell. -/
+theorem checkedDocument_overlay_read_absent
+    (checked : CheckedDocument model) (placements : List (FieldId × Option CheckedCellPlacement))
+    (field : FieldId)
+    (valid : ∃ cell, checked.read { field, path := [] } = .ok cell)
+    (absent : (checked.overlayNonrepeatableCells placements).checkedCells.find?
+        (fun candidate => candidate.address == { field, path := [] }) = none) :
+    (checked.overlayNonrepeatableCells placements).read { field, path := [] } =
+      .ok (checkAdmittedRawCell .empty) := by
+  obtain ⟨cell, read⟩ := valid
+  unfold CheckedDocument.read at read ⊢
+  rw [absent]
+  simp only [CheckedDocument.overlayNonrepeatableCells] at read ⊢
+  revert read
+  simp only [bind, Except.bind]
+  split <;> (try split) <;> intro read <;>
+    simp_all [throw, throwThe, MonadExceptOf.throw, pure, Except.pure, FlatModel.addressOverLimit?,
+      StarAxes.environmentOverLimit, CheckedCell.withOverRepetitionIf, Option.bind_eq_some_iff]
+
+/-- An overlay finds the document's own placement for every field it does not list. -/
+theorem checkedDocument_overlay_find_unlisted
+    (checked : CheckedDocument model) (placements : List (FieldId × Option CheckedCellPlacement))
+    (address : CellAddr)
+    (unlisted : placements.any (·.1 == address.field) = false) :
+    (checked.overlayNonrepeatableCells placements).checkedCells.find?
+        (fun candidate => candidate.address == address) =
+      checked.checkedCells.find? (fun candidate => candidate.address == address) := by
+  have keep : List.find? (fun candidate => candidate.address == address)
+      (checked.checkedCells.filter fun placement =>
+        !(placement.address.path.isEmpty &&
+          placements.any (·.1 == placement.address.field))) =
+      checked.checkedCells.find? (fun candidate => candidate.address == address) := by
+    rw [List.find?_filter]
+    congr 1
+    funext candidate
+    by_cases same : candidate.address = address
+    · subst same
+      simp [unlisted]
+    · simp [same]
+  have none : List.find? (fun candidate => candidate.address == address)
+      (placements.filterMap fun (field, placement) =>
+        placement.map fun placement => { placement with address := { field, path := [] } }) =
+      none := by
+    rw [List.find?_eq_none]
+    intro candidate member
+    simp only [List.mem_filterMap, Option.map_eq_some_iff] at member
+    obtain ⟨⟨field, placement⟩, listed, inner, _, rfl⟩ := member
+    have := List.any_eq_false.mp unlisted (field, placement) listed
+    simp_all
+    intro equal
+    exact this (by rw [← equal])
+  simp only [CheckedDocument.overlayNonrepeatableCells, List.find?_append, keep, none,
+    Option.or_none]
+
+/-- An overlay finds only its own placement for a listed nonrepeatable field, never the document's. -/
+theorem checkedDocument_overlay_find_listed
+    (checked : CheckedDocument model) (placements : List (FieldId × Option CheckedCellPlacement))
+    (field : FieldId)
+    (listed : placements.any (·.1 == field) = true) :
+    (checked.overlayNonrepeatableCells placements).checkedCells.find?
+        (fun candidate => candidate.address == { field, path := [] }) =
+      List.find? (fun candidate => candidate.address == { field, path := [] })
+        (placements.filterMap fun (field, placement) =>
+          placement.map fun placement => { placement with address := { field, path := [] } }) := by
+  have removed : List.find? (fun candidate => candidate.address == { field, path := [] })
+      (checked.checkedCells.filter fun placement =>
+        !(placement.address.path.isEmpty &&
+          placements.any (·.1 == placement.address.field))) = none := by
+    rw [List.find?_eq_none]
+    intro candidate member
+    rw [List.mem_filter] at member
+    intro equal
+    simp only [beq_iff_eq] at equal
+    simp [equal, listed] at member
+  simp only [CheckedDocument.overlayNonrepeatableCells, List.find?_append, removed, Option.none_or]
+
+/-- An overlay read depends on its placements only through the one it finds. -/
+theorem checkedDocument_overlay_read_congr
+    (checked : CheckedDocument model) (placements : List (FieldId × Option CheckedCellPlacement))
+    (address : CellAddr)
+    (same : (checked.overlayNonrepeatableCells placements).checkedCells.find?
+        (fun candidate => candidate.address == address) =
+      checked.checkedCells.find? (fun candidate => candidate.address == address)) :
+    (checked.overlayNonrepeatableCells placements).read address = checked.read address := by
+  unfold CheckedDocument.read
+  rw [same]
+  rfl
+
 end A12Kernel

@@ -74,7 +74,10 @@ structure CheckedCellPlacement where
   numericFormalReadText : Option String := none
   deriving Repr, DecidableEq
 
-/-- One exact-model checked input. Only `checkDocument` can construct the certificate; the source placement remains immutable and every placed cell has one cached base formal-check result. -/
+/-- One exact-model checked input. `checkDocument` constructs it from source data, so every placed cell is
+that source cell's one cached base formal-check result; `overlayNonrepeatableCells` derives a read view
+from one, whose replaced placements are no longer that check's result and whose own documentation names
+what stays source-derived. The source placement remains immutable in both. -/
 structure CheckedDocument (model : FlatModel) where
   private mk ::
   source : DocumentData
@@ -442,19 +445,23 @@ def validationRowEnvironments (checked : CheckedDocument model)
         actualOuter remaining
 
 /-- The document a later computation of one run reads: each listed nonrepeatable field's own placement
-replaced by the listed cell, or removed, so that field reads empty. Inside a run a completed target is
-read through the cell its outcome projects and a pending one reads empty, whatever the document stores
-for either ([`kf459`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459)). This is a read overlay for
-evaluators that take the whole document; the source data, rows and every other placement are unchanged,
-and nothing here applies a result. -/
+replaced by the listed placement, or removed, so that field reads empty. Inside a run a completed target
+is read through the cell its outcome projects and a pending one reads empty, whatever the document stores
+for either ([`kf459`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459)).
+
+This is a read overlay for evaluators that take the whole document, and nothing here applies a result.
+Every placement read — `read`, the Number formal-read text, and the contexts built on them — sees the
+listed placement, which is why a placement rather than a bare cell is listed: a replaced Number keeps its
+formal-read text only if the caller supplies it. The source data and rows are unchanged, so what is read
+off `source` — `readStoredText` and `temporallyCoherent` — still describes the source document. -/
 def overlayNonrepeatableCells (checked : CheckedDocument model)
-    (cells : List (FieldId × Option CheckedCell)) : CheckedDocument model :=
+    (placements : List (FieldId × Option CheckedCellPlacement)) : CheckedDocument model :=
   { checked with
     checkedCells :=
       (checked.checkedCells.filter fun placement =>
-        !(placement.address.path.isEmpty && cells.any (·.1 == placement.address.field))) ++
-      cells.filterMap fun (field, cell) =>
-        cell.map fun cell => { address := { field, path := [] }, cell } }
+        !(placement.address.path.isEmpty && placements.any (·.1 == placement.address.field))) ++
+      placements.filterMap fun (field, placement) =>
+        placement.map fun placement => { placement with address := { field, path := [] } } }
 
 /-- Query one model-legal address. In-cap absence is a clean empty checked cell, over-limit ancestry is unavailable, and malformed addressing remains an explicit structural error. -/
 def read (checked : CheckedDocument model) (address : CellAddr) :

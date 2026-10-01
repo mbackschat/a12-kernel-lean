@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Elaboration.ScalarComputationRunResult
 
 /-! # Authored scalar plan locks: DateTime steps at a join
 
@@ -61,12 +61,12 @@ private def numberStep? (target : FieldId) (guard : Option ComputationCondition)
 private def dayShiftStep? : Option (CheckedScalarComputationStep model) := do
   let amount ← (elaborateTemporalFieldShiftAmount model n1Id).toOption
   let operation ← (elaborateDateTimeDayShiftComputation model dt0Id amount dtaId).toOption
-  CheckedScalarComputationStep.ofDateTimeDayShift? operation
+  pure (.document (.ofDateTimeDayShift operation))
 
 private def subdayShiftStep? : Option (CheckedScalarComputationStep model) := do
   let operation ←
     (elaborateDateTimeSubdayShiftComputation model dtaId .hours (.literal 2) dtbId).toOption
-  CheckedScalarComputationStep.ofDateTimeSubdayShift? operation
+  pure (.document (.ofDateTimeSubdayShift operation))
 
 /-- The model's computations in its authored order, every reader ahead of what it reads. -/
 private def authored : List (CheckedScalarComputationStep model) :=
@@ -112,9 +112,11 @@ private def reported : List FieldId := [n1Id, dtaId, dtbId, hId, kId, knId]
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
-  | .dateTime target (.accepted stored) => some (target, stored.text)
-  | .dateTime target .noValue | .dateTime target (.poison _) => some (target, "-")
-  | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _ => none
+  | .document target (.dateTime (.accepted stored)) => some (target, stored.text)
+  | .document target (.dateTime .noValue) | .document target (.dateTime (.poison _)) =>
+      some (target, "-")
+  | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
+  | .document _ (.fullDate _) | .document _ (.enumeration _) => none
 
 private def values? (cells : List ClassifiedCellInput) : Option (List String) := do
   let input ← (checkDocument prepared "en_US"
@@ -163,6 +165,18 @@ example :
       some ["0", "2024-10-27T02:30:00", "2024-10-27T04:30:00", "2", "0", "-"] ∧
     values? (inputs (dt0 := some (dateTimeCell dt0Id "2024-03-31T01:30:00")) (n0 := some (numberCell n0Id 0))) =
       some ["0", "2024-03-31T01:30:00", "2024-03-31T04:30:00", "2", "0", "-"] := by
+  native_decide
+
+/- The String-and-Number result view composes no whole-document family, so it refuses a run that computed
+one and names the first such target in execution order, `DTA`, rather than dropping it. -/
+example :
+    (do
+      let input ← (checkDocument prepared "en_US"
+        { instantiatedRows := [], cells := seeds ++ inputs }).toOption
+      match plan.execution.executeResult (StringResidual := Unit) (NumberPayload := Unit) world
+          prepared.patterns input (fun _ => ()) [] [] with
+      | .error (.documentTarget target) => some target
+      | _ => none) = some dtaId := by
   native_decide
 
 end A12Kernel.Conformance.ScalarComputationPlanDateTime

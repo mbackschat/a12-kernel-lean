@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Proofs.ComputationRunPlan
 import A12Kernel.Proofs.FieldId
 import A12Kernel.Proofs.NumericComputationRun
@@ -158,40 +159,14 @@ theorem scalarComputationRun_evaluateStep_faultIdentity
           · rfl
       | ok completion =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
-  | dateTimeDayShift operation _ =>
-      cases result : operation.evaluateOutcome (run.documentFor state input) with
+  | document step =>
+      cases result : step.run world (run.documentFor state input) with
       | error cause =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
           subst fault
           exact ⟨rfl, rfl⟩
-      | ok outcome =>
-          cases cell : CheckedScalarComputationRun.dateTimeDependencyCell model
-              operation.target.checked.target.id outcome with
-          | error cause =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
-              subst fault
-              exact ⟨rfl, rfl⟩
-          | ok readCell =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
-  | dateTimeSubdayShift operation _ =>
-      cases result : operation.evaluateOutcome (run.documentFor state input) with
-      | error cause =>
+      | ok computed =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
-          subst fault
-          exact ⟨rfl, rfl⟩
-      | ok outcome =>
-          cases cell : CheckedScalarComputationRun.dateTimeDependencyCell model
-              operation.target.checked.target.id outcome with
-          | error cause =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
-              subst fault
-              exact ⟨rfl, rfl⟩
-          | ok readCell =>
-              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
-                Except.mapError] at evaluated
 
 /-- A failing mixed suffix attributes its structural fault to one of the exact typed steps it was given. -/
 private theorem scalarComputationRun_executeSteps_faultTarget
@@ -360,5 +335,106 @@ theorem scalarComputationPlan_execute
       steps.map (·.fieldDependencies) := by
   simp [analyzeScalarComputationSteps,
     CheckedScalarComputationStep.dependencyAnalysis]
+
+/-- A completed or pending target's placement in a whole-document step's document is its completion's, and absent while pending. -/
+theorem scalarComputationRun_documentFor_find_listed
+    (run : CheckedScalarComputationRun model)
+    (state : ScalarComputationRunState) (input : CheckedDocument model) (field : FieldId)
+    (listed : (state.find? field).isSome || run.targetFields.contains field) :
+    (run.documentFor state input).checkedCells.find?
+        (fun candidate => candidate.address == { field, path := [] }) =
+      (state.find? field).map (·.placement) := by
+  unfold CheckedScalarComputationRun.documentFor
+  rw [checkedDocument_overlay_find_listed]
+  · have pendingDrop :
+        ((run.targetFields.filter fun field => (state.find? field).isNone).map
+            (fun field => (field, (none : Option CheckedCellPlacement)))).filterMap
+          (fun (field, placement) =>
+            placement.map fun placement => { placement with address := { field, path := [] } }) =
+        [] := by
+      simp
+    rw [List.filterMap_append, pendingDrop, List.append_nil, List.filterMap_map]
+    have asMap : ∀ completions : List ScalarComputationCompletion,
+        completions.filterMap
+          ((fun (field, placement) =>
+              placement.map fun (placement : CheckedCellPlacement) =>
+                { placement with address := { field, path := [] } }) ∘
+            fun completion => (completion.targetField, some completion.placement)) =
+          completions.map (·.placement) := by
+      intro completions
+      induction completions with
+      | nil => rfl
+      | cons head tail inductionHypothesis =>
+          simp only [List.filterMap_cons, Function.comp, Option.map_some] at inductionHypothesis ⊢
+          rw [inductionHypothesis]
+          rfl
+    rw [asMap, List.find?_map]
+    unfold ScalarComputationRunState.find?
+    congr 2
+    funext completion
+    simp only [Function.comp, ScalarComputationCompletion.placement]
+    rw [Bool.eq_iff_iff]
+    simp
+  · cases hFind : state.find? field with
+    | some completion =>
+        have member := List.find?_some hFind
+        have mem := List.mem_of_find?_eq_some hFind
+        simp only [beq_iff_eq] at member
+        simp only [List.any_append, List.any_map, Bool.or_eq_true, List.any_eq_true]
+        exact Or.inl ⟨completion, mem, by simp [member]⟩
+    | none =>
+        simp [hFind] at listed
+        simp only [List.any_append, List.any_map, Bool.or_eq_true, List.any_eq_true]
+        exact Or.inr ⟨field, by simp [hFind, listed], by simp⟩
+
+/-- On every address the model admits, a whole-document step reads exactly what the Number context reads, so the two cannot disagree about a completed, pending, or ordinary field. -/
+theorem scalarComputationRun_documentFor_read
+    (run : CheckedScalarComputationRun model) (world : World)
+    (state : ScalarComputationRunState) (input : CheckedDocument model) (field : FieldId)
+    (valid : ∃ cell, input.read { field, path := [] } = .ok cell) :
+    (run.documentFor state input).flatContext.read field =
+      (run.numberContext world state input).read field := by
+  cases found : state.find? field with
+  | some completion =>
+      have find := scalarComputationRun_documentFor_find_listed run state input field
+        (by simp [found])
+      rw [found] at find
+      unfold CheckedScalarComputationRun.documentFor at find ⊢
+      simp only [CheckedDocument.flatContext,
+        checkedDocument_overlay_read_found input _ _ _ valid find,
+        CheckedScalarComputationRun.numberContext, found]
+      rfl
+  | none =>
+      by_cases target : run.targetFields.contains field = true
+      · have find := scalarComputationRun_documentFor_find_listed run state input field
+          (by simp only [target, Bool.or_true])
+        rw [found] at find
+        unfold CheckedScalarComputationRun.documentFor at find ⊢
+        simp only [CheckedDocument.flatContext,
+          checkedDocument_overlay_read_absent input _ _ valid find,
+          CheckedScalarComputationRun.numberContext, found, target]
+        rfl
+      · have unlisted :
+            ((state.completed.map fun completion =>
+                (completion.targetField, some completion.placement)) ++
+              (run.targetFields.filter fun field => (state.find? field).isNone).map
+                (fun field => (field, (none : Option CheckedCellPlacement)))).any
+              (·.1 == field) = false := by
+          have absentCompleted := List.find?_eq_none.mp found
+          rw [Bool.eq_false_iff]
+          intro listed
+          simp only [List.any_append, List.any_map, Bool.or_eq_true, List.any_eq_true,
+            List.mem_filter, Function.comp, beq_iff_eq] at listed
+          rcases listed with ⟨completion, member, same⟩ | ⟨other, ⟨member, _⟩, same⟩
+          · exact absentCompleted completion member (by simpa using same)
+          · subst same
+            exact target (List.contains_iff_mem.mpr member)
+        have same := checkedDocument_overlay_read_congr input _ { field, path := [] }
+          (checkedDocument_overlay_find_unlisted input _ { field, path := [] } unlisted)
+        unfold CheckedScalarComputationRun.documentFor
+        simp only [CheckedDocument.flatContext, same,
+          CheckedScalarComputationRun.numberContext, found, target,
+          CheckedDocument.scalarComputationContext]
+        simp
 
 end A12Kernel

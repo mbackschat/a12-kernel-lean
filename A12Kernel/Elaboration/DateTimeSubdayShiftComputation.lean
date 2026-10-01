@@ -36,6 +36,10 @@ structure CheckedDateTimeSubdayShiftComputation (model : FlatModel) where
   shift : CheckedShiftedDateTimeSource model
   target : CheckedDateTimeTarget model
   sourceDistinct : shift.source.id ≠ target.checked.target.id
+  /-- A Number amount cannot name a DateTime target, so this never refuses an admitted operation; it is
+  carried so a dependency-ordered plan can take the operation without re-deciding it. -/
+  amountExcludesTarget :
+    shift.amount.referencesField target.checked.target.id = false
 
 /-- Check one field-backed sub-day shift and one distinct complete-DateTime target. -/
 def elaborateDateTimeSubdayShiftComputation
@@ -48,8 +52,11 @@ def elaborateDateTimeSubdayShiftComputation
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
   if distinct : shift.source.id = target.checked.target.id then
     throw (.targetSelfReference targetField)
+  else if amountReads : shift.amount.referencesField target.checked.target.id = true then
+    throw (.targetSelfReference targetField)
   else
-    pure { shift, target, sourceDistinct := distinct }
+    pure { shift, target, sourceDistinct := distinct
+           amountExcludesTarget := by simpa using amountReads }
 
 /-- Structural execution failure outside the rich DateTime target outcome. -/
 inductive DateTimeSubdayShiftComputationFault where

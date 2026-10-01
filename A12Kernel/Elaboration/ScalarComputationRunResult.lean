@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.StringNumberComputationRunView
 
 /-! # Family-preserving result for a finite mixed scalar run
 
-This capsule partitions successful mixed outcomes solely by their retained constructor, then delegates source-relative classification to the existing String and Number result owners. A DateTime outcome has no source-relative owner in this view, so a run that computed one is refused rather than reported without it. It defines no common computed instance, error, message, or collection-order contract.
+This capsule partitions successful mixed outcomes solely by their retained constructor, then delegates source-relative classification to the existing String and Number result owners. This view routes only those two families; a whole-document outcome's family owners are not composed into it, so a run that computed one is refused rather than reported without it. It defines no common computed instance, error, message, or collection-order contract.
 -/
 
 namespace A12Kernel
@@ -12,23 +12,23 @@ namespace A12Kernel
 structure ScalarComputationOutcomePartitions where
   string : List (FieldId × StringTargetOutcome)
   number : List (FieldId × NumericTargetOutcome)
-  dateTime : List (FieldId × DateTimeTargetOutcome)
+  document : List (FieldId × DocumentTargetOutcome)
   deriving Repr, DecidableEq
 
 namespace ScalarComputationOutcomePartitions
 
 def ofOutcomes : List ScalarComputationOutcome →
     ScalarComputationOutcomePartitions
-  | [] => { string := [], number := [], dateTime := [] }
+  | [] => { string := [], number := [], document := [] }
   | .string target outcome :: remaining =>
       let partitioned := ofOutcomes remaining
       { partitioned with string := (target, outcome) :: partitioned.string }
   | .number target outcome :: remaining =>
       let partitioned := ofOutcomes remaining
       { partitioned with number := (target, outcome) :: partitioned.number }
-  | .dateTime target outcome :: remaining =>
+  | .document target outcome :: remaining =>
       let partitioned := ofOutcomes remaining
-      { partitioned with dateTime := (target, outcome) :: partitioned.dateTime }
+      { partitioned with document := (target, outcome) :: partitioned.document }
 
 end ScalarComputationOutcomePartitions
 
@@ -40,7 +40,7 @@ abbrev ScalarComputationRunView
 inductive ScalarComputationRunResultFault where
   | execution (cause : ScalarComputationRunFault)
   | numberSource (cause : NumericSourceTargetError)
-  | dateTimeTarget (target : FieldId)
+  | documentTarget (target : FieldId)
   deriving Repr, DecidableEq
 
 namespace CheckedScalarComputationRun
@@ -57,8 +57,8 @@ def executeResult (run : CheckedScalarComputationRun model)
       (ScalarComputationRunView StringResidual NumberPayload) := do
   let outcomes ← (run.execute world patterns input).mapError .execution
   let partitioned := ScalarComputationOutcomePartitions.ofOutcomes outcomes
-  if let some (target, _) := partitioned.dateTime.head? then
-    throw (.dateTimeTarget target)
+  if let some (target, _) := partitioned.document.head? then
+    throw (.documentTarget target)
   let string :=
     StringComputationRunView.fromOutcomes input
       stringResidualMessages partitioned.string

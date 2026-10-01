@@ -42,6 +42,10 @@ structure CheckedDateTimeDayShiftComputation (model : FlatModel) where
   target : CheckedDateTimeTarget model
   sourceDistinct :
     shift.source.id ≠ target.checked.target.id
+  /-- A Number amount cannot name a DateTime target, so this never refuses an admitted operation; it is
+  carried so a dependency-ordered plan can take the operation without re-deciding it. -/
+  amountExcludesTarget :
+    shift.amount.referencesField target.checked.target.id = false
 
 /-- One checked dynamic `Now` day shift and its declaration-owned target. -/
 structure CheckedNowDateTimeDayShiftComputation (model : FlatModel) where
@@ -72,8 +76,11 @@ def elaborateDateTimeDayShiftComputation
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
   if distinct : shift.source.id = target.checked.target.id then
     throw (.targetSelfReference targetField)
+  else if amountReads : shift.amount.referencesField target.checked.target.id = true then
+    throw (.targetSelfReference targetField)
   else
-    pure { shift, target, sourceDistinct := distinct }
+    pure { shift, target, sourceDistinct := distinct
+           amountExcludesTarget := by simpa using amountReads }
 
 /-- Check one dynamic `Now` day shift and complete-DateTime target without sampling
     the execution world. -/
