@@ -1,0 +1,350 @@
+{
+  "header" : {
+    "id" : "Rows2_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Rows2_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Rows",
+        "name" : "Rows",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Rows/Outer",
+            "name" : "Outer",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Rows/Outer/Inner",
+                "name" : "Inner",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Rows/Outer/Inner/IBase",
+                    "name" : "IBase",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Rows/Outer/Inner/ISub",
+                    "name" : "ISub",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Rows/Outer/Inner/IMul",
+                    "name" : "IMul",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Rows/Outer/Inner/ISubComp",
+                    "name" : "ISubComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../ISub",
+                      "computationAlternatives" : [ {
+                        "operation" : "[IBase] - [../OP]"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "m"
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Rows/Outer/Inner/IMulComp",
+                    "name" : "IMulComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../IMul",
+                      "computationAlternatives" : [ {
+                        "operation" : "[IBase] * [../OP]"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "m"
+                      } ]
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OBase",
+                "name" : "OBase",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OBase2",
+                "name" : "OBase2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OGate",
+                "name" : "OGate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OP",
+                "name" : "OP",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OSub",
+                "name" : "OSub",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OMul",
+                "name" : "OMul",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OH",
+                "name" : "OH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rows/Outer/OHN",
+                "name" : "OHN",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rows/Outer/OSubComp",
+                "name" : "OSubComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../OSub",
+                  "computationAlternatives" : [ {
+                    "operation" : "[OP] - [/Rows/Fix]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rows/Outer/OMulComp",
+                "name" : "OMulComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../OMul",
+                  "computationAlternatives" : [ {
+                    "operation" : "[OP] * [OBase2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rows/Outer/OHComp",
+                "name" : "OHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../OH",
+                  "computationAlternatives" : [ {
+                    "operation" : "[OBase2]",
+                    "precondition" : "FieldFilled(OP)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rows/Outer/OHNComp",
+                "name" : "OHNComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../OHN",
+                  "computationAlternatives" : [ {
+                    "operation" : "[OBase2]",
+                    "precondition" : "FieldNotFilled(OP)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rows/Outer/OPComp",
+                "name" : "OPComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../OP",
+                  "computationAlternatives" : [ {
+                    "operation" : "[OBase]",
+                    "precondition" : "FieldFilled(OGate)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rows/Base",
+            "name" : "Base",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rows/Fix",
+            "name" : "Fix",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rows/RootSum",
+            "name" : "RootSum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Rows/RootSumComp",
+            "name" : "RootSumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RootSum",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Outer*/OP)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Rows/FixComp",
+            "name" : "FixComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Fix",
+              "computationAlternatives" : [ {
+                "operation" : "[Base]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

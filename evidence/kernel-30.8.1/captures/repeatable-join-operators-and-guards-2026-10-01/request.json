@@ -1,0 +1,466 @@
+{
+ "model": "Rows2_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "r01-clean",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "10",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "7",
+       "OBase2": "3",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r02-obase-malformed",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "10",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "bad",
+       "OBase2": "3",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r03-ogate-absent",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "10",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "7",
+       "OBase2": "3",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r04-base-malformed",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "bad",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "7",
+       "OBase2": "3",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r05-base-absent",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "7",
+       "OBase2": "3",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r06-obase-negative",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "10",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "-2",
+       "OBase2": "3",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r07-obase-absent",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "10",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase2": "3",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r08-obase2-malformed",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "10",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "7",
+       "OBase2": "bad",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "1",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "r09-ibase-malformed",
+   "documentInline": {
+    "Rows": {
+     "Fix": "99",
+     "RootSum": "99",
+     "Base": "10",
+     "Outer": [
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "7",
+       "OBase2": "3",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "bad",
+         "ISub": "99",
+         "IMul": "99"
+        },
+        {
+         "IBase": "2",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      },
+      {
+       "OP": "99",
+       "OSub": "99",
+       "OMul": "99",
+       "OH": "99",
+       "OHN": "99",
+       "OBase": "5",
+       "OBase2": "4",
+       "OGate": "x",
+       "Inner": [
+        {
+         "IBase": "3",
+         "ISub": "99",
+         "IMul": "99"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

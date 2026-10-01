@@ -1458,6 +1458,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Operators and guards at a join, cycle classes, and a self-read asked after the authoring and scale gates on every shape, measured locally 2026-10-01](sources/evaluation-and-application-routes.md#src-join-operators-and-guards)
 <a id="src-two-level-repeatable-join"></a>
 - [Poison and empty substitution cross repetition levels and rows by the same rule, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-two-level-repeatable-join)
+<a id="src-repeatable-join-operators-and-guards"></a>
+- [Operators, computed-target fill guards and a fixed computed read on two repetition levels, measured locally 2026-10-01](sources/evaluation-and-application-routes.md#src-repeatable-join-operators-and-guards)
 <a id="src-scalar-mixed-reverse-authored-triple"></a>
 - [Reverse-authored mixed scalar triple, measured locally 2026-09-01](sources/evaluation-and-application-routes.md#src-scalar-mixed-reverse-authored-triple)
 <a id="src-numeric-extremum-call-boundary"></a>
