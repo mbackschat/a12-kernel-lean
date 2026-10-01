@@ -110,6 +110,52 @@ def certifyNumericComputationTable
         remaining := checkedRemaining
       }
 
+/-- Why a whole Number computation is refused: one alternative's operation, numbered from 1, or the
+table assembled from the checked operations. -/
+inductive NumericComputationTableElabError where
+  | operation (alternative : Nat) (error : NumericComputationElabError)
+  | table (error : NumericComputationTableError)
+  deriving Repr, DecidableEq
+
+namespace NumericComputationTableElabError
+
+/-- The Kernel class of a whole computation's refusal, through each failure's own projection. -/
+def diagnostic? : NumericComputationTableElabError → Option KernelStaticDiagnostic
+  | .operation _ error => error.targetDiagnostic?
+  | .table error => error.diagnostic?
+
+end NumericComputationTableElabError
+
+/-- Elaborate a whole Number computation from its authored alternatives, each a precondition beside an
+operation. The Kernel asks every alternative's other gates before any read of the target, so a
+self-read in one alternative beside a scale mismatch, a second unbraced division or an unresolved
+name in another draws that other class
+([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+An operation refuses its own self-read only past its own gates, so the first refusal that is no
+self-read, in authored order, answers first, then the first self-read, then the table's checks,
+among them a guard's self-read. Where an unguarded alternative and a self-read meet, the Kernel
+reports both ([`spec/09`](../../../spec/09-computations.md) §1) and this reports one: an operation's
+self-read, or the unguarded alternative ahead of a guard's. The order among two alternatives' other refusals is
+authored order here, which only one alternative failing ever measures. -/
+def elaborateNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
+    (target : FieldId)
+    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
+    Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
+  let elaborated := alternatives.zipIdx.map fun ((precondition, expression), index) =>
+    (index + 1, precondition,
+      elaborateNumericTargetComputationOperation model declaringGroup target expression)
+  let refusal? (selfRead : Bool) := elaborated.findSome? fun (index, _, result) =>
+    match result with
+    | .error error =>
+        if (error matches .targetSelfReference _) == selfRead then some (index, error) else none
+    | .ok _ => none
+  match refusal? false, refusal? true with
+  | some (index, error), _ | none, some (index, error) => .error (.operation index error)
+  | none, none =>
+      let checked := elaborated.filterMap fun (_, precondition, result) =>
+        result.toOption.map fun operation => { precondition, operation }
+      (certifyNumericComputationTable checked).mapError .table
+
 namespace CheckedNumericComputationTable
 
 /-- Retain every checked row in authored order for same-target assembly. -/

@@ -136,7 +136,7 @@ power over a power, a read of the target, which every measured shape reaches onl
 aggregates, `FirstFilledValue` and group counts included, and a copied field the generated comparison
 refuses ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
 The class is one operation's: a computation of several alternatives asks every alternative's other
-gates before any read of the target. The two authoring failures together, and other computation
+gates before any read of the target, which `elaborateNumericTargetComputationTable` owns. The two authoring failures together, and other computation
 failures, remain unmapped. -/
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic

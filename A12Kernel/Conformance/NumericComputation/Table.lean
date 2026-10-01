@@ -179,4 +179,53 @@ example :
         some (.supported (.inheritedPoison .malformed)) := by
   native_decide
 
+/-- The fixture beside a scale-2 Number, so one alternative's scale gate can fail. -/
+private def fractionModel : FlatModel :=
+  { model with fields := model.fields ++
+      [{ numberDeclaration 35 "Frac" with policy := { kind := .number { scale := 2, signed := true } } }] }
+
+/-- The class a whole two-alternative computation draws, guarded on `Source` and `Later`, or the
+refusal's arm where it projects none. -/
+private def computationClass (first second : AuthoredNumericExpr SurfaceNumericAtom)
+    (firstGuard : ComputationCondition := .fieldFilled sourceId) : String :=
+  match elaborateNumericTargetComputationTable fractionModel ["Root"] targetId
+      [(some firstGuard, first), (some (.fieldFilled laterId), second)] with
+  | .ok _ => "admitted"
+  | .error error =>
+      (error.diagnostic?.map (·.kernelCode)).getD ("none:" ++ (reprStr error).takeWhile (!·.isWhitespace))
+
+/- The Kernel asks every alternative's other gates before a read of the target, so a self-read in one
+alternative beside a scale mismatch or a second unbraced division in another draws that other class
+in either order, and beside a later unresolved name that name's refusal; beside a clean alternative,
+and from a guard, the self-read draws its own class
+([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards),
+`settle.tsv` A01 to A10). -/
+example :
+    let target := surfaceField ["Root"] "Target"
+    let source := surfaceField ["Root"] "Source"
+    let later := surfaceField ["Root"] "Later"
+    let frac := surfaceField ["Root"] "Frac"
+    let two : AuthoredNumericExpr SurfaceNumericAtom := .literal { value := 2, authoredScale := 0 }
+    let oneHalf : AuthoredNumericExpr SurfaceNumericAtom := .literal { value := 3 / 2, authoredScale := 1 }
+    let divisions : AuthoredNumericExpr SurfaceNumericAtom := .binary .divide (.binary .divide source later) source
+    [computationClass (.binary .multiply target two) (.binary .multiply source oneHalf),
+      computationClass (.binary .multiply source oneHalf) (.binary .multiply target two),
+      computationClass target frac, computationClass frac target,
+      computationClass target divisions, computationClass divisions target,
+      computationClass target later, computationClass source frac,
+      computationClass source frac (firstGuard := .fieldFilled targetId),
+      computationClass source later (firstGuard := .fieldFilled targetId),
+      computationClass source later] =
+      ["MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES",
+        "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES",
+        "MVK_TOO_MANY_DIV_FOR_CALC", "MVK_TOO_MANY_DIV_FOR_CALC",
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", "MVK_INVALID_COMPARE_DEC_PLACES",
+        "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", "admitted"] ∧
+    (match elaborateNumericTargetComputationTable fractionModel ["Root"] targetId
+        [(some (.fieldFilled sourceId), target),
+          (some (.fieldFilled laterId), surfaceField ["Root"] "Nope")] with
+      | .error (.operation 2 (.resolve _)) => true
+      | _ => false) = true := by
+  native_decide
+
 end A12Kernel.Conformance.NumericComputation.Table
