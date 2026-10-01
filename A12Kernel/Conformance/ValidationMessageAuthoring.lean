@@ -439,6 +439,29 @@ example :
       side "See $Amount.Vordruckzeile$" = some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") := by
   native_decide
 
+/- A key is a literal or an entity with a key of its own, and the checks run in the parser's event
+order: every name resolves as it is read, outer before inner, then a key that is itself keyed is
+refused, then the index gate answers
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)).
+So a name that resolves nowhere answers first in any position, a keyed field or group key draws the
+nesting class, and a literal followed by a key reaches the index gate, which this fragment leaves
+unprojected. The category suffix's two declaration gates carry their own classes
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-rule-message-parameter-grammar)). -/
+example :
+    let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    root "See $Deep For Head/Deeper/Deep For \"k\"$" = some (some "ILLEGAL_SEMANTIC_INDEX") ∧
+      root "See $Deep For Head For \"k\"$" = some (some "ILLEGAL_SEMANTIC_INDEX") ∧
+      root "See $Deep For Head/Deeper/Deep For Deep$" = some (some "ILLEGAL_SEMANTIC_INDEX") ∧
+      root "See $Deep For \"k1\" For \"k2\"$" = some none ∧
+      root "See $Deep For Nope For \"k\"$" = some (some "INVALID_ENTITY") ∧
+      root "See $Nope For Head/Deeper/Deep For \"k\"$" = some (some "INVALID_ENTITY") ∧
+      root "See $Deep For Head/Deeper/Deep For Nope$" = some (some "INVALID_ENTITY") ∧
+      namedClassOn? model ["Order"] (bare "Status") "See $Status->Nope$" =
+        some (some "INVALID_CATEGORY") ∧
+      namedClassOn? model ["Order"] (bare "Amount") "See $Amount->Group$" =
+        some (some "FIELD_NO_ENUM") := by
+  native_decide
+
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/
 private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
 
@@ -669,10 +692,11 @@ example :
 /- A key is a quoted token or a path to the keying field, and nothing else: an **unquoted** bare word
 is not a token that fails to parse but a field reference that fails to resolve, which is the
 `INVALID_ENTITY` the Kernel reports for that same spelling. So a key's name is resolved even though
-the keyed form requires no membership. A key that is itself keyed is refused as nesting. -/
+the keyed form requires no membership. A literal takes no key of its own, so one written after it
+leaves the literal for the index gate rather than nesting. -/
 example :
     templateError? "$Amount For \"k1\" For \"k2\"$" =
-        some (.nestedSemanticIndex "Amount For \"k1\" For \"k2\"") ∧
+        some (.semanticIndexUnsupported "Amount For \"k1\" For \"k2\"") ∧
       templateError? "$Amount For k1$" =
         some (.reference "Amount For k1"
           (.invalidEntity (pathAt (.relative 0) [] "k1"))) := by

@@ -166,7 +166,9 @@ inductive ValidationMessageTemplateError where
   | ruleGroupImmediatelyBelowRoot (parameter : String)
   /-- A Base Year parameter was authored against a model that declares none. -/
   | noBaseYear
-  /-- A semantic-index key is itself keyed. -/
+  /-- A semantic-index key that is an entity carrying a key of its own, refused only after every name in
+  the parameter has resolved
+  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
   | nestedSemanticIndex (parameter : String)
   /-- A **well-formed** keyed parameter, refused because this fragment's model is nonrepeatable and so
   declares no semantic index for the key to name. This is the fragment's own boundary, not the
@@ -192,10 +194,12 @@ inductive MessageParameterSuffix where
   | category (name : String)
   deriving Repr, DecidableEq
 
-/-- A key as the author spelled it: a decoded quoted literal, or a path to the keying field. -/
+/-- A key as the author spelled it: a decoded quoted literal, or a path to the keying entity, which the
+grammar lets carry a key of its own so that the checker, not the parser, refuses the nesting. -/
 inductive AuthoredMessageKey where
   | literal (token : String)
   | field (reference : AuthoredFieldPath)
+  | keyedField (reference : AuthoredFieldPath) (key : AuthoredMessageKey)
   deriving Repr, DecidableEq
 
 private inductive ParsedValidationMessagePart where
@@ -424,6 +428,19 @@ private def parseMessageKey (parameter key : String) :
   else
     .field <$> parseMessagePath parameter key
 
+/-- Decode a key from its `For`-separated segments. An entity segment takes the rest as its own key, as
+the grammar's recursive key does. A literal takes no key, so a key written after one is the parser's
+syntax fault, which the Kernel reports only after the index gate has answered — measured with a
+literal trailing key — so the trailing text carries nothing this fragment checks. -/
+private def parseMessageKeyChain (parameter : String) :
+    List String → Except ValidationMessageTemplateError AuthoredMessageKey
+  | [] => .error (.invalidParameter parameter)
+  | [key] => parseMessageKey parameter key
+  | key :: rest => do
+      match ← parseMessageKey parameter key with
+      | .field reference => pure (.keyedField reference (← parseMessageKeyChain parameter rest))
+      | other => pure other
+
 /-- Split the trailing key off a parameter, then decode the remaining spec's own suffix. The key
 separator is the selected language's `For` terminal surrounded by spaces, which is the canonical
 authored spelling; this fragment does not accept the grammar's whitespace-free forms. -/
@@ -470,11 +487,9 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
   -- The Base Year terminal is checked first: it is a terminal, so an unquoted occurrence is never a
   -- field name, and its offset syntax is not part of any path.
   match splitMessageKey profile parameter with
-  | (spec, some keyText) =>
-      if (splitMessageKey profile keyText).2.isSome then
-        .error (.nestedSemanticIndex parameter)
-      else do
-        let key ← parseMessageKey parameter keyText
+  | (spec, some keyText) => do
+        let key ← parseMessageKeyChain parameter
+          (keyText.splitOn s!" {profile.forTerminal} ")
         -- The suffix sits before the key, so the spec is re-split by the ordinary rules.
         match spec.splitOn "->" with
         | [inner, category] =>
@@ -927,12 +942,18 @@ private def checkMessageParts (model : FlatModel)
       -- these resolutions are kept for their refusals, and their results are unusable here. A group
       -- is an entity here and passes to the index gate, measured on either position. The
       -- decoded suffix is likewise unusable, since no part this fragment can build carries a key.
+      -- Every name resolves in written order before any key check, and only then is a keyed key
+      -- refused, which is the parser's order of events.
       discard <| resolveMessageEntity model profile condition parameter reference
-      match key with
+      let rec resolveKey : AuthoredMessageKey → Except ValidationMessageTemplateError Unit
         | .literal _ => pure ()
         | .field keyReference =>
-            discard <|
-              resolveMessageEntity model profile condition parameter keyReference
+            discard <| resolveMessageEntity model profile condition parameter keyReference
+        | .keyedField keyReference inner => do
+            discard <| resolveMessageEntity model profile condition parameter keyReference
+            resolveKey inner
+      resolveKey key
+      if let .keyedField _ _ := key then throw (.nestedSemanticIndex parameter)
       throw (.semanticIndexUnsupported parameter)
   | .fieldCategory parameter reference category :: rest => do
       let resolved ←

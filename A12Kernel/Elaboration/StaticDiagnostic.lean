@@ -205,10 +205,12 @@ inductive KernelStaticDiagnostic where
   | pathSpecNotAllowed
   /-- An `index(...)` parameter written with neither suffix. The Kernel treats a bare index reference as meaningless rather than defaulting it. -/
   | indexFieldSuffixMissing
-  /-- Under the category suffix, a referenced index field is not an Enumeration. Reachable from that suffix only: the value suffix admits a wholly non-Enumeration set instead. -/
+  /-- Under a message parameter's category suffix, the referenced field — an `index(...)` field or an ordinary field reference — is not an Enumeration. Reachable from that suffix only: the value suffix admits a wholly non-Enumeration set instead. -/
   | indexFieldNoEnumeration
-  /-- Under the category suffix, a referenced index field's Enumeration does not declare the named category. Distinct from the enumeration-category *constant* class, which is the condition's own vocabulary. -/
+  /-- Under a message parameter's category suffix, the referenced field's Enumeration — an `index(...)` field's or an ordinary field reference's — does not declare the named category. Distinct from the enumeration-category *constant* class, which is the condition's own vocabulary. -/
   | indexFieldCategoryUnknown
+  /-- A message parameter's semantic-index key that is a keyed entity in its own right. -/
+  | illegalSemanticIndex
   /-- Two referenced index fields declare different value sets, or the same values in a different order. The one class both suffixes can raise. -/
   | indexFieldEnumValuesDiffer
   /-- Two referenced index fields agree on values but map them to different category values. The category suffix alone reads this. -/
@@ -527,6 +529,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .indexFieldSuffixMissing => "INVALID_INDEX_FIELD_PARAMETER"
   | .indexFieldNoEnumeration => "FIELD_NO_ENUM"
   | .indexFieldCategoryUnknown => "INVALID_CATEGORY"
+  | .illegalSemanticIndex => "ILLEGAL_SEMANTIC_INDEX"
   | .indexFieldEnumValuesDiffer => "INVALID_INDEX_FIELD_ENUM_XML_VALUES"
   | .indexFieldCategoryMappingDiffers => "INVALID_INDEX_FIELD_ENUM_XML_TO_CAT"
   | .indexFieldDisplayMappingDiffers => "INVALID_INDEX_FIELD_ENUM_XML_TO_DISPLAY"
@@ -717,7 +720,7 @@ def all : List KernelStaticDiagnostic :=
     .paramSizeInvalidTwo, .pointInA12Model,
     .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed,
     .indexTypeInconsistent,
-    .invalidFieldInParameter,
+    .invalidFieldInParameter, .illegalSemanticIndex,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,
     .invalidConst, .noStringOrEnum,
     .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,

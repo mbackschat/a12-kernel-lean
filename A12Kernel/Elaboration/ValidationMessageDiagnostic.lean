@@ -12,7 +12,7 @@ the [group-argument checkpoints](../../docs/sources/message-and-pointer-probes.m
 and the [name-position](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals) and [carrier](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers) checkpoints. This projection is for the rule producer; the shared error type alone supplies no evidence
 for a String-pattern or computation-message carrier. A codeless repertoire finding remains in the
 original error, beside any named cause. `none` means no established named class, never acceptance;
-in particular the fragment's generic parse and semantic-index refusals stay unmapped. -/
+in particular the fragment's generic parse refusals and its unmodelled index gate stay unmapped. -/
 def ValidationMessageTemplateError.namedRuleDiagnostic? :
     ValidationMessageTemplateError → Option KernelStaticDiagnostic
   | .emptyTemplate => some .ruleHasNoErrorText
@@ -35,6 +35,9 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .reference _ (.shortNameNotUnique _) => some .messageFieldNameNotUnique
   | .groupInNamePosition _ _ => some .messageFieldNotReferenced
   | .groupInFormPointer _ _ => some .invalidFieldInParameter
+  | .categoryFieldNotEnumeration _ _ => some .indexFieldNoEnumeration
+  | .category _ (.unknownCategory _) => some .indexFieldCategoryUnknown
+  | .nestedSemanticIndex _ => some .illegalSemanticIndex
   | .invalidGroupParameter _ => some .invalidGroupInParameter
   | .groupShortNameNotUnique _ _ => some .messageFieldNameNotUnique
   | .groupParameterAboveRoot _ => some .parameterTooManyParentGroups
