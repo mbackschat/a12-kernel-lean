@@ -1,0 +1,14 @@
+# row	suppress	alternatives (precondition => operation; ...)	kernel-codes
+K01	-	[Base1] + [Gate1]	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+K02	-	[Gate1] + [Base1]	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+K03	-	[Base1] - [Gate1]	MVK_NO_NUMBER_FOR_CALC
+K04	-	[Base1] * [Gate1]	MVK_NO_NUMBER_FOR_CALC
+K05	-	[Base1] / [Gate1]	MVK_NO_NUMBER_FOR_CALC
+K06	-	[Gate1]	MVK_INVALID_COMPARE_TO_ENUM_OR_STRING
+K07	-	Abs([Gate1])	MVK_NO_NUMBER
+K08	-	Max([Base1], [Gate1])	MVK_NOT_SORTABLE
+K09	-	[Gate1] + [Gate2]	MVK_INVALID_COMPARE_TO_ENUM_OR_STRING
+K10	-	[Base1] ^ [Gate1]	MVK_NO_NUMBER_FOR_CALC
+R01	-	FieldFilled(T3) => [Base1]; FieldFilled(Nope) => [Base2]	MVK_INVALID_ENTITY
+R02	-	FieldFilled(Nope) => [Base2]; FieldFilled(T3) => [Base1]	MVK_INVALID_ENTITY
+R03	-	FieldFilled(T3) => [Base1]; FieldFilled(Gate2) => [Base2]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD

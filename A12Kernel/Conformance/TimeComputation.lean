@@ -263,6 +263,32 @@ private def worldSelfReferenceError? :
   | .error error => some error
   | .ok _ => none
 
+/-- `Time(HoursFromTime(Now), MinutesFromTime(source))` into the target: a world hour beside a static
+minute read off `source`. -/
+private def nowHourMinuteError? (source : FieldId) :
+    Option (Option WorldTimeConstructionComputationElabError) := do
+  let now ← (elaborateNowShiftedTimeExtractorLiteral executionModel .hour .hour .hours 0).toOption
+  let static ← (elaborateTimeComponents executionModel
+    (.minute (.extractor .hour source) (.extractor .minute source))).toOption
+  match static with
+  | .minute _ minute =>
+      match certifyWorldTimeConstructionComputation executionModel
+          (.minute now (.static minute)) 1 with
+      | .error error => some (some error)
+      | .ok _ => some none
+  | _ => none
+
+/- A world hour beside a minute read off the target draws the reference class, and the same minute read
+off another clock is admitted
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep),
+rows `W01` and `W02`). -/
+example :
+    nowHourMinuteError? 1 = some (some (.targetSelfReference 1)) ∧
+      WorldTimeConstructionComputationElabError.diagnostic? (.targetSelfReference 1) =
+        some .errorReferenceToCalculatedField ∧
+      nowHourMinuteError? 20 = some none := by
+  native_decide
+
 /- Exact complete Time is admitted; component or format widening fails before execution. -/
 example :
     timeTargetError? (model) = none ∧

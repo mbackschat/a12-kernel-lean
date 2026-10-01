@@ -293,6 +293,40 @@ example :
         "MVK_TOO_MANY_POW_FOR_CALC", "MVK_TOO_MANY_DIV_FOR_CALC"] := by
   native_decide
 
+/- A nested power and a String operand in an addition are asked in their own alternative's place too:
+each answers ahead of a later unresolved name and behind an earlier one (`settle2.tsv` C03 to C06). The
+String operand's own class is not projected, because the Kernel picks it by the operator and the other
+operand's kind, `MVK_NO_STRING_OR_NUMBER_FOR_ADD` here, and this refusal is raised at the operand. -/
+example :
+    let source := surfaceField ["Root"] "Source"
+    let nope := surfaceField ["Root"] "Nope"
+    let text := surfaceField ["Root"] "Wrong"
+    let two : AuthoredNumericExpr SurfaceNumericAtom := .literal { value := 2, authoredScale := 0 }
+    let power : AuthoredNumericExpr SurfaceNumericAtom := .power (.power source two) two
+    let mixed : AuthoredNumericExpr SurfaceNumericAtom := .binary .add source text
+    [computationClass power nope, computationClass nope power, computationClass nope mixed] =
+        ["MVK_TOO_MANY_POW_FOR_CALC", "MVK_INVALID_ENTITY", "MVK_INVALID_ENTITY"] ∧
+      (elaborateNumericTargetComputationTable fractionModel ["Root"] targetId
+          [(some (.fieldFilled sourceId), mixed), (some (.fieldFilled laterId), nope)] matches
+        .error (.operation 1 _)) := by
+  native_decide
+
+/- A guard reading the target beside a guard the model does not admit meets the unadmitted guard first
+in either order, where the Kernel reports that guard's unresolved name; beside an admitted guard it draws
+the reference class (`settle2k.tsv` R01 to R03). -/
+example :
+    let source := surfaceField ["Root"] "Source"
+    let unresolved := some (ComputationCondition.fieldFilled 999)
+    (elaborateNumericTargetComputationTable fractionModel ["Root"] targetId
+        [(some (.fieldFilled targetId), source), (unresolved, source)] matches
+      .error (.table (.guardNotAdmitted 2))) ∧
+    (elaborateNumericTargetComputationTable fractionModel ["Root"] targetId
+        [(unresolved, source), (some (.fieldFilled targetId), source)] matches
+      .error (.table (.guardNotAdmitted 1))) ∧
+    tableClass [(some (.fieldFilled targetId), source), (some (.fieldFilled laterId), source)] =
+      "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" := by
+  native_decide
+
 /- A guard is resolved before it reaches the elaborator, so one naming no field meets it as an
 unadmitted guard. It is asked in its alternative's place: ahead of a later scale mismatch, behind an
 earlier one. The Kernel's class for the unresolved name, `MVK_INVALID_ENTITY`, is the caller's to

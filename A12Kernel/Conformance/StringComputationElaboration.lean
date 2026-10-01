@@ -369,23 +369,31 @@ example :
 
 /- Every measured target read projects to the one Kernel class: a direct copy and a root range
 ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-computed-target-reference)),
-and a concatenation reading the target on either side or beside another field
-([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)).
-An accepted other-field copy remains diagnostic-free. -/
+and a concatenation reading the target on either side, beside another field, through a range, beside
+a Number's string form, or twice
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep),
+rows `S01` to `S09`). The twice-read row draws the class once per read in the Kernel; this refusal names
+the first. An accepted other-field copy and range remain diagnostic-free. -/
 example :
     let reads := [
       StringExpr.field (bare "Target"), .range (bare "Target") 1 1,
       .concat (.field (bare "Target")) (.literal "X"),
       .concat (.literal "X") (.field (bare "Target")),
-      .concat (.field (bare "Source")) (.field (bare "Target"))]
+      .concat (.field (bare "Source")) (.field (bare "Target")),
+      .concat (.range (bare "Target") 1 2) (.literal "x"),
+      .concat (.fieldValueAsString (bare "Amount")) (.field (bare "Target")),
+      .concat (.field (bare "Target")) (.field (bare "Target"))]
     let errors := reads.map fun expression => operationErrorOf
       (elaborateStringComputationOperation model ["Form"] target.id expression)
     let control := operationErrorOf
       (elaborateStringComputationOperation model ["Form"] target.id
         (.concat (.field (bare "Source")) (.literal "X")))
+    let rangeControl := operationErrorOf
+      (elaborateStringComputationOperation model ["Form"] target.id
+        (.concat (.range (bare "Source") 1 2) (.literal "x")))
     errors.all (· == some (.targetSelfReference target.id)) ∧
       errors.all (targetDiagnosticOf · == some .errorReferenceToCalculatedField) ∧
-      control = none ∧ targetDiagnosticOf control = none := by
+      control = none ∧ targetDiagnosticOf control = none ∧ rangeControl = none := by
   native_decide
 
 /- A malformed range retains its local refusal without an exact Kernel projection because no
