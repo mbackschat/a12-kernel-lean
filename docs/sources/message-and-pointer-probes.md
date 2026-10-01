@@ -75,6 +75,18 @@
 - `limit`: static admission only, one model, `en_US`, rule carrier. Whether the shared root gate also holds on the computation message carrier is untested, though the terminal bundle is carrier-identical there.
 - `sync`: no entry. The code split confirms a12-dmkits' own observation, and the shared root gate adds a cell neither estate had recorded rather than contradicting one; it is carried to the peer in conversation rather than as a request, since nothing they ship states otherwise.
 
+<a id="src-message-name-position-refusals"></a>
+#### The name position's path refusals carry their own classes, and a name that resolves to a group is refused as no read field, measured locally 2026-10-01
+
+- `revision`: the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, clean before and after, its source-built `dmtool` launcher, Kernel `30.8.1`. Every row is one `rule check --message en_US=…` verdict, `KERNEL_CONFIRMED`.
+- `bytes`: the rows run on the [argument-layer grid's](#src-message-group-argument-layers) twin model `GroupAvailTwin_DM.json` `142dd1cd584f191efb78bcb4e9eabb59682d7d2d475b727bb460b364868c8cf5`, which allows short names. In the [grid directory](../../evidence/kernel-30.8.1/captures/message-name-position-refusals-2026-10-01/) are rows `rows.tsv` `d08372f964215a1a8bbb612b71c1878646c8f6ac5417f6ff7d517752995b661f` with each row's prediction, and code-only observations `obs.json` `4a97d2a4f8a2b2d6d9b46a09533d513d419766269baa7f0e7b051f9a28cc7331`.
+- `question`: Lean's name position resolved through the condition's resolver and so kept a root miss, an entity miss, a walk past the root and a short-name ambiguity apart, but projected none of them to a class, and a group named there fell into the entity miss. The [root-gate checkpoint](#src-two-positions-share-the-root-gate) measured the first two on absolute paths only. Of 10 non-control rows 9 held.
+- `classes`: from a root rule reading `Store/X`, `$/Nope/X$` draws `INVALID_ROOT_GROUP`, `$/Probe/Nope/X$`, `$Nope$` and `$Nope/X$` draw `INVALID_ENTITY`, `$X$`, whose `X` is two fields, draws `ERROR_TEXT_FIELDNAME_NOT_UNIQUE`, and the unread `$Z$` draws `INVALID_FIELD`. From `/Probe/Store`, `$../../X$` draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, `$..Wrong/X$` `INVALID_ENTITY` and the unread `$../Beside/Z$` `INVALID_FIELD`.
+- `group-named`: `$Store$`, naming the group the condition reads into, draws `INVALID_FIELD`, against the prediction of `INVALID_ENTITY`. So the name position resolves a group as an entity and then refuses it as no read field.
+- `controls`: `$Store/X$` from the root rule is admitted.
+- `limit`: English condition language, static admission on fixed groups and field reads, the bare name form only. Whether a group named with a suffix, a key or a form-pointer terminal draws the same class is not measured.
+- `sync`: locally originated for the group-named, relative, above-root and bare rows, on [`SPEC-2026-10-01-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-03); the short-name row reproduces the peer's `$Book$` row ([inbound](../SOURCES.md#inbound-2026-10-01a-provenance)).
+
 <a id="src-name-position-index-terminal"></a>
 #### `index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all, measured locally 2026-09-05
 

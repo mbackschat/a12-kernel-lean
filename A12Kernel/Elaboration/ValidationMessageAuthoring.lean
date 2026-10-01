@@ -106,6 +106,11 @@ inductive ValidationMessageTemplateError where
   /-- A name colliding with a terminal was written without the grammar's quote escape. -/
   | unquotedTerminalName (name : String)
   | reference (parameter : String) (error : ResolveError)
+  /-- A name-position path that names a declared group rather than a field. The Kernel resolves the
+  group and refuses it on the class of a field the condition does not read, `INVALID_FIELD`, even when
+  the condition reads inside the group
+  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)). -/
+  | groupInNamePosition (parameter : String) (group : GroupPath)
   | fieldNotReferenced (parameter : String) (field : FieldId)
   /-- A category suffix was written with no category name after the arrow. -/
   | missingCategoryName (parameter : String)
@@ -798,7 +803,10 @@ private def resolveMessageEntity (model : FlatModel)
     | .error (.unquotedKeyword name) => throw (.unquotedTerminalName name)
   match hResolved :
       model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
-  | .error error => throw (.reference parameter error)
+  | .error error =>
+      match error.isGroupDisplaceableMiss, model.groupNamedBy? condition.rowGroup reference with
+      | true, some group => throw (.groupInNamePosition parameter group)
+      | _, _ => throw (.reference parameter error)
   | .ok declaration => pure { reference, declaration, resolved := hResolved }
 
 private def resolveMessageReference (model : FlatModel)

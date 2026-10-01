@@ -7,7 +7,9 @@ namespace A12Kernel
 
 The [retained rule-message checks](../../docs/SOURCES.md#src-message-template-character-repertoire)
 and [group lexical checks](../../docs/SOURCES.md#src-message-group-parameter-resolution) fix these
-classes. This projection is for the rule producer; the shared error type alone supplies no evidence
+classes, and the group position's model classes and the name position's path classes are measured at
+the [group-argument checkpoints](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)
+and the [name-position checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals). This projection is for the rule producer; the shared error type alone supplies no evidence
 for a String-pattern or computation-message carrier. A codeless repertoire finding remains in the
 original error, beside any named cause. `none` means no established named class, never acceptance;
 in particular the fragment's generic parse and semantic-index refusals stay unmapped. -/
@@ -27,6 +29,18 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .groupParameterLexical _ .separator => some .unexpectedToken
   | .groupParameterLexical _ .unexpected => some .unexpectedToken
   | .unsupportedCharacterWithError _ cause => cause.namedRuleDiagnostic?
+  | .reference _ (.unknownRootGroup _) => some .messageInvalidRootGroup
+  | .reference _ (.invalidEntity _) => some .messageInvalidEntity
+  | .reference _ (.aboveRoot _) => some .parameterTooManyParentGroups
+  | .reference _ (.shortNameNotUnique _) => some .messageFieldNameNotUnique
+  | .groupInNamePosition _ _ => some .messageFieldNotReferenced
+  | .invalidGroupParameter _ => some .invalidGroupInParameter
+  | .groupShortNameNotUnique _ _ => some .messageFieldNameNotUnique
+  | .groupParameterAboveRoot _ => some .parameterTooManyParentGroups
+  | .groupTurningPointMismatch _ => some .messageInvalidEntity
+  | .unknownRootGroup _ _ => some .messageInvalidRootGroup
+  | .retiredGroupTerminal _ _ => some .parameterInvalidInNewWorld
+  | .ruleGroupImmediatelyBelowRoot _ => some .ruleGroupImmediatelyBelowRoot
   | _ => none
 
 /-- The established named class of a String-pattern field-message refusal.

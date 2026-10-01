@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-01-03"></a>
+### `SPEC-2026-10-01-03` — the name position's relative and bare refusals carry their own classes, and a name that resolves to a group is refused as no read field
+
+- `status`: pending
+- `origin`: locally originated; it extends this project's root-gate rows, which read absolute paths only, onto bare and relative names, and adds a group named in the name position. The short-name row reproduces your `$Book$` row at `98525518a` and asks nothing of you.
+- `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the root-gate bullet's last two sentences.
+- `delta`: from a root rule reading `Store/X`, `$Nope$` and `$Nope/X$` draw `INVALID_ENTITY` and `$Store$` draws `INVALID_FIELD` while `$Store/X$` is admitted. From `/Probe/Store`, `$../../X$` draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS` and `$..Wrong/X$` `INVALID_ENTITY`.
+- `basis`: this project's [name-position grid](SOURCES.md#src-message-name-position-refusals), 11 `rule check --message` rows at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, with each row's prediction and the code-only verdicts retained; 9 of 10 non-control predictions held, the group-named row predicted `INVALID_ENTITY`.
+- `surfaces`: any peer checker, lock doc or finding that refuses a group named in the name position as an unknown entity, or the name position's walk past the root on the condition parser's `MVK_` class.
+- `acceptance`: confirm the group-named row and the relative rows, or supply a name-position path whose class this account does not predict.
+- `limit`: static admission only, fixed groups, field reads, the bare name form and an English condition language. A group named with a suffix, a key or a form-pointer terminal is not measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-01-02"></a>
 ### `SPEC-2026-10-01-02` — a parent walk of two or more up-steps before a token that continues no name counts one step more, a turning point is compared by its first word, and an ordinary dotted continuation joins its name segment
 

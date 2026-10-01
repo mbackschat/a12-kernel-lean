@@ -1,0 +1,132 @@
+[
+ {
+  "id": "N0",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store/X$.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "N1",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $X$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+  ]
+ },
+ {
+  "id": "N2",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Nope$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "N3",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Store$.",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "N4",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $/Nope/X$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ROOT_GROUP"
+  ]
+ },
+ {
+  "id": "N5",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $/Probe/Nope/X$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "N6",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $../../X$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "N7",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $..Wrong/X$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ },
+ {
+  "id": "N8",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $Z$.",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "N9",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $../Beside/Z$.",
+  "valid": false,
+  "codes": [
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "id": "N10",
+  "model": "GroupAvailTwin_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $Nope/X$.",
+  "valid": false,
+  "codes": [
+   "INVALID_ENTITY"
+  ]
+ }
+]

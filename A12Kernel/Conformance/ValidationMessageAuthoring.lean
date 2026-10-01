@@ -381,6 +381,36 @@ example :
         some (.unquotedTerminalName "For") := by
   native_decide
 
+/-- The Kernel code a template's refusal projects to, for a rule in `group` reading `reference` on
+`onModel`. -/
+private def namedClassOn? (onModel : FlatModel) (group : GroupPath) (reference : SurfaceFieldPath)
+    (template : String) : Option (Option String) := do
+  let condition ← (elaborate onModel group (.fieldFilled reference)).toOption
+  match elaborateValidationMessageTemplate onModel keywordProfile condition template with
+  | .ok _ => none
+  | .error error => some (error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode)
+
+/- The name position's path refusals carry their own classes: an unknown root, an entity that does not
+resolve below it, a walk past the root, and a bare name two fields share where short names reach the
+whole model. A name that resolves to a group is no read field, whatever the condition reads inside it
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)). -/
+example :
+    let shortNames := { model with fieldRefByShortNameAllowed := true }
+    let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    root "See $/Nope/Amount$" = some (some "INVALID_ROOT_GROUP") ∧
+      root "See $/Order/Nope/Amount$" = some (some "INVALID_ENTITY") ∧
+      root "See $Nope$" = some (some "INVALID_ENTITY") ∧
+      root "See $Nope/Amount$" = some (some "INVALID_ENTITY") ∧
+      root "See $Head$" = some (some "INVALID_FIELD") ∧
+      root "See $Head/Deeper$" = some (some "INVALID_FIELD") ∧
+      namedClassOn? model ["Order", "Head"] (bare "Amount") "See $../../Amount$" =
+        some (some "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS") ∧
+      namedClassOn? model ["Order", "Head"] (bare "Amount") "See $..Wrong/Amount$" =
+        some (some "INVALID_ENTITY") ∧
+      namedClassOn? shortNames ["Order", "Side"] (bare "Aside") "See $Amount$" =
+        some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") := by
+  native_decide
+
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/
 private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
 

@@ -395,6 +395,17 @@ inductive KernelStaticDiagnostic where
   | wrongNumberOfDollars
   | noMessageBaseYear
   | messageFieldNotReferenced
+  /-- A message parameter whose absolute path opens on no declared root group, in either position. The
+  condition parser's class for the same defect is `invalidRootGroup`. -/
+  | messageInvalidRootGroup
+  /-- A name-position path that resolves to no entity below its root, or a turning point naming another
+  group in either position. The condition parser's class is `invalidEntity`. -/
+  | messageInvalidEntity
+  /-- A bare message parameter that falls back to a field short name two fields share. The condition
+  parser's class is `fieldNameNotUnique`. -/
+  | messageFieldNameNotUnique
+  /-- The rule-group shorthand in a rule declared directly in the root group. -/
+  | ruleGroupImmediatelyBelowRoot
   /-- A message parameter outside the producer's grammar. Measured on the String-pattern field message,
   where only the two fixed tokens are parameters. -/
   | invalidMessageParameter
@@ -618,6 +629,10 @@ def kernelCode : KernelStaticDiagnostic → String
   | .wrongNumberOfDollars => "WRONG_NUMBER_OF_DOLLARS"
   | .noMessageBaseYear => "NO_BASE_YEAR"
   | .messageFieldNotReferenced => "INVALID_FIELD"
+  | .messageInvalidRootGroup => "INVALID_ROOT_GROUP"
+  | .messageInvalidEntity => "INVALID_ENTITY"
+  | .messageFieldNameNotUnique => "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+  | .ruleGroupImmediatelyBelowRoot => "RULEGROUP_IMMEDIATELY_BELOW_ROOT"
   | .invalidMessageParameter => "INVALID_PARAMETER"
   | .errorMessageAndPatternInvalid => "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"
   | .errorMessageAndNoPattern => "MVK_ERROR_MESSAGE_AND_NO_PATTERN"
@@ -706,6 +721,8 @@ def all : List KernelStaticDiagnostic :=
     .invalidConst, .noStringOrEnum,
     .ruleHasNoErrorText, .invalidMessageLinebreak, .invalidMessageCharacters,
     .wrongNumberOfDollars, .noMessageBaseYear, .messageFieldNotReferenced,
+    .messageInvalidRootGroup, .messageInvalidEntity, .messageFieldNameNotUnique,
+    .ruleGroupImmediatelyBelowRoot,
     .invalidMessageParameter, .errorMessageAndPatternInvalid, .errorMessageAndNoPattern,
     .errorMessageForLanguageMissing,
     .missingMessageCategory,

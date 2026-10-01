@@ -469,4 +469,26 @@ example : render? "[rtg=$#RootGroup$]" = some { text := "[rtg=1]" } := by
 example : render? "[rg=$#RuleGroup$]" = none := by
   native_decide
 
+/-- The Kernel code a group-position refusal projects to, for a rule in `group` reading `reference`. -/
+private def groupClass? (group : GroupPath) (reference : SurfaceFieldPath) (template : String) :
+    Option (Option String) :=
+  (pathTemplateError? group reference template).map fun error =>
+    error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode
+
+/- Every refusal the group position draws once the model is consulted projects to the Kernel's class:
+an unknown or unavailable group, an ambiguous short name, a walk past the root, a wrong turning
+point, an unknown root, a retired terminal and the rule-group shorthand at the root. -/
+example :
+    let deep := groupClass? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    let head := groupClass? ["Order", "Head"] (bare "Amount")
+    deep "In $#Side$" = some (some "INVALID_GROUP") ∧
+      groupClass? ["Order", "Side"] (bare "Aside") "In $#Amount$" =
+        some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") ∧
+      head "In $#../..$" = some (some "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS") ∧
+      head "In $#..Wrong$" = some (some "INVALID_ENTITY") ∧
+      deep "In $#/Nope$" = some (some "INVALID_ROOT_GROUP") ∧
+      deep "In $#Zeile$" = some (some "PARAM_INVALID_IN_NEW_WORLD") ∧
+      deep "In $#RuleGroup$" = some (some "RULEGROUP_IMMEDIATELY_BELOW_ROOT") := by
+  native_decide
+
 end A12Kernel.Conformance.MessageGroupPosition

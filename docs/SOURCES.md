@@ -213,9 +213,9 @@ The dotted grid (`MessageGroupDottedBoundaryAgreementTest.reservedDottedSuffixes
 
 **Classification.** Behavioral and inbound from a committed, reviewed revision, so no outbound entry follows for these rows. They extend [`spec/11`](../spec/11-messages-and-custom.md)'s group-position clauses. This project's [walk and dotted-name grid](sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names) then measured the shapes these rows leave open, outbound as [`SPEC-2026-10-01-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-02).
 
-**Lean.** Corrected and locked. Replayed through [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean) on each model, with the Kernel's English and German terminal bundles, the earlier decoder disagreed on 55 of the 513 rows, 54 of them group arguments: it checked a parent walk only after the whole path parsed, and read a dot as a token after the name. [`MessageGroupArgument`](../A12Kernel/Elaboration/MessageGroupArgument.lean) now ends the walk where the parser decides, defers a later fault to the walk's check, and joins a dotted continuation into its segment, and the [decoder locks](../A12Kernel/Conformance/MessageGroupArgument.lean) carry the German keyword set.
+**Lean.** Corrected and locked. Replayed through [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean) on each model, with the Kernel's English and German terminal bundles, the earlier decoder disagreed on 54 of the 513 rows, all of them group arguments: it checked a parent walk only after the whole path parsed, and read a dot as a token after the name. [`MessageGroupArgument`](../A12Kernel/Elaboration/MessageGroupArgument.lean) now ends the walk where the parser decides, defers a later fault to the walk's check, and joins a dotted continuation into its segment, and the [decoder locks](../A12Kernel/Conformance/MessageGroupArgument.lean) carry the German keyword set.
 
-The one row still differing is the name position's `$Book$` with two `Book` fields, which the Kernel refuses `ERROR_TEXT_FIELDNAME_NOT_UNIQUE` and Lean's `reference` arm, projecting no class, refuses as an unknown entity with no class, the name position's path failures all folding into that arm as [SG25](gaps/strings-and-messages.md#gap-sg25) records.
+A 55th row, the name position's `$Book$` with two `Book` fields, differed only because the replay's first fixture left out the models' short-name flag; with it Lean resolves the ambiguity, and once the projection took the name position's classes ([checkpoint](sources/message-and-pointer-probes.md#src-message-name-position-refusals)) all 513 rows agree through `namedRuleDiagnostic?` itself.
 
 ### Inbound 2026-10-01 handback
 
@@ -1015,6 +1015,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-two-positions-share-the-root-gate"></a>
 - [Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)
+<a id="src-message-name-position-refusals"></a>
+- [The name position's path refusals carry their own classes, and a name that resolves to a group is refused as no read field](sources/message-and-pointer-probes.md#src-message-name-position-refusals)
 
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)

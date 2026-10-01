@@ -1,0 +1,11 @@
+N0	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store/X$.	-
+N1	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $X$.	ERROR_TEXT_FIELDNAME_NOT_UNIQUE
+N2	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Nope$.	INVALID_ENTITY
+N3	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Store$.	INVALID_ENTITY
+N4	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $/Nope/X$.	INVALID_ROOT_GROUP
+N5	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $/Probe/Nope/X$.	INVALID_ENTITY
+N6	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $../../X$.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+N7	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $..Wrong/X$.	INVALID_ENTITY
+N8	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Z$.	INVALID_FIELD
+N9	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $../Beside/Z$.	INVALID_FIELD
+N10	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $Nope/X$.	INVALID_ENTITY
