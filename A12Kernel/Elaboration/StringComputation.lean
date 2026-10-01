@@ -4,7 +4,7 @@ import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable declarations of the exact kind required by each leaf. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. Root direct-copy and `RangeAsString` target references retain separate refusal provenance for their measured exact Kernel projection, and a raw target is refused with its read's class; wider target reads remain locally rejected and externally unmapped. Alternatives, concrete syntax, repeatable reads, indexed coercion, custom targets, computing into a raw target, and scheduling remain outside.
+This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable declarations of the exact kind required by each leaf. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. A read of the target, at the root or inside a concatenation, projects the one measured Kernel class, and a raw target is refused with its read's class. Alternatives, concrete syntax, repeatable reads, indexed coercion, custom targets, computing into a raw target, and scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -26,7 +26,9 @@ inductive StringComputationElabError where
 namespace StringComputationElabError
 
 /-- Project the measured target refusals to their exact Kernel diagnostic class: a read of the
-target, which draws one class whatever shape surrounds it
+target, which draws one class on every shape measured, a root copy or range
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-computed-target-reference)) and
+a concatenation around the read
 ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)),
 a raw target, which the generated comparison reads before the operation, and a copied field that
 comparison refuses. The raw row is measured with

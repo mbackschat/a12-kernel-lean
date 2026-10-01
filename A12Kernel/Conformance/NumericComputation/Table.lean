@@ -142,6 +142,17 @@ example :
         some (.guardTargetReference 1) := by
   native_decide
 
+/- A guard the model does not admit is asked before any alternative's own class, as the Kernel asks a
+guard naming nothing ahead of an unguarded alternative in either order (`settle2.tsv` C01 and C02):
+the unadmitted guard answers here, and claims no class because its name was resolved by the caller. -/
+example :
+    tableError? [unguardedLiteralRow? targetId 1, literalRow? (.fieldFilled 999) targetId 2] =
+        some (.guardNotAdmitted 2) ∧
+    tableError? [literalRow? (.fieldFilled 999) targetId 2, unguardedLiteralRow? targetId 1] =
+        some (.guardNotAdmitted 1) ∧
+    NumericComputationTableError.diagnostic? (.guardNotAdmitted 2) = none := by
+  native_decide
+
 /- A guard reading its own target draws the reference class, in the only alternative and in a later
 one, while an inadmissible guard claims none
 ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
@@ -232,9 +243,9 @@ example :
 /- The two stages the Kernel asks, on the second settling grid
 ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards),
 `settle2.tsv`). An unguarded alternative among several refuses once, wherever it stands, and its own
-read of the target goes unreported, while a guarded alternative's read ahead of it answers first. A
-stage-ordered account fails the second block: the first alternative failing any other gate answers,
-a scale mismatch ahead of an unresolved name, a second division or a nested power included. -/
+read of the target goes unreported, while a guarded alternative's read ahead of it answers first. An
+unguarded alternative's own scale or division class, and any alternative's scale mismatch, still
+answers ahead of every alternative class. -/
 example :
     let target := surfaceField ["Root"] "Target"
     let source := surfaceField ["Root"] "Source"
@@ -264,6 +275,9 @@ example :
         "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"] := by
   native_decide
 
+/- A stage-ordered account fails here: the first alternative failing any other gate answers, a scale
+mismatch ahead of an unresolved name or a second division, and a nested power or a second division ahead
+of a mismatch or a name (`settle2.tsv` O01 to O10). -/
 example :
     let source := surfaceField ["Root"] "Source"
     let later := surfaceField ["Root"] "Later"
@@ -313,6 +327,24 @@ example :
       ["MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD",
         "MVK_TOO_MANY_DIV_FOR_CALC", "MVK_INVALID_ENTITY", "admitted",
         "MVK_ERROR_EMPTY_PRECONDITION", "MVK_ERROR_EMPTY_PRECONDITION"] := by
+  native_decide
+
+/- The target's own lookup and the model's validation are no operand's reference, so neither claims the
+resolver class an operand's failure projects: a repeatable target would otherwise claim
+`MVK_NO_WILDCARD` and a model refusing its own declaration `MVK_FRACT_DIGITS_INVALID`. -/
+example :
+    let source := surfaceField ["Root"] "Source"
+    let badModel : FlatModel := { model with fields := model.fields ++
+      [{ numberDeclaration 40 "Bad" with numericTargetConstraints := { minFractionalDigits := 3 } }] }
+    (match elaborateNumericTargetComputationTable model ["Root"] repeatedId [(none, source)] with
+      | .error error@(.operation 1 (.targetResolve (.repeatableReference _))) => error.diagnostic?.isNone
+      | _ => false : Bool) = true ∧
+    (match elaborateNumericTargetComputationTable model ["Root"] 999 [(none, source)] with
+      | .error error@(.operation 1 (.targetResolve (.unknownFieldId 999))) => error.diagnostic?.isNone
+      | _ => false : Bool) = true ∧
+    (match elaborateNumericTargetComputationTable badModel ["Root"] targetId [(none, source)] with
+      | .error error@(.operation 1 (.invalidModel _)) => error.diagnostic?.isNone
+      | _ => false : Bool) = true := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.Table

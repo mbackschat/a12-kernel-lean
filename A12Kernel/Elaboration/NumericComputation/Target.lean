@@ -7,7 +7,7 @@ namespace A12Kernel
 private def FlatModel.resolveNumericComputationTargetPolicy
     (model : FlatModel) (target : FieldId) :
     Except NumericComputationElabError NumericTargetPolicy := do
-  let declaration ← model.lookupUniqueId target |>.mapError .resolve
+  let declaration ← model.lookupUniqueId target |>.mapError .targetResolve
   match declaration.policy.kind, declaration.toNumericTargetPolicy? with
   | .number _, some policy => pure policy
   | .number _, none => throw .incoherentCore

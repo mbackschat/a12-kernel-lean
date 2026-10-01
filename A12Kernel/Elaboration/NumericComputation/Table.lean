@@ -89,7 +89,10 @@ private def certifyNumericComputationAlternative
       throw (.targetMismatch alternativeIndex target
       alternative.operation.operation.core.target.id)
 
-/-- Consolidate already-checked Number operations without reordering their guards. Alternative positions are one-based. -/
+/-- Consolidate already-checked Number operations without reordering their guards. Alternative positions
+are one-based. Every guard's admission is asked before any alternative's own class, as the Kernel asks a
+guard's name ahead of an unguarded alternative wherever either stands
+([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
 def certifyNumericComputationTable
     (alternatives : List (ComputationAlternative
       (CheckedNumericTargetComputationOperation model))) :
@@ -97,6 +100,9 @@ def certifyNumericComputationTable
   match alternatives with
   | [] => .error .empty
   | first :: remaining => do
+      if let some (_, index) := (first :: remaining).zipIdx.find? fun (alternative, _) =>
+          !alternative.precondition.all (·.wellFormedBool model) then
+        throw (.guardNotAdmitted (index + 1))
       let target := first.operation.operation.core.target.id
       let policy := first.operation.policy
       let guardRequired := !remaining.isEmpty

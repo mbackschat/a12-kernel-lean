@@ -367,9 +367,10 @@ example :
       (cells (.parsed (.str "ABCDE")) .empty) = some (.accepted rangeResult) := by
   native_decide
 
-/- Every measured target read projects to the one Kernel class whatever the shape around it: a
-direct copy, a root range, and a concatenation reading the target on either side or beside another
-field ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)).
+/- Every measured target read projects to the one Kernel class: a direct copy and a root range
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-computed-target-reference)),
+and a concatenation reading the target on either side or beside another field
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)).
 An accepted other-field copy remains diagnostic-free. -/
 example :
     let reads := [

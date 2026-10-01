@@ -6,8 +6,9 @@ The second two-level grid of the authored repeatable plan. A root `Fix = [Base]`
 `RootSum = Sum(Outer*/OP)`, a repeatable `Outer` (at most two rows) with `OP = [OBase]` under
 `FieldFilled(OGate)`, `OSub = [OP] - [/Rows/Fix]`, `OMul = [OP] * [OBase2]`, and `OH`, `OHN` copying
 `OBase2` under `FieldFilled(OP)` and `FieldNotFilled(OP)`, and a nested repeatable `Inner` (at most
-three rows) with `ISub = [IBase] - [../OP]` and `IMul = [IBase] * [../OP]`. Every reader is authored
-ahead of what it reads and every computed target seeded with a stale `99`. The nine documents are the
+three rows) with `ISub = [IBase] - [../OP]` and `IMul = [IBase] * [../OP]`. Every reader of `OP` and
+`Fix` is authored ahead of what it reads, `RootSum` after the `OP` it sums, and every computed target
+is seeded with a stale `99`. The nine documents are the
 Kernel's rows at the
 [repeatable operator checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-repeatable-join-operators-and-guards),
 measured on both codegen strategies.

@@ -73,3 +73,9 @@ T11	-	[T3] + [T3]; FieldFilled(Gate2) => [T3] + [T3]	MVK_ERROR_EMPTY_PRECONDITIO
 T12	-	FieldFilled(T3) => [T3] + [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
 E01	-	FieldFilled(T3) => [Base1]; FieldFilled(Gate2) => [Base2]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
 E02	-	FieldFilled(Gate1) => [Base1]; FieldFilled(Gate2) => [Base2]	admitted
+C01	-	[Base1]; FieldFilled(Nope) => [Base2]	MVK_INVALID_ENTITY
+C02	-	FieldFilled(Nope) => [Base2]; [Base1]	MVK_INVALID_ENTITY
+C03	-	FieldFilled(Gate1) => [Base1] ^ 2 ^ 2; FieldFilled(Gate2) => [Nope]	MVK_TOO_MANY_POW_FOR_CALC
+C04	-	FieldFilled(Gate1) => [Nope]; FieldFilled(Gate2) => [Base1] ^ 2 ^ 2	MVK_INVALID_ENTITY
+C05	-	FieldFilled(Gate1) => [Base1] + [Gate1]; FieldFilled(Gate2) => [Nope]	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+C06	-	FieldFilled(Gate1) => [Nope]; FieldFilled(Gate2) => [Base1] + [Gate1]	MVK_INVALID_ENTITY

@@ -843,7 +843,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-condition-class-projection"></a>
 - [Under `==`, a rule condition's comparison refusals follow one kind arm for field pairs and point-in-time partners in either position, with `BaseYear` met as a Number opposite every kind but a Date](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)
 <a id="src-computation-self-read-sweep"></a>
-- [A computation reading its own target draws the target-read class on every carrier and shape measured, once per occurrence, a precondition's read included](sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)
+- [A computation reading its own target draws the target-read class on every carrier measured once the read is reached, once per occurrence, a precondition's read included](sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)
 <a id="src-field-copy-comparison-grid"></a>
 - [A field copied into a field of another kind draws the comparison walk's arm order on every pair of nine kinds, a temporal pair meets the format question, and the display arm answers ahead of the Enumeration calculation](sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
 <a id="src-entity-list-kind-empty-and-root-carriers"></a>
