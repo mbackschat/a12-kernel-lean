@@ -1,0 +1,97 @@
+[
+ {
+  "id": "D01",
+  "verb": "rule",
+  "args": ["check", "--code", "D01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D02",
+  "verb": "rule",
+  "args": ["check", "--code", "D02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Window]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D03",
+  "verb": "rule",
+  "args": ["check", "--code", "D03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And BaseYear == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D04",
+  "verb": "rule",
+  "args": ["check", "--code", "D04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Today == [/Order/Note]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D05",
+  "verb": "rule",
+  "args": ["check", "--code", "D05", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Today == [/Order/Flag]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D06",
+  "verb": "rule",
+  "args": ["check", "--code", "D06", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Today == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D07",
+  "verb": "rule",
+  "args": ["check", "--code", "D07", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Now == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D08",
+  "verb": "rule",
+  "args": ["check", "--code", "D08", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Now == [/Order/Plain]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "D09",
+  "verb": "rule",
+  "args": ["check", "--code", "D09", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And StartOfDateRange(BaseYear) == [/Order/Qty]", "--message", "en_US=Check."]
+ },
+ {
+  "id": "E01",
+  "verb": "rule",
+  "args": ["check", "--code", "E01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Note] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "E02",
+  "verb": "rule",
+  "args": ["check", "--code", "E02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Qty] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "E03",
+  "verb": "rule",
+  "args": ["check", "--code", "E03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Flag] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "E04",
+  "verb": "rule",
+  "args": ["check", "--code", "E04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Window] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "E05",
+  "verb": "rule",
+  "args": ["check", "--code", "E05", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/Due] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "E06",
+  "verb": "rule",
+  "args": ["check", "--code", "E06", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And [/Order/At] == EndOfDateRange(BaseYear)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "L01",
+  "verb": "rule",
+  "args": ["check", "--code", "L01", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length(/Order/Qty) == 2", "--message", "en_US=Check."]
+ },
+ {
+  "id": "L02",
+  "verb": "rule",
+  "args": ["check", "--code", "L02", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length(/Order/Flag) > 2", "--message", "en_US=Check."]
+ },
+ {
+  "id": "L03",
+  "verb": "rule",
+  "args": ["check", "--code", "L03", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length(/Order/Plain) > 2", "--message", "en_US=Check."]
+ },
+ {
+  "id": "L04",
+  "verb": "rule",
+  "args": ["check", "--code", "L04", "--field", "/Order/Note2", "--group", "/Order", "--condition", "FieldFilled(Note2) And Length(/Order/Window) > 2", "--message", "en_US=Check."]
+ }
+]

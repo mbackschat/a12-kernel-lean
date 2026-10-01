@@ -62,8 +62,8 @@ end Except
 
 namespace ElabError
 
-/-- Project only the two measured raw-String `Length` refusal classes. Every other
-elaboration failure remains unmapped. -/
+/-- Project only the two measured raw-String `Length` refusal classes. The flat rule condition's
+gated projection, `SurfaceCondition.refusalDiagnostic?`, delegates these two arms here. -/
 def rawStringDiagnostic? : ElabError → Option KernelStaticDiagnostic
   | .rawStringLength _ => some .invalidLengthOfRawType
   | .rawStringLengthBound _ => some .internalError

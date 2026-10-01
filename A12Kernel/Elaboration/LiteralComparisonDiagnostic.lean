@@ -185,9 +185,12 @@ def copyComparisonKindArm? : SurfaceScalarKind → SurfaceScalarKind → Option 
   | .string, .number | .enumeration, .number | .number, .string | .number, .enumeration => some .text
   | _, _ => none
 
-/-- The kind arm a rule comparison of two operands meets: the copied field's walk in either order,
-except that two Confirm operands are refused, where a copy of one into the other is admitted. Measured
-over every ordered pair of eleven declarations and against `Today`, `Now`, and `BaseYear` as partners
+/-- The kind arm a rule comparison of two operands meets under `==`: the copied field's walk in either
+order, except that two Confirm operands draw the Confirm class, because the equality operator narrows
+the Confirm arm and `!=` admits the pair
+([`kf383`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf383)). It takes no operator, so it holds for
+`==` alone. Measured over every ordered pair of eleven declarations and against `Today`, `Now`,
+`BaseYear` and its range endpoints as partners in either position
 ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)). -/
 def ruleComparisonKindArm? (left right : SurfaceScalarKind) : Option CopyComparisonKindArm :=
   match left, right with

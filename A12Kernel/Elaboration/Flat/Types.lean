@@ -659,8 +659,8 @@ inductive ElabError where
   | literalKindMismatch (path : List String) (expected actual : SurfaceScalarKind)
   | illegalConfirmLiteral (path : List String)
   /-- Two comparison operands whose kinds no route here pairs: two fields, or a field beside `Today`,
-      `Now` or `BaseYear`. Despite the name it is not confined to temporal operands; the kinds are
-      what the Kernel's kind arm reads. -/
+      `Now`, `BaseYear` or a Base Year range endpoint. Despite the name it is not confined to
+      temporal operands; the kinds are what the Kernel's kind arm reads. -/
   | temporalOperandKindMismatch (leftPath rightPath : List String)
       (leftKind rightKind : SurfaceScalarKind)
   | temporalFormatsIncompatible (leftPath rightPath : List String)

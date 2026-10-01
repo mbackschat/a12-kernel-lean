@@ -170,6 +170,8 @@ example :
             (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents }))) := by
   native_decide
 
+-- Locks this route's refusal, which the Kernel does not share: a Date ordered against `Now` is
+-- admitted there (`kf82`), an over-refusal the temporal gap SG6 records.
 example :
     errorOf (elaborate model ["Order"]
       (compareNow .less .right "DispatchDate")) =
@@ -765,7 +767,7 @@ example :
    an unstarred repeatable group draws the missing-star class and a fixed group the group class on
    either side of the comparison, and a name resolving to nothing its own class. A raw String meets
    `Length`'s own raw refusal, which `ElabError.rawStringDiagnostic?` projects rather than this view,
-   and a partially known Date `Length`'s kind refusal, which projects no class; the read's value gates
+   and a partially known Date `Length`'s kind refusal, which this view does not project; the read's value gates
    would draw the raw and the date class instead. -/
 example :
     let two : DecodedNumericLiteral := { value := 2, authoredScale := 0 }

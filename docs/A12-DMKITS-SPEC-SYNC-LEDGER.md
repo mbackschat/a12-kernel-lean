@@ -41,11 +41,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `status`: pending
 - `origin`: locally originated. Your [`kf86`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf86) holds `BaseYear`'s values against Number and Date fields and [`kf434`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf434) its undeclared class; this entry adds its refusal classes against the other kinds, which neither carries.
 - `clause`: [`05`](../spec/05-dates-and-time.md), the new `BaseYear` bullet after the constant-typing one.
-- `delta`: `[Note] == BaseYear` draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`, a DATE_RANGE `MVK_INVALID_COMPARE_TO_DATE_RANGE`, a Time or DateTime `MVK_INVALID_COMPARE_TO_DATE`, a Boolean `MVK_INVALID_COMPARE_TO_YESNO`, a Confirm `MVK_INVALID_COMPARE_TO_YES` and a scale-2 Number `MVK_INVALID_COMPARE_DEC_PLACES`; a Date and a scale-0 Number are admitted. `StartOfDateRange(BaseYear)` and `EndOfDateRange(BaseYear)` draw `MVK_INVALID_COMPARE_TO_DATE` opposite a String, a Number, an Enumeration, a DATE_RANGE or a Time.
-- `basis`: this project's [condition-class grid](SOURCES.md#src-condition-class-projection), 17 base-year rows among 233 `rule check` rows at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, code-only verdicts retained.
+- `delta`: under `==` and in either position, `[Note] == BaseYear` draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`, a DATE_RANGE `MVK_INVALID_COMPARE_TO_DATE_RANGE`, a Time or DateTime `MVK_INVALID_COMPARE_TO_DATE`, a Boolean `MVK_INVALID_COMPARE_TO_YESNO`, a Confirm `MVK_INVALID_COMPARE_TO_YES` and a scale-2 Number `MVK_INVALID_COMPARE_DEC_PLACES`; a Date and a scale-0 Number are admitted. `StartOfDateRange(BaseYear)` and `EndOfDateRange(BaseYear)` draw `MVK_INVALID_COMPARE_TO_DATE` opposite a String, a Number, a DATE_RANGE or a Time, and the end endpoint opposite an Enumeration too. The typed-use rule itself is §7's and your `kf86`'s, not this entry's.
+- `basis`: this project's [condition-class grid](SOURCES.md#src-condition-class-projection), 17 base-year rows among 233 `rule check` rows and ten more in its 19-row domain batch, at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, code-only verdicts retained.
 - `surfaces`: any peer checker or lock that types `BaseYear` as a date opposite a non-temporal field, or a range endpoint as a Number.
 - `acceptance`: confirm the String and DATE_RANGE rows for `BaseYear` and for a range endpoint, which separate the two partner readings, or supply a kind on which the account fails.
-- `limit`: static admission, `==` only, English condition language, a field on the left except for one `BaseYear == [Stamp]` row.
+- `limit`: static admission, `==` only, English condition language.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-01-04"></a>
