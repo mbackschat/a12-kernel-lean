@@ -196,6 +196,25 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-06a"></a>
 - Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
+### Inbound 2026-10-01a handback
+
+<a id="inbound-2026-10-01a-provenance"></a>
+#### Reviewed 2026-10-01a handback — the group argument's event order holds on the peer's own models in both condition languages, a parent walk is checked before the names after it, and a reserved dotted suffix splits by whether it may end a name
+
+a12-dmkits `main` at `98525518a68615d229c5652a5ca232b4fd95b2a6`, read on 2026-10-01, with `5c295eb54` and `2af2d0f03` its first two commits after `c785a4b6f`. The letter is the peer's `-2026-10-01a`, delivered by the user with SHA-256 `43d23c2cfee9eb34aa2bb1949f633dd3e4195433b964507feefbe20a4c079a20`; it answers this project's 2026-10-01 reply against `bb10b630`. Its §3 reports the peer's host, demo, mutation and performance verification and is recorded as no claim. The retained resources named below were read at `98525518a` and replayed here: every one of their 513 model byte strings reproduces its recorded SHA-256.
+
+<a id="inbound-2026-10-01a-event-order"></a>
+**Claim.** Its §1 (`MessageGroupEventAgreementTest.groupArgumentsFollowGrammarDecisionsAndReachedFaults` at `5c295eb54`, resource `message-group-events.json`, with the peer's `kf214`) runs 284 typed Library models, 142 per condition language with ten plain-message controls, through the Kernel's consistency check. Its rows confirm every delta row of [`SPEC-2026-10-01-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01), which is accepted on them, and they answer that entry's German `limit`: `RegelKontext`, `LfdNr`, `Fuer`, `Referenzjahr` and `Wert` take the roles of `RuleGroup`, `RootGroup`, `For`, `BaseYear` and `value`, so `$#RegelKontext/Loans$` from the root draws `RULEGROUP_IMMEDIATELY_BELOW_ROOT`, `$#LfdNr/Loans$` `INVALID_GROUP` and `$#LfdNr-x$` `MVK_UNEXPECTED_TOKEN`. A keyed `For` argument stays unmeasured.
+
+<a id="inbound-2026-10-01a-parent-walk-and-dotted-names"></a>
+Its §2 adds two grids. The parent grid (`MessageGroupParentBoundaryAgreementTest.parentActionsPrecedeOnlyTheTokensTheyActuallyPrecede` at `2af2d0f03`, resource `message-group-parent-boundaries.json`) crosses both languages, a rule declared at the root, one level below it or two, one to three up-steps and six following forms. A walk's depth check answers before the names after it: from the root `$#../RuleGroup$` draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, and from `/Library/RootGroup/Archive` `$#../..RuleGroup$` draws `MVK_UNEXPECTED_TOKEN` while `$#../../RuleGroup$` draws the above-root class, the walk reaching the root exactly in both. The core grid adds that from `Loans` `$#..Wrong/$`, `$#..Wrong//%$` and `$#..Wrong/%$` draw `INVALID_ENTITY` and `$#../../Loans//%$` the above-root class, and that a `%` right after an up-step draws `MVK_LEXER_STANDARD_ERROR` at every depth.
+
+The dotted grid (`MessageGroupDottedBoundaryAgreementTest.reservedDottedSuffixesRetainMeasuredSilence` at `98525518a`, resource `message-group-dotted-boundaries.json`) puts each language's ten terminals after `Loans.`: the words that may end a dotted name, `RootGroup`/`LfdNr`, `Zeile`, `Usb` and `index`, draw `INVALID_GROUP`, the others `MVK_UNEXPECTED_TOKEN`, and every quoted suffix `INVALID_GROUP`. The peer's portable checker declines the ten unquoted reserved suffixes; its Kernel column is the one taken here.
+
+**Classification.** Behavioral and inbound from a committed, reviewed revision, so no outbound entry follows for these rows. They extend [`spec/11`](../spec/11-messages-and-custom.md)'s group-position clauses. This project's [walk and dotted-name grid](sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names) then measured the shapes these rows leave open, outbound as [`SPEC-2026-10-01-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-02).
+
+**Lean.** Corrected and locked. Replayed through [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean) on each model, with the Kernel's English and German terminal bundles, the earlier decoder disagreed on 54 of the 513 rows: it checked a parent walk only after the whole path parsed, and read a dot as a token after the name. [`MessageGroupArgument`](../A12Kernel/Elaboration/MessageGroupArgument.lean) now ends the walk where the parser decides, defers a later fault to the walk's check, and joins a dotted continuation into its segment, and the [decoder locks](../A12Kernel/Conformance/MessageGroupArgument.lean) carry the German keyword set. The one row still differing is the name position's `$Book$` with two `Book` fields, which the Kernel refuses `ERROR_TEXT_FIELDNAME_NOT_UNIQUE` and Lean's `reference` arm, projecting no class, refuses unclassified, as [SG25](gaps/strings-and-messages.md#gap-sg25) records.
+
 ### Inbound 2026-10-01 handback
 
 <a id="inbound-2026-10-01-provenance"></a>
@@ -1270,6 +1289,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A group argument is refused in layers, a lexer or separator fault before the lookup with its field short-name fallback, then a token left after the path](sources/message-and-pointer-probes.md#src-message-group-argument-layers)
 <a id="src-message-group-argument-events"></a>
 - [A group argument's classes follow its parser's events, and a keyword that is also a name is decided by the token after it](sources/message-and-pointer-probes.md#src-message-group-argument-events)
+<a id="src-message-group-walk-and-dotted-names"></a>
+- [A parent walk ends where the parser decides, two or more up-steps before a token that continues no name count one more, a turning point is compared by its first word, and a dotted continuation joins its name](sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)
 <a id="src-german-condition-language-terminals"></a>
 - [The group position's keyword set is selected by condition language in both directions, and the retired terminals are not](sources/message-and-pointer-probes.md#src-german-condition-language-terminals)
 

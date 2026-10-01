@@ -35,10 +35,24 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-01-02"></a>
+### `SPEC-2026-10-01-02` — a parent walk of two or more up-steps before a token that continues no name counts one step more, a turning point is compared by its first word, and an ordinary dotted continuation joins its name segment
+
+- `status`: pending
+- `origin`: locally originated; it extends your `kf214` parent rows at `2af2d0f03`, which reach the root exactly or past it, onto a walk that the extra step leaves inside the root and onto a run ending the text, and your dotted rows at `98525518a`, which read a reserved suffix after `Loans.`, onto ordinary dotted words, a dotted turning point and a keyword-and-name word continued by a dot.
+- `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the absolute-argument bullet's parent-walk and dotted-name sentences.
+- `delta`: two or more up-steps whose last separator is followed by a token that continues no name count one step more than written, and a single up-step does not. From two levels below the root `$#../../$` and `$#../..//$` draw `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS` while `$#../../Nope$` draws `INVALID_GROUP` and `$#../../Store$` is admitted; from three levels below `$#../../$` draws `MVK_EXPECTED_TOKEN_NOT_FOUND` and `$#../../RuleGroup$` `MVK_UNEXPECTED_TOKEN`; from one level below `$#../$` draws `MVK_INCOMPLETE_INPUT`. A turning point is compared by its first word: from `/Probe/Store` `$#..Probe.x$` is admitted.
+- `delta`: an ordinary dotted continuation is part of its name segment: from a root rule reading `Store/X`, `$#Store.X$`, `$#Store.x/Deep$`, `$#Store.x.y$` and `$#Store.value.x$` draw `INVALID_GROUP`, as do `$#RootGroup.x$`, `$#Zeile.x$` and `$#'RootGroup'.x$`, while `$#Store.1$` and `$#Store.$` draw `MVK_UNEXPECTED_TOKEN`.
+- `basis`: this project's [walk and dotted-name grid](SOURCES.md#src-message-group-walk-and-dotted-names), 25 `rule check --message` rows at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, with the model, each row's prediction and the code-only verdicts retained. 21 of 22 non-control predictions held; the dotted turning point was predicted refused.
+- `surfaces`: any peer checker, lock doc or finding that counts a parent walk by its written up-steps alone, compares a turning point's whole dotted name, or reads an ordinary dotted word as a token after the name rather than part of it.
+- `acceptance`: confirm the up-run rows, the turning-point row and the dotted rows, or supply a parent walk or dotted name whose class this account does not predict.
+- `limit`: static admission only, fixed groups, field reads and an English condition language. A dotted name that resolves, a quoted dotted turning point and a keyed `For` argument are not measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-01-01"></a>
 ### `SPEC-2026-10-01-01` — a group argument's classes follow its parser's events, a keyword that is also a name is decided by the token after it, `Zeile` takes a signed offset, and availability answers before a trailing token
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `98525518a68615d229c5652a5ca232b4fd95b2a6` ([inbound](SOURCES.md#inbound-2026-10-01a-event-order)). The peer confirmed every delta row on its own Library models with `MessageGroupEventAgreementTest` at `5c295eb54`, each language beside plain-message controls, and measured the German keyword decision this entry's `limit` left open. Its parent and dotted grids extend the fault order onto the parent walk. A keyed `For` argument and a keyword-and-name word followed by `For` stay unmeasured on both sides.
 - `origin`: locally originated; it names the mechanism behind your `kf214` keyword rows at `c785a4b6f` and measures it where your grid stops: retired terminals, reserved words, a group named `RootGroup`, a lexer fault against a syntax fault, and the resolved but unavailable path your letter left unmeasured. It narrows the accepted [`SPEC-2026-09-30-01`](#spec-2026-09-30-01): a lexer fault answers first only when the parser reaches it before a syntax fault.
 - `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the absolute-argument bullet's order sentences and the keyword bullet that replaced the raw-argument match.
 - `delta`: `RootGroup`, `Zeile` and `Usb` are each a keyword at the end of the argument and a path segment before a separator, and `RuleGroup` is a keyword whatever follows: beside a group named `RootGroup` holding a read field, `$#RootGroup/Inner$` is admitted, and with it unread `$#RootGroup$` is admitted while `$#'RootGroup'$` draws `INVALID_GROUP`. `$#Zeile/Store$` draws `INVALID_GROUP`, and your `$#RootGroup-x$` and this grid's `$#Zeile-x$` and `$#Usb x$` draw `MVK_UNEXPECTED_TOKEN` with no check run. A reserved word outside the quoting-exempt set is never a name: `$#Store/RuleGroup$` and `$#For$` draw `MVK_UNEXPECTED_TOKEN`.

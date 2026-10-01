@@ -104,11 +104,14 @@ argument names a declared root group **and** is available to the rule's message,
 undeclared root, and no group the rule neither lies in nor reads into, is ever reached through it. -/
 theorem checkMessageGroup_absolute_admitted
     {model : FlatModel} {condition : CheckedFlatCondition model}
-    {parameter : String} {path : GroupPath} {trailing : Bool}
+    {parameter : String} {path : GroupPath} {remainder : MessageGroupRemainder}
     {access : CheckedValidationMessageGroup model condition}
-    (admitted : checkMessageGroup condition parameter (.absolute path) trailing = .ok access) :
+    (admitted : checkMessageGroup condition parameter (.absolute path) remainder = .ok access) :
     messageGroupAvailable model condition path = true ∧
       model.hasGroupPath (path.take 1) = true := by
+  cases remainder with
+  | afterWalk _ => simp [checkMessageGroup] at admitted
+  | none | trailing =>
   cases path with
   | nil => simp [checkMessageGroup, resolveMessageGroup] at admitted
   | cons root rest =>
@@ -130,14 +133,15 @@ climb past the root is never reached through the relative form, whatever path fo
 theorem checkMessageGroup_relative_walkWithinRoot
     {model : FlatModel} {condition : CheckedFlatCondition model}
     {parameter : String} {parents : Nat} {turningPoint : Option String} {path : GroupPath}
-    {trailing : Bool} {access : CheckedValidationMessageGroup model condition}
+    {remainder : MessageGroupRemainder} {access : CheckedValidationMessageGroup model condition}
     (admitted : checkMessageGroup condition parameter
-      (.relative parents turningPoint path) trailing = .ok access) :
+      (.relative parents turningPoint path) remainder = .ok access) :
     parents < condition.rowGroup.length := by
   by_cases hWithin : parents < condition.rowGroup.length
   · exact hWithin
-  · unfold checkMessageGroup resolveMessageGroup GroupPath.walkUp at admitted
-    simp [hWithin] at admitted
+  · cases remainder <;>
+      simp [checkMessageGroup, resolveMessageGroup, walkMessageGroup, GroupPath.walkUp,
+        hWithin] at admitted
 
 /-- The rule-group shorthand resolves to the rule's own group — **once its placement admits it**. The
 extra hypothesis is the whole difference between the two shorthands: `RootGroup` needs only a

@@ -200,8 +200,10 @@ private inductive ParsedValidationMessagePart where
   | fieldCategoryWithTrailingSyntax (parameter : String)
       (reference : AuthoredFieldPath) (category : String)
   | baseYear (offset : Int)
-  /-- A group-position argument, beside the authored spelling a diagnostic quotes. -/
-  | group (parameter : String) (authored : AuthoredMessageGroup) (trailing : Bool)
+  /-- A group-position argument, beside the authored spelling a diagnostic quotes and what the parser
+  still owes after the part whose check runs first. -/
+  | group (parameter : String) (authored : AuthoredMessageGroup)
+      (remainder : MessageGroupRemainder)
   /-- A form-pointer parameter. It shares the name position's entity spec and nothing else: its one
   gate resolves that entity to a field, and the condition-membership requirement every other field
   form carries does not apply. -/
@@ -288,6 +290,8 @@ reserved words, and the exemption from quoting that keeps a reserved word a name
 def ValidationMessageKeywordProfile.groupKeywords (profile : ValidationMessageKeywordProfile) :
     MessageGroupKeywords :=
   { reserved := profile.path.reserved, exempt := profile.unquotedTerminals,
+    exemptNonFinal :=
+      [profile.valueSuffixTerminal, profile.formLineTerminal, profile.formNameTerminal],
     ruleGroup := profile.ruleGroupTerminal, rootGroup := profile.rootGroupTerminal,
     retired := profile.retiredGroupTerminals, offset := profile.offsetGroupTerminals }
 
@@ -391,7 +395,7 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
 parameter as authored into the refusal. -/
 private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
     (parameter argument : String) :
-    Except ValidationMessageTemplateError (AuthoredMessageGroup × Bool) :=
+    Except ValidationMessageTemplateError (AuthoredMessageGroup × MessageGroupRemainder) :=
   match decodeMessageGroupArgument profile.groupKeywords argument with
   | .error (.syntax fault) => .error (.groupParameterLexical parameter fault)
   | .error (.retired terminal) => .error (.retiredGroupTerminal parameter terminal)
@@ -448,7 +452,7 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
   -- The position marker is read first, because it selects a different grammar rather than a different
   -- form inside the name grammar. Nothing in the name grammar can begin with it.
   if parameter.startsWith "#" then
-    (fun (authored, trailing) => ParsedValidationMessagePart.group parameter authored trailing) <$>
+    (fun (authored, remainder) => ParsedValidationMessagePart.group parameter authored remainder) <$>
       parseMessageGroup profile parameter (parameter.drop 1).toString
   else
   -- The Base Year terminal is checked first: it is a terminal, so an unquoted occurrence is never a
@@ -660,6 +664,17 @@ def admitMessageGroup {model : FlatModel}
 def FlatModel.declaresEntityPath (model : FlatModel) (path : GroupPath) : Bool :=
   model.hasGroupPath path || model.fields.any (·.path == path)
 
+/-- A relative group argument's parent walk and its check, which the Kernel runs when the walk's own
+rule ends: a climb past the root first, then a turning point that does not name the group reached. -/
+def walkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+    (parameter : String) (parents : Nat) (turningPoint : Option String) :
+    Except ValidationMessageTemplateError GroupPath :=
+  match GroupPath.walkUp condition.rowGroup parents with
+  | .error _ => .error (.groupParameterAboveRoot parameter)
+  | .ok base =>
+      if base.matchesTurningPoint turningPoint then .ok base
+      else .error (.groupTurningPointMismatch parameter)
+
 /-- Look one group-position argument up against the rule's own group, before its availability is
 asked. An absolute path resolves in the two stages the Kernel reports apart: its first segment must
 name a declared root group, and then the whole path must name an entity. The root gate belongs to the
@@ -692,12 +707,10 @@ def resolveMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mo
       else
         .error (.invalidGroupParameter parameter)
   | .relative parents turningPoint path =>
-      match GroupPath.walkUp condition.rowGroup parents with
-      | .error _ => .error (.groupParameterAboveRoot parameter)
+      match walkMessageGroup condition parameter parents turningPoint with
+      | .error error => .error error
       | .ok base =>
-          if !base.matchesTurningPoint turningPoint then
-            .error (.groupTurningPointMismatch parameter)
-          else if model.declaresEntityPath (base ++ path) then
+          if model.declaresEntityPath (base ++ path) then
             .ok (base ++ path)
           else
             match parents, path with
@@ -712,18 +725,29 @@ def resolveMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mo
 then refuse a token left after the path. The lookup and availability are the alternative's check,
 which the Kernel runs before it meets the end of the text: `$#He-ad$` and the unavailable `$#Side-x$`
 draw the group class, and only `$#Head-x$` the syntax class
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)). -/
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)). A
+fault met after a complete parent walk waits only for the walk's check, so `$#..Wrong/$` draws the
+turning-point class rather than the truncated one. -/
 def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
-    (parameter : String) (authored : AuthoredMessageGroup) (trailing : Bool := false) :
+    (parameter : String) (authored : AuthoredMessageGroup)
+    (remainder : MessageGroupRemainder := .none) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageGroup model condition) :=
-  match resolveMessageGroup condition parameter authored with
-  | .error error => .error error
-  | .ok group =>
-      match admitMessageGroup condition parameter group with
+  match remainder, authored with
+  | .afterWalk fault, .relative parents turningPoint _ =>
+      match walkMessageGroup condition parameter parents turningPoint with
       | .error error => .error error
-      | .ok access =>
-          if trailing then .error (.groupParameterLexical parameter .unexpected) else .ok access
+      | .ok _ => .error (.groupParameterLexical parameter fault)
+  | .afterWalk fault, _ => .error (.groupParameterLexical parameter fault)
+  | _, _ =>
+      match resolveMessageGroup condition parameter authored with
+      | .error error => .error error
+      | .ok group =>
+          match admitMessageGroup condition parameter group with
+          | .error error => .error error
+          | .ok access =>
+              if remainder = .trailing then .error (.groupParameterLexical parameter .unexpected)
+              else .ok access
 
 inductive CheckedValidationMessagePart
     (model : FlatModel) (condition : CheckedFlatCondition model) where
@@ -852,8 +876,8 @@ private def checkMessageParts (model : FlatModel)
           pure (.baseYear offset (base + offset) (by
             rw [hDeclared, Int.add_sub_cancel]) ::
             (← checkMessageParts model profile condition rest))
-  | .group parameter authored trailing :: rest => do
-      pure (.group (← checkMessageGroup condition parameter authored trailing) ::
+  | .group parameter authored remainder :: rest => do
+      pure (.group (← checkMessageGroup condition parameter authored remainder) ::
         (← checkMessageParts model profile condition rest))
   | .formPointer parameter reference pointer :: rest => do
       -- `resolveMessageEntity`, not `resolveMessageReference`: this is the one field form the Kernel

@@ -52,6 +52,11 @@ private def asideField : FlatFieldDecl :=
   { id := 7, groupPath := ["Order", "Side"], name := "Aside",
     policy := { kind := .string } }
 
+/-- A field three levels below the root, so a parent walk of three steps can reach the root exactly. -/
+private def baseField : FlatFieldDecl :=
+  { id := 9, groupPath := ["Order", "Head", "Deeper", "Base"], name := "Bottom",
+    policy := { kind := .string } }
+
 /-- A field under a **second root group**. The Kernel admits a model with more than one root, which is
 what makes the root shorthand's meaning measurable rather than a distinction without a difference. -/
 private def branchLabel : FlatFieldDecl :=
@@ -60,7 +65,7 @@ private def branchLabel : FlatFieldDecl :=
 
 private def model : FlatModel :=
   { fields := [amount, other, headAmount, forField, indexField, status,
-      deepField, asideField, branchLabel] }
+      deepField, asideField, branchLabel, baseField] }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -911,6 +916,61 @@ example :
         some (.groupParameterLexical "#..RuleGroup" .unexpected) ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..RootGroup$" =
         some (.groupTurningPointMismatch "#..RootGroup") := by
+  native_decide
+
+/- The parent walk's check is an action at the end of the walk, so it answers before any fault in the
+names after it, and before a turning point's dotted continuation, which only its first word is
+compared by. Two or more up-steps ending on a separator before a token that continues no name count
+one step more, which only a walk reaching the root exactly can show
+([inbound](../../docs/SOURCES.md#inbound-2026-10-01a-parent-walk-and-dotted-names), [checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)). -/
+example :
+    let base := pathTemplateError? ["Order", "Head", "Deeper", "Base"] (bare "Bottom")
+    let deeper := pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep")
+    pathTemplateError? ["Order"] (bare "Other") "In $#../RuleGroup$" =
+        some (.groupParameterAboveRoot "#../RuleGroup") ∧
+      pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..Wrong/$" =
+        some (.groupTurningPointMismatch "#..Wrong/") ∧
+      pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..Wrong/%$" =
+        some (.groupTurningPointMismatch "#..Wrong/%") ∧
+      pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#../../Head//%$" =
+        some (.groupParameterAboveRoot "#../../Head//%") ∧
+      deeper "In $#../../RuleGroup$" = some (.groupParameterAboveRoot "#../../RuleGroup") ∧
+      deeper "In $#../../$" = some (.groupParameterAboveRoot "#../../") ∧
+      deeper "In $#../..//$" = some (.groupParameterAboveRoot "#../..//") ∧
+      deeper "In $#../../%$" = some (.groupParameterLexical "#../../%" .lexer) ∧
+      deeper "In $#../../Nope$" = some (.invalidGroupParameter "#../../Nope") ∧
+      base "In $#../../$" = some (.groupParameterLexical "#../../" .expectedToken) ∧
+      base "In $#../../RuleGroup$" =
+        some (.groupParameterLexical "#../../RuleGroup" .unexpected) ∧
+      base "In $#../..//$" = some (.groupParameterLexical "#../..//" .unexpected) ∧
+      base "In $#../../../RuleGroup$" =
+        some (.groupParameterAboveRoot "#../../../RuleGroup") ∧
+      pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#../$" =
+        some (.groupParameterLexical "#../" .truncated) ∧
+      pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../Head$" = some true ∧
+      pathTemplateOk? ["Order", "Head"] (bare "Amount") "In $#..Order.x$" = some true := by
+  native_decide
+
+/- A dotted continuation is part of its name segment, so the segment names no group, while a word that
+cannot continue it is a token left after the path. An exempt word may continue one and, except the
+value suffix and the form-pointer terminals, end it; a keyword-and-name word continued by a dot is a
+path segment. -/
+example :
+    let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    deep "In $#Head.Deeper$" = some (.invalidGroupParameter "#Head.Deeper") ∧
+      deep "In $#Head.'Deeper'$" = some (.invalidGroupParameter "#Head.'Deeper'") ∧
+      deep "In $#Head.x/Deeper$" = some (.invalidGroupParameter "#Head.x/Deeper") ∧
+      deep "In $#Head.x.y$" = some (.invalidGroupParameter "#Head.x.y") ∧
+      deep "In $#Head.Zeile$" = some (.invalidGroupParameter "#Head.Zeile") ∧
+      deep "In $#Head.value.x$" = some (.invalidGroupParameter "#Head.value.x") ∧
+      deep "In $#RootGroup.x$" = some (.invalidGroupParameter "#RootGroup.x") ∧
+      deep "In $#Zeile.x$" = some (.invalidGroupParameter "#Zeile.x") ∧
+      deep "In $#'RootGroup'.x$" = some (.invalidGroupParameter "#'RootGroup'.x") ∧
+      (["Head.value", "Head.Vordruckname", "Head.RuleGroup", "Head.For", "Head.1", "Head."].all
+        fun argument => deep s!"In $#{argument}$" =
+          some (.groupParameterLexical s!"#{argument}" .unexpected)) = true ∧
+      (["Head.'value'", "Head.'RuleGroup'", "Head.'For'"].all fun argument =>
+        deep s!"In $#{argument}$" = some (.invalidGroupParameter s!"#{argument}")) = true := by
   native_decide
 
 /- The peer's turning-point rows on this fixture: the turning point is checked before the child below

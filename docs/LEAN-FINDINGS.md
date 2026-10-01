@@ -2593,3 +2593,11 @@ The peer's keyword rows showed `$#RootGroup-x$` drawing the syntax class while `
 **When a correction branches on the identity of a terminal, operator or carrier, ask what property of it the branch stands for, and predict a row for another member that shares or lacks that property before landing the branch.** A branch on identity cannot be wrong on the rows that produced it, so they are no test of it.
 
 Related: [[LF116]] on reusing a mechanism across a boundary, [[LF84]] on outcomes that do not discharge a mechanism.
+
+## LF200 — a check that runs before a syntax fault can reveal which alternative a parser chose for a text no alternative accepts
+
+`$#../../RuleGroup$` from a group two levels below the root draws the above-root class, though its two written up-steps reach the root exactly, and `$#../..RuleGroup$` from the same group draws the syntax class ([inbound](SOURCES.md#inbound-2026-10-01a-parent-walk-and-dotted-names)). Neither text parses. The Kernel's depth check is an action at the end of the up-run rule, and it counts the run plus the one `..` the enclosing rule still requires; when neither continuing the run nor ending it can reach a name, the parser keeps the run going, so the action counts one step more than was written. Lean had modelled the parse as a function from a valid path to a check, with every fault raised before the check, and so could not express a check answering for a text that never became a path. Three levels down the same text draws the syntax class and `$#../../$` the expected-token class ([checkpoint](sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)), which is what separates the extra step from a rule that a walk to the root may not descend.
+
+**Where a Kernel check is a grammar action, model the decoder as the event sequence the parser runs, a check firing where its rule ends, and test the fault rows at the depth where the check passes as well as where it fails.** A single depth cannot separate an over-count from a stricter bound.
+
+Related: [[LF199]] on fitting a fix to a mechanism rather than to the rows, [[LF195]] on gates raised at a grammar production.

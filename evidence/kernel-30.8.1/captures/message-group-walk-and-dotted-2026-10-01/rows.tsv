@@ -1,0 +1,25 @@
+W0	/Probe/Store/Deep/Deeper/V	/Probe/Store/Deep/Deeper	FieldFilled(V)	Check.	-
+W1	/Probe/Store/Deep/Deeper/V	/Probe/Store/Deep/Deeper	FieldFilled(V)	Check $#..$.	-
+W2	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#../$.	MVK_INCOMPLETE_INPUT
+W3	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#../$.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+W4	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../$.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+W5	/Probe/Store/Deep/Deeper/V	/Probe/Store/Deep/Deeper	FieldFilled(V)	Check $#../../$.	MVK_EXPECTED_TOKEN_NOT_FOUND
+W6	/Probe/Store/Deep/Deeper/V	/Probe/Store/Deep/Deeper	FieldFilled(V)	Check $#../../RuleGroup$.	MVK_UNEXPECTED_TOKEN
+W7	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../Nope$.	INVALID_GROUP
+W8	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../Store$.	-
+W9	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../..//$.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+W10	/Probe/Store/Deep/Deeper/V	/Probe/Store/Deep/Deeper	FieldFilled(V)	Check $#../..//$.	MVK_UNEXPECTED_TOKEN
+W11	/Probe/Store/Deep/Y	/Probe/Store/Deep	FieldFilled(Y)	Check $#../../%$.	MVK_LEXER_STANDARD_ERROR
+W12	/Probe/Store/Deep/Deeper/V	/Probe/Store/Deep/Deeper	FieldFilled(V)	Check $#../../../RuleGroup$.	ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS
+W13	/Probe/Store/X	/Probe/Store	FieldFilled(X)	Check $#..Probe.x$.	INVALID_ENTITY
+D0	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check.	-
+D1	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.X$.	INVALID_GROUP
+D2	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.x/Deep$.	INVALID_GROUP
+D3	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.1$.	MVK_UNEXPECTED_TOKEN
+D4	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.$.	MVK_UNEXPECTED_TOKEN
+D5	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#RootGroup.x$.	INVALID_GROUP
+D6	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Zeile.x$.	INVALID_GROUP
+D7	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#'RootGroup'.x$.	INVALID_GROUP
+D8	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.x.y$.	INVALID_GROUP
+D9	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.value.x$.	INVALID_GROUP
+D10	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $#Store.value$.	MVK_UNEXPECTED_TOKEN
