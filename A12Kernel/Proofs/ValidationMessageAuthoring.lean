@@ -158,7 +158,7 @@ theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
     (belowRoot : ¬ condition.rowGroup.length ≤ 1) :
     (checkMessageGroup condition parameter .ruleGroup).map
         (fun access => access.group) = .ok condition.rowGroup := by
-  simp only [checkMessageGroup, resolveMessageGroup, belowRoot, if_false, Bool.false_eq_true,
+  simp only [checkMessageGroup, resolveMessageGroup, belowRoot, if_false,
     admitMessageGroup, valid, messageGroupAvailable, groupPath_isPrefixOf_self, Bool.true_or,
     dite_true]
   rfl
@@ -180,7 +180,7 @@ theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     (valid : GroupPath.isValid condition.rowGroup = true) :
     (checkMessageGroup condition parameter .rootGroup).map
         (fun access => access.group) = .ok (condition.rowGroup.take 1) := by
-  simp only [checkMessageGroup, resolveMessageGroup, Bool.false_eq_true, if_false,
+  simp only [checkMessageGroup, resolveMessageGroup,
     admitMessageGroup, groupPath_isValid_take_one valid, messageGroupAvailable,
     groupPath_take_isPrefixOf, Bool.true_or, dite_true]
   rfl
