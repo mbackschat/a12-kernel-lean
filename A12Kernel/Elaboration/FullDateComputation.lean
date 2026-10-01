@@ -34,10 +34,13 @@ namespace FullDateComputationElabError
 
 /-- The generated comparison's classes on this carrier, each measured by copying every kind into a
 full-Date target ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)):
-a temporal source's format question and every other kind's arm. -/
+a temporal source's format question and every other kind's arm. A copy of the target itself draws
+the target-read class of every computation carrier
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)). -/
 def diagnostic? : FullDateComputationElabError → Option KernelStaticDiagnostic
   | .sourceKind _ arm => some arm.diagnostic
   | .sourceComponents _ _ => some .invalidCompareToDate
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | _ => none
 
 end FullDateComputationElabError

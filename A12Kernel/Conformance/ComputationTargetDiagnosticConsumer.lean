@@ -264,25 +264,23 @@ example :
     fractionDecision (surfaceAggregate .sum "Source" ["Later"]) = .accepted := by
   native_decide
 
-/- Explain keeps an uncovered String target read as its exact local refusal. Its missing external
-code is distinct from an accepted operation. -/
+/- Explain keeps an unmeasured String refusal, a range that starts at zero, as its exact local
+refusal. Its missing external code is distinct from an accepted operation. -/
 example :
-    let uncoveredString : StringExpr SurfaceFieldPath :=
-      .concat (.field (bare "StringTarget")) (.literal "X")
+    let uncoveredString : StringExpr SurfaceFieldPath := .range (bare "Wrong") 0 1
     let acceptedString : StringExpr SurfaceFieldPath := .field (bare "Wrong")
-    stringDecision uncoveredString =
-        .stringRefusal (.targetSelfReference stringTarget.id) ∧
+    stringDecision uncoveredString = .stringRefusal (.invalidRange 0 1) ∧
       stringDecision acceptedString = .accepted ∧
       (stringDecision uncoveredString).kernelCode? = none ∧
       (stringDecision acceptedString).kernelCode? = none := by
   native_decide
 
-/- Both measured String root forms translate to the shared external class. -/
+/- Every measured String target read translates to the shared external class, a concatenation
+around the read included. -/
 example :
-    stringDecision (.field (bare "StringTarget")) =
-        .kernelRejected .errorReferenceToCalculatedField ∧
-      stringDecision (.range (bare "StringTarget") 1 1) =
-        .kernelRejected .errorReferenceToCalculatedField ∧
+    [StringExpr.field (bare "StringTarget"), .range (bare "StringTarget") 1 1,
+        .concat (.field (bare "StringTarget")) (.literal "X")].map stringDecision =
+      List.replicate 3 (.kernelRejected .errorReferenceToCalculatedField) ∧
       (stringDecision (.field (bare "StringTarget"))).kernelCode? =
         some "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" := by
   native_decide

@@ -18,6 +18,16 @@ inductive TimeConstructionComputationElabError where
   | targetSelfReference (field : FieldId)
   deriving Repr, DecidableEq
 
+namespace TimeConstructionComputationElabError
+
+/-- An extractor of the target among the components draws the target-read class, once per
+occurrence in the Kernel's report ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)). The component and target refusals claim no class. -/
+def diagnostic? : TimeConstructionComputationElabError → Option KernelStaticDiagnostic
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
+  | .components _ | .target _ => none
+
+end TimeConstructionComputationElabError
+
 /-- One checked nonrepeatable Time component prefix and its distinct exact target. -/
 structure CheckedTimeConstructionComputation (model : FlatModel) where
   components : CheckedTimeComponents model
@@ -58,6 +68,16 @@ inductive WorldTimeConstructionComputationElabError where
   | target (error : TimeTargetElabError)
   | targetSelfReference (field : FieldId)
   deriving Repr, DecidableEq
+
+namespace WorldTimeConstructionComputationElabError
+
+/-- The world-aware carrier spells the same authored `Time(...)` as the document one, so a
+static extractor of the target draws the same target-read class ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)). -/
+def diagnostic? : WorldTimeConstructionComputationElabError → Option KernelStaticDiagnostic
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
+  | .target _ => none
+
+end WorldTimeConstructionComputationElabError
 
 /-- One checked world-aware Time component prefix and its distinct exact target. -/
 structure CheckedWorldTimeConstructionComputation (model : FlatModel) where

@@ -367,38 +367,33 @@ example :
       (cells (.parsed (.str "ABCDE")) .empty) = some (.accepted rangeResult) := by
   native_decide
 
-/- The measured direct-copy and root-range target references project to their
-exact Kernel class, while an accepted other-field copy remains diagnostic-free. -/
+/- Every measured target read projects to the one Kernel class whatever the shape around it: a
+direct copy, a root range, and a concatenation reading the target on either side or beside another
+field ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)).
+An accepted other-field copy remains diagnostic-free. -/
 example :
-    let direct := operationErrorOf
-      (elaborateStringComputationOperation model ["Form"] target.id
-        (.field (bare "Target")))
-    let range := operationErrorOf
-      (elaborateStringComputationOperation model ["Form"] target.id
-        (.range (bare "Target") 1 1))
+    let reads := [
+      StringExpr.field (bare "Target"), .range (bare "Target") 1 1,
+      .concat (.field (bare "Target")) (.literal "X"),
+      .concat (.literal "X") (.field (bare "Target")),
+      .concat (.field (bare "Source")) (.field (bare "Target"))]
+    let errors := reads.map fun expression => operationErrorOf
+      (elaborateStringComputationOperation model ["Form"] target.id expression)
     let control := operationErrorOf
       (elaborateStringComputationOperation model ["Form"] target.id
-        (.field (bare "Source")))
-    direct = some (.targetSelfReferenceAtRoot target.id) ∧
-      range = some (.targetSelfReferenceAtRoot target.id) ∧
-      control = none ∧
-      targetDiagnosticOf direct = some .errorReferenceToCalculatedField ∧
-      targetDiagnosticOf range = some .errorReferenceToCalculatedField ∧
-      targetDiagnosticOf control = none := by
+        (.concat (.field (bare "Source")) (.literal "X")))
+    errors.all (· == some (.targetSelfReference target.id)) ∧
+      errors.all (targetDiagnosticOf · == some .errorReferenceToCalculatedField) ∧
+      control = none ∧ targetDiagnosticOf control = none := by
   native_decide
 
-/- Wider and malformed target reads retain their local refusal without an exact
-Kernel projection because this matrix measured neither branch. -/
+/- A malformed range retains its local refusal without an exact Kernel projection because no
+matrix measured it. -/
 example :
-    let concatenated := operationErrorOf
-      (elaborateStringComputationOperation model ["Form"] target.id
-        (.concat (.field (bare "Target")) (.literal "X")))
     let invalidRange := operationErrorOf
       (elaborateStringComputationOperation model ["Form"] target.id
         (.range (bare "Target") 0 1))
-    concatenated = some (.targetSelfReference target.id) ∧
-      invalidRange = some (.invalidRange 0 1) ∧
-      targetDiagnosticOf concatenated = none ∧
+    invalidRange = some (.invalidRange 0 1) ∧
       targetDiagnosticOf invalidRange = none ∧
       StringComputationElabError.targetDiagnostic?
         (.targetKindMismatch amount.path .number) = none ∧

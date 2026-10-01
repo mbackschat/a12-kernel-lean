@@ -447,7 +447,9 @@ example :
     (operation? (.second
       (.number 2) (.number 3) (.number 4))).isSome = true ∧
       operationError? (.hour (.extractor .hour 1)) =
-        some (.targetSelfReference 1) := by
+        some (.targetSelfReference 1) ∧
+      TimeConstructionComputationElabError.diagnostic? (.targetSelfReference 1) =
+        some .errorReferenceToCalculatedField := by
   native_decide
 
 /- The extractor source's admitted family is its declared **format**'s, never its declared kind,
@@ -585,7 +587,9 @@ example :
 
 /- Static components inside the world carrier retain the same target-reference prohibition. -/
 example :
-    worldSelfReferenceError? = some (.targetSelfReference 1) := by
+    worldSelfReferenceError? = some (.targetSelfReference 1) ∧
+      WorldTimeConstructionComputationElabError.diagnostic? (.targetSelfReference 1) =
+        some .errorReferenceToCalculatedField := by
   native_decide
 
 /- A dynamic accepted clock reaches the settled source-relative result and exact application path. -/

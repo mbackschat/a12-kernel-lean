@@ -26,6 +26,16 @@ inductive DateTimeDayShiftComputationElabError where
   | targetSelfReference (field : FieldId)
   deriving Repr, DecidableEq
 
+namespace DateTimeDayShiftComputationElabError
+
+/-- A shift of the target itself draws the target-read class, measured for one day shift, two,
+and either mixed order ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)). The source and target refusals claim no class. -/
+def diagnostic? : DateTimeDayShiftComputationElabError → Option KernelStaticDiagnostic
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
+  | .shift _ | .target _ => none
+
+end DateTimeDayShiftComputationElabError
+
 /-- One checked direct DateTime day shift and its distinct declaration-owned target. -/
 structure CheckedDateTimeDayShiftComputation (model : FlatModel) where
   shift : CheckedDateTimeDayShift model

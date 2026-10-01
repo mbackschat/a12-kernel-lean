@@ -136,7 +136,9 @@ example :
       timeZoneId := "Europe/Berlin" }
     errorOf (elaborateDateTimeSubdayShiftComputation
       selfModel target.id .hours (.literal 1) target.id) =
-        some (.targetSelfReference target.id) := by
+        some (.targetSelfReference target.id) ∧
+      DateTimeSubdayShiftComputationElabError.diagnostic?
+        (.targetSelfReference target.id) = some .errorReferenceToCalculatedField := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeSubdayShiftComputation

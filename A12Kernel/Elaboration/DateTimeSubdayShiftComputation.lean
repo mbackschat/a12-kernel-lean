@@ -21,6 +21,16 @@ inductive DateTimeSubdayShiftComputationElabError where
   | targetSelfReference (field : FieldId)
   deriving Repr, DecidableEq
 
+namespace DateTimeSubdayShiftComputationElabError
+
+/-- A sub-day shift of the target itself draws the target-read class ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)). The source and
+target refusals claim no class. -/
+def diagnostic? : DateTimeSubdayShiftComputationElabError → Option KernelStaticDiagnostic
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
+  | .shift _ | .target _ => none
+
+end DateTimeSubdayShiftComputationElabError
+
 /-- One checked field-backed sub-day shift and its distinct DateTime target. -/
 structure CheckedDateTimeSubdayShiftComputation (model : FlatModel) where
   shift : CheckedShiftedDateTimeSource model

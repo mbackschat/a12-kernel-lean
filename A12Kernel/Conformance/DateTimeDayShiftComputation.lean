@@ -201,7 +201,9 @@ example :
       timeZoneId := "Europe/Berlin" }
     errorOf (elaborateDateTimeDayShiftComputation
       selfModel target.id (.literal 1) target.id) =
-        some (.targetSelfReference target.id) := by
+        some (.targetSelfReference target.id) ∧
+      DateTimeDayShiftComputationElabError.diagnostic?
+        (.targetSelfReference target.id) = some .errorReferenceToCalculatedField := by
   native_decide
 
 /- One checked dynamic computation consumes each supplied world independently, retains

@@ -20,20 +20,21 @@ inductive StringComputationElabError where
   | rawStringTarget (path : List String)
   | customStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
-  | targetSelfReferenceAtRoot (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
 
 namespace StringComputationElabError
 
-/-- Project the measured target refusals to their exact Kernel diagnostic class: the root
-direct-copy and `RangeAsString` self-references, a raw target, which the generated comparison
-reads before the operation, and a copied field that comparison refuses. The raw row is measured with
+/-- Project the measured target refusals to their exact Kernel diagnostic class: a read of the
+target, which draws one class whatever shape surrounds it
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)),
+a raw target, which the generated comparison reads before the operation, and a copied field that
+comparison refuses. The raw row is measured with
 a String field source ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)); a literal
 source takes it by that read, which does not depend on the operation. -/
 def targetDiagnostic? :
     StringComputationElabError → Option KernelStaticDiagnostic
-  | .targetSelfReferenceAtRoot _ => some .errorReferenceToCalculatedField
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | .rawStringTarget _ => some .rawTypeOperandInvalid
   | .copyComparison _ _ refusal => some refusal.diagnostic
   | _ => none
@@ -122,13 +123,6 @@ def referencesField (field : FieldId) : StringExpr FieldId → Bool
   | .literal _ => false
   | .range candidate _ _ => candidate == field
   | .concat left right => left.referencesField field || right.referencesField field
-
-/-- Whether the complete expression is one of the measured root target-read
-shapes rather than a wider expression that merely contains the target. -/
-private def isRootTargetReference (field : FieldId) : StringExpr FieldId → Bool
-  | .field candidate => candidate == field
-  | .range candidate _ _ => candidate == field
-  | _ => false
 
 end StringExpr
 
@@ -260,10 +254,7 @@ def elaborateStringComputationOperation
         elaborateStringExprCore model checkedDeclaringGroup.val declaration.groupPath expression
       let checked ← certifyStringExpr model hModel core
       if hReference : checked.core.referencesField targetField = true then
-        if checked.core.isRootTargetReference targetField then
-          throw (.targetSelfReferenceAtRoot targetField)
-        else
-          throw (.targetSelfReference targetField)
+        throw (.targetSelfReference targetField)
       else
         if hTarget : model.admitsStringComputationTarget
             targetField declaration.stringPolicy = true then

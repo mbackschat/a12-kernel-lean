@@ -236,7 +236,9 @@ example :
       timeZoneId := "UTC" }
     errorOf (elaborateFullDateFieldComputation selfModel
       target.id target.id) =
-        some (.targetSelfReference target.id) := by
+        some (.targetSelfReference target.id) ∧
+      FullDateComputationElabError.diagnostic? (.targetSelfReference target.id) =
+        some .errorReferenceToCalculatedField := by
   native_decide
 
 /- One retained instant denotes different local dates in UTC and Berlin. Target rendering therefore follows the checked model zone, not the host zone or an instant-wide fixed offset. -/
