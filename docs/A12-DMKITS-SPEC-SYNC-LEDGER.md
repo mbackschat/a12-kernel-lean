@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-01-04"></a>
+### `SPEC-2026-10-01-04` — a filtered Number star answers from its in-capacity rows on both arms
+
+- `status`: pending
+- `origin`: locally originated; it replaces a sentence of this project's own that recorded the filtered star's extent as an unobserved internal choice.
+- `clause`: [`07`](../spec/07-repetition-and-iteration.md), the capacity bullet's filtered-star sentences.
+- `delta`: over `5, 5, 5, 7` at `max 3`, `Sum` of a star filtered by a reflexive position comparison, by `V > 6` and by `V < 6` answers `15`, `0` and `15` under both full validation and `compute`, exactly as over `5, 5, 5`, and `17`, `7` and `10` over `7, 5, 5, 5`. The over-limit row is never kept and does not make the filter unknown, and no computed value is cleared.
+- `basis`: this project's [filtered-star grid](SOURCES.md#src-filtered-star-capacity-both-arms), one `:adapter:kernelProbe` request at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, three documents on both codegen strategies with `enginesAgree`, every prediction held.
+- `surfaces`: any peer evaluator that filters a star's complete rows before or without the capacity projection, or reads an over-limit row's position as a formal failure inside a filter.
+- `acceptance`: confirm the three documents' sums on either arm, or supply a filtered Number star whose answer depends on an over-limit row.
+- `limit`: Number `Sum`, one repetition level, `en_US`; this project holds no row for a filtered Number star's other operators or for another kind on the computation arm.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-01-03"></a>
 ### `SPEC-2026-10-01-03` — the name position's relative and bare refusals carry their own classes, and a name that resolves to a group is refused as no read field
 

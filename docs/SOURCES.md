@@ -1337,6 +1337,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Filtered starred String, Boolean, and Confirm value-count capacity](sources/group-and-iteration-probes.md#src-filtered-starred-field-capacity)
 <a id="src-capacity-projection-computation-arm"></a>
 - [Declared-capacity projection on the computation arm](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)
+<a id="src-filtered-star-capacity-both-arms"></a>
+- [A filtered Number star answers from its in-capacity rows on both arms, so an over-limit row is never kept and never makes the filter unknown](sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)
 <a id="src-starred-field-operand-peer-reproduction"></a>
 - [Starred field operand, empty-domain zero, and the operand-scoped over-repetition channel, reproduced by a12-dmkits](sources/inbound-group-operand-batches.md#src-starred-field-operand-peer-reproduction)
 <a id="src-star-over-repetition-domain"></a>
