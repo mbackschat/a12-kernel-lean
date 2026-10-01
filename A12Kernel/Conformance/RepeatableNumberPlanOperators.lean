@@ -103,16 +103,17 @@ private def copy (group : GroupPath) (target : FieldId) (source : SurfaceFieldPa
     Option (CheckedRepeatableNumberRowOperation model) :=
   (checkAddressedNumberField model group target source).toOption.map .direct
 
-/-- The model's nine computations in its authored order, every reader ahead of what it reads. -/
+/-- The model's nine computations in its authored order: every reader of `OP` ahead of it, `OSub`
+ahead of `Fix`, and only `RootSum` after the `OP` it sums. -/
 private def authored : List (Option (CheckedRepeatableNumberPlanStep model)) :=
-  [rootSum?,
+  [row? (binary innerPath iSubId (bare "IBase") (parent "OP") .subtract),
+    row? (binary innerPath iMulId (bare "IBase") (parent "OP") .multiply),
     row? (binary outerPath oSubId (bare "OP") fixPath .subtract),
     row? (binary outerPath oMulId (bare "OP") (bare "OBase2") .multiply),
     row? (copy outerPath ohId (bare "OBase2")) (some (.fieldFilled opId)),
     row? (copy outerPath ohnId (bare "OBase2")) (some (.fieldNotFilled opId)),
-    row? (binary innerPath iSubId (bare "IBase") (parent "OP") .subtract),
-    row? (binary innerPath iMulId (bare "IBase") (parent "OP") .multiply),
     row? (copy outerPath opId (bare "OBase")) (some (.fieldFilled oGateId)),
+    rootSum?,
     fix?]
 
 private def plan? : Option (CheckedRepeatableNumberPlan model) := do
@@ -179,14 +180,14 @@ private def reportsAs (base : Source) (rows : List OuterRow)
   | some actual => actual.length == expected.length && expected.all actual.contains
   | none => false
 
-private def report (field : FieldId) (path : List Nat) (report : Option Int) : CellAddr × Option Int :=
-  ({ field, path }, report)
+private def report (field : FieldId) (path : List Nat) (value : Option Int) : CellAddr × Option Int :=
+  ({ field, path }, value)
 
-/- Every reader runs after what it reads, `OSub` after the fixed `Fix`, although each is authored
-ahead of it; only those producer-before-reader pairs are measured, the rest is the shared rule's
+/- Every reader runs after what it reads, `OSub` after the fixed `Fix`, although all but `RootSum` are
+authored ahead of what they read; only those producer-before-reader pairs are measured, the rest is the shared rule's
 earliest-ready order. -/
 example : (plan?.map fun plan => plan.execution.map (·.targetField)) =
-    some [opId, rootSumId, oMulId, ohId, ohnId, iSubId, iMulId, fixId, oSubId] := by
+    some [opId, iSubId, iMulId, oMulId, ohId, ohnId, rootSumId, fixId, oSubId] := by
   native_decide
 
 /- Every source readable: subtraction and multiplication read the fresh `OP` and `Fix`, each inner row

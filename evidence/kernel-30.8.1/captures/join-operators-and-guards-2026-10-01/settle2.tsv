@@ -1,0 +1,75 @@
+# row	suppress	alternatives (precondition => operation; ...)	kernel-codes
+B01	-	[T3]; FieldFilled(Gate2) => [Base1]	MVK_ERROR_EMPTY_PRECONDITION
+B02	-	FieldFilled(Gate1) => [Base1]; [T3]	MVK_ERROR_EMPTY_PRECONDITION
+B03	-	[T3] * 2; FieldFilled(Gate2) => [Base1]	MVK_ERROR_EMPTY_PRECONDITION
+B04	-	[T3]; [Base1]	MVK_ERROR_EMPTY_PRECONDITION
+B05	-	[Base1]; FieldFilled(Gate2) => [T3]	MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+B06	-	FieldFilled(Gate1) => [T3]; [Base1]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_EMPTY_PRECONDITION
+B07	-	FieldFilled(T3) => [Base1]; [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_EMPTY_PRECONDITION
+B08	-	[T3]; FieldFilled(Gate2) => [T3]	MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+B09	-	[Base1]; [Base2]	MVK_ERROR_EMPTY_PRECONDITION
+B10	-	[Base1]; FieldFilled(Gate2) => [Base2]	MVK_ERROR_EMPTY_PRECONDITION
+B11	-	FieldFilled(Gate1) => [Base1]; [Base2]	MVK_ERROR_EMPTY_PRECONDITION
+U01	-	[Frac]; FieldFilled(Gate2) => [Base1]	MVK_INVALID_COMPARE_DEC_PLACES
+U02	-	FieldFilled(Gate1) => [Base1]; [Frac]	MVK_INVALID_COMPARE_DEC_PLACES
+U03	-	[Base1] / [Base2] / [Base3]; FieldFilled(Gate2) => [Base1]	MVK_TOO_MANY_DIV_FOR_CALC
+U04	-	[Base1] ^ 2 ^ 2; FieldFilled(Gate2) => [Base1]	MVK_TOO_MANY_POW_FOR_CALC
+U05	-	[Nope]; FieldFilled(Gate2) => [Base1]	MVK_INVALID_ENTITY
+U06	-	[Base1] + [Gate1]; FieldFilled(Gate2) => [Base1]	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+U07	-	FieldFilled(Gate1) => [Frac]; [T3]	MVK_INVALID_COMPARE_DEC_PLACES
+U08	-	[T3]; FieldFilled(Gate2) => [Frac]	MVK_INVALID_COMPARE_DEC_PLACES
+U09	-	[Frac]; [T3]	MVK_INVALID_COMPARE_DEC_PLACES
+U10	-	[T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+U11	-	FieldFilled(Gate1) => [Base1]; [Base1] / [Base2] / [Base3]	MVK_TOO_MANY_DIV_FOR_CALC
+U12	-	FieldFilled(T3) => [Base1]; [Base2]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_EMPTY_PRECONDITION
+U13	-	[Base1]; FieldFilled(T3) => [Base2]	MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+G01	-	FieldFilled(Nope) => [Base1]; FieldFilled(Gate2) => [Frac]	MVK_INVALID_ENTITY
+G02	-	FieldFilled(Gate1) => [Frac]; FieldFilled(Nope) => [Base1]	MVK_INVALID_COMPARE_DEC_PLACES
+G03	-	FieldFilled(Nope) => [Base1]; FieldFilled(Gate2) => [Base1] / [Base2] / [Base3]	MVK_INVALID_ENTITY
+G04	-	FieldFilled(Gate1) => [Base1] / [Base2] / [Base3]; FieldFilled(Nope) => [Base1]	MVK_TOO_MANY_DIV_FOR_CALC
+G05	-	FieldFilled(Nope) => [Base1]; FieldFilled(Gate2) => [T3]	MVK_INVALID_ENTITY
+G06	-	FieldFilled(Gate1) => [T3]; FieldFilled(Nope) => [Base1]	MVK_INVALID_ENTITY
+O01	-	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [Nope]	MVK_INVALID_COMPARE_DEC_PLACES
+O02	-	FieldFilled(Gate1) => [Nope]; FieldFilled(Gate2) => [Frac]	MVK_INVALID_ENTITY
+O03	-	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [Base1] / [Base2] / [Base3]	MVK_INVALID_COMPARE_DEC_PLACES
+O04	-	FieldFilled(Gate1) => [Base1] / [Base2] / [Base3]; FieldFilled(Gate2) => [Frac]	MVK_TOO_MANY_DIV_FOR_CALC
+O05	-	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [Base1] ^ 2 ^ 2	MVK_INVALID_COMPARE_DEC_PLACES
+O06	-	FieldFilled(Gate1) => [Base1] ^ 2 ^ 2; FieldFilled(Gate2) => [Frac]	MVK_TOO_MANY_POW_FOR_CALC
+O07	-	FieldFilled(Gate1) => [Base1] / [Base2] / [Base3]; FieldFilled(Gate2) => [Base1] ^ 2 ^ 2	MVK_TOO_MANY_DIV_FOR_CALC
+O08	-	FieldFilled(Gate1) => [Base1] ^ 2 ^ 2; FieldFilled(Gate2) => [Base1] / [Base2] / [Base3]	MVK_TOO_MANY_POW_FOR_CALC
+O09	-	FieldFilled(Gate1) => [Nope]; FieldFilled(Gate2) => [Base1] / [Base2] / [Base3]	MVK_INVALID_ENTITY
+O10	-	FieldFilled(Gate1) => [Base1] / [Base2] / [Base3]; FieldFilled(Gate2) => [Nope]	MVK_TOO_MANY_DIV_FOR_CALC
+O11	-	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [Base1] + [Gate1]	MVK_INVALID_COMPARE_DEC_PLACES
+O12	-	FieldFilled(Gate1) => [Base1] + [Gate1]; FieldFilled(Gate2) => [Frac]	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+O13	-	FieldFilled(Gate1) => [Nope]; FieldFilled(Gate2) => [Nope2]	MVK_INVALID_ENTITY
+O14	-	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [Frac]	MVK_INVALID_COMPARE_DEC_PLACES
+O15	-	FieldFilled(Gate1) => Sum(T3, Base1); FieldFilled(Gate2) => [Frac]	MVK_INVALID_COMPARE_DEC_PLACES
+D01	-	FieldFilled(T3) => [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+D02	-	FieldFilled(T3) => [Base1]; FieldFilled(Gate2) => [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+D03	-	FieldFilled(Gate1) => [T3]; FieldFilled(T3) => [Base1]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+D04	-	FieldFilled(Gate1) => [T3]; FieldFilled(Gate2) => [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+D05	-	FieldFilled(T3) => [T3]; FieldFilled(Gate2) => [Base1]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+D06	-	FieldFilled(T3) => [Base1]; FieldFilled(T3) => [Base2]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+D07	-	FieldFilled(T3) => [T3]; FieldFilled(Gate2) => [Frac]	MVK_INVALID_COMPARE_DEC_PLACES
+S01	COMPARE_DEC_PLACES	FieldFilled(Gate1) => [T3]; FieldFilled(Gate2) => [Frac]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+S02	COMPARE_DEC_PLACES	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+S03	COMPARE_DEC_PLACES	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [Base1] / [Base2] / [Base3]	MVK_TOO_MANY_DIV_FOR_CALC
+S04	COMPARE_DEC_PLACES	FieldFilled(Gate1) => [Frac]; FieldFilled(Gate2) => [Nope]	MVK_INVALID_ENTITY
+S05	COMPARE_DEC_PLACES	FieldFilled(Gate1) => [T3] * 1.5; FieldFilled(Gate2) => [Base1]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+S06	COMPARE_DEC_PLACES	[Frac]	admitted
+S07	COMPARE_DEC_PLACES	[T3]; FieldFilled(Gate2) => [Frac]	MVK_ERROR_EMPTY_PRECONDITION
+S08	COMPARE_DEC_PLACES	[Frac]; FieldFilled(Gate2) => [Base1]	MVK_ERROR_EMPTY_PRECONDITION
+T01	-	[Base1]; FieldFilled(Gate2) => [T3]; [Base2]	MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+T02	-	FieldFilled(Gate1) => [T3]; [Base1]; FieldFilled(Gate2) => [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+T03	-	[Base1]; [Base2]; FieldFilled(Gate2) => [T3]	MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+T04	-	FieldFilled(Gate1) => [T3]; [Base1]; [Base2]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_EMPTY_PRECONDITION
+T05	-	[T3]; [T3]; FieldFilled(Gate2) => [T3]	MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+T06	-	FieldFilled(Gate1) => [Base1]; FieldFilled(Gate2) => [Base2]; [T3]	MVK_ERROR_EMPTY_PRECONDITION
+T07	-	FieldFilled(Nope) => [Frac]	MVK_INVALID_ENTITY
+T08	-	FieldFilled(Nope) => [Base1] / [Base2] / [Base3]	MVK_INVALID_ENTITY
+T09	-	FieldFilled(Gate1) => [Frac] + [Nope]	MVK_INVALID_ENTITY
+T10	-	FieldFilled(Gate1) => [Nope] + [Frac]	MVK_INVALID_ENTITY
+T11	-	[T3] + [T3]; FieldFilled(Gate2) => [T3] + [T3]	MVK_ERROR_EMPTY_PRECONDITION,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+T12	-	FieldFilled(T3) => [T3] + [T3]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD,MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+E01	-	FieldFilled(T3) => [Base1]; FieldFilled(Gate2) => [Base2]	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+E02	-	FieldFilled(Gate1) => [Base1]; FieldFilled(Gate2) => [Base2]	admitted

@@ -46,14 +46,16 @@ inductive NumericComputationTableError where
   | guardTargetReference (alternative : Nat)
   deriving Repr, DecidableEq
 
-/-- Project the measured guard refusal: a guard reading the table's own target draws the class a
-read of the target draws anywhere in a computation
-([`spec/09`](../../../spec/09-computations.md) §1), measured in a sole and a later alternative. The
+/-- Project the measured alternative classes: a guard reading the table's own target draws the class a
+read of the target draws anywhere in a computation ([`spec/09`](../../../spec/09-computations.md)
+§1), and an unguarded alternative among several draws `MVK_ERROR_EMPTY_PRECONDITION`
+([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+The certifier meets both in authored order, which is the order the Kernel reports them in. The
 structural refusals claim no class. -/
 def NumericComputationTableError.diagnostic? : NumericComputationTableError → Option KernelStaticDiagnostic
   | .guardTargetReference _ => some .errorReferenceToCalculatedField
-  | .empty | .unguardedAlternative _ | .targetMismatch _ _ _ | .targetPolicyMismatch _
-  | .guardNotAdmitted _ => none
+  | .unguardedAlternative _ => some .errorEmptyPrecondition
+  | .empty | .targetMismatch _ _ _ | .targetPolicyMismatch _ | .guardNotAdmitted _ => none
 
 private def certifyNumericComputationAlternative
     (target : FieldId) (policy : NumericTargetPolicy) (alternativeIndex : Nat)
@@ -119,41 +121,62 @@ inductive NumericComputationTableElabError where
 
 namespace NumericComputationTableElabError
 
-/-- The Kernel class of a whole computation's refusal, through each failure's own projection. -/
+/-- The Kernel class of a whole computation's refusal, through each failure's own projection. Where
+the Kernel reports several codes this is the first of them; the reads of the target it reports once
+per occurrence are not counted. -/
 def diagnostic? : NumericComputationTableElabError → Option KernelStaticDiagnostic
-  | .operation _ error => error.targetDiagnostic?
+  | .operation _ error => error.diagnostic?
   | .table error => error.diagnostic?
 
 end NumericComputationTableElabError
 
-/-- Elaborate a whole Number computation from its authored alternatives, each a precondition beside an
-operation. The Kernel asks every alternative's other gates before any read of the target, so a
-self-read in one alternative beside a scale mismatch, a second unbraced division or an unresolved
-name in another draws that other class
+/-- Elaborate a whole Number computation from its authored alternatives, each an already-resolved
+precondition beside an authored operation, in the two stages the Kernel asks
 ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
-An operation refuses its own self-read only past its own gates, so the first refusal that is no
-self-read, in authored order, answers first, then the first self-read, then the table's checks,
-among them a guard's self-read. Where an unguarded alternative and a self-read meet, the Kernel
-reports both ([`spec/09`](../../../spec/09-computations.md) §1) and this reports one: an operation's
-self-read, or the unguarded alternative ahead of a guard's. The order among two alternatives' other refusals is
-authored order here, which only one alternative failing ever measures. -/
+
+First each alternative in authored order is asked everything but a read of its target: its guard's
+admission, then its operation's names, authoring, kinds and scale. The first alternative failing one
+of them reports that refusal alone, whatever any other alternative holds, so neither a computation-wide
+names stage nor a computation-wide scale stage exists. Then the alternatives' own classes are asked in
+authored order: an unguarded alternative among several refuses as such, once, and its own reads of the
+target go unreported, while every other alternative's guard or operation reading the target refuses as
+that read. Warning suppression is the whole computation's and lifts only the scale gate.
+
+A guard's name is resolved by the caller, so a guard that does not resolve meets this elaborator as an
+unadmitted guard, asked in its alternative's place. -/
 def elaborateNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
-    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
+    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
+    (suppressExactScaleWarning : Bool := false) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   let elaborated := alternatives.zipIdx.map fun ((precondition, expression), index) =>
     (index + 1, precondition,
-      elaborateNumericTargetComputationOperation model declaringGroup target expression)
-  let refusal? (selfRead : Bool) := elaborated.findSome? fun (index, _, result) =>
-    match result with
-    | .error error =>
-        if (error matches .targetSelfReference _) == selfRead then some (index, error) else none
-    | .ok _ => none
-  match refusal? false, refusal? true with
-  | some (index, error), _ | none, some (index, error) => .error (.operation index error)
-  | none, none =>
-      let checked := elaborated.filterMap fun (_, precondition, result) =>
-        result.toOption.map fun operation => { precondition, operation }
+      elaborateNumericTargetComputationOperation model declaringGroup target expression
+        suppressExactScaleWarning)
+  let otherRefusal? := elaborated.findSome? fun (index, precondition, result) =>
+    if !precondition.all (·.wellFormedBool model) then
+      some (.table (.guardNotAdmitted index))
+    else
+      match result with
+      | .error (.targetSelfReference _) | .ok _ => none
+      | .error error => some (.operation index error)
+  let several := alternatives.length > 1
+  let alternativeRefusal? := elaborated.findSome? fun (index, precondition, result) =>
+    match precondition with
+    | none => if several then some (.table (.unguardedAlternative index)) else
+        match result with
+        | .error error => some (.operation index error)
+        | .ok _ => none
+    | some guard =>
+        if guard.referencesField target then some (.table (.guardTargetReference index)) else
+          match result with
+          | .error error => some (.operation index error)
+          | .ok _ => none
+  match otherRefusal? <|> alternativeRefusal? with
+  | some refusal => .error refusal
+  | none => do
+      let checked ← elaborated.mapM fun (index, precondition, result) =>
+        result.mapError (.operation index) |>.map fun operation => { precondition, operation }
       (certifyNumericComputationTable checked).mapError .table
 
 namespace CheckedNumericComputationTable

@@ -73,7 +73,12 @@ structure NumericComputationEvaluationContext where
   starRead : Env → FieldId → CheckedCell
 
 inductive NumericComputationElabError where
+  /-- An operand's reference, or the declaring group's syntax. -/
   | resolve (error : ResolveError)
+  /-- The target's own declaration, looked up by identity rather than by an authored path. -/
+  | targetResolve (error : ResolveError)
+  /-- The model fails its own validation before any operation is read. -/
+  | invalidModel (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
   | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
@@ -136,8 +141,8 @@ power over a power, a read of the target, which every measured shape reaches onl
 aggregates, `FirstFilledValue` and group counts included, and a copied field the generated comparison
 refuses ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
 The class is one operation's: a computation of several alternatives asks every alternative's other
-gates before any read of the target, which `elaborateNumericTargetComputationTable` owns. The two authoring failures together, and other computation
-failures, remain unmapped. -/
+gates before any read of the target, which `elaborateNumericTargetComputationTable` owns. The two
+authoring failures together, and other computation failures, remain unmapped. -/
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
@@ -161,6 +166,17 @@ def iterationDiagnostic? :
   | .tokenValueCount (.source (.shape (.unboundOperandLevel unbound)))
   | .booleanValueCount (.shape (.unboundOperandLevel unbound)) => unbound.diagnostic?
   | _ => none
+
+/-- The Kernel class of one operation's refusal, through whichever of the projections above owns its
+arm, or through the shared resolver projection for an operand's reference, whose classes the
+computation carrier draws as every other carrier does
+([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)).
+The target's lookup and the model's own validation claim no class. -/
+def diagnostic? (error : NumericComputationElabError) : Option KernelStaticDiagnostic :=
+  error.targetDiagnostic? <|> error.iterationDiagnostic? <|> error.groupCountDiagnostic? <|>
+    match error with
+    | .resolve cause => cause.diagnostic?
+    | _ => none
 
 end NumericComputationElabError
 
@@ -362,7 +378,7 @@ structure CheckedNumericTargetComputationOperation (model : FlatModel) where
 private def FlatModel.resolveNumericComputationTarget
     (model : FlatModel) (target : FieldId) :
     Except NumericComputationElabError (FlatNumberField × GroupPath) := do
-  let declaration ← (model.resolveNonrepeatableDeclarationById target).mapError .resolve
+  let declaration ← (model.resolveNonrepeatableDeclarationById target).mapError .targetResolve
   match declaration.toNumberField? with
   | some field => pure (field, declaration.groupPath)
   | none => throw (.targetNotNumber target)
@@ -647,7 +663,7 @@ private def FlatModel.checkNumericCopyComparison (model : FlatModel) (declaringG
     (targetField : FieldId) :
     AuthoredNumericExpr SurfaceNumericComputationAtom → Except NumericComputationElabError Unit
   | .atom (.numeric (.field reference)) => do
-      let target ← (model.resolveNonrepeatableDeclarationById targetField).mapError .resolve
+      let target ← (model.resolveNonrepeatableDeclarationById targetField).mapError .targetResolve
       if target.fieldValueReadRefusal?.isNone then
         let source ←
           (model.resolveComputationFieldValueRead declaringGroup target.groupPath reference).mapError
@@ -664,7 +680,7 @@ def elaborateCompleteNumericComputationOperation
     Except NumericComputationElabError
       (CheckedNumericComputationOperation model) := do
   match hModel : model.validate with
-  | .error error => throw (.resolve error)
+  | .error error => throw (.invalidModel error)
   | .ok () => do
       let checkedDeclaringGroup ←
         certifyNumericComputationDeclaringGroup declaringGroup
