@@ -1,0 +1,9 @@
+F0	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Z)	Check.	MVK_INVALID_ENTITY
+F1	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Z)	Check.	-
+F2	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Beside/Z)	Check $Z$.	-
+F3	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Z.Vordruckzeile$.	-
+F4	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $X.Vordruckzeile$.	ERROR_TEXT_FIELDNAME_NOT_UNIQUE
+F5	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $X/Foo$.	ERROR_TEXT_FIELDNAME_NOT_UNIQUE
+F6	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Z.value$.	INVALID_FIELD
+F7	noshort	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Store/X)	Check $Z For "k"$.	MVK_INDEX_FOR_ERROR_TEXT_INVALID
+F8	twin	/Probe/Top	/Probe	FieldFilled(Top) And FieldFilled(Beside/Z)	Check $Z$.	-

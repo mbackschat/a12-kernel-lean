@@ -1,0 +1,128 @@
+{
+ "producer": {
+  "dmtool": "source-built launcher",
+  "source": {
+   "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8"
+  }
+ },
+ "observations": [
+  {
+   "id": "F0",
+   "model": "GroupAvailTwinNoShort_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Z)",
+   "message": "Check.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "F1",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Z)",
+   "message": "Check.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "F2",
+   "model": "GroupAvailTwinNoShort_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Beside/Z)",
+   "message": "Check $Z$.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "F3",
+   "model": "GroupAvailTwinNoShort_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Z.Vordruckzeile$.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "F4",
+   "model": "GroupAvailTwinNoShort_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $X.Vordruckzeile$.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+   ]
+  },
+  {
+   "id": "F5",
+   "model": "GroupAvailTwinNoShort_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $X/Foo$.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+   ]
+  },
+  {
+   "id": "F6",
+   "model": "GroupAvailTwinNoShort_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Z.value$.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "INVALID_FIELD"
+   ]
+  },
+  {
+   "id": "F7",
+   "model": "GroupAvailTwinNoShort_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Z For \"k\"$.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+   ]
+  },
+  {
+   "id": "F8",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Beside/Z)",
+   "message": "Check $Z$.",
+   "verification": "KERNEL_CONFIRMED",
+   "engineVersion": "30.8.1",
+   "valid": true,
+   "codes": []
+  }
+ ]
+}

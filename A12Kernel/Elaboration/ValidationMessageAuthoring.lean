@@ -594,8 +594,8 @@ private def parseValidationMessageTemplate
   parseSegments profile segments
 
 /-- The model a message parameter's name resolves in: the same declarations with the short-name tier
-always on. Measured, a model whose flag is off still answers a bare message name by its model-wide
-short name, both an ambiguous one and a unique unread one, while its conditions keep the flag
+always on. Measured, a model whose flag is off still answers a message name by its model-wide short
+name — ambiguous, unread, read, or form-pointed — while the same model's condition refuses a short name
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
 def FlatModel.messageNameModel (model : FlatModel) : FlatModel :=
   { model with fieldRefByShortNameAllowed := true }

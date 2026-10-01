@@ -137,7 +137,7 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
       source.resolvedValueSide document outer filterRead starRead
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
-/-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. A plain or filtered star narrows to its declared-capacity extent, as the checked-document route does; a filter is applied only to in-capacity rows, so an over-limit row is never kept, whichever way the filter would judge it, and cannot make the filter unknown ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/
+/-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. A plain or filtered star narrows to its declared-capacity extent, answering as the checked-document route does; this route filters only the in-capacity rows, so an over-limit row is never kept, whichever way the filter would judge it, and cannot make the filter unknown ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/
 def resolvedValidationAggregateSideIn
     (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -194,8 +194,8 @@ def resolvedComputationAggregateSide
     A plain or filtered **star** and a **group** operand each narrow to their declared-capacity extent:
     a row beyond its group's declared repeatability is not in the domain the operand denotes, so its
     selected value cell is neither aggregated nor able to make the aggregate unavailable. A direct
-    field keeps the complete formal-cell view. The filtered Number branch is an internally selected
-    operand-domain account with external evidence pending; it establishes no filter/capacity order.
+    field keeps the complete formal-cell view. The filtered Number branch's extent is measured on both
+    arms ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)).
 
     One resolver serves every validation aggregate consumer — `Sum`, the extrema, the distinct count,
     and the value count. `Sum` and the group form were measured first, and the remaining consumers

@@ -390,11 +390,9 @@ private def namedClassOn? (onModel : FlatModel) (group : GroupPath) (reference :
   | .error error => some (error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode)
 
 /- The name position's path refusals carry their own classes: an unknown root, an entity that does not
-resolve below it, a walk past the root, and a bare name two fields share where short names reach the
-whole model. A name that resolves to a group is no read field, whatever the condition reads inside it
+resolve below it, and a walk past the root. A name that resolves to a group is no read field, whatever the condition reads inside it
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)). -/
 example :
-    let shortNames := { model with fieldRefByShortNameAllowed := true }
     let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     root "See $/Nope/Amount$" = some (some "INVALID_ROOT_GROUP") ∧
       root "See $/Order/Nope/Amount$" = some (some "INVALID_ENTITY") ∧
@@ -405,18 +403,17 @@ example :
       namedClassOn? model ["Order", "Head"] (bare "Amount") "See $../../Amount$" =
         some (some "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS") ∧
       namedClassOn? model ["Order", "Head"] (bare "Amount") "See $..Wrong/Amount$" =
-        some (some "INVALID_ENTITY") ∧
-      namedClassOn? shortNames ["Order", "Side"] (bare "Aside") "See $Amount$" =
-        some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") := by
+        some (some "INVALID_ENTITY") := by
   native_decide
 
 /- The forms that carry a name keep its resolution but not always its group class
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). A
-form pointer naming a group draws its own class, as does a group's lone absolute segment, while the
-suffixed forms keep the membership one. A keyed form resolves a group as an entity and leaves it to the
-index gate, which this fragment does not decide, so only a key that names nothing is classed. The
-message's short-name tier answers with the model's flag off, which is this fixture's default, and an
-ambiguous first segment answers even when more path follows it. -/
+form pointer naming a group draws its own class, while the suffixed forms and a group's lone absolute
+segment keep the membership one. A keyed form resolves a group as an entity and leaves it to the index
+gate, which this fragment does not decide, so only a key that names nothing is classed. The message's
+short-name tier answers with the model's flag off, which is this fixture's default, admitting a read
+or form-pointed field by its short name, and an ambiguous first segment answers even when more path
+follows it. -/
 example :
     let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     let side := namedClassOn? model ["Order", "Side"] (bare "Aside")
@@ -424,7 +421,10 @@ example :
       root "See $/Order/Head.Vordruckname$" = some (some "INVALID_FIELD_IN_PARAMETER") ∧
       namedClassOn? model ["Order", "Head"] (bare "Amount") "See $Head.Vordruckzeile$" =
         some (some "INVALID_ENTITY") ∧
+      namedClassOn? model ["Order", "Head"] (bare "Amount") "See $Deeper.Vordruckzeile$" =
+        some (some "INVALID_FIELD_IN_PARAMETER") ∧
       root "See $Head.value$" = some (some "INVALID_FIELD") ∧
+      root "See $Head->Cat$" = some (some "INVALID_FIELD") ∧
       root "See $Head For \"k\"$" = some none ∧
       root "See $Amount For Head$" = some none ∧
       root "See $Head For Nope$" = some (some "INVALID_ENTITY") ∧
@@ -433,7 +433,10 @@ example :
       side "See $Amount$" = some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") ∧
       side "See $Amount/Foo$" = some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") ∧
       side "See $Deep/Foo$" = some (some "INVALID_ENTITY") ∧
-      side "See $Deep$" = some (some "INVALID_FIELD") := by
+      side "See $Deep$" = some (some "INVALID_FIELD") ∧
+      root "See $Deep$" = none ∧
+      side "See $Deep.Vordruckzeile$" = none ∧
+      side "See $Amount.Vordruckzeile$" = some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") := by
   native_decide
 
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/
