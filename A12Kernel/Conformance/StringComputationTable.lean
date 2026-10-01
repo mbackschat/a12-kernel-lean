@@ -141,10 +141,15 @@ example :
         some (.accepted ⟨"VALUE", by decide⟩) := by
   native_decide
 
-/- Guard-side target self-reference fails before evaluation. -/
+/- Guard-side target self-reference fails before evaluation and draws the reference class
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
 example :
     tableError [alternative (.fieldFilled target.id) copySource] =
-      some (.guardTargetReference 1) := by
+      some (.guardTargetReference 1) ∧
+    (tableError [alternative (.fieldFilled target.id) copySource]).bind (·.diagnostic?) =
+      some .errorReferenceToCalculatedField ∧
+    (tableError [alternative (.fieldFilled repeatedGate.id) copySource]).bind (·.diagnostic?) =
+      none := by
   native_decide
 
 /- Every row must retain the first row's checked target and declaration policy. -/

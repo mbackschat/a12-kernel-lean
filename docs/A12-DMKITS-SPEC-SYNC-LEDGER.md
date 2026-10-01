@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-01-07"></a>
+### `SPEC-2026-10-01-07` — a computation's read of its own target is asked after the authoring and scale gates on every expression shape
+
+- `status`: pending
+- `origin`: locally originated. Your [`kf181`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf181) holds the order over `+`, `-` and `*` in both positions; this entry extends it to the shapes it does not carry and places the division-count gate ahead of both.
+- `clause`: [`09`](../spec/09-computations.md) §1, the scale bullet's order sentences, and the self-reference checklist item.
+- `delta`: a bare copy `[T]`, `Abs([T])`, `Max([T], [B])`, `[T] ^ 2`, `RoundAccounting([T] / 2, 0)`, `{[T] * 2}` and `[T] + [T]` draw `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`, the last twice; `Max([T], [F])`, `Abs([T]) * [F]`, `Abs([T] * [F])`, `[T] / 2`, `[T] / [B]`, `Abs([T] / 2)`, `{[T] / 2} * {3 / 4}` and `{[T] * [F]}` draw `MVK_INVALID_COMPARE_DEC_PLACES` over a scale-0 `T` beside a scale-2 `F`; `[T] / [B] / [C]`, plain or rounded, draws `MVK_TOO_MANY_DIV_FOR_CALC`.
+- `basis`: this project's [operator-join checkpoint](SOURCES.md#src-join-operators-and-guards), 35 `computation add --dry-run` verdicts on one model at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, code-only verdicts retained in its `static.tsv`.
+- `surfaces`: any peer checker that refuses a target read before typing the whole operation, or that defers it only on enumerated binary shapes.
+- `acceptance`: confirm `Max([T], [F])` against `Max([T], [B])` and `[T] / 2` against `[T] ^ 2`, which separate the order from a shape list, or supply a shape on which it fails.
+- `limit`: Number targets of one scale; an aggregate or a group count reading the target, and other computation families, unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-01-06"></a>
 ### `SPEC-2026-10-01-06` — a message parameter is refused at its parser's first event, and the name position reads the whole entity before any check
 

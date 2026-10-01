@@ -106,7 +106,6 @@ inductive NumericComputationElabError where
   cannot do; the record carries what selects the class. -/
   | unboundOperandLevel (unbound : UnboundOperandLevel)
   | targetSelfReference (field : FieldId)
-  | targetSelfReferenceAfterScale (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
   | unsupportedExpression
   | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
@@ -132,14 +131,15 @@ def groupCountDiagnostic? :
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | _ => none
 
-/-- Project the measured computed Number target-scale rejection, the target
-reference reached after that gate on the measured arithmetic surface, and a copied
-field the generated comparison refuses. Other computation failures remain unmapped. -/
+/-- Project the measured computed Number target-scale rejection, a read of the target, which
+every measured shape reaches only past the authoring and scale gates, and a copied field the
+generated comparison refuses. An aggregate or group-count read of the target takes the same order
+unmeasured. Other computation failures remain unmapped. -/
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
   | .copyComparison _ _ refusal => some refusal.diagnostic
-  | .targetSelfReferenceAfterScale _ => some .errorReferenceToCalculatedField
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | _ => none
 
 /-- Project the per-row operand gate, whether this arm, an operand's resolver or an entity list's
@@ -626,69 +626,6 @@ private def FlatModel.resolveNumericComputationAtoms
                 | some operand => throw (.rootGroupInGroupCount operand.groupPath)
                 | none => pure (.filledGroupCountMixed checked)
 
-/-- Resolve every atom, then refuse a read of the target. Self-reference is judged once the whole
-    expression has resolved, because the Kernel answers a per-row read's class ahead of it whichever
-    operand reads the target
-    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
-private def FlatModel.resolveNumericComputationExpression
-    (model : FlatModel) (declaringGroup targetGroup : GroupPath) (target : FieldId)
-    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
-    Except NumericComputationElabError
-      (AuthoredNumericExpr (CheckedNumericComputationAtom model)) := do
-  let resolved ← model.resolveNumericComputationAtoms declaringGroup targetGroup expression
-  if resolved.anyAtom (CheckedNumericComputationAtom.references model target) then
-    throw (.targetSelfReference target)
-  pure resolved
-
-/-- Resolve the measured arithmetic shapes whose target reference is deferred
-until after the scale comparison.
-
-The Kernel decides the implicit target-scale comparison **before** the
-target-reference refusal, and that order is independent of the operator, of
-which side reads the target, and of whether the other operand is an immediate
-literal or a different Number field. The deferral therefore covers that whole
-measured surface rather than an enumerated list of authored shapes.
-
-Everything outside it keeps the immediate target-first refusal: division, a
-wrapped or nested read, an aggregate or group count, a repeatable or non-Number
-operand, and an operation reading the target on *both* sides, whose order is
-unmeasured. A malformed operand yields `none` as well, so the ordinary resolver
-replays the expression and reports its own error. -/
-private def FlatModel.resolveDirectTargetAdmissionExpression?
-    (model : FlatModel) (declaringGroup targetGroup : GroupPath)
-    (target : FlatNumberField)
-    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
-    Option (AuthoredNumericExpr (CheckedNumericComputationAtom model)) :=
-  let resolveOperand
-      (operand : AuthoredNumericExpr SurfaceNumericComputationAtom) :
-      Option (AuthoredNumericExpr (CheckedNumericComputationAtom model) × Bool) :=
-    match operand with
-    | .literal value => some (.literal value, false)
-    | .atom (.numeric (.field reference)) =>
-        match model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference with
-        | .error _ => none
-        | .ok declaration =>
-            match declaration.toNumberField? with
-            | none => none
-            | some field =>
-                some (.atom (.numeric (.field declaration)), field.id == target.id)
-    | _ => none
-  match expression with
-  | .binary op left right =>
-      match op with
-      | .divide => none
-      | _ =>
-          match resolveOperand left, resolveOperand right with
-          | some (resolvedLeft, leftReadsTarget),
-            some (resolvedRight, rightReadsTarget) =>
-              -- Exactly one side reads the target: a both-sides read is unmeasured.
-              if leftReadsTarget != rightReadsTarget then
-                some (.binary op resolvedLeft resolvedRight)
-              else
-                none
-          | _, _ => none
-  | _ => none
-
 /-- Check computation-group syntax independently of whether the Numeric expression has an operand. -/
 private def certifyNumericComputationDeclaringGroup (declaringGroup : GroupPath) :
     Except NumericComputationElabError { group : GroupPath // GroupPath.isValid group = true } :=
@@ -728,15 +665,8 @@ def elaborateCompleteNumericComputationOperation
         certifyNumericComputationDeclaringGroup declaringGroup
       model.checkNumericCopyComparison checkedDeclaringGroup.val targetField expression
       let (target, targetGroup) ← model.resolveNumericComputationTarget targetField
-      let deferredTargetExpression? :=
-        model.resolveDirectTargetAdmissionExpression?
-          checkedDeclaringGroup.val targetGroup target expression
-      let defersTargetReference := deferredTargetExpression?.isSome
-      let resolved ← match deferredTargetExpression? with
-        | some resolved => pure resolved
-        | none =>
-            model.resolveNumericComputationExpression checkedDeclaringGroup.val
-              targetGroup targetField expression
+      let resolved ← model.resolveNumericComputationAtoms checkedDeclaringGroup.val
+        targetGroup expression
       if !resolved.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression
       match resolved.numericOperationAuthoringCheck with
@@ -750,8 +680,13 @@ def elaborateCompleteNumericComputationOperation
           suppressExactScaleWarning
           (NumericScaleSummary.field target.info.scale) summary then
         throw (.operationScaleMismatch target.info.scale summary)
-      if defersTargetReference then
-        throw (.targetSelfReferenceAfterScale targetField)
+      -- A read of the target is refused last, after every atom has resolved, so a per-row read's
+      -- class answers first
+      -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
+      -- and after the authoring and scale gates on every measured shape
+      -- ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+      if resolved.anyAtom (CheckedNumericComputationAtom.references model targetField) then
+        throw (.targetSelfReference targetField)
       let core : NumericComputationOperation model := {
         target
         expression := resolved

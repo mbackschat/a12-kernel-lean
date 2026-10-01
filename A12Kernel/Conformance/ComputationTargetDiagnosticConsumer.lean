@@ -100,6 +100,16 @@ private def numberDecision
     (elaborateNumericComputationOperation model ["Root"] targetId expression
       suppressExactScaleWarning)
 
+/-- A scale-2 Number beside the scale-0 target, so a self-read's scale gate can fail. -/
+private def fractionModel : FlatModel :=
+  { model with fields := model.fields ++
+      [{ numberDeclaration 35 "Frac" with policy := { kind := .number { scale := 2, signed := true } } }] }
+
+private def fractionDecision (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    ComputationTargetDiagnosticDecision :=
+  decideNumberTargetDiagnostic
+    (elaborateNumericComputationOperation fractionModel ["Root"] targetId expression)
+
 private def stringDecision (expression : StringExpr SurfaceFieldPath) :
     ComputationTargetDiagnosticDecision :=
   decideStringTargetDiagnostic
@@ -217,20 +227,40 @@ example :
         some "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" := by
   native_decide
 
-/- Explain keeps uncovered Number and String target reads as their exact local
-refusals. Their missing external code is distinct from an accepted operation. -/
+/- A Number operation reading its own target draws the reference class whatever its shape, a bare
+copy, a wrapper, an operand-list call, a rounded division, a power, and both sides at once, which the
+Kernel reports once per occurrence. The class is asked after the authoring and scale gates on every
+shape, so a mismatched scale draws the scale class and too many divisions their own refusal instead
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
 example :
-    let numberTarget := surfaceField ["Root"] "Target"
-    let uncoveredNumber := AuthoredNumericExpr.abs numberTarget
+    let selfRead := surfaceField ["Root"] "Target"
+    let frac := surfaceField ["Root"] "Frac"
+    let other := surfaceField ["Root"] "Source"
+    [AuthoredNumericExpr.abs selfRead, selfRead,
+        .extremumCall .maximum (.extremum .maximum selfRead other),
+        .round .halfUp ⟨0, by decide⟩ (.binary .divide selfRead (.literal { value := 2, authoredScale := 0 })),
+        .power selfRead (.literal { value := 2, authoredScale := 0 }), .binary .add selfRead selfRead].map
+          (fun expression => (fractionDecision expression).kernelCode?) =
+      List.replicate 6 (some "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD") ∧
+    [.extremumCall .maximum (.extremum .maximum selfRead frac),
+        .binary .multiply (.abs selfRead) frac, .abs (.binary .multiply selfRead frac),
+        .binary .divide selfRead other, .binary .multiply (.binary .multiply selfRead selfRead) frac,
+        .binary .multiply selfRead (.literal { value := 3 / 2, authoredScale := 1 })].map
+          (fun expression => (fractionDecision expression).kernelCode?) =
+      List.replicate 6 (some "MVK_INVALID_COMPARE_DEC_PLACES") ∧
+    fractionDecision (.binary .divide (.binary .divide selfRead other) frac) =
+      .numberRefusal (.authoring .tooManyDivisions) := by
+  native_decide
+
+/- Explain keeps an uncovered String target read as its exact local refusal. Its missing external
+code is distinct from an accepted operation. -/
+example :
     let uncoveredString : StringExpr SurfaceFieldPath :=
       .concat (.field (bare "StringTarget")) (.literal "X")
     let acceptedString : StringExpr SurfaceFieldPath := .field (bare "Wrong")
-    numberDecision uncoveredNumber =
-        .numberRefusal (.targetSelfReference targetId) ∧
-      stringDecision uncoveredString =
+    stringDecision uncoveredString =
         .stringRefusal (.targetSelfReference stringTarget.id) ∧
       stringDecision acceptedString = .accepted ∧
-      (numberDecision uncoveredNumber).kernelCode? = none ∧
       (stringDecision uncoveredString).kernelCode? = none ∧
       (stringDecision acceptedString).kernelCode? = none := by
   native_decide

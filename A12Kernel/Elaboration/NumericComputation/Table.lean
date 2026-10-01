@@ -46,6 +46,15 @@ inductive NumericComputationTableError where
   | guardTargetReference (alternative : Nat)
   deriving Repr, DecidableEq
 
+/-- Project the measured guard refusal: a guard reading the table's own target draws the class a
+read of the target draws anywhere in a computation
+([`spec/09`](../../../spec/09-computations.md) §1), measured in a sole and a later alternative. The
+structural refusals claim no class. -/
+def NumericComputationTableError.diagnostic? : NumericComputationTableError → Option KernelStaticDiagnostic
+  | .guardTargetReference _ => some .errorReferenceToCalculatedField
+  | .empty | .unguardedAlternative _ | .targetMismatch _ _ _ | .targetPolicyMismatch _
+  | .guardNotAdmitted _ => none
+
 private def certifyNumericComputationAlternative
     (target : FieldId) (policy : NumericTargetPolicy) (alternativeIndex : Nat)
     (guardRequired : Bool)

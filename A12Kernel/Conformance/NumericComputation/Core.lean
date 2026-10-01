@@ -59,8 +59,7 @@ example :
         some (.targetSelfReference targetId) := by
   native_decide
 
-/- The measured arithmetic forms reach scale comparison before the bounded
-target-reference refusal. The same-scale field form is a separate positive
+/- The measured arithmetic forms reach scale comparison before the target-reference refusal. The same-scale field form is a separate positive
 branch from the literal mismatch and suppression branches. -/
 example :
     let targetField := surfaceField ["Root"] "Target"
@@ -80,18 +79,18 @@ example :
             (NumericScaleSummary.field 0)
             (NumericScaleSummary.constant 1))) ∧
       checkedErrorOf multiply (suppressExactScaleWarning := true) =
-        some (.targetSelfReferenceAfterScale targetId) ∧
+        some (.targetSelfReference targetId) ∧
       checkedErrorOf matchedMultiply =
-        some (.targetSelfReferenceAfterScale targetId) ∧
+        some (.targetSelfReference targetId) ∧
       checkedErrorOf addLiteral =
         some (.operationScaleMismatch 0
           (NumericScaleSummary.binary .add
             (NumericScaleSummary.field 0)
             (NumericScaleSummary.constant 1))) ∧
       checkedErrorOf addLiteral (suppressExactScaleWarning := true) =
-        some (.targetSelfReferenceAfterScale targetId) ∧
+        some (.targetSelfReference targetId) ∧
       checkedErrorOf addField =
-        some (.targetSelfReferenceAfterScale targetId) ∧
+        some (.targetSelfReference targetId) ∧
       targetDiagnosticOf (checkedErrorOf multiply) =
         some .invalidCompareDecimalPlaces ∧
       targetDiagnosticOf
@@ -143,7 +142,7 @@ example :
           (checkedErrorOf reverseMultiply (suppressExactScaleWarning := true)) =
         some .errorReferenceToCalculatedField ∧
       checkedErrorOf reverseAddField =
-        some (.targetSelfReferenceAfterScale targetId) ∧
+        some (.targetSelfReference targetId) ∧
       targetDiagnosticOf (checkedErrorOfIn scaleOneModel widerScaleField) =
         some .invalidCompareDecimalPlaces ∧
       targetDiagnosticOf
@@ -152,13 +151,15 @@ example :
         some .errorReferenceToCalculatedField := by
   native_decide
 
-/- Unmeasured target-reading shapes keep a local refusal with no class, judged
-once every atom has resolved and been kind-checked. A per-row read measurably
-answers ahead of it in either operand order
+/- The target read is judged last on every shape, once every atom has resolved and been
+kind-checked and the authoring and scale gates have passed. A per-row read measurably answers ahead
+of it in either operand order
 ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
-as the scale comparison does on the deferred shapes, so a later operand's
-repeatable or wrongly kinded read reports its own refusal first; that consequence
-for a kind refusal is this account's, not a measured row. -/
+so a later operand's repeatable or wrongly kinded read reports its own refusal first; that
+consequence for a kind refusal is this account's, not a measured row. A top-level division and the
+braced two-division product reach the scale class, a braced product and a read on both sides the
+reference class, as the Kernel answers them
+([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
 example :
     let targetField := surfaceField ["Root"] "Target"
     let wrongField := surfaceField ["Root"] "Wrong"
@@ -171,40 +172,31 @@ example :
     let sameTarget := AuthoredNumericExpr.binary .add targetField targetField
     let twoDivisions :=
       AuthoredNumericExpr.binary .multiply
-        (.binary .divide targetField
-          (.literal { value := 2, authoredScale := 0 }))
-        (.binary .divide (.literal { value := 3, authoredScale := 0 })
-          (.literal { value := 4, authoredScale := 0 }))
+        (.group (.binary .divide targetField
+          (.literal { value := 2, authoredScale := 0 })))
+        (.group (.binary .divide (.literal { value := 3, authoredScale := 0 })
+          (.literal { value := 4, authoredScale := 0 })))
     let stringLengthTarget : AuthoredNumericExpr SurfaceNumericAtom :=
       .atom (.stringLength (surfacePath ["Root"] "Target"))
-    -- Each of these varies exactly one axis away from a shape that does
-    -- project, so neither exclusion can be widened silently: the division is
-    -- top-level rather than nested under a multiply, and the grouped multiply
-    -- differs from the projecting `[Target] * 2` only by its grouping.
     let topLevelDivision :=
       AuthoredNumericExpr.binary .divide targetField
         (.literal { value := 2, authoredScale := 0 })
     let groupedTargetTimesLiteral :=
       AuthoredNumericExpr.group (.binary .multiply targetField
         (.literal { value := 2, authoredScale := 0 }))
-    checkedErrorOf topLevelDivision = some (.targetSelfReference targetId) ∧
-      targetDiagnosticOf (checkedErrorOf topLevelDivision) = none ∧
-      checkedErrorOf groupedTargetTimesLiteral =
-        some (.targetSelfReference targetId) ∧
-      targetDiagnosticOf (checkedErrorOf groupedTargetTimesLiteral) = none ∧
-      checkedErrorOf (.binary .multiply targetField
-          (.literal { value := 2, authoredScale := 0 })) =
-        some (.targetSelfReferenceAfterScale targetId) ∧
+    targetDiagnosticOf (checkedErrorOf topLevelDivision) = some .invalidCompareDecimalPlaces ∧
+      targetDiagnosticOf (checkedErrorOf twoDivisions) = some .invalidCompareDecimalPlaces ∧
+      checkedErrorOf groupedTargetTimesLiteral = some (.targetSelfReference targetId) ∧
+      checkedErrorOf sameTarget = some (.targetSelfReference targetId) ∧
+      targetDiagnosticOf (checkedErrorOf groupedTargetTimesLiteral) =
+        some .errorReferenceToCalculatedField ∧
+      targetDiagnosticOf (checkedErrorOf sameTarget) = some .errorReferenceToCalculatedField ∧
       checkedErrorOf targetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
       checkedErrorOf groupedTargetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
       checkedErrorOf targetThenRepeatable =
         some (.resolve (.unboundOperandLevel ["Root", "Rows", "Repeated"] unboundRows)) ∧
-      checkedErrorOf sameTarget = some (.targetSelfReference targetId) ∧
-      checkedErrorOf twoDivisions = some (.targetSelfReference targetId) ∧
       checkedErrorOf stringLengthTarget =
-        some (.lengthOperandNotEvaluatedString ["Root", "Target"]) ∧
-      targetDiagnosticOf (checkedErrorOf sameTarget) = none ∧
-      targetDiagnosticOf (checkedErrorOf twoDivisions) = none := by
+        some (.lengthOperandNotEvaluatedString ["Root", "Target"]) := by
   native_decide
 
 /- Target policy is attached once: a different scale/signedness summary is rejected before evaluation. -/
@@ -327,9 +319,8 @@ example :
           { unscaled := 11, scale := 1 } .suppressedScaleMismatch)) := by
   native_decide
 
-/- Every reached scale mismatch and the bounded after-scale target reference
-project to their measured Kernel classes. Earlier local self-reference and
-unrelated authoring failures remain explicitly unmapped. -/
+/- Every reached scale mismatch and target reference project to their measured Kernel classes.
+Unrelated authoring failures remain explicitly unmapped. -/
 example :
     let scaleOne :=
       AuthoredNumericExpr.literal
@@ -339,10 +330,8 @@ example :
       targetDiagnosticOf
         (checkedErrorOf scaleOne (suppressExactScaleWarning := true)) = none ∧
       NumericComputationElabError.targetDiagnostic?
-        (.targetSelfReferenceAfterScale targetId) =
+        (.targetSelfReference targetId) =
           some .errorReferenceToCalculatedField ∧
-      NumericComputationElabError.targetDiagnostic?
-        (.targetSelfReference targetId) = none ∧
       NumericComputationElabError.targetDiagnostic?
         (.authoring .tooManyDivisions) = none ∧
       NumericComputationElabError.targetDiagnostic? .unsupportedExpression = none ∧

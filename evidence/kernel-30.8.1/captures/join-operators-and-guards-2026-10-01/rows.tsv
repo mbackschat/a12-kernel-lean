@@ -1,0 +1,12 @@
+# row	engines-agree	P1	P2	Sub	Mul	Mx	G	H	HN	Div	formal-errors-in-operands	validation-codes
+d01-clean	true	7	5	2	35	7	12	2	cleared	1.4	-	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,P2Comp:VALUE_ERROR,SubComp:VALUE_ERROR
+d02-base1-malformed	true	cleared	5	cleared	cleared	cleared	cleared	cleared	cleared	cleared	Join/Base1:zahlHatUngueltigeZeichen	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P2Comp:VALUE_ERROR,SubComp:VALUE_ERROR,zahlHatUngueltigeZeichen:VALUE_ERROR
+d03-gate2-absent	true	7	cleared	7	0	7	7	2	2	cleared	Join/Div:berechnungsWertFehler	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,SubComp:VALUE_ERROR
+d04-gate1-absent	true	7	5	2	35	7	cleared	2	cleared	1.4	-	DivComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,P2Comp:VALUE_ERROR,SubComp:VALUE_ERROR
+d05-base1-absent	true	0	5	-5	0	5	5	2	cleared	0	-	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:OMISSION_ERROR,P2Comp:VALUE_ERROR,SubComp:VALUE_ERROR
+d06-base2-malformed	true	7	cleared	cleared	cleared	cleared	cleared	2	cleared	cleared	Join/Base2:zahlHatUngueltigeZeichen	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,SubComp:VALUE_ERROR,zahlHatUngueltigeZeichen:VALUE_ERROR
+d07-base3-malformed	true	7	5	2	35	7	12	cleared	cleared	1.4	Join/Base3:zahlHatUngueltigeZeichen	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,P2Comp:VALUE_ERROR,SubComp:VALUE_ERROR,zahlHatUngueltigeZeichen:VALUE_ERROR
+d08-base2-zero	true	7	0	7	0	7	7	2	cleared	cleared	Join/Div:berechnungsWertFehler	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,P2Comp:VALUE_ERROR,SubComp:VALUE_ERROR
+d09-base1-negative	true	-3	5	-8	-15	5	2	2	cleared	-0.6	-	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,P2Comp:VALUE_ERROR,SubComp:VALUE_ERROR
+d10-negative-gate2-absent	true	-3	cleared	-3	0	0	-3	2	2	cleared	Join/Div:berechnungsWertFehler	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,P1Comp:VALUE_ERROR,SubComp:VALUE_ERROR
+d11-base1-malformed-gate2-absent	true	cleared	cleared	cleared	cleared	cleared	cleared	cleared	2	cleared	Join/Base1:zahlHatUngueltigeZeichen	DivComp:VALUE_ERROR,GComp:VALUE_ERROR,HComp:VALUE_ERROR,MulComp:VALUE_ERROR,SubComp:VALUE_ERROR,zahlHatUngueltigeZeichen:VALUE_ERROR

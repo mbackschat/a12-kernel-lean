@@ -1,0 +1,236 @@
+{
+ "model": "Join2b_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "d01-clean",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "7",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate1": "x",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d02-base1-malformed",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "bad",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate1": "x",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d03-gate2-absent",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "7",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate1": "x"
+    }
+   }
+  },
+  {
+   "name": "d04-gate1-absent",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "7",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d05-base1-absent",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate1": "x",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d06-base2-malformed",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "7",
+     "Base2": "bad",
+     "Base3": "2",
+     "Gate1": "x",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d07-base3-malformed",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "7",
+     "Base2": "5",
+     "Base3": "bad",
+     "Gate1": "x",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d08-base2-zero",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "7",
+     "Base2": "0",
+     "Base3": "2",
+     "Gate1": "x",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d09-base1-negative",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "-3",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate1": "x",
+     "Gate2": "x"
+    }
+   }
+  },
+  {
+   "name": "d10-negative-gate2-absent",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "-3",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate1": "x"
+    }
+   }
+  },
+  {
+   "name": "d11-base1-malformed-gate2-absent",
+   "documentInline": {
+    "Join": {
+     "P1": "99",
+     "P2": "99",
+     "Sub": "99",
+     "Mul": "99",
+     "Mx": "99",
+     "G": "99",
+     "H": "99",
+     "HN": "99",
+     "Div": "99",
+     "Base1": "bad",
+     "Base2": "5",
+     "Base3": "2",
+     "Gate1": "x"
+    }
+   }
+  }
+ ]
+}

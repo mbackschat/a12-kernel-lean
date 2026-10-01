@@ -142,6 +142,18 @@ example :
         some (.guardTargetReference 1) := by
   native_decide
 
+/- A guard reading its own target draws the reference class, in the only alternative and in a later
+one, while an inadmissible guard claims none
+([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
+example :
+    (tableError? [literalRow? (.fieldNotFilled targetId) targetId 1]).bind (·.diagnostic?) =
+        some .errorReferenceToCalculatedField ∧
+    (tableError? [literalRow? (.fieldFilled sourceId) targetId 1,
+        literalRow? (.fieldFilled targetId) targetId 2]).bind (·.diagnostic?) =
+        some .errorReferenceToCalculatedField ∧
+    (tableError? [literalRow? (.fieldNotFilled 999) targetId 1]).bind (·.diagnostic?) = none := by
+  native_decide
+
 /- A false guard crosses row boundaries, but the first selected operation ends the scan even on numeric domain failure. -/
 example :
     tableOutcome? [
