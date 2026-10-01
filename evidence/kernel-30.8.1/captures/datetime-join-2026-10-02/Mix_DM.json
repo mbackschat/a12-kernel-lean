@@ -1,0 +1,340 @@
+{
+ "header": {
+  "id": "Mix_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Mix_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Mix",
+     "name": "Mix",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Mix/DT0",
+        "name": "DT0",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/N0",
+        "name": "N0",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/G",
+        "name": "G",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/N1",
+        "name": "N1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/DTA",
+        "name": "DTA",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/DTB",
+        "name": "DTB",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/DTC",
+        "name": "DTC",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/H",
+        "name": "H",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/K",
+        "name": "K",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/KN",
+        "name": "KN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Mix/H2",
+        "name": "H2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/HComp",
+        "name": "HComp",
+        "Computation": {
+         "computedFieldRelPath": "../H",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInHours(DT0, DTB)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/KComp",
+        "name": "KComp",
+        "Computation": {
+         "computedFieldRelPath": "../K",
+         "computationAlternatives": [
+          {
+           "operation": "[N0]",
+           "precondition": "FieldFilled(DTB)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/KNComp",
+        "name": "KNComp",
+        "Computation": {
+         "computedFieldRelPath": "../KN",
+         "computationAlternatives": [
+          {
+           "operation": "[N0]",
+           "precondition": "FieldNotFilled(DTB)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/DTBComp",
+        "name": "DTBComp",
+        "Computation": {
+         "computedFieldRelPath": "../DTB",
+         "computationAlternatives": [
+          {
+           "operation": "AddHours(DTA, 2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/DTAComp",
+        "name": "DTAComp",
+        "Computation": {
+         "computedFieldRelPath": "../DTA",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(DT0, [N1])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/N1Comp",
+        "name": "N1Comp",
+        "Computation": {
+         "computedFieldRelPath": "../N1",
+         "computationAlternatives": [
+          {
+           "operation": "[N0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/DTCComp",
+        "name": "DTCComp",
+        "Computation": {
+         "computedFieldRelPath": "../DTC",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(DT0, 1)",
+           "precondition": "FieldFilled(G)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Mix/H2Comp",
+        "name": "H2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../H2",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(DT0, DTC)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

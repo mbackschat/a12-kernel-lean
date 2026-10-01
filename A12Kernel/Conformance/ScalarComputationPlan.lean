@@ -146,7 +146,8 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × Option St
   | .string target (.accepted term) => some (target, some term.text)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, none)
   | .string target .noValue | .string target (.poison _) => some (target, none)
-  | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ (.errored _ _) => none
+  | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ (.errored _ _)
+  | .dateTime _ _ => none
 
 /-- The computed value of each reported target, `none` where it is cleared. -/
 private def values? (cells : List ClassifiedCellInput) : Option (List (Option String)) := do

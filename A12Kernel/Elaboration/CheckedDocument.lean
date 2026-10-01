@@ -441,6 +441,21 @@ def validationRowEnvironments (checked : CheckedDocument model)
       extendValidationRowEnvironments checked [outer]
         actualOuter remaining
 
+/-- The document a later computation of one run reads: each listed nonrepeatable field's own placement
+replaced by the listed cell, or removed, so that field reads empty. Inside a run a completed target is
+read through the cell its outcome projects and a pending one reads empty, whatever the document stores
+for either ([`kf459`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459)). This is a read overlay for
+evaluators that take the whole document; the source data, rows and every other placement are unchanged,
+and nothing here applies a result. -/
+def overlayNonrepeatableCells (checked : CheckedDocument model)
+    (cells : List (FieldId × Option CheckedCell)) : CheckedDocument model :=
+  { checked with
+    checkedCells :=
+      (checked.checkedCells.filter fun placement =>
+        !(placement.address.path.isEmpty && cells.any (·.1 == placement.address.field))) ++
+      cells.filterMap fun (field, cell) =>
+        cell.map fun cell => { address := { field, path := [] }, cell } }
+
 /-- Query one model-legal address. In-cap absence is a clean empty checked cell, over-limit ancestry is unavailable, and malformed addressing remains an explicit structural error. -/
 def read (checked : CheckedDocument model) (address : CellAddr) :
     Except CheckedDocumentError CheckedCell := do

@@ -11,7 +11,7 @@ namespace A12Kernel
 theorem scalarComputationOutcomePartitions_count
     (outcomes : List ScalarComputationOutcome) :
     let partitioned := ScalarComputationOutcomePartitions.ofOutcomes outcomes
-    partitioned.string.length + partitioned.number.length =
+    partitioned.string.length + partitioned.number.length + partitioned.dateTime.length =
       outcomes.length := by
   induction outcomes with
   | nil =>
@@ -53,6 +53,21 @@ theorem scalarComputationOutcomePartitions_number_mem_iff
         simp [ScalarComputationOutcomePartitions.ofOutcomes,
           inductionHypothesis]
 
+/-- DateTime membership is preserved exactly by the DateTime partition. -/
+theorem scalarComputationOutcomePartitions_dateTime_mem_iff
+    (outcomes : List ScalarComputationOutcome)
+    (target : FieldId) (outcome : DateTimeTargetOutcome) :
+    (target, outcome) ∈
+        (ScalarComputationOutcomePartitions.ofOutcomes outcomes).dateTime ↔
+      ScalarComputationOutcome.dateTime target outcome ∈ outcomes := by
+  induction outcomes with
+  | nil =>
+      simp [ScalarComputationOutcomePartitions.ofOutcomes]
+  | cons head remaining inductionHypothesis =>
+      cases head <;>
+        simp [ScalarComputationOutcomePartitions.ofOutcomes,
+          inductionHypothesis]
+
 /-- Successful mixed result projection delegates the exact constructor partitions to the two existing family owners. -/
 theorem scalarComputationRun_executeResult_routesFamilies
     (run : CheckedScalarComputationRun model)
@@ -67,6 +82,7 @@ theorem scalarComputationRun_executeResult_routesFamilies
       NumericComputationRunView
         (ComputationFormalMessage NumberPayload))
     (executed : run.execute world patterns input = .ok outcomes)
+    (noDateTime : (ScalarComputationOutcomePartitions.ofOutcomes outcomes).dateTime = [])
     (numberProjected :
       NumericComputationRunView.fromOutcomes input numberPayloadAt
         numberMessages
@@ -82,20 +98,6 @@ theorem scalarComputationRun_executeResult_routesFamilies
       } := by
   unfold CheckedScalarComputationRun.executeResult
   rw [executed]
-  change
-    (do
-      let projected ←
-        (NumericComputationRunView.fromOutcomes input numberPayloadAt
-          numberMessages
-          (ScalarComputationOutcomePartitions.ofOutcomes outcomes).number).mapError
-            ScalarComputationRunResultFault.numberSource
-      pure ({
-        string := StringComputationRunView.fromOutcomes input
-          stringResidualMessages
-          (ScalarComputationOutcomePartitions.ofOutcomes outcomes).string
-        number := projected
-      } : ScalarComputationRunView StringResidual NumberPayload)) = _
-  rw [numberProjected]
-  rfl
+  simp [noDateTime, numberProjected, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 end A12Kernel

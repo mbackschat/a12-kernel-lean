@@ -1456,6 +1456,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A four-deep dependency diamond orders correctly, and a silently cleared producer reads EMPTY where an errored one poisons](sources/evaluation-and-application-routes.md#src-diamond-dependency-clear-kinds)
 <a id="src-join-poison-and-substitution"></a>
 - [A malformed producer clears every Number join that reaches it, and a twelve-computation plan runs in dependency order, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-join-poison-and-substitution)
+<a id="src-datetime-join"></a>
+- [A DateTime shift reads computed amounts and DateTimes fresh, poison and absence cross the join by the shared rule, and a computed DateTime is read back from its rendering, measured locally 2026-10-02](sources/evaluation-and-application-routes.md#src-datetime-join)
 <a id="src-join-operators-and-guards"></a>
 - [Operators and guards at a join, cycle classes, and a self-read asked after the authoring and scale gates on every shape, measured locally 2026-10-01](sources/evaluation-and-application-routes.md#src-join-operators-and-guards)
 <a id="src-two-level-repeatable-join"></a>

@@ -300,6 +300,7 @@ import A12Kernel.Conformance.RepetitionNotUniqueElaboration
 import A12Kernel.Conformance.RepetitionNotUniqueValidationRule
 import A12Kernel.Conformance.Required
 import A12Kernel.Conformance.ScalarComputationPlan
+import A12Kernel.Conformance.ScalarComputationPlanDateTime
 import A12Kernel.Conformance.ScalarComputationPlanOperators
 import A12Kernel.Conformance.ScalarComputationRun
 import A12Kernel.Conformance.ScalarText

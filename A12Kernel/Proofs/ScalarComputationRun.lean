@@ -158,6 +158,40 @@ theorem scalarComputationRun_evaluateStep_faultIdentity
           · rfl
       | ok completion =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
+  | dateTimeDayShift operation _ =>
+      cases result : operation.evaluateOutcome (run.documentFor state input) with
+      | error cause =>
+          simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
+          subst fault
+          exact ⟨rfl, rfl⟩
+      | ok outcome =>
+          cases cell : CheckedScalarComputationRun.dateTimeDependencyCell model
+              operation.target.checked.target.id outcome with
+          | error cause =>
+              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
+                Except.mapError] at evaluated
+              subst fault
+              exact ⟨rfl, rfl⟩
+          | ok readCell =>
+              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
+                Except.mapError] at evaluated
+  | dateTimeSubdayShift operation _ =>
+      cases result : operation.evaluateOutcome (run.documentFor state input) with
+      | error cause =>
+          simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
+          subst fault
+          exact ⟨rfl, rfl⟩
+      | ok outcome =>
+          cases cell : CheckedScalarComputationRun.dateTimeDependencyCell model
+              operation.target.checked.target.id outcome with
+          | error cause =>
+              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
+                Except.mapError] at evaluated
+              subst fault
+              exact ⟨rfl, rfl⟩
+          | ok readCell =>
+              simp [CheckedScalarComputationRun.evaluateStep, result, cell, Except.map,
+                Except.mapError] at evaluated
 
 /-- A failing mixed suffix attributes its structural fault to one of the exact typed steps it was given. -/
 private theorem scalarComputationRun_executeSteps_faultTarget

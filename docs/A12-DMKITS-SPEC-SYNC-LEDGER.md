@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-02-01"></a>
+### `SPEC-2026-10-02-01` — a computed DateTime crosses a computation join as its rendering, not as its instant
+
+- `status`: pending
+- `origin`: locally originated. Your [`kf459`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459) holds that a computed field's stored value is invisible inside a cascade; this entry adds what a later computation reads of a computed DateTime.
+- `clause`: [`05`](../spec/05-dates-and-time.md) §5, the chained-instant bullet.
+- `delta`: in `Europe/Berlin`, `DTB = AddHours(DTA, 2)` over `DTA = AddDays(DT0, [N1])` with `DT0` `2024-10-27T00:30:00` and `N1` `0` renders `DTB` `2024-10-27T02:30:00`, and `H = DifferenceInHours(DT0, DTB)` is `3`, not `2`. With `DT0` `2024-10-26T02:30:00` and `N1` `1`, `DTA` renders `2024-10-27T02:30:00` and `DTB` `2024-10-27T04:30:00`, not `03:30:00`. A later computation therefore reads a computed DateTime at the instant its rendering denotes under the overlap rule, while a chained shift inside one operation keeps its exact instant.
+- `basis`: this project's [DateTime join checkpoint](SOURCES.md#src-datetime-join), eleven `compute` documents on one model at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, both codegen strategies agreeing, code and value projection retained in its `rows.tsv`.
+- `surfaces`: any peer evaluator that carries a computed DateTime's exact instant into a dependent computation.
+- `acceptance`: confirm the `00:30` row's `H` of `3` against the `01:30` row's `2`, which separate a rendering read from an instant read, or supply a carrier on which a dependent reads the exact instant.
+- `limit`: complete ISO DateTime targets, `AddDays` and `AddHours` producers, `DifferenceInHours` and a sub-day shift as readers; whether the Kernel re-parses the text or normalizes the instant is not separated, only the reported values are measured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-01-07"></a>
 ### `SPEC-2026-10-01-07` — a computation's read of its own target is asked after the authoring and scale gates on every expression shape, and the other gates one alternative at a time
 

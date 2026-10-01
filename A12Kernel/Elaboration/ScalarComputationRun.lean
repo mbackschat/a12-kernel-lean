@@ -1,11 +1,14 @@
 import A12Kernel.Elaboration.ComputationNormalForm
+import A12Kernel.Elaboration.DateTimeDayShiftComputation
+import A12Kernel.Elaboration.DateTimeInput
+import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
 import A12Kernel.Elaboration.NumericComputation.Run
 import A12Kernel.Elaboration.StringComputationRun
 import A12Kernel.Semantics.HeterogeneousComputationDependency
 
 /-! # Finite checked mixed scalar computation runs
 
-This capsule composes already-consolidated checked String and scalar Number tables. A run executes them in one supplied order. Every step, completion, fault, and outcome retains its family. Pending targets hide source state; completed targets are projected only when a consumer context reads them, so a Number remains numeric for Number computation and becomes canonical text for String computation.
+This capsule composes already-consolidated checked String and scalar Number tables and field-backed DateTime day and sub-day shifts. A run executes them in one supplied order. Every step, completion, fault, and outcome retains its family. Pending targets hide source state; completed targets are projected only when a consumer reads them, so a Number remains numeric for Number computation and becomes canonical text for String computation, and a DateTime is read as its stored rendering would be. A DateTime step reads the whole document, so it runs against the document overlaid with those projections.
 
 An authored plan of any length over the same flat scalar steps is put into dependency order first, by running the earliest authored step that reads no other pending target, and a plan some of whose steps are read-closed is refused as a cycle. Same-target grouping remains in each family owner. Family result projection, whole-document application, and repeatable targets remain separate.
 -/
@@ -16,6 +19,12 @@ namespace A12Kernel
 inductive CheckedScalarComputationStep (model : FlatModel) where
   | string (table : CheckedStringComputationTable model)
   | number (table : CheckedNumericComputationTable model)
+  | dateTimeDayShift (operation : CheckedDateTimeDayShiftComputation model)
+      (amountExcludesTarget :
+        operation.shift.amount.referencesField operation.target.checked.target.id = false)
+  | dateTimeSubdayShift (operation : CheckedDateTimeSubdayShiftComputation model)
+      (amountExcludesTarget :
+        operation.shift.amount.referencesField operation.target.checked.target.id = false)
 
 /-- One checked mixed scalar step projected for pre-schedule analysis without requiring or choosing a run order. -/
 structure ScalarComputationStepDependency where
@@ -29,16 +38,23 @@ namespace CheckedScalarComputationStep
 def targetField : CheckedScalarComputationStep model → FieldId
   | .string table => table.targetField
   | .number table => table.targetField
+  | .dateTimeDayShift operation _ => operation.target.checked.target.id
+  | .dateTimeSubdayShift operation _ => operation.target.checked.target.id
 
 def targetKind : CheckedScalarComputationStep model → SurfaceScalarKind
   | .string _ => .string
   | .number _ => .number
+  | .dateTimeDayShift _ _ | .dateTimeSubdayShift _ _ => .temporal .dateTime
 
 def referencesField (step : CheckedScalarComputationStep model)
     (field : FieldId) : Bool :=
   match step with
   | .string table => table.referencesField field
   | .number table => table.referencesField field
+  | .dateTimeDayShift operation _ =>
+      operation.shift.source.id == field || operation.shift.amount.referencesField field
+  | .dateTimeSubdayShift operation _ =>
+      operation.shift.source.id == field || operation.shift.amount.referencesField field
 
 /-- Enumerate every model field referenced by this checked typed step. The model order is stable while the predicate traverses the step's complete guards and operations. -/
 def fieldDependencies (step : CheckedScalarComputationStep model) :
@@ -54,8 +70,20 @@ def dependencyAnalysis (step : CheckedScalarComputationStep model) :
   fieldDependencies := step.fieldDependencies
 }
 
+/-- A DateTime day shift as a plan step, refused when its amount reads the shift's own target. -/
+def ofDateTimeDayShift? (operation : CheckedDateTimeDayShiftComputation model) :
+    Option (CheckedScalarComputationStep model) :=
+  if excludes : operation.shift.amount.referencesField operation.target.checked.target.id = false
+  then some (.dateTimeDayShift operation excludes) else none
+
+/-- A DateTime sub-day shift as a plan step, refused when its amount reads the shift's own target. -/
+def ofDateTimeSubdayShift? (operation : CheckedDateTimeSubdayShiftComputation model) :
+    Option (CheckedScalarComputationStep model) :=
+  if excludes : operation.shift.amount.referencesField operation.target.checked.target.id = false
+  then some (.dateTimeSubdayShift operation excludes) else none
+
 def supportsScalarEvaluation : CheckedScalarComputationStep model → Bool
-  | .string _ => true
+  | .string _ | .dateTimeDayShift _ _ | .dateTimeSubdayShift _ _ => true
   | .number table => table.supportsScalarEvaluation
 
 end CheckedScalarComputationStep
@@ -215,36 +243,43 @@ end CheckedScalarComputationPlan
 inductive ScalarComputationOutcome where
   | string (target : FieldId) (outcome : StringTargetOutcome)
   | number (target : FieldId) (outcome : NumericTargetOutcome)
+  | dateTime (target : FieldId) (outcome : DateTimeTargetOutcome)
   deriving Repr, DecidableEq
 
-/-- Internal typed completion used to defer consumer-specific dependency projection until a read is reached. -/
+/-- Internal typed completion used to defer consumer-specific dependency projection until a read is reached. A DateTime completion carries the one cell every consumer reads. -/
 inductive ScalarComputationCompletion where
   | string (completion : StringComputationRunCompletion)
   | number (completion : NumericComputationRunCompletion)
+  | dateTime (target : FieldId) (outcome : DateTimeTargetOutcome) (cell : CheckedCell)
 
 namespace ScalarComputationCompletion
 
 def targetField : ScalarComputationCompletion → FieldId
   | .string completion => completion.targetField
   | .number completion => completion.targetField
+  | .dateTime target _ _ => target
 
 def outcome : ScalarComputationCompletion → ScalarComputationOutcome
   | .string completion =>
       .string completion.targetField completion.outcome
   | .number completion =>
       .number completion.targetField completion.outcome
+  | .dateTime target outcome _ => .dateTime target outcome
 
 /-- Project a completed target only for a reached String-family read. -/
 def stringCell : ScalarComputationCompletion → CheckedCell
   | .string completion => completion.dependencyCell.checked
   | .number completion =>
       (StringDependencyCell.ofNumericOutcome completion.outcome).checked
+  | .dateTime _ _ cell => cell
 
-/-- Project a completed target only for a reached Number-family read. -/
+/-- Project a completed target for a reached Number-family read, which is also the read every
+whole-document evaluator makes. -/
 def numberCell : ScalarComputationCompletion → CheckedCell
   | .string completion => completion.dependencyCell.checked
   | .number completion =>
       (NumericDependencyCell.ofOutcome completion.outcome).checked
+  | .dateTime _ _ cell => cell
 
 end ScalarComputationCompletion
 
@@ -263,9 +298,18 @@ def outcomes (state : ScalarComputationRunState) :
 
 end ScalarComputationRunState
 
+/-- A DateTime step's structural failure, or the model zone its rendering cannot be read back in. -/
+inductive DateTimeComputationStepFault where
+  | dayShift (cause : DateTimeDayShiftComputationFault)
+  | subdayShift (cause : DateTimeSubdayShiftComputationFault)
+  | targetRead (cause : DateTimeInputError)
+  | targetNotReadable
+  deriving Repr, DecidableEq
+
 inductive ScalarComputationRunFault where
   | string (cause : StringComputationRunFault)
   | number (cause : NumericComputationRunFault)
+  | dateTime (target : FieldId) (cause : DateTimeComputationStepFault)
   deriving Repr, DecidableEq
 
 namespace ScalarComputationRunFault
@@ -274,10 +318,12 @@ namespace ScalarComputationRunFault
 def target : ScalarComputationRunFault → FieldId
   | .string cause => cause.target
   | .number cause => cause.target
+  | .dateTime target _ => target
 
 def targetKind : ScalarComputationRunFault → SurfaceScalarKind
   | .string _ => .string
   | .number _ => .number
+  | .dateTime _ _ => .temporal .dateTime
 
 end ScalarComputationRunFault
 
@@ -316,6 +362,31 @@ def numberContext (run : CheckedScalarComputationRun model)
             source.read field
   }
 
+/-- The whole document a DateTime step reads: each completed target through its Number-family cell,
+each pending one empty. -/
+def documentFor (run : CheckedScalarComputationRun model)
+    (state : ScalarComputationRunState) (input : CheckedDocument model) : CheckedDocument model :=
+  input.overlayNonrepeatableCells
+    (state.completed.map (fun completion => (completion.targetField, some completion.numberCell)) ++
+      (run.targetFields.filter fun field => (state.find? field).isNone).map (·, none))
+
+/-- The cell a later computation reads for a completed DateTime target: its stored rendering read back
+in the model zone exactly as the document's own text would be, so an exact instant the rendering cannot
+carry does not cross the join. On Berlin's repeated hour a result at the first `02:30` is read at the
+second, which the Kernel shows by reporting three elapsed hours for two
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-datetime-join)). A cleared
+target reads empty and a poisoned one carries the computed-dependency marker every family's poison
+projects to. -/
+def dateTimeDependencyCell (model : FlatModel) (target : FieldId) :
+    DateTimeTargetOutcome → Except DateTimeComputationStepFault CheckedCell
+  | .noValue => pure { rawPresent := false, parsed := none, findings := [] }
+  | .poison _ => pure { rawPresent := true, parsed := none, findings := [.computedDependency] }
+  | .accepted stored => do
+      let declaration ← (model.lookupUniqueId target).toOption.getDM (throw .targetNotReadable)
+      let field ← (certifyDateTimeInputField declaration).toOption.getDM (throw .targetNotReadable)
+      let raw ← (field.classifyStoredForModel model.timeZoneId stored.text).mapError .targetRead
+      pure (checkAdmittedRawCell raw)
+
 /-- Evaluate one family-tagged table through its matching consumer context and retain its typed completion. -/
 def evaluateStep (run : CheckedScalarComputationRun model)
     (world : World)
@@ -334,6 +405,20 @@ def evaluateStep (run : CheckedScalarComputationRun model)
           (run.numberContext world state input) with
       | .ok completion => .ok (.number completion)
       | .error cause => .error (.number cause)
+  | .dateTimeDayShift operation _ =>
+      let target := operation.target.checked.target.id
+      match operation.evaluateOutcome (run.documentFor state input) with
+      | .error cause => .error (.dateTime target (.dayShift cause))
+      | .ok outcome =>
+          (dateTimeDependencyCell model target outcome).map (.dateTime target outcome)
+            |>.mapError (.dateTime target)
+  | .dateTimeSubdayShift operation _ =>
+      let target := operation.target.checked.target.id
+      match operation.evaluateOutcome (run.documentFor state input) with
+      | .error cause => .error (.dateTime target (.subdayShift cause))
+      | .ok outcome =>
+          (dateTimeDependencyCell model target outcome).map (.dateTime target outcome)
+            |>.mapError (.dateTime target)
 
 def executeSteps (run : CheckedScalarComputationRun model)
     (world : World)
