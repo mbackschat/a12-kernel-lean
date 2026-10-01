@@ -2601,3 +2601,11 @@ Related: [[LF116]] on reusing a mechanism across a boundary, [[LF84]] on outcome
 **Where a Kernel check is a grammar action, model the decoder as the event sequence the parser runs, a check firing where its rule ends, and test the fault rows at the depth where the check passes as well as where it fails.** A single depth cannot separate an over-count from a stricter bound.
 
 Related: [[LF199]] on fitting a fix to a mechanism rather than to the rows, [[LF195]] on gates raised at a grammar production.
+
+## LF201 — five carrier-crossing rounds on one checker mean its forms share no parse, not that the rows are hard
+
+On 2026-10-01 the rule-message parameter checker took five corrections in one day, and each cold review found a shape the previous fix had crossed without a row: the group walk, dotted names, the name position's classes, a group in each name-carrying form, the short-name flag, the lone absolute segment, and then a keyed key, where Lean's one nested-key refusal covers three Kernel answers ([checkpoint](sources/message-and-pointer-probes.md#src-message-name-position-carriers)). The rows were never the difficulty. Lean decodes a parameter by splitting on `->`, `.value` and `For` per form, and each form calls the resolver and its gates in its own order, while the Kernel parses one entity-spec grammar with a recursive key and resolves every entity spec before a form's own gate.
+
+**When a review round on one checker again finds a crossing the last fix did not measure, stop patching: model the grammar once, put every form's gates in one ordered pipeline, and replay every retained row against it before measuring the next shape.**
+
+Related: [[LF199]] on fitting a fix to a mechanism rather than to the rows, [[LF153]] on crossing a batch instead of sampling it.
