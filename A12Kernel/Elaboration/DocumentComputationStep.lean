@@ -59,7 +59,7 @@ def poison : CheckedCell := { rawPresent := true, parsed := none, findings := [.
 def dateTime (model : FlatModel) (target : FieldId) :
     DateTimeTargetOutcome → Except DocumentComputationStepFault CheckedCell
   | .noValue => pure empty
-  | .poison _ => pure poison
+  | .poison _ | .errored _ _ => pure poison
   | .accepted stored => do
       let declaration ← (model.lookupUniqueId target).toOption.getDM (throw .targetNotReadable)
       let field ← (certifyDateTimeInputField declaration).toOption.getDM (throw .targetNotReadable)

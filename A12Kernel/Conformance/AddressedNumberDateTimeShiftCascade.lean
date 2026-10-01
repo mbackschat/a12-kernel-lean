@@ -142,6 +142,7 @@ private inductive DateTimeSummary where
   | empty
   | value (text : String)
   | poisoned (cause : FormalCause)
+  | errored (attempted : String)
   deriving Repr, DecidableEq
 
 private def summarizeConsumer
@@ -150,6 +151,7 @@ private def summarizeConsumer
   (entry.targetField, match entry.outcome with
     | .noValue => .empty
     | .accepted value => .value value.text
+    | .errored attempted _ => .errored attempted.text
     | .poison cause => .poisoned cause)
 
 private def duplicateProducerPreparedConsumer? : Option

@@ -75,9 +75,9 @@ end FullDateTargetOutcome
 
 namespace DateTimeTargetOutcome
 
-/-- Whether the DateTime outcome produced a nonempty computed-data instance. -/
+/-- Whether the DateTime outcome produced a nonempty computed-data instance. A rejected attempt counts, as a full Date's does; quiet no-value and poison do not. -/
 def hasComputedInstance : DateTimeTargetOutcome → Bool
-  | .accepted _ => true
+  | .accepted _ | .errored _ _ => true
   | .noValue | .poison _ => false
 
 end DateTimeTargetOutcome

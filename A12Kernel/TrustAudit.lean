@@ -344,6 +344,7 @@ run_cmd do
 #print axioms A12Kernel.checkedFullDateTarget_precisionFull
 #print axioms A12Kernel.resolveStoredDate_identity
 #print axioms A12Kernel.dateTimeTarget_evaluate_value
+#print axioms A12Kernel.dateTimeTarget_evaluate_rejected
 #print axioms A12Kernel.dateTimeComputation_transports_now
 #print axioms A12Kernel.dateTimeTargetApplies_iff_applyTo
 #print axioms A12Kernel.dateTimeTargetApplies_deterministic

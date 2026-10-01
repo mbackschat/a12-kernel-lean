@@ -108,11 +108,13 @@ private def seeds : List ClassifiedCellInput :=
 
 private def reported : List FieldId := [n1Id, dtaId, dtbId, hId, kId, knId]
 
-/-- A computed value, or `-` for a target the Kernel reports cleared without an error at it. -/
+/-- A computed value, `E` for a target the Kernel retains as errored, or `-` for one it reports cleared
+without an error at it. -/
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.dateTime (.accepted stored)) => some (target, stored.text)
+  | .document target (.dateTime (.errored _ _)) => some (target, "E")
   | .document target (.dateTime .noValue) | .document target (.dateTime (.poison _)) =>
       some (target, "-")
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
@@ -165,6 +167,23 @@ example :
       some ["0", "2024-10-27T02:30:00", "2024-10-27T04:30:00", "2", "0", "-"] ∧
     values? (inputs (dt0 := some (dateTimeCell dt0Id "2024-03-31T01:30:00")) (n0 := some (numberCell n0Id 0))) =
       some ["0", "2024-03-31T01:30:00", "2024-03-31T04:30:00", "2", "0", "-"] := by
+  native_decide
+
+/- A shifted DateTime whose rendering its own target would reject as stored text is retained as errored,
+and its readers see poison: one day past `9999-12-31` and two hours past `9999-12-31T23:00` both render a
+five-digit year. The row two days short of the ceiling is the control, and a shift landing on the
+Gregorian floor is accepted. The Kernel also retains a landing one day below the floor as errored, which
+is what separates this account from a year bound; that row is not locked, because the bounded zone
+profile resolves no instant below the floor and the day shift refuses before its target is asked. -/
+example :
+    values? (inputs (dt0 := some (dateTimeCell dt0Id "9999-12-29T00:00:00"))) =
+      some ["2", "9999-12-31T00:00:00", "9999-12-31T02:00:00", "50", "2", "-"] ∧
+    values? (inputs (dt0 := some (dateTimeCell dt0Id "9999-12-31T00:00:00"))) =
+      some ["2", "E", "-", "-", "-", "-"] ∧
+    values? (inputs (dt0 := some (dateTimeCell dt0Id "9999-12-31T23:00:00")) (n0 := some (numberCell n0Id 0))) =
+      some ["0", "9999-12-31T23:00:00", "E", "-", "-", "-"] ∧
+    values? (inputs (dt0 := some (dateTimeCell dt0Id "1583-10-20T12:00:00")) (n0 := some (numberCell n0Id (-4)))) =
+      some ["-4", "1583-10-16T12:00:00", "1583-10-16T14:00:00", "-94", "-4", "-"] := by
   native_decide
 
 /- The String-and-Number result view composes no whole-document family, so it refuses a run that computed

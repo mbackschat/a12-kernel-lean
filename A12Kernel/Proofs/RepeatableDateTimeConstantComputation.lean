@@ -52,12 +52,15 @@ theorem checkedRepeatableDateTimeConstantComputation_renderingAgreesWithResolved
     (operation : CheckedRepeatableDateTimeConstantComputation model)
     (instant : Instant)
     (resolves :
-      operation.dateTimeTarget.profile.localDateTime? instant = some operation.constant) :
+      operation.dateTimeTarget.profile.localDateTime? instant = some operation.constant)
+    (value : Value)
+    (readable :
+      operation.dateTimeTarget.format.classifyStoredIn operation.dateTimeTarget.profile
+        (operation.dateTimeTarget.format.render operation.constant).text = .ok (.parsed value)) :
     operation.dateTimeTarget.evaluate (.value instant) =
       .ok (.accepted
         (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant)) := by
-  simp only [CheckedDateTimeFormatTarget.evaluate,
-    resolves]
+  simp only [CheckedDateTimeFormatTarget.evaluate, resolves, readable]
   rfl
 
 end A12Kernel

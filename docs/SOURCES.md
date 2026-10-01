@@ -1409,6 +1409,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 
 <a id="src-date-constant-pre-1900-target"></a>
 - [A Date constant reaches the target's opt-in pre-1900 policy after rendering](sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)
+<a id="src-datetime-errored-target"></a>
+- [A computed DateTime whose rendering its own target would reject is ERRORED and poisons its readers: a five-digit year, and a date one day below the Gregorian floor, measured locally 2026-10-02](sources/temporal-constant-and-base-year-probes.md#src-datetime-errored-target)
 
 <a id="src-constant-literal-family-gate"></a>
 - [A bare constant's admission is gated by the target's declared format string, never its kind](sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate)
@@ -1461,6 +1463,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A malformed producer clears every Number join that reaches it, and a twelve-computation plan runs in dependency order, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-join-poison-and-substitution)
 <a id="src-datetime-join"></a>
 - [A DateTime shift reads computed amounts and DateTimes fresh, poison and absence cross the join by the shared rule, and a computed DateTime is read back from its rendering, measured locally 2026-10-02](sources/evaluation-and-application-routes.md#src-datetime-join)
+<a id="src-document-step-join"></a>
+- [Full-Date and Enumeration copies are read fresh across a join, chained copies included, and a pre-1900 Date retained as errored reaches its readers as poison, measured locally 2026-10-02](sources/evaluation-and-application-routes.md#src-document-step-join)
 <a id="src-join-operators-and-guards"></a>
 - [Operators and guards at a join, cycle classes, and a self-read asked after the authoring and scale gates on every shape, measured locally 2026-10-01](sources/evaluation-and-application-routes.md#src-join-operators-and-guards)
 <a id="src-two-level-repeatable-join"></a>

@@ -215,8 +215,23 @@ end FullDateTargetOutcome
 /-- DateTime-specific prior target value. -/
 abbrev PriorDateTimeTarget := PriorTemporalTarget StoredDateTime
 
-/-- DateTime has exactly the shared value/clear delta domain in this bounded target fragment. -/
-abbrev DateTimeDelta := TemporalValueDelta StoredDateTime
+/-- Source-relative action for one checked DateTime outcome. Target rejection retains the exact rendered
+attempt, as a full Date's does. -/
+inductive DateTimeDelta where
+  | value (stored : StoredDateTime)
+  | cleared
+  | errored (attempted : StoredDateTime) (cause : DateTimeTargetError)
+  deriving Repr, DecidableEq
+
+namespace DateTimeDelta
+
+/-- Lift a shared value/clear action into the DateTime delta domain. -/
+def ofValueDelta : Option (TemporalValueDelta StoredDateTime) → Option DateTimeDelta
+  | none => none
+  | some (.value stored) => some (.value stored)
+  | some .cleared => some .cleared
+
+end DateTimeDelta
 
 /-- Exact state of one DateTime target cell. -/
 abbrev DateTimeTargetState := TemporalTargetState StoredDateTime
@@ -244,23 +259,25 @@ end DateTimeTargetState
 
 namespace DateTimeTargetOutcome
 
-/-- Classify one rich DateTime target outcome relative to the computation source. Accepted text is change-sensitive; quiet no-value and poison clear only a source-filled target. -/
+/-- Classify one rich DateTime target outcome relative to the computation source. Accepted text is change-sensitive; target errors are unconditional; quiet no-value and poison clear only a source-filled target. -/
 def projectDelta (outcome : DateTimeTargetOutcome)
     (prior : PriorDateTimeTarget) : Option DateTimeDelta :=
   match outcome with
-  | .accepted value => TemporalValueDelta.projectValue value prior
-  | .noValue | .poison _ => TemporalValueDelta.projectNoValue prior
+  | .accepted value => DateTimeDelta.ofValueDelta (TemporalValueDelta.projectValue value prior)
+  | .errored attempted cause => some (.errored attempted cause)
+  | .noValue | .poison _ => DateTimeDelta.ofValueDelta (TemporalValueDelta.projectNoValue prior)
 
 /-- Exact stored value supplied by an accepted DateTime outcome, independently of placement. -/
 def appliedValue : DateTimeTargetOutcome → Option StoredDateTime
   | .accepted value => some value
-  | .noValue | .poison _ => none
+  | .noValue | .errored _ _ | .poison _ => none
 
-/-- Apply one checked DateTime outcome to an exact target cell. Accepted text creates or overwrites the value; no-value and poison clear an existing target in place and leave absence unchanged. -/
+/-- Apply one checked DateTime outcome to an exact target cell. Accepted text creates or overwrites the value; every other outcome clears an existing target in place and leaves absence unchanged, as for a full Date. -/
 def applyTo :
     DateTimeTargetOutcome → DateTimeTargetState → DateTimeTargetState
   | .accepted value, _ => .presentValue value
   | .noValue, prior => prior.clearValue
+  | .errored _ _, prior => prior.clearValue
   | .poison _, prior => prior.clearValue
 
 end DateTimeTargetOutcome

@@ -89,24 +89,21 @@ inductive DateTimeInputError where
   | unresolvableDateTime (parts : DateParts) (time : TimeOfDay)
   deriving Repr, DecidableEq
 
-/-- Classify stored DateTime text under its certified declaration and one bounded model-zone profile.
-Formal text failures are successful classifications; only unsupported or unresolvable model context
-returns an error. -/
-def CheckedDateTimeInputField.classifyStoredForModel
-    (checked : CheckedDateTimeInputField) (zoneId text : String) :
-    Except DateTimeInputError RawCell := do
-  let profile ← match ModelZone.ConcreteProfile.ofId? zoneId with
-    | some profile => pure profile
-    | none => throw (.unsupportedZone zoneId)
+/-- Classify stored DateTime text in one storage format and one resolved model-zone profile. Formal
+text failures are successful classifications; only an unresolvable wall label returns an error. This is
+the read a document cell receives and the check a computed target's rendering must pass. -/
+def DateTimeTargetFormat.classifyStoredIn (format : DateTimeTargetFormat)
+    (profile : ModelZone.ConcreteProfile) (text : String) :
+    Except DateTimeInputError RawCell :=
   if text.isEmpty then
     pure .presentEmpty
   else
-    match checked.format.splitLabel? text with
+    match format.splitLabel? text with
     | none => pure (.rejected .dateFormat)
     | some (dateText, timeText) =>
         -- Both halves are spelling questions and are settled first; only then does the date's position
         -- in time speak. A clock has no position of its own, which is why one floor test serves.
-        match checked.format.dateHalf.parseLegacyParts? dateText,
+        match format.dateHalf.parseLegacyParts? dateText,
             decodeTimeLiteral? timeText with
         | some parts, some clock =>
             if decide (parts.Before CivilDate.gregorianFloor.parts) then
@@ -129,5 +126,15 @@ def CheckedDateTimeInputField.classifyStoredForModel
                                 (.dateTime instant date.parts clock
                                   .storedGregorian)))
         | _, _ => pure (.rejected .dateFormat)
+
+/-- Classify stored DateTime text under its certified declaration and the model's zone. Formal text
+failures are successful classifications; only an unsupported or unresolvable model context returns an
+error. -/
+def CheckedDateTimeInputField.classifyStoredForModel
+    (checked : CheckedDateTimeInputField) (zoneId text : String) :
+    Except DateTimeInputError RawCell :=
+  match ModelZone.ConcreteProfile.ofId? zoneId with
+  | some profile => checked.format.classifyStoredIn profile text
+  | none => throw (.unsupportedZone zoneId)
 
 end A12Kernel

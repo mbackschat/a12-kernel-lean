@@ -106,10 +106,10 @@ private def summarize (entry : AddressedDateTimeDayShiftComputationOutcome) :
   target := entry.targetField
   value := match entry.outcome with
     | .accepted value => some value.text
-    | .noValue | .poison _ => none
+    | .noValue | .errored _ _ | .poison _ => none
   poison := match entry.outcome with
     | .poison cause => some cause
-    | .accepted _ | .noValue => none
+    | .accepted _ | .errored _ _ | .noValue => none
 }
 
 /- Outer DateTime correlation and target-row Number reads retain exact coordinates. The values separate a Berlin spring gap, exact zero preservation, and the historical source-offset fallback from elapsed shifting. -/

@@ -124,6 +124,7 @@ private def signature? (sourceInputs : List SourceInput) : Option String := do
   pure (match outcome with
     | .noValue => "CLEARED"
     | .accepted stored => "VALUE|" ++ stored.text
+    | .errored attempted _ => "ERRORED|" ++ attempted.text
     | .poison _ => "POISON")
 
 private def runView? (targetStored : String) (targetRaw : RawCell)

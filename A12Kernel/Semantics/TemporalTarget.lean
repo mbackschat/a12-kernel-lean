@@ -1,6 +1,7 @@
 import A12Kernel.Semantics.ModelZone
 import A12Kernel.Semantics.DateRangeOverlap
 import A12Kernel.Semantics.TemporalFormat
+import A12Kernel.Semantics.Observation
 
 /-! # Bounded temporal computation targets
 
@@ -328,10 +329,18 @@ def render (format : DateTimeTargetFormat)
 
 end DateTimeTargetFormat
 
-/-- Rich DateTime target result before source-relative classification or application. This bounded fragment has no target-local rejection branch. -/
+/-- Why a DateTime target refuses a computed value: the target's own stored-text check rejects the
+rendering, as it rejects a five-digit year or a date below the Gregorian floor. -/
+inductive DateTimeTargetError where
+  | renderingRejected (cause : BaseFormalCause)
+  deriving Repr, DecidableEq
+
+/-- Rich DateTime target result before source-relative classification or application. A target that
+refuses the computed value retains the rendered attempt. -/
 inductive DateTimeTargetOutcome where
   | noValue
   | accepted (stored : StoredDateTime)
+  | errored (attempted : StoredDateTime) (cause : DateTimeTargetError)
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 

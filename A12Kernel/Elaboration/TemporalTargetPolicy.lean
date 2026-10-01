@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.TemporalTarget
@@ -462,14 +463,21 @@ def elaborateDateTimeTarget
     Except DateTimeTargetElabError (CheckedDateTimeFormatTarget model) :=
   elaborateDateTimeFormatTargetIn model [] targetField
 
-/-- Runtime refusal when an exact result instant has no local DateTime label in the selected concrete profile. -/
+/-- Runtime refusal when an exact result instant has no local DateTime label in the selected concrete
+profile, or when its rendering names a wall label the profile cannot resolve back. -/
 inductive DateTimeTargetEvaluationFault where
   | localDateTimeUnavailable (instant : Instant)
+  | renderingUnresolvable (cause : DateTimeInputError)
   deriving Repr, DecidableEq
 
 namespace CheckedDateTimeFormatTarget
 
 /-- Render one already-selected DateTime computation result at the target's declared whole-second precision without classifying a delta or mutating a document.
+
+    The rendering then meets the target's own stored-text check, and a rendering that check rejects is
+    retained as errored: the Kernel reports a five-digit year and a date one day below the Gregorian floor
+    errored while the floor date itself is accepted
+    ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-errored-target)).
 
     It sits on the format-keyed certificate so the narrowed one inherits it: the declared kind reaches no part of the rendering, which is what the cross-kind store rows measure. -/
 def evaluate
@@ -482,7 +490,11 @@ def evaluate
       match target.profile.localDateTime? instant with
       | none => throw (.localDateTimeUnavailable instant)
       | some dateTime =>
-          pure (.accepted (target.format.render dateTime))
+          let rendered := target.format.render dateTime
+          match target.format.classifyStoredIn target.profile rendered.text with
+          | .error cause => throw (.renderingUnresolvable cause)
+          | .ok (.rejected cause) => pure (.errored rendered (.renderingRejected cause))
+          | .ok _ => pure (.accepted rendered)
 
 end CheckedDateTimeFormatTarget
 

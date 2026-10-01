@@ -46,12 +46,30 @@ theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
 /-- DateTime rendering uses the local wall label selected from the exact input instant; no caller-supplied label or host zone can replace it. -/
 theorem dateTimeTarget_evaluate_value
     (target : CheckedDateTimeTarget model)
-    (instant : Instant) (dateTime : LocalDateTime)
+    (instant : Instant) (dateTime : LocalDateTime) (value : Value)
     (decoded :
-      target.profile.localDateTime? instant = some dateTime) :
+      target.profile.localDateTime? instant = some dateTime)
+    (readable :
+      target.format.classifyStoredIn target.profile (target.format.render dateTime).text =
+        .ok (.parsed value)) :
     target.evaluate (.value instant) =
       .ok (.accepted (target.format.render dateTime)) := by
-  simp [CheckedDateTimeFormatTarget.evaluate, decoded]
+  simp [CheckedDateTimeFormatTarget.evaluate, decoded, readable]
+  rfl
+
+/-- A rendering the target's own stored-text check rejects is retained as errored with that check's
+cause, never accepted; the Kernel reports such a target errored. -/
+theorem dateTimeTarget_evaluate_rejected
+    (target : CheckedDateTimeTarget model)
+    (instant : Instant) (dateTime : LocalDateTime) (cause : BaseFormalCause)
+    (decoded :
+      target.profile.localDateTime? instant = some dateTime)
+    (rejected :
+      target.format.classifyStoredIn target.profile (target.format.render dateTime).text =
+        .ok (.rejected cause)) :
+    target.evaluate (.value instant) =
+      .ok (.errored (target.format.render dateTime) (.renderingRejected cause)) := by
+  simp [CheckedDateTimeFormatTarget.evaluate, decoded, rejected]
   rfl
 
 /-- **A yearless target's stored text does not depend on the year.** Two dates sharing a month and a

@@ -15,7 +15,7 @@ namespace A12Kernel
     (resolved : ModelZone.ConcreteProfile.ofId? zoneId = some profile) :
     checked.classifyStoredForModel zoneId "" = .ok .presentEmpty := by
   simp [CheckedDateTimeInputField.classifyStoredForModel, resolved,
-    bind, Except.bind, pure, Except.pure]
+    DateTimeTargetFormat.classifyStoredIn, pure, Except.pure]
 
 /-- An unsupported zone is a **context** error rather than a formal finding, so a model this classifier
 cannot serve is never reported as invalid stored data. -/
@@ -25,7 +25,7 @@ theorem dateTimeInput_unsupportedZone
     checked.classifyStoredForModel zoneId text =
       .error (.unsupportedZone zoneId) := by
   simp [CheckedDateTimeInputField.classifyStoredForModel, unsupported,
-    bind, Except.bind, throw, throwThe, MonadExceptOf.throw]
+    throw, throwThe, MonadExceptOf.throw]
 
 /-- A certified declaration retains this classifier's bounded storage format, so a consumer never
 re-derives which spelling produced the cell.

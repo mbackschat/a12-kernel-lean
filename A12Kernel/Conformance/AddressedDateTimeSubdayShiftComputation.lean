@@ -119,10 +119,10 @@ private def summarize (outcome : AddressedDateTimeSubdayShiftComputationOutcome)
   target := outcome.targetField
   value := match outcome.outcome with
     | .accepted value => some value.text
-    | .noValue | .poison _ => none
+    | .noValue | .errored _ _ | .poison _ => none
   poison := match outcome.outcome with
     | .poison cause => some cause
-    | .accepted _ | .noValue => none
+    | .accepted _ | .errored _ _ | .noValue => none
 }
 
 /- Each physical target row binds the enclosing source and its own amount, retaining exact source-first dependencies, references, addresses, and whole-DateTime results. -/

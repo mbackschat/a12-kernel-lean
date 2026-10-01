@@ -15,6 +15,9 @@ def DateTimeTargetApplies :
   | .poison _, .absent, .absent => True
   | .poison _, .presentEmpty, .presentEmpty => True
   | .poison _, .presentValue _, .presentEmpty => True
+  | .errored _ _, .absent, .absent => True
+  | .errored _ _, .presentEmpty, .presentEmpty => True
+  | .errored _ _, .presentValue _, .presentEmpty => True
   | _, _, _ => False
 
 /-- Executable DateTime application is sound and complete for the independent transition relation. -/
@@ -43,7 +46,7 @@ theorem acceptedDateTime_unchanged_noDelta
     (DateTimeTargetOutcome.accepted value).projectDelta
       (.filled value) = none := by
   simp [DateTimeTargetOutcome.projectDelta,
-    TemporalValueDelta.projectValue]
+    TemporalValueDelta.projectValue, DateTimeDelta.ofValueDelta]
 
 /-- Any DateTime outcome without an applied stored value clears exactly in place. -/
 theorem noAppliedDateTimeValue_clears_exactly

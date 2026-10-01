@@ -1,0 +1,41 @@
+# row	field	outcome	value
+e00-near-ceiling	Mix/DTA	value	9999-12-31T00:00:00
+e00-near-ceiling	Mix/DTB	value	9999-12-31T02:00:00
+e00-near-ceiling	Mix/DTC	value	9999-12-30T00:00:00
+e00-near-ceiling	Mix/H	value	50
+e00-near-ceiling	Mix/H2	value	1
+e00-near-ceiling	Mix/K	value	2
+e00-near-ceiling	Mix/KN	cleared	
+e00-near-ceiling	Mix/N1	value	2
+e01-day-past-ceiling	Mix/DTA	errored	10000-01-02T00:00:00
+e01-day-past-ceiling	Mix/DTB	cleared	
+e01-day-past-ceiling	Mix/DTC	errored	10000-01-01T00:00:00
+e01-day-past-ceiling	Mix/H	cleared	
+e01-day-past-ceiling	Mix/H2	cleared	
+e01-day-past-ceiling	Mix/K	cleared	
+e01-day-past-ceiling	Mix/KN	cleared	
+e01-day-past-ceiling	Mix/N1	value	2
+e02-hour-past-ceiling	Mix/DTA	value	9999-12-31T23:00:00
+e02-hour-past-ceiling	Mix/DTB	errored	10000-01-01T01:00:00
+e02-hour-past-ceiling	Mix/DTC	errored	10000-01-01T23:00:00
+e02-hour-past-ceiling	Mix/H	cleared	
+e02-hour-past-ceiling	Mix/H2	cleared	
+e02-hour-past-ceiling	Mix/K	cleared	
+e02-hour-past-ceiling	Mix/KN	cleared	
+e02-hour-past-ceiling	Mix/N1	value	0
+e03-day-onto-floor	Mix/DTA	value	1583-10-16T12:00:00
+e03-day-onto-floor	Mix/DTB	value	1583-10-16T14:00:00
+e03-day-onto-floor	Mix/DTC	value	1583-10-21T12:00:00
+e03-day-onto-floor	Mix/H	value	-94
+e03-day-onto-floor	Mix/H2	value	1
+e03-day-onto-floor	Mix/K	value	-4
+e03-day-onto-floor	Mix/KN	cleared	
+e03-day-onto-floor	Mix/N1	value	-4
+e04-day-below-floor	Mix/DTA	errored	1583-10-15T12:00:00
+e04-day-below-floor	Mix/DTB	cleared	
+e04-day-below-floor	Mix/DTC	value	1583-10-21T12:00:00
+e04-day-below-floor	Mix/H	cleared	
+e04-day-below-floor	Mix/H2	value	1
+e04-day-below-floor	Mix/K	cleared	
+e04-day-below-floor	Mix/KN	cleared	
+e04-day-below-floor	Mix/N1	value	-5
