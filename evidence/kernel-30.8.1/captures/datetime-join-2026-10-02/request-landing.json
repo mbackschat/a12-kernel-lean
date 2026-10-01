@@ -1,0 +1,30 @@
+{
+ "model": "Land_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "l1-overlap-landing",
+   "documentInline": {
+    "Land": {
+     "DT0": "2024-10-26T02:30:00",
+     "DTY": "2000-01-01T00:00:00",
+     "DTZ": "2000-01-01T00:00:00"
+    }
+   }
+  },
+  {
+   "name": "l2-control",
+   "documentInline": {
+    "Land": {
+     "DT0": "2024-03-10T10:00:00",
+     "DTY": "2000-01-01T00:00:00",
+     "DTZ": "2000-01-01T00:00:00"
+    }
+   }
+  }
+ ]
+}

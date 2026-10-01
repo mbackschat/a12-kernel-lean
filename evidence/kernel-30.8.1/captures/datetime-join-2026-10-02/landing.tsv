@@ -1,0 +1,5 @@
+# row	field	outcome	value
+l1-overlap-landing	Land/DTY	value	2024-10-27T03:30:00
+l1-overlap-landing	Land/DTZ	value	2024-10-27T02:30:00
+l2-control	Land/DTY	value	2024-03-11T12:00:00
+l2-control	Land/DTZ	value	2024-03-11T10:00:00
