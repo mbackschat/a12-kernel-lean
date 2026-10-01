@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-02; HEAD was `3acdbc4c`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-02; HEAD was `3135584a`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -65,7 +65,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | records | share |
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 214 | 100% |
-| Citing a Kernel checkpoint or calibration | 123 | 57% |
+| Citing a Kernel checkpoint or calibration | 125 | 58% |
 | Carrying an explicit evidence-pending note | 54 | 25% |
 
 ## Axis 3 — open obligation load
@@ -73,7 +73,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 282 |
+| `remaining` rows across those gaps | 283 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 6 |
 | Ledger entries `handed-off` | 0 |
@@ -86,7 +86,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 224893 | 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 225289 | 100% |
 | Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8778 | 3% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
@@ -96,7 +96,7 @@ Tracked Lean files in neither estate: 0. A nonzero value means the ratio above m
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 230 |
+| Retained capture directories under `../evidence/` | 231 |
 | `inputHash` markers in `*-obs.json` and `semantic-observations.json` | 734 |
 
 The marker count excludes other observation formats, including runtime `artifact.json` files with `rows` arrays. It is neither a total observation count nor a count of independent behavioural discriminators.
@@ -184,4 +184,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-10-01T19:53:58+02:00 | `d75f6596` | 489 | 467 | 6 | 122 | 24 |
 | 2026-10-01T21:15:06+02:00 | `fd92bdaf` | 489 | 468 | 6 | 122 | 24 |
 | 2026-10-01T21:26:08+02:00 | `e066b209` | 489 | 470 | 6 | 123 | 24 |
+| 2026-10-02T00:34:38+02:00 | `3135584a` | 489 | 470 | 6 | 125 | 24 |
 <!-- velocity-history:end -->
