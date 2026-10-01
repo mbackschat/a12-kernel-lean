@@ -1,0 +1,182 @@
+[
+ {
+  "id": "W01",
+  "verb": "rule",
+  "args": ["check", "--code", "W01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade->Band$."]
+ },
+ {
+  "id": "W02",
+  "verb": "rule",
+  "args": ["check", "--code", "W02", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade -> Band$."]
+ },
+ {
+  "id": "W03",
+  "verb": "rule",
+  "args": ["check", "--code", "W03", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade-> Band$."]
+ },
+ {
+  "id": "W04",
+  "verb": "rule",
+  "args": ["check", "--code", "W04", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade->Band $."]
+ },
+ {
+  "id": "W05",
+  "verb": "rule",
+  "args": ["check", "--code", "W05", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade ->Band$."]
+ },
+ {
+  "id": "W06",
+  "verb": "rule",
+  "args": ["check", "--code", "W06", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $ Grade->Band$."]
+ },
+ {
+  "id": "W07",
+  "verb": "rule",
+  "args": ["check", "--code", "W07", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade-> $."]
+ },
+ {
+  "id": "W08",
+  "verb": "rule",
+  "args": ["check", "--code", "W08", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade->$."]
+ },
+ {
+  "id": "W09",
+  "verb": "rule",
+  "args": ["check", "--code", "W09", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score-> $."]
+ },
+ {
+  "id": "W10",
+  "verb": "rule",
+  "args": ["check", "--code", "W10", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade->Band x$."]
+ },
+ {
+  "id": "W11",
+  "verb": "rule",
+  "args": ["check", "--code", "W11", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade->Band.value$."]
+ },
+ {
+  "id": "W12",
+  "verb": "rule",
+  "args": ["check", "--code", "W12", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade->Band/Foo$."]
+ },
+ {
+  "id": "W13",
+  "verb": "rule",
+  "args": ["check", "--code", "W13", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Grade->Nope x$."]
+ },
+ {
+  "id": "W14",
+  "verb": "rule",
+  "args": ["check", "--code", "W14", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score->Band x$."]
+ },
+ {
+  "id": "W15",
+  "verb": "rule",
+  "args": ["check", "--code", "W15", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $ Score$."]
+ },
+ {
+  "id": "W16",
+  "verb": "rule",
+  "args": ["check", "--code", "W16", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score $."]
+ },
+ {
+  "id": "W17",
+  "verb": "rule",
+  "args": ["check", "--code", "W17", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score .value$."]
+ },
+ {
+  "id": "W18",
+  "verb": "rule",
+  "args": ["check", "--code", "W18", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score. value$."]
+ },
+ {
+  "id": "W20",
+  "verb": "rule",
+  "args": ["check", "--code", "W20", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score For  \"k\"$."]
+ },
+ {
+  "id": "W21",
+  "verb": "rule",
+  "args": ["check", "--code", "W21", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score For\"k\"$."]
+ },
+ {
+  "id": "W22",
+  "verb": "rule",
+  "args": ["check", "--code", "W22", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score  For \"k\"$."]
+ },
+ {
+  "id": "G01",
+  "verb": "rule",
+  "args": ["check", "--code", "G01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#Cases For \"k\"$."]
+ },
+ {
+  "id": "G02",
+  "verb": "rule",
+  "args": ["check", "--code", "G02", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#Cases For Score$."]
+ },
+ {
+  "id": "G03",
+  "verb": "rule",
+  "args": ["check", "--code", "G03", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#Cases For Score For \"k\"$."]
+ },
+ {
+  "id": "G04",
+  "verb": "rule",
+  "args": ["check", "--code", "G04", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#Cases For Nope$."]
+ },
+ {
+  "id": "G05",
+  "verb": "rule",
+  "args": ["check", "--code", "G05", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#Cases$."]
+ },
+ {
+  "id": "L01",
+  "verb": "rule",
+  "args": ["check", "--code", "L01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score For \"a For b\"$."]
+ },
+ {
+  "id": "L02",
+  "verb": "rule",
+  "args": ["check", "--code", "L02", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score For Grade For \"a For b\"$."]
+ },
+ {
+  "id": "R01",
+  "verb": "rule",
+  "args": ["check", "--code", "R01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $RuleGroup For Score For \"k\"$."]
+ },
+ {
+  "id": "R02",
+  "verb": "rule",
+  "args": ["check", "--code", "R02", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score For RuleGroup$."]
+ },
+ {
+  "id": "P01",
+  "verb": "rule",
+  "args": ["check", "--code", "P01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Nope$ and $Score$."]
+ },
+ {
+  "id": "P02",
+  "verb": "rule",
+  "args": ["check", "--code", "P02", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Nope$ and $Gradé$."]
+ },
+ {
+  "id": "P03",
+  "verb": "rule",
+  "args": ["check", "--code", "P03", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Nope$ and $Nope2$."]
+ },
+ {
+  "id": "S01",
+  "verb": "rule",
+  "args": ["check", "--code", "S01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Nope For Score.x$."]
+ },
+ {
+  "id": "S02",
+  "verb": "rule",
+  "args": ["check", "--code", "S02", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Nope For \"k\" x$."]
+ },
+ {
+  "id": "C01",
+  "verb": "rule",
+  "args": ["check", "--code", "C01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $Score$."]
+ }
+]

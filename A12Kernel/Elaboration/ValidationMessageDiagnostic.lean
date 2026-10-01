@@ -12,7 +12,7 @@ the [group-argument checkpoints](../../docs/sources/message-and-pointer-probes.m
 and the [name-position](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals) and [carrier](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers) checkpoints. This projection is for the rule producer; the shared error type alone supplies no evidence
 for a String-pattern or computation-message carrier. A codeless repertoire finding remains in the
 original error, beside any named cause. `none` means no established named class, never acceptance;
-in particular the fragment's generic parse refusals and its unmodelled index gate stay unmapped. -/
+the `index(...)` form and the rule-group terminal where the Kernel fails internally stay unmapped. -/
 def ValidationMessageTemplateError.namedRuleDiagnostic? :
     ValidationMessageTemplateError → Option KernelStaticDiagnostic
   | .emptyTemplate => some .ruleHasNoErrorText
@@ -22,12 +22,13 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .noBaseYear => some .noMessageBaseYear
   | .fieldNotReferenced _ _ => some .messageFieldNotReferenced
   | .missingCategoryName _ => some .missingMessageCategory
-  | .parameterCharacter _ _ => some .lexerStandardError
-  | .groupParameterLexical _ .lexer => some .lexerStandardError
-  | .groupParameterLexical _ .truncated => some .incompleteInput
-  | .groupParameterLexical _ .expectedToken => some .expectedTokenNotFound
-  | .groupParameterLexical _ .separator => some .unexpectedToken
-  | .groupParameterLexical _ .unexpected => some .unexpectedToken
+  | .categoryFieldNotEnumeration _ _ => some .indexFieldNoEnumeration
+  | .category _ (.unknownCategory _) => some .indexFieldCategoryUnknown
+  | .parameterSyntax _ .lexer => some .lexerStandardError
+  | .parameterSyntax _ .truncated => some .incompleteInput
+  | .parameterSyntax _ .expectedToken => some .expectedTokenNotFound
+  | .parameterSyntax _ .separator => some .unexpectedToken
+  | .parameterSyntax _ .unexpected => some .unexpectedToken
   | .unsupportedCharacterWithError _ cause => cause.namedRuleDiagnostic?
   | .reference _ (.unknownRootGroup _) => some .messageInvalidRootGroup
   | .reference _ (.invalidEntity _) => some .messageInvalidEntity
@@ -36,10 +37,12 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .groupInNamePosition _ _ => some .messageFieldNotReferenced
   | .groupInFormPointer _ _ => some .invalidFieldInParameter
   | .nestedSemanticIndex _ => some .illegalSemanticIndex
+  | .keyNotInCondition _ => some .indexForErrorTextInvalid
+  | .ruleGroupParameter _ => some .invalidMessageParameter
   | .invalidGroupParameter _ => some .invalidGroupInParameter
   | .groupShortNameNotUnique _ _ => some .messageFieldNameNotUnique
-  | .groupParameterAboveRoot _ => some .parameterTooManyParentGroups
-  | .groupTurningPointMismatch _ => some .messageInvalidEntity
+  | .parameterAboveRoot _ => some .parameterTooManyParentGroups
+  | .turningPointMismatch _ => some .messageInvalidEntity
   | .unknownRootGroup _ _ => some .messageInvalidRootGroup
   | .retiredGroupTerminal _ _ => some .parameterInvalidInNewWorld
   | .ruleGroupImmediatelyBelowRoot _ => some .ruleGroupImmediatelyBelowRoot

@@ -162,21 +162,21 @@ example :
             field := "Amount" })) := by
   native_decide
 
-/- Malformed specs are the Kernel's single parse class, not a family of shape classes: an empty
-segment and a bare parent walk with no field. A lone absolute segment is not malformed; it resolves
-like any other entity spec. -/
+/- A malformed spec draws the parser's own syntax class where it stands, so an empty segment is the
+separator fault. A bare parent walk is no malformed spec but an entity naming the group it reaches,
+here one past the root, and a lone absolute segment resolves like any other entity spec. -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head"] "Amount")
-        "See $Head//Amount$" = some (.invalidParameter "Head//Amount") ∧
+        "See $Head//Amount$" = some (.parameterSyntax "Head//Amount" .separator) ∧
       pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head"] "Amount")
-        "See $..$" = some (.invalidParameter "..") := by
+        "See $..$" = some (.parameterAboveRoot "..") := by
   native_decide
 
-/- A terminal collision is refused at **any** path level, not only as the final name, and the refusal
-names the colliding segment rather than the whole spec. -/
+/- An unquoted terminal is a keyword token and never a name, so at any path level it is the syntax
+fault where the parser meets it. -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head"] "Amount")
-        "See $For/Amount$" = some (.unquotedTerminalName "For") := by
+        "See $For/Amount$" = some (.parameterSyntax "For/Amount" .unexpected) := by
   native_decide
 
 /- The grammar's single-quote escape makes a colliding name authorable, and the quotes are erased
@@ -186,7 +186,7 @@ example :
     pathTemplateOk? ["Order"] (pathAt (.relative 0) [] "For")
         "See $'For'$" = some true ∧
       pathTemplateError? ["Order"] (pathAt (.relative 0) [] "For")
-        "See $For$" = some (.unquotedTerminalName "For") := by
+        "See $For$" = some (.parameterSyntax "For" .unexpected) := by
   native_decide
 
 /- This producer's quoting rule is **narrower** than the condition language's: a terminal it
@@ -226,15 +226,19 @@ example :
       baseYearRender? "Year $BaseYear-1$" = some { text := "Year 2019" } := by
   native_decide
 
-/- Its one static gate is that the model declares a Base Year, and the offset syntax is exactly a
-sign and digits: any other tail is the single parse class rather than a zero offset. -/
+/- Its one static gate is that the model declares a Base Year, and the offset's syntax answers around
+it: a character the lexer forms no token from is met when the terminal is consumed, before the gate,
+a sign with no digits misses a required token at the end, and a token left after the parameter waits
+for the gate ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
         "Year $BaseYear$" = some .noBaseYear ∧
       pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
-        "Year $BaseYear*2$" = some (.invalidParameter "BaseYear*2") ∧
+        "Year $BaseYear*2$" = some (.parameterSyntax "BaseYear*2" .lexer) ∧
       pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
-        "Year $BaseYear+$" = some (.invalidParameter "BaseYear+") := by
+        "Year $BaseYear+$" = some (.parameterSyntax "BaseYear+" .expectedToken) ∧
+      pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
+        "Year $BaseYear x$" = some .noBaseYear := by
   native_decide
 
 /- Each field is already referenced by the condition, so these rows reach the category checks: missing name, Enumeration kind, then declared-category lookup. -/
@@ -251,17 +255,17 @@ example :
           some (.categoryFieldNotEnumeration "Amount->Group" amount.id) := by
   native_decide
 
-/- The suffixes are alternatives: combining them is a parse failure, which the Kernel confirms. A
+/- The suffixes are alternatives: combining them is a syntax fault, which the Kernel confirms. A
 **doubled** arrow has no single class: a declared first category reaches the trailing-syntax refusal,
 an undeclared first category stops at the category gate, and a non-Enumeration field stops at the kind
 gate. The three rows differ only in that first lookup, so they separate gate order from syntax. -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
         "See $Status.value->Group$" =
-      some (.invalidParameter "Status.value->Group") ∧
+      some (.parameterSyntax "Status.value->Group" .unexpected) ∧
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
         "See $Status->Group->Group$" =
-      some (.invalidParameter "Status->Group->Group") ∧
+      some (.parameterSyntax "Status->Group->Group" .unexpected) ∧
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
         "See $Status->Nope->Nope$" =
       some (.category "Status->Nope->Nope" (.unknownCategory "Nope")) ∧
@@ -270,11 +274,11 @@ example :
       some (.categoryFieldNotEnumeration "Amount->Group->Group" amount.id) := by
   native_decide
 
-/- An unbalanced quote is a parse failure rather than a name, so a half-written escape never resolves
+/- An unbalanced quote is a lexer fault rather than a name, so a half-written escape never resolves
 as a literal name containing a quote. -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "For")
-        "See $'For$" = some (.invalidParameter "'For") := by
+        "See $'For$" = some (.parameterSyntax "'For" .lexer) := by
   native_decide
 
 private def inputs : ValidationMessageInputs where
@@ -375,9 +379,9 @@ example :
       templateError? "$Missing$" =
         some (.reference "Missing" (.invalidEntity (bare "Missing"))) ∧
       templateError? "$Amount.nope$" =
-        some (.invalidParameter "Amount.nope") ∧
+        some (.reference "Amount.nope" (.invalidEntity (bare "Amount.nope"))) ∧
       templateError? "$For$" =
-        some (.unquotedTerminalName "For") := by
+        some (.parameterSyntax "For" .unexpected) := by
   native_decide
 
 /-- The Kernel code a template's refusal projects to, for a rule in `group` reading `reference` on
@@ -410,7 +414,8 @@ example :
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). A
 form pointer naming a group draws its own class, while the suffixed forms and a group's lone absolute
 segment keep the membership one. A keyed form resolves a group as an entity and leaves it to the index
-gate, which this fragment does not decide, so only a key that names nothing is classed. The message's
+gate, which refuses every key on a condition that reads none, so a key that names nothing answers
+first. The message's
 short-name tier answers with the model's flag off, which is this fixture's default, admitting a read
 or form-pointed field by its short name, and an ambiguous first segment answers even when more path
 follows it. -/
@@ -425,8 +430,8 @@ example :
         some (some "INVALID_FIELD_IN_PARAMETER") ∧
       root "See $Head.value$" = some (some "INVALID_FIELD") ∧
       root "See $Head->Cat$" = some (some "INVALID_FIELD") ∧
-      root "See $Head For \"k\"$" = some none ∧
-      root "See $Amount For Head$" = some none ∧
+      root "See $Head For \"k\"$" = some (some "MVK_INDEX_FOR_ERROR_TEXT_INVALID") ∧
+      root "See $Amount For Head$" = some (some "MVK_INDEX_FOR_ERROR_TEXT_INVALID") ∧
       root "See $Head For Nope$" = some (some "INVALID_ENTITY") ∧
       root "See $/Order$" = some (some "INVALID_FIELD") ∧
       root "See $/Nope$" = some (some "INVALID_ROOT_GROUP") ∧
@@ -444,22 +449,18 @@ order: every name resolves as it is read, outer before inner, then a key that is
 refused, then the index gate answers
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)).
 So a name that resolves nowhere answers first in any position, a keyed field or group key draws the
-nesting class, and a literal followed by a key reaches the index gate, which this fragment leaves
-unprojected. -/
+nesting class, and a literal followed by a key reaches the index gate before the trailing key. -/
 example :
     let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     root "See $Deep For Head/Deeper/Deep For \"k\"$" = some (some "ILLEGAL_SEMANTIC_INDEX") ∧
       root "See $Deep For Head For \"k\"$" = some (some "ILLEGAL_SEMANTIC_INDEX") ∧
       root "See $Deep For Head/Deeper/Deep For Deep$" = some (some "ILLEGAL_SEMANTIC_INDEX") ∧
-      root "See $Deep For \"k1\" For \"k2\"$" = some none ∧
+      root "See $Deep For \"k1\" For \"k2\"$" = some (some "MVK_INDEX_FOR_ERROR_TEXT_INVALID") ∧
       root "See $Deep For Nope For \"k\"$" = some (some "INVALID_ENTITY") ∧
       root "See $Nope For Head/Deeper/Deep For \"k\"$" = some (some "INVALID_ENTITY") ∧
       root "See $Deep For Head/Deeper/Deep For Nope$" = some (some "INVALID_ENTITY") ∧
-      -- The category suffix's declaration gates stay unprojected: the decoder takes everything after
-      -- the arrow as the name, so a spacing or trailing token the grammar treats otherwise would carry
-      -- a wrong class ([`LF201`](../../docs/LEAN-FINDINGS.md)).
-      namedClassOn? model ["Order"] (bare "Status") "See $Status->Nope$" = some none ∧
-      root "See $#Head For \"k\"$" = some none := by
+      namedClassOn? model ["Order"] (bare "Status") "See $Status->Nope$" = some (some "INVALID_CATEGORY") ∧
+      root "See $#Head For \"k\"$" = some (some "INVALID_GROUP") := by
   native_decide
 
 /-- One code point as a one-character string, so a case can name a scalar Lean's char escapes do not spell. -/
@@ -484,7 +485,7 @@ example :
 
 example :
     templateError? "$Other-> For \"k1\"$" =
-      some (.semanticIndexUnsupported "Other-> For \"k1\"") ∧
+      some (.keyNotInCondition "Other-> For \"k1\"") ∧
     templateError? "$Missing-> For \"k1\"$" =
       some (.reference "Missing-> For \"k1\"" (.invalidEntity (bare "Missing"))) := by
   native_decide
@@ -513,8 +514,9 @@ example :
     templateNamedDiagnostic? ("row $An" ++ cp 0x1F600 ++ "chor$") =
       some (some "MVK_LEXER_STANDARD_ERROR") ∧
     templateNamedDiagnostic? (cp 0x1F600 ++ " $Amount$") = some none ∧
-    templateNamedDiagnostic? "$BaseYear+$" = some none ∧
-    templateNamedDiagnostic? (cp 0x1F600 ++ " $Amount For \"k1\"$") = some none ∧
+    templateNamedDiagnostic? "$BaseYear+$" = some (some "MVK_EXPECTED_TOKEN_NOT_FOUND") ∧
+    templateNamedDiagnostic? (cp 0x1F600 ++ " $Amount For \"k1\"$") =
+      some (some "MVK_INDEX_FOR_ERROR_TEXT_INVALID") ∧
     templateNamedDiagnostic? "Cost $$ $Amount$" = none ∧
     templateNamedDiagnostic? "$$$$" = none := by
   native_decide
@@ -532,14 +534,14 @@ example :
         (.controlCharacter '\t')) ∧
     templateError? ("row $An" ++ cp 0x1F600 ++ "chor$") =
       some (.unsupportedCharacterWithError (Char.ofNat 0x1F600)
-        (.parameterCharacter ("An" ++ cp 0x1F600 ++ "chor") (Char.ofNat 0x1F600))) ∧
+        (.parameterSyntax ("An" ++ cp 0x1F600 ++ "chor") .lexer)) ∧
     templateError? ("t" ++ cp 0x1F600 ++ "x $Amount$") =
       some (.unsupportedCharacter (Char.ofNat 0x1F600)) ∧
     templateError? ("x" ++ cp 0x1F600 ++ cp 0x1D400 ++ "y") =
       some (.unsupportedCharacter (Char.ofNat 0x1F600)) ∧
     templateError? ("x" ++ cp 0x1F600 ++ " $Amount For \"k1\"$") =
       some (.unsupportedCharacterWithError (Char.ofNat 0x1F600)
-        (.semanticIndexUnsupported "Amount For \"k1\"")) := by
+        (.keyNotInCondition "Amount For \"k1\"")) := by
   native_decide
 
 /- **The template's character repertoire is the BMP, and it is the value charset's rule reaching a second
@@ -604,13 +606,17 @@ example :
 /- **A parameter's own body keeps the ASCII bound, and that is a different refusal from the repertoire
    one.** The Kernel reports a non-ASCII letter inside a parameter through its lexer, naming the character
    and its position, where the same letter in surrounding text is admitted — so the bound belongs to the
-   name grammar rather than to the template. The position payload is not tracked here. -/
+   name grammar rather than to the template. The fault answers where the parser fetches its token, so
+   a check that runs before that answers first: `$Nope For é$` is the entity's refusal. The position
+   payload is not tracked here. -/
 example :
-    templateError? "row $Anchéor$" = some (.parameterCharacter "Anchéor" 'é') ∧
+    templateError? "row $Anchéor$" = some (.parameterSyntax "Anchéor" .lexer) ∧
     templateError? ("row $No" ++ cp 0x20AC ++ "pe$") =
-      some (.parameterCharacter ("No" ++ cp 0x20AC ++ "pe") (Char.ofNat 0x20AC)) ∧
+      some (.parameterSyntax ("No" ++ cp 0x20AC ++ "pe") .lexer) ∧
     templateError? ("row $No" ++ cp 0x4E00 ++ "pe$") =
-      some (.parameterCharacter ("No" ++ cp 0x4E00 ++ "pe") (Char.ofNat 0x4E00)) ∧
+      some (.parameterSyntax ("No" ++ cp 0x4E00 ++ "pe") .lexer) ∧
+    templateError? "row $Nope For é$" =
+      some (.reference "Nope For é" (.invalidEntity (bare "Nope"))) ∧
     templateError? "row $Amount$ é" = none := by
   native_decide
 
@@ -643,24 +649,25 @@ example :
 
 /- Their only measured gate resolves the entity to a **field**: an undeclared name draws its own
    reference failure, and the bare terminal without an entity is an ordinary entity lookup rather than
-   a terminal at all. Neither composes with a further suffix. -/
+   a terminal at all. Neither composes with a further suffix: a dotted name may not end on the value
+   word, so the parser meets the end of the text still inside the name. -/
 example :
     templateError? "row $Nope.Vordruckzeile$" =
         some (.reference "Nope.Vordruckzeile" (.invalidEntity (bare "Nope"))) ∧
       templateError? "row $Vordruckzeile$" =
         some (.reference "Vordruckzeile" (.invalidEntity (bare "Vordruckzeile"))) ∧
       templateError? "row $Amount.Vordruckzeile.value$" =
-        some (.invalidParameter "Amount.Vordruckzeile.value") := by
+        some (.parameterSyntax "Amount.Vordruckzeile.value" .truncated) := by
   native_decide
 
-/- The **semantic-index suffix** on a parameter. A keyed parameter names a semantic index over a
-repeatable group, and this fragment's model is nonrepeatable, so every well-formed keyed parameter is
-refused as outside the fragment rather than admitted or mapped to the Kernel's pairing class. What the
-cases separate is the grammar *in front of* that boundary: which spellings are well formed and reach
-it, and which are refused earlier and where. -/
+/- The **semantic-index suffix** on a parameter. The Kernel admits a keyed parameter only under a key
+the condition itself uses, and no flat condition uses one, so every well-formed keyed parameter meets
+the index gate's refusal, measured on the flat model. What the cases separate is the grammar *in
+front of* that gate: which spellings are well formed and reach it, and which are refused earlier and
+where. -/
 example :
     templateError? "Bad $Amount For \"k1\"$" =
-        some (.semanticIndexUnsupported "Amount For \"k1\"") := by
+        some (.keyNotInCondition "Amount For \"k1\"") := by
   native_decide
 
 /- Keying **replaces the field-membership gate rather than removing a gate**. The unkeyed spelling of
@@ -674,19 +681,19 @@ holds regardless: the same field reaches two different refusals depending only o
 a key, which is the distinction a fragment without repeatable groups can still hold. -/
 example :
     templateError? "$Other For \"k1\"$" =
-        some (.semanticIndexUnsupported "Other For \"k1\"") ∧
+        some (.keyNotInCondition "Other For \"k1\"") ∧
       templateError? "$Other$" =
         some (.fieldNotReferenced "Other" other.id) := by
   native_decide
 
 /- The suffix sits **before** the key, which is the one ordering the grammar admits: measured, the
-Kernel accepts `$X.value For "k"$` and refuses `$X For "k".value$` as a parse failure. Here the first
-is well formed and reaches the fragment boundary while the second never becomes a parameter at all. -/
+Kernel accepts `$X.value For "k"$` and refuses `$X For "k".value$` as a syntax fault once its keyed
+field passes. Here both reach the index gate, which answers before the trailing suffix is met. -/
 example :
     templateError? "$Amount.value For \"k1\"$" =
-        some (.semanticIndexUnsupported "Amount.value For \"k1\"") ∧
+        some (.keyNotInCondition "Amount.value For \"k1\"") ∧
       templateError? "$Amount For \"k1\".value$" =
-        some (.invalidParameter "Amount For \"k1\".value") := by
+        some (.keyNotInCondition "Amount For \"k1\".value") := by
   native_decide
 
 /- A key is a quoted token or a path to the keying field, and nothing else: an **unquoted** bare word
@@ -696,18 +703,19 @@ the keyed form requires no membership. A literal takes no key of its own, so one
 leaves the literal for the index gate rather than nesting. -/
 example :
     templateError? "$Amount For \"k1\" For \"k2\"$" =
-        some (.semanticIndexUnsupported "Amount For \"k1\" For \"k2\"") ∧
+        some (.keyNotInCondition "Amount For \"k1\" For \"k2\"") ∧
       templateError? "$Amount For k1$" =
         some (.reference "Amount For k1"
           (.invalidEntity (pathAt (.relative 0) [] "k1"))) := by
   native_decide
 
-/- The keyed category form reaches the fragment's unsupported index gate before the category can be checked; the measured ordering is recorded in the category-gate checkpoint. -/
+/- The keyed category form reaches the index gate before the category can be checked; the measured
+ordering is recorded in the category-gate checkpoint. -/
 example :
     templateError? "$Status->Group For \"k1\"$" =
-        some (.semanticIndexUnsupported "Status->Group For \"k1\"") ∧
+        some (.keyNotInCondition "Status->Group For \"k1\"") ∧
       templateError? "$Status-> For \"k1\"$" =
-        some (.semanticIndexUnsupported "Status-> For \"k1\"") := by
+        some (.keyNotInCondition "Status-> For \"k1\"") := by
   native_decide
 
 /- **The value suffix is the profile's word, not a literal in the parser.** Every sibling terminal was
@@ -718,13 +726,17 @@ English condition language and `Wert` under German, and each is a lexer refusal 
 
 Each language sits on **both** sides here, which is what distinguishes a parametric parser from one
 that happens to accept both words: under the English profile `.value` selects the value part while
-`.Wert` is not recognized as the suffix at all, leaving a residue that is no legal entity spec and
-drawing `invalidParameter` — and under a German profile the two swap. So the other language's word
+`.Wert` is not recognized as the suffix at all but continues the name, which then resolves nowhere —
+and under a German profile, which reserves `Wert` in place of `value`, the two swap. So the other language's word
 fails as a *parse*, not at the unquoted-terminal gate. This locks *this fragment's* parametricity;
 the spellings themselves are the caller's data, and no row here claims which word a given Kernel
 model takes. -/
 example :
-    let germanProfile := { keywordProfile with valueSuffixTerminal := "Wert" }
+    let swap (word : String) := if word == "value" then "Wert" else word
+    let germanProfile := { keywordProfile with
+      valueSuffixTerminal := "Wert"
+      path := { reserved := keywordProfile.path.reserved.map swap }
+      unquotedTerminals := keywordProfile.unquotedTerminals.map swap }
     let parsedAs (profile : ValidationMessageKeywordProfile)
         (template : String) : Option Bool := do
       let condition ← conditionOn? ["Order"] (bare "Amount")

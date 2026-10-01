@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-01-06"></a>
+### `SPEC-2026-10-01-06` — a message parameter is refused at its parser's first event, and the name position reads the whole entity before any check
+
+- `status`: pending
+- `origin`: locally originated. Your [`kf343`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf343) holds the per-parameter report and [`kf413`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf413) the spaced arrow; [`kf198`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf198) holds `$For$`, `$BaseYear+$` and a suffix after an admitted key as syntax faults. This entry adds the order between checks and faults, which none of them carries.
+- `clause`: [`11`](../spec/11-messages-and-custom.md), the three bullets before the keyed field's prerequisite gates.
+- `delta`: a check runs where its rule ends and a fault where the parser meets it, a lexer fault when its token is fetched; the name position reads the whole entity spec and the token after it first, so `$Nope x$` and `$Nope.Vordruckzeile x$` draw `MVK_UNEXPECTED_TOKEN` and `$Nope/$` `MVK_INCOMPLETE_INPUT` where `$Nope For$` draws `INVALID_ENTITY`; a category name is one token, `$Grade->Nope x$` drawing `INVALID_CATEGORY` and `$Grade->Nope For$` `MVK_INCOMPLETE_INPUT`; `$BaseYear x$` without a Base Year draws `NO_BASE_YEAR`; a bare walk is an entity, `$..$` drawing `INVALID_FIELD`. On a condition reading no key every keyed name-position parameter draws `MVK_INDEX_FOR_ERROR_TEXT_INVALID`, and a keyed group `INVALID_GROUP` after its lookup and its key's nesting and syntax; `$#RootGroup For "k"$` reads as a name.
+- `basis`: this project's [decoder grid](SOURCES.md#src-message-parameter-decoder), 72 `rule check` rows on a repeatable model and its flat twin with identical results, at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, code-only verdicts retained.
+- `surfaces`: any peer checker that decodes a parameter by splitting on its separators, checks the name before the rest of the parameter is well formed, or takes everything after an arrow as the category name.
+- `acceptance`: confirm `$Nope x$` against `$Nope For$`, and `$Grade->Nope x$` against `$Grade->Nope For$`, which separate the decision's window and the key's place inside the field, or supply a row on which the account fails.
+- `limit`: static admission, English condition language, a rule-owned message; a parent walk inside a key, and a key's names in the group position, unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-01-05"></a>
 ### `SPEC-2026-10-01-05` — `BaseYear` meets the comparison walk's arms as a Number, and its range endpoints as a date
 

@@ -1,0 +1,37 @@
+[
+ {
+  "id": "H00",
+  "verb": "rule",
+  "args": ["check", "--code", "H00", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#/Probe/Cases$."]
+ },
+ {
+  "id": "H01",
+  "verb": "rule",
+  "args": ["check", "--code", "H01", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#/Probe/Cases For \"k\"$."]
+ },
+ {
+  "id": "H02",
+  "verb": "rule",
+  "args": ["check", "--code", "H02", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#/Probe/Cases For Score$."]
+ },
+ {
+  "id": "H03",
+  "verb": "rule",
+  "args": ["check", "--code", "H03", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#/Probe/Cases For Score For \"k\"$."]
+ },
+ {
+  "id": "H04",
+  "verb": "rule",
+  "args": ["check", "--code", "H04", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#/Probe/Cases For Nope$."]
+ },
+ {
+  "id": "H05",
+  "verb": "rule",
+  "args": ["check", "--code", "H05", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#/Probe/Cases For Grade$."]
+ },
+ {
+  "id": "H06",
+  "verb": "rule",
+  "args": ["check", "--code", "H06", "--field", "/Probe/Cases/Score", "--group", "/Probe/Cases", "--condition", "FieldFilled(Score) And FieldFilled(Grade)", "--message", "en_US=Check $#/Probe For \"k\"$."]
+ }
+]

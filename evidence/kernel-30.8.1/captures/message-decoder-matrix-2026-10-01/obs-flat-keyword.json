@@ -1,0 +1,96 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "ec7a28b696ddbc5c55c02009398f470d2ff360cd7bb6e9b4eb1403443f3ccd08",
+  "observations" : [ {
+    "id" : "K01",
+    "inputHash" : "e57a39d103bb90c6a4b7ed014e504bf7787cc628672ffdc474002babff3e4743",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "K02",
+    "inputHash" : "cd62bbd84afe6b6f3450864c766e1b9482363c9754e398d00201592f46d46a9a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "K03",
+    "inputHash" : "44a7d395ce1069e39a968fd4add88f0074a37519f46888dec80937f109cbdbf5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "K04",
+    "inputHash" : "f6cc24805944d89ad00ecd44d89d54ca71e906710061aae31bd0bc9fa3145b9e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCOMPLETE_INPUT" ]
+  }, {
+    "id" : "K05",
+    "inputHash" : "be45e081b1d68c88cca557413dd592d1f55f2c0c0371dce2a2c45e86593f5c1c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "K06",
+    "inputHash" : "6e51acb24843ba3a2a20cbc1669018750c93568fd6ff5990d36fc5778a98805e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCOMPLETE_INPUT" ]
+  }, {
+    "id" : "K07",
+    "inputHash" : "7a1c6e695bbf0bdb7d1d46dfe6fca3daf2b859797a7de02884eb649bf7e3def0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "U01",
+    "inputHash" : "9324065bfcd9c28d1f31e39ceb284b6c67949389d2aaa63ea7d3de21c5be1c58",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "U02",
+    "inputHash" : "1cb2dd165ec812a72d39fd99b30c6ba6d8e3e8b75f5c15cac76ff64977afa087",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "U03",
+    "inputHash" : "2bd989806ebaf9c9cbc2c95401c384fdee44d8f95540689a10d5869fe0013ee7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "U04",
+    "inputHash" : "f64e85a9cc7370baa56db229af60e7fda04fdb32e12dbe03f5e726289b60f293",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS" ]
+  }, {
+    "id" : "X01",
+    "inputHash" : "02768fb6e81e4902a36507bcefdc1ae59392dbcb8cebb56daf97229ec98c2ecd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "X02",
+    "inputHash" : "2e6dbb95183b0922c636896d2162949ae1ebaee090a9223aafa832a4af0e29ba",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_LEXER_STANDARD_ERROR" ]
+  }, {
+    "id" : "X03",
+    "inputHash" : "f1c2f483ea71fbf3d78e536a51e10b28a23c7a619b2a0cf86181899d680f52b3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_LEXER_STANDARD_ERROR" ]
+  } ]
+}

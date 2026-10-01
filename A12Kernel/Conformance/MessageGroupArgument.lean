@@ -28,11 +28,11 @@ def englishReservedTerminals : List String :=
 def englishUnquotedTerminals : List String :=
   ["value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"]
 
-private def keywords : MessageGroupKeywords :=
+private def keywords : MessageParameterKeywords :=
   { reserved := englishReservedTerminals, exempt := englishUnquotedTerminals,
     exemptNonFinal := ["value", "Vordruckzeile", "Vordruckname"],
     ruleGroup := "RuleGroup", rootGroup := "RootGroup", retired := ["Zeile", "Usb"],
-    offset := ["Zeile"] }
+    offset := ["Zeile"], forTerminal := "For" }
 
 private def refused (argument : String) : Option MessageGroupArgumentRefusal :=
   match decodeMessageGroupArgument keywords argument with
@@ -42,7 +42,7 @@ private def refused (argument : String) : Option MessageGroupArgumentRefusal :=
 private def decoded (argument : String) : Option (AuthoredMessageGroup × MessageGroupRemainder) :=
   (decodeMessageGroupArgument keywords argument).toOption
 
-private def syntaxFault (argument : String) (fault : MessageGroupLexicalFault) : Bool :=
+private def syntaxFault (argument : String) (fault : MessageParameterFault) : Bool :=
   refused argument = some (.syntax fault)
 
 /- A character the lexer forms no token from, or a malformed quoted name, is the lexer class whatever
@@ -155,13 +155,13 @@ example :
 
 /-- The de_DE parameter terminals, read off the Kernel's own German terminal bundle, with the quoting
 exemption and the non-final exempt words in the same grammar roles as the English ones. -/
-private def germanKeywords : MessageGroupKeywords :=
+private def germanKeywords : MessageParameterKeywords :=
   { reserved := ["Fuer", "index", "LfdNr", "RegelKontext", "Usb", "Vordruckname",
       "Vordruckzeile", "Referenzjahr", "Wert", "Zeile"],
     exempt := ["Wert", "LfdNr", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"],
     exemptNonFinal := ["Wert", "Vordruckzeile", "Vordruckname"],
     ruleGroup := "RegelKontext", rootGroup := "LfdNr", retired := ["Zeile", "Usb"],
-    offset := ["Zeile"] }
+    offset := ["Zeile"], forTerminal := "Fuer" }
 
 private def decodedGerman (argument : String) :
     Option (AuthoredMessageGroup × MessageGroupRemainder) :=
@@ -172,7 +172,7 @@ private def germanRefused (argument : String) : Option MessageGroupArgumentRefus
   | .error refusal => some refusal
   | .ok _ => none
 
-private def germanSyntaxFault (argument : String) (fault : MessageGroupLexicalFault) : Bool :=
+private def germanSyntaxFault (argument : String) (fault : MessageParameterFault) : Bool :=
   germanRefused argument = some (.syntax fault)
 
 /- Under the German condition language the same decisions fall on the German words, as the peer's

@@ -1,0 +1,54 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "ec7a28b696ddbc5c55c02009398f470d2ff360cd7bb6e9b4eb1403443f3ccd08",
+  "observations" : [ {
+    "id" : "H00",
+    "inputHash" : "a2863f99b7b2aa3a5411dec682d7d101f930a7aca58224be583efcfe8a5a1976",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "H01",
+    "inputHash" : "90baebf0ad9eddf4ac6fa331a2741567c8260ea9dd1c25205a3329ea0857cbb4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "H02",
+    "inputHash" : "043781b1129da596658a664cded176b71f0e6251a70611f53cfcd9dd8bc529ca",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "H03",
+    "inputHash" : "d967050d70be0116169e062d043dffd2198cd689e62d2f4eb7f99c70f980fad5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "ILLEGAL_SEMANTIC_INDEX" ]
+  }, {
+    "id" : "H04",
+    "inputHash" : "d818112b1e8d23664dda712d77a30f364c90db98845f7bdecd0a51cd383e1e49",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "H05",
+    "inputHash" : "9f5897f47be6b2792bdf949dd50af68ddd3763a538f6ec16b9de85b3d4671bd3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "H06",
+    "inputHash" : "8e3a4b6f717ff817ed9cd554bb1b081b90a20cd46ec687b323115bfa027cd252",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  } ]
+}

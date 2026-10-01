@@ -103,7 +103,7 @@ example :
       pathTemplateOk? ["Order", "Head"] aside "In $#/Order/Side$" = some true ∧
       pathTemplateOk? ["Order", "Head"] aside "In $#..Order/Side$" = some true ∧
       pathTemplateError? ["Order", "Head"] aside "In $#..Wrong/Side$" =
-        some (.groupTurningPointMismatch "#..Wrong/Side") := by
+        some (.turningPointMismatch "#..Wrong/Side") := by
   native_decide
 
 /- A parent walk reaches the ancestor arm, and one that climbs past the root group is refused on the
@@ -114,9 +114,9 @@ example :
       headGroupError? "In $#../Side$" = some (.invalidGroupParameter "#../Side") ∧
       headGroupError? "In $#Deeper$" = some (.invalidGroupParameter "#Deeper") ∧
       headGroupError? "In $#../../Order$" =
-        some (.groupParameterAboveRoot "#../../Order") ∧
+        some (.parameterAboveRoot "#../../Order") ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#../Head$" =
-        some (.groupParameterAboveRoot "#../Head") := by
+        some (.parameterAboveRoot "#../Head") := by
   native_decide
 
 /- The argument is refused in **layers**
@@ -127,16 +127,16 @@ then the path is looked up, and only a path that resolves meets the syntax class
 after it. -/
 example :
     let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
-    deep "In $#Nope[1]$" = some (.groupParameterLexical "#Nope[1]" .lexer) ∧
-      deep "In $#Nope/$" = some (.groupParameterLexical "#Nope/" .truncated) ∧
+    deep "In $#Nope[1]$" = some (.parameterSyntax "#Nope[1]" .lexer) ∧
+      deep "In $#Nope/$" = some (.parameterSyntax "#Nope/" .truncated) ∧
       deep "In $#He-ad$" = some (.invalidGroupParameter "#He-ad") ∧
       deep "In $#/Order/He-ad$" = some (.invalidGroupParameter "#/Order/He-ad") ∧
-      deep "In $#Head-x$" = some (.groupParameterLexical "#Head-x" .unexpected) ∧
-      deep "In $#Head)$" = some (.groupParameterLexical "#Head)" .unexpected) ∧
-      deep "In $#Head x$" = some (.groupParameterLexical "#Head x" .unexpected) ∧
+      deep "In $#Head-x$" = some (.parameterSyntax "#Head-x" .unexpected) ∧
+      deep "In $#Head)$" = some (.parameterSyntax "#Head)" .unexpected) ∧
+      deep "In $#Head x$" = some (.parameterSyntax "#Head x" .unexpected) ∧
       deep "In $#/Order/Head-x$" =
-        some (.groupParameterLexical "#/Order/Head-x" .unexpected) ∧
-      headGroupError? "In $#...$" = some (.groupParameterLexical "#..." .unexpected) := by
+        some (.parameterSyntax "#/Order/Head-x" .unexpected) ∧
+      headGroupError? "In $#...$" = some (.parameterSyntax "#..." .unexpected) := by
   native_decide
 
 /- A bare word that names nothing directly below the rule's group is looked up as the **short name of
@@ -158,7 +158,7 @@ example :
         some true ∧
       pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../..$" = some true ∧
       pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../..$" =
-        some (.groupParameterAboveRoot "#../../..") := by
+        some (.parameterAboveRoot "#../../..") := by
   native_decide
 
 /- Two historic terminals are **recognized** in this position and refused on their own class, which the
@@ -229,13 +229,13 @@ example :
       pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup-x$" =
         some (.ruleGroupImmediatelyBelowRoot "#RuleGroup-x") ∧
       pathTemplateError? ["Order", "Head"] aside "In $#RuleGroup/Deeper$" =
-        some (.groupParameterLexical "#RuleGroup/Deeper" .unexpected) ∧
+        some (.parameterSyntax "#RuleGroup/Deeper" .unexpected) ∧
       pathTemplateError? ["Order", "Head"] aside "In $#RuleGroup-x$" =
-        some (.groupParameterLexical "#RuleGroup-x" .unexpected) ∧
+        some (.parameterSyntax "#RuleGroup-x" .unexpected) ∧
       pathTemplateError? ["Order"] deep "In $#RootGroup/Head$" =
         some (.invalidGroupParameter "#RootGroup/Head") ∧
       pathTemplateError? ["Order"] deep "In $#RootGroup-x$" =
-        some (.groupParameterLexical "#RootGroup-x" .unexpected) := by
+        some (.parameterSyntax "#RootGroup-x" .unexpected) := by
   native_decide
 
 /- The decoder's event order, locked in `Conformance/MessageGroupArgument.lean`, meets the lookup and
@@ -251,18 +251,18 @@ example :
       deep "In $#Usb/Head$" = some (.invalidGroupParameter "#Usb/Head") ∧
       deep "In $#123$" = some (.invalidGroupParameter "#123") ∧
       deep "In $#Head/123$" = some (.invalidGroupParameter "#Head/123") ∧
-      deep "In $#RootGroup+1$" = some (.groupParameterLexical "#RootGroup+1" .unexpected) ∧
-      deep "In $#Side%$" = some (.groupParameterLexical "#Side%" .lexer) ∧
+      deep "In $#RootGroup+1$" = some (.parameterSyntax "#RootGroup+1" .unexpected) ∧
+      deep "In $#Side%$" = some (.parameterSyntax "#Side%" .lexer) ∧
       deep "In $#Side-x$" = some (.invalidGroupParameter "#Side-x") ∧
       deep "In $#/Order/Side-x$" = some (.invalidGroupParameter "#/Order/Side-x") ∧
       deep "In $#Side)$" = some (.invalidGroupParameter "#Side)") ∧
       deep "In $#Side x%$" = some (.invalidGroupParameter "#Side x%") ∧
-      deep "In $#Head x%$" = some (.groupParameterLexical "#Head x%" .unexpected) ∧
+      deep "In $#Head x%$" = some (.parameterSyntax "#Head x%" .unexpected) ∧
       deep "In $#'Zeile'-1$" = some (.invalidGroupParameter "#'Zeile'-1") ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup+1$" =
         some (.ruleGroupImmediatelyBelowRoot "#RuleGroup+1") ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup%$" =
-        some (.groupParameterLexical "#RuleGroup%" .lexer) := by
+        some (.parameterSyntax "#RuleGroup%" .lexer) := by
   native_decide
 
 /-- A model whose root holds a group literally named `RootGroup`, so a path through it can resolve. -/
@@ -303,13 +303,13 @@ exempt word is a name the lookup refuses, and after a parent walk `RuleGroup` is
 the resolved parent while `RootGroup` is a turning point naming another group. -/
 example :
     let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
-    deep "In $#Head/RuleGroup$" = some (.groupParameterLexical "#Head/RuleGroup" .unexpected) ∧
+    deep "In $#Head/RuleGroup$" = some (.parameterSyntax "#Head/RuleGroup" .unexpected) ∧
       deep "In $#Head/value$" = some (.invalidGroupParameter "#Head/value") ∧
       deep "In $#index/Head$" = some (.invalidGroupParameter "#index/Head") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..RuleGroup$" =
-        some (.groupParameterLexical "#..RuleGroup" .unexpected) ∧
+        some (.parameterSyntax "#..RuleGroup" .unexpected) ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..RootGroup$" =
-        some (.groupTurningPointMismatch "#..RootGroup") := by
+        some (.turningPointMismatch "#..RootGroup") := by
   native_decide
 
 /- The parent walk's check is an action at the end of the walk, so it answers before any fault in the
@@ -321,26 +321,26 @@ example :
     let base := pathTemplateError? ["Order", "Head", "Deeper", "Base"] (bare "Bottom")
     let deeper := pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep")
     pathTemplateError? ["Order"] (bare "Other") "In $#../RuleGroup$" =
-        some (.groupParameterAboveRoot "#../RuleGroup") ∧
+        some (.parameterAboveRoot "#../RuleGroup") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..Wrong/$" =
-        some (.groupTurningPointMismatch "#..Wrong/") ∧
+        some (.turningPointMismatch "#..Wrong/") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..Wrong/%$" =
-        some (.groupTurningPointMismatch "#..Wrong/%") ∧
+        some (.turningPointMismatch "#..Wrong/%") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#../../Head//%$" =
-        some (.groupParameterAboveRoot "#../../Head//%") ∧
-      deeper "In $#../../RuleGroup$" = some (.groupParameterAboveRoot "#../../RuleGroup") ∧
-      deeper "In $#../../$" = some (.groupParameterAboveRoot "#../../") ∧
-      deeper "In $#../..//$" = some (.groupParameterAboveRoot "#../..//") ∧
-      deeper "In $#../../%$" = some (.groupParameterLexical "#../../%" .lexer) ∧
+        some (.parameterAboveRoot "#../../Head//%") ∧
+      deeper "In $#../../RuleGroup$" = some (.parameterAboveRoot "#../../RuleGroup") ∧
+      deeper "In $#../../$" = some (.parameterAboveRoot "#../../") ∧
+      deeper "In $#../..//$" = some (.parameterAboveRoot "#../..//") ∧
+      deeper "In $#../../%$" = some (.parameterSyntax "#../../%" .lexer) ∧
       deeper "In $#../../Nope$" = some (.invalidGroupParameter "#../../Nope") ∧
-      base "In $#../../$" = some (.groupParameterLexical "#../../" .expectedToken) ∧
+      base "In $#../../$" = some (.parameterSyntax "#../../" .expectedToken) ∧
       base "In $#../../RuleGroup$" =
-        some (.groupParameterLexical "#../../RuleGroup" .unexpected) ∧
-      base "In $#../..//$" = some (.groupParameterLexical "#../..//" .unexpected) ∧
+        some (.parameterSyntax "#../../RuleGroup" .unexpected) ∧
+      base "In $#../..//$" = some (.parameterSyntax "#../..//" .unexpected) ∧
       base "In $#../../../RuleGroup$" =
-        some (.groupParameterAboveRoot "#../../../RuleGroup") ∧
+        some (.parameterAboveRoot "#../../../RuleGroup") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#../$" =
-        some (.groupParameterLexical "#../" .truncated) ∧
+        some (.parameterSyntax "#../" .truncated) ∧
       pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../Head$" = some true ∧
       pathTemplateOk? ["Order", "Head"] (bare "Amount") "In $#..Order.x$" = some true := by
   native_decide
@@ -362,7 +362,7 @@ example :
       deep "In $#'RootGroup'.x$" = some (.invalidGroupParameter "#'RootGroup'.x") ∧
       (["Head.value", "Head.Vordruckname", "Head.RuleGroup", "Head.For", "Head.1", "Head."].all
         fun argument => deep s!"In $#{argument}$" =
-          some (.groupParameterLexical s!"#{argument}" .unexpected)) = true ∧
+          some (.parameterSyntax s!"#{argument}" .unexpected)) = true ∧
       (["Head.'value'", "Head.'RuleGroup'", "Head.'For'"].all fun argument =>
         deep s!"In $#{argument}$" = some (.invalidGroupParameter s!"#{argument}")) = true := by
   native_decide
@@ -378,13 +378,13 @@ example :
     let deeper := pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep")
     pathTemplateError? ["Order"] (bare "Other") "In $#Zeile-1.x$" =
         some (.retiredGroupTerminal "#Zeile-1.x" "Zeile") ∧
-      deep "In $#Head.%$" = some (.groupParameterLexical "#Head.%" .lexer) ∧
-      deep "In $#Head.'x$" = some (.groupParameterLexical "#Head.'x" .lexer) ∧
-      head "In $#..Wrong.%$" = some (.groupParameterLexical "#..Wrong.%" .lexer) ∧
-      head "In $#..Wrong.x$" = some (.groupTurningPointMismatch "#..Wrong.x") ∧
-      head "In $#..Wrong/..$" = some (.groupTurningPointMismatch "#..Wrong/..") ∧
-      deeper "In $#../../-x$" = some (.groupParameterAboveRoot "#../../-x") ∧
-      deeper "In $#../../($" = some (.groupParameterAboveRoot "#../../(") ∧
+      deep "In $#Head.%$" = some (.parameterSyntax "#Head.%" .lexer) ∧
+      deep "In $#Head.'x$" = some (.parameterSyntax "#Head.'x" .lexer) ∧
+      head "In $#..Wrong.%$" = some (.parameterSyntax "#..Wrong.%" .lexer) ∧
+      head "In $#..Wrong.x$" = some (.turningPointMismatch "#..Wrong.x") ∧
+      head "In $#..Wrong/..$" = some (.turningPointMismatch "#..Wrong/..") ∧
+      deeper "In $#../../-x$" = some (.parameterAboveRoot "#../../-x") ∧
+      deeper "In $#../../($" = some (.parameterAboveRoot "#../../(") ∧
       deeper "In $#../../123$" = some (.invalidGroupParameter "#../../123") ∧
       pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../'Head'$" = some true ∧
       (["Head.Vordruckname.x", "Head.Usb.x", "Head.RootGroup.x"].all fun argument =>
@@ -396,7 +396,7 @@ it ([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)). -/
 example :
     let aside := pathAt .absolute ["Order", "Side"] "Aside"
     pathTemplateError? ["Order", "Head"] aside "In $#..Wrong/Missing$" =
-        some (.groupTurningPointMismatch "#..Wrong/Missing") ∧
+        some (.turningPointMismatch "#..Wrong/Missing") ∧
       pathTemplateError? ["Order", "Head"] aside "In $#..Order/Missing$" =
         some (.invalidGroupParameter "#..Order/Missing") := by
   native_decide

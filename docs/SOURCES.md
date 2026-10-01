@@ -841,7 +841,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-resolver-failure-classes-every-carrier"></a>
 - [A field name that does not resolve draws one of three classes on every carrier asked, and the root class turns on the first segment](sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)
 <a id="src-condition-class-projection"></a>
-- [A rule condition's comparison refusals follow one kind arm for field pairs and point-in-time partners, with `BaseYear` met as a Number](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)
+- [Under `==`, a rule condition's comparison refusals follow one kind arm for field pairs and point-in-time partners in either position, with `BaseYear` met as a Number opposite every kind but a Date](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)
 <a id="src-field-copy-comparison-grid"></a>
 - [A field copied into a field of another kind draws the comparison walk's arm order on every pair of nine kinds, a temporal pair meets the format question, and the display arm answers ahead of the Enumeration calculation](sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
 <a id="src-entity-list-kind-empty-and-root-carriers"></a>
@@ -984,6 +984,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The name position's path refusals carry their own classes, and a name that resolves to a group is refused as no read field](sources/message-and-pointer-probes.md#src-message-name-position-refusals)
 <a id="src-message-name-position-carriers"></a>
 - [A group in a form pointer draws its own class, a keyed form passes a group to the index gate, the message's short-name tier ignores the model flag, and a lone absolute segment resolves](sources/message-and-pointer-probes.md#src-message-name-position-carriers)
+<a id="src-message-parameter-decoder"></a>
+- [A rule message's parameter is parsed on its own and refused at its parser's first event: the name position's decision reads the whole entity first](sources/message-and-pointer-probes.md#src-message-parameter-decoder)
 
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)

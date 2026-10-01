@@ -111,6 +111,9 @@ theorem checkMessageGroup_absolute_admitted
       model.hasGroupPath (path.take 1) = true := by
   cases remainder with
   | afterWalk _ => simp [checkMessageGroup] at admitted
+  | keyed _ =>
+      simp only [checkMessageGroup] at admitted
+      split at admitted <;> (try split at admitted) <;> simp_all
   | none | trailing =>
   cases path with
   | nil => simp [checkMessageGroup, resolveMessageGroup] at admitted

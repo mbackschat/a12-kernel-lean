@@ -2611,3 +2611,11 @@ On 2026-10-01 the rule-message parameter checker took five corrections in one da
 The same day showed the corollary. A class projected onto a splitter's error turns an honest `none` into a named wrong class on every spelling the splitter misreads: the category suffix's two measured classes, projected while the decoder still took everything after the arrow as the name, answered `INVALID_CATEGORY` for a spacing the grammar ignores, and had to be withdrawn. Project a decoder's refusals only once it reads the shapes the grammar accepts. The flat condition's projection repeated the corollary on another carrier the same day: its error arms carry neither the operator nor the raising site, so a total projection named measured `==` classes for ordering operators, `!=` and value lists, and the honest domain was a gate on the authored condition's shapes ([checkpoint](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)).
 
 Related: [[LF199]] on fitting a fix to a mechanism rather than to the rows, [[LF153]] on crossing a batch instead of sampling it.
+
+## LF202 — alternatives that share a long prefix put the whole prefix inside the parser's decision, so no check in it runs before its faults
+
+A rule message's name position offers three alternatives that all begin with an entity spec, the field and the two form pointers, and the Kernel's parser cannot choose among them until the token after the spec. Its decision reads that whole window before any grammar action runs, so `$Nope x$` draws the syntax class while `$Nope For$`, whose `For` ends the window at once, draws the unknown name's ([checkpoint](sources/message-and-pointer-probes.md#src-message-parameter-decoder)). The group position's alternatives part after one token, which is why its in-rule order looked like the whole rule ([`LF200`](LEAN-FINDINGS.md)), and a checker carried from one position to the other inherits the wrong window.
+
+**Before modelling a Kernel parser's event order, find each decision whose alternatives share a prefix and predict the window's faults to answer first; measure one row inside the window and one just past it.** Reading the grammar predicted every row of the two grids that tested it.
+
+Related: [[LF200]] on checks that run before a syntax fault, [[LF201]] on modelling the grammar once.

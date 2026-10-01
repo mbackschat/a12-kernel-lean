@@ -4,9 +4,11 @@ import A12Kernel.Elaboration.JavaOtherCategory
 
 /-! # Checked authoring for bounded flat validation-message templates
 
-A parameter's entity spec is the **shared path grammar** the condition parser uses, so this fragment
-decodes the same separators and hands the result to the one existing field resolver rather than
-carrying a second lookup: a leading `/` is absolute, each leading `..` crosses one enclosing group
+Each parameter is decoded on its own by `MessageParameterSyntax` into the events the Kernel's parser
+meets — every name resolved as it ends, a key's nesting refused, a fault where it stands — and its
+form's check, and this module runs them in that order. A parameter's entity spec is the **shared path
+grammar** the condition parser uses, so the decoder reads the same separators and hands the result to
+the one existing field resolver rather than carrying a second lookup: a leading `/` is absolute, each leading `..` crosses one enclosing group
 with an optional explicit turning point after the last of them, and `/` separates the remaining group
 names from the field. A field is therefore addressable by its bare name when that name is unique, by
 a path relative to the rule group, or absolutely when it lies outside the rule context.
@@ -46,11 +48,10 @@ spelling of a keyed field stays refused, so condition membership belongs to the 
 and the pairing is exact in the other direction too: a keyed condition operand does not license an
 unkeyed parameter.
 
-A semantic index needs a repeatable group, and this fragment's model is nonrepeatable, so a keyed
-parameter is decoded and then refused as outside the fragment. The refusal is deliberately *not*
-mapped to the Kernel's pairing class, because the Kernel's gate is a question this condition spine
-cannot pose; the grammar in front of it — well-formedness, suffix order, key spelling, nesting — is
-measured and modeled exactly.
+No flat condition reads a field under a key, so the index gate refuses every keyed parameter here,
+`MVK_INDEX_FOR_ERROR_TEXT_INVALID` in the name position and `INVALID_GROUP` in the group position,
+both measured on the flat model; the grammar in front of that gate — suffix order, key spelling,
+nesting, whitespace — answers first.
 
 A parameter written `$#...$` occupies the **group position**, which is a different position from the
 name one and resolves the same words differently: bare `$RootGroup$` is an entity lookup and refused,
@@ -79,8 +80,8 @@ carries **does not apply** — the Kernel admits both on a field the condition n
 is why the checked part has no membership witness to carry rather than an unset one. What either
 renders is unmeasured and stays caller-supplied.
 
-What stays outside is the rest of the parameter grammar: the remaining non-field forms, the semantic
-index suffix, and repeatable targets. Two of the Kernel's own `.value` gates are unreachable in this
+What stays outside is the rest of the parameter grammar: `index(...)`, the remaining non-field forms,
+and repeatable targets. Two of the Kernel's own `.value` gates are unreachable in this
 fragment rather than modelled — a star reference needs a repeatable path, and a declaration's "no
 value validation" flag has no representation here.
 -/
@@ -97,13 +98,12 @@ inductive ValidationMessageTemplateError where
   /-- Preserve the other check's cause beside the repertoire refusal ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)); an unsupported-fragment cause remains local rather than acquiring a Kernel class. -/
   | unsupportedCharacterWithError (character : Char)
       (cause : ValidationMessageTemplateError)
-  /-- A non-ASCII character inside a rule message's **parameter body**, which the surrounding text
-  admits. Carries the parameter as authored; the Kernel additionally reports the character's 1-based
-  offset. -/
-  | parameterCharacter (parameter : String) (character : Char)
   | oddDollarCount
+  /-- A parameter alternative this fragment does not model, `index(...)`. -/
   | invalidParameter (parameter : String)
-  /-- A name colliding with a terminal was written without the grammar's quote escape. -/
+  /-- A name colliding with a terminal was written without the grammar's quote escape. The parameter
+  lexer forms such a word as a keyword rather than a name, so the decoder refuses it as a syntax fault
+  first; this is the shared path lowering's own refusal. -/
   | unquotedTerminalName (name : String)
   | reference (parameter : String) (error : ResolveError)
   /-- A name-position path that names a declared group rather than a field. The Kernel resolves the
@@ -135,18 +135,17 @@ inductive ValidationMessageTemplateError where
   more than one field, refused `ERROR_TEXT_FIELDNAME_NOT_UNIQUE`. The lookup covers fields only, so a
   group's short name is never found this way. -/
   | groupShortNameNotUnique (parameter name : String)
-  /-- A relative group argument whose parent walk climbs past the root group, refused on the message
-  route's own above-root class `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, distinct from the
-  condition parser's. -/
-  | groupParameterAboveRoot (parameter : String)
-  /-- A relative group argument whose turning point does not name the group its parent walk reaches.
-  The Kernel refuses it on its entity class `INVALID_ENTITY`, not on the group class. -/
-  | groupTurningPointMismatch (parameter : String)
-  /-- A group argument the parameter grammar refuses, carrying which of the Kernel's lexical and syntax
-  classes the malformed shape falls into. Every fault but a token left after a complete path is
-  reported before any group is looked up. Kept apart from `invalidGroupParameter`, which is a group
-  **refusal** on a well-formed spelling. -/
-  | groupParameterLexical (parameter : String) (fault : MessageGroupLexicalFault)
+  /-- A parameter's parent walk, naming no segment after it or in the group position, climbs past the
+  root group, refused on the message route's own above-root class
+  `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, distinct from the condition parser's. -/
+  | parameterAboveRoot (parameter : String)
+  /-- A parameter's turning point does not name the group its parent walk reaches. The Kernel refuses
+  it on its entity class `INVALID_ENTITY` in either position, not on the group class. -/
+  | turningPointMismatch (parameter : String)
+  /-- A parameter the parameter grammar refuses, carrying which of the Kernel's lexical and syntax
+  classes the malformed shape falls into, at the point in the parser's events where it meets it. Kept
+  apart from the refusals of a well-formed spelling. -/
+  | parameterSyntax (parameter : String) (fault : MessageParameterFault)
   /-- The first segment of an absolute group argument names no declared root group. Root existence is
   a gate of its own, ahead of the lookup below it and of availability, and reported apart from both,
   so it fires whatever follows the root.
@@ -170,64 +169,20 @@ inductive ValidationMessageTemplateError where
   the parameter has resolved
   ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
   | nestedSemanticIndex (parameter : String)
-  /-- A keyed parameter — in the name position or the group position, or a literal key followed by a
-  further key, whose class the Kernel draws from the same index gate — refused because this fragment's
-  model is nonrepeatable and so declares no semantic index for the key to name. This is the fragment's own boundary, not the
-  Kernel's pairing class: the Kernel gates a keyed parameter on whether the **condition uses that same
-  semantic index** *and* on the displayed field being either the condition's keyed field or the
-  group's index field, neither of which a flat condition spine can pose. -/
-  | semanticIndexUnsupported (parameter : String)
+  /-- A keyed name-position parameter, refused `MVK_INDEX_FOR_ERROR_TEXT_INVALID` because no flat
+  condition reads a field under a key. The Kernel admits a keyed parameter only on the condition's own
+  keyed field or the group's index field under the key the condition uses, so a condition with no key
+  admits none, which the flat model measures on a referenced field, a group and a literal containing
+  the key terminal ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
+  | keyNotInCondition (parameter : String)
+  /-- The rule-group terminal as a field, with or without a suffix or key, refused `INVALID_PARAMETER`
+  by the field's own check before any other gate. -/
+  | ruleGroupParameter (parameter : String)
+  /-- The rule-group terminal where the Kernel's check expects a resolved entity: a form pointer's
+  entity or a field's key. The Kernel fails there with `MVK_INTERNAL_ERROR`, a defect this fragment
+  refuses on its own arm and does not model. -/
+  | ruleGroupUnresolved (parameter : String)
   deriving Repr, DecidableEq
-
-/-- Which of the two form-pointer terminals a parameter carries. They are one form with two words
-rather than two forms: the grammar gives them the same shape and the checker the same single gate, and
-no measured row separates them anywhere ([checkpoint](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)). -/
-inductive MessageFormPointer where
-  | line
-  | name
-  deriving Repr, DecidableEq
-
-/-- Which suffix a keyed field reference carries. The grammar puts the suffix **before** the key, so
-a keyed parameter is one shape with three suffix cases rather than three keyed shapes. -/
-inductive MessageParameterSuffix where
-  | none
-  | value
-  | category (name : String)
-  deriving Repr, DecidableEq
-
-/-- A key as the author spelled it: a decoded quoted literal, or a path to the keying entity, which the
-grammar lets carry a key of its own so that the checker, not the parser, refuses the nesting. -/
-inductive AuthoredMessageKey where
-  | literal (token : String)
-  | field (reference : AuthoredFieldPath)
-  | keyedField (reference : AuthoredFieldPath) (key : AuthoredMessageKey)
-  deriving Repr, DecidableEq
-
-private inductive ParsedValidationMessagePart where
-  | text (value : String)
-  /-- The authored spelling beside the path it decoded to. Both travel, because the spelling is what
-  a diagnostic and an Explain consumer quote while the path is what resolves. -/
-  | fieldName (parameter : String) (reference : AuthoredFieldPath)
-  | fieldValue (parameter : String) (reference : AuthoredFieldPath)
-  | fieldCategory (parameter : String) (reference : AuthoredFieldPath)
-      (category : String)
-  /-- A doubled category arrow. The first category is checked before the remaining syntax is refused,
-  so this stays distinct from an undifferentiated parse failure. -/
-  | fieldCategoryWithTrailingSyntax (parameter : String)
-      (reference : AuthoredFieldPath) (category : String)
-  | baseYear (offset : Int)
-  /-- A group-position argument, beside the authored spelling a diagnostic quotes and what the parser
-  still owes after the part whose check runs first. -/
-  | group (parameter : String) (authored : AuthoredMessageGroup)
-      (remainder : MessageGroupRemainder)
-  /-- A form-pointer parameter. It shares the name position's entity spec and nothing else: its one
-  gate resolves that entity to a field, and the condition-membership requirement every other field
-  form carries does not apply. -/
-  | formPointer (parameter : String) (reference : AuthoredFieldPath)
-      (pointer : MessageFormPointer)
-  /-- Any field form above, keyed. The suffix travels so one arm serves all three. -/
-  | keyed (parameter : String) (reference : AuthoredFieldPath)
-      (suffix : MessageParameterSuffix) (key : AuthoredMessageKey)
 
 private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
@@ -250,19 +205,6 @@ private def isSupportedTemplateCharacter (character : Char) : Bool :=
 /-- Retain one local locator for the repertoire refusal; the Kernel reports the template once even with two offending characters ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)). -/
 def firstUnsupportedMessageTemplateCharacter? (source : String) : Option Char :=
   source.toList.find? (fun character => !isSupportedTemplateCharacter character)
-
-/-- A **parameter body** keeps a bound the template does not: printable ASCII together with the seven
-German letters the `nameOhnePunkt` token grammar names. The Kernel reports anything else inside a
-parameter through its lexer, naming the character and its 1-based offset, where the same character in
-surrounding text is admitted — and the seven are measured on the near side of that line, since an
-unknown name spelled with `ö` or `ß` reaches entity lookup while `é`, `€` and a CJK letter do not
-([checkpoint](../../docs/SOURCES.md#src-message-template-character-repertoire)). The offset is a payload
-this fragment does not track. -/
-private def isBoundedAscii (character : Char) : Bool :=
-  character.toNat ≤ 0x7e || messageNameGermanLetters.contains character
-
-private def isBareName (name : String) : Bool :=
-  !name.isEmpty && name.toList.all isMessageNameCharacter
 
 /-- The quoting rule for a rule-message parameter. A name colliding with one of the selected
 language's terminals must be quoted, **except** for the terminals this producer has historically
@@ -301,15 +243,22 @@ structure ValidationMessageKeywordProfile where
   offsetGroupTerminals : List String := []
   deriving Repr, DecidableEq
 
-/-- The words the group argument's decoder distinguishes, read off the profile: the path grammar's
-reserved words, and the exemption from quoting that keeps a reserved word a name. -/
-def ValidationMessageKeywordProfile.groupKeywords (profile : ValidationMessageKeywordProfile) :
-    MessageGroupKeywords :=
+/-- The words the parameter decoder distinguishes, read off the profile: the path grammar's reserved
+words, and the exemption from quoting that keeps a reserved word a name. -/
+def ValidationMessageKeywordProfile.parameterKeywords (profile : ValidationMessageKeywordProfile) :
+    MessageParameterKeywords :=
   { reserved := profile.path.reserved, exempt := profile.unquotedTerminals,
     exemptNonFinal :=
       [profile.valueSuffixTerminal, profile.formLineTerminal, profile.formNameTerminal],
     ruleGroup := profile.ruleGroupTerminal, rootGroup := profile.rootGroupTerminal,
-    retired := profile.retiredGroupTerminals, offset := profile.offsetGroupTerminals }
+    retired := profile.retiredGroupTerminals, offset := profile.offsetGroupTerminals,
+    forTerminal := profile.forTerminal }
+
+/-- The name position's own terminals, read off the profile. -/
+def ValidationMessageKeywordProfile.nameTerminals (profile : ValidationMessageKeywordProfile) :
+    MessageNameTerminals :=
+  { baseYear := profile.baseYearTerminal, valueSuffix := profile.valueSuffixTerminal,
+    formLine := profile.formLineTerminal, formName := profile.formNameTerminal }
 
 /-- Treat an exempt terminal as if the author had quoted it, then reuse the one existing
 quote-provenance lowering. The exemption says exactly "no quote is needed here", so recording it as
@@ -320,244 +269,6 @@ private def exemptQuoting (profile : ValidationMessageKeywordProfile)
     { name with quoted := true }
   else
     name
-
-/-- Decode one authored segment's quote syntax into the shared name-with-provenance type. -/
-private def decodeSegment (segment : String) : Option AuthoredPathName :=
-  match segment.toList with
-  | '\'' :: rest =>
-      match rest.reverse with
-      | '\'' :: inner =>
-          let text := String.ofList inner.reverse
-          if isBareName text then some { text, quoted := true } else none
-      | _ => none
-  | _ => if isBareName segment then some { text := segment } else none
-
-/-- Decode a list of authored segments, failing as a whole if any segment is malformed. -/
-private def decodeSegments : List String → Option (List AuthoredPathName)
-  | [] => some []
-  | segment :: rest => do
-      let name ← decodeSegment segment
-      pure (name :: (← decodeSegments rest))
-
-/-- Split the up-run off a relative spec, returning the parent count, the optional turning point, and
-the remaining segments. A name attached directly to a `..` is the turning point, so it ends the run;
-one written after a `/` is an ordinary path element. -/
-private def splitParentWalk :
-    Nat → List String → Nat × Option String × List String
-  | parents, ".." :: rest => splitParentWalk (parents + 1) rest
-  | parents, segment :: rest =>
-      if segment.startsWith ".." then
-        (parents + 1, some (segment.drop 2).toString, rest)
-      else
-        (parents, none, segment :: rest)
-  | parents, [] => (parents, none, [])
-
-/-- Decode one parameter's entity spec into the shared structured path. Failure is the Kernel's own
-single parse class rather than a family of shape classes, because that is what the parameter parser
-reports for every malformed spec. -/
-private def parseMessagePath (parameter spec : String) :
-    Except ValidationMessageTemplateError AuthoredFieldPath :=
-  -- The refusal quotes the whole authored parameter rather than the spec it was split from, because
-  -- a diagnostic naming a fragment the author never wrote sends them looking in the wrong place.
-  let segments := spec.splitOn "/"
-  let malformed :=
-    Except.error (ValidationMessageTemplateError.invalidParameter parameter)
-  match segments with
-  | [] => malformed
-  | first :: rest =>
-      if first.isEmpty then
-        -- A leading separator is the absolute form. A lone segment is still an entity spec, so it is
-        -- resolved rather than refused here: it names a root group or an undeclared one.
-        match rest.reverse with
-        | field :: groups =>
-            match decodeSegments (field :: groups) with
-            | some (field :: groups) =>
-                .ok { base := .absolute, groups := groups.reverse, field }
-            | _ => malformed
-        | [] => malformed
-      else
-        let (parents, turningPoint, remaining) := splitParentWalk 0 segments
-        match remaining.reverse, turningPoint with
-        | field :: groups, none =>
-            match decodeSegments (field :: groups) with
-            | some (field :: groups) =>
-                .ok { base := .relative parents, groups := groups.reverse, field }
-            | _ => malformed
-        | field :: groups, some turningPoint =>
-            match decodeSegments (field :: groups), decodeSegment turningPoint with
-            | some (field :: groups), some turningPoint =>
-                .ok { base := .relative parents, turningPoint := some turningPoint
-                      groups := groups.reverse, field }
-            | _, _ => malformed
-        | [], _ => malformed
-
-/-- Decode the optional signed offset of a Base Year parameter. An absent offset is zero, which is
-the same parameter with no calculation rather than a distinguished shape. -/
-private def parseBaseYearOffset (remainder : String) : Option Int :=
-  if remainder.isEmpty then
-    some 0
-  else
-    match remainder.toList with
-    | sign :: digits =>
-        if digits.isEmpty || !digits.all Char.isDigit then none
-        else
-          let magnitude := (String.ofList digits).toNat!
-          match sign with
-          | '+' => some (Int.ofNat magnitude)
-          | '-' => some (-Int.ofNat magnitude)
-          | _ => none
-    | [] => none
-
-/-- Decode one group-position argument through the group argument's own decoder, carrying the
-parameter as authored into the refusal. -/
-private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
-    (parameter argument : String) :
-    Except ValidationMessageTemplateError (AuthoredMessageGroup × MessageGroupRemainder) :=
-  match decodeMessageGroupArgument profile.groupKeywords argument with
-  | .error (.syntax fault) => .error (.groupParameterLexical parameter fault)
-  | .error (.retired terminal) => .error (.retiredGroupTerminal parameter terminal)
-  | .ok decoded => .ok decoded
-
-/-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its
-escape; anything else is a path to the keying field, and an unquoted bare word therefore resolves as a
-field rather than as a token. -/
-private def parseMessageKey (parameter key : String) :
-    Except ValidationMessageTemplateError AuthoredMessageKey :=
-  if key.startsWith "\"" && key.endsWith "\"" && key.length ≥ 2 then
-    .ok (.literal
-      (((key.drop 1).dropEnd 1).toString.replace "\"\"" "\""))
-  else
-    .field <$> parseMessagePath parameter key
-
-/-- Decode a key from its `For`-separated segments. An entity segment takes the rest as its own key, as
-the grammar's recursive key does. A literal takes no key, so a key written after one is the parser's
-syntax fault, which the Kernel reports only after the index gate has answered — measured with a
-literal trailing key — so the trailing text carries nothing this fragment checks. -/
-private def parseMessageKeyChain (parameter : String) :
-    List String → Except ValidationMessageTemplateError AuthoredMessageKey
-  | [] => .error (.invalidParameter parameter)
-  | [key] => parseMessageKey parameter key
-  | key :: rest => do
-      match ← parseMessageKey parameter key with
-      | .field reference => pure (.keyedField reference (← parseMessageKeyChain parameter rest))
-      | other => pure other
-
-/-- Split the trailing key off a parameter, then decode the remaining spec's own suffix. The key
-separator is the selected language's `For` terminal surrounded by spaces, which is the canonical
-authored spelling; this fragment does not accept the grammar's whitespace-free forms. -/
-private def splitMessageKey (profile : ValidationMessageKeywordProfile)
-    (parameter : String) : String × Option String :=
-  match parameter.splitOn s!" {profile.forTerminal} " with
-  | [spec] => (spec, none)
-  | spec :: rest => (spec, some (String.intercalate s!" {profile.forTerminal} " rest))
-  | [] => (parameter, none)
-
-/-- Recognize a form-pointer parameter, `<entity>.Vordruckzeile` or `<entity>.Vordruckname`. Returns
-`none` when neither terminal ends the parameter, so the caller falls through to the ordinary forms —
-the bare terminal without an entity is therefore an entity lookup and not a parameter of this shape,
-which is what the Kernel does with it. -/
-private def parseFormPointer (profile : ValidationMessageKeywordProfile)
-    (parameter : String) :
-    Option (Except ValidationMessageTemplateError ParsedValidationMessagePart) :=
-  let attempt (terminal : String) (pointer : MessageFormPointer) :
-      Option (Except ValidationMessageTemplateError ParsedValidationMessagePart) :=
-    match parameter.splitOn ("." ++ terminal) with
-    | [spec, ""] =>
-        if spec.isEmpty then none
-        else some ((.formPointer parameter · pointer) <$>
-          parseMessagePath parameter spec)
-    -- A further suffix after this one is refused by the Kernel, so it stays this fragment's single
-    -- parse class rather than becoming a second admitted spelling.
-    | [_, _] => some (.error (.invalidParameter parameter))
-    | _ => none
-  (attempt profile.formLineTerminal .line).orElse fun _ =>
-    attempt profile.formNameTerminal .name
-
-/-- Strip the value suffix, then decode the remaining entity spec as a path. The suffix is taken at
-the end of the whole spec, which is this fragment's committed reading of a grammar that also lets a
-trailing reserved word belong to the name itself. -/
-private def parseParameter (profile : ValidationMessageKeywordProfile)
-    (parameter : String) :
-    Except ValidationMessageTemplateError ParsedValidationMessagePart :=
-  -- The position marker is read first, because it selects a different grammar rather than a different
-  -- form inside the name grammar. Nothing in the name grammar can begin with it.
-  if parameter.startsWith "#" then
-    -- The grammar's group position takes the same recursive key as a field, which the group decoder
-    -- does not read; refusing it here as the keyed fragment keeps the decoder from reporting the
-    -- key's first word as an unexpected token, a class the Kernel does not draw for it.
-    if (splitMessageKey profile parameter).2.isSome then
-      .error (.semanticIndexUnsupported parameter)
-    else
-    (fun (authored, remainder) => ParsedValidationMessagePart.group parameter authored remainder) <$>
-      parseMessageGroup profile parameter (parameter.drop 1).toString
-  else
-  -- A key is split off first, because it ends the parameter; the Base Year terminal is then checked
-  -- before any path, being a terminal whose offset syntax is not part of a path.
-  match splitMessageKey profile parameter with
-  | (spec, some keyText) => do
-        let key ← parseMessageKeyChain parameter
-          (keyText.splitOn s!" {profile.forTerminal} ")
-        -- The suffix sits before the key, so the spec is re-split by the ordinary rules.
-        match spec.splitOn "->" with
-        | [inner, category] =>
-            pure (.keyed parameter (← parseMessagePath parameter inner)
-              (.category category) key)
-        | [_] =>
-            match spec.splitOn ("." ++ profile.valueSuffixTerminal) with
-            | [inner, ""] =>
-                pure (.keyed parameter (← parseMessagePath parameter inner) .value
-                  key)
-            | [inner] =>
-                pure (.keyed parameter (← parseMessagePath parameter inner) .none
-                  key)
-            | _ => throw (.invalidParameter parameter)
-        | _ => throw (.invalidParameter parameter)
-  | (_, none) =>
-  if parameter.startsWith profile.baseYearTerminal then
-    match parseBaseYearOffset
-        ((parameter.drop profile.baseYearTerminal.length).toString) with
-    | some offset => .ok (.baseYear offset)
-    | none => .error (.invalidParameter parameter)
-  else
-  -- The two suffixes are alternatives in the grammar, and the arrow cannot occur inside a name, so
-  -- splitting on it first is unambiguous. A doubled arrow retains its first category so the semantic
-  -- gates can decide before the trailing syntax is refused.
-
-  match parameter.splitOn "->" with
-  | [spec, category] =>
-      (.fieldCategory parameter · category) <$> parseMessagePath parameter spec
-  | spec :: category :: _ =>
-      (.fieldCategoryWithTrailingSyntax parameter · category) <$>
-        parseMessagePath parameter spec
-  | [_] =>
-      -- The two form-pointer terminals are tried before the value suffix, which cannot occur inside
-      -- either word, so the order is a reading convenience rather than a precedence claim. A suffix
-      -- written *after* one is not an alternative spelling: the Kernel refuses it, so a nonempty tail
-      -- falls through to this fragment's single parse class exactly as a doubled value suffix does.
-      match parseFormPointer profile parameter with
-      | some parsed => parsed
-      | none =>
-      match parameter.splitOn ("." ++ profile.valueSuffixTerminal) with
-      | [spec, ""] => .fieldValue parameter <$> parseMessagePath parameter spec
-      | [spec] => .fieldName parameter <$> parseMessagePath parameter spec
-      | _ => .error (.invalidParameter parameter)
-  | _ => .error (.invalidParameter parameter)
-
-private def textPart (value : String) : List ParsedValidationMessagePart :=
-  if value.isEmpty then [] else [.text value]
-
-private def parseSegments (profile : ValidationMessageKeywordProfile) :
-    List String →
-      Except ValidationMessageTemplateError (List ParsedValidationMessagePart)
-  | [] => .ok []
-  | [text] => .ok (textPart text)
-  | text :: parameter :: rest => do
-      let parameterPart ←
-        if parameter.isEmpty then
-          pure (.text "$")
-        else
-          parseParameter profile parameter
-      pure (textPart text ++ [parameterPart] ++ (← parseSegments profile rest))
 
 private def validateMessageTemplatePrefix (source : String) :
     Except ValidationMessageTemplateError Unit := do
@@ -573,20 +284,6 @@ private def validateMessageTemplateSegments (source : String) :
     Except ValidationMessageTemplateError (List String) := do
   if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
   pure (source.splitOn "$")
-
-/-- A rule message's parameter bodies, the odd-indexed pieces of a balanced split, carry the ASCII
-bound its reference lexer imposes. A field's own message compares its parameters with two fixed tokens
-instead, so a non-ASCII letter there is a wrong name, not a lexer failure
-([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)). -/
-private def checkRuleMessageParameterBodies (segments : List String) :
-    Except ValidationMessageTemplateError Unit :=
-  match segments.zipIdx.find? fun (segment, index) =>
-      index % 2 == 1 && segment.toList.any (fun c => !isBoundedAscii c) with
-  | some (segment, _) =>
-      match segment.toList.find? (fun c => !isBoundedAscii c) with
-      | some character => throw (.parameterCharacter segment character)
-      | none => pure ()
-  | none => pure ()
 
 /-- The lexical gates both producers share: the line and control gates, then dollar parity. The
 repertoire refusal is not one of them; each producer adds it with `withMessageRepertoire`, since it
@@ -607,13 +304,6 @@ def withMessageRepertoire (source : String)
   | none, result => result
   | some character, .ok _ => .error (.unsupportedCharacter character)
   | some character, .error cause => .error (.unsupportedCharacterWithError character cause)
-
-private def parseValidationMessageTemplate
-    (profile : ValidationMessageKeywordProfile) (source : String) :
-    Except ValidationMessageTemplateError (List ParsedValidationMessagePart) := do
-  let segments ← validateMessageTemplateSource source
-  checkRuleMessageParameterBodies segments
-  parseSegments profile segments
 
 /-- The model a message parameter's name resolves in: the same declarations with the short-name tier
 always on. Measured, a model whose flag is off still answers a message name by its model-wide short
@@ -711,10 +401,10 @@ def walkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model
     (parameter : String) (parents : Nat) (turningPoint : Option String) :
     Except ValidationMessageTemplateError GroupPath :=
   match GroupPath.walkUp condition.rowGroup parents with
-  | .error _ => .error (.groupParameterAboveRoot parameter)
+  | .error _ => .error (.parameterAboveRoot parameter)
   | .ok base =>
       if base.matchesTurningPoint turningPoint then .ok base
-      else .error (.groupTurningPointMismatch parameter)
+      else .error (.turningPointMismatch parameter)
 
 /-- Look one group-position argument up against the rule's own group, before its availability is
 asked. An absolute path resolves in the two stages the Kernel reports apart: its first segment must
@@ -778,8 +468,19 @@ def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mode
   | .afterWalk fault, .relative parents turningPoint _ =>
       match walkMessageGroup condition parameter parents turningPoint with
       | .error error => .error error
-      | .ok _ => .error (.groupParameterLexical parameter fault)
-  | .afterWalk fault, _ => .error (.groupParameterLexical parameter fault)
+      | .ok _ => .error (.parameterSyntax parameter fault)
+  | .afterWalk fault, _ => .error (.parameterSyntax parameter fault)
+  -- The group's own lookup runs as its names end, the key's events after it, and the key's gate last:
+  -- no flat condition reads a group under a key, so a keyed group that survives its key is refused
+  -- `INVALID_GROUP` whatever its availability, measured on an admitted group.
+  | .keyed events, _ =>
+      match resolveMessageGroup condition parameter authored with
+      | .error error => .error error
+      | .ok _ =>
+          match events.find? fun event => event matches .nestedKey | .fault _ with
+          | some .nestedKey => .error (.nestedSemanticIndex parameter)
+          | some (.fault fault) => .error (.parameterSyntax parameter fault)
+          | _ => .error (.invalidGroupParameter parameter)
   | _, _ =>
       match resolveMessageGroup condition parameter authored with
       | .error error => .error error
@@ -787,7 +488,7 @@ def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mode
           match admitMessageGroup condition parameter group with
           | .error error => .error error
           | .ok access =>
-              if remainder = .trailing then .error (.groupParameterLexical parameter .unexpected)
+              if remainder = .trailing then .error (.parameterSyntax parameter .unexpected)
               else .ok access
 
 inductive CheckedValidationMessagePart
@@ -846,15 +547,31 @@ private def resolveMessageEntity (model : FlatModel)
       | _, _ => throw (.reference parameter error)
   | .ok declaration => pure (.inl { reference, declaration, resolved := hResolved })
 
+/-- Resolve one name-position entity spec as the parser resolves it when its names end: a path to a
+field or a declared group, a bare parent walk to the group it reaches, and the rule-group terminal to
+nothing, since the Kernel's name check skips it. A bare walk's climb past the root and its turning
+point answer on the group position's classes, measured in the name position too. -/
+private def resolveMessageSpec (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (parameter : String) :
+    MessageEntitySpec →
+      Except ValidationMessageTemplateError
+        (Option (ResolvedMessageEntity model condition ⊕ GroupPath))
+  | .ruleGroup => pure none
+  | .walk parents turningPoint =>
+      (some ∘ .inr) <$> walkMessageGroup condition parameter parents (turningPoint.map (·.text))
+  | .path authored => some <$> resolveMessageEntity model profile condition parameter authored
+
 private def resolveMessageReference (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model)
-    (parameter : String) (authored : AuthoredFieldPath) :
+    (parameter : String) (spec : MessageEntitySpec) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageReference model condition) := do
-  let entity ← match ← resolveMessageEntity model profile condition parameter authored with
-    | .inl entity => pure entity
-    | .inr group => throw (.groupInNamePosition parameter group)
+  let entity ← match ← resolveMessageSpec model profile condition parameter spec with
+    | some (.inl entity) => pure entity
+    | some (.inr group) => throw (.groupInNamePosition parameter group)
+    | none => throw (.ruleGroupParameter parameter)
   if hReferenced :
       condition.core.referencesField entity.declaration.id = true then
     pure {
@@ -899,81 +616,122 @@ private def resolveMessageCategory
               else
                 throw (.category parameter (.unknownCategory category))
 
-private def checkMessageParts (model : FlatModel)
+/-- Run a name-position parameter's events in the parser's order, stopping at the first that fails. -/
+private def runMessageNameEvents (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (parameter : String) :
+    List MessageParameterEvent → Except ValidationMessageTemplateError Unit
+  | [] => pure ()
+  | .resolve spec :: rest => do
+      discard <| resolveMessageSpec model profile condition parameter spec
+      runMessageNameEvents model profile condition parameter rest
+  | .nestedKey :: _ => throw (.nestedSemanticIndex parameter)
+  | .fault fault :: _ => throw (.parameterSyntax parameter fault)
+
+/-- The field's own check, which the Kernel runs where the field's rule ends: the rule-group terminal
+first, then the key's gate, then the membership gate and the suffix's gates. -/
+private def checkMessageField (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (parameter : String)
+    (entity : MessageEntitySpec) (suffix : MessageFieldSuffix) :
+    Option MessageKeyHead →
+      Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition)
+  | some key =>
+      if entity == .ruleGroup then throw (.ruleGroupParameter parameter)
+      else if key == .entity .ruleGroup then throw (.ruleGroupUnresolved parameter)
+      else throw (.keyNotInCondition parameter)
+  | none => do
+      let reference ← resolveMessageReference model profile condition parameter entity
+      match suffix with
+      | .none => pure (.fieldName reference)
+      | .value => pure (.fieldValue reference)
+      | .category name => pure (.fieldCategory (← resolveMessageCategory reference parameter name))
+
+/-- Check one name-position parameter: its events, then its form's own check, then a fault the parser
+meets at the end it requires. -/
+private def checkMessageName (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (parameter : String)
+    (decoded : DecodedMessageName) :
+    Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) := do
+  runMessageNameEvents model profile condition parameter decoded.events
+  let part ← match decoded.form with
+    | none => throw (.invalidParameter parameter)
+    | some (.field entity suffix key) =>
+        checkMessageField model profile condition parameter entity suffix key
+    | some (.formPointer entity pointer) =>
+        -- The one field form the Kernel admits on a field the condition never references, measured on
+        -- six admitted spellings against the same model's own membership refusals.
+        match ← resolveMessageSpec model profile condition parameter entity with
+        | some (.inl entity) =>
+            pure (.formPointer {
+              parameter
+              reference := entity.reference
+              declaration := entity.declaration
+              pointer
+              resolved := entity.resolved })
+        | some (.inr group) => throw (.groupInFormPointer parameter group)
+        | none => throw (.ruleGroupUnresolved parameter)
+    | some (.baseYear offset) =>
+        match hDeclared : model.baseYear with
+        | none => throw .noBaseYear
+        | some base =>
+            pure (.baseYear offset (base + offset) (by rw [hDeclared, Int.add_sub_cancel]))
+    | some .indexField => throw (.invalidParameter parameter)
+  match decoded.trailing with
+  | some fault => throw (.parameterSyntax parameter fault)
+  | none => pure part
+
+/-- Check one parameter body on its own, as the Kernel's service parses each with a parser of its own.
+The position marker selects the grammar: a body whose first token is `#` is the group position. -/
+private def checkMessageParameter (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (parameter : String) :
+    Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) :=
+  let keywords := profile.parameterKeywords
+  match ParameterToken.ofParameter keywords parameter with
+  | .hash :: rest =>
+      match decodeMessageGroupTokens keywords rest with
+      | .error (.syntax fault) => .error (.parameterSyntax parameter fault)
+      | .error (.retired terminal) => .error (.retiredGroupTerminal parameter terminal)
+      | .ok (authored, remainder) =>
+          .group <$> checkMessageGroup condition parameter authored remainder
+  | tokens =>
+      checkMessageName model profile condition parameter
+        (decodeMessageName keywords profile.nameTerminals tokens)
+
+/-- Every part of a balanced template, each parameter checked independently. -/
+private def checkMessageSegments (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model) :
-    List ParsedValidationMessagePart →
-      Except ValidationMessageTemplateError
-        (List (CheckedValidationMessagePart model condition))
-  | [] => .ok []
-  | .text value :: rest => do
-      pure (.text value :: (← checkMessageParts model profile condition rest))
-  | .fieldName parameter reference :: rest => do
-      pure (.fieldName
-        (← resolveMessageReference model profile condition parameter reference) ::
-        (← checkMessageParts model profile condition rest))
-  | .fieldValue parameter reference :: rest => do
-      pure (.fieldValue
-        (← resolveMessageReference model profile condition parameter reference) ::
-        (← checkMessageParts model profile condition rest))
-  | .baseYear offset :: rest => do
-      match hDeclared : model.baseYear with
-      | none => throw .noBaseYear
-      | some base =>
-          pure (.baseYear offset (base + offset) (by
-            rw [hDeclared, Int.add_sub_cancel]) ::
-            (← checkMessageParts model profile condition rest))
-  | .group parameter authored remainder :: rest => do
-      pure (.group (← checkMessageGroup condition parameter authored remainder) ::
-        (← checkMessageParts model profile condition rest))
-  | .formPointer parameter reference pointer :: rest => do
-      -- `resolveMessageEntity`, not `resolveMessageReference`: this is the one field form the Kernel
-      -- admits on a field the condition never references, measured on six admitted spellings against
-      -- the same model's own membership refusals.
-      let entity ← match ← resolveMessageEntity model profile condition parameter reference with
-        | .inl entity => pure entity
-        | .inr group => throw (.groupInFormPointer parameter group)
-      pure (.formPointer {
-          parameter
-          reference := entity.reference
-          declaration := entity.declaration
-          pointer
-          resolved := entity.resolved
-        } ::
-        (← checkMessageParts model profile condition rest))
-  | .keyed parameter reference _suffix key :: rest => do
-      -- A keyed parameter is *not* subject to the condition-membership gate an unkeyed one carries,
-      -- but its own admitted set is only the condition's keyed field plus the group's declared index
-      -- field — not any field of the keyed group. Both name-bearing positions are still resolved as
-      -- entities, because an unresolvable name is refused there rather than at the index gate — so
-      -- these resolutions are kept for their refusals, and their results are unusable here. A group
-      -- is an entity here and passes to the index gate, measured on either position. The
-      -- decoded suffix is likewise unusable, since no part this fragment can build carries a key.
-      -- Every name resolves in written order before any key check, and only then is a keyed key
-      -- refused, which is the parser's order of events.
-      discard <| resolveMessageEntity model profile condition parameter reference
-      let rec resolveKey : AuthoredMessageKey → Except ValidationMessageTemplateError Unit
-        | .literal _ => pure ()
-        | .field keyReference =>
-            discard <| resolveMessageEntity model profile condition parameter keyReference
-        | .keyedField keyReference inner => do
-            discard <| resolveMessageEntity model profile condition parameter keyReference
-            resolveKey inner
-      resolveKey key
-      if let .keyedField _ _ := key then throw (.nestedSemanticIndex parameter)
-      throw (.semanticIndexUnsupported parameter)
-  | .fieldCategory parameter reference category :: rest => do
-      let resolved ←
-        resolveMessageReference model profile condition parameter reference
-      pure (.fieldCategory
-        (← resolveMessageCategory resolved parameter category) ::
-        (← checkMessageParts model profile condition rest))
-  | .fieldCategoryWithTrailingSyntax parameter reference category :: _ => do
-      let resolved ←
-        resolveMessageReference model profile condition parameter reference
-      discard <| resolveMessageCategory resolved parameter category
-      throw (.invalidParameter parameter)
+    List String →
+      List (Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition))
+  | [] => []
+  | [text] => if text.isEmpty then [] else [.ok (.text text)]
+  | text :: parameter :: rest =>
+      (if text.isEmpty then [] else [.ok (.text text)]) ++
+        [if parameter.isEmpty then .ok (.text "$")
+          else checkMessageParameter model profile condition parameter] ++
+        checkMessageSegments model profile condition rest
 
+/-- Every refusal a rule message's template draws: the template-level gate that stops it, or one
+refusal for each parameter that fails, in written order. The Kernel's service parses each parameter on
+its own and reports each one's first failure, so `$Nope$ and $Nope2$` draws two
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). The codeless
+repertoire finding is not among them; `withMessageRepertoire` keeps it beside the first. -/
+def validationMessageTemplateRefusals (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (source : String) :
+    List ValidationMessageTemplateError :=
+  match validateMessageTemplateSource source with
+  | .error error => [error]
+  | .ok segments =>
+      (checkMessageSegments model profile condition segments).filterMap fun
+        | .error error => some error
+        | .ok _ => none
+
+/-- Check a rule message's template. A refused template reports its first refusal in written order;
+`validationMessageTemplateRefusals` lists the rest. -/
 def elaborateValidationMessageTemplate (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model) (source : String) :
@@ -981,8 +739,8 @@ def elaborateValidationMessageTemplate (model : FlatModel)
       (CheckedValidationMessageTemplate model condition) :=
   let checked : Except ValidationMessageTemplateError
       (CheckedValidationMessageTemplate model condition) := do
-    let parsed ← parseValidationMessageTemplate profile source
-    pure { source, parts := ← checkMessageParts model profile condition parsed }
+    let segments ← validateMessageTemplateSource source
+    pure { source, parts := ← (checkMessageSegments model profile condition segments).mapM id }
   withMessageRepertoire source checked
 
 structure ValidationMessageInputs where
