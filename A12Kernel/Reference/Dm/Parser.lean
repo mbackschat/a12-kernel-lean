@@ -230,14 +230,17 @@ private def preamble : P (List String) := do
     return [name]
   else return []
 
-/-- Read one condition or operation text in a model's language. -/
-def parseText (language : Language) (text : String) : Except SyntaxError Text := do
-  let lexemes ← lex language text
+/-- Read one condition or operation text from its lexemes. -/
+def parseLexemes (lexemes : Array Lexeme) : Except SyntaxError Text :=
   let grammar : P Text := do
     let suppressed ← preamble
     let body ← condition true
     if (← peek).isSome then failHere .unexpectedToken
     return { suppressed, body }
   (grammar.run' 0).run lexemes
+
+/-- Read one condition or operation text in a model's language. -/
+def parseText (language : Language) (text : String) : Except SyntaxError Text := do
+  parseLexemes (← lex language text)
 
 end A12Kernel.Dm

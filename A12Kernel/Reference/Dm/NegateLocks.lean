@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.Negate
+import A12Kernel.Reference.Dm.NonOperation
 import A12Kernel.Reference.Dm.Parser
 
 /-! # Locks for printing and negating conditions
@@ -82,6 +83,28 @@ example :
     [(english "DateRangesOverlap(A, B)").map (negate · |>.toOption.isNone),
      (english "FieldFilled(A) And [A] DiffersWithToleranceRange1 [B]").map
        (negate · |>.toOption.isNone)] == [some true, some true] := by
+  native_decide
+
+private def lowered (language : Language) (text : String) : Option Expr := do
+  (lowerNon (← (parseNonText language text).toOption).body).toOption
+
+/- A `Non` twin lowers to its predicate's complement wherever it stands, a compound complement keeping
+its own bracket, in both languages; a name not followed by `(` stays a name. -/
+example :
+    [lowered .english "NonFieldFilled(A) And [B] > 1" == english "FieldNotFilled(A) And [B] > 1",
+     lowered .english "NonFieldsNotCollectivelyFilled(A, B) Or FieldFilled(C)" ==
+       english "(AllFieldsFilled(A, B) Or NoFieldFilled(A, B)) Or FieldFilled(C)",
+     lowered .english "NonNoFieldFilled(Rows*/R)" == english "AtLeastOneFieldFilled(Rows*/R)",
+     lowered .german "NonFeldAngegeben(A)" == english "FieldNotFilled(A)",
+     lowered .english "[NonFieldFilled] == 1" == english "[NonFieldFilled] == 1"].all id := by
+  native_decide
+
+/- The twin is the extension's: the Kernel language reads `NonFieldFilled` as a name and refuses the
+call, and a predicate without a complement has no twin. -/
+example :
+    [(parseText .english "NonFieldFilled(A)").toOption.isNone,
+     lowered .english "NonFieldValuesNotUnique(A, B)" == none,
+     ((parseNonText .english "NonFieldValuesNotUnique(A, B)").toOption.isSome)].all id := by
   native_decide
 
 end A12Kernel.Dm.NegateLocks
