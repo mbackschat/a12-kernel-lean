@@ -45,7 +45,12 @@ def evalSymmetricComparison (holds : α → α → Bool)
       else
         .notFired
 
-private def EqualityOp.holds (op : EqualityOp) (equivalent : Bool) : Bool :=
+/-- The other equality operator, the complement rule negation uses. -/
+def EqualityOp.complement : EqualityOp → EqualityOp
+  | .equal => .notEqual
+  | .notEqual => .equal
+
+def EqualityOp.holds (op : EqualityOp) (equivalent : Bool) : Bool :=
   match op with
   | .equal => equivalent
   | .notEqual => !equivalent

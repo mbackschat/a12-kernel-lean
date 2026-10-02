@@ -56,6 +56,8 @@ import A12Kernel.Proofs.ComputationMessage
 import A12Kernel.Proofs.ComputationRunPlan
 import A12Kernel.Proofs.ComputationSelfValidation
 import A12Kernel.Proofs.ConditionTree
+import A12Kernel.Proofs.ConditionNegation
+import A12Kernel.Proofs.NegationPairs
 import A12Kernel.Proofs.DynamicEnumerationLegality
 import A12Kernel.Proofs.IterationLegality
 import A12Kernel.Proofs.TableEnumeration

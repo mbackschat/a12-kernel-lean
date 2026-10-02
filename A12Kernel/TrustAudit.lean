@@ -570,6 +570,21 @@ run_cmd do
 #print axioms A12Kernel.ConditionTree.evalVerdict_and_eq_conj
 #print axioms A12Kernel.ConditionTree.evalVerdict_or_eq_disj
 #print axioms A12Kernel.ConditionTree.evalVerdict_collapseUnknown
+#print axioms A12Kernel.Verdict.fires_conj
+#print axioms A12Kernel.Verdict.fires_disj
+#print axioms A12Kernel.ConditionTree.fires_evalVerdict_and
+#print axioms A12Kernel.ConditionTree.fires_evalVerdict_or
+#print axioms A12Kernel.ConditionTree.negate_exclusive
+#print axioms A12Kernel.ConditionTree.negate_exhaustive
+#print axioms A12Kernel.NumericComparisonOp.holds_complement
+#print axioms A12Kernel.NumericComparisonOp.eval_complement_regions
+#print axioms A12Kernel.EqualityOp.evalSimple_complement_regions
+#print axioms A12Kernel.FieldFillQuantifier.allFieldsFilled_complement_regions
+#print axioms A12Kernel.FieldFillQuantifier.atLeastOneFieldFilled_complement_regions
+#print axioms A12Kernel.FieldFillQuantifier.fieldsNotCollectivelyFilled_excludes_complement
+#print axioms A12Kernel.GroupFillQuantifier.allGroupsFilled_complement_regions
+#print axioms A12Kernel.GroupFillQuantifier.atLeastOneGroupFilled_complement_regions
+#print axioms A12Kernel.GroupFillQuantifier.groupsNotCollectivelyFilled_excludes_complement
 
 #print axioms A12Kernel.formalCheck_wellFormed
 #print axioms A12Kernel.checkRawCellWith_wellFormed

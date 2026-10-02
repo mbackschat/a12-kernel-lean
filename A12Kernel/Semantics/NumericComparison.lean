@@ -88,6 +88,12 @@ def NumericComparisonOp.holds (op : NumericComparisonOp) (left right : Rat) : Bo
   | .greater => left > right
   | .greaterEqual => left >= right
 
+/-- The comparison that holds exactly where this one does not, the complement rule negation uses. -/
+def NumericComparisonOp.complement : NumericComparisonOp → NumericComparisonOp
+  | .equal => .notEqual | .notEqual => .equal
+  | .less => .greaterEqual | .greaterEqual => .less
+  | .lessEqual => .greater | .greater => .lessEqual
+
 /-- Whether an available operand movement can close the current normalized numeric gap. Callers use this only when the normalized operands differ. -/
 def numericDifferenceFillCanClose (left right : Rat)
     (leftFill rightFill : NumericFillability) : Bool :=

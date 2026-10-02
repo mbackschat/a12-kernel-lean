@@ -59,6 +59,7 @@ import A12Kernel.Semantics.MandatoryInformation
 import A12Kernel.Semantics.ComputationMessage
 import A12Kernel.Semantics.ParallelComputationClearing
 import A12Kernel.Semantics.Condition
+import A12Kernel.Semantics.ConditionNegation
 import A12Kernel.Semantics.ValueList
 import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.StarCompleteness
