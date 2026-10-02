@@ -177,8 +177,8 @@ example : errorOf (twoSided .equal (atom "U") (atom "Flag")) =
 /- A call is one more division region boundary on the validation carrier too, measured on rule rows
 `q1`, `q3` and `q4` of the
 [node-gate grids](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates):
-a comparison side that is a call is checked like any other operand, and a call exposes its largest
-operand's divisions rather than their sum. -/
+a call's operands are checked at their own nodes, a division inside an operand that already holds two
+included, and a call under a division shares that division's walk. -/
 example :
     let divide := AuthoredNumericExpr.binary (Atom := SurfaceNumericAtom) .divide
     errorOf (comparison .greater
@@ -190,6 +190,32 @@ example :
       errorOf (comparison .greater
         (AuthoredNumericExpr.extremumList .maximum (divide (atom "U") (atom "V"))
           [divide (atom "V") (atom "U")]) 0) = none := by
+  native_decide
+
+/- Rule rows `v01` to `v05`, `R01`, `R02` and `R08` of the
+[division-walk grids](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk):
+a call under a wrapper at a comparison side's root asks nothing, under an operator it shares that
+operator's walk, a leading addition or a brace in an earlier operand ends the walk, and a power directly
+on a power is refused inside a root call. -/
+example :
+    let divide := AuthoredNumericExpr.binary (Atom := SurfaceNumericAtom) .divide
+    let add := AuthoredNumericExpr.binary (Atom := SurfaceNumericAtom) .add
+    let both := AuthoredNumericExpr.extremumList .maximum (divide (atom "U") (atom "V"))
+      [divide (atom "V") (atom "U")]
+    errorOf (comparison .greater (.abs both) 0) = none ∧
+      errorOf (comparison .greater (add (atom "U") both) 0) = some (.authoring .tooManyDivisions) ∧
+      errorOf (comparison .greater
+        (AuthoredNumericExpr.extremumList .maximum
+          (.power (.power (atom "U") (literal 2 0)) (literal 2 0)) [atom "V"]) 0) =
+        some (.authoring .directLeftNestedPower) ∧
+      errorOf (comparison .greater (.binary .multiply (atom "U") both) 0) =
+        some (.authoring .tooManyDivisions) ∧
+      errorOf (comparison .greater (divide both (atom "U")) 0) = some (.authoring .tooManyDivisions) ∧
+      errorOf (comparison .greater (add (add (atom "U") (atom "U")) both) 0) = none ∧
+      errorOf (comparison .greater (divide (atom "U") (AuthoredNumericExpr.extremumList .maximum
+        (.group (atom "V")) [divide (atom "V") (atom "U")])) 0) = none ∧
+      errorOf (comparison .greater (divide (atom "U") (AuthoredNumericExpr.extremumList .maximum
+        (divide (atom "V") (atom "U")) [.group (atom "V")])) 0) = some (.authoring .tooManyDivisions) := by
   native_decide
 
 end A12Kernel.Conformance.NumericValidation.Extrema

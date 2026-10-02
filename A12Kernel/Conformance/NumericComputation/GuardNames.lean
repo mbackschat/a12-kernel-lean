@@ -11,8 +11,9 @@ root `G` holds Numbers `A`, `N` and the target `T`, a String `S`, a nonrepeatabl
 `FieldFilled` are surfaces a presence guard here does not carry, and are not replayed.
 
 The rows separate a guard's name class from its operation's (a typing failure beside an unknown guard
-draws the guard's class), a guard's class from an unguarded sibling's (an unbound guard stands alone),
-and the group class from the unbound-level one (a fixed group against a repeatable one).
+draws the guard's class), a guard's class from an unguarded sibling's (a guard naming a group draws its
+class beside an admitted unguarded alternative), the group class from the unbound-level one (a fixed
+group against a repeatable one), and a left leaf's class from a right one's (`k01` to `k04`).
 -/
 
 namespace A12Kernel.Conformance.NumericComputation.GuardNames
@@ -71,7 +72,13 @@ private def rows :
   ("g17", [(none, read "A"), (some (filled [] "Sub"), read "N")], some "MVK_NO_GROUPS_ALLOWED"),
   ("g18", [(some (filled [] "Nope"), read "Nope2")], some "MVK_INVALID_ENTITY"),
   ("g19", [(some (filled ["Sub"] "Nope"), read "A")], some "MVK_INVALID_ENTITY"),
-  ("g20", [(some (.fieldNotFilled (path ["Rows"] "R")), read "A")], some "MVK_NO_WILDCARD")]
+  ("g20", [(some (.fieldNotFilled (path ["Rows"] "R")), read "A")], some "MVK_NO_WILDCARD"),
+  -- Two differently classed leaves: the left one answers under either connective (rows `k01` to `k04`
+  -- of the division-walk grids' guard table).
+  ("k01", [(some (.and (filled [] "Sub") (filled [] "Nope")), read "A")], some "MVK_NO_GROUPS_ALLOWED"),
+  ("k02", [(some (.and (filled [] "Nope") (filled [] "Sub")), read "A")], some "MVK_INVALID_ENTITY"),
+  ("k03", [(some (.or (filled [] "Sub") (filled [] "Nope")), read "A")], some "MVK_NO_GROUPS_ALLOWED"),
+  ("k04", [(some (.or (filled [] "Nope") (filled [] "Sub")), read "A")], some "MVK_INVALID_ENTITY")]
 
 /- Every row reports the Kernel's code; the failing ids are listed, so a mismatch names its row. -/
 example : (rows.filter fun (_, alternatives, expected) => codeOf alternatives != expected).map (·.1) =

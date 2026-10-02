@@ -10,8 +10,9 @@ model of the [guarded-step checkpoint](../../docs/sources/computation-scheduling
 and every document row is the Kernel's, measured on both codegen strategies.
 
 The rows separate a guard that does not hold, whose step clears and is read as empty, from one that
-reads poison, whose step clears and is read as poison, and a guard on a computed Number reading its
-completion from one reading the stored seed: an absent `N0` copies as `0`, which is filled.
+reads poison, whose step clears and is read as poison. A guard on a computed Number reads its
+completion: a malformed `N0` poisons `NG` and so the guard on it, where the filled seed would let the
+step run. An absent `N0` copies as `0`, which is filled, so that row cannot tell completion from seed.
 -/
 
 namespace A12Kernel.Conformance.ScalarComputationPlanGuarded

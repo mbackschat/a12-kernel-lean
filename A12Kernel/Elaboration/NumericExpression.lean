@@ -164,70 +164,78 @@ def summary? (atomSummary : Atom → NumericScaleSummary) :
       let _ ← body.summary? atomSummary
       pure (NumericScaleSummary.rounded places.val)
 
-private def isDirectPower : AuthoredNumericExpr Atom → Bool
-  | .power _ _ => true
+/-- Whether a subtree holds a node satisfying `predicate`, the node itself included. -/
+def anyNode (predicate : AuthoredNumericExpr Atom → Bool) :
+    AuthoredNumericExpr Atom → Bool
+  | expression@(.atom _) | expression@(.literal _) => predicate expression
+  | expression@(.group body) | expression@(.abs body) | expression@(.extremumCall _ body)
+  | expression@(.round _ _ body) => predicate expression || body.anyNode predicate
+  | expression@(.binary _ left right) | expression@(.power left right)
+  | expression@(.extremum _ left right) =>
+      predicate expression || left.anyNode predicate || right.anyNode predicate
+
+/-- What one division walk over a subtree found: a second division, an end of the walk, or neither
+yet, with whether a division was seen. -/
+inductive DivisionWalk where
+  | violation
+  | stopped
+  | open (seen : Bool)
+  deriving Repr, DecidableEq
+
+/-- A construct walked afresh keeps a violation it found and otherwise ends the enclosing walk. -/
+private def DivisionWalk.close : DivisionWalk → DivisionWalk
+  | .violation => .violation
+  | .stopped | .open _ => .stopped
+
+/-- The Kernel's division walk over one subtree, in pre-order, carrying whether a division was seen.
+A division seen twice is a violation. The walk passes through `Abs`, rounding and every operand of a
+`Max` or `Min` call, so their operands share the enclosing walk. A brace, an addition or subtraction, and
+a power are each walked afresh, operand by operand, and then end the whole walk, so whatever the walk
+had not reached yet is never counted
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk)):
+`[a] / Max({[b]}, [b] / [a])` passes while `[a] / Max([b] / [a], {[b]})` does not. -/
+def divisionWalk (seen : Bool) : AuthoredNumericExpr Atom → DivisionWalk
+  | .atom _ | .literal _ => .open seen
+  | .group body => (body.divisionWalk false).close
+  | .binary .add left right | .binary .subtract left right | .power left right =>
+      match left.divisionWalk false with
+      | .open _ => (right.divisionWalk false).close
+      | found => found.close
+  | .binary op left right =>
+      let division := op == .divide
+      if division && seen then .violation
+      else
+        match left.divisionWalk (seen || division) with
+        | .open seenAfter => right.divisionWalk seenAfter
+        | found => found
+  | .abs body | .round _ _ body | .extremumCall _ body => body.divisionWalk seen
+  | .extremum _ left right =>
+      match left.divisionWalk seen with
+      | .open seenAfter => right.divisionWalk seenAfter
+      | found => found
+
+/-- Whether the Kernel's division check refuses at this node. It runs at every arithmetic operator and
+power as that node closes, walking the node's own subtree, and at no other node: a call, a wrapper or a
+brace is never itself checked, so `Max([a] / [b], [b] / [a])` passes at the root while
+`[a] + Max([a] / [b], [b] / [a])` does not. -/
+def divisionGateRefuses : AuthoredNumericExpr Atom → Bool
+  | expression@(.binary _ _ _) | expression@(.power _ _) =>
+      expression.divisionWalk false == .violation
   | _ => false
 
-private structure AuthoringScan where
-  exposedDivisions : Nat
-  tooManyDivisions : Bool
-  directLeftNestedPower : Bool
+/-- Whether this node is a power directly on the left of a power, which the Kernel refuses at every
+power node wherever it stands; a brace around the inner power separates them. -/
+def directLeftNestedPowerAt : AuthoredNumericExpr Atom → Bool
+  | .power (.power _ _) _ => true
+  | _ => false
 
-private def authoringScan? (allowUnaryWrappers : Bool) :
-    AuthoredNumericExpr Atom → Option AuthoringScan
-  | .atom _ | .literal _ => some ⟨0, false, false⟩
-  | .group body => do
-      let bodyScan ← body.authoringScan? allowUnaryWrappers
-      pure ⟨0, bodyScan.tooManyDivisions, bodyScan.directLeftNestedPower⟩
-  | .binary op left right => do
-      let leftScan ← left.authoringScan? allowUnaryWrappers
-      let rightScan ← right.authoringScan? allowUnaryWrappers
-      let divisionViolation :=
-        leftScan.tooManyDivisions || rightScan.tooManyDivisions
-      let powerViolation :=
-        leftScan.directLeftNestedPower || rightScan.directLeftNestedPower
-      match op with
-      | .add | .subtract => pure ⟨0, divisionViolation, powerViolation⟩
-      | .multiply | .divide =>
-          let ownDivision := if op = .divide then 1 else 0
-          let exposed :=
-            leftScan.exposedDivisions + rightScan.exposedDivisions + ownDivision
-          pure ⟨exposed, divisionViolation || decide (1 < exposed), powerViolation⟩
-  | .power base exponent => do
-      let baseScan ← base.authoringScan? allowUnaryWrappers
-      let exponentScan ← exponent.authoringScan? allowUnaryWrappers
-      pure ⟨0,
-        baseScan.tooManyDivisions || exponentScan.tooManyDivisions,
-        base.isDirectPower ||
-          baseScan.directLeftNestedPower ||
-          exponentScan.directLeftNestedPower⟩
-  | .abs body | .round _ _ body =>
-      if allowUnaryWrappers then body.authoringScan? true else none
-  -- A call's operands are not one region: it exposes its largest operand's divisions to an
-  -- enclosing one, wherever that operand sits, so two single-division operands pass.
-  | .extremum _ left right =>
-      if allowUnaryWrappers then do
-        let leftScan ← left.authoringScan? true
-        let rightScan ← right.authoringScan? true
-        pure ⟨max leftScan.exposedDivisions rightScan.exposedDivisions,
-          leftScan.tooManyDivisions || rightScan.tooManyDivisions,
-          leftScan.directLeftNestedPower || rightScan.directLeftNestedPower⟩
-      else none
-  | .extremumCall _ body =>
-      if allowUnaryWrappers then body.authoringScan? true else none
-
-private def authoringResult : Option AuthoringScan → NumericAuthoringCheck
-  | some scan =>
-      match scan.tooManyDivisions, scan.directLeftNestedPower with
-      | false, false => .accepted
-      | true, false => .tooManyDivisions
-      | false, true => .directLeftNestedPower
-      | true, true => .tooManyDivisionsAndDirectLeftNestedPower
-  | none => .outsideFragment
-
-/-- Check the exact plain arithmetic fragment: multiplication/division regions contain at most one division, and a power may not have an ungrouped power as its direct left operand. Addition, subtraction, power, and grouping reset the division contribution. Operation-valued wrappers fail closed because the kernel's legacy function traversal is not a compositional region rule. -/
-def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  authoringResult (expression.authoringScan? false)
+/-- The two gates' verdicts over every node of one tree. -/
+def authoringResult (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
+  match expression.anyNode divisionGateRefuses, expression.anyNode directLeftNestedPowerAt with
+  | false, false => .accepted
+  | true, false => .tooManyDivisions
+  | false, true => .directLeftNestedPower
+  | true, true => .tooManyDivisionsAndDirectLeftNestedPower
 
 /-- Whether an authored tree uses only atoms, literals, grouping, ordinary binary arithmetic, and power. -/
 def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
@@ -237,6 +245,13 @@ def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .power base exponent =>
       base.isPlainArithmetic && exponent.isPlainArithmetic
   | .abs _ | .extremum _ _ _ | .extremumCall _ _ | .round _ _ _ => false
+
+/-- Check the plain arithmetic fragment by the Kernel's division and power gates. Inside it the walk is
+the compositional region rule: addition, subtraction, power and grouping close a region, and a
+multiplication or division region holds at most one division. An operation-valued wrapper is outside
+this fragment; `numericOperationAuthoringCheck` owns it. -/
+def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
+  if expression.isPlainArithmetic then authoringResult expression else .outsideFragment
 
 mutual
 
@@ -311,19 +326,14 @@ def isExtremumCall : AuthoredNumericExpr Atom → Bool
 def isAdmittedNumericOperation (expression : AuthoredNumericExpr Atom) : Bool :=
   expression.isNumericOperation
 
-/-- Check the complete child of an operation-form rounding or absolute-value node, descending through every reached numeric value function. -/
-def numericWrapperBodyAuthoringCheck
-    (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  authoringResult (expression.authoringScan? true)
-
-/-- Check one complete operation through every reached value function: division contributions cross
-rounding, absolute value and each operand of a Min/Max call, which exposes its largest operand's count,
-while each function node structurally separates an outer direct-left power relation. A root call is
-checked like any other operation, measured on both the computation and the rule carrier
-([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)). -/
+/-- Check one complete operation by the Kernel's division and power gates at every node it checks,
+the nodes inside a value function's operands included. A root call, wrapper or brace is no checked node
+itself, so a value function at the root leaves its operands to their own checks, while one under an
+operator shares that operator's division walk
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk)). -/
 def numericOperationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  expression.numericWrapperBodyAuthoringCheck
+  authoringResult expression
 
 end AuthoredNumericExpr
 

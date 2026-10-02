@@ -2633,3 +2633,15 @@ Lean treatment: the resolvers share `FlatTemporalField.holdsValue`, the format-f
 **Sweep the comparison, not the reported locus.** The fix covered the four resolvers the review named, and the next review found the same `value.kind != field.kind` guard in a computation's component read and a constructed Date's extractor; a grep for the declared-kind comparison then found a third site, an indexed DateRange endpoint's static kind conjunct, which the Kernel refutes too ([checkpoint](sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)). A finding about a predicate is a claim about every place that predicate is written, so its fix starts from a search for the predicate's spelling, and each hit is either converted or kept with its reason stated beside it.
 
 Limit: flat nonrepeatable reads and one String-indexed endpoint level; component-omitting cross-kind formats are not measured.
+
+## LF204 — a region rule fitted on rows where every account agrees is a guess; when a gate is not compositional, read its mechanism and measure what only that mechanism predicts
+
+> Date: 2026-10-02. Sections: §5. Basis: the cold review of `b44b1068..d73964d6` and the [division-walk checkpoint](sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk), 51 Kernel rows.
+
+The node-gate batch replaced a Min/Max call's summed division count with its largest operand's, citing `Max([N] / [N2], [N2] / [N])` passing at the root. Every row with two dividing operands stood at the root or under a root `Abs`, where the call's count meets no enclosing operator, so sum, largest and first-operand accounts all predicted the same codes; the choice was untested, and it entered `spec/` and an outbound entry. One enclosing operator refuted all three: the Kernel checks no call at all, and its division check is a pre-order walk from each operator that passes through calls and is cut at the first brace, addition or power, which no compositional count expresses.
+
+Lean treatment: `AuthoredNumericExpr.divisionWalk` is the one walk, asked at every operator and power by both the shared authoring check and the computation's node walk; the exposure count is gone.
+
+**Before choosing among accounts, list the rows each account would answer differently, and if there are none, the accounts are not yet chosen between.** Where the candidates keep multiplying with each new row — here three in one batch — the rule is not compositional, and the cheaper route is to read the mechanism, write down what only it predicts, and measure exactly those rows: here sixteen order-sensitive predictions, every one held.
+
+Limit: the rounding family inside a walk is measured on `RoundDown` only.

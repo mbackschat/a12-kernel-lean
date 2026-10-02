@@ -16,9 +16,10 @@ The grids' bracketed guards and their one `Round` spelling the parser refuses ar
 The rows separate a node's typing from its own authoring gates and both from another node's: a
 region's second division answers before an enclosing typing failure (`A03`, `Y14`), a later sibling's
 (`c22`) and the target's scale rule (`c01`), and after an earlier sibling's (`c16`, `Y17`, `Y24`). An
-exponent's derived scale answers before a power on its left (`c15`, `Y25`), and a call exposes its
-largest operand's divisions, not their sum (`c10`, `e2`) and not only its first's (`g1`). A root call is
-checked like any operand (`c01`, `c11`), and a lone unsortable leader is refused (`Y03` to `Y12`). The
+exponent's derived scale answers before a power on its left (`c15`, `Y25`). A call at the root or under
+a wrapper asks no division gate of its own (`c10`, `e2`), while each operand is checked at its own nodes
+(`c01`, `c11`) and a division above the call counts any operand's division (`g1`, `g2`); the
+`walkRows` below separate the call's walk itself. A lone unsortable leader is refused (`Y03` to `Y12`). The
 kind rows lock what the typing walk reads off a declaration: a labelled Enumeration is not string-like
 (`B02`, `B03`, `B07`), an extrema call compares component sets rather than kinds (`X10` to `X14`), the
 first offending follower decides a chain (`X26`, `X27`), a declaration refused as an operand answers
@@ -269,6 +270,54 @@ private def rows : List (String × Expr × Option String) := [
 
 /- Every row reports the Kernel's code; the failing ids are listed, so a mismatch names its row. -/
 example : (rows.filter fun (_, expression, expected) => codeOf expression != expected).map (·.1) =
+    [] := by
+  native_decide
+
+/-- The rows of the
+[division-walk grids](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk).
+A call sums its operands' divisions into an enclosing operator's walk (`h01`, `h03`, `j02`), while at the
+root, braced or under only wrappers and calls it asks nothing itself (`j01`, `j05`, `j09`, `j16`). A brace,
+an addition or subtraction, or a power ends the walk wherever it stands, so the same two operands are
+refused in one order and pass in the other (`P01`/`P02`, `P14`/`P15`, `P10`/`P11`), and a leading
+addition hides a later call (`P03` beside `h03`). A power's exponent is asked its scale before the
+division walk (`j18`). -/
+private def walkRows : List (String × Expr × Option String) := [
+    ("h01", mul (f "N") (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("h02", dv (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]) (f "N"), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("h03", add (f "N") (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("h04", mul (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N"), dv (f "N") (f "N2")]) (f "N"), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("h05", dv (f "N") (mx [dv (f "N2") (f "N"), f "N"]), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("j01", mx [mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")], lit 1], some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j02", add (f "N") (ab (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")])), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("j03", mul (f "N") (mx [dv (f "N") (f "N2"), lit 1]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j04", add (f "N") (mx [dv (f "N") (f "N2"), lit 1]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j05", g (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j06", add (f "N") (mx [g (dv (f "N") (f "N2")), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j08", add (ab (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")])) (f "N"), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("j09", roundDown (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), none),
+    ("j10", mx [ab (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), lit 1], some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j12", pw (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]) (lit 2), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("j13", add (g (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")])) (f "N"), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("j14", add (f "N") (mx [dv (f "N") (f "N2"), f "N2"]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j15", sub (f "N") (mn [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("j16", mx [f "N", mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]], some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("j17", add (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]) (mx [f "N", lit 1]), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("j18", pw (lit 2) (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_NUMBER_FOR_EXP"),
+    ("P01", dv (f "N") (mx [g (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P02", dv (f "N") (mx [dv (f "N2") (f "N"), g (f "N2")]), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("P03", add (add (f "N") (f "N")) (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P04", dv (f "N") (mx [add (f "N2") (lit 1), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P05", mul (f "N") (mx [dv (f "N2") (g (f "N")), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P06", add (add (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]) (f "N")) (f "N"), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("P07", add (sub (f "N") (f "N")) (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P10", mul (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]) (g (f "N")), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("P11", mul (g (f "N")) (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P12", mul (pw (f "N") (lit 2)) (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P13", mul (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]) (pw (f "N") (lit 2)), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    ("P14", dv (f "N") (mx [pw (f "N2") (lit 2), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("P15", dv (f "N") (mx [dv (f "N2") (f "N"), pw (f "N2") (lit 2)]), some "MVK_TOO_MANY_DIV_FOR_CALC")]
+
+example : (walkRows.filter fun (_, expression, expected) => codeOf expression != expected).map (·.1) =
     [] := by
   native_decide
 

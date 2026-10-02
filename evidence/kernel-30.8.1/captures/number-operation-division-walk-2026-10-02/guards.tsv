@@ -1,0 +1,5 @@
+id	precondition	operation
+k01	FieldFilled(Sub) And FieldFilled(Nope)	[A]
+k02	FieldFilled(Nope) And FieldFilled(Sub)	[A]
+k03	FieldFilled(Sub) Or FieldFilled(Nope)	[A]
+k04	FieldFilled(Nope) Or FieldFilled(Sub)	[A]

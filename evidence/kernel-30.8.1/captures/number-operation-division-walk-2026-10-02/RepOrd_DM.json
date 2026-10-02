@@ -1,0 +1,360 @@
+{
+ "header": {
+  "id": "RepOrd_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "RepOrd_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Typ",
+     "name": "Typ",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Typ/N",
+        "name": "N",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/N2",
+        "name": "N2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/T",
+        "name": "T",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/S",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/S2",
+        "name": "S2",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/E",
+        "name": "E",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/TM",
+        "name": "TM",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/EL",
+        "name": "EL",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "One"
+              }
+             ]
+            },
+            {
+             "value": "2",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Two"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/CF",
+        "name": "CF",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/DR",
+        "name": "DR",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "dd.MM.yyyy",
+           "rangeSeparator": "-"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/SR",
+        "name": "SR",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "noValueValidation": true,
+           "lineBreaksPermitted": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/DP",
+        "name": "DP",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/D3",
+        "name": "D3",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/DM",
+        "name": "DM",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/DTT",
+        "name": "DTT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/TD",
+        "name": "TD",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Typ/Z",
+        "name": "Z",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Typ/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Typ/Rows/RN",
+           "name": "RN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Typ/Rows/RN2",
+           "name": "RN2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Typ/Rows/RT",
+           "name": "RT",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,35 @@
+field t /Typ/T
+field n /Typ/N
+op P1 [N] / Max({[N2]}, [N2] / [N])
+op P2 [N] / Max([N2] / [N], {[N2]})
+op P3 [N] + [N] + Max([N] / [N2], [N2] / [N])
+op P4 [N] / Max([N2] + 1, [N2] / [N])
+op P5 [N] * Max([N2] / {[N]}, [N2] / [N])
+op P6 Max([N] / [N2], [N2] / [N]) + [N] + [N]
+op P7 [N] - [N] + Max([N] / [N2], [N2] / [N])
+op P10 Max([N] / [N2], [N2] / [N]) * {[N]}
+op P11 {[N]} * Max([N] / [N2], [N2] / [N])
+op P12 [N] ^ 2 * Max([N] / [N2], [N2] / [N])
+op P13 Max([N] / [N2], [N2] / [N]) * [N] ^ 2
+op P14 [N] / Max([N2] ^ 2, [N2] / [N])
+op P15 [N] / Max([N2] / [N], [N2] ^ 2)
+comp P01 t P1
+comp P02 t P2
+comp P03 t P3
+comp P04 t P4
+comp P05 t P5
+comp P06 t P6
+comp P07 t P7
+comp P10 t P10
+comp P11 t P11
+comp P12 t P12
+comp P13 t P13
+comp P14 t P14
+comp P15 t P15
+cond R8 [N] + [N] + Max([N] / [N2], [N2] / [N]) > 0
+cond R1 [N] / Max({[N2]}, [N2] / [N]) > 0
+cond R2 [N] / Max([N2] / [N], {[N2]}) > 0
+msg m m
+row R08 n R8 m
+row R01 n R1 m
+row R02 n R2 m

@@ -182,31 +182,42 @@ theorem numericOperation_extremumCall_admitted
   | atom | literal | binary | power | abs | extremum | round =>
       simp [AuthoredNumericExpr.isExtremumCall] at direct
 
-/-- An operand-list call exposes its largest operand's divisions to the enclosing region rather than
-their sum: two single-division operands pass, while one of them under a further division does not. -/
-theorem numericOperation_extremumCall_exposes_largest_operand_divisions
+/-- A Min/Max call is no checked node itself: at the root its two single-division operands pass, while
+under an addition they share the operator's division walk and are refused, and a brace in an earlier
+operand ends that walk before a later operand's division is counted. -/
+theorem numericOperation_extremumCall_shares_enclosing_division_walk
     (op : NumericExtremumOp) (a b c d : Atom) :
     (.extremumCall op (.extremum op (.binary .divide (.atom a) (.atom b))
         (.binary .divide (.atom c) (.atom d))) :
       AuthoredNumericExpr Atom).numericOperationAuthoringCheck = .accepted ∧
-    (.binary .divide (.atom a) (.extremumCall op (.extremum op (.atom b)
+    (.binary .add (.atom a) (.extremumCall op (.extremum op (.binary .divide (.atom a) (.atom b))
         (.binary .divide (.atom c) (.atom d)))) :
-      AuthoredNumericExpr Atom).numericOperationAuthoringCheck = .tooManyDivisions :=
-  ⟨rfl, rfl⟩
+      AuthoredNumericExpr Atom).numericOperationAuthoringCheck = .tooManyDivisions ∧
+    (.binary .divide (.atom a) (.extremumCall op (.extremum op (.group (.atom b))
+        (.binary .divide (.atom c) (.atom d)))) :
+      AuthoredNumericExpr Atom).numericOperationAuthoringCheck = .accepted ∧
+    (.binary .divide (.atom a) (.extremumCall op (.extremum op (.binary .divide (.atom c) (.atom d))
+        (.group (.atom b)))) :
+      AuthoredNumericExpr Atom).numericOperationAuthoringCheck = .tooManyDivisions := by
+  cases op <;> exact ⟨rfl, rfl, rfl, rfl⟩
 
-/-- A root rounding node delegates exactly to the recursive value-function body checker. -/
+/-- A root rounding node is no checked node, so it answers exactly as its body does. -/
 theorem numericOperation_round_body_authoringCheck
     (mode : DecimalRoundingMode) (places : RoundingPlaces)
     (body : AuthoredNumericExpr Atom) :
     (AuthoredNumericExpr.round mode places body).numericOperationAuthoringCheck =
-      body.numericWrapperBodyAuthoringCheck := by
-  rfl
+      body.numericOperationAuthoringCheck := by
+  simp [AuthoredNumericExpr.numericOperationAuthoringCheck, AuthoredNumericExpr.authoringResult,
+    AuthoredNumericExpr.anyNode, AuthoredNumericExpr.divisionGateRefuses,
+    AuthoredNumericExpr.directLeftNestedPowerAt]
 
-/-- A root absolute-value node delegates exactly to the same recursive value-function body checker. -/
+/-- A root absolute-value node is no checked node, so it answers exactly as its body does. -/
 theorem numericOperation_abs_body_authoringCheck
     (body : AuthoredNumericExpr Atom) :
     (AuthoredNumericExpr.abs body).numericOperationAuthoringCheck =
-      body.numericWrapperBodyAuthoringCheck := by
-  rfl
+      body.numericOperationAuthoringCheck := by
+  simp [AuthoredNumericExpr.numericOperationAuthoringCheck, AuthoredNumericExpr.authoringResult,
+    AuthoredNumericExpr.anyNode, AuthoredNumericExpr.divisionGateRefuses,
+    AuthoredNumericExpr.directLeftNestedPowerAt]
 
 end A12Kernel

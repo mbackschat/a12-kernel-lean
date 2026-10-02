@@ -201,9 +201,8 @@ def elaborateValueAsDateSourceIn
   let source ←
     elaborateTemporalTargetPolicyIn model scope sourceField
       |>.mapError .sourcePolicy
-  -- The admission's own kind rule rather than a re-check of the formal one (LF203): the Kernel's
-  -- model types declare a date precision on a DATE declaration only (source read of its model
-  -- facade), and no measurement admits another kind here, so any other kind is refused.
+  -- The admission's own kind rule rather than a re-check of the formal one (LF203): no measurement
+  -- admits a partial source of another declared kind here, so any other kind is refused.
   if hKind : source.target.kind = .date then
     if hMode : source.policy.partialMode ≠ .full then
       match hFormat :

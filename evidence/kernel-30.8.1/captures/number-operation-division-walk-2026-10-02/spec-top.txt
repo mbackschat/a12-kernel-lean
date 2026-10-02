@@ -1,0 +1,33 @@
+field t /Typ/T
+op j1 Max(Max([N] / [N2], [N2] / [N]), 1)
+op j2 [N] + Abs(Max([N] / [N2], [N2] / [N]))
+op j3 [N] * Max([N] / [N2], 1)
+op j4 [N] + Max([N] / [N2], 1)
+op j5 {Max([N] / [N2], [N2] / [N])}
+op j6 [N] + Max({[N] / [N2]}, [N2] / [N])
+op j8 Abs(Max([N] / [N2], [N2] / [N])) + [N]
+op j9 RoundDown(Max([N] / [N2], [N2] / [N]), 2)
+op j10 Max(Abs(Max([N] / [N2], [N2] / [N])), 1)
+op j12 Max([N] / [N2], [N2] / [N]) ^ 2
+op j13 {Max([N] / [N2], [N2] / [N])} + [N]
+op j14 [N] + Max([N] / [N2], [N2])
+op j15 [N] - Min([N] / [N2], [N2] / [N])
+op j16 Max([N], Max([N] / [N2], [N2] / [N]))
+op j17 Max([N] / [N2], [N2] / [N]) + Max([N], 1)
+op j18 2 ^ Max([N] / [N2], [N2] / [N])
+comp j01 t j1
+comp j02 t j2
+comp j03 t j3
+comp j04 t j4
+comp j05 t j5
+comp j06 t j6
+comp j08 t j8
+comp j09 t j9
+comp j10 t j10
+comp j12 t j12
+comp j13 t j13
+comp j14 t j14
+comp j15 t j15
+comp j16 t j16
+comp j17 t j17
+comp j18 t j18

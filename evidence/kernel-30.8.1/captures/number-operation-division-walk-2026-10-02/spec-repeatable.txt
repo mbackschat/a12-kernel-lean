@@ -1,0 +1,12 @@
+field rt /Typ/Rows/RT
+group rows /Typ/Rows
+op p1 Max([RN] / [RN2] / [RN], [RN2])
+op p2 [RN] * Max([RN] / [RN2], [RN2] / [RN])
+op p3 Max([RN] / [RN2], [RN2] / [RN])
+op p4 Max([RN] ^ 2 ^ 2, [RN2])
+op p5 [RN] ^ [RN2]
+comp p01 rt p1 rows
+comp p02 rt p2 rows
+comp p03 rt p3 rows
+comp p04 rt p4 rows
+comp p05 rt p5 rows
