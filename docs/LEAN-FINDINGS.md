@@ -2653,3 +2653,11 @@ A partially known Date such as `2024-06-00` denotes an interval with no point va
 Lean treatment: `Value.partialDate` carries the stored spelling, and the checked document admits it only where the declaration's classifier admits that exact text as partial, refusing the two encodings it replaced; a temporal value beside a partially known text stays constructible and `temporallyCoherent` reports it.
 
 **"No point form" and "no value" are different facts; collapsing them moves a value out of every reader that tests presence.** When a domain value cannot be represented by the existing value type, give it its own arm rather than leaning on an absence encoding, because absence is the one observation every presence, count and requiredness reader already interprets. The tell is a value admitted through a side channel that only one reader consults.
+
+## LF206 — a certificate that restates its producer's gate becomes the gate when the producer widens, and it refuses without a class
+
+Binding a computation's operands by its target's scope widened one shared resolver, and the complete Number elaborator then admitted every per-row operand of the [row-producer grid](sources/computation-scheduling-probes.md#src-repeatable-row-producers) except `FirstFilledValue` and `NumberOfValueInFields`. Their direct-field certificates, on the Number, token and Boolean entity lists alike, required each field to be nonrepeatable, a fact the list's shape had already settled by its own binding gate. Once the shape bound the target's levels, the certificate was the only place a row field was refused, and it refused as an incoherent core with no class, which no row could tell from a genuine elaboration defect.
+
+Lean treatment: the three certificates assert model ownership, the shape keeps the binding decision, and the Number operation's well-formedness checks its lists' direct fields against its reading scope, so the invariant has one owner per layer.
+
+**When a certificate restates the gate of the stage that produced it, it is a second copy of that gate, and widening the gate leaves the copy behind.** Before widening a gate, grep the certificates its outputs feed for the same predicate. The tell is a fail-closed internal error appearing where a measured refusal class was expected.

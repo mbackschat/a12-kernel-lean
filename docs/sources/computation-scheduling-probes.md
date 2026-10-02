@@ -244,6 +244,23 @@ Dependency order, join, poison, empty-substitution, and fill-guard probes for au
 - `limit`: one repetition level, two alternatives, `FieldFilled` guards; a sibling guard in the first position and a common precondition are not measured.
 - `sync`: follows [`spec/09`](../../spec/09-computations.md)'s stage account, in which a name and its index gates are asked before the alternatives' classes, and first-match selection; opens no entry.
 
+<a id="src-repeatable-row-producers"></a>
+#### At a repeatable target `Max`, a rounded division, `Abs`, `FirstFilledValue` and `NumberOfValueInFields` read a computed row copy fresh at their own row, a zero or empty divisor clearing only the division, measured locally 2026-10-02
+
+- `revision`: one `:adapter:kernelProbe` run with `observe: ["validateFull", "compute"]` over two documents, in the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, `source.state` `CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `enginesAgree: true` on both rows. The artifact `f381fb882231704237d2c40bfacae68ccc55b03355699acc369a0e579ad50f04` is not retained.
+- `question`: the repeatable plan's row step admitted only a copy and binary arithmetic; do the rest of the Number surface's operators read a computed row target at their own row by the same rule, and what do an empty copy, a malformed source, an over-limit row and a zero divisor do to each reader of the row?
+- `model`: a repeatable `Rg/Rows` (max 3) with integral Numbers `A`, `B`, `CA`, `MX`, `AB`, `FF`, `VN`, `K`, `KN` and a two-place `DV`; `CA = [A]`, and authored ahead of it `MX = Max([CA], [B])`, `DV = RoundAccounting([CA] / [B], 2)`, `AB = Abs([CA] - [B])`, `FF = FirstFilledValue(CA, B)`, `VN = NumberOfValueInFields(5 In CA, B)`, `K = 1` under `FieldFilled(FF)` and `KN = 1` under `FieldNotFilled(FF)`.
+- `seeds`: every computed target holds `99` on every row.
+- `claim-fresh`: a row holding `A` `5` and `B` `2` computes `CA` `5`, `MX` `5`, `DV` `2.5`, `AB` `3`, `FF` `5`, `VN` `1` and `K` `1`, clearing `KN`, none of them a seed.
+- `claim-empty`: a row with `A` absent and `B` `3` copies `CA` as `0`, which `FF` takes as filled, so `FF` is `0`, `VN` `0`, `MX` `3`, `DV` `0` and `AB` `3`.
+- `claim-poison`: a malformed `A`, reported `zahlHatUngueltigeZeichen`, clears every target of its row and both guards; a fourth row beyond the capacity of three, reported `zuGrosseZeile`, clears every target of its row.
+- `claim-divisor`: an empty `B` beside `A` `5`, and `A` and `B` both `0`, clear `DV` with `berechnungsWertFehler` at it while every other reader of the row computes, `AB` reading the empty `B` as `0`; `A` `9` beside `B` `5` gives `DV` `1.8`.
+- `retained`: in the [grid directory](../../evidence/kernel-30.8.1/captures/repeatable-row-producers-2026-10-02/), `Rs_DM.json` `97db2eef94472017fc6f17d4f252df2d5cb8c4a011035e506ae9c3892dae7e5a`, `request.json` `e3eb839668514a183c36aefe996757ca5f2bc20344ace837c21f1ddf5cd59ea3`, and the outcome projection `rows.tsv` `a265b0b83eb36886b220b47cffabecf6457ec0edf8e5b8a5c5d82539d2796991`, 56 rows.
+- `redundancy-check`: the peer's [`kf115`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf115) holds iteration by the referenced repeatable fields and [`kf459`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459) the cascade rule; searched heading-first for a repeatable or per-row computation beside the extrema, rounding, `Abs`, division, `FirstFilledValue` and `NumberOfValueInFields`, no heading there or here measures one reading a computed row target.
+- `local-consequence`: the shared computation binding binds the target's own levels, so the complete Number table elaborates at a repeatable target, and the repeatable plan runs every step as such a table, per row through a row-local read; the former copy and arithmetic row step became its instance ([locks](../../A12Kernel/Conformance/RepeatableNumberPlanRowTables.lean)).
+- `limit`: one repetition level, direct two-field lists, integral sources; these operators reading an operand one level up, a `FieldValueAsNumber`, `Length`, temporal component or group count at a row, a token or Boolean value count at a row, and an aggregate over a star read from inside a row are not measured.
+- `sync`: confirms [`spec/09`](../../spec/09-computations.md) §5's binding by the target's scope and own-path read at a row, and §3's split of a no-value and an invalid upstream, on these readers, and opens no entry.
+
 <a id="src-repeatable-nested-star-aggregate"></a>
 #### A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02
 

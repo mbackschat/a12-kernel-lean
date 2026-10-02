@@ -1496,6 +1496,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A repeatable target's guarded alternatives select per row by first match and abort on a reached poisoned guard, and the fixed table's two refusals hold there, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)
 <a id="src-row-table-guard-order"></a>
 - [A row table asks every guard's row binding before any alternative's own class, and selects lazily, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-table-guard-order)
+<a id="src-repeatable-row-producers"></a>
+- [At a repeatable target the extrema, a rounded division, `Abs`, `FirstFilledValue` and `NumberOfValueInFields` read a computed row copy fresh at their own row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-row-producers)
 <a id="src-repeatable-nested-star-aggregate"></a>
 - [A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-nested-star-aggregate)
 <a id="src-computation-precondition-names"></a>
