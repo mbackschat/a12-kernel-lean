@@ -1239,6 +1239,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-partial-coverage-group-operands"></a>
 - [The count needs every operand field covered, where the presence predicates read what they can see](sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands)
+<a id="src-group-count-empty-gate"></a>
+- [A comparison reading a filled-group count fires on an instance without content, where one of field reads alone does not, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)
 <a id="src-starred-group-quantifier-capacity"></a>
 - [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity)
 <a id="src-count-placement-overlap-list-grid"></a>

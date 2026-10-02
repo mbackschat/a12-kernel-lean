@@ -1,0 +1,4 @@
+{"model":"Gate_DM.json","locale":"en_US","rows":[
+ {"name":"blank-nulls","documentInline":{"Probe":{"W":null,"G1":{"A":null},"G2":{"B":null}}}},
+ {"name":"blank-absent","documentInline":{"Probe":{}}},
+ {"name":"content-w","documentInline":{"Probe":{"W":1}}}]}

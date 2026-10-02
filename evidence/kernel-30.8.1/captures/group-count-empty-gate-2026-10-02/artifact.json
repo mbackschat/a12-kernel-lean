@@ -1,0 +1,424 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Gate_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "blank-nulls",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCOUNT",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "GCW",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCW",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GCZERO",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCZERO",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "NOTFILLED",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NOTFILLED",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/W"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCOUNT",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "GCW",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCW",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GCZERO",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCZERO",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "NOTFILLED",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NOTFILLED",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/W"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "blank-absent",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCOUNT",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "GCW",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCW",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GCZERO",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCZERO",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "NOTFILLED",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NOTFILLED",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/W"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCOUNT",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "GCW",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCW",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GCZERO",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCZERO",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "NOTFILLED",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NOTFILLED",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/W"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "content-w",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCOUNT",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "GCW",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCW",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GCZERO",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCZERO",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "PLAIN",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "PLAIN",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCOUNT",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "GCW",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCW",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GCZERO",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GCZERO",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "PLAIN",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "PLAIN",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

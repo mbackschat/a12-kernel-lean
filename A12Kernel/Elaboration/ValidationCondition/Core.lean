@@ -403,9 +403,23 @@ def ResolvedGroupListOperands.evalAddressedTally
 
 namespace ValidationConditionLeaf
 
+/-- Whether a numeric comparison reads a filled-group count anywhere in its operations. -/
+private def countsFilledGroups (comparison : NumericComparisonOf Atom) (isCount : Atom → Bool) : Bool :=
+  comparison.left.anyAtom isCount || comparison.right.anyAtom isCount
+
+/-- Whether the leaf is evaluated on an instance without admitted content under full validation.
+A comparison reading a filled-group count is, whatever else it reads: the Kernel fires
+`NumberOfFilledGroups(G1, G2) < 2`, `== 0` and `NumberOfFilledGroups(G1, G2) + [W] < 2` over a blank
+root, the last reading the empty `W` as `0`, while `[W] < 5` stays silent there
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)). -/
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .flat condition => condition.canFireOnEmpty
-  | .numeric _ _ | .orderedNumeric _ _ => false
+  | .numeric _ comparison => countsFilledGroups comparison fun
+      | .filledGroupCount _ => true
+      | _ => false
+  | .orderedNumeric _ comparison => countsFilledGroups comparison fun
+      | .ordinary (.filledGroupCount _) | .filledGroupCountMixed _ => true
+      | _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
   | .repeatableFieldPresence operator _ => operator.canFireOnEmpty

@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-02-05"></a>
+### `SPEC-2026-10-02-05` — a comparison reading a filled-group count is evaluated on an instance without content, where one of field reads alone is not
+
+- `status`: pending
+- `origin`: locally originated. This project's population replay found Lean suppressing a group-count rule the Kernel fired on a blank document, and the follow-up measurement separated the two accounts.
+- `clause`: [`03`](../spec/03-empty-and-required.md) §2, the row gate's empty-eligible family.
+- `delta`: under full validation `NumberOfFilledGroups(G1, G2) < 2`, `== 0` and `NumberOfFilledGroups(G1, G2) + [W] < 2` fire `OMISSION_ERROR` over a root of `null` cells and over an empty root object, the last reading the empty `W` as `0`, while `[W] < 5` stays silent there and fires once `W` holds `1`.
+- `basis`: this project's [checkpoint](SOURCES.md#src-group-count-empty-gate) at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model, request and artifact retained beside it. Consistent with your `kf163`, which has a starred count fire at zero rows.
+- `surfaces`: a reader that decides empty eligibility from the comparison form alone, as `Interpreter.canFireEmpty` does with `Cond.Cmp -> false`, unless another gate already lets these rows through.
+- `acceptance`: confirm the five rules' outcomes on the checkpoint's three rows, or supply a blank-document carrier on which a group-count comparison stays silent.
+- `limit`: fixed operands, one nesting level, a nonrepeatable rule; a starred count and every other numeric atom are unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-02-04"></a>
 ### `SPEC-2026-10-02-04` — an admitted partially known Date is filled on both arms, satisfies requiredness, is group and root content and is compared by its stored text, and only a too-deep omission leaves presence unknown
 

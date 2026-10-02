@@ -629,6 +629,30 @@ example : (checkedGroupCount? (groupCountComparison
   }) = some (.fired .omission) := by
   native_decide
 
+/- The full-validation content gate admits a comparison that reads a filled-group count, whatever
+   else it reads, and still refuses one of field reads alone: on an instance without admitted content
+   `count < 1` and `count + [V] < 2` fire with the empty `V` read as `0`, while `[V] < 5` does not
+   until the instance has content
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)). -/
+example :
+    let emptyGroups := twoGroupContext
+      ["Order", "Details"] (groupState false false)
+      ["Order", "Preferences"] (groupState false false)
+    let full (surface : SurfaceNumericComparison) (hasContent : Bool) : Option Verdict :=
+      (checkedGroupCount? surface).map fun checked =>
+        checked.core.evalFull { fields := model.checkContext (raw .empty .empty), groups := emptyGroups }
+          hasContent
+    let fieldOnly : SurfaceNumericComparison :=
+      { numericSurface with op := .ordinary .less, right := .literal { value := 5, authoredScale := 0 } }
+    [full (groupCountComparison (op := .less) (expected := 1)) false,
+     full { op := .ordinary .less
+            left := .binary .add fixedGroupCount (.atom (.field (fieldPath "V")))
+            right := .literal { value := 2, authoredScale := 0 } } false,
+     full fieldOnly false,
+     full fieldOnly true] =
+      [some (.fired .omission), some (.fired .omission), some .notFired, some (.fired .omission)] := by
+  native_decide
+
 /- An *undecided* group, invisible absence under partial coverage, or missing resolved state makes
    the complete numeric source unavailable rather than inventing a partial count or a `FormalCause`.
    Undecided is the operative word: the erroneous operand here carries no admitted content, which is
