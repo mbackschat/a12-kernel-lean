@@ -450,9 +450,9 @@ is read through the cell its outcome projects and a pending one reads empty, wha
 for either ([`kf459`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459)).
 
 This is a read overlay for evaluators that take the whole document, and nothing here applies a result.
-Every placement read — `read`, the Number formal-read text, and the contexts built on them — sees the
-listed placement, which is why a placement rather than a bare cell is listed: a replaced Number keeps its
-formal-read text only if the caller supplies it. The source data and rows are unchanged, so what is read
+Every placement read — `read`, the Number input regime and formal-read text, and the contexts built on
+them — sees the listed placement, which is why a placement rather than a bare cell is listed: a replaced
+Number keeps its input regime and formal-read text only if the caller supplies them. The source data and rows are unchanged, so what is read
 off `source` — `readStoredText` and `temporallyCoherent` — still describes the source document. -/
 def overlayNonrepeatableCells (checked : CheckedDocument model)
     (placements : List (FieldId × Option CheckedCellPlacement)) : CheckedDocument model :=

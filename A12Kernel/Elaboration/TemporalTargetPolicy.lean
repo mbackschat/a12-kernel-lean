@@ -464,7 +464,12 @@ def elaborateDateTimeTarget
   elaborateDateTimeFormatTargetIn model [] targetField
 
 /-- Runtime refusal when an exact result instant has no local DateTime label in the selected concrete
-profile, or when its rendering names a wall label the profile cannot resolve back. -/
+profile, or when its rendering names a wall label the profile cannot resolve back.
+
+No witness of `renderingUnresolvable` is known as of 2026-10-02: the target renders whole seconds and
+every transition of both concrete profiles falls on a whole hour, so a rendering only drops a sub-second
+remainder inside one offset period. It is the fail-closed answer to the classifier's own error rather
+than an asserted impossibility. -/
 inductive DateTimeTargetEvaluationFault where
   | localDateTimeUnavailable (instant : Instant)
   | renderingUnresolvable (cause : DateTimeInputError)
