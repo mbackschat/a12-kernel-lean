@@ -1,0 +1,380 @@
+{
+ "header": {
+  "id": "Gate_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Gate_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Gate",
+     "name": "Gate",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Gate/NG",
+        "name": "NG",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Gate/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Gate/P",
+        "name": "P",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Gate/PN",
+        "name": "PN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Gate/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Gate/DN",
+        "name": "DN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Gate/DComp",
+        "name": "DComp",
+        "Computation": {
+         "computedFieldRelPath": "../D",
+         "computationAlternatives": [
+          {
+           "operation": "[P] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Gate/DNComp",
+        "name": "DNComp",
+        "Computation": {
+         "computedFieldRelPath": "../DN",
+         "computationAlternatives": [
+          {
+           "operation": "[PN] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Gate/PComp",
+        "name": "PComp",
+        "Computation": {
+         "computedFieldRelPath": "../P",
+         "computationAlternatives": [
+          {
+           "operation": "[A]",
+           "precondition": "FieldFilled(NG)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Gate/PNComp",
+        "name": "PNComp",
+        "Computation": {
+         "computedFieldRelPath": "../PN",
+         "computationAlternatives": [
+          {
+           "operation": "[A]",
+           "precondition": "FieldNotFilled(NG)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Gate/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Gate/Rows/RG",
+           "name": "RG",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Gate/Rows/RA",
+           "name": "RA",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Gate/Rows/RB",
+           "name": "RB",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Gate/Rows/RP",
+           "name": "RP",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Gate/Rows/RPN",
+           "name": "RPN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Gate/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Gate/Rows/RDN",
+           "name": "RDN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Gate/Rows/RDComp",
+           "name": "RDComp",
+           "Computation": {
+            "computedFieldRelPath": "../RD",
+            "computationAlternatives": [
+             {
+              "operation": "[RP] + [RB]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Gate/Rows/RDNComp",
+           "name": "RDNComp",
+           "Computation": {
+            "computedFieldRelPath": "../RDN",
+            "computationAlternatives": [
+             {
+              "operation": "[RPN] + [RB]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Gate/Rows/RPComp",
+           "name": "RPComp",
+           "Computation": {
+            "computedFieldRelPath": "../RP",
+            "computationAlternatives": [
+             {
+              "operation": "[RA]",
+              "precondition": "FieldFilled(RG)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Gate/Rows/RPNComp",
+           "name": "RPNComp",
+           "Computation": {
+            "computedFieldRelPath": "../RPN",
+            "computationAlternatives": [
+             {
+              "operation": "[RA]",
+              "precondition": "FieldNotFilled(RG)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

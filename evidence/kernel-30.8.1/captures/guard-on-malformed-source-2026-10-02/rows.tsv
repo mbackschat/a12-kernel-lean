@@ -1,0 +1,51 @@
+# row	field	outcome	value
+g01-clean	Gate/D	value	6
+g01-clean	Gate/DN	value	1
+g01-clean	Gate/P	value	5
+g01-clean	Gate/PN	cleared	
+g01-clean	Gate/Rows/RD	value	8
+g01-clean	Gate/Rows/RDN	value	1
+g01-clean	Gate/Rows/RP	value	7
+g01-clean	Gate/Rows/RPN	cleared	
+g01-clean	Gate/Rows[2]/RD	value	4
+g01-clean	Gate/Rows[2]/RDN	value	1
+g01-clean	Gate/Rows[2]/RP	value	3
+g01-clean	Gate/Rows[2]/RPN	cleared	
+g02-gate-malformed	Gate/D	cleared	
+g02-gate-malformed	Gate/DN	cleared	
+g02-gate-malformed	Gate/P	cleared	
+g02-gate-malformed	Gate/PN	cleared	
+g02-gate-malformed	Gate/Rows/RD	cleared	
+g02-gate-malformed	Gate/Rows/RDN	cleared	
+g02-gate-malformed	Gate/Rows/RP	cleared	
+g02-gate-malformed	Gate/Rows/RPN	cleared	
+g02-gate-malformed	Gate/Rows[2]/RD	value	4
+g02-gate-malformed	Gate/Rows[2]/RDN	value	1
+g02-gate-malformed	Gate/Rows[2]/RP	value	3
+g02-gate-malformed	Gate/Rows[2]/RPN	cleared	
+g02-gate-malformed	formal	zahlHatUngueltigeZeichen	Gate/NG
+g02-gate-malformed	formal	zahlHatUngueltigeZeichen	Gate/Rows/RG
+g03-gate-absent	Gate/D	value	1
+g03-gate-absent	Gate/DN	value	6
+g03-gate-absent	Gate/P	cleared	
+g03-gate-absent	Gate/PN	value	5
+g03-gate-absent	Gate/Rows/RD	value	1
+g03-gate-absent	Gate/Rows/RDN	value	8
+g03-gate-absent	Gate/Rows/RP	cleared	
+g03-gate-absent	Gate/Rows/RPN	value	7
+g03-gate-absent	Gate/Rows[2]/RD	value	4
+g03-gate-absent	Gate/Rows[2]/RDN	value	1
+g03-gate-absent	Gate/Rows[2]/RP	value	3
+g03-gate-absent	Gate/Rows[2]/RPN	cleared	
+g04-gate-zero	Gate/D	value	6
+g04-gate-zero	Gate/DN	value	1
+g04-gate-zero	Gate/P	value	5
+g04-gate-zero	Gate/PN	cleared	
+g04-gate-zero	Gate/Rows/RD	value	8
+g04-gate-zero	Gate/Rows/RDN	value	1
+g04-gate-zero	Gate/Rows/RP	value	7
+g04-gate-zero	Gate/Rows/RPN	cleared	
+g04-gate-zero	Gate/Rows[2]/RD	value	1
+g04-gate-zero	Gate/Rows[2]/RDN	value	4
+g04-gate-zero	Gate/Rows[2]/RP	cleared	
+g04-gate-zero	Gate/Rows[2]/RPN	value	3

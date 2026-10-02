@@ -19,7 +19,10 @@ The two-level grid of the [checkpoint](../../docs/sources/evaluation-and-applica
 calibrates one plan: a root aggregate over a guarded outer copy, and an inner join of an inner copy
 with the enclosing outer target, the aggregate and the join authored ahead of what they read. Other
 admitted shapes run by the same rules without a measurement of their own: the grid measures the direct
-copy and addition, not subtraction or multiplication, and no row reads a poisoned guard.
+copy and addition, not subtraction or multiplication, and no row reads a poisoned guard; the
+[operator checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-repeatable-join-operators-and-guards)
+and the [guard-source checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-guard-on-malformed-source)
+measure those since.
 -/
 
 namespace A12Kernel
