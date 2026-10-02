@@ -423,12 +423,14 @@ def declaredExtent? (operand : CheckedGroupCountOperand model) : Option Nat :=
       (source.path.axes.drop source.path.firstStar).foldl (init := some 1)
         fun product axis => product.bind fun total => axis.repeatability.map (· * total)
 
-/-- Whether a list's length passes the count's arity law in this carrier. A lone operand is
-    admitted when it carries a star, and the lone starred repeatable terminal is routed to its own
-    sole-star carrier instead, so only a lone fixed terminal below a starred ancestor stays here. -/
+/-- Whether a list's length passes the count's arity law in this carrier: a lone operand is
+    admitted when it carries a star, the arity class belonging to a lone fixed operand only. A lone
+    starred repeatable terminal counts its in-capacity rows, the quantity
+    `CheckedStarredGroupSource.numberOfFilledGroupsOperand?` reads, measured on the
+    [Fill_DM ladder](../../docs/sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity). -/
 def admittedArity : List (CheckedGroupCountOperand model) → Bool
-  | [.starredPresence _] => true
-  | operands => 1 < operands.length
+  | [.fixed _] => false
+  | operands => !operands.isEmpty
 
 /-- The model certificate a starred member already carries. -/
 def modelWellFormed? : List (CheckedGroupCountOperand model) →

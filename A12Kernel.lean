@@ -323,6 +323,7 @@ import A12Kernel.Elaboration.AddressedNumberEnumerationHavingCascade
 import A12Kernel.Elaboration.AddressedEnumerationNumberHavingJoin
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.NumericValidation
+import A12Kernel.Elaboration.NumericValidation.EntityComparison
 import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.EnumerationComparability

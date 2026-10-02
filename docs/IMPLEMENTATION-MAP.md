@@ -551,6 +551,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Fixed groups under bound repeatable ancestry](implementation/cross-clause.md#cap-fixed-group-bound-repeatable-ancestry)
 <a id="cap-mixed-validation-filled-group-count"></a>
 - [Mixed validation `NumberOfFilledGroups`](implementation/cross-clause.md#cap-mixed-validation-filled-group-count)
+<a id="cap-rule-comparisons-over-entity-lists"></a>
+- [Rule comparisons over entity lists](implementation/cross-clause.md#cap-rule-comparisons-over-entity-lists)
 <a id="cap-resolved-date-range-overlap-truth-admission-and-scans"></a>
 - [Resolved Date-range overlap truth, admission, and scans](implementation/cross-clause.md#cap-resolved-date-range-overlap-truth-admission-and-scans)
 <a id="cap-resolved-direct-date-construction-and-base-year-sources"></a>

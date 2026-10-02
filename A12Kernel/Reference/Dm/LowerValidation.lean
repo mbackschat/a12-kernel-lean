@@ -1,18 +1,20 @@
 import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Elaboration.ValidationRule
+import A12Kernel.Elaboration.NumericValidation.EntityComparison
 
 /-! # Lowering a rule condition onto the checked validation carriers
 
 A condition whose every leaf has a flat form is elaborated whole by the flat carrier. Otherwise its
 connectives are kept and each leaf is offered, in a fixed order, to the carriers that exist for it:
 the flat leaf, repeatable field presence, group presence, the group-list quantifiers, the filled-group
-count over stars and the numeric comparison, scalar then addressed. The first carrier that admits a
+numeric comparison, scalar, then addressed, then over entity lists, and the starred filled-group
+count against a literal. The first carrier that admits a
 leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
 Only public elaboration entry points are reached. A construct with a semantic evaluator but no rule
-carrier, such as a filtered starred aggregate in a comparison, is refused here rather than assembled
+carrier is refused here rather than assembled
 by hand, so the refusal measures the missing carrier instead of hiding it.
 -/
 
@@ -73,6 +75,15 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
         elaborated "Flat" (CheckedValidationCondition.fromFlat checked)]
     | none => []
+  let groupCount := match leaf with
+    | .compare op (.call "NumberOfFilledGroups" arguments none none) (.number threshold) => [do
+        let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
+        let some threshold := decodeNumber? threshold | refuse "NumberOfFilledGroups" "threshold"
+        let operands ← arguments.mapM lowerGroupCountOperand
+        let checked ← elaborated "NumberOfFilledGroups"
+          (elaborateMixedFilledGroupCountComparison model rowGroup operands numericOp threshold.value)
+        elaborated "NumberOfFilledGroups" (CheckedValidationCondition.fromOrderedNumeric checked)]
+    | _ => []
   let specific := match leaf with
     | .call id [.mk operand none none] none none =>
         match presenceOp? id, groupPresenceOp? id, operand.fieldEntity?, operand.groupReference? with
@@ -96,17 +107,24 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
                   (elaborateRepeatableNumericComparison model rowGroup surface)
                 elaborated "NumericComparison" (CheckedValidationCondition.fromOrderedNumeric checked)]
         | .error refusal => [.error refusal]
+      ++ [do
+        let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
+        let atom := lowerComputationNumericAtom model rowGroup
+        let checked ← elaborated "EntityComparison"
+          (elaborateEntityNumericComparison model rowGroup numericOp (← lowerNumericExpr atom left)
+            (← lowerNumericExpr atom right) suppress)
+        elaborated "EntityComparison" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
-  flat ++ specific
+  flat ++ specific ++ groupCount
 
-/-- The first admitting carrier, or the refusal of the first that answered for this construct. -/
+/-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :
     List (Lowering (CheckedValidationCondition model)) → Lowering (CheckedValidationCondition model)
   | [] => refuse construct
   | attempts =>
       match attempts.find? (·.toOption.isSome) with
       | some admitted => admitted
-      | none => match attempts.head? with
+      | none => match attempts.getLast? with
         | some (.error refusal) => .error { refusal with construct }
         | _ => refuse construct
 

@@ -385,6 +385,13 @@ def resolveNumericValidationAtom
     Except NumericValidationElabError NumericValidationAtom :=
   resolveNumericAtom model rowGroup writtenGroup surface
 
+/-- Resolve one ordinary operand of an addressed comparison, the reading
+`elaborateRepeatableNumericComparison` gives each of its atoms. -/
+def resolveAddressedNumericValidationAtom
+    (model : FlatModel) (rowGroup : GroupPath) (surface : SurfaceNumericAtom) :
+    Except NumericValidationElabError NumericValidationAtom :=
+  resolveAddressedNumericAtom model rowGroup surface
+
 private def elaborateNumericValidationExpressionWith
     (model : FlatModel) (rowGroup : GroupPath)
     (scope : NumericOperandScope)
@@ -531,9 +538,8 @@ bare repeatable member is refused `MVK_NO_WILDCARD` upstream, so the star is man
 optional, and a starred member contributes its in-capacity instantiated row count
 ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)).
 
-The fixed-only list keeps the established scalar atom untouched and a lone star keeps its sole-star
-carrier, so both are refused here and widening this operator costs the already-measured forms
-nothing. The duplicate gate reaches every member: any
+The fixed-only list keeps the established scalar atom untouched and is refused here, so widening
+this operator costs the already-measured form nothing; a lone star is admitted. The duplicate gate reaches every member: any
 containment refuses, and equal paths refuse unless both sides are starred, which the Kernel admits
 and counts once per position. `writtenGroup` is the error field's group, defaulting to the rule
 group; it places a walk refusal, a star's unstarred level below its first star included, as on the
@@ -562,8 +568,7 @@ def elaborateMixedFilledGroupCountComparison
         | .ok (.terminalPresence source) =>
             pure (CheckedGroupCountOperand.starredPresence source)
   -- Some member is starred, so a short list is a lone star, which the Kernel admits as a complete
-  -- list: the arity class belongs to a lone *fixed* operand. A lone starred repeatable terminal keeps
-  -- its sole-star carrier; a lone fixed terminal below a starred ancestor has no other carrier.
+  -- list: the arity class belongs to a lone *fixed* operand.
   if !CheckedGroupCountOperand.admittedArity checked then
     throw .unsupportedExpression
   -- Containment runs **before** rootness, and the order is measured: a root beside its own
