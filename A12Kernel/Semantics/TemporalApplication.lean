@@ -130,35 +130,40 @@ def applyTo : TimeTargetOutcome → TimeTargetState → TimeTargetState
 
 end TimeTargetOutcome
 
+/-- Shared source-relative action for temporal families whose target can reject a rendered attempt,
+which it retains exactly. -/
+inductive TemporalErroredDelta (Stored Error : Type) where
+  | value (stored : Stored)
+  | cleared
+  | errored (attempted : Stored) (cause : Error)
+  deriving Repr, DecidableEq
+
+namespace TemporalErroredDelta
+
+/-- Lift a shared value/clear action into the error-bearing delta domain. -/
+def ofValueDelta :
+    Option (TemporalValueDelta Stored) → Option (TemporalErroredDelta Stored Error)
+  | none => none
+  | some (.value stored) => some (.value stored)
+  | some .cleared => some .cleared
+
+/-- Classify an accepted stored value relative to the source value. -/
+def projectValue [DecidableEq Stored] (value : Stored) (prior : PriorTemporalTarget Stored) :
+    Option (TemporalErroredDelta Stored Error) :=
+  ofValueDelta (TemporalValueDelta.projectValue value prior)
+
+/-- Classify an outcome that stores no value relative to the source value. -/
+def projectNoValue (prior : PriorTemporalTarget Stored) :
+    Option (TemporalErroredDelta Stored Error) :=
+  ofValueDelta (TemporalValueDelta.projectNoValue prior)
+
+end TemporalErroredDelta
+
 /-- Date-specific prior target value. -/
 abbrev PriorFullDateTarget := PriorTemporalTarget StoredDate
 
-/-- Source-relative action for one checked full-Date outcome. Target rejection retains the exact rendered attempt. -/
-inductive FullDateDelta where
-  | value (stored : StoredDate)
-  | cleared
-  | errored (attempted : StoredDate) (cause : FullDateTargetError)
-  deriving Repr, DecidableEq
-
-namespace FullDateDelta
-
-/-- Classify an accepted stored Date relative to the source value. -/
-def projectValue (value : StoredDate) : PriorFullDateTarget → Option FullDateDelta
-  | prior =>
-      match TemporalValueDelta.projectValue value prior with
-      | none => none
-      | some (.value stored) => some (.value stored)
-      | some .cleared => some .cleared
-
-/-- Classify an outcome that stores no value relative to the source value. -/
-def projectNoValue : PriorFullDateTarget → Option FullDateDelta
-  | prior =>
-      match TemporalValueDelta.projectNoValue prior with
-      | none => none
-      | some (.value stored) => some (.value stored)
-      | some .cleared => some .cleared
-
-end FullDateDelta
+/-- Source-relative action for one checked full-Date outcome. -/
+abbrev FullDateDelta := TemporalErroredDelta StoredDate FullDateTargetError
 
 namespace FullDateTargetOutcome
 
@@ -166,9 +171,9 @@ namespace FullDateTargetOutcome
 def projectDelta (outcome : FullDateTargetOutcome)
     (prior : PriorFullDateTarget) : Option FullDateDelta :=
   match outcome with
-  | .accepted value => FullDateDelta.projectValue value prior
+  | .accepted value => TemporalErroredDelta.projectValue value prior
   | .errored attempted cause => some (.errored attempted cause)
-  | .noValue | .poison _ => FullDateDelta.projectNoValue prior
+  | .noValue | .poison _ => TemporalErroredDelta.projectNoValue prior
 
 /-- Exact stored value supplied by an accepted outcome, independently of placement. -/
 def appliedValue : FullDateTargetOutcome → Option StoredDate
@@ -215,23 +220,8 @@ end FullDateTargetOutcome
 /-- DateTime-specific prior target value. -/
 abbrev PriorDateTimeTarget := PriorTemporalTarget StoredDateTime
 
-/-- Source-relative action for one checked DateTime outcome. Target rejection retains the exact rendered
-attempt, as a full Date's does. -/
-inductive DateTimeDelta where
-  | value (stored : StoredDateTime)
-  | cleared
-  | errored (attempted : StoredDateTime) (cause : DateTimeTargetError)
-  deriving Repr, DecidableEq
-
-namespace DateTimeDelta
-
-/-- Lift a shared value/clear action into the DateTime delta domain. -/
-def ofValueDelta : Option (TemporalValueDelta StoredDateTime) → Option DateTimeDelta
-  | none => none
-  | some (.value stored) => some (.value stored)
-  | some .cleared => some .cleared
-
-end DateTimeDelta
+/-- Source-relative action for one checked DateTime outcome. -/
+abbrev DateTimeDelta := TemporalErroredDelta StoredDateTime DateTimeTargetError
 
 /-- Exact state of one DateTime target cell. -/
 abbrev DateTimeTargetState := TemporalTargetState StoredDateTime
@@ -263,9 +253,9 @@ namespace DateTimeTargetOutcome
 def projectDelta (outcome : DateTimeTargetOutcome)
     (prior : PriorDateTimeTarget) : Option DateTimeDelta :=
   match outcome with
-  | .accepted value => DateTimeDelta.ofValueDelta (TemporalValueDelta.projectValue value prior)
+  | .accepted value => TemporalErroredDelta.projectValue value prior
   | .errored attempted cause => some (.errored attempted cause)
-  | .noValue | .poison _ => DateTimeDelta.ofValueDelta (TemporalValueDelta.projectNoValue prior)
+  | .noValue | .poison _ => TemporalErroredDelta.projectNoValue prior
 
 /-- Exact stored value supplied by an accepted DateTime outcome, independently of placement. -/
 def appliedValue : DateTimeTargetOutcome → Option StoredDateTime

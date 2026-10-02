@@ -42,7 +42,7 @@ theorem fullDateTargetApplies_deterministic (outcome : FullDateTargetOutcome)
 /-- An unchanged accepted stored Date produces no source-relative delta. -/
 theorem acceptedFullDate_unchanged_noDelta (value : StoredDate) :
     (FullDateTargetOutcome.accepted value).projectDelta (.filled value) = none := by
-  simp [FullDateTargetOutcome.projectDelta, FullDateDelta.projectValue,
+  simp [FullDateTargetOutcome.projectDelta, TemporalErroredDelta.projectValue, TemporalErroredDelta.ofValueDelta,
     TemporalValueDelta.projectValue]
 
 /-- Any outcome without an applied stored Date clears exactly in place. -/
@@ -80,6 +80,6 @@ theorem equal_fullDate_application_does_not_imply_equal_delta
           (.filled prior) := by
   simp [FullDateTargetOutcome.applyTo, FullDateTargetState.clearValue,
     TemporalTargetState.clearValue, FullDateTargetOutcome.projectDelta,
-    FullDateDelta.projectNoValue, TemporalValueDelta.projectNoValue]
+    TemporalErroredDelta.projectNoValue, TemporalErroredDelta.ofValueDelta, TemporalValueDelta.projectNoValue]
 
 end A12Kernel

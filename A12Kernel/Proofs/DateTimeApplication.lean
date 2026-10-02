@@ -46,7 +46,7 @@ theorem acceptedDateTime_unchanged_noDelta
     (DateTimeTargetOutcome.accepted value).projectDelta
       (.filled value) = none := by
   simp [DateTimeTargetOutcome.projectDelta,
-    TemporalValueDelta.projectValue, DateTimeDelta.ofValueDelta]
+    TemporalValueDelta.projectValue, TemporalErroredDelta.projectValue, TemporalErroredDelta.ofValueDelta]
 
 /-- Any DateTime outcome without an applied stored value clears exactly in place. -/
 theorem noAppliedDateTimeValue_clears_exactly
