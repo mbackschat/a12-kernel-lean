@@ -493,16 +493,18 @@ def ofStringFirstFilled (operation : CheckedStringFirstFilledComputation model) 
     let cell ← DocumentComputationReadBack.string entry.outcome
     pure (.string entry.outcome, cell)
 
-/-- A fixed-target Custom `FirstFilledValue`, whose selected token its matching Custom declaration
-accepts unchecked, read back as a String completion is. -/
+/-- A fixed-target Custom `FirstFilledValue` at its single instance, whose selected token its matching
+Custom declaration accepts unchecked, read back as a String completion is. -/
 def ofCustomFirstFilled (operation : CheckedCustomFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
-  target := operation.target.id
+  target := operation.targetField
   family := .string
-  referencesField := operation.source.referencesField
+  referencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
   run _ _ document := do
-    let outcome := (← (operation.execute document).mapError .firstFilledSource).asExactStringTargetOutcome
+    let entry ← (operation.evaluateAt document document.read
+      { field := operation.targetField, path := [] } []).mapError .firstFilledSite
+    let outcome := entry.result.asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.string outcome
     pure (.string outcome, cell)
 

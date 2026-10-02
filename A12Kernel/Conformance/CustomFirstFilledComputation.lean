@@ -104,7 +104,8 @@ private def result? (sourceStored : Option String) :
     Option TokenComputationResult := do
   let operation ← checked? target.id (star "Code")
   let input ← input? sourceStored
-  operation.execute input |>.toOption
+  let [entry] ← operation.execute input |>.toOption | none
+  pure entry.result
 
 private def document? (targetStored sourceStored : Option String)
     (unrelatedStored : String := "KEEP") : Option (CheckedDocument model) :=
@@ -125,6 +126,8 @@ private def resultView? (input : CheckedDocument model) := do
   let operation ← checked? target.id (star "Code")
   operation.executeResult input ([] : List FormalCause) |>.toOption
 
+private def root (field : FieldId) : CellAddr := { field, path := [] }
+
 /- The externally measured empty selection clears a seeded target, while the filled source preserves its exact bytes. -/
 example :
     result? none = some .noValue ∧
@@ -137,7 +140,7 @@ example :
       some (.poison (.registeredCustomValidation rejection)) := by
   native_decide
 
-/- The checked boundary admits only the same Custom type on a fixed target and direct single-level starred source. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and the repeatable target is refused on the fixed-target gate rather than on placement. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- The checked boundary admits only the same Custom type on a fixed target and direct single-level starred source. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and so is the repeatable target, whose direct star reopens its own row rather than a sibling. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "Code")).isSome = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star "Code")).isSome = true ∧
@@ -154,8 +157,8 @@ example : (do
     let destination ← document? (some "OLD") none
     let result ← resultView? input
     let applied ← result.applyToChecked destination |>.toOption
-    pure (result.string.withChanges, applied target.id,
-      applied unrelated.id)) =
+    pure (result.string.withChanges, applied (root target.id),
+      applied (root unrelated.id))) =
   some ([], .presentValue ⟨"OLD", by decide⟩,
     .presentValue ⟨"KEEP", by decide⟩) := by
   native_decide
@@ -166,8 +169,8 @@ example : (do
     let destination ← document? (some "OLD") none
     let result ← resultView? input
     let applied ← result.applyToChecked destination |>.toOption
-    pure (result.string.withErrors, applied target.id,
-      applied unrelated.id)) =
+    pure (result.string.withErrors, applied (root target.id),
+      applied (root unrelated.id))) =
   some ([], .presentValue ⟨"A7", by decide⟩,
     .presentValue ⟨"KEEP", by decide⟩) := by
   native_decide
@@ -178,9 +181,9 @@ example : (do
     let destination ← document? none none
     let result ← resultView? input
     let applied ← result.applyToChecked destination |>.toOption
-    pure (result.string.cleared, applied target.id,
-      applied unrelated.id)) =
-  some ([target.id], .presentEmpty,
+    pure (result.string.cleared, applied (root target.id),
+      applied (root unrelated.id))) =
+  some ([root target.id], .presentEmpty,
     .presentValue ⟨"KEEP", by decide⟩) := by
   native_decide
 
@@ -191,8 +194,8 @@ example : (do
     let result ← resultView? input
     let applied ← result.applyToChecked destination |>.toOption
     pure (result.string.withoutErrors, result.string.withErrors,
-      result.string.cleared, applied target.id, applied unrelated.id)) =
-  some ([], [], [target.id], .presentEmpty,
+      result.string.cleared, applied (root target.id), applied (root unrelated.id))) =
+  some ([], [], [root target.id], .presentEmpty,
     .presentValue ⟨"KEEP", by decide⟩) := by
   native_decide
 

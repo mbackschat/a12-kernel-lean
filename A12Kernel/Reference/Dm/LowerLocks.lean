@@ -329,4 +329,28 @@ example :
       }).toOption.isSome := by
   native_decide
 
+private def customModel : FlatModel :=
+  let custom (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
+      FlatFieldDecl :=
+    { id, groupPath, name, policy := { kind := .string }, repeatableScope := scope
+      customType := some { name := "Code" } }
+  { fields := [custom 1 ["Form"] "Fixed" [], custom 2 ["Form"] "First" [],
+      custom 3 ["Form"] "Second" [], custom 4 ["Form", "Rows", "Tasks"] "Target" [10, 30],
+      custom 5 ["Form", "Rows", "Choices"] "Choice" [10, 20]]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 },
+      { level := 20, path := ["Form", "Rows", "Choices"], repeatability := some 3 },
+      { level := 30, path := ["Form", "Rows", "Tasks"], repeatability := some 3 }] }
+
+/- A Custom `FirstFilledValue` lowers onto the one Custom carrier, not the ordinary String one, over a
+list at a fixed target and over a sibling star at a row target. -/
+example :
+    let computation (group : GroupPath) (target operation : String) : DmComputation :=
+      { group, name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+        alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
+    [(lowerComputation customModel .english
+        (computation ["Form"] "Fixed" "FirstFilledValue(First, Second)")).toOption.isSome,
+     (lowerComputation customModel .english
+        (computation ["Form", "Rows", "Tasks"] "Target" "FirstFilledValue(../Choices*/Choice)")).toOption.isSome].all id := by
+  native_decide
+
 end A12Kernel.Dm.LowerLocks

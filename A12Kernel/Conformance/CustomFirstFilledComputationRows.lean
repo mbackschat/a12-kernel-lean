@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedCustomFirstFilledFormalInput
+import A12Kernel.Elaboration.CustomFirstFilledComputation
 
 /-! # Exact-address repeatable Custom `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedCustomFirstFilledComputation
+namespace A12Kernel.Conformance.CustomFirstFilledComputationRows
 
 open A12Kernel
 
@@ -98,65 +98,65 @@ private def rootStar : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedAddressedCustomFirstFilledComputation model) :=
-  (checkAddressedCustomFirstFilledComputation model
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+    Option (CheckedCustomFirstFilledComputation model) :=
+  (checkCustomFirstFilledComputation model
+    ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
 
 private def elabError? (checked :
-    Except AddressedCustomFirstFilledComputationElabError
-      (CheckedAddressedCustomFirstFilledComputation model)) :
-    Option AddressedCustomFirstFilledComputationElabError :=
+    Except CustomFirstFilledComputationElabError
+      (CheckedCustomFirstFilledComputation model)) :
+    Option CustomFirstFilledComputationElabError :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary separates target placement, Custom declaration identity, source shape and scope, and self-reference. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
+/- The checked boundary separates target placement, Custom declaration identity checked before placement, source shape and scope, and self-reference; a fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
 example :
     operation?.isSome = true ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] 99 (siblingStar source.name)) =
-        some (.target (.unknownFieldId 99)) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Summary"] target.id (siblingStar source.name)) =
-        some (.targetOutsideDeclaringGroup target.path ["Summary"]) ∧
-    (checkAddressedCustomFirstFilledComputation model
-      ["Projects"] target.id absoluteSiblingStar).toOption.isSome = true ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Choices"] target.id absoluteSiblingStar) =
-        some (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] 99 (.star (siblingStar source.name))) =
+        some (.site (.target (.unknownFieldId 99))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Summary"] target.id (.star (siblingStar source.name))) =
+        some (.site (.repeatableTarget (.targetOutsideDeclaringGroup target.path ["Summary"]))) ∧
+    (checkCustomFirstFilledComputation model
+      ["Projects"] target.id (.star absoluteSiblingStar)).toOption.isSome = true ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Choices"] target.id (.star absoluteSiblingStar)) =
+        some (.site (.repeatableTarget (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
+        some (.site (.source (.resolve (.aboveRoot 1)))) ∧
+    elabError? (checkCustomFirstFilledComputation model
       ["Projects", "Choices"] ordinarySource.id
-        (siblingStar source.name)) =
+        (.star (siblingStar source.name))) =
         some (.targetNotCustom ordinarySource.path) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar ordinarySource.name)) =
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star (siblingStar ordinarySource.name))) =
         some (.sourceCustomTypeMismatch ordinarySource.path customType none) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar otherSource.name)) =
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star (siblingStar otherSource.name))) =
         some (.sourceCustomTypeMismatch otherSource.path customType
           (some otherType)) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar policySource.name)) =
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star (siblingStar policySource.name))) =
         some (.sourceCustomTypeMismatch policySource.path customType
           (some sameNameOtherPolicy)) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id nestedSiblingStar) =
-        some (.sourceShape nestedSource.path) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id partialBindingStar) =
-        some (.sourceScope nestedSource.path) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["OtherTasks"] unboundTarget.id absoluteSiblingStar) =
-        some (.sourceScope source.path) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id rootStar) =
-        some (.sourceScope rootSource.path) ∧
-    elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id selfStar) =
-        some (.targetSelfReference target.id) := by
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star nestedSiblingStar)) =
+        some (.site (.starPlacement (.sourceShape nestedSource.path))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star partialBindingStar)) =
+        some (.site (.starPlacement (.sourceScope nestedSource.path))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["OtherTasks"] unboundTarget.id (.star absoluteSiblingStar)) =
+        some (.site (.starPlacement (.sourceScope source.path))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star rootStar)) =
+        some (.site (.starPlacement (.sourceScope rootSource.path))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star selfStar)) =
+        some (.site (.starPlacement (.targetSelfReference target.id))) := by
   native_decide
 
 private def rejection : RegisteredCustomRejection := {
@@ -363,4 +363,4 @@ example : formalInputSummary? = some {
   } := by
   native_decide
 
-end A12Kernel.Conformance.AddressedCustomFirstFilledComputation
+end A12Kernel.Conformance.CustomFirstFilledComputationRows

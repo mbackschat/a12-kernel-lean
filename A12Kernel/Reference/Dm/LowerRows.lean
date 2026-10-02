@@ -96,7 +96,7 @@ private def timeComponents (model : FlatModel) (group : GroupPath) :
 the others over one sibling star. -/
 private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (arguments : List Argument) : Lowering (RowStep model) := do
-  if target.policy.kind == .string then
+  if target.policy.kind == .string && target.customType.isNone then
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofStringFirstFilled?
       (← elaborated "FirstFilledValue" (checkStringFirstFilledComputation model group target.id
         (← lowerEntitySource model group arguments))))
@@ -110,6 +110,9 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
         | true, some star => pure star
         | _, _ => refuse "FirstFilledValue" "row source"
     | _ => refuse "FirstFilledValue" "row source"
+  if target.customType.isSome then
+    return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofCustomFirstFilled?
+      (← elaborated "FirstFilledValue" (checkCustomFirstFilledComputation model group target.id (.star star))))
   match target.policy.kind with
   | .boolean => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofBooleanFirstFilled?

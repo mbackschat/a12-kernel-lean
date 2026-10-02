@@ -88,6 +88,8 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
           let operation ← check (checkDateRangeFirstFilledComputation model group target.id star)
           pure (.ofDateRangeFirstFilled operation)
   | .string =>
+      if target.customType.isSome then
+        return .ofCustomFirstFilled (← check (checkCustomFirstFilledComputation model group target.id source))
       let operation ← check (checkStringFirstFilledComputation model group target.id
         (← lowerEntitySource model group arguments))
       pure (.ofStringFirstFilled operation)

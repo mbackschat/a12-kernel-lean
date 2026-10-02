@@ -185,6 +185,14 @@ def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComput
     readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
       .dateFragment (DocumentComputationReadBack.dateFragment model)
 
+/-- A per-row Custom `FirstFilledValue` over a sibling star, read back as a String completion is. -/
+def ofCustomFirstFilled? (operation : CheckedCustomFirstFilledComputation model) :
+    Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
+  checked? operation.targetField .string operation.referencesField fun _ _ _ document => do
+    let outcomes ← (operation.execute document).mapError .firstFilledSite
+    readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
+      .string fun _ => DocumentComputationReadBack.string
+
 /-- A per-row Boolean `FirstFilledValue` over a sibling star. -/
 def ofBooleanFirstFilled? (operation : CheckedBooleanFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=

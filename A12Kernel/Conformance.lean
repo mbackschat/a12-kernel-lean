@@ -1,5 +1,5 @@
 import A12Kernel.Conformance.BooleanFirstFilledComputationRows
-import A12Kernel.Conformance.AddressedCustomFirstFilledComputation
+import A12Kernel.Conformance.CustomFirstFilledComputationRows
 import A12Kernel.Conformance.DateFragmentFirstFilledComputationRows
 import A12Kernel.Conformance.AddressedDateFromDateTime
 import A12Kernel.Conformance.AddressedDateFromDateTimeFormalInput
