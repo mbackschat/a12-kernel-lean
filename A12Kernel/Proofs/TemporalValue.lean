@@ -6,19 +6,19 @@ import A12Kernel.Elaboration.FullDateInput
 
 namespace A12Kernel
 
-/-- The same clean checked Date payload supplies exact comparison identity and fixed direct numeric components. -/
+/-- The same clean checked Date payload, in a field whose format is a date, supplies exact comparison identity and fixed direct numeric components. -/
 theorem flatTemporalDate_projects_instant_and_component
     (context : FlatContext) (field : FlatTemporalField)
     (date : DateValue)
     (part : DateNumericPart)
-    (kind : field.kind = .date)
+    (family : field.components.family? = some .date)
     (observed : context.observeValidationAt field.id =
       .value (.temporal (.date date))) :
     context.resolveTemporalComparisonOperand field = .value date.instant true ∧
       context.resolveDateNumericOperand field part =
         .value (part.extract date.parts) .fixed := by
-  simp [FlatContext.resolveTemporalComparisonOperand,
-    FlatContext.resolveDateNumericOperand, observed, kind,
+  simp [FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
+    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?]
 
 /-- The universal range reaches the established resolved range whenever both endpoint projections succeed. -/
@@ -44,13 +44,13 @@ theorem resolveStoredDate_identity
   rcases resolved with ⟨_, _, _, _, _, _, rfl⟩
   simp
 
-/-- The same clean checked DateTime payload supplies exact comparison identity and both fixed numeric component families. -/
+/-- The same clean checked DateTime payload, in a field whose format is a complete instant, supplies exact comparison identity and both fixed numeric component families. -/
 theorem flatTemporalDateTime_projects_all_consumers
     (context : FlatContext) (field : FlatTemporalField)
     (instant : Instant) (date : DateParts) (time : TimeOfDay)
     (basis : DateCalendarBasis) (datePart : DateNumericPart)
     (timePart : TimeNumericPart)
-    (kind : field.kind = .dateTime)
+    (family : field.components.family? = some .dateTime)
     (observed : context.observeValidationAt field.id =
       .value (.temporal (.dateTime instant date time basis))) :
     context.resolveTemporalComparisonOperand field = .value instant true ∧
@@ -58,9 +58,9 @@ theorem flatTemporalDateTime_projects_all_consumers
         .value (datePart.extract date) .fixed ∧
       context.resolveTimeNumericOperand field timePart =
         .value (timePart.extract time) .fixed := by
-  simp [FlatContext.resolveTemporalComparisonOperand,
-    FlatContext.resolveDateNumericOperand,
-    FlatContext.resolveTimeNumericOperand, observed, kind,
+  simp [FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
+    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand,
+    FlatContext.resolveTimeNumericOperand, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?,
     TemporalValue.time?]
 

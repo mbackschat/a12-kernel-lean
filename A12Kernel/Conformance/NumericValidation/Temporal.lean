@@ -306,4 +306,23 @@ example : errorOf
   native_decide
 
 
+/- A cross-kind carrier holds its format's value, and extraction reads that value whatever the declared
+kind: `HoursFromTime` of a DATE-declared clock and `YearFromDate` of a TIME-declared date fire on the
+matching row of the [cross-kind grid](../../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)
+and not on the other. A declared-kind test would leave both unknown. -/
+example :
+    let clock (hour : Nat) : RawCell :=
+      match TimeOfDay.ofHms? hour 30 0 with
+      | some value => .parsed (.temporal (.time { epochMillis := 0 } value))
+      | none => .empty
+    verdictOf (comparison .equal (timeFieldPart "DateAsClock" .hour) 10)
+        (temporalRaw 25 (clock 10)) true crossCarrierModel = some (.fired .value) ∧
+      verdictOf (comparison .equal (timeFieldPart "DateAsClock" .hour) 10)
+        (temporalRaw 25 (clock 11)) true crossCarrierModel = some .notFired ∧
+      verdictOf (comparison .equal (dateFieldPart "TimeAsDate" .year) 2024)
+        (temporalRaw 26 (.parsed (dateValue 2024 3 4))) true crossCarrierModel = some (.fired .value) ∧
+      verdictOf (comparison .equal (dateFieldPart "TimeAsDate" .year) 2024)
+        (temporalRaw 26 (.parsed (dateValue 2023 3 4))) true crossCarrierModel = some .notFired := by
+  native_decide
+
 end A12Kernel.Conformance.NumericValidation.Temporal

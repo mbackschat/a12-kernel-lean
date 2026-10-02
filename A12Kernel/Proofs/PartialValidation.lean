@@ -91,7 +91,7 @@ private theorem temporalOperand_resolve_agreesOn
       have readEq := agreement field.id (by
         simpa [FlatTemporalOperand.fields, FlatField.id] using relevant)
       simp_all [FlatTemporalOperand.resolve,
-        FlatContext.resolveTemporalComparisonOperand,
+        FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
         FlatContext.observeValidationAt]
   | literalValue instant => rfl
   | todayValue zoneId =>
@@ -429,7 +429,7 @@ theorem partialSelected_agreesOn
               simp_all [FlatComparison.allRelevant, FlatComparison.fieldIds,
                 FlatComparison.fields, FlatField.id])
             simp_all [FlatComparison.eval, FlatContext.resolveTimeComparisonOperand,
-              FlatContext.observeValidationAt]
+              FlatContext.resolveTemporalFieldBy, FlatContext.observeValidationAt]
       · rfl
     | tokenValueList quantifier operands values =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,

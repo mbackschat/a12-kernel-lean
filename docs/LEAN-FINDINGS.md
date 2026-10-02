@@ -2619,3 +2619,15 @@ A rule message's name position offers three alternatives that all begin with an 
 **Before modelling a Kernel parser's event order, find each decision whose alternatives share a prefix and predict the window's faults to answer first; measure one row inside the window and one just past it.** List every nested decision too, not only the outermost one.
 
 Related: [[LF200]] on checks that run before a syntax fault, [[LF201]] on modelling the grammar once.
+
+## LF203 — a "defensive" check that tests a different property from its owner's admission is a second rule, not a re-check
+
+> Date: 2026-10-02. Sections: §5. Basis: the cold review of `a5c93ddb..e99eddf6` and the [cross-kind checkpoint](sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads), four Kernel runs on both strategies.
+
+Four flat temporal resolvers guarded their read with `value.kind == field.kind` and called the guard defensive, since the formal check had already admitted the cell. But the formal check admits a value by its format's family, and the guard tested the declared kind, a different property. On every carrier where the two disagree, a DATE-declared clock or a TIME-declared date, the guard fired on admitted input and answered UNKNOWN where the Kernel fires. [`LF70`](LEAN-FINDINGS.md)'s question is whether a re-check is dead. Before that comes whether it re-checks the owner's fact at all; one that restates a neighbouring property is live on exactly the inputs that tell the two apart. A newly written resolver copied the guard and its docstring, so the defect spread by reuse rather than by design.
+
+Lean treatment: the resolvers share `FlatTemporalField.holdsValue`, the format-family test the formal check applies, and the two comparison resolvers became one parameterised by their projection.
+
+**Name the owner a defensive check re-checks, and use that owner's predicate rather than restating it.** Where none is named, the check is a semantic rule and needs a witness at the boundary where the two properties disagree.
+
+Limit: flat nonrepeatable validation reads; component-omitting cross-kind formats are not measured.

@@ -874,7 +874,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`index(...)` **is** admissible — a bare index-field short name plus the mandatory lowercase `.value` suffix, with the index field on the error field's own path — refuting the earlier no-witness row](sources/message-and-pointer-probes.md#src-index-terminal-admitting-spelling)
 
 <a id="src-index-german-suffix"></a>
-- [The `index(...)` value suffix follows the condition language and not the message locale, `Wert` under German and `value` under English, each refusing the other](sources/message-and-pointer-probes.md#src-index-german-suffix)
+- [Across the `en_US` and `de_DE` message locales measured, the `index(...)` value suffix follows the condition language, `Wert` under German and `value` under English, each refusing the other](sources/message-and-pointer-probes.md#src-index-german-suffix)
 
 <a id="src-value-list-base-type-cross-pairs"></a>
 - [Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, the token families in both orders on both sides and the boolean kinds in both orders against a literal](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)
@@ -966,6 +966,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A computed temporal target is gated by its declared format string and not by its declared kind, on all three of the Time, Date, and DateTime families](sources/computation-placement-and-constant-probes.md#src-computed-temporal-target-reads-the-format-not-the-kind)
 <a id="src-temporal-value-family-is-the-formats-not-the-kinds"></a>
 - [A temporal field's value family is its declared format's, not its declared kind's](sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)
+<a id="src-cross-kind-temporal-reads"></a>
+- [A cross-kind temporal field compares and extracts by its format's family, measured locally 2026-10-02](sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)
 <a id="src-temporal-operand-family-is-the-formats-not-the-kinds"></a>
 - [A temporal operand's admitted family is its declared format's too, extractors and completed-period differences alike, with a Base Year completing the year the format omits](sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)
 <a id="src-temporal-difference-gates-read-the-format"></a>

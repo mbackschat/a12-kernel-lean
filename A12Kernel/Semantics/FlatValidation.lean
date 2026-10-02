@@ -148,9 +148,10 @@ inductive FlatComparison where
   | textFields (op : EqualityOp) (left right : FlatTextFieldOperand)
   | temporal (op : TemporalComparisonOp)
       (left right : FlatTemporalOperand)
-  /-- Two date-free fields, compared by their clocks alone: the Kernel anchors every date-free value on
-  one shared day, so its comparison observes only the decoded hour, minute, and second
-  ([`spec/05`](../../spec/05-dates-and-time.md) §1), and the instant a cell carries plays no part. -/
+  /-- Two date-free fields, compared by their clocks alone: the Kernel's comparison observes only the
+  decoded hour, minute, and second, whatever the declared kind of either side
+  ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)), and
+  the instant a cell carries plays no part. -/
   | time (op : TemporalComparisonOp) (left right : FlatTemporalField)
   deriving Repr, DecidableEq
 
@@ -335,39 +336,44 @@ def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : Flat
     NumericOperand :=
   (context.observeValidationAt field.id).asStringLengthOperand
 
-/-- Resolve one checked temporal field to the runtime's exact instant coordinate. The kind check is defensive for low-level callers; checked model contexts already enforce it during formal checking. -/
-def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
-    (field : FlatTemporalField) : SimpleComparisonOperand Instant :=
-  match context.observeValidationAt field.id with
-  | .empty => .notEvaluated
-  | .value (.temporal value) =>
-      if value.kind == field.kind then .value value.instant true
-      else .unknown .malformed
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .unknown cause
+/-- Whether a temporal value belongs to the field's **format family**, the family its formal check
+admits ([`TemporalComponents.family?`](../Core.lean)). The declared kind takes no part: a DATE- or
+DATE_TIME-declared clock compares and extracts as a clock, and a TIME- or DATE_TIME-declared date as a
+date ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)).
+The test is defensive for low-level callers, since a checked context admits nothing else. -/
+def FlatTemporalField.holdsValue (field : FlatTemporalField) (value : TemporalValue) : Bool :=
+  some value.kind == field.components.family?
 
-/-- Resolve one checked date-free temporal field to its clock. The kind check is the same defensive one
-the instant resolution makes. -/
-def FlatContext.resolveTimeComparisonOperand (context : FlatContext)
-    (field : FlatTemporalField) : SimpleComparisonOperand TimeOfDay :=
+/-- Resolve one checked temporal field to one projection of its value for a comparison. -/
+def FlatContext.resolveTemporalFieldBy (context : FlatContext) (field : FlatTemporalField)
+    (project : TemporalValue → Option α) : SimpleComparisonOperand α :=
   match context.observeValidationAt field.id with
   | .empty => .notEvaluated
   | .value (.temporal value) =>
-      match value.kind == field.kind, value.time? with
-      | true, some clock => .value clock true
+      match field.holdsValue value, project value with
+      | true, some projected => .value projected true
       | _, _ => .unknown .malformed
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-/-- Resolve one checked Date or DateTime field for direct numeric date-component extraction. The kind check is defensive; checked authoring separately excludes Time. -/
+/-- Resolve one checked temporal field to the runtime's exact instant coordinate. -/
+def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
+    (field : FlatTemporalField) : SimpleComparisonOperand Instant :=
+  context.resolveTemporalFieldBy field fun value => some value.instant
+
+/-- Resolve one checked date-free temporal field to its clock. -/
+def FlatContext.resolveTimeComparisonOperand (context : FlatContext)
+    (field : FlatTemporalField) : SimpleComparisonOperand TimeOfDay :=
+  context.resolveTemporalFieldBy field TemporalValue.time?
+
+/-- Resolve one checked field holding a date for direct numeric date-component extraction. -/
 def FlatContext.resolveDateNumericOperand (context : FlatContext)
     (field : FlatTemporalField) (part : DateNumericPart) : NumericOperand :=
   match context.observeValidationAt field.id with
   | .empty => .value 0 .both
   | .value (.temporal value) =>
-      if value.kind == field.kind then
+      if field.holdsValue value then
         match value.dateParts? with
         | some parts => .value (part.extract parts) .fixed
         | none => .unknown .malformed
@@ -377,13 +383,13 @@ def FlatContext.resolveDateNumericOperand (context : FlatContext)
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-/-- Resolve one checked Time or DateTime field for direct numeric clock-component extraction. The kind check is defensive; checked authoring separately excludes Date. -/
+/-- Resolve one checked field holding a clock for direct numeric clock-component extraction. -/
 def FlatContext.resolveTimeNumericOperand (context : FlatContext)
     (field : FlatTemporalField) (part : TimeNumericPart) : NumericOperand :=
   match context.observeValidationAt field.id with
   | .empty => .value 0 .both
   | .value (.temporal value) =>
-      if value.kind == field.kind then
+      if field.holdsValue value then
         match value.time? with
         | some clock => .value (part.extract clock) .fixed
         | none => .unknown .malformed

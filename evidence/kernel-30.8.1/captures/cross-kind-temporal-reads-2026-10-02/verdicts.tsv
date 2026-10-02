@@ -1,0 +1,11 @@
+# run	row	fired
+xd	lt	CLT,DLT
+xd	gt	
+xd	eq	DEQ
+xs	lt	CLT,SLT
+xs	gt	
+xs	eq	SEQ
+xr	lt	CLT,SLT,TLT
+xr	gt	
+xe	hit	DH,DY,SH,SY,TH,TY
+xe	miss	

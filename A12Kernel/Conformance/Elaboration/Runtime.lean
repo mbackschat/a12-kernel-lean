@@ -231,18 +231,12 @@ private def clockModel : FlatModel :=
 
 private def clockRaw (event other : Nat × Nat) (eventInstant otherInstant : Int) : RawFlatContext where
   read id :=
-    let clock (parts : Nat × Nat) : Option TimeOfDay :=
-      if valid : parts.1 < 24 ∧ parts.2 < 60 ∧ 0 < 60 then
-        some { hour := parts.1, minute := parts.2, second := 0, valid }
-      else none
-    if id = 10 then
-      match clock event with
-      | some value => .parsed (.temporal (.time { epochMillis := eventInstant } value))
+    let cell (parts : Nat × Nat) (millis : Int) : RawCell :=
+      match TimeOfDay.ofHms? parts.1 parts.2 0 with
+      | some value => .parsed (.temporal (.time { epochMillis := millis } value))
       | none => .empty
-    else if id = 90 then
-      match clock other with
-      | some value => .parsed (.temporal (.time { epochMillis := otherInstant } value))
-      | none => .empty
+    if id = 10 then cell event eventInstant
+    else if id = 90 then cell other otherInstant
     else .empty
 
 /- A comparison between two date-free fields observes their clocks and nothing else, as `spec/05`
@@ -260,6 +254,49 @@ example :
       run (clockRaw (10, 0) (11, 0) 36000000 39600000) less = some (.fired .value) ∧
       run (clockRaw (11, 0) (10, 0) 0 0) less = some .notFired ∧
       run (clockRaw (10, 0) (10, 0) 0 36000000) equal = some (.fired .value) := by
+  native_decide
+
+/-- Clock- and date-format carriers whose declared kind disagrees with their format, beside the
+model's `EventTime`, `DispatchDate` and date-format DATE_TIME `StampAsDate`. -/
+private def crossKindModel : FlatModel :=
+  { model with fields := model.fields ++ [
+      { eventTimeDecl with id := 91, name := "ClockAsDate", policy := { kind := .temporal .date timeComponents } },
+      { eventTimeDecl with id := 92, name := "ClockAsStamp", policy := { kind := .temporal .dateTime timeComponents } },
+      { eventTimeDecl with id := 93, name := "DateAsTime", policy := { kind := .temporal .time dispatchDateComponents } }] }
+
+/-- `EventTime` and the clock carriers at `left`'s hour, `DispatchDate` at day 5 and the date carriers at
+`right`'s day of March 2024, each holding its format's value. -/
+private def crossKindRaw (hour day : Nat) : RawFlatContext where
+  read id :=
+    let clock (hour : Nat) : RawCell :=
+      match TimeOfDay.ofHms? hour 0 0 with
+      | some value => .parsed (.temporal (.time { epochMillis := 0 } value))
+      | none => .empty
+    let date (day : Nat) : RawCell :=
+      .parsed (.temporal (.date { instant := { epochMillis := day * 86400000 }
+                                  parts := { year := 2024, month := 3, day }
+                                  basis := .storedGregorian }))
+    if id = 10 then clock 11
+    else if id = 91 ∨ id = 92 then clock hour
+    else if id = 8 then date 5
+    else if id = 93 ∨ id = 13 then date day
+    else .empty
+
+/- The [cross-kind grid](../../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads):
+a DATE- or DATE_TIME-declared clock compares with a Time field as a clock, and a TIME- or
+DATE_TIME-declared date with a Date field as a date, firing on the order their values hold and on
+equality. A declared-kind test leaves every row unknown. -/
+example :
+    let run (raw : RawFlatContext) (condition : SurfaceCondition) :=
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" crossKindModel (worldAt 0)
+        ["Order"] raw true condition)
+    ["ClockAsDate", "ClockAsStamp"].all (fun field =>
+      run (crossKindRaw 10 5) (compareFields .less field "EventTime") == some (.fired .value) &&
+      run (crossKindRaw 12 5) (compareFields .less field "EventTime") == some .notFired &&
+      run (crossKindRaw 11 5) (compareFields .equal field "EventTime") == some (.fired .value)) ∧
+    ["DateAsTime", "StampAsDate"].all (fun field =>
+      run (crossKindRaw 11 4) (compareFields .less field "DispatchDate") == some (.fired .value) &&
+      run (crossKindRaw 11 6) (compareFields .less field "DispatchDate") == some .notFired) := by
   native_decide
 
 end A12Kernel.Conformance.Elaboration.Runtime
