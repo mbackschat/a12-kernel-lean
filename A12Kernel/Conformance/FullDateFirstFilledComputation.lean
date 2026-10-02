@@ -172,7 +172,8 @@ private def outcomeFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     Option FullDateTargetOutcome := do
   let operation ← checked? targetDeclaration.id (star sourceDeclaration.name)
   let input ← inputFor? targetDeclaration sourceDeclaration sourceInputs
-  operation.execute input |>.toOption
+  let [entry] ← operation.execute input |>.toOption | none
+  pure entry.outcome
 
 private def outcome? := outcomeFor? target source
 
@@ -192,11 +193,13 @@ private def runViewFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     (targetStored : String) (targetRaw : RawCell)
     (sourceInputs : List SourceInput)
     (residualMessages : List FormalCause := []) :
-    Option (FullDateComputationRunView FormalCause) := do
+    Option (FullDateComputationRunView FormalCause CellAddr) := do
   let operation ← checked? targetDeclaration.id (star sourceDeclaration.name)
   let input ← inputWithTargetFor? targetDeclaration sourceDeclaration
     targetStored targetRaw sourceInputs
-  operation.executeResult input residualMessages |>.toOption
+  (·.fullDate) <$> (operation.executeResult input residualMessages |>.toOption)
+
+private def root (field : FieldId) : CellAddr := { field, path := [] }
 
 private def selectedDate : StoredDate := ⟨"2024-03-20", by decide⟩
 private def destinationDate : StoredDate := ⟨"2010-02-03", by decide⟩
@@ -241,11 +244,11 @@ example : (do
         raw := .parsed (dateValue 1710892800000 2024 3 20)
       }]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
+    let applied ← view.applyTo destination.sourceFullDateTargetStateAt |>.toOption
     pure (view.withoutErrors, view.withChanges,
-      applied target.id, applied otherGroupTarget.id)) =
-    some ([{ targetField := target.id, value := selectedDate }],
-      [{ targetField := target.id, value := selectedDate }],
+      applied (root target.id), applied (root otherGroupTarget.id))) =
+    some ([{ targetField := root target.id, value := selectedDate }],
+      [{ targetField := root target.id, value := selectedDate }],
       .presentValue selectedDate, .presentValue unrelatedDate) := by
   native_decide
 
@@ -258,9 +261,9 @@ example : (do
         raw := .parsed (dateValue 1710892800000 2024 3 20)
       }]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
-    pure (view.withoutErrors, view.withChanges, applied target.id)) =
-    some ([{ targetField := target.id, value := selectedDate }], [],
+    let applied ← view.applyTo destination.sourceFullDateTargetStateAt |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied (root target.id))) =
+    some ([{ targetField := root target.id, value := selectedDate }], [],
       .presentValue destinationDate) := by
   native_decide
 
@@ -272,10 +275,10 @@ example :
       let view ← runViewFor? target source "2000-01-01"
         (.parsed (dateValue 946684800000 2000 1 1)) []
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceFullDateTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied otherGroupTarget.id)) =
-      some ([target.id], true, .presentEmpty, .presentValue unrelatedDate) ∧
+        applied (root target.id), applied (root otherGroupTarget.id))) =
+      some ([root target.id], true, .presentEmpty, .presentValue unrelatedDate) ∧
     (do
       let view ← runViewFor? target source "2000-01-01"
         (.parsed (dateValue 946684800000 2000 1 1)) [{
@@ -284,10 +287,10 @@ example :
           raw := .rejected .malformed
         }]
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceFullDateTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied otherGroupTarget.id)) =
-      some ([target.id], true, .presentEmpty, .presentValue unrelatedDate) := by
+        applied (root target.id), applied (root otherGroupTarget.id))) =
+      some ([root target.id], true, .presentEmpty, .presentValue unrelatedDate) := by
   native_decide
 
 /- The typed adapter retains the parsed instant rather than copying the source's stored text; this mechanism separator is internal, not Kernel-calibrated. -/
@@ -328,7 +331,7 @@ example :
       ] = some "POISON" := by
   native_decide
 
-/- The checked boundary admits either exact full-Date format only when target and direct single-level starred source match; optional checks and wider profiles remain excluded. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- The checked boundary admits either exact full-Date format only when target and direct single-level starred source match. A pre-1900-checked target is admitted, its target policy owning the check as at a row target, while a checked source and wider profiles remain excluded. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "PromiseDate")).isSome = true ∧
       (checked? target.id (star "DottedDate")).isNone = true ∧
@@ -336,7 +339,7 @@ example :
       (checked? dottedTarget.id (star "DottedDate")).isSome = true ∧
       (checked? target.id (star "CheckedDate")).isNone = true ∧
       (checked? dottedTarget.id (star "CheckedDottedSource")).isNone = true ∧
-      (checked? checkedDottedTarget.id (star "DottedDate")).isNone = true ∧
+      (checked? checkedDottedTarget.id (star "DottedDate")).isSome = true ∧
       (checked? unsupportedFormatTarget.id
         (star "UnsupportedSource")).isNone = true ∧
       (checked? target.id (star "Time")).isNone = true ∧

@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedFullDateFirstFilledFormalInput
+import A12Kernel.Elaboration.FullDateFirstFilledComputation
 
 /-! # Exact-address repeatable full-Date `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedFullDateFirstFilledComputation
+namespace A12Kernel.Conformance.FullDateFirstFilledComputationRows
 
 open A12Kernel
 
@@ -53,35 +53,35 @@ private def siblingStar (field : String) : SurfaceStarFieldPath := {
 }
 
 private def operation? : Option
-    (CheckedAddressedFullDateFirstFilledComputation model) :=
-  (checkAddressedFullDateFirstFilledComputation model
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+    (CheckedFullDateFirstFilledComputation model) :=
+  (checkFullDateFirstFilledComputation model
+    ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
 
 private def elabError? (checked : Except
-    AddressedFullDateFirstFilledComputationElabError
-    (CheckedAddressedFullDateFirstFilledComputation model)) :=
+    FullDateFirstFilledComputationElabError
+    (CheckedFullDateFirstFilledComputation model)) :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary admits both same-format FULL Date carriers and a checked target, while rejecting crossed, wrong-family, checked-source, and fixed shapes. -/
+/- A repeatable target admits both same-format FULL Date carriers and a pre-1900-checked target, while rejecting crossed, wrong-family and checked-source shapes. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example : operation?.isSome = true ∧
-    (checkAddressedFullDateFirstFilledComputation model
+    (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] dottedTarget.id
-      (siblingStar dottedSource.name)).toOption.isSome = true ∧
-    elabError? (checkAddressedFullDateFirstFilledComputation model
+      (.star (siblingStar dottedSource.name))).toOption.isSome = true ∧
+    elabError? (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] target.id
-      (siblingStar dottedSource.name)) =
-        some (.sourceCarrier dottedSource.path) ∧
-    elabError? (checkAddressedFullDateFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar timeSource.name)) =
-        some (.sourceCarrier timeSource.path) ∧
-    elabError? (checkAddressedFullDateFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar checkedSource.name)) =
-        some (.sourceCarrier checkedSource.path) ∧
-    elabError? (checkAddressedFullDateFirstFilledComputation model
-      ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) := by
+      (.star (siblingStar dottedSource.name))) =
+        some (.shape (.sourceCarrier dottedSource.path)) ∧
+    elabError? (checkFullDateFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star (siblingStar timeSource.name))) =
+        some (.shape (.sourceCarrier timeSource.path)) ∧
+    elabError? (checkFullDateFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star (siblingStar checkedSource.name))) =
+        some (.shape (.sourceCarrier checkedSource.path)) ∧
+    elabError? (checkFullDateFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
+        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) := by
   native_decide
 
 private def prepared :
@@ -299,4 +299,4 @@ example : formalInputSummary? = some {
   } := by
   native_decide
 
-end A12Kernel.Conformance.AddressedFullDateFirstFilledComputation
+end A12Kernel.Conformance.FullDateFirstFilledComputationRows

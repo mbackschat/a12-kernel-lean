@@ -371,7 +371,8 @@ def fromOutcomes (input : CheckedDocument model)
   fromOutcomesAt input.sourceFullDateTargetState residualMessages outcomes
 
 /-- The public error predicate observes exactly computed-instance errors and residual messages. -/
-def noErrorOccurred (view : FullDateComputationRunView ResidualMessage) : Bool :=
+def noErrorOccurred {Target : Type} (view : FullDateComputationRunView ResidualMessage Target) :
+    Bool :=
   TemporalComputationRunView.noErrorOccurred view
 
 /-- Order-independent equality of the five public collections. -/

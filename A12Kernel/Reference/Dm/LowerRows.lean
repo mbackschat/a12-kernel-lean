@@ -123,8 +123,8 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
           (← elaborated "FirstFilledValue" (checkDateFragmentFirstFilledComputation model group target.id
             (.star star))))
       else
-      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedFullDateFirstFilled?
-        (← elaborated "FirstFilledValue" (checkAddressedFullDateFirstFilledComputation model group target.id star)))
+      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofFullDateFirstFilled?
+        (← elaborated "FirstFilledValue" (checkFullDateFirstFilledComputation model group target.id (.star star))))
   | .dateRange => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedDateRangeFirstFilled?
         (← elaborated "FirstFilledValue" (checkAddressedDateRangeFirstFilledComputation model group target.id star)))

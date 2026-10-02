@@ -1,64 +1,46 @@
 import A12Kernel.Elaboration.TemporalFirstFilledShape
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
-/-! # Fixed-target full-Date `FirstFilledValue` computation over a direct star or a direct list -/
+/-! # Full-Date `FirstFilledValue` at a fixed or a repeatable target
+
+One carrier serves both address classes over the shared temporal site: a fixed target over a direct
+star or a list of plain fields, a repeatable one over a sibling single-axis star at every row of its
+scope. Source and target share one exact full-Date spelling, ISO or dotted, and the target policy
+renders and classifies the selected Date.
+-/
 
 namespace A12Kernel
 
 inductive FullDateFirstFilledComputationElabError where
-  | shape (cause : TemporalFirstFilledShapeElabError)
+  | shape (cause : TemporalFirstFilledSiteElabError)
+  | targetNotFullDate (path : List String)
   | targetPolicy (cause : FullDateTargetElabError)
   deriving Repr, DecidableEq
 
-/-- Carrier-specific source shape retained beneath the checked full-Date computation boundary. -/
-inductive FullDateFirstFilledShape (model : FlatModel) where
-  | iso
-      (shape : CheckedTemporalFirstFilledShape model .fullDateIso)
-  | dotted
-      (shape : CheckedTemporalFirstFilledShape model .fullDateDotted)
-
-namespace FullDateFirstFilledShape
-
-def targetField : FullDateFirstFilledShape model → FieldId
-  | .iso shape | .dotted shape => shape.target.id
-
-def referencesField : FullDateFirstFilledShape model → FieldId → Bool
-  | .iso shape | .dotted shape => shape.source.referencesField
-
-theorem excludesTarget (shape : FullDateFirstFilledShape model) :
-    shape.referencesField shape.targetField = false := by
-  cases shape with
-  | iso shape | dotted shape => exact shape.excludesTarget
-
-end FullDateFirstFilledShape
-
-/-- One fixed full-Date target and one direct star or direct list source sharing one exact admitted declaration format. The private constructor keeps the separately checked target policy tied to the assembly route. -/
+/-- One full-Date target, fixed or repeatable, and its source sharing one exact spelling. -/
 structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
   private mk ::
-  shape : FullDateFirstFilledShape model
+  shape : CheckedTemporalFirstFilledSite model
+  fullDate : shape.carrier = .fullDateIso ∨ shape.carrier = .fullDateDotted
   targetPolicy : CheckedFullDateTarget model
 
-/-- Check the two exact bounded full-Date formats. The ISO composition is externally measured; dotted target rendering is measured separately while its direct `FirstFilledValue` composition remains pending. Wider formats, policies, operands other than a direct star or a direct list of plain fields, nesting, validation use, and materialized-document reconstruction stay outside. -/
+/-- Check the site, the two exact full-Date spellings, and the target's policy at its own scope, which
+owns the target's pre-1900 check. The ISO composition is externally measured; dotted target rendering
+is measured separately. Wider formats, nesting, validation use, and materialized-document
+reconstruction remain outside. -/
 def checkFullDateFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :
-    Except FullDateFirstFilledComputationElabError
-      (CheckedFullDateFirstFilledComputation model) := do
-  match checkTemporalFirstFilledShape
-      model declaringGroup targetField authored .fullDateIso with
-  | .ok shape =>
-      let targetPolicy ← elaborateFullDateTarget model targetField
-        |>.mapError .targetPolicy
-      pure { shape := .iso shape, targetPolicy }
-  | .error (.targetCarrier _) =>
-      let shape ← checkTemporalFirstFilledShape
-        model declaringGroup targetField authored .fullDateDotted
-          |>.mapError .shape
-      let targetPolicy ← elaborateFullDateTarget model targetField
-        |>.mapError .targetPolicy
-      pure { shape := .dotted shape, targetPolicy }
-  | .error cause => throw (.shape cause)
+    Except FullDateFirstFilledComputationElabError (CheckedFullDateFirstFilledComputation model) := do
+  let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField authored
+    (ownsBefore1900 := true)).mapError .shape
+  if fullDate : shape.carrier = .fullDateIso ∨ shape.carrier = .fullDateDotted then
+    let targetPolicy ← (elaborateFullDateTargetIn model shape.site.target.repeatableScope
+      targetField).mapError .targetPolicy
+    pure { shape, fullDate, targetPolicy }
+  else throw (.targetNotFullDate shape.site.target.path)
 
 /-- Project one checked full-Date cell into the typed root computation result consumed by the target policy. Stored text is deliberately not selected here, so the account does not choose copy over decode/render. -/
 def fullDateFirstFilledCellAt
@@ -78,43 +60,125 @@ def evalFullDateFirstFilledCells :
       | .noValue => evalFullDateFirstFilledCells remaining
       | result => result
 
+/-- A full-Date run's failure: the shared site's, or the target policy's rendering. -/
 inductive FullDateFirstFilledComputationFault where
-  | source (cause : CheckedStarDocumentError)
+  | site (cause : FirstFilledSiteFault)
   | target (cause : FullDateTargetEvaluationFault)
+  deriving Repr, DecidableEq
+
+/-- One instance's full-Date selection retained under its exact target address. -/
+structure FullDateFirstFilledComputationOutcome where
+  targetField : CellAddr
+  outcome : FullDateTargetOutcome
+  deriving Repr, DecidableEq
+
+/-- One checked full-Date result backed by the common FullDate channels over exact cell addresses. -/
+structure FullDateFirstFilledComputationRunView (model : FlatModel) (ResidualMessage : Type) where
+  private mk ::
+  operation : CheckedFullDateFirstFilledComputation model
+  fullDate : FullDateComputationRunView ResidualMessage CellAddr
+
+namespace CheckedFullDateFirstFilledComputation
+
+def targetField (operation : CheckedFullDateFirstFilledComputation model) : FieldId :=
+  operation.shape.site.targetField
+
+def target (operation : CheckedFullDateFirstFilledComputation model) : FlatFieldDecl :=
+  operation.shape.site.target
+
+def referencesField (operation : CheckedFullDateFirstFilledComputation model) : FieldId → Bool :=
+  operation.shape.site.referencesField
+
+theorem excludesTarget (operation : CheckedFullDateFirstFilledComputation model) :
+    operation.referencesField operation.targetField = false :=
+  operation.shape.excludesTarget
+
+/-- Scan the source at one target instance's environment, then render the selected Date. -/
+def evaluateAt (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (target : CellAddr) (environment : Env) :
+    Except FullDateFirstFilledComputationFault FullDateFirstFilledComputationOutcome := do
+  let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError
+    (.site ∘ .source)
+  let outcome ← (operation.targetPolicy.evaluate (evalFullDateFirstFilledCells resolved.cells)).mapError
+    .target
+  pure { targetField := target, outcome }
+
+/-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
+scope with a clear at each over-limit row. -/
+def executeWithRead (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except FullDateFirstFilledComputationFault (List FullDateFirstFilledComputationOutcome) :=
+  operation.shape.site.instances input (.site ∘ .targetRows) (.site ∘ .targetEnvironment)
+    (fun target _ => pure { targetField := target, outcome := .noValue })
+    (operation.evaluateAt input read)
+
+def execute (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except FullDateFirstFilledComputationFault (List FullDateFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
+
+/-- Classify caller-view outcomes against immutable source target state through the shared FullDate
+result owner. -/
+def executeResultWithRead (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
+    Except FullDateFirstFilledComputationFault
+      (FullDateFirstFilledComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithRead input read
+  pure { operation
+         fullDate := FullDateComputationRunView.fromOutcomesAt input.sourceFullDateTargetStateAt
+           residualMessages
+           (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
+
+def executeResult (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except FullDateFirstFilledComputationFault
+      (FullDateFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
+
+end CheckedFullDateFirstFilledComputation
+
+namespace FullDateFirstFilledComputationRunView
+
+/-- Apply retained source-relative actions to exact FullDate cell-state projections from a separate
+checked document of the same model. -/
+def applyToChecked (view : FullDateFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (FullDateComputationRunView.FullDateComputationRunApplicationError CellAddr)
+      (FullDateComputationDestination CellAddr) :=
+  view.fullDate.applyTo destination.sourceFullDateTargetStateAt
+
+end FullDateFirstFilledComputationRunView
+
+/-- Failure while composing selected formal-input preparation with full-Date `FirstFilledValue`. -/
+inductive FullDateFirstFilledCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : FullDateFirstFilledComputationFault)
   deriving Repr, DecidableEq
 
 namespace CheckedFullDateFirstFilledComputation
 
-/-- Execute one checked carrier over immutable rows, then let the existing target policy render and classify the selected typed Date. -/
-private def executeWith
-    (shape : CheckedTemporalFirstFilledShape model carrier)
-    (targetPolicy : CheckedFullDateTarget model)
-    (input : CheckedDocument model) :
-    Except FullDateFirstFilledComputationFault FullDateTargetOutcome := do
-  let resolved ← shape.source.resolve input
-    |>.mapError .source
-  targetPolicy.evaluate (evalFullDateFirstFilledCells resolved.cells)
-    |>.mapError .target
+/-- Bind every source declaration and the computed target to the shared eager inventory. -/
+def formalInputPlan (operation : CheckedFullDateFirstFilledComputation model) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    (operation.shape.site.source.declarations.map (·.id)) [operation.targetField]
 
-/-- Execute through the single checked document and the exact full-Date target policy retained during assembly. -/
-def execute (operation : CheckedFullDateFirstFilledComputation model)
+/-- Prepare the selected sources once, retain every eager finding, and run lazily through the
+prepared read. -/
+def executeResultWithFormalInputs (operation : CheckedFullDateFirstFilledComputation model)
     (input : CheckedDocument model) :
-    Except FullDateFirstFilledComputationFault FullDateTargetOutcome :=
-  match operation with
-  | { shape := .iso shape, targetPolicy } =>
-      executeWith shape targetPolicy input
-  | { shape := .dotted shape, targetPolicy } =>
-      executeWith shape targetPolicy input
-
-/-- Execute and classify the one checked FirstFilled outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
-def executeResult (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (residualMessages : List ResidualMessage) :
-    Except FullDateFirstFilledComputationFault
-      (FullDateComputationRunView ResidualMessage) := do
-  let outcome ← operation.execute input
-  pure (FullDateComputationRunView.fromOutcomes input residualMessages
-    [(operation.targetPolicy.checked.target.id, outcome)])
+    Except FullDateFirstFilledCheckedResultFault
+      (FullDateFirstFilledComputationRunView model ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead input prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands with
+  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
 
 end CheckedFullDateFirstFilledComputation
 

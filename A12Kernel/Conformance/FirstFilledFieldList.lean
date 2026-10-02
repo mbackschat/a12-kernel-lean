@@ -174,7 +174,7 @@ private def dateResult? (cells : List (String × String)) : Option String := do
   let operation ←
     (checkFullDateFirstFilledComputation model ["Fc"] 14 (list ["D1", "D2"])).toOption
   match ← (operation.execute input).toOption with
-  | .accepted stored => pure stored.text
+  | [{ outcome := .accepted stored, .. }] => pure stored.text
   | _ => pure "-"
 
 /- The malformed-prefix capture's direct rows `c1` to `c3` and `q1` to `q4`, in that order; its seeded

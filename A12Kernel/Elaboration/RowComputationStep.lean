@@ -7,7 +7,7 @@ import A12Kernel.Elaboration.AddressedFieldValueAsString
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.TimeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
-import A12Kernel.Elaboration.AddressedFullDateFirstFilledComputation
+import A12Kernel.Elaboration.FullDateFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateRangeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateFromDateTime
@@ -40,7 +40,7 @@ inductive RowComputationStepFault where
   | stringFirstFilled (cause : StringFirstFilledComputationFault)
   | firstFilledSite (cause : FirstFilledSiteFault)
   | dateTimeFirstFilled (cause : DateTimeFirstFilledComputationFault)
-  | fullDateFirstFilled (cause : AddressedFullDateFirstFilledComputationFault)
+  | fullDateFirstFilled (cause : FullDateFirstFilledComputationFault)
   | dateRangeFirstFilled (cause : AddressedDateRangeFirstFilledComputationFault)
   | enumerationFirstFilled (cause : AddressedEnumerationFirstFilledComputationFault)
   | dateFromDateTime (cause : AddressedDateFromDateTimeFault)
@@ -204,9 +204,9 @@ def ofDateTimeFirstFilled? (operation : CheckedDateTimeFirstFilledComputation mo
         (DocumentComputationReadBack.dateTime model)
 
 /-- A per-row full-Date `FirstFilledValue` over a sibling star. -/
-def ofAddressedFullDateFirstFilled? (operation : CheckedAddressedFullDateFirstFilledComputation model) :
+def ofFullDateFirstFilled? (operation : CheckedFullDateFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .fullDate (· == operation.source.declaration.id)
+  checked? operation.targetField .fullDate operation.referencesField
     fun _ _ _ document => do
       let outcomes ← (operation.execute document).mapError .fullDateFirstFilled
       readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .fullDate

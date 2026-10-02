@@ -18,7 +18,7 @@ import A12Kernel.Conformance.AddressedEnumerationNumberHavingJoin
 import A12Kernel.Conformance.AddressedFieldValueAsNumber
 import A12Kernel.Conformance.AddressedFieldValueAsString
 import A12Kernel.Conformance.AddressedFieldValueRead
-import A12Kernel.Conformance.AddressedFullDateFirstFilledComputation
+import A12Kernel.Conformance.FullDateFirstFilledComputationRows
 import A12Kernel.Conformance.AddressedNestedPlacement
 import A12Kernel.Conformance.AddressedNumberAbs
 import A12Kernel.Conformance.AddressedNumberBinary

@@ -1,7 +1,6 @@
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
-import A12Kernel.Elaboration.AddressedFullDateFirstFilledFormalInput
 
-/-! # Direct and exact-address full-Date `FirstFilledValue` computation laws -/
+/-! # Full-Date `FirstFilledValue` laws at a fixed or a repeatable target -/
 
 namespace A12Kernel
 
@@ -36,40 +35,27 @@ theorem evalFullDateFirstFilledCells_poison_head
     evalFullDateFirstFilledCells (addressed :: remaining) = .poison cause := by
   simp [evalFullDateFirstFilledCells, selected]
 
-/-- Result construction retains the operation-owned target and delegates every public projection to the established FullDate outcome classifier. -/
-theorem fullDateFirstFilled_executeResult_projects
+/-- The immutable-document executor is definitionally the caller-read route specialized to the document's checked read. -/
+theorem checkedFullDateFirstFilled_executeWithRead_base
     (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (residualMessages : List ResidualMessage)
-    (outcome : FullDateTargetOutcome)
-    (evaluated : operation.execute input = .ok outcome) :
-    operation.executeResult input residualMessages =
-      .ok (FullDateComputationRunView.fromOutcomes input residualMessages
-        [(operation.targetPolicy.checked.target.id, outcome)]) := by
-  rw [CheckedFullDateFirstFilledComputation.executeResult, evaluated]
-  rfl
-
-/-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/
-theorem addressedFullDateFirstFilled_executeWithRead_base
-    (operation : CheckedAddressedFullDateFirstFilledComputation model)
     (input : CheckedDocument model) :
     operation.executeWithRead input input.read = operation.execute input := by
   rfl
 
-/-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
-theorem addressedFullDateFirstFilled_executeResult_projects
-    (operation : CheckedAddressedFullDateFirstFilledComputation model)
+/-- Result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
+theorem checkedFullDateFirstFilled_executeResult_projects
+    (operation : CheckedFullDateFirstFilledComputation model)
     (input : CheckedDocument model) (messages : List ResidualMessage)
-    (outcomes : List AddressedFullDateFirstFilledComputationOutcome)
-    (view : AddressedFullDateFirstFilledComputationRunView model ResidualMessage)
+    (outcomes : List FullDateFirstFilledComputationOutcome)
+    (view : FullDateFirstFilledComputationRunView model ResidualMessage)
     (executed : operation.execute input = .ok outcomes)
     (produced : operation.executeResult input messages = .ok view) :
     view.operation = operation ∧
       view.fullDate = FullDateComputationRunView.fromOutcomesAt
         input.sourceFullDateTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  rw [CheckedAddressedFullDateFirstFilledComputation.executeResult,
-    CheckedAddressedFullDateFirstFilledComputation.executeResultWithRead]
+  rw [CheckedFullDateFirstFilledComputation.executeResult,
+    CheckedFullDateFirstFilledComputation.executeResultWithRead]
     at produced
   change operation.executeWithRead input input.read = .ok outcomes at executed
   rw [executed] at produced
@@ -78,12 +64,12 @@ theorem addressedFullDateFirstFilled_executeResult_projects
   exact ⟨rfl, rfl⟩
 
 /-- Successful whole-call composition preserves the exact prepared FULL Date result, including its eager findings, target rendering, and source-relative actions. -/
-theorem addressedFullDateFirstFilled_executeResultWithFormalInputs_exact
-    (operation : CheckedAddressedFullDateFirstFilledComputation model)
+theorem checkedFullDateFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedFullDateFirstFilledComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
     (prepared : ComputationFormalInputPreparation model)
-    (result : AddressedFullDateFirstFilledComputationRunView model
+    (result : FullDateFirstFilledComputationRunView model
       ComputationFormalInputFinding)
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
@@ -91,17 +77,17 @@ theorem addressedFullDateFirstFilled_executeResultWithFormalInputs_exact
       prepared.preliminary.readComputation
       prepared.formalErrorsInOperands = .ok result) :
     operation.executeResultWithFormalInputs input = .ok result := by
-  rw [CheckedAddressedFullDateFirstFilledComputation.executeResultWithFormalInputs,
+  rw [CheckedFullDateFirstFilledComputation.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
-/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged addressed FULL Date fault. -/
-theorem addressedFullDateFirstFilled_executeResultWithFormalInputs_failure_exact
-    (operation : CheckedAddressedFullDateFirstFilledComputation model)
+/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged FULL Date fault. -/
+theorem checkedFullDateFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedFullDateFirstFilledComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
     (prepared : ComputationFormalInputPreparation model)
-    (fault : AddressedFullDateFirstFilledComputationFault)
+    (fault : FullDateFirstFilledComputationFault)
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeResultWithRead input
@@ -109,13 +95,13 @@ theorem addressedFullDateFirstFilled_executeResultWithFormalInputs_failure_exact
       prepared.formalErrorsInOperands = .error fault) :
     operation.executeResultWithFormalInputs input =
       .error (.execution prepared.formalErrorsInOperands fault) := by
-  rw [CheckedAddressedFullDateFirstFilledComputation.executeResultWithFormalInputs,
+  rw [CheckedFullDateFirstFilledComputation.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
-/-- Addressed application is exactly the common FullDate fold over the separately supplied document's exact cell-state projection. -/
-theorem addressedFullDateFirstFilledRun_applyToChecked_delegates
-    (view : AddressedFullDateFirstFilledComputationRunView model ResidualMessage)
+/-- Application is exactly the common FullDate fold over the separately supplied document's exact cell-state projection. -/
+theorem fullDateFirstFilledRun_applyToChecked_delegates
+    (view : FullDateFirstFilledComputationRunView model ResidualMessage)
     (destination : CheckedDocument model) :
     view.applyToChecked destination =
       view.fullDate.applyTo destination.sourceFullDateTargetStateAt := by

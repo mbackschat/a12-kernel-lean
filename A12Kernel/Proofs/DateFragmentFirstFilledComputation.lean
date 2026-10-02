@@ -27,7 +27,8 @@ declaration, and a source that cannot read its target. -/
 theorem checkedDateFragmentFirstFilled_carriers
     (operation : CheckedDateFragmentFirstFilledComputation model) :
     operation.shape.carrier.isDateFragment = true ∧
-      operation.target.temporalFirstFilledStarCarrier? = some operation.shape.carrier ∧
+      (operation.target.firstFilledTargetProfile operation.shape.ownsBefore1900
+        ).temporalFirstFilledStarCarrier? = some operation.shape.carrier ∧
       operation.shape.site.source.declarations.all
         (·.temporalFirstFilledStarCarrier? == some operation.shape.sourceProfile) = true ∧
       operation.shape.carrier.acceptsSource operation.shape.sourceProfile = true ∧

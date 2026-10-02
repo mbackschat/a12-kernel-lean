@@ -236,6 +236,20 @@ def checkTemporalFirstFilledShape
     checkTemporalFirstFilledSourceAgainst model target carrier declaringGroup
       checked.declaringGroupValid (.list checked.fields)
 
+/-- A target declaration as a carrier whose target policy owns the pre-1900 check reads it: that
+policy reports an earlier Date as errored rather than refusing the target, measured for a full-Date
+copy ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)) and a
+Date constant ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)).
+A source keeps the check and stays outside. -/
+def FlatFieldDecl.withoutBefore1900Check (declaration : FlatFieldDecl) : FlatFieldDecl :=
+  { declaration with temporalTargetPolicy :=
+      declaration.temporalTargetPolicy.map ({ · with youngerThan1900Check := false }) }
+
+/-- The target as a carrier reads it: without the pre-1900 check when its own policy owns it. -/
+def FlatFieldDecl.firstFilledTargetProfile (declaration : FlatFieldDecl)
+    (ownsBefore1900 : Bool) : FlatFieldDecl :=
+  if ownsBefore1900 then declaration.withoutBefore1900Check else declaration
+
 inductive TemporalFirstFilledSiteElabError where
   | site (cause : FirstFilledPlacementElabError)
   | targetCarrier (path : List String)
@@ -253,18 +267,22 @@ structure CheckedTemporalFirstFilledSite (model : FlatModel) where
   site : CheckedFirstFilledSite model
   carrier : TemporalFirstFilledStarCarrier
   sourceProfile : TemporalFirstFilledStarCarrier
-  targetCarrier : site.target.temporalFirstFilledStarCarrier? = some carrier
+  /-- Whether the carrier's target policy owns the target's pre-1900 check. -/
+  ownsBefore1900 : Bool
+  targetCarrier :
+    (site.target.firstFilledTargetProfile ownsBefore1900).temporalFirstFilledStarCarrier? = some carrier
   sourceCarrier :
     site.source.declarations.all (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true
   sourceAccepted : carrier.acceptsSource sourceProfile = true
   excludesTarget : site.referencesField site.targetField = false
 
-/-- Place the target and source, then check both carriers against the target's own profile. -/
+/-- Place the target and source, then check both carriers against the target's own profile, read
+without the pre-1900 check when the calling carrier's target policy owns it. -/
 def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath)
-    (targetField : FieldId) (authored : SurfaceFirstFilledSource) :
+    (targetField : FieldId) (authored : SurfaceFirstFilledSource) (ownsBefore1900 : Bool := false) :
     Except TemporalFirstFilledSiteElabError (CheckedTemporalFirstFilledSite model) := do
   let site ← (checkFirstFilledSite model declaringGroup targetField authored).mapError .site
-  match hTarget : site.target.temporalFirstFilledStarCarrier? with
+  match hTarget : (site.target.firstFilledTargetProfile ownsBefore1900).temporalFirstFilledStarCarrier? with
   | none => throw (.targetCarrier site.target.path)
   | some carrier =>
     let first := (site.source.declarations.head?).getD site.target
@@ -277,7 +295,7 @@ def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath
           if let .list _ := site.source then
             if carrier.dateRangeComponents?.isSome then throw (.sourceShape site.target.path)
           if hExcludes : site.referencesField site.targetField = false then
-            pure { site, carrier, sourceProfile
+            pure { site, carrier, sourceProfile, ownsBefore1900
                    targetCarrier := hTarget
                    sourceCarrier := hSource
                    sourceAccepted := hAccepted
