@@ -1,0 +1,9 @@
+{"model":"model.dm.json","locale":"en_US","observe":["validateFull","compute"],"rows":[
+    {"name": "clean", "documentInline": {"Order":{"Lines":[{"Candidate":7}]}}},
+    {"name": "invalid ordinary operand", "documentInline": {"Order":{"Lines":[{"Candidate":5.1,"Amount":9}]}}},
+    {"name": "domain failure", "documentInline": {"Order":{"Numerator":10,"Divisor":0,"Quotient":9.00}}},
+    {"name": "invalid computed target", "documentInline": {"Order":{"Lines":[{"Candidate":10}]}}},
+    {"name": "selected empty index", "documentInline": {"Order":{"IndexedLines":[{"Source":3}]}}},
+    {"name": "selected duplicate index", "documentInline": {"Order":{"IndexedLines":[{"Code":"A","Source":3},{"Code":"A","Source":4}]}}},
+    {"name": "formal operand and errored target", "documentInline": {"Order":{"Lines":[{"Candidate":10}],"Numerator":10,"Divisor":0}}}
+]}

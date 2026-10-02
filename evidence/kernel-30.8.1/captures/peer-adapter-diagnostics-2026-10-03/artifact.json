@@ -1,0 +1,524 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "model.dm.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "clean",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid ordinary operand",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlHatDezimalTrenner",
+              "field": "Order/Lines/Candidate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/Lines/Candidate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatDezimalTrenner",
+                "field": "Order/Lines/Candidate",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/Lines/Candidate"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlHatDezimalTrenner",
+              "field": "Order/Lines/Candidate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/Lines/Candidate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatDezimalTrenner",
+                "field": "Order/Lines/Candidate",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/Lines/Candidate"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "domain failure",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Quotient",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Order/Quotient",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/Quotient"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Quotient",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Order/Quotient",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/Quotient"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid computed target",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": false,
+                "errored": true,
+                "value": "10"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": false,
+                "errored": true,
+                "value": "10"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "selected empty index",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "mandatoryField",
+              "field": "Order/IndexedLines/Code",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/IndexedLines/Code"
+              ],
+              "fillToFix": [
+                "Order/IndexedLines/Code"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/IndexedLines/Projection",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "mandatoryField",
+                "field": "Order/IndexedLines/Code",
+                "severity": "ERROR",
+                "type": "OMISSION_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/IndexedLines/Code"
+                ],
+                "fillToFix": [
+                  "Order/IndexedLines/Code"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "mandatoryField",
+              "field": "Order/IndexedLines/Code",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/IndexedLines/Code"
+              ],
+              "fillToFix": [
+                "Order/IndexedLines/Code"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/IndexedLines/Projection",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "mandatoryField",
+                "field": "Order/IndexedLines/Code",
+                "severity": "ERROR",
+                "type": "OMISSION_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/IndexedLines/Code"
+                ],
+                "fillToFix": [
+                  "Order/IndexedLines/Code"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "selected duplicate index",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "uniqueIndex",
+              "field": "Order/IndexedLines/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/IndexedLines/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Order/IndexedLines[2]/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/IndexedLines[2]/Code"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/IndexedLines/Projection",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Order/IndexedLines[2]/Projection",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Order/IndexedLines/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/IndexedLines/Code"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Order/IndexedLines[2]/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/IndexedLines[2]/Code"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "uniqueIndex",
+              "field": "Order/IndexedLines/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/IndexedLines/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Order/IndexedLines[2]/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted kernel message]",
+              "referenced": [
+                "Order/IndexedLines[2]/Code"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/IndexedLines/Projection",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Order/IndexedLines[2]/Projection",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Order/IndexedLines/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/IndexedLines/Code"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Order/IndexedLines[2]/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/IndexedLines[2]/Code"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "formal operand and errored target",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": false,
+                "errored": true,
+                "value": "10"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Order/Quotient",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/Quotient"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Amount",
+                "cleared": false,
+                "errored": true,
+                "value": "10"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Order/Quotient",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted kernel message]",
+                "referenced": [
+                  "Order/Quotient"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
