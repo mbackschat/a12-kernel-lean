@@ -367,8 +367,8 @@ structure RepeatableGroupDecl where
   declares a finite maximum strictly greater than zero — `1` included — and a group declaring none
   is nonrepeatable rather than unbounded
   ([checkpoint](../../../docs/SOURCES.md#src-repeatability-domain-peer-measurement)).
-  Every consumer keeping a `none` branch therefore answers a shape no authorable model reaches;
-  keep those branches total and do not write a clause that depends on their unreachability. -/
+  Every consumer keeping a `none` branch therefore answers a shape outside that measured domain, and
+  the DM reader always retains the maximum; keep those branches total and do not write a clause that depends on their unreachability. -/
   repeatability : Option Nat := none
   /-- The unique direct-child field used for semantic row selection, when declared. -/
   indexField : Option FieldId := none

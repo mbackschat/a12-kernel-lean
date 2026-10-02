@@ -78,7 +78,8 @@ def evaluateCheckedDocumentValidation
     [starred-extent](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)
     and [nested-star](../../docs/sources/group-and-iteration-probes.md#src-nested-star-bound-outer-level)
     captures, read through the population replay on 2026-10-02. No retained row types a starred
-    count at capacity. An unretained maximum returns `none`, which no authorable model reaches. -/
+    count at capacity. An unretained maximum returns `none`, outside the measured repeatability domain
+    `RepeatableGroupDecl.repeatability` records. -/
 def countCapacity? (checked : CheckedFilledFieldCountGroupSource model) : Option Nat :=
   match checked.source with
   | .fixed _ => model.groupSubtreeSlotCapacity? checked.source.groupPath

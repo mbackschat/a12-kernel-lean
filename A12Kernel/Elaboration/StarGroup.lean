@@ -414,7 +414,8 @@ def isRoot (operand : CheckedGroupCountOperand model) : Bool :=
     environment the star reopens, the product of the reopened levels' maxima
     ([`kf463`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf463)). `none` leaves the whole count
     without a finite extent to reach rather than acquiring an unmeasured movement rule;
-    `RepeatableGroupDecl.repeatability` owns why no authorable model selects that branch. -/
+    `RepeatableGroupDecl.repeatability` owns the measurement placing that branch outside the
+    Kernel's repeatability domain. -/
 def declaredExtent? (operand : CheckedGroupCountOperand model) : Option Nat :=
   match operand with
   | .fixed _ => some 1

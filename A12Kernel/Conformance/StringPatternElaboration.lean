@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.ValidationCondition.Assembly
+import A12Kernel.Elaboration.StringContext
 
 /-! # Checked authored String-pattern conformance locks -/
 
@@ -463,6 +464,53 @@ example :
       [some (.notFired, false), some (.notFired, false),
        some (.fired .value, false), some (.fired .value, false),
        some (.notFired, false), some (.unknown, false)] := by
+  native_decide
+
+/-! ## The pattern leaf on the addressed routes
+
+The rule routes read the leaf through the checked document, not the scalar context: the full route
+behind the content gate, the partial route through its call-local view. -/
+
+private def checkedDocument? (cell : RawCell) : Option (CheckedDocument model) := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } compilePattern model).toOption
+  let placed : ClassifiedCellInput := { address := { field := 1, path := [] }, stored := "ABC", raw := cell }
+  (checkDocument prepared "en_US" { instantiatedRows := [], cells := [placed] }).toOption
+
+private def addressedContext (document : CheckedDocument model)
+    (input : AddressedValidationInput model) : AddressedValidationEvaluationContext model :=
+  { scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }
+    outer := []
+    input }
+
+/-- The full route: the matched leaf, and the content gate's answer on an instance without content. -/
+private def fullVerdicts? (cell : RawCell) : Option (Verdict × Verdict) := do
+  let document ← checkedDocument? cell
+  let checked ← (CheckedValidationCondition.fromStringPattern model ["Claim"] compilePattern
+    condition).toOption
+  let context := addressedContext document (.checked document)
+  pure ((← (checked.core.evalAddressedFull context true).toOption),
+    (← (checked.core.evalAddressedFull context false).toOption))
+
+/-- The partial route, `covered` choosing whether the view reads the cell or reports it silent. -/
+private def partialVerdict? (cell : RawCell) (covered : Bool) : Option Verdict := do
+  let document ← checkedDocument? cell
+  let checked ← (CheckedValidationCondition.fromStringPattern model ["Claim"] compilePattern
+    condition).toOption
+  let .leaf leaf := checked.core | none
+  let context := addressedContext document (.partialView document fun environment field =>
+    if covered then (document.validationAddressedCell environment field).map (some ·.cell)
+    else pure none)
+  (← ValidationConditionLeaf.evalAddressedPartial? context .full (fun _ => true)
+    (fun _ _ => .error (.checkedDocumentRequired [])) none leaf).toOption
+
+/- A matching value fires on the full route and the gate keeps it silent without content, since the
+pattern cannot fire on an empty field; the partial route reads a covered cell as the full one does
+and an uncovered one as UNKNOWN. -/
+example :
+    fullVerdicts? (.parsed (.str "ABC")) = some (.fired .value, .notFired) ∧
+    fullVerdicts? (.parsed (.str "xyz")) = some (.notFired, .notFired) ∧
+    partialVerdict? (.parsed (.str "ABC")) true = some (.fired .value) ∧
+    partialVerdict? (.parsed (.str "ABC")) false = some .unknown := by
   native_decide
 
 end A12Kernel.Conformance.StringPatternElaboration

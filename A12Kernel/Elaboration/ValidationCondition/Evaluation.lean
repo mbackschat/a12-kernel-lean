@@ -232,8 +232,9 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
         (RepeatableFieldPresenceOperator.filled.eval
           (observeCell .validation cell))
         (comparison.eval coordinate))
-  -- The group source reads the checked document's in-capacity extent. An unretained maximum the
-  -- declared-range quantifiers need answers UNKNOWN rather than an invented tail.
+  -- The list reads the checked document's in-capacity extent. An unretained maximum the
+  -- declared-range quantifiers need answers UNKNOWN rather than an invented tail, so the pair
+  -- regions hold at this leaf only with a retained capacity.
   | .fieldFill operator source =>
       match context.input with
       | .checked document => do
