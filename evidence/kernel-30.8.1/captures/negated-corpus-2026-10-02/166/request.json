@@ -1,0 +1,94 @@
+{
+ "model": "Vcap_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "v1-over-limit",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "F9": "9",
+     "TF": "fb",
+     "Rows": [
+      {
+       "N": "5",
+       "D": "2020-01-01",
+       "K": "a"
+      },
+      {},
+      {
+       "N": "100",
+       "T": "x",
+       "D": "2021-01-01",
+       "K": "a",
+       "M": "7",
+       "E": "A"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg"
+    }
+   ]
+  },
+  {
+   "name": "v2-in-capacity",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "F9": "9",
+     "TF": "fb",
+     "Rows": [
+      {
+       "N": "5",
+       "D": "2020-01-01",
+       "K": "a"
+      },
+      {
+       "N": "100",
+       "T": "x",
+       "D": "2021-01-01",
+       "K": "a",
+       "M": "7",
+       "E": "A"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg"
+    }
+   ]
+  },
+  {
+   "name": "v3-no-third",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "F9": "9",
+     "TF": "fb",
+     "Rows": [
+      {
+       "N": "5",
+       "D": "2020-01-01",
+       "K": "a"
+      },
+      {}
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "model": "Leap_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "leap-anchor-witnesses",
+   "document": "doc-leap.json"
+  }
+ ]
+}

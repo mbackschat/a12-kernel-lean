@@ -1,0 +1,86 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Gate_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "blank-nulls",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "blank-absent",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "content-w",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NOTFILLED",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NOTFILLED",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NOTFILLED",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NOTFILLED",
+              "referenced" : [
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

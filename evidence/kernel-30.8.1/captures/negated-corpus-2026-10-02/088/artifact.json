@@ -1,0 +1,212 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "GrpCount_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "h1-one-filled-one-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT3",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT3",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "h2-one-empty-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "h3-three-rows-one-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT3",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT3",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

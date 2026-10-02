@@ -1,0 +1,387 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Prd_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-02T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "o1-partial",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FAComp",
+              "field" : "Pu/FA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/F1",
+                "Pu/F2",
+                "Pu/FA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MAComp",
+              "field" : "Pm/MA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pm/M1",
+                "Pm/M2",
+                "Pm/MA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/QS",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/QS"
+              ],
+              "fillToFix" : [
+                "Pu/QS"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FAComp",
+              "field" : "Pu/FA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/F1",
+                "Pu/F2",
+                "Pu/FA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MAComp",
+              "field" : "Pm/MA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pm/M1",
+                "Pm/M2",
+                "Pm/MA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/QS",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/QS"
+              ],
+              "fillToFix" : [
+                "Pu/QS"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "o2-empty-and-distinct",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FAComp",
+              "field" : "Pu/FA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/F1",
+                "Pu/F2",
+                "Pu/FA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MAComp",
+              "field" : "Pm/MA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pm/M1",
+                "Pm/M2",
+                "Pm/MA"
+              ],
+              "fillToFix" : [
+                "Pm/M1",
+                "Pm/M2",
+                "Pm/MA"
+              ]
+            },
+            {
+              "code" : "RG",
+              "field" : "Pu/GE",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "RG",
+              "referenced" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ],
+              "fillToFix" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/Q",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/Q"
+              ],
+              "fillToFix" : [
+                "Pu/Q"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/QS",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/QS"
+              ],
+              "fillToFix" : [
+                "Pu/QS"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FAComp",
+              "field" : "Pu/FA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/F1",
+                "Pu/F2",
+                "Pu/FA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MAComp",
+              "field" : "Pm/MA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pm/M1",
+                "Pm/M2",
+                "Pm/MA"
+              ],
+              "fillToFix" : [
+                "Pm/M1",
+                "Pm/M2",
+                "Pm/MA"
+              ]
+            },
+            {
+              "code" : "RG",
+              "field" : "Pu/GE",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "RG",
+              "referenced" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ],
+              "fillToFix" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/Q",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/Q"
+              ],
+              "fillToFix" : [
+                "Pu/Q"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/QS",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/QS"
+              ],
+              "fillToFix" : [
+                "Pu/QS"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "o3-partial-vs-full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FAComp",
+              "field" : "Pu/FA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/F1",
+                "Pu/F2",
+                "Pu/FA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FAComp",
+              "field" : "Pu/FA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/F1",
+                "Pu/F2",
+                "Pu/FA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "o4-full-equal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RG",
+              "field" : "Pu/GE",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "RG",
+              "referenced" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ],
+              "fillToFix" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/Q",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/Q"
+              ],
+              "fillToFix" : [
+                "Pu/Q"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RG",
+              "field" : "Pu/GE",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "RG",
+              "referenced" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ],
+              "fillToFix" : [
+                "Pu/GE",
+                "Pu/Sg/SG"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Pu/Q",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pu/Q"
+              ],
+              "fillToFix" : [
+                "Pu/Q"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

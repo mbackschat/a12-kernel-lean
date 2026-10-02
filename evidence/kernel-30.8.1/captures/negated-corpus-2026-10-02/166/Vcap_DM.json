@@ -1,0 +1,287 @@
+{
+ "header": {
+  "id": "Vcap_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Vcap_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rg",
+     "name": "Rg",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rg/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/F9",
+        "name": "F9",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/TF",
+        "name": "TF",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rg/FFN",
+        "name": "FFN",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "FFN",
+         "errorCondition": "FirstFilledValue(Rows*/M, F9) != 9 Or FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rg/FFT",
+        "name": "FFT",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "FFT",
+         "errorCondition": "FirstFilledValue(Rows*/T, TF) != \"fb\" Or FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rg/VL",
+        "name": "VL",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "VL",
+         "errorCondition": "AtLeastOneFieldValueIncludedInValueList(Rows*/T In \"x\") Or FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rg/DC",
+        "name": "DC",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "DC",
+         "errorCondition": "NumberOfDifferentValues(Rows*/D) != 1 Or FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rg/SUM",
+        "name": "SUM",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "SUM",
+         "errorCondition": "Sum(Rows*/N) != 5 Or FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rg/ENC",
+        "name": "ENC",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "ENC",
+         "errorCondition": "NumberOfValueInFields(\"A\" In Rows*/E) != 0 Or FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rg/CTRL",
+        "name": "CTRL",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "CTRL",
+         "errorCondition": "FieldNotFilled(W) Or FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/T",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/D",
+           "name": "D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd",
+              "datePrecision": "FULL"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/K",
+           "name": "K",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/M",
+           "name": "M",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/E",
+           "name": "E",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

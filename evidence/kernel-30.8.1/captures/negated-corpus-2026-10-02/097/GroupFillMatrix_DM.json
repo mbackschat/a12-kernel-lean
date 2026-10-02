@@ -1,0 +1,399 @@
+{
+ "header": {
+  "id": "GroupFillMatrix_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "GroupFillMatrix_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Probe/Box",
+        "name": "Box",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Probe/Box/Rows",
+           "name": "Rows",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Probe/Box/Rows/B",
+              "name": "B",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/Box/A",
+           "name": "A",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/F0",
+        "name": "F0",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "F0",
+         "errorCondition": "FieldNotFilled(W) Or NotAllFieldsFilled(Box)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "F0"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/F1",
+        "name": "F1",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "F1",
+         "errorCondition": "FieldNotFilled(W) Or AtLeastOneFieldFilled(Box)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "F1"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/F2",
+        "name": "F2",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "F2",
+         "errorCondition": "FieldNotFilled(W) Or NoFieldFilled(Box)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "F2"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/F3",
+        "name": "F3",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "F3",
+         "errorCondition": "FieldNotFilled(W) Or NumberOfFilledFields(Box) <= 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "F3"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/F4",
+        "name": "F4",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "F4",
+         "errorCondition": "FieldNotFilled(W) Or AllFieldsFilled(Box)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "F4"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/F5",
+        "name": "F5",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "F5",
+         "errorCondition": "FieldNotFilled(W) Or NumberOfFilledFields(Box) == 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "F5"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/F6",
+        "name": "F6",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "F6",
+         "errorCondition": "FieldNotFilled(W) Or (AllFieldsFilled(Box) Or NoFieldFilled(Box))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "F6"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/S0",
+        "name": "S0",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "S0",
+         "errorCondition": "FieldNotFilled(W) Or NotAllFieldsFilled(Box/Rows*)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "S0"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/S1",
+        "name": "S1",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "S1",
+         "errorCondition": "FieldNotFilled(W) Or AtLeastOneFieldFilled(Box/Rows*)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "S1"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/S2",
+        "name": "S2",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "S2",
+         "errorCondition": "FieldNotFilled(W) Or NoFieldFilled(Box/Rows*)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "S2"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/S3",
+        "name": "S3",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "S3",
+         "errorCondition": "FieldNotFilled(W) Or NumberOfFilledFields(Box/Rows*) <= 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "S3"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/S4",
+        "name": "S4",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "S4",
+         "errorCondition": "FieldNotFilled(W) Or AllFieldsFilled(Box/Rows*)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "S4"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/S5",
+        "name": "S5",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "S5",
+         "errorCondition": "FieldNotFilled(W) Or NumberOfFilledFields(Box/Rows*) == 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "S5"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/S6",
+        "name": "S6",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "S6",
+         "errorCondition": "FieldNotFilled(W) Or (AllFieldsFilled(Box/Rows*) Or NoFieldFilled(Box/Rows*))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "S6"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/Control",
+        "name": "Control",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "Control",
+         "errorCondition": "FieldNotFilled(W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Control"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/Outer",
+        "name": "Outer",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Probe/Outer/Inner",
+           "name": "Inner",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Probe/Outer/Inner/C",
+              "name": "C",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/Outer/Marker",
+           "name": "Marker",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "model": "FillDeep_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "d0-empty",
+   "document": "d0-empty.json"
+  },
+  {
+   "name": "d3-flat-two-rows",
+   "document": "d3-flat-two-rows.json"
+  },
+  {
+   "name": "d4-one-inner",
+   "document": "d4-one-inner.json"
+  },
+  {
+   "name": "d5-two-inner",
+   "document": "d5-two-inner.json"
+  },
+  {
+   "name": "d6-three-inner",
+   "document": "d6-three-inner.json"
+  },
+  {
+   "name": "d7-capacity",
+   "document": "d7-capacity.json"
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "model": "Deep3Count_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "n0-shell-empty",
+   "document": "n0-shell-empty.json"
+  },
+  {
+   "name": "n1-depth-one",
+   "document": "n1-depth-one.json"
+  },
+  {
+   "name": "n3-depth-three",
+   "document": "n3-depth-three.json"
+  },
+  {
+   "name": "nover-inner",
+   "document": "nover-inner.json"
+  },
+  {
+   "name": "nover-inner-ctrl",
+   "document": "nover-inner-ctrl.json"
+  },
+  {
+   "name": "nover-outer",
+   "document": "nover-outer.json"
+  },
+  {
+   "name": "nover-outer-ctrl",
+   "document": "nover-outer-ctrl.json"
+  }
+ ]
+}

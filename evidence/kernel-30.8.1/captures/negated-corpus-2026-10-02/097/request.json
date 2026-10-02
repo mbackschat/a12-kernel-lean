@@ -1,0 +1,196 @@
+{
+ "model": "GroupFillMatrix_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "empty-shell",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {}
+    }
+   }
+  },
+  {
+   "name": "direct-only",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "A": 1
+     }
+    }
+   }
+  },
+  {
+   "name": "one-row-open-tail",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "Rows": [
+       {
+        "B": 2
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "direct-and-row-open-tail",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "A": 1,
+      "Rows": [
+       {
+        "B": 2
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "all-slots-filled",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "A": 1,
+      "Rows": [
+       {
+        "B": 2
+       },
+       {
+        "B": 3
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "one-instantiated-empty",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "A": 1,
+      "Rows": [
+       {
+        "B": 2
+       },
+       {}
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "unknown-beside-two-filled",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "A": 1,
+      "Rows": [
+       {
+        "B": 2
+       },
+       {
+        "B": "bad"
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "unknown-beside-empty",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "Rows": [
+       {
+        "B": "bad"
+       },
+       {}
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "over-limit-only-filled",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "Rows": [
+       {},
+       {},
+       {
+        "B": 3
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "unknown-with-open-tail",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Box": {
+      "A": 1,
+      "Rows": [
+       {
+        "B": "bad"
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "nested-star-keeps-parent-capacity",
+   "documentInline": {
+    "Probe": {
+     "W": "ready",
+     "Outer": [
+      {
+       "Marker": "ready",
+       "Inner": [
+        {
+         "C": 1
+        }
+       ]
+      },
+      {
+       "Marker": "ready",
+       "Inner": [
+        {
+         "C": 2
+        },
+        {
+         "C": 3
+        }
+       ]
+      },
+      {
+       "Marker": "ready"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

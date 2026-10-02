@@ -1,0 +1,488 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "BooleanStarCapacity_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "over-limit-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "COUNT1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "COUNT2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "COUNT1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "COUNT2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "in-capacity-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "COUNT0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "COUNT2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "COUNT0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "COUNT2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "two-in-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "COUNT0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "COUNT1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "COUNT0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "COUNT1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "COUNT1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FALSE2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FALSE2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

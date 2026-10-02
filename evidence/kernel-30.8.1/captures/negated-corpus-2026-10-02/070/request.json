@@ -1,0 +1,29 @@
+{
+ "model": "FillCount_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "c0-empty",
+   "document": "c0-empty.json"
+  },
+  {
+   "name": "c1-flat-only",
+   "document": "c1-flat-only.json"
+  },
+  {
+   "name": "c2-flat-one-row",
+   "document": "c2-flat-one-row.json"
+  },
+  {
+   "name": "c3-flat-two-rows",
+   "document": "c3-flat-two-rows.json"
+  },
+  {
+   "name": "c4-capacity",
+   "document": "c4-capacity.json"
+  }
+ ]
+}

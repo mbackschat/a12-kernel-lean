@@ -1,0 +1,1138 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "StarredExtent_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "s-notes-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Notes[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Notes[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Notes[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Notes[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Notes[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Notes[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Notes[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Notes[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-notes-ctrl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-notes-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-sum-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-sum-ctrl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-bad-incap",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Shell/Charges[2]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[2]/Fee"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Shell/Charges[2]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[2]/Fee"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-bad-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "NF2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF2",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "SUM7",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM7",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

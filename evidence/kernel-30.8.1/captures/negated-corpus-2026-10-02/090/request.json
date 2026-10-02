@@ -1,0 +1,29 @@
+{
+ "model": "GrpCount_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "g0-none",
+   "document": "g0-none.json"
+  },
+  {
+   "name": "g1-g1only",
+   "document": "g1-g1only.json"
+  },
+  {
+   "name": "g2-one-row",
+   "document": "g2-one-row.json"
+  },
+  {
+   "name": "g3-two-rows",
+   "document": "g3-two-rows.json"
+  },
+  {
+   "name": "g4-capacity",
+   "document": "g4-capacity.json"
+  }
+ ]
+}

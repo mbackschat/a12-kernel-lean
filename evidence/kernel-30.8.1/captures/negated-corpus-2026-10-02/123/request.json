@@ -1,0 +1,90 @@
+{
+ "model": "Pres2_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-02T00:00:00Z",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "p1-partial",
+   "documentInline": {
+    "Pr": {
+     "PD": "2024-06-00",
+     "PY": "0000-00-00",
+     "FY": "2024-06",
+     "GF": "2024-06",
+     "KPD": 99,
+     "KPY": 99,
+     "KFY": 99,
+     "KGF": 99,
+     "KNPD": 99,
+     "KNPY": 99,
+     "KNFY": 99,
+     "KNGF": 99,
+     "C": 99
+    }
+   }
+  },
+  {
+   "name": "p2-complete",
+   "documentInline": {
+    "Pr": {
+     "PD": "2024-06-15",
+     "PY": "2024-06-15",
+     "FY": null,
+     "GF": null,
+     "KPD": 99,
+     "KPY": 99,
+     "KFY": 99,
+     "KGF": 99,
+     "KNPD": 99,
+     "KNPY": 99,
+     "KNFY": 99,
+     "KNGF": 99,
+     "C": 99
+    }
+   }
+  },
+  {
+   "name": "p3-empty",
+   "documentInline": {
+    "Pr": {
+     "PD": null,
+     "PY": null,
+     "FY": null,
+     "GF": null,
+     "KPD": 99,
+     "KPY": 99,
+     "KFY": 99,
+     "KGF": 99,
+     "KNPD": 99,
+     "KNPY": 99,
+     "KNFY": 99,
+     "KNGF": 99,
+     "C": 99
+    }
+   }
+  },
+  {
+   "name": "p4-too-deep",
+   "documentInline": {
+    "Pr": {
+     "PD": "2024-00-00",
+     "PY": "2024-00-00",
+     "FY": null,
+     "GF": null,
+     "KPD": 99,
+     "KPY": 99,
+     "KFY": 99,
+     "KGF": 99,
+     "KNPD": 99,
+     "KNPY": 99,
+     "KNFY": 99,
+     "KNGF": 99,
+     "C": 99
+    }
+   }
+  }
+ ]
+}

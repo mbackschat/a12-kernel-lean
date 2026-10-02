@@ -1,0 +1,25 @@
+{
+ "model": "TwoStar_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "s0-none",
+   "document": "s0-none.json"
+  },
+  {
+   "name": "s1-two-rows",
+   "document": "s1-two-rows.json"
+  },
+  {
+   "name": "s2-two-one",
+   "document": "s2-two-one.json"
+  },
+  {
+   "name": "s3-capacity",
+   "document": "s3-capacity.json"
+  }
+ ]
+}

@@ -1,0 +1,222 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Quant_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "all-valid",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CNT2",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CNT2",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NOTALL",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NOTALL",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CNT2",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CNT2",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NOTALL",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NOTALL",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "middle-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ALLF",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLF",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ]
+            },
+            {
+              "code" : "CNT3",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CNT3",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ALLF",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLF",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ]
+            },
+            {
+              "code" : "CNT3",
+              "field" : "Quant_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CNT3",
+              "referenced" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ],
+              "fillToFix" : [
+                "Quant_DM/A",
+                "Quant_DM/B",
+                "Quant_DM/C",
+                "Quant_DM/W"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "middle-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Quant_DM/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Quant_DM/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Quant_DM/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Quant_DM/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

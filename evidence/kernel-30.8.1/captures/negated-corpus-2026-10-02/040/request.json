@@ -1,0 +1,45 @@
+{
+ "model": "X_S.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "lt",
+   "documentInline": {
+    "Kind_DM": {
+     "Reference": "x",
+     "DClock": "10:00:00",
+     "TClock": "11:00:00",
+     "TClock2": "10:00:00",
+     "SClock": "10:00:00"
+    }
+   }
+  },
+  {
+   "name": "gt",
+   "documentInline": {
+    "Kind_DM": {
+     "Reference": "x",
+     "DClock": "12:00:00",
+     "TClock": "11:00:00",
+     "TClock2": "12:00:00",
+     "SClock": "12:00:00"
+    }
+   }
+  },
+  {
+   "name": "eq",
+   "documentInline": {
+    "Kind_DM": {
+     "Reference": "x",
+     "DClock": "11:00:00",
+     "TClock": "11:00:00",
+     "TClock2": "11:00:00",
+     "SClock": "11:00:00"
+    }
+   }
+  }
+ ]
+}

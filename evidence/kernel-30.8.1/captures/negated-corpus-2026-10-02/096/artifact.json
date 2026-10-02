@@ -1,0 +1,348 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Unavail_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "w0-clean",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F1",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F1",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F2",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F1",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F1",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F2",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w1-second-invalid-with-content",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F1",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F1",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F2",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G2/Num2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F1",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F1",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F2",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G2/Num2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w2-second-only-invalid",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G2/Num2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G2/Num2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w3-unreferenced-invalid",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F1",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F1",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F2",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "U2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "U2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/RNum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/RNum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F1",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F1",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "F2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F2",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "U2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "U2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/RNum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/RNum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

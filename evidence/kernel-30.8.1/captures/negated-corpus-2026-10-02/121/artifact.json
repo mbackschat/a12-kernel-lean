@@ -1,0 +1,712 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Part_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "all-covered",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "partialMessages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "partialMessages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "G1-filled-cell-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "partialMessages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "partialMessages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "G1-empty-cell-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "partialMessages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NFG0",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFG0",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFG2",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NFG2",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "partialMessages" : [
+            {
+              "code" : "ALLGF",
+              "field" : "Part_DM/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ALLGF",
+              "referenced" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ],
+              "fillToFix" : [
+                "Part_DM/G1/A",
+                "Part_DM/G1/B",
+                "Part_DM/G2/C",
+                "Part_DM/W"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

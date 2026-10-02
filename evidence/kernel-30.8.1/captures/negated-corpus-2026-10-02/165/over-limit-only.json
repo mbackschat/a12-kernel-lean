@@ -1,0 +1,16 @@
+{
+  "Probe": {
+    "Err": "e",
+    "Rows": [
+      {
+        "Label": "A"
+      },
+      {
+        "Label": "A"
+      },
+      {
+        "Label": "X"
+      }
+    ]
+  }
+}

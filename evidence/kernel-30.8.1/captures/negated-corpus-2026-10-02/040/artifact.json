@@ -1,0 +1,224 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "X_S.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "lt",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SEQ",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SEQ",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SEQ",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SEQ",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "gt",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SEQ",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SEQ",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SEQ",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SEQ",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "eq",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "CLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/TClock",
+                "Kind_DM/TClock2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SLT",
+              "field" : "Kind_DM/Reference",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SLT",
+              "referenced" : [
+                "Kind_DM/Reference",
+                "Kind_DM/SClock",
+                "Kind_DM/TClock"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

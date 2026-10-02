@@ -1,0 +1,1067 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Pres2_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-02T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "p1-partial",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CComp",
+              "field" : "Pr/C",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KFYComp",
+              "field" : "Pr/KFY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KFY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KGFComp",
+              "field" : "Pr/KGF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KGF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KPDComp",
+              "field" : "Pr/KPD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPD",
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KPYComp",
+              "field" : "Pr/KPY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPD",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPD",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CComp",
+              "field" : "Pr/C",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KFYComp",
+              "field" : "Pr/KFY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KFY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KGFComp",
+              "field" : "Pr/KGF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KGF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KPDComp",
+              "field" : "Pr/KPD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPD",
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KPYComp",
+              "field" : "Pr/KPY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPD",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPD",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "p2-complete",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CComp",
+              "field" : "Pr/C",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "CNT",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CNT",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "FFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [
+                "Pr/FY"
+              ]
+            },
+            {
+              "code" : "FGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [
+                "Pr/GF"
+              ]
+            },
+            {
+              "code" : "KNFYComp",
+              "field" : "Pr/KNFY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ]
+            },
+            {
+              "code" : "KNGFComp",
+              "field" : "Pr/KNGF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ],
+              "fillToFix" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ]
+            },
+            {
+              "code" : "KPDComp",
+              "field" : "Pr/KPD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPD",
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KPYComp",
+              "field" : "Pr/KPY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPD",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPD",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CComp",
+              "field" : "Pr/C",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "CNT",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CNT",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "FFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [
+                "Pr/FY"
+              ]
+            },
+            {
+              "code" : "FGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [
+                "Pr/GF"
+              ]
+            },
+            {
+              "code" : "KNFYComp",
+              "field" : "Pr/KNFY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ]
+            },
+            {
+              "code" : "KNGFComp",
+              "field" : "Pr/KNGF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ],
+              "fillToFix" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ]
+            },
+            {
+              "code" : "KPDComp",
+              "field" : "Pr/KPD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPD",
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "KPYComp",
+              "field" : "Pr/KPY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPD",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPD",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "p3-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CComp",
+              "field" : "Pr/C",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "CNT",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CNT",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "FFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [
+                "Pr/FY"
+              ]
+            },
+            {
+              "code" : "FGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [
+                "Pr/GF"
+              ]
+            },
+            {
+              "code" : "FPD",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FPD",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [
+                "Pr/PD"
+              ]
+            },
+            {
+              "code" : "FPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "KNFYComp",
+              "field" : "Pr/KNFY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ]
+            },
+            {
+              "code" : "KNGFComp",
+              "field" : "Pr/KNGF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ],
+              "fillToFix" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ]
+            },
+            {
+              "code" : "KNPDComp",
+              "field" : "Pr/KNPD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KNPD",
+                "Pr/PD"
+              ],
+              "fillToFix" : [
+                "Pr/KNPD",
+                "Pr/PD"
+              ]
+            },
+            {
+              "code" : "KNPYComp",
+              "field" : "Pr/KNPY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KNPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/KNPY",
+                "Pr/PY"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CComp",
+              "field" : "Pr/C",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/C",
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "CNT",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CNT",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/GF",
+                "Pr/PD",
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "FFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [
+                "Pr/FY"
+              ]
+            },
+            {
+              "code" : "FGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [
+                "Pr/GF"
+              ]
+            },
+            {
+              "code" : "FPD",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FPD",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [
+                "Pr/PD"
+              ]
+            },
+            {
+              "code" : "FPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/PY"
+              ]
+            },
+            {
+              "code" : "KNFYComp",
+              "field" : "Pr/KNFY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ]
+            },
+            {
+              "code" : "KNGFComp",
+              "field" : "Pr/KNGF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ],
+              "fillToFix" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ]
+            },
+            {
+              "code" : "KNPDComp",
+              "field" : "Pr/KNPD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KNPD",
+                "Pr/PD"
+              ],
+              "fillToFix" : [
+                "Pr/KNPD",
+                "Pr/PD"
+              ]
+            },
+            {
+              "code" : "KNPYComp",
+              "field" : "Pr/KNPY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KNPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [
+                "Pr/KNPY",
+                "Pr/PY"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "p4-too-deep",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [
+                "Pr/FY"
+              ]
+            },
+            {
+              "code" : "FGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [
+                "Pr/GF"
+              ]
+            },
+            {
+              "code" : "KNFYComp",
+              "field" : "Pr/KNFY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ]
+            },
+            {
+              "code" : "KNGFComp",
+              "field" : "Pr/KNGF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ],
+              "fillToFix" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ]
+            },
+            {
+              "code" : "KPYComp",
+              "field" : "Pr/KPY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFalsch",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FFY",
+              "field" : "Pr/FY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FFY",
+              "referenced" : [
+                "Pr/FY"
+              ],
+              "fillToFix" : [
+                "Pr/FY"
+              ]
+            },
+            {
+              "code" : "FGF",
+              "field" : "Pr/GF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FGF",
+              "referenced" : [
+                "Pr/GF"
+              ],
+              "fillToFix" : [
+                "Pr/GF"
+              ]
+            },
+            {
+              "code" : "KNFYComp",
+              "field" : "Pr/KNFY",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ],
+              "fillToFix" : [
+                "Pr/FY",
+                "Pr/KNFY"
+              ]
+            },
+            {
+              "code" : "KNGFComp",
+              "field" : "Pr/KNGF",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ],
+              "fillToFix" : [
+                "Pr/GF",
+                "Pr/KNGF"
+              ]
+            },
+            {
+              "code" : "KPYComp",
+              "field" : "Pr/KPY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/KPY",
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NPY",
+              "field" : "Pr/PY",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NPY",
+              "referenced" : [
+                "Pr/PY"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFalsch",
+              "field" : "Pr/PD",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Pr/PD"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

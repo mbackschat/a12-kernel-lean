@@ -1,0 +1,104 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Leap_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "leap-anchor-witnesses",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "L2",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L2",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L3",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L3",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L5",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L5",
+              "referenced" : [
+                "Gate_DM/Src",
+                "Gate_DM/YDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "L2",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L2",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L3",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L3",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L5",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L5",
+              "referenced" : [
+                "Gate_DM/Src",
+                "Gate_DM/YDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

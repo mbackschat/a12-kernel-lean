@@ -1,0 +1,236 @@
+{
+ "header": {
+  "id": "XE_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "XE_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Kind_DM",
+     "name": "Kind_DM",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Kind_DM/Reference",
+        "name": "Reference",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/DClock",
+        "name": "DClock",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/SClock",
+        "name": "SClock",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/TClock",
+        "name": "TClock",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/TDate",
+        "name": "TDate",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/SDate",
+        "name": "SDate",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kind_DM/DDate",
+        "name": "DDate",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kind_DM/DH",
+        "name": "DH",
+        "Rule": {
+         "errorEntityRelPath": "../Reference",
+         "errorCode": "DH",
+         "errorCondition": "FieldNotFilled(Reference) Or HoursFromTime(DClock) != 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "DH"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kind_DM/SH",
+        "name": "SH",
+        "Rule": {
+         "errorEntityRelPath": "../Reference",
+         "errorCode": "SH",
+         "errorCondition": "FieldNotFilled(Reference) Or HoursFromTime(SClock) != 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "SH"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kind_DM/TH",
+        "name": "TH",
+        "Rule": {
+         "errorEntityRelPath": "../Reference",
+         "errorCode": "TH",
+         "errorCondition": "FieldNotFilled(Reference) Or HoursFromTime(TClock) != 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TH"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kind_DM/TY",
+        "name": "TY",
+        "Rule": {
+         "errorEntityRelPath": "../Reference",
+         "errorCode": "TY",
+         "errorCondition": "FieldNotFilled(Reference) Or YearFromDate(TDate) != 2024",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TY"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kind_DM/SY",
+        "name": "SY",
+        "Rule": {
+         "errorEntityRelPath": "../Reference",
+         "errorCode": "SY",
+         "errorCondition": "FieldNotFilled(Reference) Or YearFromDate(SDate) != 2024",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "SY"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kind_DM/DY",
+        "name": "DY",
+        "Rule": {
+         "errorEntityRelPath": "../Reference",
+         "errorCode": "DY",
+         "errorCondition": "FieldNotFilled(Reference) Or YearFromDate(DDate) != 2024",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "DY"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

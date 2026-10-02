@@ -1,0 +1,216 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FillCount_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "c0-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "c1-flat-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "c2-flat-one-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "c3-flat-two-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "c4-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

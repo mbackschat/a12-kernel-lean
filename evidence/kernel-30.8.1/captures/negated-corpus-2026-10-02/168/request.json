@@ -1,0 +1,13 @@
+{
+ "model": "Leap_BY2023.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "anchor-under-baseyear-2023",
+   "document": "doc-leap.json"
+  }
+ ]
+}

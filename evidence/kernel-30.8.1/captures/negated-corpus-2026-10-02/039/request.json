@@ -1,0 +1,33 @@
+{
+ "model": "X_R.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "lt",
+   "documentInline": {
+    "Kind_DM": {
+     "Reference": "x",
+     "TDate": "2024-03-04",
+     "SDate": "2024-03-04",
+     "DDate": "2024-03-05",
+     "DDate2": "2024-03-04"
+    }
+   }
+  },
+  {
+   "name": "gt",
+   "documentInline": {
+    "Kind_DM": {
+     "Reference": "x",
+     "TDate": "2024-03-06",
+     "SDate": "2024-03-06",
+     "DDate": "2024-03-05",
+     "DDate2": "2024-03-06"
+    }
+   }
+  }
+ ]
+}
