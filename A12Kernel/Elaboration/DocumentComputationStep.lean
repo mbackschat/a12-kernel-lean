@@ -22,9 +22,9 @@ offset its text denotes rather than at the instant computed
 Date the target retains as errored reaches its readers as poison under both presence tests
 ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-document-step-join)).
 
-A Time construction is not an instance. A clock declaration has no `Value` derivable from its stored text
-(`CheckedDocument.temporallyCoherent`), while the document's Time comparisons read a Time value's instant,
-so a read-back would have to choose that instant. -/
+A Time construction is not an instance yet. A clock declaration has no `Value` derivable from its stored
+text (`CheckedDocument.temporallyCoherent`), so a read-back has to choose the instant a Time value
+carries; no reader observes it, since date-free comparisons compare clocks. -/
 
 namespace A12Kernel
 

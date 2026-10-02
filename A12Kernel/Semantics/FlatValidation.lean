@@ -4,6 +4,7 @@ import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
 import A12Kernel.Semantics.DateTimeComparison
+import A12Kernel.Semantics.TimeComparison
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.TimeNumeric
@@ -147,6 +148,10 @@ inductive FlatComparison where
   | textFields (op : EqualityOp) (left right : FlatTextFieldOperand)
   | temporal (op : TemporalComparisonOp)
       (left right : FlatTemporalOperand)
+  /-- Two date-free fields, compared by their clocks alone: the Kernel anchors every date-free value on
+  one shared day, so its comparison observes only the decoded hour, minute, and second
+  ([`spec/05`](../../spec/05-dates-and-time.md) §1), and the instant a cell carries plays no part. -/
+  | time (op : TemporalComparisonOp) (left right : FlatTemporalField)
   deriving Repr, DecidableEq
 
 namespace FlatComparison
@@ -161,6 +166,7 @@ def fields : FlatComparison → List FlatField
   | .enumeration _ operand _ => [.enumeration operand.field]
   | .textFields _ left right => [left.field, right.field]
   | .temporal _ left right => left.fields ++ right.fields
+  | .time _ left right => [.temporal left, .temporal right]
 
 def fieldIds (comparison : FlatComparison) : List FieldId :=
   comparison.fields.map FlatField.id
@@ -337,6 +343,20 @@ def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
   | .value (.temporal value) =>
       if value.kind == field.kind then .value value.instant true
       else .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+/-- Resolve one checked date-free temporal field to its clock. The kind check is the same defensive one
+the instant resolution makes. -/
+def FlatContext.resolveTimeComparisonOperand (context : FlatContext)
+    (field : FlatTemporalField) : SimpleComparisonOperand TimeOfDay :=
+  match context.observeValidationAt field.id with
+  | .empty => .notEvaluated
+  | .value (.temporal value) =>
+      match value.kind == field.kind, value.time? with
+      | true, some clock => .value clock true
+      | _, _ => .unknown .malformed
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
@@ -575,6 +595,9 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
       op.evalSymmetric (· == ·) (left.resolve context) (right.resolve context)
   | .temporal op left right =>
       op.evalInstant (left.resolve context) (right.resolve context)
+  | .time op left right =>
+      op.evalTime (context.resolveTimeComparisonOperand left)
+        (context.resolveTimeComparisonOperand right)
 
 def FlatField.observeValidation (context : FlatContext) : FlatField → CellObservation
   | .number field => context.observeValidationAt field.id

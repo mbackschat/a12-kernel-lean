@@ -224,4 +224,42 @@ example : (elaborate model ["Order"]
   native_decide
 
 
+/-- A second Time field beside `EventTime`, so two clocks can be compared. -/
+private def clockModel : FlatModel :=
+  { model with fields := model.fields ++
+      [{ eventTimeDecl with id := 90, name := "OtherTime" }] }
+
+private def clockRaw (event other : Nat × Nat) (eventInstant otherInstant : Int) : RawFlatContext where
+  read id :=
+    let clock (parts : Nat × Nat) : Option TimeOfDay :=
+      if valid : parts.1 < 24 ∧ parts.2 < 60 ∧ 0 < 60 then
+        some { hour := parts.1, minute := parts.2, second := 0, valid }
+      else none
+    if id = 10 then
+      match clock event with
+      | some value => .parsed (.temporal (.time { epochMillis := eventInstant } value))
+      | none => .empty
+    else if id = 90 then
+      match clock other with
+      | some value => .parsed (.temporal (.time { epochMillis := otherInstant } value))
+      | none => .empty
+    else .empty
+
+/- A comparison between two date-free fields observes their clocks and nothing else, as `spec/05`
+states the Kernel's Time comparison does: `10:00 < 11:00` fires whatever instants the two cells carry,
+equal ones and ones ordered the other way included, and `==` holds on equal clocks under different
+instants. A comparison of the instants would answer `notFired` on the first two rows. -/
+example :
+    let less := compareFields .less "EventTime" "OtherTime"
+    let equal := compareFields .equal "EventTime" "OtherTime"
+    let run (raw : RawFlatContext) (condition : SurfaceCondition) :=
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" clockModel (worldAt 0)
+        ["Order"] raw true condition)
+    run (clockRaw (10, 0) (11, 0) 0 0) less = some (.fired .value) ∧
+      run (clockRaw (10, 0) (11, 0) 39600000 36000000) less = some (.fired .value) ∧
+      run (clockRaw (10, 0) (11, 0) 36000000 39600000) less = some (.fired .value) ∧
+      run (clockRaw (11, 0) (10, 0) 0 0) less = some .notFired ∧
+      run (clockRaw (10, 0) (10, 0) 0 36000000) equal = some (.fired .value) := by
+  native_decide
+
 end A12Kernel.Conformance.Elaboration.Runtime

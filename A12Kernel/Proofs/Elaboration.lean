@@ -404,6 +404,9 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
   | temporal op left right =>
       simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
       exact admitted.2 field member
+  | time op left right =>
+      simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
+      exact admitted.2 field member
 
 /-- Model-derived context construction checks a resolved cell with exactly the policy
     carried by its unique declaration. -/

@@ -421,6 +421,15 @@ theorem partialSelected_agreesOn
                 worldAgreement agreement bothRelevant.left,
               temporalOperand_resolve_agreesOn rightOperand left right isRelevant
                 worldAgreement agreement bothRelevant.right]
+        | time op leftField rightField =>
+            have leftEq := agreement leftField.id (by
+              simp_all [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id])
+            have rightEq := agreement rightField.id (by
+              simp_all [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id])
+            simp_all [FlatComparison.eval, FlatContext.resolveTimeComparisonOperand,
+              FlatContext.observeValidationAt]
       · rfl
     | tokenValueList quantifier operands values =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,

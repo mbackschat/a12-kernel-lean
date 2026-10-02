@@ -404,10 +404,17 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       match left.policy.kind, right.policy.kind with
       | .temporal leftKind leftComponents, .temporal rightKind rightComponents =>
           let comparison := op.toTemporal
+          let leftField : FlatTemporalField :=
+            { id := left.id, kind := leftKind, components := leftComponents }
+          let rightField : FlatTemporalField :=
+            { id := right.id, kind := rightKind, components := rightComponents }
           if comparison.admitsFormats model.hasBaseYear leftComponents rightComponents then
-            pure (.compare (.temporal comparison
-              (.fieldValue { id := left.id, kind := leftKind, components := leftComponents })
-              (.fieldValue { id := right.id, kind := rightKind, components := rightComponents })))
+            -- The format gate admits a date-free side only beside another, and that pair is compared
+            -- by its clocks.
+            if !leftComponents.hasDate && !rightComponents.hasDate then
+              pure (.compare (.time comparison leftField rightField))
+            else
+              pure (.compare (.temporal comparison (.fieldValue leftField) (.fieldValue rightField)))
           else
             throw (.temporalFormatsIncompatible left.path right.path)
       | leftKind, rightKind =>
