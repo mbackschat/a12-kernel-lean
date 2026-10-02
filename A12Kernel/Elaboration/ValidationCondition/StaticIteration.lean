@@ -364,6 +364,9 @@ def ordinaryIterationScope :
       orderedNumericComparisonIterationScope comparison
   | .leaf (.groupList _ operands) =>
       ResolvedGroupListOperands.iterationScope operands
+  | .leaf (.valueList source) =>
+      source.bindingScopes.foldlM
+        (fun scope next => mergeIterationScopes scope (if next.isEmpty then none else some next)) none
   | .leaf (.repetitionNotUnique source) =>
       pure (some (source.topology.path.axes.map (·.level)))
   | .leaf (.guardedRepeatableCurrentRepetition guard _ _) =>

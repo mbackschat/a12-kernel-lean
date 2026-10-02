@@ -8,6 +8,7 @@ import A12Kernel.Elaboration.CurrentRepetition
 import A12Kernel.Elaboration.IteratedDateRangeCondition
 import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.StringPattern
+import A12Kernel.Elaboration.ValueListCondition
 
 /-! # Shared resolved validation conditions
 
@@ -259,6 +260,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   /-- `PatternMatched` or `PatternViolated` over one ordinary nonrepeatable String field, read like a
   flat leaf through the field's validation-phase String. -/
   | stringPattern (leaf : CheckedStringPatternLeaf model)
+  | valueList (source : CheckedValueListCondition model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -451,6 +453,7 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
 /-- Whether a presence leaf can hold on an instance without admitted content; it composes through
 `And` and `Or`. A comparison claims nothing here, `liftsEmptyGate` owning it. -/
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
+  | .valueList source => source.quantifier.canFireOnEmpty
   | .flat condition => condition.canFireOnEmpty
   | .numeric _ _ | .orderedNumeric _ _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
@@ -471,6 +474,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
       | .fieldsNotCollectivelyFilled => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
+  | .valueList source, field => source.referencesField field
   | .flat condition, field => condition.referencesField field
   | .numeric _ comparison, field => comparison.referencesField model field
   | .orderedNumeric _ comparison, field =>
@@ -497,6 +501,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
     and the DateRange overlap leaves own filters, and there a body's unmarked reads do not count
     while its marked ones do; every other leaf reads as `referencesField` does. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
+  | .valueList source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
   | .iteratedDateRange condition, field => condition.referencesErrorField field
   | leaf@(.flat _), field | leaf@(.numeric _ _), field | leaf@(.groupPresence _ _), field
@@ -507,8 +512,9 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.stringPattern _), field =>
       leaf.referencesField field
 
-/-- Whether a leaf retains any `Having` filter in its checked source. The ordered numeric carrier and the DateRange overlap leaves can own one; scalar leaves cannot manufacture the marker. -/
+/-- Whether a leaf retains any `Having` filter in its checked source. Ordered numeric, DateRange overlap and value-list leaves retain their owning sources’ filters; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
+  | .valueList source => source.hasHaving
   | .orderedNumeric _ comparison => comparison.hasHaving
   | .iteratedDateRange condition => !condition.filters.isEmpty
   | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
@@ -519,6 +525,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
+  | .valueList _ => true
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
   | .groupPresence _ reference =>
@@ -537,6 +544,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
+  | .valueList source => source.bindingScopes.flatten.all
+      (model.repeatableScopeForGroupPath rowGroup).contains
   | .flat condition => condition.wellFormedBool model
   | .numeric scope comparison =>
       comparison.wellFormedInBool model rowGroup scope

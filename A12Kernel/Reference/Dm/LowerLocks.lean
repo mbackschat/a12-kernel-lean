@@ -18,6 +18,8 @@ private def model : FlatModel :=
       { id := 4, groupPath := ["Order"], name := "Amt", policy := { kind := .number { scale := 0, signed := true } } },
       { id := 2, groupPath := ["Order", "Rows"], name := "Note", policy := { kind := .string },
         repeatableScope := [10] },
+      { id := 10, groupPath := ["Order", "Rows"], name := "Filter", policy := { kind := .string },
+        repeatableScope := [10] },
       { id := 5, groupPath := ["Order"], name := "Due1", policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
       { id := 6, groupPath := ["Order"], name := "Due2", policy := { kind := .temporal .date TemporalComponents.fullDate },
@@ -31,6 +33,28 @@ private def admitted (text : String) : Bool :=
   match parseText .english text with
   | .ok parsed => (lowerCondition model ["Order"] false parsed.body).toOption.isSome
   | .error _ => false
+
+example :
+    [admitted "AtLeastOneFieldValueIncludedInValueList(Rows*/Note In Ref) And FieldFilled(Ref)",
+     admitted "NoFieldValueIncludedInValueList(Rows* In Ref) Or FieldNotFilled(Ref)",
+     admitted "NotAllFieldValuesIncludedInValueList(Tail In Amt)",
+     admitted "AtLeastOneFieldValueIncludedInValueList(Rows*/Note In \"x\")"].all id := by
+  native_decide
+
+example :
+    (do
+      let parsed ← (parseText .english
+        "AtLeastOneFieldValueIncludedInValueList(Rows*/Note Having ([Rows/Filter] == \"x\" And [$Head/Code] == \"x\") In \"x\")").toOption
+      let checked ← (lowerCondition model ["Order"] false parsed.body).toOption
+      pure (checked.hasHaving,
+        [1, 2, 3, 10].filter checked.core.referencesField,
+        [1, 2, 3, 10].filter checked.core.referencesErrorField,
+        (checked.core.referencePointers []).toOption)) =
+      some (true, [2, 3, 10], [2, 3], some [
+        { field := 2, coordinates := [.wildcard] },
+        { field := 10, coordinates := [.wildcard] },
+        { field := 3, coordinates := [] }]) := by
+  native_decide
 
 /- The Base-Year ladder's literal endpoints must reach the shared numeric carrier, including the
 reversed mixed endpoint. Invalid calendar text stays outside it (spec/05 §1). -/

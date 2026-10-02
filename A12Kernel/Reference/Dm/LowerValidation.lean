@@ -11,8 +11,8 @@ A condition whose every leaf has a flat form is elaborated whole by the flat car
 connectives are kept and each leaf is offered, in a fixed order, to the carriers that exist for it:
 the flat leaf, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
-against a literal, and the field-fill quantifiers and `NumberOfFilledFields` over an entity list. The first carrier that admits a
-leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
+against a literal, the field-fill quantifiers and `NumberOfFilledFields` over an entity list,
+and typed entity-valued or token-literal value lists. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
 Only public elaboration entry points are reached. A construct with a semantic evaluator but no rule
@@ -87,6 +87,36 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
         elaborated "Flat" (CheckedValidationCondition.fromFlat checked)]
     | none => []
+  let valueLists := match leaf with
+    | .call id arguments (some values) none =>
+        let quantifier := match id with
+          | "AtLeastOneFieldValueIncludedInValueList" => some ValueListQuantifier.atLeastOne
+          | "NoFieldValueIncludedInValueList" => some .no
+          | "NotAllFieldValuesIncludedInValueList" => some .notAll
+          | _ => none
+        match quantifier with
+        | none => []
+        | some quantifier =>
+            let fields := lowerEntitySource model rowGroup arguments
+            let literals := values.mapM fun
+              | .mk (.string value) none none => some value
+              | _ => none
+            match literals with
+            | some literals => [do
+                let source ← elaborated id (elaborateTokenEntityStringLiteralValueListSource model rowGroup
+                  { quantifier, fields := ← fields, values := literals })
+                elaborated id (CheckedValidationCondition.fromValueList rowGroup (.literals source))]
+            | none =>
+                let values := lowerEntitySource model rowGroup values
+                [do
+                  let source ← elaborated id (elaborateNumberEntityValueListSource model rowGroup
+                    { quantifier, fields := ← fields, values := ← values })
+                  elaborated id (CheckedValidationCondition.fromValueList rowGroup (.number source)),
+                 do
+                  let source ← elaborated id (elaborateTokenEntityValueListSource model rowGroup
+                    { quantifier, fields := ← fields, values := ← values })
+                  elaborated id (CheckedValidationCondition.fromValueList rowGroup (.token source))]
+    | _ => []
   let fieldFill := match leaf with
     | .call id arguments none none => match fieldFillOp? id with
         | some operator => [do
@@ -176,7 +206,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
               { op := .violated, field, source })]
         | _, _ => []
     | _ => []
-  flat ++ specific ++ groupCount ++ fieldFill ++ pattern
+  flat ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

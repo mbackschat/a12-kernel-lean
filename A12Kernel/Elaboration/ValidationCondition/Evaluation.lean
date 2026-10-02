@@ -53,7 +53,7 @@ def evalSelected (context : ValidationEvaluationContext)
   | .stringPattern leaf =>
       if isRelevant leaf.condition.field.id then leaf.condition.evalSelected context.fields
       else .unknown
-  | .fieldFill _ _ => .unknown
+  | .fieldFill _ _ | .valueList _ => .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
@@ -195,6 +195,10 @@ def evalAddressedPartial?
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
+  | .valueList source =>
+      match context.input with
+      | .checked document => source.evaluateFull document context.outer
+      | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
   | .orderedNumeric _ comparison => comparison.evalAddressed context
   | .groupList operator operands => do
       pure (operator.evalTally

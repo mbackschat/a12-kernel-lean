@@ -117,6 +117,11 @@ def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
       checkCore model rowGroup (.leaf (.stringPattern { compilePattern, condition }))
         (by rw [hModel]; rfl)
 
+/-- Compose a value-list certificate without flattening its authored operands. -/
+def fromValueList (rowGroup : GroupPath) (source : CheckedValueListCondition model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model rowGroup (.leaf (.valueList source)) source.modelWellFormed
+
 /-- Lift one checked numeric comparison at its certified rule-instance group. -/
 def fromNumeric (comparison : CheckedNumericComparison model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=

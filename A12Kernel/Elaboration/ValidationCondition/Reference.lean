@@ -355,6 +355,17 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       match model.lookupUniqueId leaf.condition.field.id with
       | .ok declaration => (concreteFieldPointer declaration environment).map ([·])
       | .error _ => .error .unclassifiedLeaf
+  | .valueList source =>
+      match source with
+      | .number source => do
+          pure ((← source.fields.referencePointers environment) ++
+            (← source.values.referencePointers environment))
+      | .token source =>
+          (·.flatten) <$> (source.fields.operands ++ source.values.operands).mapM
+            (CheckedTokenEntityOperand.referencePointers environment)
+      | .literals source =>
+          (·.flatten) <$> source.fields.operands.mapM
+            (CheckedTokenEntityOperand.referencePointers environment)
   | .fieldFill _ source =>
       sievedFieldPointers model
         (fun declaration => source.declarations.any (·.id == declaration.id)) environment
