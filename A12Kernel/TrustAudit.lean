@@ -579,6 +579,9 @@ run_cmd do
 #print axioms A12Kernel.NumericComparisonOp.holds_complement
 #print axioms A12Kernel.NumericComparisonOp.eval_complement_regions
 #print axioms A12Kernel.EqualityOp.evalSimple_complement_regions
+#print axioms A12Kernel.EqualityOp.evalDirectString_complement_regions
+#print axioms A12Kernel.CellObservation.fieldFilled_complement_regions
+#print axioms A12Kernel.GroupPresenceState.groupFilled_complement_regions
 #print axioms A12Kernel.FieldFillQuantifier.allFieldsFilled_complement_regions
 #print axioms A12Kernel.FieldFillQuantifier.atLeastOneFieldFilled_complement_regions
 #print axioms A12Kernel.FieldFillQuantifier.fieldsNotCollectivelyFilled_excludes_complement

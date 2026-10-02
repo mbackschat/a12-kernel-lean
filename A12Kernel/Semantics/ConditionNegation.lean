@@ -32,13 +32,6 @@ def negate (complement : Leaf → ConditionTree Leaf) : ConditionTree Leaf → C
   | .and left right => .or (left.negate complement) (right.negate complement)
   | .or left right => .and (left.negate complement) (right.negate complement)
 
-/-- `negate` with a complement that may be missing for a leaf: `none` as soon as any leaf has none. -/
-def negate? (complement : Leaf → Option (ConditionTree Leaf)) :
-    ConditionTree Leaf → Option (ConditionTree Leaf)
-  | .leaf value => complement value
-  | .and left right => return .or (← left.negate? complement) (← right.negate? complement)
-  | .or left right => return .and (← left.negate? complement) (← right.negate? complement)
-
 end ConditionTree
 
 end A12Kernel

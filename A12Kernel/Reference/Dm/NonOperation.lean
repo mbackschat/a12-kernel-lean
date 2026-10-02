@@ -25,18 +25,22 @@ def nonKeywordId? (language : Language) (spelling : String) : Option String := d
   let base ← keywordId? language (spelling.drop 3).toString
   pure ("Non" ++ base)
 
-/-- Re-read a name directly before `(` as a `Non` keyword when its rest spells one. -/
-def markNonKeywords (language : Language) (lexemes : Array Lexeme) : Array Lexeme :=
+/-- Re-read a bare name directly before `(` as a `Non` keyword when its rest spells one. A quoted
+name is a name whatever it spells, so `'NonFieldFilled'` stays one; `text` is the lexed source,
+whose character at a lexeme's offset tells the two apart. -/
+def markNonKeywords (language : Language) (text : String) (lexemes : Array Lexeme) : Array Lexeme :=
+  let chars := text.toList.toArray
   lexemes.mapIdx fun index lexeme =>
     match lexeme.token, lexemes[index + 1]?.map (·.token) with
-    | .name spelling, some (.symbol "(") => match nonKeywordId? language spelling with
-        | some id => { lexeme with token := .keyword id }
-        | none => lexeme
+    | .name spelling, some (.symbol "(") =>
+        match chars[lexeme.offset]? != some '\'', nonKeywordId? language spelling with
+        | true, some id => { lexeme with token := .keyword id }
+        | _, _ => lexeme
     | _, _ => lexeme
 
 /-- Read a condition text of the extension. -/
 def parseNonText (language : Language) (text : String) : Except SyntaxError Text := do
-  parseLexemes (markNonKeywords language (← lex language text))
+  parseLexemes (markNonKeywords language text (← lex language text))
 
 mutual
 /-- Replace every `NonOp(args)` by the negation of `Op(args)`. -/

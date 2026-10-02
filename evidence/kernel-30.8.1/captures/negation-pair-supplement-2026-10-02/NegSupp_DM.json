@@ -1,0 +1,377 @@
+{
+ "header": {
+  "id": "NegSupp_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "NegSupp_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": 0,
+           "maxValue": 31
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/M",
+        "name": "M",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": 0,
+           "maxValue": 12
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/Y",
+        "name": "Y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": 0,
+           "maxValue": 9999
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/T",
+        "name": "T",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/C",
+        "name": "C",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/S",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/F",
+        "name": "F",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType",
+          "BooleanType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/K",
+        "name": "K",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType",
+          "ConfirmType": {}
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/G",
+        "name": "G",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/G/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/G/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/H",
+        "name": "H",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/H/Z",
+           "name": "Z",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/R",
+           "name": "R",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VALDP",
+        "name": "VALDP",
+        "Rule": {
+         "errorEntityRelPath": "../D",
+         "errorCode": "VALDP",
+         "errorCondition": "Valid(Date(D, M, Y))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "VALDP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VALDN",
+        "name": "VALDN",
+        "Rule": {
+         "errorEntityRelPath": "../D",
+         "errorCode": "VALDN",
+         "errorCondition": "Invalid(Date(D, M, Y))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "VALDN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VALTP",
+        "name": "VALTP",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "VALTP",
+         "errorCondition": "Valid(S, \"NoSuchType\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "VALTP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VALTN",
+        "name": "VALTN",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "VALTN",
+         "errorCondition": "Invalid(S, \"NoSuchType\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "VALTN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/LTP",
+        "name": "LTP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "LTP",
+         "errorCondition": "[A] < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LTP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/LTN",
+        "name": "LTN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "LTN",
+         "errorCondition": "[A] >= 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LTN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VLAP",
+        "name": "VLAP",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "VLAP",
+         "errorCondition": "AtLeastOneFieldValueIncludedInValueList(S, T In \"AB\", \"CD\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "VLAP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VLAN",
+        "name": "VLAN",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "VLAN",
+         "errorCondition": "NoFieldValueIncludedInValueList(S, T In \"AB\", \"CD\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "VLAN"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1215,6 +1215,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Over ten separating documents no predicate fires together with its complement](sources/evaluation-and-application-routes.md#src-negation-pair-grid)
 <a id="src-negated-corpus"></a>
 - [Every retained corpus rule negated by De Morgan over the complement table never fires together with its original](sources/evaluation-and-application-routes.md#src-negated-corpus)
+<a id="src-negation-pair-supplement"></a>
+- [`Valid`/`Invalid` complement only over a `Date(...)` construction, and German spellings fire as English ones](sources/evaluation-and-application-routes.md#src-negation-pair-supplement)
 
 <a id="src-firstfilled-string-boolean-runtime"></a>
 - [Fixed and parent-local starred String and Boolean computation outcomes](sources/evaluation-and-application-routes.md#src-firstfilled-string-boolean-runtime)

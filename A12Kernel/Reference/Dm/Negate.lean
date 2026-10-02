@@ -14,11 +14,12 @@ one predicate each (`FieldFilled` and `FieldNotFilled`, `>` and `<=`); three hav
 count comparison as complement, and a predicate with no complement in the language refuses the
 negation. Each pair was run on the Kernel over documents separating filled, empty, formally invalid,
 uninstantiated and over-limit cells, and no pair fired both members
-([grid](../../../evidence/kernel-30.8.1/captures/negation-pair-grid-2026-10-02/request.json)).
+([grid](../../../evidence/kernel-30.8.1/captures/negation-pair-grid-2026-10-02/request.json),
+[supplement](../../../evidence/kernel-30.8.1/captures/negation-pair-supplement-2026-10-02/request-en.json)).
 
 Whether the negated rule is legal is the static check's question: an iteration guard the negation
-turns into its complement, or an error field the output no longer reads, refuses it there. The
-firing polarity of the output and the empty-instance gate are not preserved by negation.
+turns into its complement refuses it there. The firing polarity of the output and the empty-instance
+gate are not preserved by negation.
 -/
 
 namespace A12Kernel.Dm
@@ -34,8 +35,7 @@ def complementPairs : List (String × String) := [
   ("AllFieldsFilled", "NotAllFieldsFilled"), ("AtLeastOneFieldFilled", "NoFieldFilled"),
   ("AllGroupsFilled", "NotAllGroupsFilled"), ("AtLeastOneGroupFilled", "NoGroupFilled"),
   ("FieldValueIncludedInValueList", "FieldValueNotIncludedInValueList"),
-  ("AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList"),
-  ("Valid", "Invalid")]
+  ("AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList")]
 
 def complementId? (id : String) : Option String :=
   (complementPairs.find? (·.1 == id)).map (·.2) <|> (complementPairs.find? (·.2 == id)).map (·.1)
@@ -65,6 +65,15 @@ def negate : Expr → Except NegationRefusal Expr
   -- A complement shares its original's argument shape, so an `In` list and an `@From` scope stay.
   | .call id arguments listed scope => match complementId? id, id, listed, scope with
       | some complement, _, _, _ => pure (.call complement arguments listed scope)
+      -- Only the date form: with an unregistered type name `Valid(Field, "Type")` and its `Invalid`
+      -- both fire on a filled field (spec §5, value-type validity), and registration is no part of
+      -- the condition.
+      | none, "Valid", none, none => match arguments with
+          | [.mk (.call "Date" _ none none) none none] => pure (.call "Invalid" arguments none none)
+          | _ => throw { construct := id }
+      | none, "Invalid", none, none => match arguments with
+          | [.mk (.call "Date" _ none none) none none] => pure (.call "Valid" arguments none none)
+          | _ => throw { construct := id }
       | none, "FieldsNotCollectivelyFilled", none, none => pure (.parens (.logic .or
           [.call "AllFieldsFilled" arguments none none, .call "NoFieldFilled" arguments none none]))
       | none, "GroupsNotCollectivelyFilled", none, none => pure (.parens (.logic .or

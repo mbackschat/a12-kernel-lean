@@ -85,6 +85,16 @@ example :
        (negate · |>.toOption.isNone)] == [some true, some true] := by
   native_decide
 
+/- `Valid` and `Invalid` are complements in the date form only: with an unregistered type name the
+Kernel fires both on every filled field
+([supplement](../../../evidence/kernel-30.8.1/captures/negation-pair-supplement-2026-10-02/request-en.json)),
+so the field form refuses the negation. -/
+example :
+    [negated "Valid(Date(D, M, Y))" == english "Invalid(Date(D, M, Y))",
+     negated "Invalid(Date(D, M, Y))" == english "Valid(Date(D, M, Y))",
+     negated "Valid(S, \"IBAN\")" == none, negated "Invalid(S, \"IBAN\")" == none].all id := by
+  native_decide
+
 private def lowered (language : Language) (text : String) : Option Expr := do
   (lowerNon (← (parseNonText language text).toOption).body).toOption
 
@@ -105,6 +115,26 @@ example :
     [(parseText .english "NonFieldFilled(A)").toOption.isNone,
      lowered .english "NonFieldValuesNotUnique(A, B)" == none,
      ((parseNonText .english "NonFieldValuesNotUnique(A, B)").toOption.isSome)].all id := by
+  native_decide
+
+/- A complement keeps its original's `In` list and `@From` scope, which `NoFieldValueIncludedInValueList`
+needs to mean the same members and values. -/
+example :
+    negated "AtLeastOneFieldValueIncludedInValueList(A, B In \"x\", \"y\" @From ../Rows)" ==
+      english "NoFieldValueIncludedInValueList(A, B In \"x\", \"y\" @From ../Rows)" := by
+  native_decide
+
+private def nonRoundTrips (language : Language) (text : String) : Bool :=
+  match parseNonText language text with
+  | .ok parsed => (parseNonText language (printText language parsed)).toOption == some parsed
+  | .error _ => false
+
+/- A twin prints in the model's language and reads back to the same tree; a quoted name before `(`
+is a name whatever it spells, so it is not read as a twin. -/
+example :
+    [nonRoundTrips .german "NonFeldAngegeben(A) Und NonAlleFelderAngegeben(A, B)",
+     nonRoundTrips .english "NonFieldFilled(A) Or NonNoFieldFilled(B)",
+     (parseNonText .english "'NonFieldFilled'(A)").toOption.isNone].all id := by
   native_decide
 
 end A12Kernel.Dm.NegateLocks

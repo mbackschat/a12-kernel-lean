@@ -1,0 +1,224 @@
+{
+ "model": "NegSupp_DM.json",
+ "locale": "en_US",
+ "rows": [
+  {
+   "name": "all-filled",
+   "documentInline": {
+    "Probe": {
+     "A": 7,
+     "B": 7,
+     "C": 7,
+     "S": "AB",
+     "F": true,
+     "K": true,
+     "G": {
+      "X": 1,
+      "Y": 1
+     },
+     "H": {
+      "Z": 1
+     },
+     "Rows": [
+      {
+       "R": 1
+      },
+      {
+       "R": 2
+      }
+     ],
+     "D": 31,
+     "M": 1,
+     "Y": 2020,
+     "T": "CD"
+    }
+   }
+  },
+  {
+   "name": "all-empty",
+   "documentInline": {
+    "Probe": {
+     "A": null,
+     "B": null,
+     "C": null,
+     "S": null,
+     "F": null,
+     "K": null,
+     "G": {
+      "X": null,
+      "Y": null
+     },
+     "H": {
+      "Z": null
+     },
+     "D": null,
+     "M": null,
+     "Y": null,
+     "T": null
+    }
+   }
+  },
+  {
+   "name": "blank",
+   "documentInline": {
+    "Probe": {}
+   }
+  },
+  {
+   "name": "one-filled",
+   "documentInline": {
+    "Probe": {
+     "A": 3,
+     "B": null,
+     "C": null,
+     "S": "zz",
+     "F": false,
+     "G": {
+      "X": 1
+     },
+     "H": {
+      "Z": null
+     },
+     "Rows": [
+      {
+       "R": null
+      }
+     ],
+     "D": 1,
+     "T": "zz"
+    }
+   }
+  },
+  {
+   "name": "two-filled",
+   "documentInline": {
+    "Probe": {
+     "A": 5,
+     "B": 7,
+     "C": null,
+     "S": "XY",
+     "G": {
+      "X": 1
+     },
+     "H": {
+      "Z": 1
+     },
+     "Rows": [
+      {
+       "R": 1
+      }
+     ],
+     "D": 31,
+     "M": 11,
+     "Y": 2020,
+     "T": "AB"
+    }
+   }
+  },
+  {
+   "name": "invalid-alone",
+   "documentInline": {
+    "Probe": {
+     "A": "x",
+     "B": null,
+     "C": null,
+     "S": "a b",
+     "G": {
+      "X": "x"
+     },
+     "H": {
+      "Z": null
+     },
+     "Rows": [
+      {
+       "R": "x"
+      }
+     ],
+     "D": "x",
+     "M": 1,
+     "Y": 2020,
+     "T": "a b"
+    }
+   }
+  },
+  {
+   "name": "invalid-one-filled",
+   "documentInline": {
+    "Probe": {
+     "A": "x",
+     "B": 7,
+     "C": null,
+     "G": {
+      "X": 1,
+      "Y": "x"
+     },
+     "H": {
+      "Z": null
+     },
+     "Rows": [
+      {
+       "R": "x"
+      },
+      {
+       "R": null
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "invalid-two-filled",
+   "documentInline": {
+    "Probe": {
+     "A": "x",
+     "B": 7,
+     "C": 7,
+     "G": {
+      "X": "x"
+     },
+     "H": {
+      "Z": 1
+     },
+     "Rows": [
+      {
+       "R": 1
+      },
+      {
+       "R": "x"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "over-limit",
+   "documentInline": {
+    "Probe": {
+     "A": 7,
+     "B": null,
+     "C": null,
+     "Rows": [
+      {
+       "R": null
+      },
+      {
+       "R": null
+      },
+      {
+       "R": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "rows-none-a",
+   "documentInline": {
+    "Probe": {
+     "A": 7,
+     "Rows": []
+    }
+   }
+  }
+ ]
+}

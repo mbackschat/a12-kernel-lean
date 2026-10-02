@@ -3,6 +3,7 @@ import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Semantics.GroupPresence
+import A12Kernel.Semantics.FlatValidation
 
 /-! # Firing regions of the complement pairs
 
@@ -45,7 +46,48 @@ theorem evalSimple_complement_regions (op : EqualityOp) (equivalent : α → α 
   cases op <;> cases operand <;> simp only [evalSimple, complement, holds]
   all_goals (repeat' split) <;> simp_all [Verdict.fires]
 
+/-- Direct String equality and its complement never both fire, and both are silent exactly when the
+field holds no value or the literal is empty, which the String reader suppresses. -/
+theorem evalDirectString_complement_regions (op : EqualityOp)
+    (operand : SimpleComparisonOperand String) (expected : String) :
+    ¬ ((operand.evalDirectString op expected).fires ∧
+        (operand.evalDirectString op.complement expected).fires) ∧
+      (((operand.evalDirectString op expected).fires ||
+          (operand.evalDirectString op.complement expected).fires) = false ↔
+        expected.isEmpty ∨ ∀ actual given, operand ≠ .value actual given) := by
+  cases op <;> cases operand <;>
+    simp only [SimpleComparisonOperand.evalDirectString, evalSimple, complement, holds]
+  all_goals (repeat' split) <;> simp_all [Verdict.fires]
+
 end EqualityOp
+
+namespace CellObservation
+
+/-- `FieldFilled` and `FieldNotFilled` never both fire, and both are silent exactly on a formally
+unavailable or poisoned cell. -/
+theorem fieldFilled_complement_regions (observation : CellObservation) :
+    ¬ (observation.evalValidationFilled.fires ∧ observation.evalValidationNotFilled.fires) ∧
+      ((observation.evalValidationFilled.fires || observation.evalValidationNotFilled.fires) = false ↔
+        observation ≠ .empty ∧ ∀ value, observation ≠ .value value) := by
+  cases observation <;> simp [Verdict.fires]
+
+end CellObservation
+
+namespace GroupPresenceState
+
+/-- `GroupFilled` and `GroupNotFilled` never both fire, and both are silent exactly where no member is
+relevant, or where no content is seen and either an error or partial relevance keeps absence from
+being proved. -/
+theorem groupFilled_complement_regions (state : GroupPresenceState) :
+    ¬ (state.groupFilled.fires ∧ state.groupNotFilled.fires) ∧
+      ((state.groupFilled.fires || state.groupNotFilled.fires) = false ↔
+        state.relevance = .noneRelevant ∨
+          (state.content = false ∧ (state.erroneous = true ∨ state.relevance ≠ .fullyRelevant))) := by
+  rcases state with ⟨content, erroneous, relevance⟩
+  cases content <;> cases erroneous <;> cases relevance <;>
+    simp [groupFilled, groupNotFilled, definitelyFilled, Verdict.fires]
+
+end GroupPresenceState
 
 namespace FieldFillQuantifier
 

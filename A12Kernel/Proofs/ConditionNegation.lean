@@ -39,15 +39,19 @@ theorem fires_evalVerdict_or (evalLeaf : Leaf → Verdict) (left right : Conditi
       ((left.evalVerdict evalLeaf).fires || (right.evalVerdict evalLeaf).fires) := by
   rw [evalVerdict_or_eq_disj, Verdict.fires_disj]
 
-/-- A tree and its negation never both fire when no leaf fires together with its complement. -/
-theorem negate_exclusive (evalLeaf : Leaf → Verdict) (complement : Leaf → ConditionTree Leaf)
-    (pair : ∀ value, ¬ ((evalLeaf value).fires ∧ ((complement value).evalVerdict evalLeaf).fires)) :
+/-- A tree and its negation never both fire when none of its leaves fires together with its
+complement. -/
+theorem negate_exclusive (evalLeaf : Leaf → Verdict) (complement : Leaf → ConditionTree Leaf) :
     ∀ tree : ConditionTree Leaf,
-      ¬ ((tree.evalVerdict evalLeaf).fires ∧ ((tree.negate complement).evalVerdict evalLeaf).fires)
-  | .leaf value => pair value
+      tree.allLeaves (fun value =>
+        !((evalLeaf value).fires && ((complement value).evalVerdict evalLeaf).fires)) →
+      !((tree.evalVerdict evalLeaf).fires && ((tree.negate complement).evalVerdict evalLeaf).fires)
+  | .leaf value => by simp [allLeaves, negate]
   | .and left right => by
-      have hl := negate_exclusive evalLeaf complement pair left
-      have hr := negate_exclusive evalLeaf complement pair right
+      intro pair
+      simp only [allLeaves, Bool.and_eq_true] at pair
+      have hl := negate_exclusive evalLeaf complement left pair.1
+      have hr := negate_exclusive evalLeaf complement right pair.2
       simp only [negate, fires_evalVerdict_and, fires_evalVerdict_or] at *
       generalize (left.evalVerdict evalLeaf).fires = a at *
       generalize ((left.negate complement).evalVerdict evalLeaf).fires = b at *
@@ -55,8 +59,10 @@ theorem negate_exclusive (evalLeaf : Leaf → Verdict) (complement : Leaf → Co
       generalize ((right.negate complement).evalVerdict evalLeaf).fires = d at *
       cases a <;> cases b <;> cases c <;> cases d <;> simp_all
   | .or left right => by
-      have hl := negate_exclusive evalLeaf complement pair left
-      have hr := negate_exclusive evalLeaf complement pair right
+      intro pair
+      simp only [allLeaves, Bool.and_eq_true] at pair
+      have hl := negate_exclusive evalLeaf complement left pair.1
+      have hr := negate_exclusive evalLeaf complement right pair.2
       simp only [negate, fires_evalVerdict_and, fires_evalVerdict_or] at *
       generalize (left.evalVerdict evalLeaf).fires = a at *
       generalize ((left.negate complement).evalVerdict evalLeaf).fires = b at *

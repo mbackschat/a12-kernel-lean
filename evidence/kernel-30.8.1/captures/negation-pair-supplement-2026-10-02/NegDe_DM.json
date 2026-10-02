@@ -1,0 +1,797 @@
+{
+ "header": {
+  "id": "NegDe_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "de_DE"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "NegDe_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "de_DE"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/C",
+        "name": "C",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/S",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/F",
+        "name": "F",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType",
+          "BooleanType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/K",
+        "name": "K",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType",
+          "ConfirmType": {}
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/G",
+        "name": "G",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/G/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/G/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/H",
+        "name": "H",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/H/Z",
+           "name": "Z",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/R",
+           "name": "R",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/PRESP",
+        "name": "PRESP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "PRESP",
+         "errorCondition": "FeldAngegeben(A)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "PRESP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/PRESN",
+        "name": "PRESN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "PRESN",
+         "errorCondition": "FeldNichtAngegeben(A)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "PRESN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ALLFP",
+        "name": "ALLFP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "ALLFP",
+         "errorCondition": "AlleFelderAngegeben(A, B, C)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ALLFP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ALLFN",
+        "name": "ALLFN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "ALLFN",
+         "errorCondition": "NichtAlleFelderOderKeinFeldAngegeben(A, B, C)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ALLFN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ONEFP",
+        "name": "ONEFP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "ONEFP",
+         "errorCondition": "MindestensEinFeldAngegeben(A, B, C)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ONEFP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ONEFN",
+        "name": "ONEFN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "ONEFN",
+         "errorCondition": "KeinFeldAngegeben(A, B, C)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ONEFN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/COLFP",
+        "name": "COLFP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "COLFP",
+         "errorCondition": "FelderNichtGemeinsamAngegeben(A, B, C)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "COLFP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/COLFN",
+        "name": "COLFN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "COLFN",
+         "errorCondition": "(AlleFelderAngegeben(A, B, C) Oder KeinFeldAngegeben(A, B, C))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "COLFN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MTOFP",
+        "name": "MTOFP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MTOFP",
+         "errorCondition": "MehrAlsEinFeldAngegeben(A, B, C)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "MTOFP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MTOFN",
+        "name": "MTOFN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MTOFN",
+         "errorCondition": "AnzahlAngegebenerFelder(A, B, C) <= 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "MTOFN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/NEOFP",
+        "name": "NEOFP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "NEOFP",
+         "errorCondition": "NichtGenauEinFeldAngegeben(A, B, C)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "NEOFP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/NEOFN",
+        "name": "NEOFN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "NEOFN",
+         "errorCondition": "AnzahlAngegebenerFelder(A, B, C) == 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "NEOFN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GPRESP",
+        "name": "GPRESP",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "GPRESP",
+         "errorCondition": "KontextAngegeben(G)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "GPRESP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GPRESN",
+        "name": "GPRESN",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "GPRESN",
+         "errorCondition": "KontextNichtAngegeben(G)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "GPRESN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ALLGP",
+        "name": "ALLGP",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "ALLGP",
+         "errorCondition": "AlleKontexteAngegeben(G, H)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ALLGP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ALLGN",
+        "name": "ALLGN",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "ALLGN",
+         "errorCondition": "NichtAlleOderKeinKontextAngegeben(G, H)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ALLGN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ONEGP",
+        "name": "ONEGP",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "ONEGP",
+         "errorCondition": "MindestensEinKontextAngegeben(G, H)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ONEGP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ONEGN",
+        "name": "ONEGN",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "ONEGN",
+         "errorCondition": "KeinKontextAngegeben(G, H)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "ONEGN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/COLGP",
+        "name": "COLGP",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "COLGP",
+         "errorCondition": "KontexteNichtGemeinsamAngegeben(G, H)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "COLGP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/COLGN",
+        "name": "COLGN",
+        "Rule": {
+         "errorEntityRelPath": "../G/X",
+         "errorCode": "COLGN",
+         "errorCondition": "(AlleKontexteAngegeben(G, H) Oder KeinKontextAngegeben(G, H))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "COLGN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/SONEP",
+        "name": "SONEP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "SONEP",
+         "errorCondition": "FeldAngegeben(A) Und MindestensEinFeldAngegeben(Rows*/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "SONEP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/SONEN",
+        "name": "SONEN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "SONEN",
+         "errorCondition": "FeldAngegeben(A) Und KeinFeldAngegeben(Rows*/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "SONEN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/SALLP",
+        "name": "SALLP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "SALLP",
+         "errorCondition": "FeldAngegeben(A) Und AlleFelderAngegeben(Rows*/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "SALLP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/SALLN",
+        "name": "SALLN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "SALLN",
+         "errorCondition": "FeldAngegeben(A) Und NichtAlleFelderOderKeinFeldAngegeben(Rows*/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "SALLN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GTP",
+        "name": "GTP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "GTP",
+         "errorCondition": "[A] > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "GTP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GTN",
+        "name": "GTN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "GTN",
+         "errorCondition": "[A] <= 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "GTN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/EQP",
+        "name": "EQP",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "EQP",
+         "errorCondition": "[A] == 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "EQP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/EQN",
+        "name": "EQN",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "EQN",
+         "errorCondition": "[A] != 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "EQN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/PATP",
+        "name": "PATP",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "PATP",
+         "errorCondition": "[S] WieMuster \"[A-Z]+\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "PATP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/PATN",
+        "name": "PATN",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "PATN",
+         "errorCondition": "[S] NichtWieMuster \"[A-Z]+\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "PATN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VLP",
+        "name": "VLP",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "VLP",
+         "errorCondition": "FeldWertInWerteListe(S, \"AB\", \"CD\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "VLP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/VLN",
+        "name": "VLN",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "VLN",
+         "errorCondition": "FeldWertNichtInWerteListe(S, \"AB\", \"CD\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "VLN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/BOOLP",
+        "name": "BOOLP",
+        "Rule": {
+         "errorEntityRelPath": "../F",
+         "errorCode": "BOOLP",
+         "errorCondition": "[F] == Wahr",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "BOOLP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/BOOLN",
+        "name": "BOOLN",
+        "Rule": {
+         "errorEntityRelPath": "../F",
+         "errorCode": "BOOLN",
+         "errorCondition": "[F] != Wahr",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "BOOLN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/CONFP",
+        "name": "CONFP",
+        "Rule": {
+         "errorEntityRelPath": "../K",
+         "errorCode": "CONFP",
+         "errorCondition": "[K] == Wahr",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "CONFP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/CONFN",
+        "name": "CONFN",
+        "Rule": {
+         "errorEntityRelPath": "../K",
+         "errorCode": "CONFN",
+         "errorCondition": "[K] != Wahr",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "de_DE",
+           "text": "CONFN"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -12,11 +12,15 @@ Comments are not part of the tree and are not printed.
 
 namespace A12Kernel.Dm
 
-/-- A keyword's spelling in one language, from its English id. -/
+/-- A keyword's spelling in one language, from its English id. A `Non<Operation>` twin's id is
+`Non` before its operation's id and is spelled `Non` before that operation's spelling. -/
 def keywordSpelling (language : Language) (id : String) : String :=
-  match keywordPairs.find? (·.1 == id) with
-  | some (english, german) => match language with | .english => english | .german => german
-  | none => id
+  let spell (id : String) : Option String := (keywordPairs.find? (·.1 == id)).map fun (english, german) =>
+    match language with | .english => english | .german => german
+  match spell id, (if id.startsWith "Non" then spell (id.drop 3).toString else none) with
+  | some spelling, _ => spelling
+  | none, some base => "Non" ++ base
+  | none, none => id
 
 /-- A name, quoted when bare spelling would lex as something else: a keyword, a number, or a word
 holding a character no name may. -/

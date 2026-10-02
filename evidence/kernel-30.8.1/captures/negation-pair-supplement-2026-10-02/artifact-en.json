@@ -1,0 +1,1264 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "NegSupp_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "all-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDP",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDP",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "all-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "blank",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "one-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LTP",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LTP",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "two-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "invalid-alone",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G/X"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/R"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "VALTN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALTP",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G/X"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/R"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "invalid-one-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G/Y",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G/Y"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/R"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G/Y",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G/Y"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/R"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "invalid-two-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G/X"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows[2]/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[2]/R"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/G/X"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows[2]/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[2]/R"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/R"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/R",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]/R"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "rows-none-a",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LTN",
+              "field" : "Probe/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/A"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALDN",
+              "field" : "Probe/D",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ],
+              "fillToFix" : [
+                "Probe/D",
+                "Probe/M",
+                "Probe/Y"
+              ]
+            },
+            {
+              "code" : "VLAN",
+              "field" : "Probe/S",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/S",
+                "Probe/T"
+              ],
+              "fillToFix" : [
+                "Probe/S",
+                "Probe/T"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
