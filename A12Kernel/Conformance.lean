@@ -324,6 +324,7 @@ import A12Kernel.Conformance.ScalarComputationPlanFirstFilled
 import A12Kernel.Conformance.ScalarComputationPlanFirstFilledCapacity
 import A12Kernel.Conformance.ScalarComputationPlanOperators
 import A12Kernel.Conformance.ScalarComputationRun
+import A12Kernel.Conformance.MixedComputationPlan
 import A12Kernel.Conformance.ScalarText
 import A12Kernel.Conformance.SemanticIndex
 import A12Kernel.Conformance.SemanticIndexDateRange

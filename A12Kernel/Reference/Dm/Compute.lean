@@ -2,7 +2,7 @@ import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Reference.Dm.LowerDocument
 import A12Kernel.Elaboration.RepeatableNumberPlan
-import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Elaboration.MixedComputationPlan
 
 /-! # Running a DM model's computations over one document
 
@@ -101,6 +101,7 @@ inductive LoweredComputation (model : FlatModel)
   | number (table : CheckedNumericComputationTable model) (row : Bool)
   | string (table : CheckedStringComputationTable model)
   | document (step : CheckedDocumentComputationStep model)
+  | stringConstantRows (operation : CheckedRepeatableStringConstantComputation model)
 
 /-- Lower one computation onto its target kind's checked table. -/
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
@@ -125,7 +126,12 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
           (guards.zip expressions) suppress (if row then .row else .fixed))
       pure (target, .number table row)
   | .string => do
-      if row then refuse "StringComputation" "row target"
+      if row then
+        let ([none], [.string literal]) := (guards, operations)
+          | refuse "StringComputation" "row target"
+        let operation ← elaborated "StringComputation"
+          (checkRepeatableStringConstantComputation model computation.group target.id literal)
+        return (target, .stringConstantRows operation)
       if operations.any fun | .call "FirstFilledValue" _ none none => true | _ => false then
         return ← document
       let alternatives ← (guards.zip operations).mapM fun (precondition, operation) => do
@@ -160,40 +166,36 @@ private def documentAttempt? : DocumentTargetOutcome → Option String
   | .string (.errored attempted _) => some attempted.text
   | _ => none
 
-/-- Run the lowered computations and project their change outcomes. -/
+/-- The change projection of one String or whole-document outcome at its address: an unchanged value
+is no change, and a target that held a value and now holds none is cleared. -/
+private def textOutcome (model : FlatModel) (checked : CheckedDocument model) (address : CellAddr)
+    (value? errored? : Option String) : Option ComputedOutcome :=
+  let pointer := renderPointer model (MessagePointer.ofCellAddr address)
+  let stored := (checked.storedTextAt address).getD ""
+  match value?, errored? with
+  | some value, _ => if value == stored then none else some { pointer, outcome := s!"value {value}" }
+  | none, some attempted => some { pointer, outcome := s!"errored {attempted}" }
+  | none, none => if !stored.isEmpty then some { pointer, outcome := "cleared" } else none
+
+/-- Run the lowered computations on one plan and project their change outcomes. -/
 def runComputations (world : World) (prepared : PreparedFlatStringContext model compilePattern)
     (checked : CheckedDocument model) (lowered : List (LoweredComputation model)) :
     Lowering (List ComputedOutcome) := do
-  let numbers := lowered.filterMap fun | .number table _ => some table | _ => none
-  if numbers.length == lowered.length then
-    let plan ← elaborated "ComputationPlan" (certifyRepeatableNumberPlan numbers)
-    let outcomes ← elaborated "ComputationRun" (plan.execute world checked)
-    pure (outcomes.filterMap (numberOutcome model))
-  else
-    if lowered.any fun | .number _ true => true | _ => false then
-      refuse "ComputationRun" "a row Number target beside a String target"
-    let steps := lowered.map fun
-      | .number table _ => CheckedScalarComputationStep.number table
-      | .string table => .string table
-      | .document step => .document step
-    let plan ← elaborated "ComputationPlan" (certifyScalarComputationPlan steps)
-    let outcomes ← elaborated "ComputationRun" (plan.execute world prepared.patterns checked)
-    pure (outcomes.filterMap fun outcome =>
-      let (target, value?, cleared, errored?) := match outcome with
-        | .string target (.accepted value) => (target, some value.text, false, none)
-        | .string target (.errored attempted _) => (target, none, false, some attempted.text)
-        | .string target _ => (target, none, true, none)
-        | .number target (.accepted value) => (target, some value.render, false, none)
-        | .number target (.rejected attempted _) => (target, none, false, some attempted.render)
-        | .number target _ => (target, none, true, none)
-        | .document target outcome => (target, outcome.storedText?, outcome.storedText?.isNone &&
-            (documentAttempt? outcome).isNone, documentAttempt? outcome)
-      let address : CellAddr := { field := target, path := [] }
-      let pointer := renderPointer model (MessagePointer.ofCellAddr address)
-      let stored := (checked.storedTextAt address).getD ""
-      match value?, errored? with
-      | some value, _ => if value == stored then none else some { pointer, outcome := s!"value {value}" }
-      | none, some attempted => some { pointer, outcome := s!"errored {attempted}" }
-      | none, none => if cleared && !stored.isEmpty then some { pointer, outcome := "cleared" } else none)
+  let steps : List (MixedComputationStep model compilePattern) := lowered.map fun
+    | .number table _ => .number table
+    | .string table => .string table
+    | .document step => .document step
+    | .stringConstantRows operation => .rows (.ofRepeatableStringConstant operation)
+  let plan ← elaborated "ComputationPlan" (certifyMixedComputationPlan steps)
+  let outcomes ← elaborated "ComputationRun" (plan.execute world prepared.patterns checked)
+  pure (outcomes.filterMap fun
+    | .number entry => numberOutcome model entry
+    | .string target (.accepted value) => textOutcome model checked { field := target, path := [] }
+        (some value.text) none
+    | .string target (.errored attempted _) => textOutcome model checked { field := target, path := [] }
+        none (some attempted.text)
+    | .string target _ => textOutcome model checked { field := target, path := [] } none none
+    | .document address outcome => textOutcome model checked address outcome.storedText?
+        (documentAttempt? outcome))
 
 end A12Kernel.Dm

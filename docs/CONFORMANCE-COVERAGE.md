@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-02; HEAD was `c63a69ce`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-02; HEAD was `f2391d93`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 590 retained Kernel observation rows through Lean, 1452 of the 1452 rule and computation instances Lean represents match the Kernel and 0 diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
+**Replaying 590 retained Kernel observation rows through Lean, 1522 of the 1522 rule and computation instances Lean represents match the Kernel and 0 diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -81,9 +81,9 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 979 | 473 |
+| match | 979 | 543 |
 | tier 1 | 0 | 0 |
-| tier 2 | 302 | 352 |
+| tier 2 | 302 | 282 |
 | unattributed | 0 | 19 |
 | fault | 2 | 0 |
 
@@ -96,10 +96,10 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 | instances | members | arm | construct |
 |---|---|---|---|
 | 112 | 36 | validation | `Comparison/NumberOfDifferentValues` |
-| 96 | 39 | computation | `StringComputation` |
 | 88 | 11 | validation | `Comparison/NumberOfValueInFields` |
 | 56 | 7 | computation | `NumberComputation` |
 | 49 | 29 | computation | `DateComputation` |
+| 42 | 14 | computation | `StringComputation` |
 | 24 | 6 | computation | `Guard/Comparison` |
 | 23 | 7 | computation | `TimeComputation` |
 | 21 | 3 | validation | `FieldValuesNotUnique` |
@@ -107,7 +107,6 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 | 18 | 18 | validation | `Comparison/DifferenceInDays` |
 | 18 | 8 | computation | `ConfirmComputation` |
 | 16 | 8 | validation | `Comparison/Sum` |
-| 16 | 4 | computation | `ComputationRun` |
 | 14 | 2 | computation | `FirstFilledValue` |
 | 14 | 8 | computation | `Having` |
 | 10 | 3 | computation | `EnumerationComputation` |
@@ -162,8 +161,8 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 215 | 100% |
-| Citing a Kernel checkpoint or calibration | 127 | 59% |
+| Capability records in [`implementation/`](implementation/) | 216 | 100% |
+| Citing a Kernel checkpoint or calibration | 127 | 58% |
 | Carrying an explicit evidence-pending note | 54 | 25% |
 
 ## Axis 3 — open obligation load
@@ -184,8 +183,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 232460 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 11018 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 232474 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 11121 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.

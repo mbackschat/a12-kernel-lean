@@ -100,21 +100,21 @@ def read (plan : CheckedRepeatableNumberPlan model) (input : CheckedDocument mod
       .ok (NumericDependencyCell.ofObservation .empty).checked
     else input.read address
 
-private def cellAt (input : CheckedDocument model)
+def cellAt (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (environment : Env) (field : FieldId) : CheckedCell :=
   match input.checkedCellWithRead read environment field with
   | .ok cell => cell
   | .error _ => malformedCheckedCell
 
-private def supportedOutcome (table : CheckedNumericComputationTable model) :
+def supportedOutcome (table : CheckedNumericComputationTable model) :
     Except NumericComputationFault NumericTargetCheckResult →
       Except RepeatableNumberPlanFault NumericTargetOutcome
   | .error cause => throw (.table table.targetField cause)
   | .ok (.supported outcome) => pure outcome
   | .ok (.unsupported cause) => throw (.tableTargetCheck table.targetField cause)
 
-private def executeFixed (table : CheckedNumericComputationTable model) (world : World)
+def executeFixed (table : CheckedNumericComputationTable model) (world : World)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except RepeatableNumberPlanFault (SourcedNumericTargetOutcome CellAddr) := do
@@ -132,7 +132,7 @@ private def executeFixed (table : CheckedNumericComputationTable model) (world :
 a context reading every field at its own scope under the row, so a field of the row reads that row's
 cell and a field above it the enclosing one, and with the row as the outer environment a star binds.
 An over-limit row clears without reading a guard. -/
-private def executeRows (table : CheckedNumericComputationTable model) (world : World)
+def executeRows (table : CheckedNumericComputationTable model) (world : World)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except RepeatableNumberPlanFault (List (SourcedNumericTargetOutcome CellAddr)) :=

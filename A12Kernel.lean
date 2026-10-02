@@ -310,6 +310,7 @@ import A12Kernel.Elaboration.StringNumberComputationRunApplication
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Elaboration.MixedComputationPlan
 import A12Kernel.Elaboration.ScalarComputationRunRelation
 import A12Kernel.Elaboration.ScalarComputationRunResult
 import A12Kernel.Elaboration.ScalarComputationFormalInput

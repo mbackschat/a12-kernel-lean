@@ -475,6 +475,19 @@ def overlayNonrepeatableCells (checked : CheckedDocument model)
       placements.filterMap fun (field, placement) =>
         placement.map fun placement => { placement with address := { field, path := [] } } }
 
+/-- The document a later computation of a plan with repeatable targets reads: every placement of a
+`hidden` field removed, so a pending target reads empty at every row, and each completed placement put
+at its exact address. `overlayNonrepeatableCells` is the instance whose placements all sit at the root;
+the reasons there, a stale stored value never read and a placement rather than a bare cell, are the
+same here. -/
+def overlayCells (checked : CheckedDocument model) (hidden : List FieldId)
+    (placements : List CheckedCellPlacement) : CheckedDocument model :=
+  { checked with
+    checkedCells :=
+      (checked.checkedCells.filter fun placement =>
+        !hidden.contains placement.address.field &&
+          !placements.any (·.address == placement.address)) ++ placements }
+
 /-- Query one model-legal address. In-cap absence is a clean empty checked cell, over-limit ancestry is unavailable, and malformed addressing remains an explicit structural error. -/
 def read (checked : CheckedDocument model) (address : CellAddr) :
     Except CheckedDocumentError CheckedCell := do

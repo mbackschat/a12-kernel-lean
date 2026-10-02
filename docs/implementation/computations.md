@@ -145,6 +145,13 @@ The scalar, fixed, and nonrepeatable half. Exact-address repeatable families liv
 - `assurance`: [`RepeatableNumberPlanGroupDescendants.lean`](../../A12Kernel/Conformance/RepeatableNumberPlanGroupDescendants.lean) locks all five documents of the [descendant grid](../sources/computation-scheduling-probes.md#src-fixed-group-descendants) at fixed targets: the Boolean, token and Number counts, `FirstFilledValue` and `Sum` over a fixed group's repeatable descendant, the scan declaration-major, an over-limit row left out and a malformed member poisoning its readers.
 - `remains`: Other target families at a row: [SG4](../SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition)
 
+<a id="cap-mixed-computation-plan"></a>
+#### Mixed computation plan
+
+- `owner`: [`MixedComputationPlan.lean`](../../A12Kernel/Elaboration/MixedComputationPlan.lean), the address-level overlay `overlayCells` in [`CheckedDocument.lean`](../../A12Kernel/Elaboration/CheckedDocument.lean), and the shared order in [`ComputationRunPlan.lean`](../../A12Kernel/Elaboration/ComputationRunPlan.lean).
+- `boundary`: one plan runs fixed String, Number and whole-document steps, Number tables at fixed and row targets, and row steps of other kinds, each through its component plan's own evaluator. It owns only the authored order and the overlay both component plans apply: a completed target at its exact address, every other address of a plan target empty. The one row-step instance is the repeatable String constant; other row carriers are not instanced.
+- `assurance`: E locks a row String constant read by a fixed `FirstFilledValue` authored ahead of it in [`MixedComputationPlan.lean`](../../A12Kernel/Conformance/MixedComputationPlan.lean), separating the overlay from a stale stored read. The [population replay](../TESTING.md#the-population-replay) runs every lowered computation on this plan and keeps every outcome the two component plans matched, plus 70 retained computation outcomes of mixed String and Number plans and row String constants that neither could run, measured 2026-10-02. No proof transfers the component plans' laws to this composition.
+
 <a id="cap-mixed-scalar-failure-transitions"></a>
 #### Mixed scalar failure transitions
 
