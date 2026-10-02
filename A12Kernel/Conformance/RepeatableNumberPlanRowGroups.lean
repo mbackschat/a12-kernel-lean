@@ -11,7 +11,8 @@ A repeatable `Rows` (at most three rows) holds fixed `TB` of String `T1` and `T2
 `SX = NumberOfFilledGroups(/Rg/Rows/Box, /Rg/Rows/Pad)` reads its enclosing row's `Box` and `Pad`, every
 target seeded with `99`. The documents are the Kernel's rows of the
 [row-group grid](../../evidence/kernel-30.8.1/captures/row-groups-2026-10-02/), measured on both
-codegen strategies.
+codegen strategies. A root Number `RN` and a repeatable `Oth` (at most two) of Number `OT` serve only
+the static refusals at the end.
 -/
 
 namespace A12Kernel.Conformance.RepeatableNumberPlanRowGroups
@@ -24,7 +25,7 @@ private def subPath : GroupPath := rowsPath ++ ["Sub"]
 private def targets : List String := ["TV", "BV", "NV", "FF", "TR"]
 
 private def names : List String :=
-  targets ++ ["T1", "T2", "B1", "B2", "N1", "N2", "BX", "PX", "IV", "SX", "R1", "R2"]
+  targets ++ ["T1", "T2", "B1", "B2", "N1", "N2", "BX", "PX", "IV", "SX", "R1", "R2", "RN", "OT"]
 
 private def idOf (name : String) : FieldId := names.idxOf name
 
@@ -33,6 +34,8 @@ private def declaration (name : String) : FlatFieldDecl :=
     | "T1" | "T2" => (rowsPath ++ ["TB"], [10])
     | "B1" | "B2" => (rowsPath ++ ["BB"], [10])
     | "R1" | "R2" => (["Rg", "TR"], [])
+    | "RN" => (["Rg"], [])
+    | "OT" => (["Rg", "Oth"], [30])
     | "N1" | "N2" => (rowsPath ++ ["NB"], [10])
     | "BX" => (rowsPath ++ ["Box"], [10])
     | "PX" => (rowsPath ++ ["Pad"], [10])
@@ -47,7 +50,8 @@ private def declaration (name : String) : FlatFieldDecl :=
 private def model : FlatModel where
   fields := names.map declaration
   repeatableGroups := [{ level := 10, path := rowsPath, repeatability := some 3 },
-    { level := 20, path := subPath, repeatability := some 2 }]
+    { level := 20, path := subPath, repeatability := some 2 },
+    { level := 30, path := ["Rg", "Oth"], repeatability := some 2 }]
 
 private def group (path : List String) : SurfaceGroupReference := .path { base := .relative 0, groups := path }
 
@@ -117,10 +121,12 @@ private def document? (rows : List RowInput) (r1 : String) : Option (CheckedDocu
         row.subs.zipIdx.flatMap fun (iv, s) => cell "SX" [r, s + 1] "99" :: present "IV" [r, s + 1] iv
   }).toOption
 
-/-- The stored amount, or `-` for a target the Kernel reports cleared without a formal error at it. -/
+/-- The stored amount; a cleared target as `-` when it is clean and `poison` when it carries a read
+fault, both of which the Kernel reports as cleared. -/
 private def reported : NumericTargetOutcome → Option String
   | .accepted stored => some stored.render
-  | .noValue | .inheritedPoison _ => some "-"
+  | .noValue => some "-"
+  | .inheritedPoison _ => some "poison"
   | .invalidNoValue _ | .rejected _ _ => none
 
 /-- Every outcome as `target row value`, its row written `r` or `r.s`, sorted. -/
@@ -147,17 +153,18 @@ example :
        "TV 3 0"] := by
   native_decide
 
-/- `o02`: a malformed `N1` clears its own row's scan and count and a malformed `B1` its Boolean count,
+/- `o02`: a malformed `N1` poisons its own row's scan and count and a malformed `B1` its Boolean count,
 the row's String counts and the other rows computing. -/
 example :
     outcomes? ({ clean.head! with b1 := "maybe", n1 := "x" } :: clean.tail) = some
-      ["BV 1 -", "BV 2 1", "BV 3 0", "FF 1 -", "FF 2 5", "FF 3 0", "NV 1 -", "NV 2 1", "NV 3 0",
+      ["BV 1 poison", "BV 2 1", "BV 3 0", "FF 1 poison", "FF 2 5", "FF 3 0", "NV 1 poison", "NV 2 1",
+       "NV 3 0",
        "SX 1.1 2", "SX 1.2 2", "SX 2.1 1", "TR 1 1", "TR 2 1", "TR 3 1", "TV 1 2", "TV 2 1",
        "TV 3 0"] := by
   native_decide
 
-/- `o03`: an over-limit `Sub` row and an over-limit `Rows` row clear their own targets, the root count
-included, and leave every other row unchanged. -/
+/- `o03`: an over-limit `Sub` row and an over-limit `Rows` row clear their own targets clean, the root
+count included, and leave every other row unchanged. -/
 example :
     outcomes? ({ clean.head! with subs := ["1", "2", "3"] } :: clean.tail ++
         [{ t1 := "a", b1 := "true", n1 := "5", box := "1", pad := "1", subs := ["1"] }]) = some
@@ -171,6 +178,33 @@ example :
     outcomes? [{ subs := [""] }, { t2 := "b", b2 := "false", n2 := "6" }, {}] "" = some
       ["BV 1 0", "BV 2 0", "BV 3 0", "FF 1 0", "FF 2 6", "FF 3 0", "NV 1 0", "NV 2 0", "NV 3 0",
        "SX 1.1 0", "TR 1 0", "TR 2 0", "TR 3 0", "TV 1 0", "TV 2 0", "TV 3 0"] := by
+  native_decide
+
+/-- Whether `SX`'s count, written at `target` in `declaringGroup`, is refused at its first operand
+because nothing binds that operand's `Rows` level. -/
+private def refusesUnboundRows (declaringGroup : GroupPath) (target : String)
+    (scope : ComputationTargetScope) : Bool :=
+  match elaborateCompleteNumericTargetComputationTable model declaringGroup (idOf target)
+      [(none, expression "SX")] (targetScope := scope) with
+  | .error (.operation _ (.groupReference (.unboundOperandLevel ["Rg", "Rows", "Box"] _))) => true
+  | _ => false
+
+/- The count reads `Box` and `Pad` as the instance of the `Rows` row binding them, so where no row
+binds `Rows`, at the root's fixed `RN` or at a row of the unrelated repeatable `Oth`, elaboration
+refuses it before any row is read. -/
+example : refusesUnboundRows ["Rg"] "RN" .fixed ∧ refusesUnboundRows ["Rg", "Oth"] "OT" .row := by
+  native_decide
+
+/- The token count over the shared entity-list shape meets that shape's gates: `TB` authored twice is
+refused as a repeated group, which the projection-bearing form has no group slot to ask. -/
+example :
+    (match elaborateCompleteNumericTargetComputationTable model rowsPath (idOf "TV")
+        [(none, .atom (.tokenEntityValueCount "a"
+          { first := .group (group ["TB"]), rest := [.group (group ["TB"])] }))]
+        (targetScope := .row) with
+      | .error (.operation _ (.tokenValueCount (.source (.shape
+          (.duplicateGroupOperand ["Rg", "Rows", "TB"]))))) => true
+      | _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.RepeatableNumberPlanRowGroups

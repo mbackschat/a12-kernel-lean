@@ -170,8 +170,8 @@ theorem groupCount_rowConstituent_eq_validationArm
     The law covers that refusal only. An admitted bound-instance operand still faults with
     `repeatableAddressing` when `outer` does not bind the group's scope, which the gate does not
     see. Elaboration refuses such an operand as `unboundOperandLevel` at a fixed target and at a target
-    of an unrelated repeatable level, the two shapes probed on 2026-10-02, but no law states that it
-    is unreachable.
+    of an unrelated repeatable level, the two shapes `Conformance/RepeatableNumberPlanRowGroups.lean`
+    locks, but no law states that it is unreachable.
 
     Two sites decide whether a fixed group-count operand is admitted, and only one of them runs on
     every route, so a widening that reaches the reader alone leaves the gate rejecting an operand

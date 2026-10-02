@@ -1,0 +1,311 @@
+{
+ "header": {
+  "id": "Fgd_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Fgd_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rg",
+     "name": "Rg",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rg/BV",
+        "name": "BV",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/TV",
+        "name": "TV",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/NV",
+        "name": "NV",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/FF",
+        "name": "FF",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/SN",
+        "name": "SN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/BVComp",
+        "name": "BVComp",
+        "Computation": {
+         "computedFieldRelPath": "../BV",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(True In GB)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/TVComp",
+        "name": "TVComp",
+        "Computation": {
+         "computedFieldRelPath": "../TV",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(\"a\" In GT)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/NVComp",
+        "name": "NVComp",
+        "Computation": {
+         "computedFieldRelPath": "../NV",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(1 In GN)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/FFComp",
+        "name": "FFComp",
+        "Computation": {
+         "computedFieldRelPath": "../FF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(GN)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/SNComp",
+        "name": "SNComp",
+        "Computation": {
+         "computedFieldRelPath": "../SN",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(GN)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/GB",
+        "name": "GB",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Rg/GB/RB",
+           "name": "RB",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/GB/RB/B",
+              "name": "B",
+              "Field": {
+               "fieldType": {
+                "type": "BooleanType"
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/GT",
+        "name": "GT",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Rg/GT/RT",
+           "name": "RT",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/GT/RT/T",
+              "name": "T",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/GN",
+        "name": "GN",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Rg/GN/RN",
+           "name": "RN",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/GN/RN/N1",
+              "name": "N1",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Rg/GN/RN/N2",
+              "name": "N2",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

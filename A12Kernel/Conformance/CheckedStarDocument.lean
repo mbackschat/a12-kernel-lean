@@ -196,10 +196,24 @@ private def groupRows? (stored : List (List Nat)) : Option (List (List Nat)) := 
   pure (core.addressedCells.map (·.address.path))
 
 /- A group operand reaches its rows in index order whatever order they are stored in, which is the
-only order a Kernel document carries, since it stores a repeatable group as an array indexed by
-repetition. An order-sensitive group consumer such as `FirstFilledValue` therefore reads the first
+only order a Kernel document carries, since it stores a repeatable group's repetitions positionally
+([`kf178`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf178)). An order-sensitive group consumer such as `FirstFilledValue` therefore reads the first
 row first however a caller lists the rows. -/
 example : groupRows? [[2], [1]] = some [[1], [2]] ∧ groupRows? [[1], [2]] = some [[1], [2]] := by
+  native_decide
+
+/-- The rows a group operand over `R` reaches when the outer environment binds `R` at `row`, with
+`stored` the instantiated rows. -/
+private def boundRows (stored : List (List Nat)) (row : Nat) : Option (List Env) :=
+  (orderModel.groupOperandEnvironments
+    { instantiatedRows := stored.map fun path => { group := 10, path }, rawCells := fun _ => none }
+    [(10, row)] 1 [10]).toOption
+
+/- A scope the outer environment binds completely is that one row, read only when it is instantiated
+and in capacity: an uninstantiated row and an over-limit one reach nothing. -/
+example :
+    boundRows [[1], [2]] 2 = some [[(10, 2)]] ∧ boundRows [[1]] 2 = some [] ∧
+      boundRows [[1], [2], [3], [4]] 4 = some [] := by
   native_decide
 
 end A12Kernel.Conformance.CheckedStarDocument

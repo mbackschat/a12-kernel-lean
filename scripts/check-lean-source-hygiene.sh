@@ -383,11 +383,17 @@ topology_callers_actual="$(for source in "${tracked_files[@]}"; do
   [[ "$source" == A12Kernel/Proofs/* || "$source" == A12Kernel/Conformance/* || "$source" == A12Kernel/Trust/* || "$source" == A12Kernel/TrustAudit.lean ]] && continue
   count="$(awk '{
     line = $0; code = ""
+    # A character literal holding a quote or a backslash would open or escape a string below.
+    gsub(/\x27(\\.|[^\\\x27])\x27/, "c", line)
     while (length(line) > 0) {
       if (depth > 0) {
         close_at = index(line, "-/"); open_at = index(line, "/-")
         if (open_at > 0 && (close_at == 0 || open_at < close_at)) { depth++; line = substr(line, open_at + 2) }
         else if (close_at > 0) { depth--; line = substr(line, close_at + 2) }
+        else line = ""
+      } else if (quoted == 2) {
+        close_at = index(line, raw_close)
+        if (close_at > 0) { quoted = 0; line = substr(line, close_at + length(raw_close)) }
         else line = ""
       } else if (quoted) {
         quote_at = index(line, "\""); escape_at = index(line, "\\")
@@ -403,7 +409,15 @@ topology_callers_actual="$(for source in "${tracked_files[@]}"; do
         if (first == 0) { code = code line; line = "" }
         else {
           code = code substr(line, 1, first - 1)
-          if (first == quote_at) { quoted = 1; line = substr(line, quote_at + 1) }
+          if (first == quote_at) {
+            # A raw string `r"…"` or `r#"…"#` has no escapes and closes on its own hash count.
+            hashes = ""; at = quote_at - 1
+            while (at > 0 && substr(line, at, 1) == "#") { hashes = hashes "#"; at-- }
+            if (at > 0 && substr(line, at, 1) == "r" && (at == 1 || substr(line, at - 1, 1) !~ /[A-Za-z0-9_.]/)) {
+              quoted = 2; raw_close = "\"" hashes
+            } else quoted = 1
+            line = substr(line, quote_at + 1)
+          }
           else if (first == dash_at) line = ""
           else { depth = 1; line = substr(line, open_at + 2) }
         }

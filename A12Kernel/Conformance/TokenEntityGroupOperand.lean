@@ -16,8 +16,8 @@ once through the declaration that stored each, and once through the first expand
 operand, which is what a per-operand accessor would silently do. The two answers differ.
 
 The rest fixes the boundary this carrier actually reached: the whole `(row × field)` extent under
-full and partial checked-document validation, and refusals on legacy routes that cannot enumerate
-the group's instantiated rows.
+full and partial checked-document validation, the computation arm's raw-`Document` route, and the
+refusals that route's validation arms still give.
 -/
 
 namespace A12Kernel.Conformance.TokenEntityGroupOperand
@@ -382,6 +382,24 @@ example :
       some [.present "A", .unknown] := by
   native_decide
 
+/- The computation arm's raw-`Document` route reads each cell through its own declaration as well, so
+   the same two cells reach the value count present. -/
+private def readerRouteTokens (cells : List ClassifiedCellInput) : Option (List Token) := do
+  let source ←
+    (elaborateTokenEntitySource probeModel ["Form"]
+      { first := group ["Form", "Mixed"], rest := [] }).toOption
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  let read : Env → FieldId → CheckedCell := fun _ field =>
+    (document.read { field, path := [] }).toOption.getD malformedCheckedCell
+  match source.first.resolvedValueCountComputationSide document.source.toDocument [] (read [])
+      read read with
+  | .ok (.inl side) => some (side.cells.map token)
+  | _ => none
+
+example : readerRouteTokens mixedCells = some [.present "A", .present "A"] := by
+  native_decide
+
 /- A group authors no read form, so its Enumeration members are read stored. The retained
    projections show that directly; `checkedTokenEntityGroup_projections_stored` proves it for every
    model rather than this one. -/
@@ -534,9 +552,9 @@ example :
     rawRoutesResolve (group ["Form", "Bag"]) = [false, false, false, true] := by
   native_decide
 
-/- `FirstFilledValue` still refuses on this legacy raw-`Document` route because the route cannot
-   enumerate a group's instantiated rows. The checked-document route below owns the now-measured
-   fixed-group fragment without inventing topology here. -/
+/- `FirstFilledValue` still refuses a group on this raw-`Document` route, which no observation
+   measures ([SG5](../../docs/gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime)). The
+   checked-document route below owns the measured fixed-group fragment. -/
 private def firstFilledResolves (operand : SurfaceFieldEntityOperand) : Bool :=
   match elaborateFirstFilledTokenSource probeModel ["Form"]
       { first := operand, rest := [field "Other"] } with

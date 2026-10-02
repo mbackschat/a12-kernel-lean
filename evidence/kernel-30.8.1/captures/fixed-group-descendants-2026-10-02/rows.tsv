@@ -1,0 +1,34 @@
+# row	field	outcome	value
+f01-order	Rg/BV	value	1
+f01-order	Rg/FF	value	1
+f01-order	Rg/NV	value	1
+f01-order	Rg/SN	value	3
+f01-order	Rg/TV	value	2
+f02-over-limit	Rg/BV	value	0
+f02-over-limit	Rg/FF	value	0
+f02-over-limit	Rg/NV	value	0
+f02-over-limit	Rg/SN	value	0
+f02-over-limit	Rg/TV	value	0
+f02-over-limit	Rg/GB/RB[3]/B	operand-error	zuGrosseKontextnummer
+f02-over-limit	Rg/GN/RN[3]/N1	operand-error	zuGrosseKontextnummer
+f02-over-limit	Rg/GT/RT[3]/T	operand-error	zuGrosseKontextnummer
+f02-over-limit	Rg/GB/RB[3]	operand-error	zuGrosseZeile
+f02-over-limit	Rg/GN/RN[3]	operand-error	zuGrosseZeile
+f02-over-limit	Rg/GT/RT[3]	operand-error	zuGrosseZeile
+f03-malformed	Rg/BV	cleared	
+f03-malformed	Rg/FF	cleared	
+f03-malformed	Rg/NV	cleared	
+f03-malformed	Rg/SN	cleared	
+f03-malformed	Rg/TV	value	1
+f03-malformed	Rg/GB/RB[2]/B	operand-error	feldJaNeinFalsch
+f03-malformed	Rg/GN/RN[2]/N1	operand-error	zahlHatUngueltigeZeichen
+f04-empty	Rg/BV	value	0
+f04-empty	Rg/FF	value	0
+f04-empty	Rg/NV	value	0
+f04-empty	Rg/SN	value	0
+f04-empty	Rg/TV	value	0
+f05-later-row	Rg/BV	value	1
+f05-later-row	Rg/FF	value	2
+f05-later-row	Rg/NV	value	0
+f05-later-row	Rg/SN	value	2
+f05-later-row	Rg/TV	value	1

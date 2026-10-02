@@ -156,8 +156,9 @@ private def scanCheckedFirstFilledTokenOperand
       Except StarAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
   | .group source =>
-      -- This legacy raw-`Document` route cannot enumerate the group's instantiated rows. The
-      -- checked-document specialization below owns the measured fixed-group fragment.
+      -- No observation measures a token group on this raw-`Document` route
+      -- ([SG5](../../docs/gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime)), so it
+      -- refuses; the checked-document specialization below owns the measured fixed-group fragment.
       .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       if scope.coversCell model source.declaration.path [] then

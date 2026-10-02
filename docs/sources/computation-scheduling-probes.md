@@ -326,7 +326,7 @@ Dependency order, join, poison, empty-substitution, and fill-guard probes for au
 - `sync`: confirms [`spec/09`](../../spec/09-computations.md) §5's row binding on these atoms, and opens no entry.
 
 <a id="src-row-groups"></a>
-#### At a row target a group operand inside the row is that row's instance, a deeper row reads its ancestor's, and a Number scan or count over it clears on its malformed member only, measured locally 2026-10-02
+#### At a row target a group operand inside the row is that row's instance, a deeper row reads its ancestor's, and a malformed member clears only the scan or count of its own row, measured locally 2026-10-02
 
 - `revision`: one `model check` and one `:adapter:kernelProbe` run with `observe: ["validateFull", "compute"]` over four documents, in the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, `source.state` `CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, the check `KERNEL_CONFIRMED` valid and the run `enginesAgree: true` on every row, the checkout clean before and after. The artifact `22f6c10ae5caa9e6677ebba03c037b3c45bce80766b8c84c55c5524f885abc3a` is not retained.
 - `question`: the [row-atom grid](#src-row-atoms) measured group operands only through `Sum` and a count at the group's own level. Do a value count and `FirstFilledValue` over a group inside the row read that row's instance, and does a count read from a deeper row read its ancestor's?
@@ -337,6 +337,19 @@ Dependency order, join, poison, empty-substitution, and fill-guard probes for au
 - `local-consequence`: the Number `FirstFilledValue` and the token and Boolean value counts read a group operand on the row route through the shared group walk, and every target answers exactly on all four documents.
 - `limit`: each group has one instance per row, so the scan's order across rows of one group is not exercised; `en_US`.
 - `sync`: confirms [`spec/09`](../../spec/09-computations.md) §5's row binding on group operands, and opens no entry.
+
+<a id="src-fixed-group-descendants"></a>
+#### At a fixed target a fixed group's repeatable descendant is read over its in-capacity rows declaration-major, and a malformed member clears the count, scan or sum reading it, measured locally 2026-10-02
+
+- `revision`: one `model check` and one `:adapter:kernelProbe` run with `observe: ["validateFull", "compute"]` over five documents, in the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, `source.state` `CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, the check `KERNEL_CONFIRMED` valid and the run `enginesAgree: true` on every row, the checkout clean before and after. The artifact `a2f2a3af246beb59dad6c1ba96a10ed705fedc781f14ca6351cae232a2eefcf2` is not retained.
+- `question`: the [row-group grid](#src-row-groups) measured groups holding no repeatable level. A cold review found the reader route now computing a fixed group over a repeatable descendant at a fixed target, which no row measured. Does the Kernel admit it, read every in-capacity row, and in which order does `FirstFilledValue` scan two declarations across rows?
+- `model`: `Fgd_DM`, a root `Rg` of fixed Number targets over fixed `GB`, `GT` and `GN` holding repeatable `RB` (Boolean `B`), `RT` (String `T`) and `RN` (Number `N1`, `N2`), each max 2, with `BV = NumberOfValueInFields(True In GB)`, `TV = NumberOfValueInFields("a" In GT)`, `NV = NumberOfValueInFields(1 In GN)`, `FF = FirstFilledValue(GN)` and `SN = Sum(GN)`.
+- `claim`: the check admits all five. With `N2` filled at the first row and `N1` at the second, `FF` answers the second row's `N1`, so every row of the first declaration precedes the next declaration, as [`kf191`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf191) measured for a starred group. Every count and the sum read both rows, a match only in the second row is found, and groups without rows answer `0`.
+- `claim`: a match only in an over-limit third row is left out of all five, and a malformed `B` or `N1` member clears the Boolean count, the Number count, the scan and the sum while the String count computes.
+- `retained`: in the [grid directory](../../evidence/kernel-30.8.1/captures/fixed-group-descendants-2026-10-02/), `Fgd_DM.json` `fa8db71b9a5e29c0faeb962606e3be876c751cc4050d2b39354cf39963218888`, `request.json` `474aeadca41521876b07def9f5120d3be546d46993d167e91ce5d0a1c1767eb4`, and `rows.tsv` `a858917f6e82052ba78efbd261b39007a7861dc57d4ffcf5437ad50a1e4faa0a`, codes only.
+- `local-consequence`: the authored Number plan computes all five through the shared group walk and answers exactly on every document ([locks](../../A12Kernel/Conformance/RepeatableNumberPlanGroupDescendants.lean)).
+- `limit`: one repeatable descendant per group, one level deep; `en_US`.
+- `sync`: confirms [`spec/02`](../../spec/02-logic-and-formal-errors.md)'s field-major, repetition-major group stream and [`spec/07`](../../spec/07-repetition-and-iteration.md)'s in-capacity group extent on the computation arm, and opens no entry.
 
 <a id="src-first-filled-capacity"></a>
 #### A typed or filtered `FirstFilledValue` star leaves an over-limit row out on the computation arm, so a scan finding only that row is exhausted rather than poisoned, measured locally 2026-10-02

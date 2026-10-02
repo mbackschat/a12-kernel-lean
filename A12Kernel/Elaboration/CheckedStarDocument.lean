@@ -117,17 +117,23 @@ def FlatModel.groupOperandUninstantiatedTail (model : FlatModel) (document : Doc
     return (← ({ axes, firstStar := boundCount } : StarPath).resolveTopology document outer).domain.hasOpenTail
   return tails.any id
 
-/-- Every row a group operand's declarations reach on the reader route, declaration-major as the
-checked document's group walk is, with whether any of their scopes leaves declared capacity open. A
-consumer pairs each declaration with its own environments, so it reads each cell through that cell's
-own declaration. -/
+/-- Every row a group operand's declarations reach, declaration-major: each declaration paired with
+each of its environments, so a consumer reads each cell through the declaration that stored it. The
+checked document's walk and the reader route's both take their rows from here. -/
+def FlatModel.groupOperandRows (model : FlatModel) (document : Document) (outer : Env)
+    (boundCount : Nat) (declarations : List α) (scope : α → List RepeatableLevel) :
+    Except StarAddressingError (List (α × Env)) := do
+  let rows ← declarations.mapM fun declaration => do
+    let environments ← model.groupOperandEnvironments document outer boundCount (scope declaration)
+    pure (environments.map (declaration, ·))
+  pure rows.flatten
+
+/-- A group operand's rows on the reader route, with whether any of its scopes leaves declared
+capacity open. -/
 def FlatModel.groupOperandReads (model : FlatModel) (document : Document) (outer : Env)
     (boundCount : Nat) (declarations : List α) (scope : α → List RepeatableLevel) :
     Except StarAddressingError (List (α × Env) × Bool) := do
-  let reads ← declarations.mapM fun declaration => do
-    let environments ← model.groupOperandEnvironments document outer boundCount (scope declaration)
-    pure (environments.map (declaration, ·))
-  pure (reads.flatten,
+  pure (← model.groupOperandRows document outer boundCount declarations scope,
     ← model.groupOperandUninstantiatedTail document outer boundCount (declarations.map scope))
 
 namespace CheckedDocument
@@ -253,12 +259,10 @@ def resolveCheckedGroupEntityOperandPairs
     (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
     (slots : List (FlatFieldDecl × α)) :
     Except CheckedAddressingError (List (α × CheckedAddressedCell)) := do
-  let perDeclaration ← slots.mapM fun (declaration, payload) => do
-    let environments ← (model.groupOperandEnvironments checked.source.toDocument outer boundCount
-      declaration.repeatableScope).mapError .addressing
-    let cells ← environments.mapM (checked.addressedCell · declaration.id)
-    pure (cells.map fun cell => (payload, cell))
-  pure perDeclaration.flatten
+  let rows ← (model.groupOperandRows checked.source.toDocument outer boundCount slots
+    (·.1.repeatableScope)).mapError .addressing
+  rows.mapM fun ((declaration, payload), environment) => do
+    pure (payload, ← checked.addressedCell environment declaration.id)
 
 /-- Whether any repeatable declaration this group operand reopens retains **declared but
 uninstantiated** capacity, at the operand's own depth.
