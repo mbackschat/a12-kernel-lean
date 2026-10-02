@@ -201,8 +201,9 @@ def elaborateValueAsDateSourceIn
   let source ←
     elaborateTemporalTargetPolicyIn model scope sourceField
       |>.mapError .sourcePolicy
-  -- The admission's own kind rule rather than a re-check of the formal one (LF203): no measurement
-  -- admits a partial source of another declared kind here, so any other kind is refused.
+  -- The admission's own kind rule rather than a re-check of the formal one (LF203). It refuses nothing
+  -- reachable: `TemporalTargetPolicy.errorFor?` already refuses a non-full partial mode on a Time or
+  -- DateTime declaration, so a partial source of another kind never arrives here.
   if hKind : source.target.kind = .date then
     if hMode : source.policy.partialMode ≠ .full then
       match hFormat :

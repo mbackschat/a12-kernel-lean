@@ -51,13 +51,20 @@ private def date (id : FieldId) (name : String) :=
   field id name (.temporal .date TemporalComponents.fullDate)
     (some { format := "yyyy-MM-dd", partialMode := .full })
 
+private def range (id : FieldId) (name : String) : FlatFieldDecl :=
+  { field id name .dateRange with dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
+
 private def model : FlatModel :=
   { fields := [
       boolean 0 "B1", boolean 1 "B2", boolean 2 "BTgt",
       fragment 3 "G1", fragment 4 "G2", fragment 5 "GTgt",
       clock 6 "T1", clock 7 "T2", clock 8 "TTgt",
       moment 9 "M1", moment 10 "M2", moment 11 "MTgt",
-      date 12 "D1", date 13 "D2", date 14 "DTgt"]
+      date 12 "D1", date 13 "D2", date 14 "DTgt",
+      boolean 15 "B3", { boolean 16 "RB" with groupPath := ["Fc", "Rows"], repeatableScope := [10] },
+      { date 17 "DD" with temporalTargetPolicy := some { format := "dd.MM.yyyy", partialMode := .full } },
+      range 18 "R1", range 19 "R2", range 20 "RTgt"]
+    repeatableGroups := [{ level := 10, path := ["Fc", "Rows"], repeatability := some 3 }]
     timeZoneId := "Europe/Berlin" }
 
 private def prepared : PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -181,17 +188,53 @@ example :
         some "-"] := by
   native_decide
 
-/-- Whether the Boolean carrier admits a list, the representation boundary every carrier shares. -/
-private def admitsBoolean (target : FieldId) (names : List String) : Bool :=
-  (checkBooleanFirstFilledComputation model ["Fc"] target (list names)).toOption.isSome
+private def entries (operands : List SurfaceFieldEntityOperand) : SurfaceFirstFilledSource :=
+  match operands with
+  | first :: rest => .list { first, rest }
+  | [] => .list { first := operand "", rest := [] }
 
-/- The list's representation boundary, claiming no Kernel class: a sole direct field fails the entity
-list's arity, a list naming its own target and a list mixing kinds are refused, while three fields are
-admitted. The Time carrier refuses a list mixing two clock profiles' kinds the same way. -/
+private def booleanError? (operands : List SurfaceFieldEntityOperand) :
+    Option BooleanFirstFilledComputationElabError :=
+  match checkBooleanFirstFilledComputation model ["Fc"] 2 (entries operands) with
+  | .ok _ => none
+  | .error cause => some cause
+
+private def rowsStar : SurfaceFieldEntityOperand :=
+  .star { base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "RB" }
+
+/- The list's representation boundary, each refusal at the layer that owns it and none claiming a
+Kernel class: three fields are admitted, a sole direct field fails the entity list's arity, a star
+operand is no plain field, a list naming its own target and a list mixing kinds are refused by the
+carrier, and a field under a repeatable group fails the shared shape as an unbound level. -/
 example :
-    admitsBoolean 2 ["B1", "B2"] ∧
-    !admitsBoolean 2 ["B1"] ∧ !admitsBoolean 2 ["B1", "BTgt"] ∧ !admitsBoolean 2 ["B1", "T1"] ∧
-    (checkTimeFirstFilledComputation model ["Fc"] 8 (list ["T1", "M1"])).toOption.isNone := by
+    ((booleanError? [operand "B1", operand "B2", operand "B3"]).isNone &&
+      (match booleanError? [operand "B1"] with
+        | some (.list (.shape .tooFewFields)) => true | _ => false) &&
+      (match booleanError? [operand "B1", rowsStar] with
+        | some (.list .unsupportedOperand) => true | _ => false) &&
+      (match booleanError? [operand "B1", operand "BTgt"] with
+        | some (.targetSelfReference path) => path == ["Fc", "BTgt"] | _ => false) &&
+      (match booleanError? [operand "B1", operand "T1"] with
+        | some (.sourceKind path _) => path == ["Fc", "T1"] | _ => false) &&
+      (match booleanError?
+          [operand "B1", .field { base := .relative 0, groups := ["Rows"], field := "RB" }] with
+        | some (.list (.shape (.resolve (.unboundOperandLevel _ _)))) => true | _ => false)) =
+      true := by
+  native_decide
+
+/- Every listed field repeats one carrier profile: two full Dates spelled differently, which the Kernel
+refuses `MVK_VARYING_TYPES_NOT_ALLOWED`, two kinds, and an ISO list into a dotted target, whose
+Kernel treatment is unmeasured, are each refused here as a profile mismatch; and the shared shape
+refuses a list over a DateRange profile, which the direct DateRange carrier owns. -/
+example :
+    ((match checkFullDateFirstFilledComputation model ["Fc"] 14 (list ["D1", "DD"]) with
+        | .error (.shape (.sourceCarrier path)) => path == ["Fc", "DD"] | _ => false) &&
+      (match checkTimeFirstFilledComputation model ["Fc"] 8 (list ["T1", "M1"]) with
+        | .error (.shape (.sourceCarrier path)) => path == ["Fc", "M1"] | _ => false) &&
+      (match checkFullDateFirstFilledComputation model ["Fc"] 17 (list ["D1", "D2"]) with
+        | .error (.shape (.sourceCarrier path)) => path == ["Fc", "D1"] | _ => false) &&
+      (match checkTemporalFirstFilledShape model ["Fc"] 20 (list ["R1", "R2"]) .dateRangeIsoSlash with
+        | .error (.sourceShape path) => path == ["Fc", "RTgt"] | _ => false)) = true := by
   native_decide
 
 end A12Kernel.Conformance.FirstFilledFieldList

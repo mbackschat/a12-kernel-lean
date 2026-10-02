@@ -2642,6 +2642,6 @@ The node-gate batch replaced a Min/Max call's summed division count with its lar
 
 Lean treatment: `AuthoredNumericExpr.divisionWalk` is the one walk, asked at every operator and power by both the shared authoring check and the computation's node walk; the exposure count is gone.
 
-**Before choosing among accounts, list the rows each account would answer differently, and if there are none, the accounts are not yet chosen between.** Where the candidates keep multiplying with each new row — here three in one batch — the rule is not compositional, and the cheaper route is to read the mechanism, write down what only it predicts, and measure exactly those rows: here sixteen order-sensitive predictions, every one held.
+**Before choosing among accounts, list the rows each account would answer differently, and if there are none, the accounts are not yet chosen between.** Where the candidates keep multiplying with each new row — here three in one batch — the rule is not compositional, and the cheaper route is to read the mechanism, write down what only it predicts, and measure exactly those rows: here every order-sensitive prediction held, the walk's grids being those rows ([checkpoint](sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk)).
 
 Limit: the rounding family inside a walk is measured on `RoundDown` only.

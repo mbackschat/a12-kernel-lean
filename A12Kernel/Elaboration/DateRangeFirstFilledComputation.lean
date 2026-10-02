@@ -37,14 +37,14 @@ inductive CheckedDateRangeFirstFilledComputation (model : FlatModel) where
 /-- Offer one admitted declaration profile for the authored target. A target-carrier mismatch means "not this profile", so the caller may offer the next one; every other refusal is reached before the carrier comparison and is therefore shared by all profiles. -/
 private def offerDateRangeFirstFilledCarrier (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceFirstFilledSource)
+    (authored : SurfaceStarFieldPath)
     (carrier : TemporalFirstFilledStarCarrier)
     (wrap : CheckedTemporalFirstFilledShape model carrier →
       CheckedDateRangeFirstFilledComputation model) :
     Except TemporalFirstFilledShapeElabError
       (Option (CheckedDateRangeFirstFilledComputation model)) :=
   match checkTemporalFirstFilledShape model declaringGroup targetField
-      authored carrier with
+      (.star authored) carrier with
   | .ok shape => pure (some (wrap shape))
   | .error (.targetCarrier _) => pure none
   | .error cause => throw cause
@@ -61,10 +61,11 @@ private def firstOfferedDateRangeFirstFilled {model : FlatModel} :
       | some checked => pure (some checked)
       | none => firstOfferedDateRangeFirstFilled rest
 
-/-- Check one of the admitted matching DateRange declaration profiles without widening operands, nesting, or document architecture. -/
+/-- Check one of the admitted matching DateRange declaration profiles over one direct single-level star.
+A direct list over a DateRange profile is the direct-list carrier's below. -/
 def checkDateRangeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceFirstFilledSource) :
+    (authored : SurfaceStarFieldPath) :
     Except DateRangeFirstFilledComputationElabError
       (CheckedDateRangeFirstFilledComputation model) := do
   let offer := offerDateRangeFirstFilledCarrier model declaringGroup targetField authored

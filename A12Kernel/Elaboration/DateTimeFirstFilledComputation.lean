@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.DateTimeComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
-/-! # Direct one-star DateTime `FirstFilledValue` computation -/
+/-! # Fixed-target DateTime `FirstFilledValue` computation over a direct star or a direct list -/
 
 namespace A12Kernel
 
@@ -11,13 +11,13 @@ inductive DateTimeFirstFilledComputationElabError where
   | targetPolicy (cause : DateTimeTargetElabError)
   deriving Repr, DecidableEq
 
-/-- One fixed ISO whole-second DateTime target and one direct single-level starred source of the same carrier. -/
+/-- One fixed ISO whole-second DateTime target and one direct single-level star or direct list of the same carrier. -/
 structure CheckedDateTimeFirstFilledComputation (model : FlatModel) where
   private mk ::
   shape : CheckedTemporalFirstFilledShape model .dateTimeIso
   targetPolicy : CheckedDateTimeTarget model
 
-/-- Check the bounded DateTime computation shape. Alternate formats, operands, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
+/-- Check the bounded DateTime computation shape. Alternate formats, operands other than a direct star or a direct list of plain fields, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
 def checkDateTimeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :

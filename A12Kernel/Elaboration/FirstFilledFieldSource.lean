@@ -63,12 +63,12 @@ def resolve (source : FirstFilledFieldSource model) (input : CheckedDocument mod
 end FirstFilledFieldSource
 
 /-- Why an authored list source is refused. The shape's own classes are the shared entity list's; an
-operand other than a plain stored field, or one under a repeatable group, is this source's
-representation limit and claims no class. -/
+operand other than a plain stored field is this source's representation limit and claims no class. A
+field under a repeatable group never reaches this reading: resolved with no bound level, the shared
+shape refuses it as an unbound operand level first. -/
 inductive FirstFilledListElabError where
   | shape (cause : FieldEntityShapeElabError)
   | unsupportedOperand
-  | repeatableSource (path : List String)
   deriving Repr, DecidableEq
 
 /-- An authored list's plain fields, with the validity of the declaring group its shape resolved in. -/
@@ -85,9 +85,7 @@ def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGro
   | .error cause => .error (.shape cause)
   | .ok shape => do
       let fields ← shape.operands.mapM fun
-        | .field declaration .stored =>
-            if declaration.repeatableScope.isEmpty then pure declaration
-            else throw (.repeatableSource declaration.path)
+        | .field declaration .stored => pure declaration
         | _ => throw .unsupportedOperand
       pure { fields, declaringGroupValid := elaborateFieldEntityShape_declaringGroupValid hShape }
 

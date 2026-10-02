@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.TimeComputation
 
-/-! # Direct one-star Time `FirstFilledValue` computation -/
+/-! # Fixed-target Time `FirstFilledValue` computation over a direct star or a direct list -/
 
 namespace A12Kernel
 
@@ -10,13 +10,13 @@ inductive TimeFirstFilledComputationElabError where
   | targetPolicy (cause : TimeTargetElabError)
   deriving Repr, DecidableEq
 
-/-- One fixed `HH:mm:ss` Time target and one direct single-level starred source of the same bounded carrier. -/
+/-- One fixed `HH:mm:ss` Time target and one direct single-level star or direct list of the same bounded carrier. -/
 structure CheckedTimeFirstFilledComputation (model : FlatModel) where
   private mk ::
   shape : CheckedTemporalFirstFilledShape model .timeHms
   targetPolicy : CheckedClockFormatTarget model
 
-/-- Check the bounded Time computation shape. Wider formats, policies, operands, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
+/-- Check the bounded Time computation shape. Wider formats, policies, operands other than a direct star or a direct list of plain fields, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
 def checkTimeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :

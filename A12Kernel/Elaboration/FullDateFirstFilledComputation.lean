@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
-/-! # Direct one-star full-Date `FirstFilledValue` computation -/
+/-! # Fixed-target full-Date `FirstFilledValue` computation over a direct star or a direct list -/
 
 namespace A12Kernel
 
@@ -11,7 +11,7 @@ inductive FullDateFirstFilledComputationElabError where
   | targetPolicy (cause : FullDateTargetElabError)
   deriving Repr, DecidableEq
 
-/-- Carrier-specific direct-star shape retained beneath the checked full-Date computation boundary. -/
+/-- Carrier-specific source shape retained beneath the checked full-Date computation boundary. -/
 inductive FullDateFirstFilledShape (model : FlatModel) where
   | iso
       (shape : CheckedTemporalFirstFilledShape model .fullDateIso)
@@ -39,7 +39,7 @@ structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
   shape : FullDateFirstFilledShape model
   targetPolicy : CheckedFullDateTarget model
 
-/-- Check the two exact bounded full-Date formats. The ISO composition is externally measured; dotted target rendering is measured separately while its direct `FirstFilledValue` composition remains pending. Wider formats, policies, operands, nesting, validation use, and materialized-document reconstruction stay outside. -/
+/-- Check the two exact bounded full-Date formats. The ISO composition is externally measured; dotted target rendering is measured separately while its direct `FirstFilledValue` composition remains pending. Wider formats, policies, operands other than a direct star or a direct list of plain fields, nesting, validation use, and materialized-document reconstruction stay outside. -/
 def checkFullDateFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :

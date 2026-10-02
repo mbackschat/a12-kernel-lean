@@ -3,14 +3,14 @@ import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Direct one-star DateFragment `FirstFilledValue` computation -/
+/-! # Fixed-target DateFragment `FirstFilledValue` computation over a direct star or a direct list -/
 
 namespace A12Kernel
 
 abbrev DateFragmentFirstFilledComputationElabError :=
   TemporalFirstFilledShapeElabError
 
-/-- One fixed DateFragment target and one direct single-level starred source sharing one exact admitted declaration format. -/
+/-- One fixed DateFragment target and one direct single-level star or direct list sharing one exact admitted declaration format. -/
 inductive CheckedDateFragmentFirstFilledComputation (model : FlatModel) where
   | month
       (shape : CheckedTemporalFirstFilledShape model .monthFragment)
@@ -23,7 +23,7 @@ inductive CheckedDateFragmentFirstFilledComputation (model : FlatModel) where
       (shape :
         CheckedTemporalFirstFilledShape model .monthDayFragment)
 
-/-- Check the four exact admitted DateFragment formats. Direct runtime calibration remains exact only for `MM`; wider operands, nesting, and validation use stay outside. -/
+/-- Check the four exact admitted DateFragment formats. Runtime calibration covers the `MM` star and the `yyyy-MM` direct list; other operands, nesting, and validation use stay outside. -/
 def checkDateFragmentFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :

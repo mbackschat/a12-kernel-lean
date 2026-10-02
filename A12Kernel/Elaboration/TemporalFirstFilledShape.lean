@@ -9,7 +9,7 @@ scalar temporal profiles. -/
 
 namespace A12Kernel
 
-/-- Completed scalar temporal and DateRange declaration profiles sharing the direct-star computation shape. Additional policies remain excluded.
+/-- Completed scalar temporal and DateRange declaration profiles sharing the fixed-target computation shape. Additional policies remain excluded.
 
 One of those exclusions is now known legal rather than undecided, and is named so its absence is not
 read as a gate. A **partially known** Date — a full-format DATE declaration carrying `DAY_OPTIONAL`,
@@ -202,9 +202,11 @@ private def checkTemporalFirstFilledSourceAgainst (model : FlatModel)
             else throw (.sourceCarrier first.path)
           else
             -- A list whose fields do not all repeat the first's profile. Each profile has one
-            -- format, so two differing profiles either differ in format, which the Kernel refuses
-            -- (`MVK_VARYING_TYPES_NOT_ALLOWED`, docs/sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string), or share one across kinds, which the Kernel admits
-            -- and this carrier set does not represent; neither claims a Kernel class here.
+            -- format, so two differing profiles either differ in format or share one across kinds.
+            -- The Kernel refuses a differing format on the pairs measured
+            -- (`MVK_VARYING_TYPES_NOT_ALLOWED`, docs/sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string)
+            -- and admits a shared one across kinds, which this carrier set does not represent;
+            -- neither claims a Kernel class here.
             throw (.sourceCarrier ((source.declarations.find?
               (·.temporalFirstFilledStarCarrier? != some sourceProfile)).map (·.path) |>.getD first.path))
     else throw (.targetCarrier target.path)

@@ -53,8 +53,10 @@ inductive DocumentTargetOutcome where
   | boolean (outcome : BooleanComputationOutcome)
   deriving Repr, DecidableEq
 
-/-- The target family of a whole-document step, which fixes its target kind and the outcome it reports
-when a guard keeps it from running. -/
+/-- The target family of a whole-document step: the family of the outcome it computes, and the outcome it
+reports when a guard keeps it from running. It is not the target's declared kind, which a temporal
+target admitted by its format rather than its kind may not share: a DATE-declared clock-format target
+is a Time-family step. -/
 inductive DocumentTargetFamily where
   | dateTime
   | fullDate
