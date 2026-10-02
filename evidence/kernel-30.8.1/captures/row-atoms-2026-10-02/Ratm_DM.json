@@ -1,0 +1,549 @@
+{
+ "header": {
+  "id": "Ratm_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Ratm_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rg",
+     "name": "Rg",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Rg/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/A",
+           "name": "A",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/B",
+           "name": "B",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/T",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "errorMessage": [
+               {
+                "locale": "en_US",
+                "text": "m"
+               }
+              ],
+              "maxLength": 15,
+              "pattern": "[0-9]+"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/MN",
+           "name": "MN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/FV",
+           "name": "FV",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/MV",
+           "name": "MV",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/DV",
+           "name": "DV",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/FF",
+           "name": "FF",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/VC",
+           "name": "VC",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/FX",
+           "name": "FX",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/BS",
+           "name": "BS",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/ML",
+           "name": "ML",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/GC",
+           "name": "GC",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/MNComp",
+           "name": "MNComp",
+           "Computation": {
+            "computedFieldRelPath": "../MN",
+            "computationAlternatives": [
+             {
+              "operation": "Min([A], [B])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/FVComp",
+           "name": "FVComp",
+           "Computation": {
+            "computedFieldRelPath": "../FV",
+            "computationAlternatives": [
+             {
+              "operation": "FieldValueAsNumber(T)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/MVComp",
+           "name": "MVComp",
+           "Computation": {
+            "computedFieldRelPath": "../MV",
+            "computationAlternatives": [
+             {
+              "operation": "MinValue(Sub*/IA)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/DVComp",
+           "name": "DVComp",
+           "Computation": {
+            "computedFieldRelPath": "../DV",
+            "computationAlternatives": [
+             {
+              "operation": "NumberOfDifferentValues(Sub*/IA)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/FFComp",
+           "name": "FFComp",
+           "Computation": {
+            "computedFieldRelPath": "../FF",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/Rg/Rows*/A Having [$A] < [/Rg/Rows/A])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/VCComp",
+           "name": "VCComp",
+           "Computation": {
+            "computedFieldRelPath": "../VC",
+            "computationAlternatives": [
+             {
+              "operation": "NumberOfValueInFields(10 In /Rg/Rows*/A Having [$A] < [/Rg/Rows/A])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/FXComp",
+           "name": "FXComp",
+           "Computation": {
+            "computedFieldRelPath": "../FX",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(/Rg/Fix)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/BSComp",
+           "name": "BSComp",
+           "Computation": {
+            "computedFieldRelPath": "../BS",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(Sub*/Det)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/MLComp",
+           "name": "MLComp",
+           "Computation": {
+            "computedFieldRelPath": "../ML",
+            "computationAlternatives": [
+             {
+              "operation": "NumberOfFilledGroups(Sub*, /Rg/Fix)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/GCComp",
+           "name": "GCComp",
+           "Computation": {
+            "computedFieldRelPath": "../GC",
+            "computationAlternatives": [
+             {
+              "operation": "NumberOfFilledGroups(Box, Pad)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Rg/Rows/Sub",
+           "name": "Sub",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Sub/IA",
+              "name": "IA",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/Rg/Rows/Sub/Det",
+              "name": "Det",
+              "Group": {
+               "repeatability": 1,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Rg/Rows/Sub/Det/DA",
+                 "name": "DA",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Rg/Rows/Box",
+           "name": "Box",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Box/BX",
+              "name": "BX",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Rg/Rows/Pad",
+           "name": "Pad",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Pad/PX",
+              "name": "PX",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/Fix",
+        "name": "Fix",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Fix/FA",
+           "name": "FA",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Fix/FB",
+           "name": "FB",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

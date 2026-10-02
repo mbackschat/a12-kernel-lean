@@ -1,0 +1,143 @@
+# row	field	outcome	value
+a01-clean	Rg/Rows/BS	value	1
+a01-clean	Rg/Rows/DV	value	2
+a01-clean	Rg/Rows/FF	value	4
+a01-clean	Rg/Rows/FV	value	12
+a01-clean	Rg/Rows/FX	value	16
+a01-clean	Rg/Rows/GC	value	2
+a01-clean	Rg/Rows/ML	value	3
+a01-clean	Rg/Rows/MN	value	1
+a01-clean	Rg/Rows/MV	value	2
+a01-clean	Rg/Rows/VC	value	1
+a01-clean	Rg/Rows[2]/BS	value	5
+a01-clean	Rg/Rows[2]/DV	value	1
+a01-clean	Rg/Rows[2]/FF	value	10
+a01-clean	Rg/Rows[2]/FV	value	7
+a01-clean	Rg/Rows[2]/FX	value	16
+a01-clean	Rg/Rows[2]/GC	value	1
+a01-clean	Rg/Rows[2]/ML	value	2
+a01-clean	Rg/Rows[2]/MN	value	2
+a01-clean	Rg/Rows[2]/MV	value	6
+a01-clean	Rg/Rows[2]/VC	value	1
+a01-clean	Rg/Rows[3]/BS	value	0
+a01-clean	Rg/Rows[3]/DV	value	0
+a01-clean	Rg/Rows[3]/FF	value	0
+a01-clean	Rg/Rows[3]/FV	value	3
+a01-clean	Rg/Rows[3]/FX	value	16
+a01-clean	Rg/Rows[3]/GC	value	0
+a01-clean	Rg/Rows[3]/ML	value	1
+a01-clean	Rg/Rows[3]/MN	value	0
+a01-clean	Rg/Rows[3]/MV	value	0
+a01-clean	Rg/Rows[3]/VC	value	0
+a02-malformed	Rg/Rows/BS	value	1
+a02-malformed	Rg/Rows/DV	cleared	
+a02-malformed	Rg/Rows/FF	cleared	
+a02-malformed	Rg/Rows/FV	value	12
+a02-malformed	Rg/Rows/FX	value	16
+a02-malformed	Rg/Rows/GC	value	2
+a02-malformed	Rg/Rows/ML	value	3
+a02-malformed	Rg/Rows/MN	value	1
+a02-malformed	Rg/Rows/MV	cleared	
+a02-malformed	Rg/Rows/VC	cleared	
+a02-malformed	Rg/Rows[2]/BS	cleared	
+a02-malformed	Rg/Rows[2]/DV	value	1
+a02-malformed	Rg/Rows[2]/FF	cleared	
+a02-malformed	Rg/Rows[2]/FV	value	7
+a02-malformed	Rg/Rows[2]/FX	value	16
+a02-malformed	Rg/Rows[2]/GC	value	1
+a02-malformed	Rg/Rows[2]/ML	value	2
+a02-malformed	Rg/Rows[2]/MN	cleared	
+a02-malformed	Rg/Rows[2]/MV	value	6
+a02-malformed	Rg/Rows[2]/VC	cleared	
+a02-malformed	Rg/Rows[3]/BS	value	0
+a02-malformed	Rg/Rows[3]/DV	value	0
+a02-malformed	Rg/Rows[3]/FF	cleared	
+a02-malformed	Rg/Rows[3]/FV	cleared	
+a02-malformed	Rg/Rows[3]/FX	value	16
+a02-malformed	Rg/Rows[3]/GC	value	0
+a02-malformed	Rg/Rows[3]/ML	value	1
+a02-malformed	Rg/Rows[3]/MN	value	0
+a02-malformed	Rg/Rows[3]/MV	value	0
+a02-malformed	Rg/Rows[3]/VC	cleared	
+a02-malformed	Rg/Rows[3]/T	operand-error	stringFalschesMuster
+a02-malformed	Rg/Rows/Sub[2]/IA	operand-error	zahlHatUngueltigeZeichen
+a02-malformed	Rg/Rows[2]/A	operand-error	zahlHatUngueltigeZeichen
+a02-malformed	Rg/Rows[2]/Sub/Det/DA	operand-error	zahlHatUngueltigeZeichen
+a03-over-limit	Rg/Rows/BS	value	1
+a03-over-limit	Rg/Rows/DV	value	2
+a03-over-limit	Rg/Rows/FF	value	4
+a03-over-limit	Rg/Rows/FV	value	12
+a03-over-limit	Rg/Rows/FX	value	16
+a03-over-limit	Rg/Rows/GC	value	2
+a03-over-limit	Rg/Rows/ML	value	3
+a03-over-limit	Rg/Rows/MN	value	1
+a03-over-limit	Rg/Rows/MV	value	2
+a03-over-limit	Rg/Rows/VC	value	1
+a03-over-limit	Rg/Rows[2]/BS	value	5
+a03-over-limit	Rg/Rows[2]/DV	value	1
+a03-over-limit	Rg/Rows[2]/FF	value	10
+a03-over-limit	Rg/Rows[2]/FV	value	7
+a03-over-limit	Rg/Rows[2]/FX	value	16
+a03-over-limit	Rg/Rows[2]/GC	value	1
+a03-over-limit	Rg/Rows[2]/ML	value	2
+a03-over-limit	Rg/Rows[2]/MN	value	2
+a03-over-limit	Rg/Rows[2]/MV	value	6
+a03-over-limit	Rg/Rows[2]/VC	value	1
+a03-over-limit	Rg/Rows[3]/BS	value	0
+a03-over-limit	Rg/Rows[3]/DV	value	0
+a03-over-limit	Rg/Rows[3]/FF	value	0
+a03-over-limit	Rg/Rows[3]/FV	value	3
+a03-over-limit	Rg/Rows[3]/FX	value	16
+a03-over-limit	Rg/Rows[3]/GC	value	0
+a03-over-limit	Rg/Rows[3]/ML	value	1
+a03-over-limit	Rg/Rows[3]/MN	value	0
+a03-over-limit	Rg/Rows[3]/MV	value	0
+a03-over-limit	Rg/Rows[3]/VC	value	0
+a03-over-limit	Rg/Rows[4]/BS	cleared	
+a03-over-limit	Rg/Rows[4]/DV	cleared	
+a03-over-limit	Rg/Rows[4]/FF	cleared	
+a03-over-limit	Rg/Rows[4]/FV	cleared	
+a03-over-limit	Rg/Rows[4]/FX	cleared	
+a03-over-limit	Rg/Rows[4]/GC	cleared	
+a03-over-limit	Rg/Rows[4]/ML	cleared	
+a03-over-limit	Rg/Rows[4]/MN	cleared	
+a03-over-limit	Rg/Rows[4]/MV	cleared	
+a03-over-limit	Rg/Rows[4]/VC	cleared	
+a03-over-limit	Rg/Rows/Sub[3]/Det	operand-error	zuGrosseKontextnummer
+a03-over-limit	Rg/Rows/Sub[3]/Det/DA	operand-error	zuGrosseKontextnummer
+a03-over-limit	Rg/Rows/Sub[3]/IA	operand-error	zuGrosseKontextnummer
+a03-over-limit	Rg/Rows[4]/A	operand-error	zuGrosseKontextnummer
+a03-over-limit	Rg/Rows[4]/B	operand-error	zuGrosseKontextnummer
+a03-over-limit	Rg/Rows[4]/T	operand-error	zuGrosseKontextnummer
+a03-over-limit	Rg/Rows/Sub[3]	operand-error	zuGrosseZeile
+a03-over-limit	Rg/Rows[4]	operand-error	zuGrosseZeile
+a04-empty	Rg/Rows/BS	value	0
+a04-empty	Rg/Rows/DV	value	0
+a04-empty	Rg/Rows/FF	value	4
+a04-empty	Rg/Rows/FV	value	0
+a04-empty	Rg/Rows/FX	value	0
+a04-empty	Rg/Rows/GC	value	0
+a04-empty	Rg/Rows/ML	value	1
+a04-empty	Rg/Rows/MN	value	0
+a04-empty	Rg/Rows/MV	value	0
+a04-empty	Rg/Rows/VC	value	1
+a04-empty	Rg/Rows[2]/BS	value	5
+a04-empty	Rg/Rows[2]/DV	value	1
+a04-empty	Rg/Rows[2]/FF	value	10
+a04-empty	Rg/Rows[2]/FV	value	7
+a04-empty	Rg/Rows[2]/FX	value	0
+a04-empty	Rg/Rows[2]/GC	value	0
+a04-empty	Rg/Rows[2]/ML	value	1
+a04-empty	Rg/Rows[2]/MN	value	2
+a04-empty	Rg/Rows[2]/MV	value	6
+a04-empty	Rg/Rows[2]/VC	value	1
+a04-empty	Rg/Rows[3]/BS	value	0
+a04-empty	Rg/Rows[3]/DV	value	0
+a04-empty	Rg/Rows[3]/FF	value	0
+a04-empty	Rg/Rows[3]/FV	value	0
+a04-empty	Rg/Rows[3]/FX	value	0
+a04-empty	Rg/Rows[3]/GC	value	0
+a04-empty	Rg/Rows[3]/ML	value	0
+a04-empty	Rg/Rows[3]/MN	value	0
+a04-empty	Rg/Rows[3]/MV	value	0
+a04-empty	Rg/Rows[3]/VC	value	0
