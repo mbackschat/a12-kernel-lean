@@ -171,7 +171,7 @@ example :
    why a filter's `$` marker is redundant on a non-reopened level — the Kernel admits both spellings
    there and they fire on identical rows
    ([checkpoint](../../docs/sources/having-filter-probes.md#src-bare-outer-reference-redundant-marker)).
-   `starPath_resolve_agreeOutsideReopened` is the universal form; these two rows are the separator,
+   `starPath_resolveInCapacity_agreeOutsideReopened` is the universal form; these two rows are the separator,
    because a *single* captured coordinate would satisfy the agreement vacuously. -/
 
 example : (innerStarOnly.boundEnvironment [(10, 2)]).toOption = some [(10, 2)] := by

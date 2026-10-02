@@ -535,7 +535,7 @@ def valueListSideAt (resolved : ResolvedCheckedTokenEntityOperand model)
     hasHaving := resolved.hasHaving
     hasNonRelevant := resolved.hasNonRelevant }
 
-/-- Project away cells beneath a declared-capacity violation while preserving each reached declaration's exact token projection. Every consumer the two accounts separate reads this one; `valueListSideAt` remains for `FieldValuesNotUnique`, whose skip-on-unavailable rule already reaches the same verdict ([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)). -/
+/-- Project away cells beneath a declared-capacity violation while preserving each reached declaration's exact token projection. A star or group slot already resolves in capacity, so this and `valueListSideAt` differ only on a direct slot read at an over-limit row ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-capacity-consumers)). -/
 def inCapacityValueListSideAt
     (resolved : ResolvedCheckedTokenEntityOperand model)
     (phase : Phase) : ResolvedValueListSide .token :=

@@ -285,22 +285,19 @@ private theorem resolveAxes_environmentCorrespondence
                             (resolved := child) childResult)
                           (coordinateInduction rest restResult)
 
-/-- Resolve the actual nested rows selected by one checked starred path. The result is independent of storage encounter order and never materializes a declared Cartesian tail. -/
-def resolveStarPath (document : Document) (path : StarPath) (outer : Env) :
-    Except StarAddressingError ResolvedStarTopology := do
-  path.validate
-  validateRows document path.axes 1 none
-  let bound ← path.boundEnvironment outer
-  resolveAxes document (path.axes.drop path.firstStar) (bound.map (·.2)) bound
-
 end Document
 
-/-- The physical topology a star addresses, over-limit rows included. Only a reader of the topology
-itself takes it, such as a row count or the rows a rule iterates; an operand stream reads
-`resolveInCapacity`, so the two names carry the choice every caller must make. -/
+/-- The physical topology a star addresses, over-limit rows included: the actual nested rows the
+checked path selects, independent of storage encounter order and never materializing a declared
+Cartesian tail. Only a reader of the topology itself takes it, such as a row count or the rows a rule
+iterates; an operand stream reads `resolveInCapacity`, so the two names carry the choice every caller
+must make. -/
 def StarPath.resolveTopology (path : StarPath) (document : Document) (outer : Env) :
-    Except StarAddressingError ResolvedStarTopology :=
-  document.resolveStarPath path outer
+    Except StarAddressingError ResolvedStarTopology := do
+  path.validate
+  document.validateRows path.axes 1 none
+  let bound ← path.boundEnvironment outer
+  document.resolveAxes (path.axes.drop path.firstStar) (bound.map (·.2)) bound
 
 /-- Keep only the leaf environments within every declared repeatability. A row beyond its level's
 capacity stays in the physical topology but lies outside the evaluation domain of an operand that
@@ -331,7 +328,7 @@ theorem StarPath.resolveTopology_environmentCorrespondence
       ReopenedStarDomain.EnvironmentCorrespondence
         ((path.axes.drop path.firstStar).map (·.level))
         bound resolved.domain resolved.environments := by
-  simp only [StarPath.resolveTopology, Document.resolveStarPath] at resolution
+  simp only [StarPath.resolveTopology] at resolution
   cases validation : path.validate with
   | error cause =>
       rw [validation] at resolution

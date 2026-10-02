@@ -345,12 +345,14 @@ def evaluateValidation (checked : CheckedTokenValueCountSource model)
     declared repeatability, and `1` on the control one index lower
     ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)).
     The starred group form answers the same way on its own
-    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). An
+    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). A
     starred String field also excludes an over-limit-only match, with or without `Having`: with capacity two the
     kernel answers `0`, while moving that match into row one answers `1`
     ([plain checkpoint](../../docs/sources/group-and-iteration-probes.md#src-token-starred-field-capacity),
     [filtered checkpoint](../../docs/sources/group-and-iteration-probes.md#src-filtered-starred-field-capacity)).
-    Enumeration and category stars retain the complete projection because those carriers remain unmeasured. -/
+    An Enumeration star leaves an over-limit row out as well
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)),
+    and a category star reads the same in-capacity stream without a measurement of its own. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedTokenValueCountSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -360,14 +362,8 @@ def evaluateCheckedDocumentValidation
       let resolved ←
         operand.resolveCheckedValidationOperand document outer
       match operand with
-      | .group _ =>
+      | .group _ | .star _ =>
           pure (.inl (resolved.inCapacityValueListSideAt .validation))
-      | .star source =>
-          match source.operand with
-          | .string _ =>
-              pure (.inl (resolved.inCapacityValueListSideAt .validation))
-          | _ =>
-              pure (.inl (resolved.valueListSideAt .validation))
       | .field _ =>
           pure (.inl (resolved.valueListSideAt .validation))
 

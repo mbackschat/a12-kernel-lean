@@ -373,10 +373,29 @@ done <<< "$exception_records"
 # A star's physical topology, over-limit rows included, is for a reader of the topology itself; every
 # operand stream reads `StarPath.resolveInCapacity`. Two capacity sweeps each missed a caller that kept
 # the physical extent (docs/LEAN-FINDINGS.md, LF208), so the callers are pinned here by file and count.
-topology_callers_expected=$'A12Kernel/Elaboration/CheckedStarDocument.lean\t1\nA12Kernel/Elaboration/RepetitionNotUnique.lean\t2\nA12Kernel/Elaboration/StarGroup.lean\t2'
+# Comments are stripped first, so prose naming the resolver cannot mask a swapped call, and the
+# defining module is the only one exempt.
+topology_callers_expected=$'A12Kernel/Elaboration/CheckedStarDocument.lean\t1\nA12Kernel/Elaboration/RepetitionNotUnique.lean\t2\nA12Kernel/Elaboration/StarGroup.lean\t1'
 topology_callers_actual="$(for source in "${tracked_files[@]}"; do
-  [[ "$source" == A12Kernel/Elaboration/* ]] || continue
-  count="$(grep -c 'resolveTopology' "$source" || true)"
+  [[ "$source" == A12Kernel/Elaboration/* || "$source" == A12Kernel/Semantics/* ]] || continue
+  [[ "$source" == A12Kernel/Semantics/StarAddressing.lean ]] && continue
+  count="$(awk '{
+    line = $0; code = ""
+    while (length(line) > 0) {
+      if (depth > 0) {
+        close_at = index(line, "-/"); open_at = index(line, "/-")
+        if (open_at > 0 && (close_at == 0 || open_at < close_at)) { depth++; line = substr(line, open_at + 2) }
+        else if (close_at > 0) { depth--; line = substr(line, close_at + 2) }
+        else line = ""
+      } else {
+        open_at = index(line, "/-"); dash_at = index(line, "--")
+        if (dash_at > 0 && (open_at == 0 || dash_at < open_at)) { code = code substr(line, 1, dash_at - 1); line = "" }
+        else if (open_at > 0) { code = code substr(line, 1, open_at - 1); depth = 1; line = substr(line, open_at + 2) }
+        else { code = code line; line = "" }
+      }
+    }
+    while ((at = index(code, "resolveTopology")) > 0) { total++; code = substr(code, at + 15) }
+  } END { print total + 0 }' "$source")"
   (( count > 0 )) && printf '%s\t%s\n' "$source" "$count"
 done | sort)"
 if [[ "$topology_callers_actual" != "$topology_callers_expected" ]]; then

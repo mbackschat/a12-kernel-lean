@@ -500,7 +500,7 @@ def valueListSideAt (resolved : ResolvedCheckedNumberEntityOperand model)
     hasHaving := resolved.core.hasHaving
     hasNonRelevant := resolved.core.hasNonRelevant }
 
-/-- The capacity-bounded projection used by every consumer whose answer the two accounts separate. `valueListSideAt` remains for the consumers they do not: `FieldValuesNotUnique` reaches the same verdict either way, because an over-limit cell is formally unavailable and that operator skips an unavailable cell exactly as it skips an empty ([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)). -/
+/-- The capacity-bounded projection. A star or group operand already resolves in capacity, so this and `valueListSideAt` differ only on a direct operand read at an over-limit row ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-capacity-consumers)). -/
 def inCapacityValueListSideAt
     (resolved : ResolvedCheckedNumberEntityOperand model)
     (phase : Phase) : ResolvedValueListSide .number :=

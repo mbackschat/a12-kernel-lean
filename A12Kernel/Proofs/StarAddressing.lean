@@ -192,9 +192,9 @@ mutual
             outsideAxis candidate fromRest
 end
 
-/-- The consumer-facing form: for a level the resolved path does **not** reopen, every candidate
-    environment carries the bound prefix's own coordinate. A filter reference whose declared scope
-    avoids the reopened levels therefore resolves identically marked or unmarked. -/
+/-- For a level the resolved path does **not** reopen, every environment of the physical topology
+    carries the bound prefix's own coordinate. The consumer-facing form is the in-capacity corollary
+    below, since every operand stream reads that projection. -/
 theorem starPath_resolve_agreeOutsideReopened
     (path : StarPath) (document : Document) (outer bound : Env)
     (resolved : ResolvedStarTopology)
@@ -209,5 +209,31 @@ theorem starPath_resolve_agreeOutsideReopened
   rw [boundEnvironment] at actualBound
   cases actualBound
   exact starDomain_environments_agreeOutside correspondence level outside
+
+/-- The consumer-facing form: every in-capacity candidate environment carries the bound prefix's own
+    coordinate at a level the path does not reopen, because the projection only drops environments
+    of the topology. A filter reference whose declared scope avoids the reopened levels therefore
+    resolves identically marked or unmarked. -/
+theorem starPath_resolveInCapacity_agreeOutsideReopened
+    (path : StarPath) (document : Document) (outer bound : Env)
+    (resolved : ResolvedStarTopology)
+    (resolution : path.resolveInCapacity document outer = .ok resolved)
+    (boundEnvironment : path.boundEnvironment outer = .ok bound)
+    (level : RepeatableLevel)
+    (outside : level ∉ (path.axes.drop path.firstStar).map (·.level)) :
+    ∀ candidate ∈ resolved.environments,
+      candidate.bindingAt level = bound.bindingAt level := by
+  unfold StarPath.resolveInCapacity at resolution
+  cases topology : path.resolveTopology document outer with
+  | error cause =>
+      rw [topology] at resolution
+      cases resolution
+  | ok physical =>
+      rw [topology] at resolution
+      cases resolution
+      intro candidate member
+      simp only [ResolvedStarTopology.inCapacity, List.mem_filter] at member
+      exact starPath_resolve_agreeOutsideReopened path document outer bound physical topology
+        boundEnvironment level outside candidate member.1
 
 end A12Kernel

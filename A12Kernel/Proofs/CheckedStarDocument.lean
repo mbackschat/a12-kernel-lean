@@ -106,7 +106,7 @@ theorem resolvedCheckedEntityOperandCore_inCapacity_sublist
 
 /-- A field's address depends on its environment **only** at its own declared repeatable scope, so
     two environments agreeing there address the same cell whatever else they bind. Together with
-    `starPath_resolve_agreeOutsideReopened` this is why a filter's `$` marker changes nothing on a
+    `starPath_resolveInCapacity_agreeOutsideReopened` this is why a filter's `$` marker changes nothing on a
     level the starred operand does not reopen: candidate and captured environments agree at exactly
     the levels such a field's scope can name. -/
 theorem cellAddress_congr_onScope (checked : CheckedDocument model)

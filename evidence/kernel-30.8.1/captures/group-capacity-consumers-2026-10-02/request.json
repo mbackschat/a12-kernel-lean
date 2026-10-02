@@ -1,0 +1,599 @@
+{
+ "model": "Gcap_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "g1-over-limit-root",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "X": "x",
+     "Y": "100",
+     "F9": "9",
+     "Rows": [
+      {
+       "N": "5"
+      },
+      {},
+      {
+       "N": "100",
+       "M": "7",
+       "Gate": "1"
+      }
+     ],
+     "DRows": [
+      {
+       "D": "2020-01-01"
+      },
+      {},
+      {
+       "D": "2021-01-01"
+      }
+     ],
+     "TRows": [
+      {
+       "T": "a"
+      },
+      {},
+      {
+       "T": "x"
+      }
+     ],
+     "NRows": [
+      {
+       "V": "5"
+      },
+      {},
+      {
+       "V": "100"
+      }
+     ],
+     "DShell": {
+      "SRows": [
+       {
+        "S": "2020-01-01"
+       },
+       {},
+       {
+        "S": "2021-01-01"
+       }
+      ]
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg"
+    }
+   ]
+  },
+  {
+   "name": "g1-over-limit-sub",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "X": "x",
+     "Y": "100",
+     "F9": "9",
+     "Rows": [
+      {
+       "N": "5"
+      },
+      {},
+      {
+       "N": "100",
+       "M": "7",
+       "Gate": "1"
+      }
+     ],
+     "DRows": [
+      {
+       "D": "2020-01-01"
+      },
+      {},
+      {
+       "D": "2021-01-01"
+      }
+     ],
+     "TRows": [
+      {
+       "T": "a"
+      },
+      {},
+      {
+       "T": "x"
+      }
+     ],
+     "NRows": [
+      {
+       "V": "5"
+      },
+      {},
+      {
+       "V": "100"
+      }
+     ],
+     "DShell": {
+      "SRows": [
+       {
+        "S": "2020-01-01"
+       },
+       {},
+       {
+        "S": "2021-01-01"
+       }
+      ]
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg/W"
+    },
+    {
+     "path": "/Rg/X"
+    },
+    {
+     "path": "/Rg/Y"
+    },
+    {
+     "path": "/Rg/F9"
+    },
+    {
+     "path": "/Rg/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/DRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/DRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/TRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/TRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/NRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/NRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/DShell/SRows",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/DShell/SRows",
+     "reps": [
+      1,
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "g2-in-capacity-root",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "X": "x",
+     "Y": "100",
+     "F9": "9",
+     "Rows": [
+      {
+       "N": "5"
+      },
+      {
+       "N": "100",
+       "M": "7",
+       "Gate": "1"
+      }
+     ],
+     "DRows": [
+      {
+       "D": "2020-01-01"
+      },
+      {
+       "D": "2021-01-01"
+      }
+     ],
+     "TRows": [
+      {
+       "T": "a"
+      },
+      {
+       "T": "x"
+      }
+     ],
+     "NRows": [
+      {
+       "V": "5"
+      },
+      {
+       "V": "100"
+      }
+     ],
+     "DShell": {
+      "SRows": [
+       {
+        "S": "2020-01-01"
+       },
+       {
+        "S": "2021-01-01"
+       }
+      ]
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg"
+    }
+   ]
+  },
+  {
+   "name": "g2-in-capacity-sub",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "X": "x",
+     "Y": "100",
+     "F9": "9",
+     "Rows": [
+      {
+       "N": "5"
+      },
+      {
+       "N": "100",
+       "M": "7",
+       "Gate": "1"
+      }
+     ],
+     "DRows": [
+      {
+       "D": "2020-01-01"
+      },
+      {
+       "D": "2021-01-01"
+      }
+     ],
+     "TRows": [
+      {
+       "T": "a"
+      },
+      {
+       "T": "x"
+      }
+     ],
+     "NRows": [
+      {
+       "V": "5"
+      },
+      {
+       "V": "100"
+      }
+     ],
+     "DShell": {
+      "SRows": [
+       {
+        "S": "2020-01-01"
+       },
+       {
+        "S": "2021-01-01"
+       }
+      ]
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg/W"
+    },
+    {
+     "path": "/Rg/X"
+    },
+    {
+     "path": "/Rg/Y"
+    },
+    {
+     "path": "/Rg/F9"
+    },
+    {
+     "path": "/Rg/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/DRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/DRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/TRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/TRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/NRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/NRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/DShell/SRows",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/DShell/SRows",
+     "reps": [
+      1,
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "g3-no-third-root",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "X": "x",
+     "Y": "100",
+     "F9": "9",
+     "Rows": [
+      {
+       "N": "5"
+      },
+      {}
+     ],
+     "DRows": [
+      {
+       "D": "2020-01-01"
+      },
+      {}
+     ],
+     "TRows": [
+      {
+       "T": "a"
+      },
+      {}
+     ],
+     "NRows": [
+      {
+       "V": "5"
+      },
+      {}
+     ],
+     "DShell": {
+      "SRows": [
+       {
+        "S": "2020-01-01"
+       },
+       {}
+      ]
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg"
+    }
+   ]
+  },
+  {
+   "name": "g3-no-third-sub",
+   "documentInline": {
+    "Rg": {
+     "W": "w",
+     "X": "x",
+     "Y": "100",
+     "F9": "9",
+     "Rows": [
+      {
+       "N": "5"
+      },
+      {}
+     ],
+     "DRows": [
+      {
+       "D": "2020-01-01"
+      },
+      {}
+     ],
+     "TRows": [
+      {
+       "T": "a"
+      },
+      {}
+     ],
+     "NRows": [
+      {
+       "V": "5"
+      },
+      {}
+     ],
+     "DShell": {
+      "SRows": [
+       {
+        "S": "2020-01-01"
+       },
+       {}
+      ]
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Rg/W"
+    },
+    {
+     "path": "/Rg/X"
+    },
+    {
+     "path": "/Rg/Y"
+    },
+    {
+     "path": "/Rg/F9"
+    },
+    {
+     "path": "/Rg/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/DRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/DRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/TRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/TRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/NRows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/NRows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Rg/DShell/SRows",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Rg/DShell/SRows",
+     "reps": [
+      1,
+      1,
+      2
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1463,8 +1463,6 @@ run_cmd do
 #print axioms A12Kernel.checkedTokenValueCount_partialHaving_skips
 #print axioms A12Kernel.checkedTokenValueCountGroup_checkedComputation_usesCapacityProjection
 #print axioms A12Kernel.checkedTokenValueCount_checkedValidation_usesMeasuredProjection
-#print axioms A12Kernel.checkedBooleanValueCountStarredGroup_checkedComputation_usesCapacityProjection
-#print axioms A12Kernel.checkedBooleanValueCountFixedGroup_checkedComputation_usesCompleteProjection
 #print axioms A12Kernel.checkedFieldEntityShape_requiredMultiplicity
 #print axioms A12Kernel.checkedTokenDistinctSource_requiredMultiplicity
 #print axioms A12Kernel.checkedTokenDistinctSource_uniqueDirectOperands
@@ -1487,6 +1485,7 @@ run_cmd do
 #print axioms A12Kernel.starDomain_environments_agreeOutside
 #print axioms A12Kernel.starRows_environments_agreeOutside
 #print axioms A12Kernel.starPath_resolve_agreeOutsideReopened
+#print axioms A12Kernel.starPath_resolveInCapacity_agreeOutsideReopened
 #print axioms A12Kernel.starPath_firstAxis_reopens
 #print axioms A12Kernel.starPath_boundEnvironment_single
 #print axioms A12Kernel.starPath_boundEnvironment_duplicate

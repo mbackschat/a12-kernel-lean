@@ -17,7 +17,9 @@ the first two rows alone.
 
 The Kernel answers the over-limit document exactly as the one without its third row, on both
 observations, while the in-capacity control reads the values, so each consumer leaves the row out
-rather than reading it as unavailable.
+rather than reading it as unavailable. Library partial rule evaluation refuses a `FirstFilledValue` as
+unsupported, so the partial Number scan here runs the carrier's own partial route, which only
+conformance calls.
 -/
 
 namespace A12Kernel.Conformance.CapacityValidationConsumers
@@ -113,10 +115,13 @@ private def sum? (rows : List (List (String × String))) : Option NumericOperand
   let document ← document? rows
   (← sumSource?).evaluateCheckedDocumentValidationAggregate .sum document [] |>.toOption
 
+/-- `Sum(Rows*/N)` through the call-local partial view the library's partial rule evaluation reads. -/
 private def partialSum? (rows : List (List (String × String))) :
-    Option PartialValidationNumberAggregateResult := do
+    Option PartialValidationNumberAggregateViewResult := do
   let document ← document? rows
-  (← sumSource?).evaluateCheckedDocumentPartialAggregate .sum document [] everyRow |>.toOption
+  (← sumSource?).evaluatePartialViewAggregate .sum document [] everyRow (fun environment field =>
+    (document.validationAddressedCell environment field).map fun addressed => some addressed.cell)
+    |>.toOption
 
 private def distinctDays? (rows : List (List (String × String))) : Option NumericOperand := do
   let source ← (elaborateTemporalDistinctCountSource model ["Rg"]
@@ -142,7 +147,7 @@ private def values (rows : List (List (String × String))) : List String :=
     | _ => "-",
     operandValue (sum? rows),
     match partialSum? rows with
-    | some (.evaluated operand) => operandValue (some operand)
+    | some (.result (.evaluated operand)) => operandValue (some operand)
     | _ => "-",
     operandValue (distinctDays? rows)]
 

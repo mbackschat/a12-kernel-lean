@@ -64,8 +64,8 @@ theorem checkedTokenValueCountGroup_checkedComputation_usesCapacityProjection
       pure (evalValueCountAggregate checked.expected side)) := by
   rfl
 
-/-- Checked token value-count validation narrows group operands and String stars to declared
-    capacity, while direct and Enumeration/category operands retain their existing projection. -/
+/-- Checked token value-count validation narrows group and star operands to declared capacity, while
+    a direct operand retains its existing projection. -/
 theorem checkedTokenValueCount_checkedValidation_usesMeasuredProjection
     (checked : CheckedTokenValueCountSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -75,56 +75,10 @@ theorem checkedTokenValueCount_checkedValidation_usesMeasuredProjection
           let resolved ←
             operand.resolveCheckedValidationOperand document outer
           match operand with
-          | .group _ =>
+          | .group _ | .star _ =>
               pure (.inl (resolved.inCapacityValueListSideAt .validation))
-          | .star source =>
-              match source.operand with
-              | .string _ =>
-                  pure (.inl (resolved.inCapacityValueListSideAt .validation))
-              | _ =>
-                  pure (.inl (resolved.valueListSideAt .validation))
           | .field _ =>
               pure (.inl (resolved.valueListSideAt .validation))) := by
-  rfl
-
-/-- Each measured checked Boolean-group computation specializes the shared in-capacity addressed
-    projection before applying canonical constant-specific token classification. -/
-theorem checkedBooleanValueCountStarredGroup_checkedComputation_usesCapacityProjection
-    (checked : CheckedBooleanValueCountStarredGroupSource model expected)
-    (document : CheckedDocument model) (outer : Env) :
-    checked.evaluateCheckedDocumentComputation document outer = (do
-      let core ← document.resolveCheckedGroupEntityOperandCore outer
-        checked.group.source.boundLevelCount checked.group.fields
-      let resolved : ResolvedValueListSide .token := {
-        cells := core.inCapacityAddressedCells.map fun addressed =>
-          booleanValueCountCellAt .computation addressed.cell
-        hasUninstantiatedTail := core.hasUninstantiatedTail
-        hasHaving := core.hasHaving
-        hasNonRelevant := core.hasNonRelevant }
-      let side :=
-        (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
-          |>.appendResolved resolved
-      pure (evalValueCountAggregate (booleanValueCountToken expected) side)) := by
-  rfl
-
-/-- Each measured fixed Boolean-group computation specializes the shared complete addressed
-    projection before applying canonical constant-specific token classification. -/
-theorem checkedBooleanValueCountFixedGroup_checkedComputation_usesCompleteProjection
-    (checked : CheckedBooleanValueCountFixedGroupSource model expected)
-    (document : CheckedDocument model) (outer : Env) :
-    checked.evaluateCheckedDocumentComputation document outer = (do
-      let core ← document.resolveCheckedGroupEntityOperandCore outer
-        checked.group.source.boundLevelCount checked.group.fields
-      let resolved : ResolvedValueListSide .token := {
-        cells := core.addressedCells.map fun addressed =>
-          booleanValueCountCellAt .computation addressed.cell
-        hasUninstantiatedTail := core.hasUninstantiatedTail
-        hasHaving := core.hasHaving
-        hasNonRelevant := core.hasNonRelevant }
-      let side :=
-        (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
-          |>.appendResolved resolved
-      pure (evalValueCountAggregate (booleanValueCountToken expected) side)) := by
   rfl
 
 /-- A retained Boolean/Confirm group omits no descendant: every declaration in the recursive

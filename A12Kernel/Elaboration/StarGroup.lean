@@ -484,12 +484,6 @@ def wellFormedBool (checked : CheckedStarredGroupPresenceSource model)
     decide (checked.path.firstStar < checked.path.axes.length) &&
     checked.path.validate.isOk
 
-/-- Resolve the same canonical nested topology used by every checked starred consumer. -/
-def resolvedTopology (checked : CheckedStarredGroupPresenceSource model)
-    (document : Document) (outer : Env) :
-    Except StarAddressingError ResolvedStarTopology :=
-  checked.path.resolveTopology document outer
-
 end CheckedStarredGroupPresenceSource
 
 /-- A starred group operand resolves only against a representable declaring group.

@@ -449,24 +449,15 @@ def booleanValueCountCellAt (phase : Phase)
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
 
-/-- The two externally distinguished checked group-computation extents. Fixed groups consume their
-    complete direct extent; starred groups explicitly exclude cells beyond declared capacity. -/
-inductive BooleanValueCountGroupComputationExtent where
-  | complete
-  | inCapacity
-
-/-- Evaluate one certified Boolean group against the selected checked-document extent. This is the
-    common scan; fixed and starred carriers differ only in the extent they select. -/
+/-- Evaluate one certified Boolean group over its checked-document extent. This is the common scan of
+    the fixed and starred carriers; the group walk already leaves an over-limit row out of both. -/
 def evaluateCheckedBooleanValueCountGroupComputation
     (expected : Bool) (group : CheckedBooleanValueCountGroup model expected)
-    (extent : BooleanValueCountGroupComputationExtent)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand := do
   let core ← document.resolveCheckedGroupEntityOperandCore outer
     group.source.boundLevelCount group.fields
-  let addressed := match extent with
-    | .complete => core.addressedCells
-    | .inCapacity => core.inCapacityAddressedCells
+  let addressed := core.addressedCells
   let resolved : ResolvedValueListSide .token := {
     cells := addressed.map fun cell =>
       booleanValueCountCellAt .computation cell.cell
@@ -528,13 +519,12 @@ def toCheckedBooleanValueCountSource
     requiredMultiplicity := by rfl
     uniqueDirectOperands := by rfl }
 
-/-- Checked computation selects the in-capacity addressed cells before projecting their canonical Boolean/Confirm tokens. -/
+/-- Checked computation projects the group's in-capacity addressed cells to their canonical Boolean/Confirm tokens. -/
 def evaluateCheckedDocumentComputation
     (checked : CheckedBooleanValueCountStarredGroupSource model expected)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand :=
-  evaluateCheckedBooleanValueCountGroupComputation expected checked.group
-    .inCapacity document outer
+  evaluateCheckedBooleanValueCountGroupComputation expected checked.group document outer
 
 end CheckedBooleanValueCountStarredGroupSource
 
@@ -550,13 +540,12 @@ def referencesField
     (field : FieldId) : Bool :=
   checked.group.referencesField field
 
-/-- Checked fixed-group computation classifies every cell in its complete direct extent. -/
+/-- Checked fixed-group computation classifies every cell of its in-capacity extent. -/
 def evaluateCheckedDocumentComputation
     (checked : CheckedBooleanValueCountFixedGroupSource model expected)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand :=
-  evaluateCheckedBooleanValueCountGroupComputation expected checked.group
-    .complete document outer
+  evaluateCheckedBooleanValueCountGroupComputation expected checked.group document outer
 
 end CheckedBooleanValueCountFixedGroupSource
 

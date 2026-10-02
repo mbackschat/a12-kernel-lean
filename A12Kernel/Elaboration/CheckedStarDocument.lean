@@ -73,7 +73,7 @@ def skippedHaving : ResolvedCheckedEntityOperandCore := {
   hasNonRelevant := false
 }
 
-/-- Project away cells beneath a declared-capacity violation for consumers whose selected star domain excludes over-limit rows. The checked document and base topology retain those formal cells; each consumer must opt into this narrower evaluation domain explicitly. -/
+/-- Project away cells beneath a declared-capacity violation. The checked document and base topology retain those formal cells, while star and group operand cores already leave their over-limit rows out when they resolve. -/
 def inCapacityAddressedCells (resolved : ResolvedCheckedEntityOperandCore) :
     List CheckedAddressedCell :=
   resolved.addressedCells.filter fun addressed =>
@@ -197,6 +197,8 @@ def resolveCheckedDirectEntityOperandCore
 
     `()` is the honest payload for a carrier whose projection is declaration-independent; `resolveCheckedGroupEntityOperandCore` below is exactly that instance.
 
+    Only in-capacity rows are walked: the Kernel leaves an over-limit row out of a group operand's domain on every consumer measured, fixed and starred, on full and partial validation ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-capacity-consumers)), exactly as a star's operand stream does. A consumer that needs the physical rows reads the topology instead.
+
     `boundCount` is the **operand's own depth**, not the rule's. Levels above it stay fixed at `outer`'s bindings; every level from there down is enumerated whatever the rule iterates. Both halves are load-bearing and each fails differently: reading the depth off the rule would pin an operand that names an ancestor of the rule's group to the rule's row, and ignoring `outer` altogether would let a starred operand under a *bound* repeatable ancestor compare rows the star never reopened. -/
 def resolveCheckedGroupEntityOperandPairs
     (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
@@ -210,7 +212,7 @@ def resolveCheckedGroupEntityOperandPairs
         pure [([] : Env)]
       else do
         let reached ←
-          (checked.actualRowEnvironments declaration.repeatableScope).mapError
+          (checked.inCapacityRowEnvironments declaration.repeatableScope).mapError
             CheckedAddressingError.rowEnvironment
         pure (reached.filter fun environment =>
           environment.take bound.length == bound.zip boundPath)
@@ -254,7 +256,7 @@ def resolveCheckedGroupUninstantiatedTail
 
     Cells are emitted declaration-major in stable model declaration order, with each declaration's canonical row order inside it. Fixed-group token `FirstFilledValue` observes declaration order; its terminal single-level starred-group fragment observes that every row of one declaration precedes every row of the next. Set-valued consumers remain insensitive to the order. A filter cannot attach to a group operand, so every cell is unfiltered.
 
-    Only instantiated rows are enumerated, so `hasUninstantiatedTail` comes from the declared
+    Only instantiated in-capacity rows are enumerated, so `hasUninstantiatedTail` comes from the declared
     capacity those rows leave open rather than from the walk. -/
 def resolveCheckedGroupEntityOperandCore
     (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
@@ -322,7 +324,7 @@ def resolveCheckedValidationEntityOperandCore
     hasNonRelevant := false
   }
 
-/-- Resolve one unfiltered starred occurrence under partial-validation relevance. Candidate topology remains complete while only relevant concrete cells are addressed, and incomplete extent stays on this exact operand. -/
+/-- Resolve one unfiltered starred occurrence under partial-validation relevance. Candidates are the in-capacity extent while only relevant concrete cells are addressed, and incomplete extent stays on this exact operand. -/
 def resolveCheckedPartialValidationEntityOperandCore
     (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model) (outer : Env)
