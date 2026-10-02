@@ -391,7 +391,7 @@ example :
     let n2 : FieldKind := .number { scale := 2, signed := false }
     let enum : FieldKind := .enumeration
     let flag : FieldKind := .boolean
-    let confirm : FieldKind := .confirm
+    let tick : FieldKind := .confirm
     let date : FieldKind := .temporal .date TemporalComponents.fullDate
     let moment : FieldKind := .temporal .dateTime TemporalComponents.now
     let clock : FieldKind := .temporal .time TemporalComponents.time
@@ -401,9 +401,9 @@ example :
     let gate (pair : FieldKind × FieldKind) := pair.1.indexTypeGate pair.2
     ([(text, text), (n0, n2), (enum, enum), (date, moment), (date, clock), (date, month),
         (moment, clock)].map gate,
-      ([n0, enum, flag, confirm, date, moment, clock, month, range].map (text, ·) ++
-        [(n0, text), (n0, enum), (n0, date), (enum, flag), (flag, confirm), (date, range)]).map gate,
-      [(confirm, flag), (flag, enum), (enum, n0), (range, date), (date, n0), (enum, text),
+      ([n0, enum, flag, tick, date, moment, clock, month, range].map (text, ·) ++
+        [(n0, text), (n0, enum), (n0, date), (enum, flag), (flag, tick), (date, range)]).map gate,
+      [(tick, flag), (flag, enum), (enum, n0), (range, date), (date, n0), (enum, text),
         (clock, date), (clock, moment), (moment, date), (n0, flag)].map gate) =
     (List.replicate 7 .legal, List.replicate 15 .differentType, List.replicate 10 .unmeasured) := by
   native_decide
