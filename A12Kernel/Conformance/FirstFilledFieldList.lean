@@ -134,7 +134,7 @@ private def results? (cells : List (String × String)) : Option (List String) :=
   let b ← (booleanResult.execute input).toOption
   let [{ result := g, .. }] ← (fragmentResult.execute input).toOption | none
   let [{ outcome := t, .. }] ← (clockResult.execute input).toOption | none
-  let m ← (momentResult.execute input).toOption
+  let [{ outcome := m, .. }] ← (momentResult.execute input).toOption | none
   pure [
     match b with | .value value => toString value | _ => "-",
     match g with | .value token => token | _ => "-",

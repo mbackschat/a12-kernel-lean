@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.AddressedFieldValueAsString
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.TimeFirstFilledComputation
-import A12Kernel.Elaboration.AddressedDateTimeFirstFilledComputation
+import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedFullDateFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateRangeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
@@ -39,7 +39,7 @@ inductive RowComputationStepFault where
   | fieldValueAsString (cause : AddressedFieldValueAsStringFault)
   | stringFirstFilled (cause : StringFirstFilledComputationFault)
   | firstFilledSite (cause : FirstFilledSiteFault)
-  | dateTimeFirstFilled (cause : AddressedDateTimeFirstFilledComputationFault)
+  | dateTimeFirstFilled (cause : DateTimeFirstFilledComputationFault)
   | fullDateFirstFilled (cause : AddressedFullDateFirstFilledComputationFault)
   | dateRangeFirstFilled (cause : AddressedDateRangeFirstFilledComputationFault)
   | enumerationFirstFilled (cause : AddressedEnumerationFirstFilledComputationFault)
@@ -195,9 +195,9 @@ def ofTimeFirstFilled? (operation : CheckedTimeFirstFilledComputation model) :
         (DocumentComputationReadBack.time model)
 
 /-- A per-row DateTime `FirstFilledValue` over a sibling star. -/
-def ofAddressedDateTimeFirstFilled? (operation : CheckedAddressedDateTimeFirstFilledComputation model) :
+def ofDateTimeFirstFilled? (operation : CheckedDateTimeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.checkedTarget.targetField .dateTime (· == operation.checkedSource.declaration.id)
+  checked? operation.targetField .dateTime operation.referencesField
     fun _ _ _ document => do
       let outcomes ← (operation.execute document).mapError .dateTimeFirstFilled
       readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .dateTime

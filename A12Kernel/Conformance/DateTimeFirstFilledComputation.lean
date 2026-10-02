@@ -117,7 +117,8 @@ private def input? (sourceInputs : List SourceInput) : Option (CheckedDocument m
 private def outcome? (sourceInputs : List SourceInput) : Option DateTimeTargetOutcome := do
   let operation ← checked? target.id (star "Moment")
   let input ← input? sourceInputs
-  operation.execute input |>.toOption
+  let [entry] ← operation.execute input |>.toOption | none
+  pure entry.outcome
 
 private def signature? (sourceInputs : List SourceInput) : Option String := do
   let outcome ← outcome? sourceInputs
@@ -130,10 +131,12 @@ private def signature? (sourceInputs : List SourceInput) : Option String := do
 private def runView? (targetStored : String) (targetRaw : RawCell)
     (sourceInputs : List SourceInput)
     (residualMessages : List FormalCause := []) :
-    Option (DateTimeComputationRunView FormalCause) := do
+    Option (DateTimeComputationRunView FormalCause CellAddr) := do
   let operation ← checked? target.id (star "Moment")
   let input ← inputWithTarget? targetStored targetRaw sourceInputs
-  operation.executeResult input residualMessages |>.toOption
+  (·.dateTime) <$> (operation.executeResult input residualMessages |>.toOption)
+
+private def root (field : FieldId) : CellAddr := { field, path := [] }
 
 private def selectedValue : StoredDateTime :=
   ⟨"2024-03-20T10:11:12", by decide⟩
@@ -175,11 +178,11 @@ example : (do
         { year := 2000, month := 1, day := 1 }
         (clock 12 34 56 (by decide)))) [selectedInput 1]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
+    let applied ← view.applyTo destination.sourceDateTimeTargetStateAt |>.toOption
     pure (view.withoutErrors, view.withChanges,
-      applied target.id, applied otherGroupTarget.id)) =
-    some ([{ targetField := target.id, value := selectedValue }],
-      [{ targetField := target.id, value := selectedValue }],
+      applied (root target.id), applied (root otherGroupTarget.id))) =
+    some ([{ targetField := root target.id, value := selectedValue }],
+      [{ targetField := root target.id, value := selectedValue }],
       .presentValue selectedValue, .presentValue otherValue) := by
   native_decide
 
@@ -190,9 +193,9 @@ example : (do
         { year := 2024, month := 3, day := 20 }
         (clock 10 11 12 (by decide)))) [selectedInput 1]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
-    pure (view.withoutErrors, view.withChanges, applied target.id)) =
-    some ([{ targetField := target.id, value := selectedValue }], [],
+    let applied ← view.applyTo destination.sourceDateTimeTargetStateAt |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied (root target.id))) =
+    some ([{ targetField := root target.id, value := selectedValue }], [],
       .presentValue seedValue) := by
   native_decide
 
@@ -204,20 +207,20 @@ example :
           { year := 2000, month := 1, day := 1 }
           (clock 12 34 56 (by decide)))) []
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceDateTimeTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied otherGroupTarget.id)) =
-      some ([target.id], true, .presentEmpty, .presentValue otherValue) ∧
+        applied (root target.id), applied (root otherGroupTarget.id))) =
+      some ([root target.id], true, .presentEmpty, .presentValue otherValue) ∧
     (do
       let view ← runView? seedValue.text
         (.parsed (dateTimeValue 946730096000
           { year := 2000, month := 1, day := 1 }
           (clock 12 34 56 (by decide)))) [malformedInput 1]
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceDateTimeTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied otherGroupTarget.id)) =
-      some ([target.id], true, .presentEmpty, .presentValue otherValue) := by
+        applied (root target.id), applied (root otherGroupTarget.id))) =
+      some ([root target.id], true, .presentEmpty, .presentValue otherValue) := by
   native_decide
 
 /- The typed adapter retains the exact instant rather than source text or a supplied wall label; this mechanism separator is internal. -/

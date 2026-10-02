@@ -395,17 +395,18 @@ def ofTimeFirstFilled (operation : CheckedTimeFirstFilledComputation model) :
     let cell ← DocumentComputationReadBack.time model operation.targetField entry.outcome
     pure (.time entry.outcome, cell)
 
-/-- A fixed-target DateTime `FirstFilledValue`. -/
+/-- A fixed-target DateTime `FirstFilledValue` at its single instance. -/
 def ofDateTimeFirstFilled (operation : CheckedDateTimeFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
-  target := operation.shape.target.id
+  target := operation.targetField
   family := .dateTime
-  referencesField := operation.shape.source.referencesField
-  excludesTarget := operation.shape.excludesTarget
+  referencesField := operation.referencesField
+  excludesTarget := operation.excludesTarget
   run _ _ document := do
-    let outcome ← (operation.execute document).mapError .dateTimeFirstFilled
-    let cell ← DocumentComputationReadBack.dateTime model operation.shape.target.id outcome
-    pure (.dateTime outcome, cell)
+    let entry ← (operation.evaluateAt document document.read
+      { field := operation.targetField, path := [] } []).mapError .dateTimeFirstFilled
+    let cell ← DocumentComputationReadBack.dateTime model operation.targetField entry.outcome
+    pure (.dateTime entry.outcome, cell)
 
 /-- A fixed-target full-Date `FirstFilledValue`. -/
 def ofFullDateFirstFilled (operation : CheckedFullDateFirstFilledComputation model) :

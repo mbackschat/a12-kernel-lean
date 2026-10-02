@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedDateTimeFirstFilledFormalInput
+import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 
 /-! # Exact-address repeatable DateTime `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedDateTimeFirstFilledComputation
+namespace A12Kernel.Conformance.DateTimeFirstFilledComputationRows
 
 open A12Kernel
 
@@ -52,35 +52,34 @@ private def siblingStar (field : String) : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedAddressedDateTimeFirstFilledComputation model) :=
-  (checkAddressedDateTimeFirstFilledComputation model
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+    Option (CheckedDateTimeFirstFilledComputation model) :=
+  (checkDateTimeFirstFilledComputation model
+    ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
 
 private def elabError? (checked : Except
-    AddressedDateTimeFirstFilledComputationElabError
-    (CheckedAddressedDateTimeFirstFilledComputation model)) :=
+    DateTimeFirstFilledComputationElabError
+    (CheckedDateTimeFirstFilledComputation model)) :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary admits only a complete ISO DateTime source and target, and the target must be repeatable. -/
+/- A repeatable target admits only a complete ISO DateTime source and target over a sibling star. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example : operation?.isSome = true ∧
-    elabError? (checkAddressedDateTimeFirstFilledComputation model
+    elabError? (checkDateTimeFirstFilledComputation model
       ["Projects", "Tasks"] target.id
-      (siblingStar timeSource.name)) =
-        some (.sourceCarrier timeSource.path) ∧
-    elabError? (checkAddressedDateTimeFirstFilledComputation model
+      (.star (siblingStar timeSource.name))) =
+        some (.shape (.sourceCarrier timeSource.path)) ∧
+    elabError? (checkDateTimeFirstFilledComputation model
       ["Projects", "Tasks"] target.id
-      (siblingStar incompleteSource.name)) =
-        some (.sourceCarrier incompleteSource.path) ∧
-    elabError? (checkAddressedDateTimeFirstFilledComputation model
+      (.star (siblingStar incompleteSource.name))) =
+        some (.shape (.sourceCarrier incompleteSource.path)) ∧
+    elabError? (checkDateTimeFirstFilledComputation model
       ["Projects", "Tasks"] incompleteTarget.id
-      (siblingStar source.name)) =
-        some (.targetPolicy (.components incompleteTarget.id
-          { TemporalComponents.now with second := false })) ∧
-    elabError? (checkAddressedDateTimeFirstFilledComputation model
-      ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) := by
+      (.star (siblingStar source.name))) =
+        some (.shape (.targetCarrier incompleteTarget.path)) ∧
+    elabError? (checkDateTimeFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
+        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) := by
   native_decide
 
 private def prepared :
@@ -335,4 +334,4 @@ example : formalInputSummary? = some {
   } := by
   native_decide
 
-end A12Kernel.Conformance.AddressedDateTimeFirstFilledComputation
+end A12Kernel.Conformance.DateTimeFirstFilledComputationRows
