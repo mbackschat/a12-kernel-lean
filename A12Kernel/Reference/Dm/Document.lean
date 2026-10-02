@@ -35,16 +35,63 @@ private def storedText? : Json → Option String
   | .null => some ""
   | _ => none
 
-/-- The cell one declaration takes for its stored text, or the reason none is derivable. -/
+/-- The decimal the Kernel's document conversion makes of a Number text: Java `BigDecimal`'s string
+grammar, an optional sign, digits around an optional point and an optional exponent, with at least
+one digit. An exponent too large to expand is left as text, as an unparseable value is. -/
+def convertedDecimal? (text : String) : Option NumericInputDecimal := do
+  let chars := text.toList
+  let (negative, chars) := match chars with
+    | '-' :: rest => (true, rest)
+    | '+' :: rest => (false, rest)
+    | _ => (false, chars)
+  let (mantissa, exponent) := match chars.splitOn 'e', chars.splitOn 'E' with
+    | [mantissa, exponent], _ => (mantissa, some exponent)
+    | _, [mantissa, exponent] => (mantissa, some exponent)
+    | _, _ => (chars, none)
+  let exponent ← match exponent with
+    | none => pure (0 : Int)
+    | some digits => (String.ofList digits).toInt?
+  if exponent.natAbs > 1000 then none
+  let (integer, fraction) ← match mantissa.splitOn '.' with
+    | [integer] => pure (integer, [])
+    | [integer, fraction] => pure (integer, fraction)
+    | _ => none
+  let digits := integer ++ fraction
+  if digits.isEmpty || !digits.all Char.isDigit then none
+  let magnitude ← (String.ofList digits).toNat?
+  pure { unscaled := if negative then -(magnitude : Int) else magnitude
+         scale := fraction.length - exponent }
+
+private def hasLeadingZeros (text : String) : Bool :=
+  match (text.toList.dropWhile (fun c => c == '+' || c == '-')) with
+  | '0' :: next :: _ => next.isDigit
+  | _ => false
+
+/-- The cell one declaration takes for its stored text, or the reason none is derivable. A Number
+text the document conversion parses is decimal-valued and every other filled Number text keeps the
+String-valued regime, as does a leading-zero value on a field allowing leading zeros (spec §4,
+storage regimes); a Boolean or Confirm token is read regardless of case. -/
 def classifyStored (model : FlatModel) (declaration : FlatFieldDecl) (address : CellAddr)
     (stored : String) : Except String ClassifiedCellInput := do
   let cell (raw : RawCell) : ClassifiedCellInput := { address, stored, raw }
   if stored.isEmpty then return cell .presentEmpty
   match declaration.policy.kind with
   | .number info =>
-      pure (cell (declaration.numericTargetConstraints.classifyFormalRead info (.text stored)))
-  | .boolean => pure (cell (classifyStoredBooleanText stored))
-  | .confirm => pure (cell (classifyStoredConfirmText stored))
+      let constraints := declaration.numericTargetConstraints
+      let decimal := if constraints.leadingZerosAllowed && hasLeadingZeros stored then none
+        else convertedDecimal? stored
+      match decimal with
+      | some value =>
+          let input := NumericStoredInput.decimal value
+          pure { address, stored := input.storedText, raw := constraints.classifyFormalRead info input
+                 numericDecimal := some value }
+      | none => pure (cell (constraints.classifyFormalRead info (.text stored)))
+  | .boolean =>
+      let token := match stored.toLower with | "true" => "true" | "false" => "false" | _ => stored
+      pure { address, stored := token, raw := classifyStoredBooleanText token }
+  | .confirm =>
+      let token := if stored.toLower == "true" then "true" else stored
+      pure { address, stored := token, raw := classifyStoredConfirmText token }
   | .string => pure (cell (.parsed (.str stored)))
   | .enumeration => pure (cell (.parsed (.enum stored)))
   | .dateRange =>

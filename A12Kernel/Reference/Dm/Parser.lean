@@ -75,16 +75,28 @@ private partial def segments : P (List Segment) := do
   let first ← segment
   if ← acceptSymbol "/" then return first :: (← segments) else return [first]
 
-private partial def ups : P Nat := do
-  if (← peek) == some (.symbol "..") then
-    advance; expectSymbol "/"; return (← ups) + 1
-  else return 0
+/-- An up-run: each `..` climbs one level, and a name written directly after the last one is its
+turning-point label rather than a descent, which needs the `/`. -/
+private partial def ups : P (Nat × Option String) := do
+  if (← peek) != some (.symbol "..") then return (0, none)
+  advance
+  match ← peek with
+  | some (.symbol "/") =>
+      if (← peekAt 1) == some (.symbol "..") then
+        advance
+        let (count, label) ← ups
+        return (count + 1, label)
+      else return (1, none)
+  | some (.name label) => advance; return (1, some label)
+  | _ => return (1, none)
 
 private def path : P Path := do
   let correlated ← acceptSymbol "$"
   let absolute ← acceptSymbol "/"
-  let ups ← if absolute then pure 0 else ups
-  return { correlated, absolute, ups, segments := ← segments }
+  let (ups, turningPoint) ← if absolute then pure (0, none) else ups
+  let segments ← if ups == 0 then segments
+    else if ← acceptSymbol "/" then segments else pure []
+  return { correlated, absolute, ups, turningPoint, segments }
 
 private def reference : P Reference := do
   let target ← path

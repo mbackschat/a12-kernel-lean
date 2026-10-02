@@ -299,7 +299,7 @@ private def NatPath.isPrefixOf : List Nat → List Nat → Bool
       expected == actual && NatPath.isPrefixOf expectedRest actualRest
 
 /-- Full once evaluation uses admitted value-content in the error field's root instance. Physical row existence is deliberately not part of this gate. -/
-private def ordinaryOnceRootHasContent
+def ordinaryOnceRootHasContent
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) (environment : Env) :
     Except CheckedAddressingError Bool := do

@@ -218,11 +218,14 @@ structure Segment where
   star : Bool
   deriving Repr, BEq, DecidableEq
 
-/-- An entity path as written. `correlated` is the `$` form that reads the enclosing filter's row. -/
+/-- An entity path as written. `correlated` is the `$` form that reads the enclosing filter's row, and
+`turningPoint` the `..Name` label naming the ancestor an up-run reaches. Only an up-run may leave
+`segments` empty, the reference then being that ancestor group. -/
 structure Path where
   correlated : Bool := false
   absolute : Bool := false
   ups : Nat := 0
+  turningPoint : Option String := none
   segments : List Segment
   deriving Repr, BEq, DecidableEq
 

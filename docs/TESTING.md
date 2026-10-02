@@ -273,6 +273,14 @@ Use it demand-driven, one coherent family at a time, exactly like every other ev
 
 **Seed every computed target and put the nearest settled form beside the new one in the first run.** A target seeded to a value no document reaches carries both its computed value and its implicit message type in one artifact, where an unseeded target carries the value alone; a settled twin in the same model, such as a fixed group beside a below-star one, decides a form-specific reading in-run instead of across two captures that also differ in model. Tabulate messages by `field` before reading a target's type ([`LF190`](LEAN-FINDINGS.md)). The below-star group-count capsule of 2026-09-24 spent three runs where one run so authored would have answered.
 
+### The population replay
+
+`lake exe a12-kernel-replay <request.json>…` reads each retained `kernelProbe` request with its DM-JSON model and documents. It parses every rule condition and computation operation, lowers each onto the existing checked carriers and runs it. Each rule and computation is compared, row by row, with the request's retained artifact (`artifact<suffix>.json` beside `req<suffix>.json` or `request<suffix>.json`). A rule is compared by the messages it fires and a computation by the Kernel's change projection for its target. Each instance lands in `match`, `tier1` (a different outcome), `tier2` (no carrier admits the construct, which the line names) or `unattributed` (a computation beside a refused one). The [coverage report](../scripts/report-conformance-coverage.sh) runs it over every retained request and owns the clustered result in [Axis R](CONFORMANCE-COVERAGE.md#axis-r--population-replay).
+
+The reader stands where the Kernel's document conversion stands, so it owns that conversion's choices: a Number text the conversion parses is decimal-valued (spec §4, storage regimes), a Boolean token is read regardless of case, and a JSON `null` is a field present without a value. Its locks are [`ReaderLocks.lean`](../A12Kernel/Reference/Dm/ReaderLocks.lean) and [`ParserLocks.lean`](../A12Kernel/Reference/Dm/ParserLocks.lean).
+
+**A tier-1 line has three possible owners, and only a measurement tells them apart: a Lean defect, a replay defect, or a stale artifact.** The first replay found all three. Each is settled by re-running the request on the pinned measurement checkout before any record changes, and the Lean fix is red/green against a conformance case in the owning family module, never against the replay alone.
+
 ### Five measured throughput rules — apply all five to every sweep
 
 **The instrument is not the bottleneck and never has been.** A `rule check` row costs about 0.12 seconds,

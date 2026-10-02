@@ -287,6 +287,52 @@ observation_rows="$(find evidence -type f \
   | LC_ALL=C xargs -0 grep -oh '"inputHash"' 2>/dev/null | count /dev/stdin)"
 
 # ---------------------------------------------------------------------------
+# Axis R — the population replay: every retained kernelProbe request with document rows, replayed
+# through Lean's DM-JSON reader, DSL parser and checked carriers, each rule and each computation
+# compared with the Kernel's retained artifact. The replay executable owns the comparison; this
+# section only counts its lines, so a count here can never disagree with what the replay printed.
+# ---------------------------------------------------------------------------
+if ! lake build a12-kernel-replay >/dev/null; then
+  echo "failed to build the population replay" >&2
+  exit 1
+fi
+find evidence/kernel-30.8.1/captures -type f \( -name 'req*.json' -o -name 'request*.json' \) -print \
+  | sort | while read -r request; do
+    if grep -q '"rows"' "$request"; then echo "$request"; fi
+  done > "$work/replay-requests"
+replay_requests="$(count "$work/replay-requests")"
+# shellcheck disable=SC2046
+.lake/build/bin/a12-kernel-replay $(cat "$work/replay-requests") > "$work/replay"
+# Columns: request, row, rule or computation, code or `compute`, tier, construct, detail. A line whose
+# third column is `-` speaks for a whole row, not one rule.
+replay_tally() {
+  awk -F'\t' -v arm="$1" -v tier="$2" '
+    $3 != "-" && (arm == "compute" ? $4 == "compute" : $4 != "compute") && $5 == tier { n++ }
+    END { print n + 0 }' "$work/replay"
+}
+for replay_arm in rule compute; do
+  for replay_tier in match tier1 tier2 unattributed fault; do
+    printf -v "replay_${replay_arm}_${replay_tier}" '%s' "$(replay_tally "$replay_arm" "$replay_tier")"
+  done
+done
+replay_rows="$(awk -F'\t' '{ print $1 "\t" $2 }' "$work/replay" | sort -u | count /dev/stdin)"
+replay_rows_absent="$(awk -F'\t' '$3 == "-" && $5 == "absent" { print $1 "\t" $2 }' "$work/replay" | sort -u | count /dev/stdin)"
+replay_rows_refused="$(awk -F'\t' '$3 == "-" && $5 != "absent" { print $1 "\t" $2 }' "$work/replay" | sort -u | count /dev/stdin)"
+replay_compared=$(( replay_rule_match + replay_rule_tier1 + replay_compute_match + replay_compute_tier1 ))
+replay_matched=$(( replay_rule_match + replay_compute_match ))
+replay_tier1=$(( replay_rule_tier1 + replay_compute_tier1 ))
+# A cluster counts instances (one rule or computation on one row) and distinct members (one rule or
+# computation of one request), so a heavily replayed request does not dominate the ranking alone.
+awk -F'\t' '$5 == "tier2" {
+    arm = ($3 == "-" ? "row" : ($4 == "compute" ? "computation" : "validation"))
+    key = arm "\t" $6; instances[key]++
+    if (!((key, $1, $3) in seen)) { seen[key, $1, $3] = 1; members[key]++ }
+  }
+  END { for (key in instances) print instances[key] "\t" members[key] "\t" key }' "$work/replay" \
+  | sort -t$'\t' -k1,1nr -k4 > "$work/replay-clusters"
+awk -F'\t' '$5 == "tier1" { print $1 "\t" $2 "\t" $3 "\t" $7 }' "$work/replay" | sort > "$work/replay-divergences"
+
+# ---------------------------------------------------------------------------
 # Render.
 # ---------------------------------------------------------------------------
 revision="$(git rev-parse --short HEAD)"
@@ -381,7 +427,7 @@ Working-tree counts generated on ${today}; HEAD was \`${revision}\`. The vocabul
 
 ## Headline
 
-**Of the ${admitted_cells} construct-by-arm cells the Kernel admits, Lean represents ${broad_cells} broadly ($(percent "$broad_cells" "$admitted_cells")%), ${partial_cells} partially and ${absent_cells} not at all, as classified on ${classified_on} in [Axis 0](#axis-0--kernel-constructs-by-arm).** ${in_lean} of ${total_classes} diagnostic identifiers occur in Lean source ($(percent "$in_lean" "$total_classes")%); ${modelled_untouched} do not.
+**Replaying ${replay_rows} retained Kernel observation rows through Lean, ${replay_matched} of the ${replay_compared} rule and computation instances Lean represents match the Kernel and ${replay_tier1} diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the ${admitted_cells} construct-by-arm cells the Kernel admits, Lean represents ${broad_cells} broadly ($(percent "$broad_cells" "$admitted_cells")%), ${partial_cells} partially and ${absent_cells} not at all, as classified on ${classified_on} in [Axis 0](#axis-0--kernel-constructs-by-arm).** ${in_lean} of ${total_classes} diagnostic identifiers occur in Lean source ($(percent "$in_lean" "$total_classes")%); ${modelled_untouched} do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -429,6 +475,55 @@ done < "$work/routes"
 
 printf '\nRemaining effort per construct, estimated at classification: '
 awk '{ printf "%s%s %s", (NR > 1 ? ", " : ""), $1, $2 } END { print " (S at most one family batch, M two to four, L a new mechanism)." }' "$work/sizes"
+
+cat <<REPLAY
+
+## Axis R — population replay
+
+The [replay executable](../A12Kernel/ReplayMain.lean) reads each of the ${replay_requests} retained \`kernelProbe\` requests with document rows, its DM-JSON model and its documents. It parses every rule condition and computation operation and lowers each onto the checked carriers the theory already has. Each rule and computation is then run and compared with the Kernel's retained artifact.
+
+A rule is compared by the messages it fires: code, pointer and message type. A computation is compared by the Kernel's change projection for its target.
+
+Each instance, one rule or computation on one document row, lands in one tier:
+
+- **match**: the same outcome. A rule that fires on neither side matches too.
+- **tier 1**: a different outcome.
+- **tier 2**: Lean cannot represent the rule, computation or document. The construct column names the carrier that is missing.
+- **unattributed**: a computation diverging beside a refused one whose value it may read.
+- **fault**: a structural failure inside Lean.
+
+| | rules | computations |
+|---|---|---|
+| match | ${replay_rule_match} | ${replay_compute_match} |
+| tier 1 | ${replay_rule_tier1} | ${replay_compute_tier1} |
+| tier 2 | ${replay_rule_tier2} | ${replay_compute_tier2} |
+| unattributed | ${replay_rule_unattributed} | ${replay_compute_unattributed} |
+| fault | ${replay_rule_fault} | ${replay_compute_fault} |
+
+Of the ${replay_rows} rows, ${replay_rows_absent} have no matching row in a retained artifact, and ${replay_rows_refused} could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
+
+### Tier-2 clusters
+
+Each cluster is a construct no carrier admits, with its instances and its distinct members (one rule or computation of one request). The order is the keystone order of [D3](CONFORMANCE-ECONOMY-PROPOSAL.md#d3--build-the-closing-routes-as-keystones-in-cluster-order).
+
+| instances | members | arm | construct |
+|---|---|---|---|
+REPLAY
+
+while IFS=$'\t' read -r cluster_instances cluster_members cluster_arm cluster_construct; do
+  printf '| %s | %s | %s | `%s` |\n' "$cluster_instances" "$cluster_members" "$cluster_arm" "$cluster_construct"
+done < "$work/replay-clusters"
+
+printf '\n### Tier-1 divergences\n\n'
+if [[ -s "$work/replay-divergences" ]]; then
+  printf '| request | row | rule or computation | outcomes |\n|---|---|---|---|\n'
+  while IFS=$'\t' read -r divergence_request divergence_row divergence_member divergence_outcomes; do
+    printf '| `%s` | `%s` | `%s` | %s |\n' "${divergence_request#evidence/kernel-30.8.1/captures/}" \
+      "$divergence_row" "$divergence_member" "$divergence_outcomes"
+  done < "$work/replay-divergences"
+else
+  printf 'None over this population.\n'
+fi
 
 cat <<HEADER2
 

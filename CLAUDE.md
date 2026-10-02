@@ -225,6 +225,7 @@ lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-refere
 lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/flat-validation-empty-logic-v2.conformance.json
 ./scripts/check-lean-trust.sh       # reject proof/runtime escape hatches and audit theorem-root axioms
 ./scripts/check-spec-sync.sh        # fail a spec/ change that carries no synchronization classification
+lake exe a12-kernel-replay <request.json>...   # replay retained kernelProbe requests through the DM-JSON and DSL reader
 lake env lean A12Kernel/Core.lean   # elaborate a single module with imports available
 ```
 
