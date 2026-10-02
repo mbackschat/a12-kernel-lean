@@ -293,7 +293,7 @@ theorem checkedStarredGroupSource_evaluateFull_of_resolved
     checked.evaluateFull operator document outer =
       .ok (operator.evalCount (resolved.environments.filter fun environment =>
         !StarAxes.environmentOverLimit checked.path.axes environment).length) := by
-  have pathResolution : checked.path.resolve document outer = .ok resolved := by
+  have pathResolution : checked.path.resolveTopology document outer = .ok resolved := by
     simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
   unfold CheckedStarredGroupSource.evaluateFull
     CheckedStarredGroupSource.inCapacityRowCount
@@ -309,7 +309,7 @@ theorem checkedStarredGroupSource_numberOfFilledGroups_of_resolved
     checked.numberOfFilledGroups document outer =
       .ok (.value (resolved.environments.filter fun environment =>
         !StarAxes.environmentOverLimit checked.path.axes environment).length) := by
-  have pathResolution : checked.path.resolve document outer = .ok resolved := by
+  have pathResolution : checked.path.resolveTopology document outer = .ok resolved := by
     simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
   unfold CheckedStarredGroupSource.numberOfFilledGroups
     CheckedStarredGroupSource.inCapacityRowCount

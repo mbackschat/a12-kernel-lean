@@ -25,13 +25,13 @@ private def completeDocument : Document :=
       { group := 20, path := [2, 2] } :: partialDocument.instantiatedRows }
 
 private def envsAndTail (path : StarPath) (document : Document) (environment : Env) :=
-  match path.resolve document environment with
+  match path.resolveTopology document environment with
   | .error _ => none
   | .ok resolved => some (resolved.environments, resolved.domain.hasOpenTail)
 
 private def rejectsAs (expected : StarAddressingError)
     (path : StarPath) (document : Document := partialDocument) (environment : Env := []) : Bool :=
-  match path.resolve document environment with
+  match path.resolveTopology document environment with
   | .error actual => actual == expected
   | .ok _ => false
 
@@ -122,7 +122,7 @@ example :
 /- Positional reuse across unrelated branches is rejected as a missing named binding. -/
 example :
     let path : StarPath := { axes := [outer, inner], firstStar := 1 }
-    (match path.resolve partialDocument [(99, 2)] with
+    (match path.resolveTopology partialDocument [(99, 2)] with
     | .error (.missingBinding 10) => true
     | _ => false) = true := by
   native_decide
@@ -133,7 +133,7 @@ example :
       instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [3] }]
       rawCells := fun _ => none }
     let path : StarPath := { axes := [outer], firstStar := 0 }
-    (match path.resolve document [] with
+    (match path.resolveTopology document [] with
     | .error (.nonprefixRows 10 [] [1, 3]) => true
     | _ => false) = true := by
   native_decide
@@ -143,14 +143,14 @@ example :
     let document : Document := {
       instantiatedRows := [{ group := 10, path := [1] }, { group := 20, path := [2, 1] }]
       rawCells := fun _ => none }
-    (match allRows.resolve document [] with
+    (match allRows.resolveTopology document [] with
     | .error (.orphanRow 20 [2, 1] 10) => true
     | _ => false) = true := by
   native_decide
 
 /- The shared bridge derives cells from the same environment order as the tree. -/
 example :
-    (match allRows.resolve partialDocument [] with
+    (match allRows.resolveTopology partialDocument [] with
     | .error _ => []
     | .ok resolved =>
         (resolved.toResolvedSide (kind := .number)

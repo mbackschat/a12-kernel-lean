@@ -600,7 +600,7 @@ def resolvedPartialValidationSide
     (_unfiltered : checked.filter.isNone = true) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) Unit) := do
-  let resolved ← checked.source.path.resolve document outer
+  let resolved ← checked.source.path.resolveInCapacity document outer
   if checked.source.allRowsRelevant scope outer then
     pure (.inl (resolved.toResolvedSide
       (checked.valueListCellAt .validation read)))
@@ -615,7 +615,7 @@ def resolvedPartialValueCountSide
     (_unfiltered : checked.filter.isNone = true) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) Unit) := do
-  let resolved ← checked.source.path.resolve document outer
+  let resolved ← checked.source.path.resolveInCapacity document outer
   if checked.source.valueListExtentRelevant scope outer then
     pure (.inl (resolved.toResolvedSide
       (checked.valueListCellAt .validation read)))

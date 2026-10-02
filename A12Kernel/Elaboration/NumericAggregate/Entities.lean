@@ -294,7 +294,7 @@ def resolvedCheckedDocumentPartialAggregateSide
         pure (.inr .nonRelevant)
   | .star source => do
       let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
+        (source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       if source.source.allRowsRelevant scope outer then do
         match ← resolvedCheckedDocumentSide document .validation source.field
@@ -336,7 +336,7 @@ private def resolvedPartialViewAggregateSide
         pure (.inr .nonRelevant)
   | .star source => do
       let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
+        (source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError fun error =>
             PartialViewNumberAggregateError.addressing (.addressing error)
       if source.source.allRowsRelevant scope outer then
@@ -381,7 +381,7 @@ def resolvedCheckedDocumentPartialValueCountSide
         pure (.inr .nonRelevant)
   | .star source => do
       let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
+        (source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       if source.source.valueListExtentRelevant scope outer then do
         match ← resolvedCheckedDocumentSide document .validation source.field
@@ -435,7 +435,7 @@ def resolvedPartialValueCountSide (checked : CheckedNumberEntityOperand model)
       else
         pure (.inr .nonRelevant)
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       if source.source.valueListExtentRelevant scope outer then
         pure (.inl (resolved.toResolvedSide (source.valueListCell starRead)))
       else

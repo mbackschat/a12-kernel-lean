@@ -370,6 +370,23 @@ while IFS=$'\t' read -r path mode rationale; do
   esac
 done <<< "$exception_records"
 
+# A star's physical topology, over-limit rows included, is for a reader of the topology itself; every
+# operand stream reads `StarPath.resolveInCapacity`. Two capacity sweeps each missed a caller that kept
+# the physical extent (docs/LEAN-FINDINGS.md, LF208), so the callers are pinned here by file and count.
+topology_callers_expected=$'A12Kernel/Elaboration/CheckedStarDocument.lean\t1\nA12Kernel/Elaboration/RepetitionNotUnique.lean\t2\nA12Kernel/Elaboration/StarGroup.lean\t2'
+topology_callers_actual="$(for source in "${tracked_files[@]}"; do
+  [[ "$source" == A12Kernel/Elaboration/* ]] || continue
+  count="$(grep -c 'resolveTopology' "$source" || true)"
+  (( count > 0 )) && printf '%s\t%s\n' "$source" "$count"
+done | sort)"
+if [[ "$topology_callers_actual" != "$topology_callers_expected" ]]; then
+  echo "StarPath.resolveTopology callers changed; an operand stream reads StarPath.resolveInCapacity. Expected:" >&2
+  printf '%s\n' "$topology_callers_expected" >&2
+  echo "Actual:" >&2
+  printf '%s\n' "$topology_callers_actual" >&2
+  exit 1
+fi
+
 printf 'Lean source hygiene passed: %s tracked files; largest ordinary file %s nonblank lines; %s reviewed exception%s\n' \
   "${#tracked_files[@]}" "$largest_ordinary" "$exception_count" \
   "$([[ "$exception_count" == 1 ]] && printf '' || printf 's')"

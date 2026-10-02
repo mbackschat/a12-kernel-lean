@@ -284,7 +284,7 @@ def wellFormedBool (checked : CheckedStarredGroupSource model)
 /-- Resolve the canonical nested topology once, retaining its exact terminal-row environments. -/
 def resolvedTopology (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError ResolvedStarTopology :=
-  checked.path.resolve document outer
+  checked.path.resolveTopology document outer
 
 /-- Count concrete terminal repeatable rows without consulting descendant cells. -/
 def rowCount (checked : CheckedStarredGroupSource model)
@@ -488,7 +488,7 @@ def wellFormedBool (checked : CheckedStarredGroupPresenceSource model)
 def resolvedTopology (checked : CheckedStarredGroupPresenceSource model)
     (document : Document) (outer : Env) :
     Except StarAddressingError ResolvedStarTopology :=
-  checked.path.resolve document outer
+  checked.path.resolveTopology document outer
 
 end CheckedStarredGroupPresenceSource
 

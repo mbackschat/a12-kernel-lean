@@ -714,12 +714,12 @@ example :
         some (.value 2 .both) := by
   native_decide
 
-/- The observed String carrier does not silently widen the unmeasured Enumeration carrier. Its
-   previous complete-view result remains the explicit internal boundary until separate evidence
-   settles that projection. -/
+/- The Enumeration carrier leaves an over-limit row out as the String one does, measured on full and
+   partial validation ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)):
+   the over-limit `A` is not counted. -/
 example :
     evaluatedCheckedCapacityEnumerationStar ["B", "B", "A"] =
-      some (.unknown .overRepetition) := by
+      some (.value 0 { canGrow := false, canShrink := false }) := by
   native_decide
 
 /- Filter provenance remains per selected cell in validation and computation: only a selected current match can later shrink the count. -/

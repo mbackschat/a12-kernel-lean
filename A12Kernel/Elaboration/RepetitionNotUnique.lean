@@ -721,7 +721,7 @@ def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError (List ResolvedRepetitionKeyRow) := do
-  let topology ← checked.topology.path.resolve document outer
+  let topology ← checked.topology.path.resolveTopology document outer
   pure ((topology.environments.filter (checked.rowRelevant scope)).map
     (checked.resolvedRow read))
 
@@ -732,7 +732,7 @@ def resolvedRowsChecked
     (scope : ValidationRelevanceScope) :
     Except CheckedAddressingError (List ResolvedRepetitionKeyRow) := do
   let topology ←
-    (checked.topology.path.resolve document.source.toDocument outer)
+    (checked.topology.path.resolveTopology document.source.toDocument outer)
       |>.mapError .addressing
   let levels := checked.topology.path.axes.map (·.level)
   let validationRows ←

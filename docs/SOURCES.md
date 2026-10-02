@@ -1229,6 +1229,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`MinValue`/`MaxValue` pick their operand family from the first operand, and the two families draw different codes](sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)
 <a id="src-capacity-consumer-sweep"></a>
 - [The declared-capacity extent reaches the last four operand-stream consumers](sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)
+<a id="src-validation-capacity-consumers"></a>
+- [Six more validation consumers leave an over-limit row out on full and partial validation, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)
 <a id="src-over-limit-finding-text"></a>
 - [`zuGrosseZeile` renders no coordinate, and two over-limit groups report independently](sources/over-repetition-probes.md#src-over-limit-finding-text)
 <a id="src-starred-group-count-computation"></a>

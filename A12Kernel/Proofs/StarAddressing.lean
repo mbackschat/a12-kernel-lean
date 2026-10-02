@@ -198,14 +198,14 @@ end
 theorem starPath_resolve_agreeOutsideReopened
     (path : StarPath) (document : Document) (outer bound : Env)
     (resolved : ResolvedStarTopology)
-    (resolution : path.resolve document outer = .ok resolved)
+    (resolution : path.resolveTopology document outer = .ok resolved)
     (boundEnvironment : path.boundEnvironment outer = .ok bound)
     (level : RepeatableLevel)
     (outside : level ∉ (path.axes.drop path.firstStar).map (·.level)) :
     ∀ candidate ∈ resolved.environments,
       candidate.bindingAt level = bound.bindingAt level := by
   obtain ⟨actual, actualBound, correspondence⟩ :=
-    StarPath.resolve_environmentCorrespondence path document outer resolved resolution
+    StarPath.resolveTopology_environmentCorrespondence path document outer resolved resolution
   rw [boundEnvironment] at actualBound
   cases actualBound
   exact starDomain_environments_agreeOutside correspondence level outside

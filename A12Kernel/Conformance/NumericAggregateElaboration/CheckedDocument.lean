@@ -445,10 +445,11 @@ example :
   native_decide
 
 /- A structural filter does not reintroduce an over-capacity Number cell into any aggregate. The
-   shared in-capacity side fixes all four folds, while selected matches retain value-count movement. -/
+   star's own resolution leaves the row out, so even its complete side is available, and every fold
+   answers from the in-capacity rows, while selected matches retain value-count movement. -/
 example :
     checkedFilteredCapacityCompleteAvailability [5, 5, 5, 7] =
-        some false ∧
+        some true ∧
       checkedFilteredCapacityAggregateSnapshot .sum [5, 5, 5, 7] =
         some (.value 15 .both) ∧
       checkedFilteredCapacityAggregateSnapshot .minimum [5, 5, 5, 7] =

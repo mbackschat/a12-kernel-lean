@@ -162,7 +162,7 @@ theorem checkedRepetitionNotUnique_resolvedRows_of_topology
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → CheckedCell) (topology : ResolvedStarTopology)
-    (resolved : checked.topology.path.resolve document outer = .ok topology) :
+    (resolved : checked.topology.path.resolveTopology document outer = .ok topology) :
     checked.resolvedRows document outer scope read =
       .ok ((topology.environments.filter (checked.rowRelevant scope)).map
         (checked.resolvedRow read)) := by

@@ -299,7 +299,7 @@ def evaluatePartial (checked : CheckedNumericProductAggregate model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationNumberAggregateResult := do
-  let resolved ← checked.left.source.path.resolve document outer
+  let resolved ← checked.left.source.path.resolveInCapacity document outer
   if resolved.environments.all fun environment =>
       checked.left.source.cellRelevant scope environment &&
         checked.right.source.cellRelevant scope environment then

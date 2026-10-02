@@ -243,7 +243,7 @@ def resolveCheckedGroupUninstantiatedTail
         | some axes => pure axes
         | none => throw (.document (.incoherentRepeatableScope scope))
       let topology ←
-        (({ axes, firstStar := boundCount } : StarPath).resolve
+        (({ axes, firstStar := boundCount } : StarPath).resolveTopology
           checked.source.toDocument outer).mapError .addressing
       pure topology.domain.hasOpenTail
   pure (tails.any id)
@@ -307,7 +307,7 @@ def resolveCheckedValidationEntityOperandCore
     (having : Option CorrelatedHaving) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
   let topology ←
-    (source.path.resolve checked.source.toDocument outer).mapError .addressing
+    (source.path.resolveInCapacity checked.source.toDocument outer).mapError .addressing
   let selected ← match having with
     | none => pure topology.environments
     | some condition =>
@@ -329,7 +329,7 @@ def resolveCheckedPartialValidationEntityOperandCore
     (scope : ValidationRelevanceScope) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
   let topology ←
-    (source.path.resolve checked.source.toDocument outer).mapError .addressing
+    (source.path.resolveInCapacity checked.source.toDocument outer).mapError .addressing
   let relevant := topology.environments.filter fun environment =>
     source.cellRelevant scope environment
   let addressedCells ← relevant.mapM (source.addressedCell checked)

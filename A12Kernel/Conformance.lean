@@ -62,6 +62,7 @@ import A12Kernel.Conformance.RepeatableStringConstantComputation
 import A12Kernel.Conformance.BooleanEntityGroupOperand
 import A12Kernel.Conformance.BooleanFirstFilledComputation
 import A12Kernel.Conformance.CapacityConsumerSweep
+import A12Kernel.Conformance.CapacityValidationConsumers
 import A12Kernel.Conformance.CheckedDocument
 import A12Kernel.Conformance.OverRepetitionFindings
 import A12Kernel.Conformance.CheckedEnumeration

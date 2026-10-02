@@ -120,7 +120,7 @@ theorem checkedNumberEntityStarValidationOperand_addressing_error
     (document : CheckedDocument model) (outer : Env)
     (cause : StarAddressingError)
     (failed :
-      source.source.path.resolve document.source.toDocument outer =
+      source.source.path.resolveInCapacity document.source.toDocument outer =
         .error cause) :
     (CheckedNumberEntityOperand.star source).resolveCheckedValidationOperand
         document outer =

@@ -295,7 +295,10 @@ def resolveStarPath (document : Document) (path : StarPath) (outer : Env) :
 
 end Document
 
-def StarPath.resolve (path : StarPath) (document : Document) (outer : Env) :
+/-- The physical topology a star addresses, over-limit rows included. Only a reader of the topology
+itself takes it, such as a row count or the rows a rule iterates; an operand stream reads
+`resolveInCapacity`, so the two names carry the choice every caller must make. -/
+def StarPath.resolveTopology (path : StarPath) (document : Document) (outer : Env) :
     Except StarAddressingError ResolvedStarTopology :=
   document.resolveStarPath path outer
 
@@ -304,7 +307,7 @@ capacity stays in the physical topology but lies outside the evaluation domain o
 expands rows, on the validation and the computation arm alike, so its cell contributes neither a value
 nor a formal poison ([`spec/07`](../../spec/07-repetition-and-iteration.md)). The domain stays the
 physical tree, over-limit rows included, so the environment correspondence
-`StarPath.resolve_environmentCorrespondence` states holds for the resolved topology and not for this
+`StarPath.resolveTopology_environmentCorrespondence` states holds for the resolved topology and not for this
 projection; consumers read only the domain's open-tail state, which is unchanged because a level
 holding an over-limit row is full. -/
 def ResolvedStarTopology.inCapacity (resolved : ResolvedStarTopology)
@@ -316,19 +319,19 @@ def ResolvedStarTopology.inCapacity (resolved : ResolvedStarTopology)
 /-- Resolve the topology and narrow it to the declared-capacity extent. -/
 def StarPath.resolveInCapacity (path : StarPath) (document : Document) (outer : Env) :
     Except StarAddressingError ResolvedStarTopology :=
-  (·.inCapacity path.axes) <$> path.resolve document outer
+  (·.inCapacity path.axes) <$> path.resolveTopology document outer
 
 /-- A successful checked star resolution constructs its hierarchical tree and ordered leaf environments from the same named axes and exact bound outer prefix. -/
-theorem StarPath.resolve_environmentCorrespondence
+theorem StarPath.resolveTopology_environmentCorrespondence
     (path : StarPath) (document : Document) (outer : Env)
     (resolved : ResolvedStarTopology)
-    (resolution : path.resolve document outer = .ok resolved) :
+    (resolution : path.resolveTopology document outer = .ok resolved) :
     ∃ bound,
       path.boundEnvironment outer = .ok bound ∧
       ReopenedStarDomain.EnvironmentCorrespondence
         ((path.axes.drop path.firstStar).map (·.level))
         bound resolved.domain resolved.environments := by
-  simp only [StarPath.resolve, Document.resolveStarPath] at resolution
+  simp only [StarPath.resolveTopology, Document.resolveStarPath] at resolution
   cases validation : path.validate with
   | error cause =>
       rw [validation] at resolution

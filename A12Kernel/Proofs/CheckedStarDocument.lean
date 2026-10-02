@@ -57,7 +57,7 @@ theorem resolveCheckedValidationEntityOperandCore_addressing_error
     (outer : Env) (having : Option CorrelatedHaving)
     (cause : StarAddressingError)
     (failed :
-      source.path.resolve checked.source.toDocument outer = .error cause) :
+      source.path.resolveInCapacity checked.source.toDocument outer = .error cause) :
     source.resolveCheckedValidationEntityOperandCore checked outer having =
       .error (.addressing cause) := by
   unfold CheckedStarFieldPath.resolveCheckedValidationEntityOperandCore

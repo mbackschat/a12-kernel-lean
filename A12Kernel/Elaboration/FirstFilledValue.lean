@@ -102,7 +102,7 @@ def resolvedPartialValidationFirstFilled (checked : CheckedStarNumberSource mode
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationFirstFilledNumberResult := do
-  let resolved ← checked.source.path.resolve document outer
+  let resolved ← checked.source.path.resolveInCapacity document outer
   pure (checked.selectedPartialValidationFirstFilled resolved scope read)
 
 end CheckedStarNumberSource
@@ -124,13 +124,13 @@ private def scanCheckedFirstFilledNumberOperandWith
       else
         pure (.inr .nonRelevant)
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       pure (source.scanPartialValidationFirstFilledStateWith scope
         (classifyStar source)
         resolved.environments (state.enterSelection resolved.environments.isEmpty
           resolved.domain.hasOpenTail false))
   | .starHaving source => do
-      let resolved ← source.source.source.path.resolve document outer
+      let resolved ← source.source.source.path.resolveInCapacity document outer
       let selected := source.having.selectEnvironments { read := filterRead } outer
         resolved.environments
       pure (source.source.scanPartialValidationFirstFilledStateWith scope
@@ -259,7 +259,7 @@ private def scanCheckedDocumentValidationOperand
         pure (.inr .nonRelevant)
   | .star source => do
       let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
+        (source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
@@ -270,7 +270,7 @@ private def scanCheckedDocumentValidationOperand
           resolved.domain.hasOpenTail false)
   | .starHaving source => do
       let resolved ←
-        (source.source.source.path.resolve document.source.toDocument outer)
+        (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       let selected ← source.having.selectEnvironmentsResolving
         document.resolvingCorrelationContext outer resolved.environments

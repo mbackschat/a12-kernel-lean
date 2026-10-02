@@ -126,7 +126,7 @@ def resolvedPartialAllRowsValueSide (checked : CheckedStarNumberSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError AllRowsValidationStarNumberSide := do
-  let resolved ← checked.source.path.resolve document outer
+  let resolved ← checked.source.path.resolveInCapacity document outer
   pure (checked.selectedPartialAllRowsValueSide resolved outer scope read)
 
 /-- Resolve general nested topology once, evaluate the validation `Having` over every candidate environment with the complete captured outer environment, then read only selected Number targets. -/

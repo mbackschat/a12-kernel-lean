@@ -1,0 +1,14 @@
+# row	observation	fired
+v1-over-limit	validateFull	CTRL,DC,ENC,FFN,FFT,SUM,VL
+v1-over-limit	validatePart	CTRL,DC,ENC,FFN,FFT,SUM,VL
+v1-over-limit	validateFull-other	zuGrosseKontextnummer@Rg/Rows[3]/D
+v1-over-limit	validateFull-other	zuGrosseKontextnummer@Rg/Rows[3]/E
+v1-over-limit	validateFull-other	zuGrosseKontextnummer@Rg/Rows[3]/K
+v1-over-limit	validateFull-other	zuGrosseKontextnummer@Rg/Rows[3]/M
+v1-over-limit	validateFull-other	zuGrosseKontextnummer@Rg/Rows[3]/N
+v1-over-limit	validateFull-other	zuGrosseKontextnummer@Rg/Rows[3]/T
+v1-over-limit	validateFull-other	zuGrosseZeile@Rg/Rows[3]
+v2-in-capacity	validateFull	CTRL
+v2-in-capacity	validatePart	CTRL
+v3-no-third	validateFull	CTRL,DC,ENC,FFN,FFT,SUM,VL
+v3-no-third	validatePart	CTRL,DC,ENC,FFN,FFT,SUM,VL

@@ -236,7 +236,7 @@ theorem checkedNumberEntityStar_partialAggregate_nonRelevant
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (direct : FlatContext) (starRead : Env → FieldId → RawCell)
     (resolved : ResolvedStarTopology)
-    (resolvedPath : source.source.path.resolve document outer = .ok resolved)
+    (resolvedPath : source.source.path.resolveInCapacity document outer = .ok resolved)
     (nonRelevant : source.source.allRowsRelevant scope outer = false) :
     (CheckedNumberEntityOperand.star source).resolvedPartialAggregateSide
         document outer scope direct starRead = .ok (.inr .nonRelevant) := by

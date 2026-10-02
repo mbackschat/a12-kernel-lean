@@ -489,7 +489,7 @@ def stringValueListCell (checked : CheckedStarFieldPath model)
 def resolvedValueListSide (checked : CheckedStarFieldPath model)
     (document : Document) (outer : Env) (classify : Env → ValueListCell kind) :
     Except StarAddressingError (ResolvedValueListSide kind) := do
-  let resolved ← checked.path.resolve document outer
+  let resolved ← checked.path.resolveInCapacity document outer
   pure (resolved.toResolvedSide classify)
 
 /-- Retain only relevant concrete cells before invoking the kind-specific classifier, while recording whether the star's complete extent is wildcard-covered. Concrete enumeration of every current row does not establish that future/absent rows are relevant. -/
@@ -511,7 +511,7 @@ def resolvedPartialValueListSide (checked : CheckedStarFieldPath model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (classify : Env → ValueListCell kind) :
     Except StarAddressingError (ResolvedValueListQuantifierSide kind) := do
-  let resolved ← checked.path.resolve document outer
+  let resolved ← checked.path.resolveInCapacity document outer
   pure (checked.selectedPartialValueListSide resolved outer scope classify)
 
 end CheckedStarFieldPath

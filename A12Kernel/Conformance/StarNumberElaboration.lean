@@ -249,7 +249,7 @@ private def checkedCrossLevelSelectionsOf (outer : Env) : Option (List Env) :=
       surfaceParentEqualsCapturedParentAndChild with
   | .error _ => none
   | .ok checked =>
-      match checked.source.source.path.resolve (document standardRows) outer with
+      match checked.source.source.path.resolveTopology (document standardRows) outer with
       | .error _ => none
       | .ok resolved =>
           some (checked.having.selectEnvironments
@@ -605,17 +605,20 @@ example :
         some .invalidTypeForComparison := by
   native_decide
 
-/- Either an inner or outer over-capacity coordinate makes the selected Number cell formally unavailable. -/
+/- A star leaves out every environment holding an over-capacity coordinate, inner or outer, rather
+   than reading its cell as unavailable ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)).
+   An outer row beyond capacity is one no rule iterates, its ordinary checks being suppressed, so its
+   empty stream answers no Kernel row. -/
 example :
     let innerRows := standardRows ++ [{ group := 20, path := [1, 3] }]
     let outerRows := standardRows ++ [
       { group := 10, path := [3] }, { group := 20, path := [3, 1] }]
     cellsOf (source) innerRows (read := fun env _ =>
       if env == [(10, 1), (20, 3)] then .parsed (.num 9) else readAmount env amount.id) =
-        some ([.present 1, .empty, .unknown .overRepetition, .present 3], true) ∧
+        some ([.present 1, .empty, .present 3], true) ∧
     cellsOf (source (outerStar := false)) outerRows [(10, 3)] (read := fun env _ =>
       if env == [(10, 3), (20, 1)] then .parsed (.num 9) else readAmount env amount.id) =
-        some ([.unknown .overRepetition], true) := by
+        some ([], true) := by
   native_decide
 
 /- General checked path admission remains kind-safe for the concrete Number consumer. -/

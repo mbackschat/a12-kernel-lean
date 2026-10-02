@@ -741,7 +741,7 @@ def resolvedValidationHavingValueListSide (checked : CheckedStarFieldPath model)
     (filterRead : Env → FieldId → CheckedCell)
     (classify : Env → ValueListCell kind) :
     Except StarAddressingError (ResolvedValueListSide kind) := do
-  let resolved ← checked.path.resolve document outer
+  let resolved ← checked.path.resolveInCapacity document outer
   pure (checked.selectedValidationHavingValueListSide resolved having filterRead outer classify)
 
 /-- Dispatch one optional checked validation filter without duplicating the filter-before-classification branch in each scalar-kind adapter. -/

@@ -167,7 +167,7 @@ private def scanCheckedFirstFilledTokenOperand
       else
         pure (.inr .nonRelevant)
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       let selected := match source.filter with
         | none => resolved.environments
         | some filter =>
