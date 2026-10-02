@@ -1,11 +1,13 @@
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.ParserLocks
 import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.ReplayMain — replay retained `kernelProbe` requests through Lean
 
-Each argument is a `kernelProbe` request file. The process reads its model and every document row,
-and prints one tab-separated line per row: the request, the row, and the reader's outcome. Evaluation
-and comparison against the retained Kernel artifact follow as the replay grows.
+Each argument is a `kernelProbe` request file. The process reads its model, parses every rule
+condition and computation text in it, reads every document row, and prints one tab-separated line per
+row: the request, the row, the reader's outcome and the share of the model's texts that parsed.
+Evaluation and comparison against the retained Kernel artifact follow as the replay grows.
 -/
 
 namespace A12Kernel.Replay
@@ -26,6 +28,13 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
     | .ok model => pure model
     | .error reason => do IO.println s!"{requestPath}\t-\tmodel-error\t{reason}"; return
   let locale := (request.getObjValAs? String "locale").toOption.getD "en_US"
+  let texts := model.rules.map (·.condition) ++ model.computations.flatMap fun computation =>
+    computation.commonPrecondition.toList ++ computation.alternatives.flatMap fun alternative =>
+      alternative.precondition.toList ++ [alternative.operation]
+  let parsed := match Language.ofCode? model.conditionLanguage with
+    | some language => (texts.filter fun text => (parseText language text).toOption.isSome).length
+    | none => 0
+  let parseColumn := s!"parsed={parsed}/{texts.length}"
   let world : World := { now := { epochMillis := 0 } }
   let rows := (request.getObjValAs? (Array Json) "rows").toOption.getD #[]
   for row in rows do
@@ -44,7 +53,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
             match checkDocument prepared locale read.data with
             | .ok _ =>
                 let reasons := ((model.refusals ++ read.refusals).map (·.2)).eraseDups
-                IO.println s!"{requestPath}\t{name}\tchecked\trefusals={refused}\t{"; ".intercalate reasons}"
+                IO.println s!"{requestPath}\t{name}\tchecked\t{parseColumn}\trefusals={refused}\t{"; ".intercalate reasons}"
             | .error error => IO.println s!"{requestPath}\t{name}\tcheck-error\t{(repr error).pretty 200}"
 
 end A12Kernel.Replay
