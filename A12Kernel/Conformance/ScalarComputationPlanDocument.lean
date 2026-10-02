@@ -217,7 +217,8 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .document target (.enumeration .noValue) | .document target (.enumeration (.poison _)) =>
       some (target, "-")
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
-  | .document _ (.dateTime _) | .document _ (.enumeration (.errored _ _)) => none
+  | .document _ (.dateTime _) | .document _ (.enumeration (.errored _ _))
+  | .document _ (.dateRange _) => none
 
 private def values? (reported : List FieldId) (cells : List ClassifiedCellInput) :
     Option (List String) := do

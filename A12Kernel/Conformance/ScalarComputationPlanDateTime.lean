@@ -118,7 +118,8 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .document target (.dateTime .noValue) | .document target (.dateTime (.poison _)) =>
       some (target, "-")
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
-  | .document _ (.fullDate _) | .document _ (.time _) | .document _ (.enumeration _) => none
+  | .document _ (.fullDate _) | .document _ (.time _) | .document _ (.enumeration _)
+  | .document _ (.dateRange _) => none
 
 private def values? (cells : List ClassifiedCellInput) : Option (List String) := do
   let input ← (checkDocument prepared "en_US"

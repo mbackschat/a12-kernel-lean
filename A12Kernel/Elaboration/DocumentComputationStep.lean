@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.DateRangeConstructionComputation
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
@@ -11,7 +12,8 @@ import A12Kernel.Elaboration.TimeComputation
 A computation whose evaluator reads the whole document joins a scalar plan as one step. The step carries
 its target, the fields it reads, a proof that it does not read its own target, and an evaluator returning
 the target's outcome together with the cell a later computation reads for it. Day and sub-day DateTime
-shifts, a full-Date computation, a Time construction and an Enumeration copy are its instances; each is
+shifts, a full-Date computation, a Time construction, an Enumeration copy and a DateRange construction
+are its instances; each is
 one constructor here, and the plan's laws are stated once over the step rather than once per family.
 
 The read-back cell is the rule every instance shares. A later computation reads a completed target as the
@@ -21,7 +23,9 @@ read is what the Kernel shows on Berlin's repeated hour, where a dependent reads
 offset its text denotes rather than at the instant computed
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-datetime-join)); a pre-1900
 Date the target retains as errored reaches its readers as poison under both presence tests
-([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)).
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)), and so does an
+inverted DateRange the target retains as errored
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-date-range-join)).
 
 A completed Time is read back through `CheckedTimeInputField.classifyStoredForModel`, which anchors the
 clock on one fixed day because a `Value` must carry an instant; that classifier names the readers
@@ -35,6 +39,7 @@ inductive DocumentTargetOutcome where
   | fullDate (outcome : FullDateTargetOutcome)
   | time (outcome : TimeTargetOutcome)
   | enumeration (outcome : StringTargetOutcome)
+  | dateRange (outcome : DateRangeTargetOutcome)
   deriving Repr, DecidableEq
 
 /-- A whole-document step's structural failure, or the model context its completed target cannot be read
@@ -45,9 +50,11 @@ inductive DocumentComputationStepFault where
   | dateTimeSubdayShift (cause : DateTimeSubdayShiftComputationFault)
   | fullDate (cause : FullDateComputationFault)
   | timeConstruction (cause : TimeComponentsFault)
+  | dateRangeConstruction (cause : DateRangeConstructionComputationFault)
   | dateTimeRead (cause : DateTimeInputError)
   | fullDateRead (cause : FullDateInputError)
   | timeRead (cause : TimeInputError)
+  | dateRangeRead (cause : DateRangeInputError)
   | targetNotReadable
   deriving Repr, DecidableEq
 
@@ -103,6 +110,16 @@ def enumeration (target : CheckedEnumerationComputationTarget model) :
   | .noValue => empty
   | .poison _ | .errored _ _ => poison
   | .accepted stored => target.projection.declaration.checkRaw (.parsed (.enum stored.text))
+
+/-- A completed DateRange target, read back from its rendering as the document classifies a stored range. -/
+def dateRange (model : FlatModel) (policy : DateRangeDeclarationPolicy) :
+    DateRangeTargetOutcome → Except DocumentComputationStepFault CheckedCell
+  | .noValue => pure empty
+  | .poison _ | .errored _ _ => pure poison
+  | .accepted stored => do
+      let raw ← (classifyStoredDateRangeForModel model.timeZoneId model.baseYear policy stored.text).mapError
+        .dateRangeRead
+      pure (checkAdmittedRawCell raw)
 
 end DocumentComputationReadBack
 
@@ -188,6 +205,21 @@ def ofEnumeration (operation : CheckedEnumerationComputationOperation model) :
   run _ document :=
     let outcome := (operation.source.evaluate document.flatContext).asExactStringTargetOutcome
     pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target outcome)
+
+/-- A DateRange construction over two Date fields. -/
+def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.source.id
+  targetKind := .dateRange
+  referencesField field :=
+    operation.construction.start.checked.target.id == field ||
+      operation.construction.finish.checked.target.id == field
+  excludesTarget := by
+    simp [operation.startNotTarget, operation.finishNotTarget]
+  run _ document := do
+    let result ← (operation.execute document).mapError .dateRangeConstruction
+    let cell ← DocumentComputationReadBack.dateRange model operation.target.policy result.outcome
+    pure (.dateRange result.outcome, cell)
 
 end CheckedDocumentComputationStep
 

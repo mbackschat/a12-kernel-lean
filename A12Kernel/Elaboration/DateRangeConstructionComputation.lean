@@ -63,6 +63,10 @@ structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   profileOwned :
     DateRangeConstructionTargetFormat.ofProfiles?
       construction.start.format target.format = some format
+  /-- Neither endpoint is the target, so a plan step over the construction never reads its own target.
+  The endpoints are Date fields and the target a DateRange one, so this never refuses a checked model. -/
+  startNotTarget : construction.start.checked.target.id ≠ target.source.id
+  finishNotTarget : construction.finish.checked.target.id ≠ target.source.id
 
 /-- Certify one supported construction and matching DateRange target against the same checked model. -/
 def elaborateDateRangeConstructionComputation
@@ -83,14 +87,20 @@ def elaborateDateRangeConstructionComputation
     match hFormat : DateRangeConstructionTargetFormat.ofProfiles?
         construction.start.format target.format with
     | some format =>
-        pure {
-          construction
-          target
-          declaringGroup
-          declaringGroupValid := hValid
-          format
-          profileOwned := hFormat
-        }
+        if hStart : construction.start.checked.target.id ≠ target.source.id then
+          if hFinish : construction.finish.checked.target.id ≠ target.source.id then
+            pure {
+              construction
+              target
+              declaringGroup
+              declaringGroupValid := hValid
+              format
+              profileOwned := hFormat
+              startNotTarget := hStart
+              finishNotTarget := hFinish
+            }
+          else throw .incoherentCore
+        else throw .incoherentCore
     | none =>
         throw (.endpointFormat construction.start.format construction.finish.format)
   else

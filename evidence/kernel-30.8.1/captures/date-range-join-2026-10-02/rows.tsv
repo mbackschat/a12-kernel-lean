@@ -1,0 +1,37 @@
+# row	field	outcome	value
+r01-fresh	Drj/DC	value	2024-03-10
+r01-fresh	Drj/DR	value	2024-03-10/2024-04-20
+r01-fresh	Drj/DR2	value	2024-03-10/2024-04-20
+r01-fresh	Drj/KNR	cleared	
+r01-fresh	Drj/KR	value	1
+r01-fresh	Drj/NE	value	20
+r01-fresh	Drj/NS	value	10
+r02-absent-start	Drj/DC	cleared	
+r02-absent-start	Drj/DR	cleared	
+r02-absent-start	Drj/DR2	cleared	
+r02-absent-start	Drj/KNR	value	1
+r02-absent-start	Drj/KR	cleared	
+r02-absent-start	Drj/NE	value	0
+r02-absent-start	Drj/NS	value	0
+r03-malformed-start	Drj/DC	cleared	
+r03-malformed-start	Drj/DR	cleared	
+r03-malformed-start	Drj/DR2	cleared	
+r03-malformed-start	Drj/KNR	cleared	
+r03-malformed-start	Drj/KR	cleared	
+r03-malformed-start	Drj/NE	cleared	
+r03-malformed-start	Drj/NS	cleared	
+r03-malformed-start	Drj/D0	formal	datumFormatFalsch
+r04-inverted	Drj/DC	value	2024-05-01
+r04-inverted	Drj/DR	errored	2024-05-01/2024-04-20
+r04-inverted	Drj/DR2	errored	2024-05-01/2024-04-20
+r04-inverted	Drj/KNR	cleared	
+r04-inverted	Drj/KR	cleared	
+r04-inverted	Drj/NE	cleared	
+r04-inverted	Drj/NS	cleared	
+r05-absent-finish	Drj/DC	value	2024-03-10
+r05-absent-finish	Drj/DR	cleared	
+r05-absent-finish	Drj/DR2	cleared	
+r05-absent-finish	Drj/KNR	value	1
+r05-absent-finish	Drj/KR	cleared	
+r05-absent-finish	Drj/NE	value	0
+r05-absent-finish	Drj/NS	value	0
