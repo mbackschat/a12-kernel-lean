@@ -32,3 +32,7 @@ root = "A12Kernel.Process.RelayMain"
 name = "checkBoundedProcess"
 root = "A12Kernel.ProcessTestMain"
 needs = ["a12-bounded-process-relay"]
+
+[[lean_exe]]
+name = "a12-kernel-replay"
+root = "A12Kernel.ReplayMain"

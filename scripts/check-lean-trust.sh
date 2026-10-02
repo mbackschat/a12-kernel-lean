@@ -125,7 +125,7 @@ source_zone() {
     A12Kernel/Trust/*|A12Kernel/TrustAudit.lean)
       printf '%s\n' "trust-driver"
       ;;
-    A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/ProcessTestMain.lean)
+    A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/ProcessTestMain.lean|A12Kernel/ReplayMain.lean)
       printf '%s\n' "io-driver"
       ;;
     *)
