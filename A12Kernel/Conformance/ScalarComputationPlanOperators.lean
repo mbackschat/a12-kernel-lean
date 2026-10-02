@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.ScalarComputationRun
 The second join grid of the authored scalar plan. Its joins read two Number producers through
 subtraction, multiplication, `Max` and a rounded division, one join sits under a String gate, and
 two copies are guarded by a computed target's fill state. The fixture is the model of the
-[operator-join checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards),
+[operator-join checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards),
 and its eleven document rows are the Kernel's, measured on both codegen strategies.
 -/
 

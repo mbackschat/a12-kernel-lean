@@ -49,7 +49,7 @@ inductive NumericComputationTableError where
 /-- Project the measured alternative classes: a guard reading the table's own target draws the class a
 read of the target draws anywhere in a computation ([`spec/09`](../../../spec/09-computations.md)
 §1), and an unguarded alternative among several draws `MVK_ERROR_EMPTY_PRECONDITION`
-([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
 The certifier meets both in authored order, which is the order the Kernel reports them in. The
 structural refusals claim no class. -/
 def NumericComputationTableError.diagnostic? : NumericComputationTableError → Option KernelStaticDiagnostic
@@ -92,7 +92,7 @@ private def certifyNumericComputationAlternative
 /-- Consolidate already-checked Number operations without reordering their guards. Alternative positions
 are one-based. Every guard's admission is asked before any alternative's own class, as the Kernel asks a
 guard's name ahead of an unguarded alternative wherever either stands
-([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
 def certifyNumericComputationTable
     (alternatives : List (ComputationAlternative
       (CheckedNumericTargetComputationOperation model))) :
@@ -138,7 +138,7 @@ end NumericComputationTableElabError
 
 /-- Elaborate a whole Number computation from its authored alternatives, each an already-resolved
 precondition beside an authored operation, in the two stages the Kernel asks
-([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
 
 First each alternative in authored order is asked everything but a read of its target: its guard's
 admission, then its operation's names, authoring, kinds and scale. The first alternative failing one

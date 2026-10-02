@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.ScalarComputationRun
 
 A plan of any length runs its steps in dependency order, choosing the earliest authored step that
 reads no other pending target. The fixture is the twelve-computation join model of the
-[join checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-poison-and-substitution),
+[join checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-poison-and-substitution),
 authored joins first, and its ten document rows are the Kernel's, measured on both codegen
 strategies. Each row reports the computed value or, where the Kernel clears the target, `none`.
 -/
@@ -239,7 +239,7 @@ private def planDecision? (steps : List (Option (CheckedScalarComputationStep mo
 /- A cycle is refused with the Kernel's cycle class, and so is a plan where a step waits on one,
    since the Kernel sorts the whole model's computed fields before it generates anything
    ([`spec/09`](../../spec/09-computations.md) §1), measured on two- and three-member circles at the
-   [operator-join checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards).
+   [operator-join checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards).
    The waiting plan's refusal names the waiting step `C`, which lies off the cycle. The acyclic control is
    admitted. -/
 example :

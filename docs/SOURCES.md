@@ -1454,27 +1454,27 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-nested-current-repetition-cascades"></a>
 - [Nested `CurrentRepetition` cascades](sources/evaluation-and-application-routes.md#src-nested-current-repetition-cascades)
 <a id="src-scalar-mixed-consumer-first-dependency-order"></a>
-- [Consumer-first mixed scalar dependency order, measured locally 2026-08-25](sources/evaluation-and-application-routes.md#src-scalar-mixed-consumer-first-dependency-order)
+- [Consumer-first mixed scalar dependency order, measured locally 2026-08-25](sources/computation-scheduling-probes.md#src-scalar-mixed-consumer-first-dependency-order)
 <a id="src-repeatable-diamond-per-row-states"></a>
-- [A repeatable dependency diamond keeps all three producer states apart within one call](sources/evaluation-and-application-routes.md#src-repeatable-diamond-per-row-states)
+- [A repeatable dependency diamond keeps all three producer states apart within one call](sources/computation-scheduling-probes.md#src-repeatable-diamond-per-row-states)
 <a id="src-diamond-dependency-clear-kinds"></a>
-- [A four-deep dependency diamond orders correctly, and a silently cleared producer reads EMPTY where an errored one poisons](sources/evaluation-and-application-routes.md#src-diamond-dependency-clear-kinds)
+- [A four-deep dependency diamond orders correctly, and a silently cleared producer reads EMPTY where an errored one poisons](sources/computation-scheduling-probes.md#src-diamond-dependency-clear-kinds)
 <a id="src-join-poison-and-substitution"></a>
-- [A malformed producer clears every Number join that reaches it, and a twelve-computation plan runs in dependency order, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-join-poison-and-substitution)
+- [A malformed producer clears every Number join that reaches it, and a twelve-computation plan runs in dependency order, measured locally 2026-09-26](sources/computation-scheduling-probes.md#src-join-poison-and-substitution)
 <a id="src-datetime-join"></a>
-- [A DateTime shift reads computed amounts and DateTimes fresh, poison and absence cross the join by the shared rule, and a computed DateTime is read back from its rendering, measured locally 2026-10-02](sources/evaluation-and-application-routes.md#src-datetime-join)
+- [A DateTime shift reads computed amounts and DateTimes fresh, poison and absence cross the join by the shared rule, and a computed DateTime is read back from its rendering, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-datetime-join)
 <a id="src-document-step-join"></a>
-- [Full-Date and Enumeration copies are read fresh across a join, chained copies included, and a pre-1900 Date retained as errored reaches its readers as poison, measured locally 2026-10-02](sources/evaluation-and-application-routes.md#src-document-step-join)
+- [Full-Date and Enumeration copies are read fresh across a join, chained copies included, and a pre-1900 Date retained as errored reaches its readers as poison, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-document-step-join)
 <a id="src-guard-on-malformed-source"></a>
-- [A fill guard on a malformed source field poisons both guarded copies and their readers, on a root and per repeatable row, measured locally 2026-10-02](sources/evaluation-and-application-routes.md#src-guard-on-malformed-source)
+- [A fill guard on a malformed source field poisons both guarded copies and their readers, on a root and per repeatable row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
 <a id="src-join-operators-and-guards"></a>
-- [Operators and guards at a join, cycle classes, and a self-read asked after the authoring and scale gates on every shape, measured locally 2026-10-01](sources/evaluation-and-application-routes.md#src-join-operators-and-guards)
+- [Operators and guards at a join, cycle classes, and a self-read asked after the authoring and scale gates on every shape, measured locally 2026-10-01](sources/computation-scheduling-probes.md#src-join-operators-and-guards)
 <a id="src-two-level-repeatable-join"></a>
-- [Poison and empty substitution cross repetition levels and rows by the same rule, measured locally 2026-09-26](sources/evaluation-and-application-routes.md#src-two-level-repeatable-join)
+- [Poison and empty substitution cross repetition levels and rows by the same rule, measured locally 2026-09-26](sources/computation-scheduling-probes.md#src-two-level-repeatable-join)
 <a id="src-repeatable-join-operators-and-guards"></a>
-- [Operators, computed-target fill guards and a fixed computed read on two repetition levels, measured locally 2026-10-01](sources/evaluation-and-application-routes.md#src-repeatable-join-operators-and-guards)
+- [Operators, computed-target fill guards and a fixed computed read on two repetition levels, measured locally 2026-10-01](sources/computation-scheduling-probes.md#src-repeatable-join-operators-and-guards)
 <a id="src-scalar-mixed-reverse-authored-triple"></a>
-- [Reverse-authored mixed scalar triple, measured locally 2026-09-01](sources/evaluation-and-application-routes.md#src-scalar-mixed-reverse-authored-triple)
+- [Reverse-authored mixed scalar triple, measured locally 2026-09-01](sources/computation-scheduling-probes.md#src-scalar-mixed-reverse-authored-triple)
 <a id="src-numeric-extremum-call-boundary"></a>
 - [Numeric extremum call boundary](sources/evaluation-and-application-routes.md#src-numeric-extremum-call-boundary)
 <a id="src-custom-field-type-spi"></a>

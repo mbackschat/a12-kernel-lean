@@ -160,7 +160,7 @@ so a later operand's repeatable or wrongly kinded read reports its own refusal f
 consequence for a kind refusal is this account's, not a measured row. A top-level division and the
 braced two-division product reach the scale class, a braced product and a read on both sides the
 reference class, as the Kernel answers them
-([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
 example :
     let targetField := surfaceField ["Root"] "Target"
     let wrongField := surfaceField ["Root"] "Wrong"

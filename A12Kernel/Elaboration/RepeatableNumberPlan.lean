@@ -15,13 +15,13 @@ Every read goes through one overlay: a completed step's outcome at its exact add
 step not yet run as clean empty, and the immutable document otherwise. A stale stored value in a plan
 target is therefore never read.
 
-The two-level grid of the [checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-two-level-repeatable-join)
+The two-level grid of the [checkpoint](../../docs/sources/computation-scheduling-probes.md#src-two-level-repeatable-join)
 calibrates one plan: a root aggregate over a guarded outer copy, and an inner join of an inner copy
 with the enclosing outer target, the aggregate and the join authored ahead of what they read. Other
 admitted shapes run by the same rules without a measurement of their own: the grid measures the direct
 copy and addition, not subtraction or multiplication, and no row reads a poisoned guard; the
-[operator checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-repeatable-join-operators-and-guards)
-and the [guard-source checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-guard-on-malformed-source)
+[operator checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-join-operators-and-guards)
+and the [guard-source checkpoint](../../docs/sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
 measure those since.
 -/
 

@@ -9,7 +9,7 @@ dates before 1900, the Time constructions `TC = Time(HoursFromTime(T0), MinutesF
 and `EC2 = [EC]` are whole-document steps of one authored plan. Number computations read them through
 `DifferenceInDays`, `HoursFromTime`, `FieldValueAsNumber`, and the two fill guards. The fixture is the second
 model of the
-[whole-document join checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-document-step-join).
+[whole-document join checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join).
 Every document row is the Kernel's, measured on both codegen strategies; a row of the first grid reports
 only the fields that grid's model declares.
 -/

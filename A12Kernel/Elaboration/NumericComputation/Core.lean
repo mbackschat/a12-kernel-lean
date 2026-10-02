@@ -139,7 +139,7 @@ def groupCountDiagnostic? :
 /-- Project the measured computed Number target-scale rejection, a second unbraced division and a
 power over a power, a read of the target, which every measured shape reaches only past those gates,
 aggregates, `FirstFilledValue` and group counts included, and a copied field the generated comparison
-refuses ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+refuses ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
 The class is one operation's: a computation of several alternatives asks every alternative's other
 gates before any read of the target, which `elaborateNumericTargetComputationTable` owns. The two
 authoring failures together, and other computation failures, remain unmapped. -/
@@ -705,7 +705,7 @@ def elaborateCompleteNumericComputationOperation
       -- class answers first
       -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
       -- and after the authoring and scale gates on every measured shape
-      -- ([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)).
+      -- ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
       if resolved.anyAtom (CheckedNumericComputationAtom.references model targetField) then
         throw (.targetSelfReference targetField)
       let core : NumericComputationOperation model := {

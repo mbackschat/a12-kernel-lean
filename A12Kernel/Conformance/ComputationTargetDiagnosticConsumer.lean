@@ -232,7 +232,7 @@ copy, a wrapper, an operand-list call, a rounded division, a power, and both sid
 Kernel reports once per occurrence. The class is asked after the authoring and scale gates on every
 shape, so a mismatched scale draws the scale class, and too many divisions or a power over a power
 draw their own class, as each does beside a control without the self-read
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
 example :
     let selfRead := surfaceField ["Root"] "Target"
     let frac := surfaceField ["Root"] "Frac"

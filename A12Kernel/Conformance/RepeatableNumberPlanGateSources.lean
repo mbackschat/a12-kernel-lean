@@ -7,7 +7,7 @@ A root `Gate` with Number `NG`, `A`, `P = [A]` under `FieldFilled(NG)`, `PN = [A
 with the same shape per row: `RP = [RA]` and `RPN = [RA]` guarded on `RG`, `RD = [RP] + [RB]` and
 `RDN = [RPN] + [RB]`. Each reader is authored ahead of what it reads and every computed target is seeded
 with a stale `99`. The four documents are the Kernel's rows at the
-[guard-source checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-guard-on-malformed-source),
+[guard-source checkpoint](../../docs/sources/computation-scheduling-probes.md#src-guard-on-malformed-source),
 measured on both codegen strategies.
 
 The three accounts a malformed guard field admits predict disjoint rows: read as filled, `D` is `6` and

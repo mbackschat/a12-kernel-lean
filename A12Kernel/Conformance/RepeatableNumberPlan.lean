@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.RepeatableNumberPlan
 /-! # Authored two-level repeatable Number plan locks
 
 The fixture is the model of the
-[two-level checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-two-level-repeatable-join):
+[two-level checkpoint](../../docs/sources/computation-scheduling-probes.md#src-two-level-repeatable-join):
 a root `RootSum = Sum(Outer*/OP)`, a repeatable `Outer` (at most two rows) with `OP = [OBase]` under
 `FieldFilled(OGate)`, and a nested repeatable `Inner` (at most three rows) with
 `IJoin = [IA] + [../OP]` and `IA = [IBase]`, authored in that order, so the aggregate and the join

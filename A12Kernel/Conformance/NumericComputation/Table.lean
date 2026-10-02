@@ -155,7 +155,7 @@ example :
 
 /- A guard reading its own target draws the reference class, in the only alternative and in a later
 one, while an inadmissible guard claims none
-([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
 example :
     (tableError? [literalRow? (.fieldNotFilled targetId) targetId 1]).bind (·.diagnostic?) =
         some .errorReferenceToCalculatedField ∧
@@ -214,7 +214,7 @@ private def computationClass (first second : AuthoredNumericExpr SurfaceNumericA
 alternative beside a scale mismatch or a second unbraced division in another draws that other class
 in either order, and beside a later unresolved name that name's class; beside a clean alternative,
 and from a guard, the self-read draws its own class, and two clean alternatives are admitted
-([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards),
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards),
 `settle.tsv` A01 to A10, `settle2.tsv` E01 and E02). -/
 example :
     let target := surfaceField ["Root"] "Target"
@@ -241,7 +241,7 @@ example :
   native_decide
 
 /- The two stages the Kernel asks, on the second settling grid
-([checkpoint](../../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards),
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards),
 `settle2.tsv`). An unguarded alternative among several refuses once, wherever it stands, and its own
 read of the target goes unreported, while a guarded alternative's read ahead of it answers first. An
 unguarded alternative's own scale or division class, and any alternative's scale mismatch, still

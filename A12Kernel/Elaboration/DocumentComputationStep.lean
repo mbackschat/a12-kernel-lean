@@ -19,9 +19,9 @@ document would read its stored rendering, a cleared one as empty, and an errored
 computed-dependency poison, which is the projection String and Number targets already make. The rendering
 read is what the Kernel shows on Berlin's repeated hour, where a dependent reads a computed DateTime at the
 offset its text denotes rather than at the instant computed
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-datetime-join)); a pre-1900
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-datetime-join)); a pre-1900
 Date the target retains as errored reaches its readers as poison under both presence tests
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-document-step-join)).
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)).
 
 A completed Time is read back through `CheckedTimeInputField.classifyStoredForModel`, which anchors the
 clock on one fixed day because a `Value` must carry an instant; that classifier names the readers

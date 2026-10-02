@@ -10,7 +10,7 @@ three rows) with `ISub = [IBase] - [../OP]` and `IMul = [IBase] * [../OP]`. Ever
 `Fix` is authored ahead of what it reads, `RootSum` after the `OP` it sums, and every computed target
 is seeded with a stale `99`. The nine documents are the
 Kernel's rows at the
-[repeatable operator checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-repeatable-join-operators-and-guards),
+[repeatable operator checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-join-operators-and-guards),
 measured on both codegen strategies.
 -/
 

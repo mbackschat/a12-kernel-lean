@@ -142,7 +142,7 @@ example :
   native_decide
 
 /- Guard-side target self-reference fails before evaluation and draws the reference class
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-join-operators-and-guards)). -/
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
 example :
     tableError [alternative (.fieldFilled target.id) copySource] =
       some (.guardTargetReference 1) ∧

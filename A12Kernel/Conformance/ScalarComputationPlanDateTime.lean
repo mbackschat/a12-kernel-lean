@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.ScalarComputationRunResult
 A DateTime day shift reads a computed Number amount, a sub-day shift reads that computed DateTime, and
 Number computations read the result through `DifferenceInHours` and two fill guards, each reader
 authored ahead of what it reads. The fixture is the model of the
-[DateTime join checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-datetime-join),
+[DateTime join checkpoint](../../docs/sources/computation-scheduling-probes.md#src-datetime-join),
 and every document row is the Kernel's, measured on both codegen strategies; the guarded `DTC` and its
 reader `H2` are left out, since no DateTime carrier here takes a precondition.
 -/
