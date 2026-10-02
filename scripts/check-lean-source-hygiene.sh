@@ -373,12 +373,14 @@ done <<< "$exception_records"
 # A star's physical topology, over-limit rows included, is for a reader of the topology itself; every
 # operand stream reads `StarPath.resolveInCapacity`. Two capacity sweeps each missed a caller that kept
 # the physical extent (docs/LEAN-FINDINGS.md, LF208), so the callers are pinned here by file and count.
-# Comments are stripped first, so prose naming the resolver cannot mask a swapped call, and the
-# defining module is the only one exempt.
-topology_callers_expected=$'A12Kernel/Elaboration/CheckedStarDocument.lean\t1\nA12Kernel/Elaboration/RepetitionNotUnique.lean\t2\nA12Kernel/Elaboration/StarGroup.lean\t1'
+# Comments and string literals are stripped first, so prose or a literal cannot mask a swapped call.
+# Every executable tree is scanned except proofs, conformance and the trust audit, which state laws
+# about the resolver rather than call it; the defining module is pinned too, so an alias added beside
+# it changes its count.
+topology_callers_expected=$'A12Kernel/Elaboration/CheckedStarDocument.lean\t1\nA12Kernel/Elaboration/RepetitionNotUnique.lean\t2\nA12Kernel/Elaboration/StarGroup.lean\t1\nA12Kernel/Semantics/StarAddressing.lean\t5'
 topology_callers_actual="$(for source in "${tracked_files[@]}"; do
-  [[ "$source" == A12Kernel/Elaboration/* || "$source" == A12Kernel/Semantics/* ]] || continue
-  [[ "$source" == A12Kernel/Semantics/StarAddressing.lean ]] && continue
+  [[ "$source" == A12Kernel/*.lean ]] || continue
+  [[ "$source" == A12Kernel/Proofs/* || "$source" == A12Kernel/Conformance/* || "$source" == A12Kernel/Trust/* || "$source" == A12Kernel/TrustAudit.lean ]] && continue
   count="$(awk '{
     line = $0; code = ""
     while (length(line) > 0) {
@@ -387,11 +389,24 @@ topology_callers_actual="$(for source in "${tracked_files[@]}"; do
         if (open_at > 0 && (close_at == 0 || open_at < close_at)) { depth++; line = substr(line, open_at + 2) }
         else if (close_at > 0) { depth--; line = substr(line, close_at + 2) }
         else line = ""
+      } else if (quoted) {
+        quote_at = index(line, "\""); escape_at = index(line, "\\")
+        if (escape_at > 0 && (quote_at == 0 || escape_at < quote_at)) line = substr(line, escape_at + 2)
+        else if (quote_at > 0) { quoted = 0; line = substr(line, quote_at + 1) }
+        else line = ""
       } else {
-        open_at = index(line, "/-"); dash_at = index(line, "--")
-        if (dash_at > 0 && (open_at == 0 || dash_at < open_at)) { code = code substr(line, 1, dash_at - 1); line = "" }
-        else if (open_at > 0) { code = code substr(line, 1, open_at - 1); depth = 1; line = substr(line, open_at + 2) }
-        else { code = code line; line = "" }
+        open_at = index(line, "/-"); dash_at = index(line, "--"); quote_at = index(line, "\"")
+        first = 0
+        if (open_at > 0) first = open_at
+        if (dash_at > 0 && (first == 0 || dash_at < first)) first = dash_at
+        if (quote_at > 0 && (first == 0 || quote_at < first)) first = quote_at
+        if (first == 0) { code = code line; line = "" }
+        else {
+          code = code substr(line, 1, first - 1)
+          if (first == quote_at) { quoted = 1; line = substr(line, quote_at + 1) }
+          else if (first == dash_at) line = ""
+          else { depth = 1; line = substr(line, open_at + 2) }
+        }
       }
     }
     while ((at = index(code, "resolveTopology")) > 0) { total++; code = substr(code, at + 15) }

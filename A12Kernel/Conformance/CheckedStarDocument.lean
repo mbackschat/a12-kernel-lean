@@ -178,4 +178,28 @@ example : (do
       | _ => false)) = some true := by
   native_decide
 
+/-- One repeatable `R` of String `T` at most three rows, for the group walk's row order. -/
+private def orderModel : FlatModel where
+  fields := [{
+    id := 0, groupPath := ["Rg", "R"], name := "T", repeatableScope := [10]
+    policy := { kind := .string } }]
+  repeatableGroups := [{ level := 10, path := ["Rg", "R"], repeatability := some 3 }]
+
+/-- The rows a group operand over `R` reaches, its rows stored in the given order. -/
+private def groupRows? (stored : List (List Nat)) : Option (List (List Nat)) := do
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler orderModel).toOption
+  let document ← (checkDocument prepared "en_US"
+    { instantiatedRows := stored.map fun path => { group := 10, path }
+      cells := stored.map fun path =>
+        { address := { field := 0, path }, stored := "t", raw := .parsed (.str "t") } }).toOption
+  let core ← (document.resolveCheckedGroupEntityOperandCore [] 0 orderModel.fields).toOption
+  pure (core.addressedCells.map (·.address.path))
+
+/- A group operand reaches its rows in index order whatever order they are stored in, which is the
+only order a Kernel document carries, since it stores a repeatable group as an array indexed by
+repetition. An order-sensitive group consumer such as `FirstFilledValue` therefore reads the first
+row first however a caller lists the rows. -/
+example : groupRows? [[2], [1]] = some [[1], [2]] ∧ groupRows? [[1], [2]] = some [[1], [2]] := by
+  native_decide
+
 end A12Kernel.Conformance.CheckedStarDocument

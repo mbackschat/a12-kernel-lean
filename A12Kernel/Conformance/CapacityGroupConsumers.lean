@@ -21,7 +21,7 @@ capacity holds `2021-01-01`, `x` or `100`, with `Rows` holding `N` `100`, `M` `7
 there. The controls are the same values in capacity as the second row, and the first two rows alone.
 The Kernel answers the over-limit document as the one without its third row on every consumer, on
 full validation, under a partial scope of the whole root, and under one naming rows 1 and 2 of each
-group.
+group; partial validation skips the filtered scan under both scopes.
 
 Two of the grid's rows have no lock here. Its `NRows` value lists take a sole `Y` on the values side,
 which the Kernel admits and Lean's Number value list refuses as `tooFewFields`. Under the rows-1-and-2

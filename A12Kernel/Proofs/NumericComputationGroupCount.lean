@@ -14,8 +14,8 @@ independent of the iteration context.
 
 namespace A12Kernel
 
-/-- A fixed group count over groups outside every repeatable level acquires no iteration reader and
-    no outer environment.
+/-- A fixed group count over operands none of which is a bound instance acquires no iteration
+    reader and no outer environment.
 
     This restates a guard that used to say the count delegates to the scalar reader outright and
     so needs no document at all. The measured repeatable-descendant shape falsified the *document*
@@ -164,7 +164,14 @@ theorem groupCount_rowConstituent_eq_validationArm
         refine ⟨g, ⟨hgmem, ?_⟩, r, hrmem, by simp [hglevel]⟩
         simpa using hrow
 
-/-- The pre-read structural gate and the operand reader refuse exactly together.
+/-- The pre-read structural gate and the operand reader raise the `unsupportedGroupCount` refusal
+    exactly together.
+
+    The law covers that refusal only. An admitted bound-instance operand still faults with
+    `repeatableAddressing` when `outer` does not bind the group's scope, which the gate does not
+    see. Elaboration refuses such an operand as `unboundOperandLevel` at a fixed target and at a target
+    of an unrelated repeatable level, the two shapes probed on 2026-10-02, but no law states that it
+    is unreachable.
 
     Two sites decide whether a fixed group-count operand is admitted, and only one of them runs on
     every route, so a widening that reaches the reader alone leaves the gate rejecting an operand

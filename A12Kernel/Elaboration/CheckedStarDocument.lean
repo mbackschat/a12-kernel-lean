@@ -85,8 +85,9 @@ end ResolvedCheckedEntityOperandCore
 `scope`, the operand fixing the scope's first `boundCount` levels at `outer`'s bindings and reopening
 every deeper one. The reopened levels resolve as a star does, through `StarPath.resolveInCapacity`, so
 a group operand and a star share one extent and one canonical row order; a scope `outer` fixes
-completely is its one row when that row is instantiated and in capacity. Every reader of a group
-operand, on the checked document and on the reader route, takes its rows from here. A scope the model
+completely is its one row when that row is instantiated and in capacity. Every group operand's cell
+walk, on the checked document and on the reader route, takes its rows from here; a fixed group below a
+star and a group count's bound instance read their own instance environments instead. A scope the model
 declares no repeatable axes for, which a certified operand cannot carry, is refused as the deepest
 level's invalid repeatability. -/
 def FlatModel.groupOperandEnvironments (model : FlatModel) (document : Document) (outer : Env)
