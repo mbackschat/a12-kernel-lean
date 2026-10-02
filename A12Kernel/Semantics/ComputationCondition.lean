@@ -13,6 +13,9 @@ namespace A12Kernel
 structure ScalarComputationContext where
   read : FieldId → CheckedCell
   world : Option World := none
+  /-- The repeatable target row being computed, empty for a fixed target. Only a structural
+  `CurrentRepetition` operand reads it; every field read is already addressed by `read`. -/
+  row : Env := []
 
 /-- Supply the explicit evaluation world without changing the checked-cell read policy. -/
 def ScalarComputationContext.withWorld

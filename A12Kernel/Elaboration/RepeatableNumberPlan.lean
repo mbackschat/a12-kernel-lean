@@ -154,7 +154,7 @@ private def executeRows (table : CheckedNumericComputationTable model) (world : 
     (fun environment => do
       let target ← addressAt environment
       let outcome ← supportedOutcome table <|
-        table.evaluate { read := cellAt input read environment, world := some world }
+        table.evaluate { read := cellAt input read environment, world := some world, row := environment }
       pure { targetField := target, outcome, source := input.numericTargetPlacementStateAt target })
 
 def executeSteps (plan : CheckedRepeatableNumberPlan model) (world : World)

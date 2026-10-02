@@ -240,7 +240,7 @@ def FlatModel.admitsNumericComputationOperand
   | .numeric (.baseYear year) => model.baseYear == some year
   | .numeric (.fixedCurrentRepetition reference) =>
       reference.scalarRepetitionWellFormedBool model
-  | .numeric (.boundCurrentRepetition _) => false
+  | .numeric (.boundCurrentRepetition source) => source.wellFormedIn model scope
   | .numeric (.baseYearDatePart year _ _) => model.baseYear == some year
   | .numeric (.temporalFieldPart source part) =>
       model.admitsTemporalComputationOperand scope source
@@ -531,9 +531,16 @@ private def FlatModel.elaborateNumericComputationAtom
         | some year => pure (.numeric (.baseYear year))
         | none => throw .baseYearNotDeclared
     | .numeric (.currentRepetition path) => do
-        let reference ← model.resolveFixedGroupReference declaringGroup (.path path)
-          |>.mapError .currentRepetitionSource
-        pure (.numeric (.fixedCurrentRepetition reference))
+        -- A fixed target binds no level, so its group must be fixed; a row target's scope binds the
+        -- coordinate of every group it holds.
+        let scope := model.repeatableScopeForGroupPath targetGroup
+        if scope.isEmpty then
+          let reference ← model.resolveFixedGroupReference declaringGroup (.path path)
+            |>.mapError .currentRepetitionSource
+          pure (.numeric (.fixedCurrentRepetition reference))
+        else
+          (.numeric ·) <$> (model.resolveNumericCurrentRepetition declaringGroup scope path).mapError
+            .currentRepetitionSource
     | .numeric (.baseYearDatePart source part) =>
         match model.baseYear with
         | some year => pure (.numeric (.baseYearDatePart year source part))

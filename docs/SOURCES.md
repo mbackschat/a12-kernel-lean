@@ -1500,6 +1500,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [At a repeatable target `Max`, a rounded division, `Abs`, `FirstFilledValue` and `NumberOfValueInFields` read a computed row copy fresh at their own row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-row-producers)
 <a id="src-row-target-boundary"></a>
 - [At a row target further atoms and a guard by name read their own or the enclosing row, and placement answers ahead of a copy comparison, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-target-boundary)
+<a id="src-row-current-repetition"></a>
+- [At a row target `CurrentRepetition` reads its row's coordinate at each group's level, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-current-repetition)
 <a id="src-repeatable-nested-star-aggregate"></a>
 - [A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-nested-star-aggregate)
 <a id="src-computation-precondition-names"></a>

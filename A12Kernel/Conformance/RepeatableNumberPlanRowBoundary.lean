@@ -11,7 +11,8 @@ sibling `Oth` and a fixed `Fx`. Its runtime document computes, at every row, `TL
 `IG = 1` under a guard authored by name, `FieldFilled(../A)`. Every target holds a stale `99`, and the
 outcomes are the Kernel's, measured on both codegen strategies.
 
-Its static models fix the row target's refusals: a read below the target's levels and a read of the
+A second document over the same rows reads `CurrentRepetition` at both levels. Its static models fix
+the row target's refusals: a read below the target's levels and a read of the
 sibling group draw `MVK_NO_WILDCARD`, a row target outside the declaring group the placement class
 ahead of a String copy's comparison class, and a String copied inside the row the comparison class.
 -/
@@ -192,6 +193,35 @@ example :
       [(none, .atom (.numeric (.stringLength (bare "S1"))))]).toOption.isNone ∧
     (elaborateStringExpr model rows (.field (bare "S1")) matches
       .error (.repeatableTargetGroup _)) := by
+  native_decide
+
+/-- `CurrentRepetition` of a group, authored by absolute path. -/
+private def repetition (groups : List String) : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  .atom (.numeric (.currentRepetition { base := .absolute, groups }))
+
+/-- The [row `CurrentRepetition` grid](../../docs/sources/computation-scheduling-probes.md#src-row-current-repetition):
+`T = CurrentRepetition(/Rg/Rows)` per row, and per inner row
+`IG = CurrentRepetition(/Rg/Rows) * 10 + CurrentRepetition(/Rg/Rows/Sub)`, over the same document. -/
+private def repetitions? : Option (List (CellAddr × String)) := do
+  let steps ← [rowStep? rows "T" (repetition ["Rg", "Rows"]),
+    rowStep? sub "IG" (.binary .add
+      (.binary .multiply (repetition ["Rg", "Rows"]) (.literal { value := 10, authoredScale := 0 }))
+      (repetition ["Rg", "Rows", "Sub"]))].mapM id
+  let plan ← (certifyRepeatableNumberPlan steps).toOption
+  let input ← document?
+  let outcomes ← (plan.execute world input).toOption
+  outcomes.mapM fun outcome => (reported outcome.outcome).map (outcome.targetField, ·)
+
+/- Each row reads its own coordinate, and an inner row reads the enclosing row's beside its own, so the
+second outer row's only inner row answers `21`; a fixed target refuses the repeatable group. -/
+example :
+    repetitions? = some [
+      ({ field := idOf "T", path := [1] }, "1"), ({ field := idOf "T", path := [2] }, "2"),
+      ({ field := idOf "T", path := [3] }, "3"),
+      ({ field := idOf "IG", path := [1, 1] }, "11"), ({ field := idOf "IG", path := [1, 2] }, "12"),
+      ({ field := idOf "IG", path := [2, 1] }, "21")] ∧
+    (elaborateCompleteNumericTargetComputationTable model ["Rg", "Fx"] (idOf "FX")
+      [(none, repetition ["Rg", "Rows"])]).toOption.isNone := by
   native_decide
 
 end A12Kernel.Conformance.RepeatableNumberPlanRowBoundary

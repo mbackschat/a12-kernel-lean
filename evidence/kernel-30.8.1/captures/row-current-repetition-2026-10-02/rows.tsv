@@ -1,0 +1,8 @@
+# row	field	outcome	value
+c1	Rg/Rows/Sub/IG	value	11
+c1	Rg/Rows/Sub[2]/IG	value	12
+c1	Rg/Rows/T	value	1
+c1	Rg/Rows[2]/Sub/IG	value	21
+c1	Rg/Rows[2]/T	value	2
+c1	Rg/Rows[3]/T	value	3
+c1	Rg/Rows[3]/D	operand-code	datumFormatFalsch
