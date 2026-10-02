@@ -56,10 +56,8 @@ private def repeatedTarget :=
   rangeField 6 ["Order", "Rows"] "RepeatedWindow" "dd.MM.yyyy" "-" [10]
 private def fragmentStart : FlatFieldDecl := {
   dateField 7 "FragmentStart" with
-  temporalTargetPolicy := some {
-    format := "yyyy"
-    partialMode := .yearOptional
-  }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy") }
+  temporalTargetPolicy := some { format := "yyyy" }
 }
 private def fragmentFinish : FlatFieldDecl := {
   fragmentStart with id := 8, name := "FragmentFinish"
@@ -68,10 +66,8 @@ private def yearMonthStart : FlatFieldDecl := {
   fragmentStart with
   id := 11
   name := "YearMonthStart"
-  temporalTargetPolicy := some {
-    format := "yyyy-MM"
-    partialMode := .yearOptional
-  }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy-MM") }
+  temporalTargetPolicy := some { format := "yyyy-MM" }
 }
 private def yearMonthFinish : FlatFieldDecl := {
   yearMonthStart with id := 12, name := "YearMonthFinish"
@@ -80,10 +76,8 @@ private def monthStart : FlatFieldDecl := {
   fragmentStart with
   id := 14
   name := "MonthStart"
-  temporalTargetPolicy := some {
-    format := "MM"
-    partialMode := .yearOptional
-  }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM") }
+  temporalTargetPolicy := some { format := "MM" }
 }
 private def monthFinish : FlatFieldDecl := {
   monthStart with id := 15, name := "MonthFinish"
@@ -92,10 +86,8 @@ private def monthDayStart : FlatFieldDecl := {
   fragmentStart with
   id := 17
   name := "MonthDayStart"
-  temporalTargetPolicy := some {
-    format := "MM-dd"
-    partialMode := .yearOptional
-  }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM-dd") }
+  temporalTargetPolicy := some { format := "MM-dd" }
 }
 private def monthDayFinish : FlatFieldDecl := {
   monthDayStart with id := 18, name := "MonthDayFinish"

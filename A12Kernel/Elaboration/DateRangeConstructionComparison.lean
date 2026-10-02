@@ -22,27 +22,31 @@ inductive DateRangeEndpointFormat where
 
 namespace DateRangeEndpointFormat
 
-/-- Recognize the checked endpoint profile; Base Year selects exact completion or retained yearless identity for `MM` and `MM-dd`. -/
+/-- Recognize the checked endpoint profile; Base Year selects exact completion or retained yearless identity for `MM` and `MM-dd`.
+
+A DateFragment endpoint is a component-omitting Date at full precision, named by its format, as the
+reader decodes a `DateFragmentType`. A partial precision is a partially known full-format Date and no
+endpoint here. -/
 def ofPolicy? (baseYear : Option Int) (policy : TemporalTargetPolicy) :
     Option DateRangeEndpointFormat :=
-  match policy.partialMode with
-  | .full => FullDateTargetFormat.ofSource? policy.format |>.map .full
-  | .yearOptional =>
-      if policy.format == "yyyy" then
-        some .yearFragment
-      else if policy.format == "yyyy-MM" then
-        some .yearMonthFragment
-      else if policy.format == "MM" then
-        match baseYear with
-        | some year => some (.monthFragment year)
-        | none => some .yearlessMonth
-      else if policy.format == "MM-dd" then
-        match baseYear with
-        | some year => some (.monthDayFragment year)
-        | none => some .yearlessMonthDay
-      else
-        none
-  | .dayOptional | .monthOptional => none
+  if policy.partialMode != .full then none
+  else match FullDateTargetFormat.ofSource? policy.format with
+    | some format => some (.full format)
+    | none =>
+        if policy.format == "yyyy" then
+          some .yearFragment
+        else if policy.format == "yyyy-MM" then
+          some .yearMonthFragment
+        else if policy.format == "MM" then
+          match baseYear with
+          | some year => some (.monthFragment year)
+          | none => some .yearlessMonth
+        else if policy.format == "MM-dd" then
+          match baseYear with
+          | some year => some (.monthDayFragment year)
+          | none => some .yearlessMonthDay
+        else
+          none
 
 /-- Exact component-set compatibility for the bounded endpoint profiles. Lexical spelling does not distinguish the two complete full-Date formats. -/
 def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Bool

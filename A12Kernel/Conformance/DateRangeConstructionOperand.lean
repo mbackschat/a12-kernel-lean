@@ -25,7 +25,8 @@ private def finish := dateField 2 "Finish"
 
 private def monthFragment : FlatFieldDecl := {
   dateField 3 "MonthFragment" with
-  temporalTargetPolicy := some { format := "MM", partialMode := .yearOptional }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM") }
+  temporalTargetPolicy := some { format := "MM" }
 }
 
 private def numberEndpoint : FlatFieldDecl := {

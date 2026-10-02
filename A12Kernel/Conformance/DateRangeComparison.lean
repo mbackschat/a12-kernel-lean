@@ -53,10 +53,8 @@ private def yearFragmentField (id : FieldId) (name : String) : FlatFieldDecl := 
   id
   groupPath := ["Order"]
   name
-  policy := { kind := .temporal .date fullDate }
-  temporalTargetPolicy := some {
-    format := "yyyy"
-    partialMode := .yearOptional } }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy") }
+  temporalTargetPolicy := some { format := "yyyy" } }
 
 private def leftYearStart := yearFragmentField 6 "LeftYearStart"
 private def leftYearFinish := yearFragmentField 7 "LeftYearFinish"
@@ -65,23 +63,22 @@ private def rightYearFinish := yearFragmentField 9 "RightYearFinish"
 private def yearMonthFragmentField (id : FieldId)
     (name : String) : FlatFieldDecl := {
   yearFragmentField id name with
-    temporalTargetPolicy := some {
-      format := "yyyy-MM"
-      partialMode := .yearOptional } }
+    policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy-MM") }
+    temporalTargetPolicy := some { format := "yyyy-MM" } }
 private def leftMonthStart := yearMonthFragmentField 13 "LeftMonthStart"
 private def leftMonthFinish := yearMonthFragmentField 14 "LeftMonthFinish"
 private def rightMonthStart := yearMonthFragmentField 15 "RightMonthStart"
 private def rightMonthFinish := yearMonthFragmentField 16 "RightMonthFinish"
 private def wrongModeMonthFragment : FlatFieldDecl := {
   yearMonthFragmentField 17 "WrongModeMonthFragment" with
+    policy := { kind := .temporal .date fullDate }
     temporalTargetPolicy := some {
       format := "yyyy-MM"
       partialMode := .dayOptional } }
 private def monthFragment : FlatFieldDecl := {
   yearFragmentField 10 "MonthFragment" with
-    temporalTargetPolicy := some {
-      format := "MM"
-      partialMode := .yearOptional } }
+    policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM") }
+    temporalTargetPolicy := some { format := "MM" } }
 private def leftMonthOnlyStart := monthFragment
 private def leftMonthOnlyFinish : FlatFieldDecl := {
   monthFragment with id := 18, name := "LeftMonthOnlyFinish" }
@@ -91,9 +88,8 @@ private def rightMonthOnlyFinish : FlatFieldDecl := {
   monthFragment with id := 20, name := "RightMonthOnlyFinish" }
 private def monthDayFragmentField (id : FieldId) (name : String) : FlatFieldDecl := {
   yearFragmentField id name with
-    temporalTargetPolicy := some {
-      format := "MM-dd"
-      partialMode := .yearOptional } }
+    policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM-dd") }
+    temporalTargetPolicy := some { format := "MM-dd" } }
 private def leftMonthDayStart := monthDayFragmentField 21 "LeftMonthDayStart"
 private def leftMonthDayFinish := monthDayFragmentField 22 "LeftMonthDayFinish"
 private def rightMonthDayStart := monthDayFragmentField 23 "RightMonthDayStart"
