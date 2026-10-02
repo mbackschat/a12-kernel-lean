@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-02-03"></a>
+### `SPEC-2026-10-02-03` — a `Min`/`Max` call exposes its largest operand's divisions and is checked at the root, a lone unsortable leader is refused, and each node's gates follow its typing
+
+- `status`: pending
+- `origin`: locally originated. Your [`kf45`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf45) leaves the region through an operation-valued wrapper as unclosed evidence, and [`kf457`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf457) measures the extrema's leader only beside a follower; this entry measures both, and Lean itself had exempted a root call and summed a call's operands.
+- `clause`: [`04`](../spec/04-numbers-and-decimals.md), the operation-wrapper boundary paragraph, its new gate-order note, and the operand-list `Min`/`Max` and plain-arithmetic checklist items.
+- `delta`: a `Min`/`Max` call is not one region across its operands; it exposes the largest of their division counts wherever that operand sits, so `Max([N] / [N2], [N2] / [N])` passes while `[N] / Max(1, [N2] / [N])` draws `MVK_TOO_MANY_DIV_FOR_CALC`, and a root call is checked, `Max([N] / [N2] / [N], [N2])` drawing the same class on a computation and on a rule. A lone String, Boolean, Confirm, Enumeration or DateRange leader draws `MVK_NOT_SORTABLE`. Each node's gates are asked as it closes, after its typing, the exponent's scale before the nesting rule; that order composes your `kf378` and `kf396`.
+- `basis`: this project's [node-gate checkpoint](SOURCES.md#src-number-operation-node-gates), 184 `computation add --dry-run` and six `rule` rows at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, models and codes retained beside it.
+- `surfaces`: any peer checker that sums a call's operand divisions, exempts a root call from the region rule, or admits a lone unsortable leader.
+- `acceptance`: confirm `[N] / Max(1, [N2] / [N])` refused against `Max([N] / [N2], [N2] / [N])` admitted, which separate the largest count from the sum and from the first operand's, and `Max([S])` refused against `Max([N])` admitted, or supply a carrier on which a call sums or a root call is exempt.
+- `limit`: static admission, nonrepeatable fields, `RoundDown` as the only rounding wrapper around a region, six rule rows.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-02-02"></a>
 ### `SPEC-2026-10-02-02` — the `index(...)` message terminal's value suffix is `Wert` under a German condition language, chosen by that language and not by the message locale
 

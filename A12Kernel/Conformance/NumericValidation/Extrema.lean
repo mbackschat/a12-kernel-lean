@@ -174,4 +174,22 @@ example : errorOf (twoSided .equal (atom "U") (atom "Flag")) =
   native_decide
 
 
+/- A call is one more division region boundary on the validation carrier too, measured on rule rows
+`q1`, `q3` and `q4` of the
+[node-gate grids](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates):
+a comparison side that is a call is checked like any other operand, and a call exposes its largest
+operand's divisions rather than their sum. -/
+example :
+    let divide := AuthoredNumericExpr.binary (Atom := SurfaceNumericAtom) .divide
+    errorOf (comparison .greater
+        (AuthoredNumericExpr.extremumList .maximum (divide (divide (atom "U") (atom "V")) (atom "U"))
+          [atom "V"]) 0) = some (.authoring .tooManyDivisions) ∧
+      errorOf (comparison .greater
+        (divide (atom "U") (AuthoredNumericExpr.extremumList .maximum (divide (atom "V") (atom "U"))
+          [literal 1 0])) 0) = some (.authoring .tooManyDivisions) ∧
+      errorOf (comparison .greater
+        (AuthoredNumericExpr.extremumList .maximum (divide (atom "U") (atom "V"))
+          [divide (atom "V") (atom "U")]) 0) = none := by
+  native_decide
+
 end A12Kernel.Conformance.NumericValidation.Extrema

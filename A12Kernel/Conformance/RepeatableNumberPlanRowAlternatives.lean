@@ -125,8 +125,8 @@ example : reports? [(.absent, .absent), (.malformed, .value 1), (.absent, .malfo
   native_decide
 
 /- Lazy selection: a malformed second guard is never read once the first holds, so rows `1`/`x` and
-`0`/`x` select `RA` while `x`/`x` poisons, as the Kernel computes them. An eager scan of every guard
-would poison all three rows. -/
+`0`/`x` select `RA` while `x`/`x` clears its row's target, as the Kernel computes them. An eager scan
+of every guard would clear all three rows. -/
 example : reports? [(.value 1, .malformed), (.malformed, .malformed), (.value 0, .malformed)] =
     some [some 7, some 8, none, none, some 7, some 8] := by
   native_decide

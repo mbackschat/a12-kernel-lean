@@ -861,7 +861,7 @@ run_cmd do
 #print axioms A12Kernel.numericInputDecimal_sourceIdentity_of_negativeScale
 #print axioms A12Kernel.numericStoredInput_sourceIdentity_ofStoredNumber
 #print axioms A12Kernel.numericOperation_extremumCall_admitted
-#print axioms A12Kernel.numericOperation_extremumCall_authoringAccepted
+#print axioms A12Kernel.numericOperation_extremumCall_exposes_largest_operand_divisions
 #print axioms A12Kernel.numericOperation_round_body_authoringCheck
 #print axioms A12Kernel.numericOperation_abs_body_authoringCheck
 #print axioms A12Kernel.emptyNumericField_evaluates_zero

@@ -1,0 +1,90 @@
+X01	/Typ/T	Max([S], [S2])
+X02	/Typ/T	Max([E], [E])
+X03	/Typ/T	Max([B], [B])
+X04	/Typ/T	Max([N], [N2], [S])
+X05	/Typ/T	Max([D], [D], [N])
+X06	/Typ/T	Max([N], [S], [Nope])
+X07	/Typ/T	Max([N], [Nope], [S])
+X08	/Typ/T	Max(Max([N], [S]), [N2])
+X09	/Typ/T	Max([D], Max([D], [D]))
+X10	/Typ/T	Max([D], [D3])
+X11	/Typ/T	Max([D], [DM])
+X12	/Typ/T	Max([D], [DTT])
+X13	/Typ/T	Max([D], [TD])
+X14	/Typ/T	Max([TD], [D])
+X15	/Typ/T	[S] ^ [N]
+X16	/Typ/T	2 ^ [S]
+X17	/Typ/T	{[S] + [S2]} ^ 2
+X18	/Typ/T	1 + [S]
+X19	/Typ/T	1 - [S]
+X20	/Typ/T	2 * [B]
+X21	/Typ/T	Abs(Max([D], [D]))
+X22	/Typ/T	{[S]} + [N]
+X23	/Typ/T	Max([D], [D]) + [N]
+X24	/Typ/T	Min([S], [N], [D])
+X25	/Typ/T	Max([N], [N2], [D], [S])
+X26	/Typ/T	Max([D], [N], [TM])
+X27	/Typ/T	Max([D], [TM], [N])
+X28	/Typ/T	Abs({[S]})
+X29	/Typ/T	Max([N])
+X30	/Typ/T	Max([S])
+X31	/Typ/T	Max({[S] + [S2]}, [S])
+X32	/Typ/T	Min(Max([N], [N2]), [S])
+X33	/Typ/T	[TD]
+X34	/Typ/T	[DTT]
+X35	/Typ/T	Max([TM], [TM])
+X36	/Typ/T	Max([DTT], [DTT])
+X37	/Typ/T	Max([N], [N2]) + Max([N], [S])
+X38	/Typ/T	[N] ^ [N2] ^ [S]
+A01	/Typ/T	[N] / [N2] / [S]
+A02	/Typ/T	[S] / [N] / [N2]
+A03	/Typ/T	[N] / [N2] / [N] + [S]
+A04	/Typ/T	[N] + [S] + [N] / [N2] / [N]
+A05	/Typ/T	[N] ^ 2 ^ [S]
+A06	/Typ/T	[S] ^ 2 ^ 2
+A07	/Typ/T	[N] * [N2] + [S]
+A08	/Typ/T	[N] * [N2] - [S]
+A09	/Typ/T	[S] + [N] * [N2]
+A10	/Typ/T	[N] ^ 1.5 + [S]
+A11	/Typ/T	[Nope] + Abs([S])
+A12	/Typ/T	Abs([S]) + [Nope] + [T]
+A13	/Typ/T	FieldFilled([N]) ==> [N] * [N2]	FieldFilled([N2]) ==> [N] + [S]
+A14	/Typ/T	FieldFilled([N]) ==> [N] + [S]	FieldFilled([N2]) ==> [N] * [N2]
+A15	/Typ/T	FieldFilled([N]) ==> [T] + 1	FieldFilled([N2]) ==> [N] + [S]
+A16	/Typ/T	FieldFilled([T]) ==> [N] + 1	FieldFilled([N2]) ==> [N] + [S]
+A17	/Typ/T	[N] + 1	FieldFilled([N2]) ==> [N] + [S]
+A18	/Typ/T	FieldFilled([N]) ==> [N] + [Nope]	FieldFilled([N2]) ==> [N] + [S]
+A19	/Typ/T	FieldFilled([N]) ==> [N] / [N2] / [N]	FieldFilled([N2]) ==> [N] + [S]
+A20	/Typ/T	FieldFilled([Nope]) ==> [N] + 1	FieldFilled([N2]) ==> [N] + [S]
+A21	/Typ/T	FieldFilled([N]) ==> [N] + [S]	FieldFilled([Nope]) ==> [N] + 1
+A22	/Typ/T	[N] * [N2] * [N] + [S]
+B01	/Typ/T	[EL]
+B02	/Typ/T	[EL] + [S]
+B03	/Typ/T	[EL] + [EL]
+B04	/Typ/T	[EL] - [N]
+B05	/Typ/T	Abs([EL])
+B06	/Typ/T	Max([EL], [N])
+B07	/Typ/T	[S] + [EL]
+B08	/Typ/T	[CF]
+B09	/Typ/T	[CF] + [N]
+B10	/Typ/T	[CF] + [S]
+B11	/Typ/T	Abs([CF])
+B12	/Typ/T	Max([CF], [N])
+B13	/Typ/T	[DR]
+B14	/Typ/T	[DR] + [N]
+B15	/Typ/T	[DR] - [N]
+B16	/Typ/T	[S] + [DR]
+B17	/Typ/T	[SR]
+B18	/Typ/T	[SR] + [N]
+B19	/Typ/T	[SR] + [S]
+B20	/Typ/T	[N] + [SR]
+B21	/Typ/T	{[N] + [S]} - [SR]
+B22	/Typ/T	[DP]
+B23	/Typ/T	[DP] + [N]
+B24	/Typ/T	[N] + [DP]
+B25	/Typ/T	{[N] + [S]} - [DP]
+B26	/Typ/T	Max([DP], [D])
+B27	/Typ/T	Abs([DR])
+B28	/Typ/T	Max([DR], [N])
+B29	/Typ/T	[CF] - [N]
+B30	/Typ/T	[EL] + 1

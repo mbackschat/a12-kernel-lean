@@ -203,14 +203,14 @@ private def authoringScan? (allowUnaryWrappers : Bool) :
           exponentScan.directLeftNestedPower⟩
   | .abs body | .round _ _ body =>
       if allowUnaryWrappers then body.authoringScan? true else none
+  -- A call's operands are not one region: it exposes its largest operand's divisions to an
+  -- enclosing one, wherever that operand sits, so two single-division operands pass.
   | .extremum _ left right =>
       if allowUnaryWrappers then do
         let leftScan ← left.authoringScan? true
         let rightScan ← right.authoringScan? true
-        let exposed := leftScan.exposedDivisions + rightScan.exposedDivisions
-        pure ⟨exposed,
-          leftScan.tooManyDivisions || rightScan.tooManyDivisions ||
-            decide (1 < exposed),
+        pure ⟨max leftScan.exposedDivisions rightScan.exposedDivisions,
+          leftScan.tooManyDivisions || rightScan.tooManyDivisions,
           leftScan.directLeftNestedPower || rightScan.directLeftNestedPower⟩
       else none
   | .extremumCall _ body =>
@@ -237,13 +237,6 @@ def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .power base exponent =>
       base.isPlainArithmetic && exponent.isPlainArithmetic
   | .abs _ | .extremum _ _ _ | .extremumCall _ _ | .round _ _ _ => false
-
-def hasUnaryValueFunction : AuthoredNumericExpr Atom → Bool
-  | .atom _ | .literal _ => false
-  | .group body => body.hasUnaryValueFunction
-  | .binary _ left right | .power left right | .extremum _ left right =>
-      left.hasUnaryValueFunction || right.hasUnaryValueFunction
-  | .extremumCall _ _ | .abs _ | .round _ _ _ => true
 
 mutual
 
@@ -323,18 +316,14 @@ def numericWrapperBodyAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
   authoringResult (expression.authoringScan? true)
 
-/-- Rounding and absolute-value operations delegate their static checks through nested value functions. Enclosing arithmetic follows the legacy walk through each reached value-function subtree: division contributions cross it, while each function node structurally separates an outer direct-left power relation. -/
+/-- Check one complete operation through every reached value function: division contributions cross
+rounding, absolute value and each operand of a Min/Max call, which exposes its largest operand's count,
+while each function node structurally separates an outer direct-left power relation. A root call is
+checked like any other operation, measured on both the computation and the rule carrier
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)). -/
 def numericOperationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  match expression with
-  | .round _ _ body | .abs body => body.numericWrapperBodyAuthoringCheck
-  | _ =>
-      if expression.isExtremumCall then
-        .accepted
-      else if expression.hasUnaryValueFunction then
-        authoringResult (expression.authoringScan? true)
-      else
-        expression.authoringCheck
+  expression.numericWrapperBodyAuthoringCheck
 
 end AuthoredNumericExpr
 

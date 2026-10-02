@@ -1,0 +1,57 @@
+field t /Typ/T
+op m01 Max([N] / [N2] / [N], [N2])
+op m02 Abs([N] / [N2] / [N])
+op m03 [N] + Max([N] / [N2] / [N], 1)
+op m04 Max([N] ^ 2 ^ 2, [N2])
+op m05 [N] / Abs([N2] / [N])
+op m06 Abs([N]) / [N2] / [N]
+op m07 [N] ^ [N2]
+op m08 [N] ^ [Z]
+op m09 [N] ^ 1.5
+op m10 Max([N] / [N2], [N2] / [N])
+op m11 Max([N], [N2] / [N] / [N2])
+op m12 [N] / Max([N2], [N]) / [N]
+op m13 Round([N] / [N2] / [N], 2)
+op m14 {[N] / [N2]} / [N]
+op m15 [N] ^ 2 ^ [N2]
+op m16 Abs([S]) / [N2] / [N]
+op m17 [N] / [N2] / Abs([S])
+op m18 [N] ^ {2 ^ 2}
+op m19 Max([N] / [N2] / [N], [S])
+op m20 Max([S], [N] / [N2] / [N])
+op m21 [S] - [N] / [N2] / [N]
+op m22 [N] / [N2] / [N] - [S]
+op m23 [N] ^ [S] ^ 2
+op m24 [N] ^ 2 ^ [S]
+op m25 [S] ^ 2 ^ 2
+op m26 Abs([N] ^ 2 ^ 2)
+op m27 [N] * [N2] / [N] / [N2]
+op m28 Max([N] ^ [N2], [N2])
+comp c01 t m01
+comp c02 t m02
+comp c03 t m03
+comp c04 t m04
+comp c05 t m05
+comp c06 t m06
+comp c07 t m07
+comp c08 t m08
+comp c09 t m09
+comp c10 t m10
+comp c11 t m11
+comp c12 t m12
+comp c13 t m13
+comp c14 t m14
+comp c15 t m15
+comp c16 t m16
+comp c17 t m17
+comp c18 t m18
+comp c19 t m19
+comp c20 t m20
+comp c21 t m21
+comp c22 t m22
+comp c23 t m23
+comp c24 t m24
+comp c25 t m25
+comp c26 t m26
+comp c27 t m27
+comp c28 t m28

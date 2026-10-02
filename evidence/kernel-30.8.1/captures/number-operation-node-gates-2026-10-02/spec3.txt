@@ -1,0 +1,17 @@
+field t /Typ/T
+op f1 [N] / Max(1, [N2] / [N])
+op f2 [N] / Max([N], [N], [N2] / [N])
+op f3 [N] / Min([N2] / [N], 1)
+op f4 [N] / RoundDown([N2] / [N], 2)
+op f5 Max([N] / [N2]) / [N]
+op f6 [N] / Max(Max([N2] / [N], 1), 1)
+op f7 RoundDown([N] / [N2], 2) / [N]
+op f8 [N] / Max(1, [N2]) / [N]
+comp g1 t f1
+comp g2 t f2
+comp g3 t f3
+comp g4 t f4
+comp g5 t f5
+comp g6 t f6
+comp g7 t f7
+comp g8 t f8

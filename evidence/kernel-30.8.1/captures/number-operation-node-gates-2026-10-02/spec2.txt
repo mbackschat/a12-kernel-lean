@@ -1,0 +1,25 @@
+field t /Typ/T
+field n /Typ/N
+op d1 [N] / Max([N2] / [N], 1)
+op d2 Abs(Max([N] / [N2], [N2] / [N]))
+op d3 Max([N] / [N2], 1) / [N]
+op d4 [N] / Abs(Max([N2] / [N], 1))
+op d5 Max(Max([N] / [N2], 1) / [N], 1)
+comp e1 t d1
+comp e2 t d2
+comp e3 t d3
+comp e4 t d4
+comp e5 t d5
+cond r1 Max([N] / [N2] / [N], [N2]) > 0
+cond r2 [N] / [N2] / [N] + [S] > 0
+cond r3 [N] / Max([N2] / [N], 1) > 0
+cond r4 Max([N] / [N2], [N2] / [N]) > 0
+cond r5 [N] ^ 2 ^ [N2] > 0
+cond r6 Max([S]) > 0
+msg m m
+row q1 n r1 m
+row q2 n r2 m
+row q3 n r3 m
+row q4 n r4 m
+row q5 n r5 m
+row q6 n r6 m

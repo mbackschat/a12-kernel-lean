@@ -962,6 +962,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-number-operation-typing"></a>
 - [A Number computation's operation is typed in one post-order walk on the condition carrier's rules, and a well-typed non-Number result meets the target's comparison, measured locally 2026-10-02](sources/computation-placement-and-constant-probes.md#src-number-operation-typing)
 
+<a id="src-number-operation-node-gates"></a>
+- [A Number operation's authoring gates are asked at each node as it closes, after that node's typing, and a `Max` or `Min` call exposes its largest operand's divisions, measured locally 2026-10-02](sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)
+
 <a id="src-power-derived-scale-and-operand-shapes"></a>
 - [`^` restricts neither operand's shape; a non-literal exponent derives unknown scale, and that is what a computed target refuses](sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes)
 

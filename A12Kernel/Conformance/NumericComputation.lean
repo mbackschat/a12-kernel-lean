@@ -14,6 +14,7 @@ import A12Kernel.Conformance.NumericComputation.Table
 import A12Kernel.Conformance.NumericComputation.RunPlan
 import A12Kernel.Conformance.NumericComputation.SourceTarget
 import A12Kernel.Conformance.NumericComputation.NestedApplication
+import A12Kernel.Conformance.NumericComputation.OperationNodeGates
 import A12Kernel.Conformance.NumericComputation.OperationTyping
 import A12Kernel.Conformance.NumericComputation.GuardNames
 

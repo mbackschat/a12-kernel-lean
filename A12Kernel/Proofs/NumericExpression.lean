@@ -182,14 +182,17 @@ theorem numericOperation_extremumCall_admitted
   | atom | literal | binary | power | abs | extremum | round =>
       simp [AuthoredNumericExpr.isExtremumCall] at direct
 
-/-- Root operand-list-extremum calls bypass only the inapplicable plain-arithmetic scan. -/
-theorem numericOperation_extremumCall_authoringAccepted
-    (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isExtremumCall = true) :
-    expression.numericOperationAuthoringCheck = .accepted := by
-  cases expression <;>
-    simp_all [AuthoredNumericExpr.isExtremumCall,
-      AuthoredNumericExpr.numericOperationAuthoringCheck]
+/-- An operand-list call exposes its largest operand's divisions to the enclosing region rather than
+their sum: two single-division operands pass, while one of them under a further division does not. -/
+theorem numericOperation_extremumCall_exposes_largest_operand_divisions
+    (op : NumericExtremumOp) (a b c d : Atom) :
+    (.extremumCall op (.extremum op (.binary .divide (.atom a) (.atom b))
+        (.binary .divide (.atom c) (.atom d))) :
+      AuthoredNumericExpr Atom).numericOperationAuthoringCheck = .accepted ∧
+    (.binary .divide (.atom a) (.extremumCall op (.extremum op (.atom b)
+        (.binary .divide (.atom c) (.atom d)))) :
+      AuthoredNumericExpr Atom).numericOperationAuthoringCheck = .tooManyDivisions :=
+  ⟨rfl, rfl⟩
 
 /-- A root rounding node delegates exactly to the recursive value-function body checker. -/
 theorem numericOperation_round_body_authoringCheck

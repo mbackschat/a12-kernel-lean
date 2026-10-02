@@ -258,7 +258,7 @@ example : (.power
     (.power (source 1) (source 2)) : Expr).authoringCheck = .accepted := by
   native_decide
 
-/- Independent violations are retained without inventing a first-diagnostic order. -/
+/- Independent violations are both retained: the shared check claims no first diagnostic, and a carrier that reports one owns its order, as the Number computation's post-order node check does. -/
 example : (.binary .add
     (quotient (quotient (source 0) (source 1)) (source 2))
     (.power (.power (source 3) (source 4)) (source 5)) :

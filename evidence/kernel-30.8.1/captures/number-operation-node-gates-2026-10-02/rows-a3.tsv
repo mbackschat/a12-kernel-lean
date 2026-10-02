@@ -1,0 +1,9 @@
+K01	/Typ/T	[CU]
+K02	/Typ/T	[CU] + [S]
+K03	/Typ/T	[S] + [CU]
+K04	/Typ/T	[CU] + [N]
+K05	/Typ/T	[CU] - [N]
+K06	/Typ/T	Abs([CU])
+K07	/Typ/T	Max([CU], [N])
+K08	/Typ/T	[CU] + [CU]
+K09	/Typ/T	[CU] + [E]

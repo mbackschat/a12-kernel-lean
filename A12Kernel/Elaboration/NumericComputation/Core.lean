@@ -82,9 +82,9 @@ inductive NumericComputationElabError where
   | invalidModel (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
-  /-- The operation's operand typing refused it, with the class of the node that failed first, `none`
-  where that node's class is not measured. -/
-  | operationTyping (diagnostic : Option KernelStaticDiagnostic)
+  /-- The operation's post-order node check refused it, its typing or one of its authoring gates, with
+  the class of the node that failed first, `none` where that node's class is not measured. -/
+  | operationNode (diagnostic : Option KernelStaticDiagnostic)
   | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
   | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
@@ -140,20 +140,19 @@ def groupCountDiagnostic? :
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | _ => none
 
-/-- Project the measured computed Number target-scale rejection, a second unbraced division and a
-power over a power, a read of the target, which every measured shape reaches only past those gates,
+/-- Project the measured computed Number target-scale rejection, the class of the operation's first
+failing node, a read of the target, which every measured shape reaches only past those gates,
 aggregates, `FirstFilledValue` and group counts included, and a copied field the generated comparison
 refuses ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
 The class is one operation's: a computation of several alternatives asks every alternative's other
-gates before any read of the target, which `elaborateNumericTargetComputationTable` owns. The two
-authoring failures together, and other computation failures, remain unmapped. -/
+gates before any read of the target, which `elaborateNumericTargetComputationTable` owns. The shared
+authoring check this carrier also asks never answers first, because the node check raises each of its
+refusals at the node it inspects, so its result stays unmapped with the other computation failures. -/
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
-  | .authoring .tooManyDivisions => some .tooManyDivisionsInRegion
-  | .authoring .directLeftNestedPower => some .nestedPowerOnLeft
   | .copyComparison _ _ refusal => some refusal.diagnostic
-  | .operationTyping diagnostic => diagnostic
+  | .operationNode diagnostic => diagnostic
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | _ => none
 
@@ -668,20 +667,23 @@ private def FlatModel.numericComputationAtomType
       let declaration ←
         (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
       pure (NumericOperandType.ofDeclaration declaration)
-  | atom => (model.elaborateNumericComputationAtom declaringGroup targetGroup atom).map fun _ => .number
+  | atom => (model.elaborateNumericComputationAtom declaringGroup targetGroup atom).map
+      fun checked => .number checked.numericScaleSummary
 
-/-- Type the operation in post-order and refuse it at the first failing node, or where its well-typed
-result is not a Number, ahead of the authoring gates and the target's read
-([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-typing)). -/
-private def FlatModel.checkNumericOperationTyping
+/-- Check the operation's nodes in post-order, typing and then each node's authoring gates, and refuse
+it at the first failing node, or where its well-typed result is not a Number, ahead of the scale rule
+and the target's read
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)). -/
+private def FlatModel.checkNumericOperationNodes
     (model : FlatModel) (declaringGroup targetGroup : GroupPath)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Except NumericComputationElabError Unit :=
-  match typeNumericOperation (model.numericComputationAtomType declaringGroup targetGroup) expression with
+  match A12Kernel.checkNumericOperationNodes (model.numericComputationAtomType declaringGroup targetGroup)
+      expression with
   | .error (.operand error) => throw error
-  | .error (.typing diagnostic) => throw (.operationTyping diagnostic)
-  | .ok .number => pure ()
-  | .ok result => throw (.operationTyping result.numberTargetDiagnostic?)
+  | .error (.node diagnostic) => throw (.operationNode diagnostic)
+  | .ok (.number _) => pure ()
+  | .ok result => throw (.operationNode result.numberTargetDiagnostic?)
 
 /-- Check computation-group syntax independently of whether the Numeric expression has an operand. -/
 private def certifyNumericComputationDeclaringGroup (declaringGroup : GroupPath) :
@@ -722,7 +724,7 @@ def elaborateCompleteNumericComputationOperation
         certifyNumericComputationDeclaringGroup declaringGroup
       model.checkNumericCopyComparison checkedDeclaringGroup.val targetField expression
       let (target, targetGroup) ← model.resolveNumericComputationTarget targetField
-      model.checkNumericOperationTyping checkedDeclaringGroup.val targetGroup expression
+      model.checkNumericOperationNodes checkedDeclaringGroup.val targetGroup expression
       let resolved ← model.resolveNumericComputationAtoms checkedDeclaringGroup.val
         targetGroup expression
       if !resolved.isAdmittedResolvedNumericOperation then

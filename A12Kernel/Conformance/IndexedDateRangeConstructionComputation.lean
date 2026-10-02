@@ -33,6 +33,10 @@ private def crossKindStart (id : FieldId) (name : String) (kind : TemporalKind) 
 
 private def timeStart := crossKindStart 8 "TimeStart" .time
 private def stampStart := crossKindStart 9 "StampStart" .dateTime
+
+/-- A DATE declaration carrying a clock's components rather than a date's. -/
+private def clockStart : FlatFieldDecl :=
+  { dateField 11 "ClockStart" with policy := { kind := .temporal .date TemporalComponents.time } }
 private def target : FlatFieldDecl := {
   id := 4
   groupPath := ["Order"]
@@ -64,7 +68,7 @@ private def items : RepeatableGroupDecl := {
 
 private def model : FlatModel := {
   fields := [index, start, finish, target, startSelector, finishSelector,
-    unrelatedTarget, timeStart, stampStart]
+    unrelatedTarget, timeStart, stampStart, clockStart]
   repeatableGroups := [items]
   timeZoneId := "UTC"
 }
@@ -290,6 +294,20 @@ example :
       let result ← (operation.execute preliminary).toOption
       pure result.outcome) =
       [some (.accepted expected), some (.accepted expected)] := by
+  native_decide
+
+/- Rows `ixtfin` and `ixdclk` of the same grid: the components decide at the finish endpoint too, so a
+TIME-declared Date format is admitted there, while a DATE declaration with a clock's components is
+refused at the start. The Kernel reports that refusal `MVK_WRONG_DATE_FORMAT_FOR_OP`, a class this
+carrier does not project. -/
+example :
+    (elaborateIndexedDateRangeConstructionComputation model ["Order"] target.id start.id "sku1"
+      timeStart.id "sku2").isOk = true ∧
+    (match elaborateIndexedDateRangeConstructionComputation model ["Order"] target.id clockStart.id
+        "sku1" finish.id "sku2" with
+      | .error (.start (.unsupportedComponents field components)) =>
+          field == clockStart.id && components == TemporalComponents.time
+      | _ => false) = true := by
   native_decide
 
 /- Reversing only the keys reverses the selected endpoint rows rather than falling back to physical order. -/

@@ -192,8 +192,8 @@ example :
       targetDiagnosticOf (checkedErrorOf groupedTargetTimesLiteral) =
         some .errorReferenceToCalculatedField ∧
       targetDiagnosticOf (checkedErrorOf sameTarget) = some .errorReferenceToCalculatedField ∧
-      checkedErrorOf targetThenWrong = some (.operationTyping (some .noStringOrNumberForAdd)) ∧
-      checkedErrorOf groupedTargetThenWrong = some (.operationTyping (some .noStringOrNumberForAdd)) ∧
+      checkedErrorOf targetThenWrong = some (.operationNode (some .noStringOrNumberForAdd)) ∧
+      checkedErrorOf groupedTargetThenWrong = some (.operationNode (some .noStringOrNumberForAdd)) ∧
       checkedErrorOf targetThenRepeatable =
         some (.resolve (.unboundOperandLevel ["Root", "Rows", "Repeated"] unboundRows)) ∧
       checkedErrorOf stringLengthTarget =
@@ -321,8 +321,8 @@ example :
   native_decide
 
 /- Every reached scale mismatch and target reference project to their measured Kernel classes, and so
-do a second unbraced division and a power over a power on its left. Their combination and an
-expression outside the fragment stay unmapped. -/
+does the class of the operation's first failing node. The shared authoring check's result, which that
+node check always answers ahead of, and an expression outside the fragment stay unmapped. -/
 example :
     let scaleOne :=
       AuthoredNumericExpr.literal
@@ -335,11 +335,8 @@ example :
         (.targetSelfReference targetId) =
           some .errorReferenceToCalculatedField ∧
       NumericComputationElabError.targetDiagnostic?
-        (.authoring .tooManyDivisions) = some .tooManyDivisionsInRegion ∧
-      NumericComputationElabError.targetDiagnostic?
-        (.authoring .directLeftNestedPower) = some .nestedPowerOnLeft ∧
-      NumericComputationElabError.targetDiagnostic?
-        (.authoring .tooManyDivisionsAndDirectLeftNestedPower) = none ∧
+        (.operationNode (some .tooManyDivisionsInRegion)) = some .tooManyDivisionsInRegion ∧
+      NumericComputationElabError.targetDiagnostic? (.authoring .tooManyDivisions) = none ∧
       NumericComputationElabError.targetDiagnostic? .unsupportedExpression = none ∧
       KernelStaticDiagnostic.kernelCode .invalidCompareDecimalPlaces =
         "MVK_INVALID_COMPARE_DEC_PLACES" ∧
@@ -356,7 +353,7 @@ example :
         (.binary .divide (.literal { value := 3, authoredScale := 0 })
           (.literal { value := 4, authoredScale := 0 }))
     checkedErrorOf twoDivisions (suppressExactScaleWarning := true) =
-      some (.authoring .tooManyDivisions) := by
+      some (.operationNode (some .tooManyDivisionsInRegion)) := by
   native_decide
 
 /- A checked operation reuses the existing numeric evaluator; unlike a validation comparison, a constant-only computation is legal. -/
@@ -503,7 +500,7 @@ example :
     checkedErrorOf (surfaceField ["Root"] "Wrong") =
         some (.copyComparison target.path wrong.path (.kindArm .text)) ∧
       checkedErrorOf (.abs (surfaceField ["Root"] "Wrong")) =
-        some (.operationTyping (some .noNumber)) ∧
+        some (.operationNode (some .noNumber)) ∧
       checkedErrorOf (surfaceField ["Root", "Rows"] "Repeated") =
         some (.resolve (.unboundOperandLevel repeated.path unboundRows)) ∧
       checkedErrorOf (.literal { value := 1, authoredScale := 0 }) wrongId =
@@ -535,7 +532,7 @@ example :
           (.literal { value := 2, authoredScale := 0 }))
         (.binary .divide (.literal { value := 3, authoredScale := 0 })
           (.literal { value := 4, authoredScale := 0 }))
-    checkedErrorOf twoDivisions = some (.authoring .tooManyDivisions) ∧
+    checkedErrorOf twoDivisions = some (.operationNode (some .tooManyDivisionsInRegion)) ∧
       checkedErrorOf (.literal { value := 1, authoredScale := 1 }) =
         some (.operationScaleMismatch 0 (NumericScaleSummary.constant 1)) := by
   native_decide
