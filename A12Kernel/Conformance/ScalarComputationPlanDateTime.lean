@@ -119,7 +119,7 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
       some (target, "-")
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
   | .document _ (.fullDate _) | .document _ (.time _) | .document _ (.enumeration _)
-  | .document _ (.dateRange _) | .document _ (.boolean _) => none
+  | .document _ (.dateRange _) | .document _ (.boolean _) | .document _ (.dateFragment _) => none
 
 private def values? (cells : List ClassifiedCellInput) : Option (List String) := do
   let input ← (checkDocument prepared "en_US"

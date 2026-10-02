@@ -73,6 +73,11 @@ structure CheckedCellPlacement where
   numericInput : Option NumericStoredInput := none
   /-- The selected Number formal-read text, including on a formally rejected Number placement. Non-Number and empty placements carry `none`. -/
   numericFormalReadText : Option String := none
+  /-- The stored text this placement's cell was read from, which a reader pairs with that cell: a
+  token scan's selected text and a partial Date's spelling. It travels with the cell, so a document
+  overlaid with a completed target reads that target's rendering rather than the source's text.
+  A placement with no text carries `none`. -/
+  storedText : Option String := none
   deriving Repr, DecidableEq
 
 /-- One exact-model checked input. `checkDocument` constructs it from source data, so every placed cell is
@@ -317,6 +322,7 @@ private def checkPlacedCell
   pure {
     address := input.address
     cell := base.withOverRepetitionIf overLimit
+    storedText := some input.stored
     numericInput
     numericFormalReadText := match declaration.policy.kind, numericInput with
       | .number _, some numeric =>
@@ -449,10 +455,11 @@ is read through the cell its outcome projects and a pending one reads empty, wha
 for either ([`kf459`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459)).
 
 This is a read overlay for evaluators that take the whole document, and nothing here applies a result.
-Every placement read — `read`, the Number input regime and formal-read text, and the contexts built on
-them — sees the listed placement, which is why a placement rather than a bare cell is listed: a replaced
-Number keeps its input regime and formal-read text only if the caller supplies them. The source data and rows are unchanged, so what is read
-off `source` — `readStoredText` and `temporallyCoherent` — still describes the source document. -/
+Every placement read — `read`, the stored text paired with a cell, the Number input regime and
+formal-read text, and the contexts built on them — sees the listed placement, which is why a placement
+rather than a bare cell is listed: a replaced target keeps its rendering and a Number its input regime
+and formal-read text only if the caller supplies them. The source data and rows are unchanged, so what
+is read off `source` — `temporallyCoherent` — still describes the source document. -/
 def overlayNonrepeatableCells (checked : CheckedDocument model)
     (placements : List (FieldId × Option CheckedCellPlacement)) : CheckedDocument model :=
   { checked with
@@ -474,6 +481,11 @@ def read (checked : CheckedDocument model) (address : CellAddr) :
   | some placement => pure placement.cell
   | none => pure ((checkAdmittedRawCell .empty).withOverRepetitionIf overLimit)
 
+/-- The stored text placed at one address, read from the placement that owns it, so an overlaid
+target reads its rendering; `none` where no placement or no text is placed. -/
+def storedTextAt (checked : CheckedDocument model) (address : CellAddr) : Option String :=
+  (checked.checkedCells.find? fun placement => placement.address == address).bind (·.storedText)
+
 /-- Read one placed cell's **stored text**, for a Date declaring a partial precision.
 
 The text is the one channel that carries every value such a declaration can hold: a *partially* known
@@ -493,24 +505,11 @@ def readStoredText (checked : CheckedDocument model) (address : CellAddr) :
     validateCellAddress model checked.source.instantiatedRows address
   if !declaration.mayStorePartialDateText then
     throw (.nonPartialDateField address)
-  let overLimit ← match model.addressOverLimit?
-      declaration.repeatableScope address.path with
-    | some overLimit => pure overLimit
-    | none => throw (.incoherentRepeatableScope declaration.repeatableScope)
-  let base : CheckedCell String :=
-    match checked.source.cells.find? fun input => input.address == address with
-    | none => { rawPresent := false, parsed := none, findings := [] }
-    | some input =>
-        match input.raw with
-        | .rejected cause =>
-            { rawPresent := true, parsed := none
-              findings := [cause.toFormalCause] }
-        | _ =>
-            if input.stored.isEmpty then
-              { rawPresent := true, parsed := none, findings := [] }
-            else
-              { rawPresent := true, parsed := some input.stored, findings := [] }
-  pure (base.withOverRepetitionIf overLimit)
+  let cell ← checked.read address
+  pure {
+    rawPresent := cell.rawPresent
+    parsed := if cell.parsed.isSome then checked.storedTextAt address else none
+    findings := cell.findings }
 
 /-- Read one checked Number input as a typed cell carrying the regime-selected text. Empty, invalid, and over-limit states retain their ordinary checked-cell structure; the text is never reconstructed from the parsed rational. -/
 def readNumberFormalText (checked : CheckedDocument model)

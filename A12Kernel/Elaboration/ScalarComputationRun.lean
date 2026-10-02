@@ -278,12 +278,16 @@ def numberInput? : ScalarComputationCompletion → Option NumericStoredInput
 
 /-- The placement a completed target takes in the document a whole-document step reads. A completed
 Number carries the input regime its application stores and its formal-read text, so no placement read
-sees it as empty. -/
+sees it as empty, and a completed whole-document target its rendering, so a reader pairing a cell with
+its stored text reads the target's and not the source's. -/
 def placement (completion : ScalarComputationCompletion) : CheckedCellPlacement where
   address := { field := completion.targetField, path := [] }
   cell := completion.numberCell
   numericInput := completion.numberInput?
   numericFormalReadText := completion.numberFormalReadText?
+  storedText := match completion with
+    | .document _ outcome _ => outcome.storedText?
+    | .string _ | .number _ => none
 
 end ScalarComputationCompletion
 

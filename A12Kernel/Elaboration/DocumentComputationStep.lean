@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeConstructionComputation
+import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
@@ -10,6 +11,7 @@ import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.FullDateComputation
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
+import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.TimeComputation
 import A12Kernel.Elaboration.TimeFirstFilledComputation
 
@@ -19,7 +21,7 @@ A computation whose evaluator reads the whole document joins a scalar plan as on
 its target, the fields it reads, a proof that it does not read its own target, and an evaluator returning
 the target's outcome together with the cell a later computation reads for it. Day and sub-day DateTime
 shifts, a full-Date computation, a Time construction, an Enumeration copy, a DateRange construction and
-the fixed-target `FirstFilledValue` over a Boolean, Time, DateTime, full Date, DateRange or Enumeration
+the fixed-target `FirstFilledValue` over a Boolean, DateFragment, Time, DateTime, full Date, DateRange or Enumeration
 are its instances; each is one constructor here, and the plan's laws are stated once over the step rather
 than once per family.
 
@@ -51,7 +53,21 @@ inductive DocumentTargetOutcome where
   | enumeration (outcome : StringTargetOutcome)
   | dateRange (outcome : DateRangeTargetOutcome)
   | boolean (outcome : BooleanComputationOutcome)
+  | dateFragment (outcome : StringTargetOutcome)
   deriving Repr, DecidableEq
+
+/-- The rendering a completed target stores, which a reader pairs with its read-back cell; a cleared,
+errored or poisoned target stores none. -/
+def DocumentTargetOutcome.storedText? : DocumentTargetOutcome → Option String
+  | .dateTime (.accepted stored) => some stored.text
+  | .fullDate (.accepted stored) => some stored.text
+  | .time (.accepted stored) => some stored.text
+  | .enumeration (.accepted stored) => some stored.text
+  | .dateRange (.accepted stored) => some stored.text
+  | .boolean (.value value) => some (toString value)
+  | .dateFragment (.accepted stored) => some stored.text
+  | .dateTime _ | .fullDate _ | .time _ | .enumeration _ | .dateRange _ | .boolean _
+  | .dateFragment _ => none
 
 /-- The target family of a whole-document step: the family of the outcome it computes, and the outcome it
 reports when a guard keeps it from running. It is not the target's declared kind, which a temporal
@@ -64,6 +80,7 @@ inductive DocumentTargetFamily where
   | enumeration
   | dateRange
   | boolean
+  | dateFragment
   deriving Repr, DecidableEq
 
 namespace DocumentTargetFamily
@@ -75,6 +92,7 @@ def kind : DocumentTargetFamily → SurfaceScalarKind
   | .enumeration => .enumeration
   | .dateRange => .dateRange
   | .boolean => .boolean
+  | .dateFragment => .temporal .date
 
 /-- The family's cleared outcome, for a step whose guard does not hold. -/
 def noValue : DocumentTargetFamily → DocumentTargetOutcome
@@ -84,6 +102,7 @@ def noValue : DocumentTargetFamily → DocumentTargetOutcome
   | .enumeration => .enumeration .noValue
   | .dateRange => .dateRange .noValue
   | .boolean => .boolean .noValue
+  | .dateFragment => .dateFragment .noValue
 
 /-- The family's poisoned outcome, for a step whose guard reads poison. -/
 def poison (cause : FormalCause) : DocumentTargetFamily → DocumentTargetOutcome
@@ -93,6 +112,7 @@ def poison (cause : FormalCause) : DocumentTargetFamily → DocumentTargetOutcom
   | .enumeration => .enumeration (.poison cause)
   | .dateRange => .dateRange (.poison cause)
   | .boolean => .boolean (.poison cause)
+  | .dateFragment => .dateFragment (.poison cause)
 
 end DocumentTargetFamily
 
@@ -186,6 +206,33 @@ def boolean : BooleanComputationOutcome → CheckedCell
   | .noValue => empty
   | .poison _ => poison
   | .value value => checkAdmittedRawCell (classifyStoredBooleanText (toString value))
+
+/-- A completed DateFragment target, read as its earliest date: the Kernel decodes a component-omitting
+value so, its year from the Base Year where the format names none
+([`kf176`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf176)). A yearless fragment in a model
+declaring no Base Year has no measured completion and fails closed as unreadable. -/
+def dateFragment (model : FlatModel) (target : FieldId) :
+    StringTargetOutcome → Except DocumentComputationStepFault CheckedCell
+  | .noValue => pure empty
+  | .poison _ | .errored _ _ => pure poison
+  | .accepted stored => do
+      let declaration ← (model.lookupUniqueId target).toOption.getDM (throw .targetNotReadable)
+      let field ← (certifyOmittingDateInputField declaration).toOption.getDM
+        (throw .targetNotReadable)
+      let profile ← (ModelZone.ConcreteProfile.ofId? model.timeZoneId).getDM
+        (throw .targetNotReadable)
+      let earliest : Option CivilDate :=
+        match field.classifyStoredForModel model.baseYear stored.text with
+        | .admitted (.yearBearing (.full date)) => some date.civil
+        | .admitted (.yearBearing (.omittedDay date)) => some date.first.civil
+        | .admitted (.yearBearing (.omittedMonth date)) => some date.first.civil
+        | .admitted (.yearBearing .omittedYear) => none
+        | .admitted (.yearless value) => model.baseYear.bind fun year =>
+            CivilDate.ofParts? { year, month := value.month, day := value.day }
+        | .presentEmpty | .rejected _ => none
+      let date ← earliest.getDM (throw .targetNotReadable)
+      let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
+      pure (checkAdmittedRawCell (.parsed (.temporal (.date value))))
 
 end DocumentComputationReadBack
 
@@ -336,6 +383,19 @@ def ofFullDateFirstFilled (operation : CheckedFullDateFirstFilledComputation mod
     let outcome ← (operation.execute document).mapError .fullDateFirstFilled
     let cell ← DocumentComputationReadBack.fullDate model operation.shape.targetField outcome
     pure (.fullDate outcome, cell)
+
+/-- A fixed-target DateFragment `FirstFilledValue`. -/
+def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.targetField
+  family := .dateFragment
+  referencesField := operation.referencesField
+  excludesTarget := operation.excludesTarget
+  run _ document := do
+    let result ← (operation.execute document).mapError .firstFilledSource
+    let outcome := result.asExactStringTargetOutcome
+    let cell ← DocumentComputationReadBack.dateFragment model operation.targetField outcome
+    pure (.dateFragment outcome, cell)
 
 /-- A fixed-target DateRange `FirstFilledValue` over a direct field list. -/
 def ofDateRangeFirstFilledDirect (operation : CheckedDateRangeFirstFilledDirectComputation model) :

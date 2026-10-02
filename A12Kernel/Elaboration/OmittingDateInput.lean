@@ -95,31 +95,31 @@ bounded too even though it authors no day: its implied day one is still checked 
 which is what refuses month `00` and month `13`. -/
 def parseYearlessComponents? (format : OmittingDateFormat) (baseYear : Option Int)
     (text : String) : Option MonthDayValue :=
-  let admit (month day : Nat) : Option MonthDayValue :=
+  let accept (month day : Nat) : Option MonthDayValue :=
     if 1 ≤ month && month ≤ 12 && 1 ≤ day &&
         day ≤ yearlessDayBound baseYear month then
       some { month, day }
     else none
   match format with
-  | .month => (digitsOfWidth? text 2).bind fun month => admit month 1
+  | .month => (digitsOfWidth? text 2).bind fun month => accept month 1
   | .monthDay =>
       match text.splitOn "-" with
       | [monthText, dayText] => do
           let month ← digitsOfWidth? monthText 2
           let day ← digitsOfWidth? dayText 2
-          admit month day
+          accept month day
       | _ => none
   | .monthDayConcatenated =>
       if text.length == 4 then do
         let month ← digitsOfWidth? (text.take 2).toString 2
         let day ← digitsOfWidth? (text.drop 2).toString 2
-        admit month day
+        accept month day
       else none
   | .dayMonthConcatenated =>
       if text.length == 4 then do
         let day ← digitsOfWidth? (text.take 2).toString 2
         let month ← digitsOfWidth? (text.drop 2).toString 2
-        admit month day
+        accept month day
       else none
   | .dayMonthDotted =>
       -- The trailing dot makes the third part exist and be empty; `dd.MM` yields two parts and is
@@ -129,7 +129,7 @@ def parseYearlessComponents? (format : OmittingDateFormat) (baseYear : Option In
       | [dayText, monthText, ""] => do
           let day ← digitsOfWidth? dayText 2
           let month ← digitsOfWidth? monthText 2
-          admit month day
+          accept month day
       | _ => none
   | .year | .yearMonthDashed | .yearMonthConcatenated => none
 

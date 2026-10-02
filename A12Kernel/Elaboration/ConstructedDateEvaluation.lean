@@ -121,7 +121,7 @@ def read (checked : CheckedConstructedDateYearField model)
   }
   let cell ← input.read address |>.mapError .document
   checked.classify (observeCell phase cell)
-    (input.source.toDocument.rawCells address)
+    (input.storedTextAt address)
 
 end CheckedConstructedDateYearField
 

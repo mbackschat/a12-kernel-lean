@@ -4,11 +4,12 @@ import A12Kernel.Elaboration.ScalarComputationRunResult
 
 Per kind `X`, `XA = FirstFilledValue(X1, X2)` feeds `XF = FirstFilledValue(XA, X3)`, read by two Number
 guards `KX = 1` under `FieldFilled(XF)` and `KNX = 1` under `FieldNotFilled(XF)`, every reader authored
-ahead of what it reads, over a Boolean, a Time, a DateTime, a full Date, a DateRange and an Enumeration
-in one root `Fj`. The fixture is the model of the
+ahead of what it reads, over a Boolean, a `yyyy-MM` DateFragment, a Time, a DateTime, a full Date, a
+DateRange and an Enumeration in one root `Fj`. The fixture is the model of the
 [`FirstFilledValue` join checkpoint](../../docs/sources/computation-scheduling-probes.md#src-first-filled-join),
-and every document row is the Kernel's, measured on both codegen strategies. That grid's seventh kind, a
-DateFragment, is not joined here.
+and every document row is the Kernel's, measured on both codegen strategies. A fragment cell is the
+earliest date its stored month denotes, as the Kernel decodes it, and a completed fragment target is
+read back the same way with its own rendering beside it.
 
 `XA` and `XF` are seeded with a value no row computes, except the Boolean `BF`, left unseeded so a
 computed `false` differs from its seed, and both guards are seeded `99`. A row projects every target to
@@ -26,17 +27,19 @@ open A12Kernel
 
 /-- The six joined kinds, in the grid's order. -/
 private inductive Kind where
-  | boolean | time | dateTime | date | dateRange | enumeration
+  | boolean | fragment | time | dateTime | date | dateRange | enumeration
   deriving DecidableEq
 
-private def Kind.all : List Kind := [.boolean, .time, .dateTime, .date, .dateRange, .enumeration]
+private def Kind.all : List Kind :=
+  [.boolean, .fragment, .time, .dateTime, .date, .dateRange, .enumeration]
 
 private def Kind.letter : Kind → String
-  | .boolean => "B" | .time => "T" | .dateTime => "M" | .date => "D" | .dateRange => "R"
+  | .boolean => "B" | .fragment => "G" | .time => "T" | .dateTime => "M" | .date => "D" | .dateRange => "R"
   | .enumeration => "E"
 
 private def Kind.index : Kind → Nat
   | .boolean => 0 | .time => 1 | .dateTime => 2 | .date => 3 | .dateRange => 4 | .enumeration => 5
+  | .fragment => 6
 
 /-- The kind's seven fields, `X1`, `X2`, `X3`, `XA`, `XF`, `KX`, `KNX`, in that order. -/
 private def Kind.names (kind : Kind) : List String :=
@@ -51,6 +54,9 @@ private def Kind.declaration (kind : Kind) (slot : Nat) (name : String) : FlatFi
   if 5 ≤ slot then { base with policy := { kind := .number { scale := 0, signed := true } } }
   else match kind with
     | .boolean => base
+    | .fragment => { base with
+        policy := { kind := .temporal .date TemporalComponents.fullDate }
+        temporalTargetPolicy := some { format := "yyyy-MM", partialMode := .yearOptional } }
     | .time => { base with
         policy := { kind := .temporal .time TemporalComponents.time }
         temporalTargetPolicy := some { format := "HH:mm:ss" } }
@@ -87,6 +93,8 @@ private def Kind.firstFilled? (kind : Kind) (target : FieldId) (first second : S
   (match kind with
     | .boolean => (checkBooleanFirstFilledComputation model ["Fj"] target list).toOption.map
         CheckedDocumentComputationStep.ofBooleanFirstFilled
+    | .fragment => (checkDateFragmentFirstFilledComputation model ["Fj"] target list).toOption.map
+        CheckedDocumentComputationStep.ofDateFragmentFirstFilled
     | .time => (checkTimeFirstFilledComputation model ["Fj"] target list).toOption.map
         CheckedDocumentComputationStep.ofTimeFirstFilled
     | .dateTime => (checkDateTimeFirstFilledComputation model ["Fj"] target list).toOption.map
@@ -117,10 +125,29 @@ private def plan : CheckedScalarComputationPlan model :=
   (certifyScalarComputationPlan ((Kind.all.mapM Kind.steps?).get (by native_decide)).flatten).toOption.get
     (by native_decide)
 
+/-- A `yyyy-MM` fragment cell: the month's first day at local midnight, or the format rejection. -/
+private def fragmentRaw (declaration : FlatFieldDecl) (text : String) : RawCell :=
+  match certifyOmittingDateInputField declaration, ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | .ok checked, some profile =>
+      match checked.classifyStoredForModel model.baseYear text with
+      | .admitted (.yearBearing (.omittedDay date)) =>
+          match profile.resolveStoredDate? date.first.civil with
+          | some value => .parsed (.temporal (.date value))
+          | none => .rejected .dateFormat
+      | .rejected cause => .rejected cause
+      | _ => .rejected .dateFormat
+  | _, _ => .rejected .dateFormat
+
 private def classified (declaration : FlatFieldDecl) (text : String) : RawCell :=
   let fallback : RawCell := .rejected .dateFormat
   match declaration.policy.kind with
   | .boolean => classifyStoredBooleanText text
+  | .temporal .date _ =>
+      if declaration.toTemporalTargetPolicy?.map (·.partialMode) == some .yearOptional then
+        fragmentRaw declaration text
+      else match certifyFullDateInputField declaration with
+        | .ok checked => (checked.classifyStoredForModel model.timeZoneId text).toOption.getD fallback
+        | .error _ => fallback
   | .enumeration => .parsed (.enum text)
   | .number _ => match text.toInt? with
       | some amount => .parsed (.num amount)
@@ -148,6 +175,7 @@ private def cell (name : String) (text : String) : Option ClassifiedCellInput :=
 private def Kind.inputs (kind : Kind) (sources : List (Option String)) : List (String × String) :=
   let seeds : List (Option String) := match kind with
     | .boolean => [some "true", none]
+    | .fragment => [some "2020-01", some "2021-01"]
     | .time => [some "01:02:03", some "02:03:04"]
     | .dateTime => [some "2020-01-01T01:02:03", some "2021-01-01T01:02:03"]
     | .date => [some "2020-01-01", some "2021-01-01"]
@@ -160,12 +188,14 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.boolean (.value value)) => some (target, toString value)
+  | .document target (.dateFragment (.accepted stored)) => some (target, stored.text)
   | .document target (.time (.accepted stored)) => some (target, stored.text)
   | .document target (.dateTime (.accepted stored)) => some (target, stored.text)
   | .document target (.fullDate (.accepted stored)) => some (target, stored.text)
   | .document target (.dateRange (.accepted stored)) => some (target, stored.text)
   | .document target (.enumeration (.accepted stored)) => some (target, stored.text)
   | .document target (.boolean .noValue) | .document target (.boolean (.poison _))
+  | .document target (.dateFragment .noValue) | .document target (.dateFragment (.poison _))
   | .document target (.time .noValue) | .document target (.time (.poison _))
   | .document target (.dateTime .noValue) | .document target (.dateTime (.poison _))
   | .document target (.fullDate .noValue) | .document target (.fullDate (.poison _))
@@ -174,7 +204,8 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
       some (target, "-")
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
   | .document _ (.dateTime (.errored _ _)) | .document _ (.fullDate (.errored _ _))
-  | .document _ (.dateRange (.errored _ _)) | .document _ (.enumeration (.errored _ _)) => none
+  | .document _ (.dateRange (.errored _ _)) | .document _ (.enumeration (.errored _ _))
+  | .document _ (.dateFragment (.errored _ _)) => none
 
 /-- Every kind's `XA`, `XF`, `KX` and `KNX`, over one document built from each kind's sources. -/
 private def values? (sources : Kind → List (Option String)) : Option (List (List String)) := do
@@ -188,11 +219,11 @@ private def values? (sources : Kind → List (Option String)) : Option (List (Li
 
 /-- Each kind's first, second and third source values in the grid's rows. -/
 private def fresh : Kind → String
-  | .boolean => "false" | .time => "08:30:00" | .dateTime => "2026-05-04T08:30:00"
+  | .boolean => "false" | .fragment => "2026-05" | .time => "08:30:00" | .dateTime => "2026-05-04T08:30:00"
   | .date => "2026-05-04" | .dateRange => "2026-05-04/2026-05-10" | .enumeration => "1"
 
 private def third : Kind → String
-  | .boolean => "true" | .time => "09:45:00" | .dateTime => "2026-07-08T09:45:00"
+  | .boolean => "true" | .fragment => "2026-07" | .time => "09:45:00" | .dateTime => "2026-07-08T09:45:00"
   | .date => "2026-07-08" | .dateRange => "2026-07-08/2026-07-10" | .enumeration => "3"
 
 private def malformed : Kind → String
@@ -219,6 +250,32 @@ example :
 /- Row `r4`: exhaustion clears both targets and only the unfilled guard fires. -/
 example :
     values? (fun _ => [none, none, none]) = some (Kind.all.map fun _ => ["-", "-", "-", "1"]) := by
+  native_decide
+
+/-- An `MM` fragment target alone, in a model with or without a Base Year. -/
+private def monthModel (baseYear : Option Int) : FlatModel :=
+  { fields := [{
+      id := 0
+      groupPath := ["Fj"]
+      name := "GM"
+      policy := { kind := .temporal .date TemporalComponents.fullDate }
+      temporalTargetPolicy := some { format := "MM", partialMode := .yearOptional } }]
+    timeZoneId := "Europe/Berlin"
+    baseYear := baseYear }
+
+/- A completed yearless fragment is read back as its month's first day in the Base Year, and with no
+Base Year, which leaves the completion unmeasured, it fails closed as unreadable. -/
+example :
+    (match DocumentComputationReadBack.dateFragment (monthModel (some 2011)) 0
+        (.accepted ⟨"03", by decide⟩) with
+      | .ok cell => match cell.parsed with
+          | some (.temporal (.date value)) => value.parts == { year := 2011, month := 3, day := 1 }
+          | _ => false
+      | .error _ => false) &&
+    (match DocumentComputationReadBack.dateFragment (monthModel none) 0
+        (.accepted ⟨"03", by decide⟩) with
+      | .error .targetNotReadable => true
+      | _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.ScalarComputationPlanFirstFilled

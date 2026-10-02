@@ -65,6 +65,17 @@ def CheckedDateFragmentFirstFilledComputation.targetField :
   | .yearMonth shape => shape.target.id
   | .monthDay shape => shape.target.id
 
+/-- The fields any admitted DateFragment carrier's source reads. -/
+def CheckedDateFragmentFirstFilledComputation.referencesField :
+    CheckedDateFragmentFirstFilledComputation model → FieldId → Bool
+  | .month shape | .year shape | .yearMonth shape | .monthDay shape => shape.source.referencesField
+
+theorem CheckedDateFragmentFirstFilledComputation.excludesTarget
+    (operation : CheckedDateFragmentFirstFilledComputation model) :
+    operation.referencesField operation.targetField = false := by
+  cases operation with
+  | month shape | year shape | yearMonth shape | monthDay shape => exact shape.excludesTarget
+
 /-- One checked DateFragment `FirstFilledValue` result backed by the common exact-text channels. Retaining the operation ties every action to the exact admitted fragment target and declaration profile. -/
 structure DateFragmentFirstFilledComputationRunView (model : FlatModel)
     (ResidualMessage : Type) where

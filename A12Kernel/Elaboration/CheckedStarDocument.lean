@@ -112,7 +112,7 @@ def addressedCellWithRead (checked : CheckedDocument model)
   pure {
     environment
     address
-    stored := checked.source.toDocument.rawCells address
+    stored := checked.storedTextAt address
     cell
   }
 
