@@ -196,6 +196,17 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-06a"></a>
 - Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
+### Inbound 2026-10-02c handback
+
+<a id="inbound-2026-10-02c"></a>
+#### Reviewed pending-queue dispositions
+
+- `revision`: a12-dmkits `5ca76014c9bdcf8b9445b84e7343ea510ae91de8`; the cited count tests and common-read correction resolve and are ancestors of this tip.
+- `receipt`: the received `2026-10-02c` letter has SHA-256 `8e0773c3b83ba1657ab3dbb2bf701a33383d7ebfe64800320af6d23dac228611`. Reconciliation uses the committed tests and replay, not the letter's prose.
+- `count-route`: [count-side checkpoint](sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate) and [connective checkpoint](sources/group-list-and-capacity-probes.md#src-empty-gate-count-beneath-and); SPEC-06 is accepted for firing on the fixed full-validation carrier, without transferring polarity or attachment claims.
+- `self-read-route`: [alternative-walk checkpoint](sources/computation-scheduling-probes.md#src-self-read-alternative-walk); SPEC-07 is accepted for ordered report placement and multiplicity on the three measured Number target topologies. This supersedes the earlier letter's common-first reading, not its rows.
+- `scope`: SPEC-08 has no disposition in this handback. The peer's wider qualification summary is not a new local conformance claim.
+
 ### Inbound 2026-10-02a handback
 
 <a id="inbound-2026-10-02a-provenance"></a>
@@ -206,7 +217,7 @@ The letter is the peer's `-2026-10-02a`, delivered by its session and frozen at 
 <a id="inbound-2026-10-02a-alternative-walk"></a>
 **Claim.** Its §1 has two unconditional alternatives draw `MVK_ERROR_EMPTY_PRECONDITION` alone with no preconditioned neighbour, either one reading the target or both, while a sole unconditional alternative draws the target-read class; the projected class is reported in every arrangement, with no empty class beside it. Its §2 reports the plain target-read class once per judged read, a precondition's reads included, and the empty class once, at the first unconditional alternative. Its §3 has `[Amount] / [Rate] + [Rate] / [Amount]`, the same with `-`, and `[Amount] / {[Rate] / [Amount]}` reach the scale class and `{[Amount] / [Rate] / [Amount]}` draw `MVK_TOO_MANY_DIV_FOR_CALC`. Its §4 is a source reading of the division walk and a single-walk reading of §1 and §2, both offered as hypotheses.
 
-**Classification.** Inbound from committed revisions; [`spec/09`](../spec/09-computations.md)'s stages bullet drops its "beside a preconditioned alternative" condition and places the projected class. The letter's reading that the common precondition is judged first does not hold: this project's [alternative-walk grid](sources/computation-scheduling-probes.md#src-self-read-alternative-walk) places it at the first judged alternative, which is outbound as [`SPEC-2026-10-02-07`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-07). §4 is not adopted: the spec's division-walk clause already states the cut the reading describes, and no row here separates the reading from it.
+**Classification.** Inbound from committed revisions; [`spec/09`](../spec/09-computations.md)'s stages bullet drops its "beside a preconditioned alternative" condition and places the projected class. The letter's reading that the common precondition is judged first does not hold: this project's [alternative-walk grid](sources/computation-scheduling-probes.md#src-self-read-alternative-walk) places it at the first judged alternative, now reconciled by the [2026-10-02c disposition](#inbound-2026-10-02c). §4 is not adopted: the spec's division-walk clause already states the cut the reading describes, and no row here separates the reading from it.
 
 **Lean.** The Number table already left an unguarded alternative's own reads unjudged from two alternatives on, without needing a guarded neighbour. The String table now projects the empty class, and §3's four rows are locked in [`OperationNodeGates`](../A12Kernel/Conformance/NumericComputation/OperationNodeGates.lean). The projected class against the empty class has no Lean carrier, and a String operation reading its target is refused before the table can leave it unjudged ([SG29](gaps/paths-and-groups.md#gap-sg29), [SG7](gaps/strings-and-messages.md#gap-sg7)).
 
@@ -1545,7 +1556,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-repeatable-row-alternatives"></a>
 - [A repeatable target's guarded alternatives select per row by first match and abort on a reached poisoned guard, and the fixed table's two refusals hold there, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)
 <a id="src-self-read-alternative-walk"></a>
-- [A common precondition's target read is judged once, at the first judged alternative, and goes unjudged when several alternatives carry no guard of their own; the projected class answers alone from any slot, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-self-read-alternative-walk)
+- [A common precondition's target-read findings appear once per written read at the first judged alternative; measured locally and by the peer 2026-10-02](sources/computation-scheduling-probes.md#src-self-read-alternative-walk)
 <a id="src-row-table-guard-order"></a>
 - [A row table asks every guard's row binding before any alternative's own class, and selects lazily, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-table-guard-order)
 <a id="src-repeatable-row-producers"></a>

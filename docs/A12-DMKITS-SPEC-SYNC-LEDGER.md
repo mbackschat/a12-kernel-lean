@@ -49,22 +49,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-02-07"></a>
-### `SPEC-2026-10-02-07` — a common precondition's target read is judged once, at the first alternative the walk judges, and the projected class answers alone from an operation or the common precondition
+### `SPEC-2026-10-02-07` — a common precondition's target-read findings appear at the first judged alternative, once per written read, and the projected class answers alone from an operation or the common precondition
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `5ca76014c9bdcf8b9445b84e7343ea510ae91de8` ([inbound](SOURCES.md#inbound-2026-10-02c)). The ordered common-read and projection matrix is confirmed; the checker correction and exact 38-model replay are retained at `f65c132c33f5eddb01a23b730f54c907a6939b37`.
 - `origin`: locally originated. Your [`2026-10-02a` letter](SOURCES.md#inbound-2026-10-02a-alternative-walk) reads the common precondition as judged first, on three rows whose first alternative is judged; this grid places it, and measures the scopes that letter left open.
 - `clause`: [`09`](../spec/09-computations.md) §1, the stages bullet's alternatives sentences and the self-reference bullet's unmeasured list.
 - `delta`: a common `FieldFilled(T3)` over `[Base1]; FieldFilled(Gate1) => [Base2]` draws `MVK_ERROR_EMPTY_PRECONDITION` then `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`, over `FieldFilled(Gate1) => [Base1]; [Base2]` the reverse, over two or three preconditioned alternatives the reference class once, `[T3] + [T3] > 0` twice, and over `[T3]; [Base1]` the empty class alone. `[/Rep/RT For "a"]` draws `MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD` alone beside an unconditional `[RB]` in either order, from a common precondition over two unconditional or two preconditioned alternatives, and once for two reads under different keys. The unconditional-alternative rows on a repeatable `RT` and on a fixed `NT` nested below its root follow the fixed root's. Within one alternative a self-reading precondition and operation draw the same class, so the letter's precondition-then-operation order is not observable.
 - `basis`: this project's [checkpoint](SOURCES.md#src-self-read-alternative-walk), 31 `computation add --dry-run` verdicts at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model and verdicts retained beside it.
 - `surfaces`: a checker that judges the common precondition ahead of the alternatives, once per alternative, or not at all, or that reports the empty class beside a projected self-read.
 - `acceptance`: confirm the `[Base1]; FieldFilled(Gate1) => [Base2]` and `FieldFilled(Gate1) => [Base1]; [Base2]` pair, which separates first-judged placement from common-first, the two-preconditioned row, which separates once from per alternative, and `[T3]; [Base1]` under the common read, or supply a row on which one fails.
-- `limit`: scale-0 fixed Number targets under `FieldFilled` and one comparison common precondition; String and Enumeration targets under a common precondition, a projection in an alternative's own precondition, and a common precondition against another alternative's other gates, unmeasured.
+- `limit`: scale-0 Number targets at a fixed root, a fixed nested group and an indexed repeatable group under `FieldFilled` and one comparison common precondition; String and Enumeration targets under a common precondition, a projection in an alternative's own precondition, and a common precondition against another alternative's other gates, unmeasured.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-02-06"></a>
 ### `SPEC-2026-10-02-06` — a count lifts the content gate from either side of `==` and `!=` and only from the small side of an ordering, on all three counts, and from anywhere in the condition
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `5ca76014c9bdcf8b9445b84e7343ea510ae91de8` ([inbound](SOURCES.md#inbound-2026-10-02c)). The count-side and connective matrix is confirmed by `RuleCountComparisonGateDiffTest` at `3dca19da97b5e2d040682efa06cca8024a75b0df` and `53d84f7f5e7e703f849c3da3ff418598905f6ef2`; no peer production change was needed.
 - `origin`: locally originated. Your [rule-bucket rows](SOURCES.md#inbound-2026-10-02-rule-buckets) defeated this project's "anywhere in either operation" account; this grid measures the arms they leave open.
 - `clause`: [`03`](../spec/03-empty-and-required.md) §2, the row gate's empty-eligible family.
 - `delta`: over a blank root, with `C = NumberOfFilledGroups(G1, G2) + [W]`, `0 == C`, `C != 1` and `1 != C` fire OMISSION, while `0 <= C`, `C > -1` and `-1 < C` stay silent, as `C >= 0` does; `NumberOfDifferentValues(A, W) < 1` fires and `>= 0` stays silent, as `NumberOfFilledFields` does. With `F = NumberOfFilledFields(A, W)`, `1 >= F` and `F <= 1` fire. The count test does not compose through `And`: `F < 1 And F >= 0` fires in either order, while `F >= 0 And NumberOfFilledFields(A, B) >= 0` stays silent ([checkpoint](SOURCES.md#src-empty-gate-count-beneath-and)).

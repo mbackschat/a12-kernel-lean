@@ -292,7 +292,9 @@
 - `local-consequence`: Lean admitted a count anywhere in either operation and did not count `NumberOfDifferentValues`, so eight rules diverged on four rows each; the once plan applied its root gate to the `Rep` rule, which diverged on the four documents without `Rep` rows. Both are corrected, and the population replay matches every row it represents. Lean refuses the second-root read.
 - `limit`: fixed operands and one repeatable root. A tolerance comparison and the root-group count are not measured.
 - `bytes`: [`rule-bucket-empty-gate-2026-10-02/`](../../evidence/kernel-30.8.1/captures/rule-bucket-empty-gate-2026-10-02/); SHA-256 model `d30f13b90fcb2b0d283e1127be7ae54d87f59b7cc30003d0f81aa7910f4ee13b`, request `4fb46b4111590819c2251f8109c31231e7d659c08423adaf8eef707746b0b871`, artifact `df426f9dc8a7ba7aa6c3bd13998d008e46651eb1652d7e962a9baf56b22b6b14`.
-- `sync`: the side rows beyond the peer's are outbound as [`SPEC-2026-10-02-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-06).
+- `peer-revision`: `3dca19da97b5e2d040682efa06cca8024a75b0df`, reviewed at `5ca76014c9bdcf8b9445b84e7343ea510ae91de8` ([inbound](../SOURCES.md#inbound-2026-10-02c)). `RuleCountComparisonGateDiffTest` crosses three counts, six operators and both operand positions beneath addition of `[Withheld]`, using fixed groups on one `Policy` root.
+- `peer-oracle`: `ThreeEngineRuns.fired` compares complete sorted fired-code lists across dynamic Groovy, static Java and the interpreter. Three empty documents separate the gate from numeric truth; `Withheld=0` keeps that truth and admits every comparison, including the plain control. This route does not check polarity or attachment.
+- `sync`: accepted as [`SPEC-2026-10-02-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-06).
 
 <a id="src-empty-gate-count-beneath-and"></a>
 #### A small-side count lifts the content gate from beneath `And` too, and the small side of `>=` and `<=` is the measured one, measured locally 2026-10-02
@@ -306,7 +308,9 @@
 - `local-consequence`: Lean composed the count test through `And`, so the `And` rows were gated and silent. The count test is now a whole-condition disjunct beside the composed presence test, and the replay matches every row it admits; `1 >= F` is tier2, a bare count right of a literal having no reader carrier.
 - `limit`: `And` and `Or` one level deep, fixed operands, one root. A negated condition and a tolerance comparison are not measured.
 - `bytes`: [`empty-gate-count-beneath-and-2026-10-02/`](../../evidence/kernel-30.8.1/captures/empty-gate-count-beneath-and-2026-10-02/); SHA-256 model `e53049c7985c3a29069152c3337fe09b651926bad97e4d98e1915e98fb90e5d4`, request `439d407447e6de0dc7733ada502c25f2b75ee2934f9ee823a1d766ab28535d22`, artifact `781037d88f3915497e3de5ddbd97c3a89fe43fa0f06aa52d8e3fbe148c75b248`.
-- `sync`: outbound in [`SPEC-2026-10-02-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-06).
+- `peer-revision`: `53d84f7f5e7e703f849c3da3ff418598905f6ef2`, reviewed at `5ca76014c9bdcf8b9445b84e7343ea510ae91de8` ([inbound](../SOURCES.md#inbound-2026-10-02c)); fifteen additional rules in `RuleCountComparisonGateDiffTest`, five for each count on its fixed `Policy` carrier.
+- `peer-matrix`: mixed small/large conjunctions in both orders, two small conjuncts and a small disjunct beside a false large disjunct fire on all three empty documents. Two large conjuncts and the plain control stay silent until `Withheld=0`; the complete fired-code oracle is the [count-side checkpoint's](#src-rule-bucket-empty-gate).
+- `sync`: accepted in [`SPEC-2026-10-02-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-06).
 
 <a id="src-starred-group-quantifier-capacity"></a>
 #### Starred group counts and threshold quantifiers use instantiated in-capacity rows, measured locally 2026-08-31 and settled inbound 2026-09-01
