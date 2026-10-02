@@ -166,6 +166,47 @@ def scanFilteredComputationFirstFilledResolving
   | .terminated result => pure (.inr result)
   | .poison cause => pure (.inr (.unavailable cause))
 
+/-- One reached computation `FirstFilledValue` operand of any kind, as its carrier resolves it at
+the scan's environment: a direct cell, a star's in-capacity rows, a filtered star's rows, or a
+group's resolved cells. Each carrier owns only the resolution and its cells' classifier. -/
+inductive FirstFilledComputationSelection (kind : ValueListKind) where
+  | cell (cell : ValueListCell kind)
+  | rows (environments : List Env) (hasUninstantiatedTail : Bool) (cell : Env → ValueListCell kind)
+  | filtered (condition : CorrelatedHaving) (filterContext : CorrelationContext)
+      (environments : List Env) (hasUninstantiatedTail : Bool) (cell : Env → ValueListCell kind)
+  | side (side : ResolvedValueListSide kind)
+
+namespace FirstFilledComputationSelection
+
+/-- Scan one reached selection: a star with no row reached is a not-given prefix, and a filter owns
+its candidates' order and poison timing. -/
+def scan (outer : Env) (state : FirstFilledScanState) :
+    FirstFilledComputationSelection kind → FirstFilledScanState ⊕ FirstFilledScanResult kind
+  | .cell reached => match state.step reached with
+      | .continue next => .inl next
+      | .done result => .inr result
+  | .rows environments hasUninstantiatedTail classify =>
+      scanFirstFilledItems classify environments
+        (state.enterSelection environments.isEmpty hasUninstantiatedTail false)
+  | .filtered condition filterContext environments hasUninstantiatedTail classify =>
+      scanFilteredComputationFirstFilled condition filterContext outer classify environments
+        hasUninstantiatedTail state
+  | .side resolved => scanFirstFilledItems id resolved.cells (state.enterOperand resolved)
+
+end FirstFilledComputationSelection
+
+/-- Scan authored operands in order, resolving each only once every earlier one has fallen through,
+so a later operand's structural failure is never reached past a selected value. The caller closes an
+exhausted scan with its family's identity. -/
+def scanComputationFirstFilledSelections (outer : Env)
+    (resolve : α → Except Error (FirstFilledComputationSelection kind)) :
+    List α → FirstFilledScanState → Except Error (FirstFilledScanState ⊕ FirstFilledScanResult kind)
+  | [], state => pure (.inl state)
+  | operand :: remaining, state => do
+      match (← resolve operand).scan outer state with
+      | .inl next => scanComputationFirstFilledSelections outer resolve remaining next
+      | .inr result => pure (.inr result)
+
 private def scanFirstFilledCells
     (cells : List (ValueListCell kind)) (state : FirstFilledScanState) :
     FirstFilledScanState ⊕ FirstFilledScanResult kind :=

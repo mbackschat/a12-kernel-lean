@@ -187,56 +187,25 @@ def evaluateDirectComputationFirstFilled?
 
 end CheckedNumberEntitySource
 
-private def scanComputationFirstFilledNumberOperand
-    (document : Document) (outer : Env) (direct : FlatContext)
-    (filterRead starRead : Env → FieldId → CheckedCell)
-    (state : FirstFilledScanState) :
-    CheckedFirstFilledNumberOperand model →
-      Except StarAddressingError
-        (FirstFilledScanState ⊕ FirstFilledNumberResult)
-  | .field source =>
-      match state.step (source.field.valueListCellAt .computation direct) with
-      | .continue next => pure (.inl next)
-      | .done result => pure (.inr result.asNumber)
-  | .star source => do
-      let resolved ← source.source.path.resolveInCapacity document outer
-      match scanFirstFilledItems
-          (source.checkedValueListCellAt .computation starRead)
-          resolved.environments
-          (state.enterSelection resolved.environments.isEmpty
-            resolved.domain.hasOpenTail false) with
-      | .inl next => pure (.inl next)
-      | .inr result => pure (.inr result.asNumber)
-  | .starHaving source => do
-      let resolved ← source.source.source.path.resolveInCapacity document outer
-      match scanFilteredComputationFirstFilled source.having
-          { read := filterRead } outer
-          (source.source.checkedValueListCellAt .computation starRead)
-          resolved.environments resolved.domain.hasOpenTail state with
-      | .inl next => pure (.inl next)
-      | .inr result => pure (.inr result.asNumber)
-  | .group slot => do
-      -- The group's cells in the shared walk's declaration-major index order: every row of one
-      -- declaration before the next, measured over a repeatable descendant
-      -- ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-fixed-group-descendants)).
-      let side ← slot.resolvedSideIn .computation document outer starRead
-      match scanFirstFilledItems id side.cells (state.enterOperand side) with
-      | .inl next => pure (.inl next)
-      | .inr result => pure (.inr result.asNumber)
-
-private def scanComputationFirstFilledNumberOperands
+/-- Resolve one reached Number operand at the scan's environment. -/
+private def CheckedNumberEntityOperand.computationSelection
     (document : Document) (outer : Env) (direct : FlatContext)
     (filterRead starRead : Env → FieldId → CheckedCell) :
-    List (CheckedFirstFilledNumberOperand model) → FirstFilledScanState →
-      Except StarAddressingError FirstFilledNumberResult
-  | [], state => pure state.finish
-  | operand :: remaining, state => do
-      match ← scanComputationFirstFilledNumberOperand document outer direct
-          filterRead starRead state operand with
-      | .inl next =>
-          scanComputationFirstFilledNumberOperands document outer direct
-            filterRead starRead remaining next
-      | .inr result => pure result
+    CheckedFirstFilledNumberOperand model →
+      Except StarAddressingError (FirstFilledComputationSelection .number)
+  | .field source => pure (.cell (source.field.valueListCellAt .computation direct))
+  | .star source => do
+      let resolved ← source.source.path.resolveInCapacity document outer
+      pure (.rows resolved.environments resolved.domain.hasOpenTail
+        (source.checkedValueListCellAt .computation starRead))
+  | .starHaving source => do
+      let resolved ← source.source.source.path.resolveInCapacity document outer
+      pure (.filtered source.having { read := filterRead } resolved.environments
+        resolved.domain.hasOpenTail (source.source.checkedValueListCellAt .computation starRead))
+  -- The group's cells in the shared walk's declaration-major index order: every row of one
+  -- declaration before the next, measured over a repeatable descendant
+  -- ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-fixed-group-descendants)).
+  | .group slot => (.side ·) <$> slot.resolvedSideIn .computation document outer starRead
 
 namespace CheckedNumberEntitySource
 
@@ -246,9 +215,12 @@ def evaluateComputationFirstFilled
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell) :
-    Except StarAddressingError FirstFilledNumberResult :=
-  scanComputationFirstFilledNumberOperands document outer
-    { read := directRead } filterRead starRead checked.operands {}
+    Except StarAddressingError FirstFilledNumberResult := do
+  match ← scanComputationFirstFilledSelections outer
+      (·.computationSelection document outer { read := directRead } filterRead starRead)
+      checked.operands {} with
+  | .inl state => pure state.finish
+  | .inr result => pure result.asNumber
 
 private def scanCheckedDocumentValidationOperand
     (document : CheckedDocument model) (outer : Env)
