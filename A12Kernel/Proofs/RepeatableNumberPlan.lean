@@ -68,11 +68,12 @@ theorem repeatableNumberPlan_read_completed (plan : CheckedRepeatableNumberPlan 
       .ok (NumericDependencyCell.ofOutcome outcome.outcome).checked := by
   simp [CheckedRepeatableNumberPlan.read, readAfterNumericDependenciesWith, covered]
 
-/-- A guard that always holds executes exactly as the unguarded addressed carrier. -/
-theorem checkedAddressedNumericTarget_executeGuarded_holds
+/-- A selection that always selects its one operation executes exactly as the unguarded addressed
+carrier. -/
+theorem checkedAddressedNumericTarget_executeSelected_selected
     (placement : CheckedAddressedNumericTarget model) (input : CheckedDocument model)
     (evaluate : Env → Except AddressedNumericLeafFault NumericComputationResult) :
-    placement.executeGuardedAtEnvironment input (fun _ => .holds) evaluate =
+    placement.executeSelectedAtEnvironment input (fun environment => .selected (evaluate environment)) =
       placement.executeAtEnvironment input evaluate := rfl
 
 end A12Kernel

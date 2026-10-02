@@ -85,11 +85,12 @@ row, a reached poisoned guard aborting the row rather than passing to the next a
 A sole alternative may go unguarded. -/
 structure CheckedRepeatableNumberRowStep (model : FlatModel) where
   private mk ::
-  operation : CheckedRepeatableNumberRowOperation model
-  first : CheckedRepeatableNumberRowAlternative model operation.targetField
-    operation.target.targetDeclaration.repeatableScope
-  remaining : List (CheckedRepeatableNumberRowAlternative model operation.targetField
-    operation.target.targetDeclaration.repeatableScope)
+  /-- The first alternative's target placement, which every alternative's target field matches. -/
+  target : CheckedAddressedNumericTarget model
+  first : CheckedRepeatableNumberRowAlternative model target.targetField
+    target.targetDeclaration.repeatableScope
+  remaining : List (CheckedRepeatableNumberRowAlternative model target.targetField
+    target.targetDeclaration.repeatableScope)
 
 namespace CheckedRepeatableNumberRowStep
 
@@ -109,9 +110,11 @@ inductive RepeatableNumberRowStepError where
   deriving Repr, DecidableEq
 
 /-- The Kernel class of a row table's refusal: a guard reading the table's own target and an unguarded
-alternative among several draw the classes a fixed table's do, measured on a repeatable target in either
-position ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)).
-The structural refusals claim no class, and the order between two refusals is not measured here. -/
+alternative among several draw the classes a fixed table's do, measured on a repeatable target in
+either position ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)).
+A guard the row does not bind is refused ahead of both wherever it stands, and claims no class: the
+Kernel reports a sibling group's `MVK_NO_WILDCARD` there, and an unknown name's `MVK_INVALID_ENTITY`,
+which this refusal does not tell apart. The structural refusals claim no class either. -/
 def RepeatableNumberRowStepError.diagnostic? : RepeatableNumberRowStepError → Option KernelStaticDiagnostic
   | .guardReadsTarget _ _ => some .errorReferenceToCalculatedField
   | .unguardedAlternative _ => some .errorEmptyPrecondition
@@ -133,21 +136,26 @@ private def checkRepeatableNumberRowAlternative (target : FieldId) (scope : List
     else .error (.guardNotRowBound index)
   else .error (.targetMismatch index target alternative.operation.targetField)
 
-/-- Certify ordered row alternatives in authored order against the first one's target. -/
+/-- Certify ordered row alternatives in authored order against the first one's target, every guard's
+row binding asked before any alternative's own class, as a fixed table asks its guards. -/
 def checkRepeatableNumberRowTable
     (alternatives : List (ComputationAlternative (CheckedRepeatableNumberRowOperation model))) :
     Except RepeatableNumberRowStepError (CheckedRepeatableNumberRowStep model) :=
   match alternatives with
   | [] => .error .empty
   | head :: tail => do
-      let operation := head.operation
-      let target := operation.targetField
-      let scope := operation.target.targetDeclaration.repeatableScope
+      let target := head.operation.target
+      let scope := target.targetDeclaration.repeatableScope
+      if let some position :=
+          ComputationAlternative.firstUnadmittedGuard? (·.rowBoundBool model scope) alternatives then
+        throw (.guardNotRowBound position)
       let guardRequired := !tail.isEmpty
-      let first ← checkRepeatableNumberRowAlternative target scope 1 guardRequired head
+      let first ←
+        checkRepeatableNumberRowAlternative target.targetField scope 1 guardRequired head
       let remaining ← tail.zipIdx.mapM fun (alternative, index) =>
-        checkRepeatableNumberRowAlternative target scope (index + 2) guardRequired alternative
-      pure { operation, first, remaining }
+        checkRepeatableNumberRowAlternative target.targetField scope (index + 2) guardRequired
+          alternative
+      pure { target, first, remaining }
 
 /-- One row operation under an optional presence guard: the one-alternative row table. -/
 def checkRepeatableNumberRowStep (operation : CheckedRepeatableNumberRowOperation model)
@@ -166,7 +174,7 @@ namespace CheckedRepeatableNumberPlanStep
 
 def targetField : CheckedRepeatableNumberPlanStep model → FieldId
   | .fixed table => table.targetField
-  | .row step => step.operation.targetField
+  | .row step => step.target.targetField
 
 /-- Whether the step's guard or operation reads one exact field, at any row. -/
 def referencesField : CheckedRepeatableNumberPlanStep model → FieldId → Bool
@@ -253,18 +261,13 @@ private def executeRow (step : CheckedRepeatableNumberRowStep model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except RepeatableNumberPlanFault (List (SourcedNumericTargetOutcome CellAddr)) :=
-  let select := fun environment =>
-    ComputationAlternative.selectFirst step.alternatives { read := cellAt input read environment }
-  step.operation.target.executeGuardedAtEnvironment input
-    (fun environment => match select environment with
-      | .selected _ => .holds
-      | .noMatch => .notTrue
-      | .poison cause => .poison cause)
-    (fun environment => match select environment with
-      | .selected operation => operation.evaluateAtEnvironmentWithRead read environment
-      -- Unreached: the executor evaluates only a row whose selection holds.
-      | .noMatch | .poison _ => step.operation.evaluateAtEnvironmentWithRead read environment)
-  |>.mapError (.row step.operation.targetField)
+  step.target.executeSelectedAtEnvironment input (fun environment =>
+    match ComputationAlternative.selectFirst step.alternatives
+        { read := cellAt input read environment } with
+    | .selected operation => .selected (operation.evaluateAtEnvironmentWithRead read environment)
+    | .noMatch => .noMatch
+    | .poison cause => .poison cause)
+  |>.mapError (.row step.target.targetField)
 
 private def executeFixed (table : CheckedNumericComputationTable model) (world : World)
     (input : CheckedDocument model)

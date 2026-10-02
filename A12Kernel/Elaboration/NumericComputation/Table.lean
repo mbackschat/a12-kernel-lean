@@ -100,9 +100,9 @@ def certifyNumericComputationTable
   match alternatives with
   | [] => .error .empty
   | first :: remaining => do
-      if let some (_, index) := (first :: remaining).zipIdx.find? fun (alternative, _) =>
-          !alternative.precondition.all (·.wellFormedBool model) then
-        throw (.guardNotAdmitted (index + 1))
+      if let some position :=
+          ComputationAlternative.firstUnadmittedGuard? (·.wellFormedBool model) (first :: remaining) then
+        throw (.guardNotAdmitted position)
       let target := first.operation.operation.core.target.id
       let policy := first.operation.policy
       let guardRequired := !remaining.isEmpty

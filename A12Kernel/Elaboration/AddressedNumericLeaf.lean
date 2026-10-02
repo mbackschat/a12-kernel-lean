@@ -244,9 +244,8 @@ namespace CheckedAddressedNumericTarget
 private def executeAtEnvironmentUsing (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
     (checkTarget : NumericComputationResult → NumericTargetCheckResult)
-    (guard : Env → ComputationConditionResult)
-    (evaluate : Env →
-      Except AddressedNumericLeafFault NumericComputationResult) :
+    (select : Env → ComputationAlternativeSelection
+      (Except AddressedNumericLeafFault NumericComputationResult)) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) := do
   let addressAt (environment : Env) : Except AddressedNumericLeafFault CellAddr := do
@@ -264,13 +263,13 @@ private def executeAtEnvironmentUsing (placement : CheckedAddressedNumericTarget
       })
     (fun environment => do
       let targetAddress ← addressAt environment
-      -- The guard is read first and the operation only when it holds, so an operand read the
-      -- guard withholds is never reached.
-      let outcome ← match guard environment with
-        | .notTrue => pure .noValue
+      -- The selection reads its guards first and evaluates only the operation it selects, so an
+      -- operand read a guard withholds is never reached.
+      let outcome ← match select environment with
+        | .noMatch => pure .noValue
         | .poison cause => pure (.inheritedPoison cause)
-        | .holds =>
-            match checkTarget (← evaluate environment) with
+        | .selected result =>
+            match checkTarget (← result) with
             | .supported outcome => pure outcome
             | .unsupported cause => throw (.targetCheck cause)
       pure {
@@ -287,20 +286,19 @@ def executeAtEnvironment (placement : CheckedAddressedNumericTarget model)
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.executeAtEnvironmentUsing input placement.targetPolicy.check (fun _ => .holds)
-    evaluate
+  placement.executeAtEnvironmentUsing input placement.targetPolicy.check
+    fun environment => .selected (evaluate environment)
 
-/-- Execute through the ordinary unsuppressed target checker under a per-row presence guard. A row
-whose guard is not true clears its target and one whose guard reads poison inherits it, both without
-evaluating the operation; an over-limit row clears without reading the guard. -/
-def executeGuardedAtEnvironment (placement : CheckedAddressedNumericTarget model)
+/-- Execute through the ordinary unsuppressed target checker under a per-row selection among guarded
+alternatives. A row selecting nothing clears its target and one whose selection reads poison inherits
+it, both without evaluating any operation; an over-limit row clears without reading a guard. -/
+def executeSelectedAtEnvironment (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
-    (guard : Env → ComputationConditionResult)
-    (evaluate : Env →
-      Except AddressedNumericLeafFault NumericComputationResult) :
+    (select : Env → ComputationAlternativeSelection
+      (Except AddressedNumericLeafFault NumericComputationResult)) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.executeAtEnvironmentUsing input placement.targetPolicy.check guard evaluate
+  placement.executeAtEnvironmentUsing input placement.targetPolicy.check select
 
 /-- Execute through this placement's own warning-suppressed target checker. -/
 def executeAtEnvironmentScaleWarningSuppressed
@@ -311,7 +309,8 @@ def executeAtEnvironmentScaleWarningSuppressed
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
   placement.executeAtEnvironmentUsing input
-    placement.targetPolicy.checkWithScaleWarningSuppressed (fun _ => .holds) evaluate
+    placement.targetPolicy.checkWithScaleWarningSuppressed
+    fun environment => .selected (evaluate environment)
 
 end CheckedAddressedNumericTarget
 

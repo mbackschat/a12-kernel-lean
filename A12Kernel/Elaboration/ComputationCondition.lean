@@ -37,4 +37,14 @@ def WellFormed (condition : ComputationCondition) (model : FlatModel) : Prop :=
 
 end ComputationCondition
 
+/-- The one-based position of the first alternative whose guard its carrier refuses. A table's
+certifier asks this of every alternative before any alternative's own class, as the Kernel asks a
+guard's name and its index gates ahead of an unguarded alternative wherever either stands
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
+def ComputationAlternative.firstUnadmittedGuard? {Operation : Type}
+    (admits : ComputationCondition → Bool) (alternatives : List (ComputationAlternative Operation)) :
+    Option Nat :=
+  (alternatives.zipIdx.find? fun (alternative, _) => !alternative.precondition.all admits).map
+    (·.2 + 1)
+
 end A12Kernel

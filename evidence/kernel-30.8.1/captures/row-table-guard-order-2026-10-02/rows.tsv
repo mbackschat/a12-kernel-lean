@@ -1,0 +1,7 @@
+# run	row	field	outcome	value
+lazy	p-unreached-poison	Alt/Rows/RD	value	8
+lazy	p-unreached-poison	Alt/Rows/RT	value	7
+lazy	p-unreached-poison	Alt/Rows[2]/RD	cleared	
+lazy	p-unreached-poison	Alt/Rows[2]/RT	cleared	
+lazy	p-unreached-poison	Alt/Rows[3]/RD	value	8
+lazy	p-unreached-poison	Alt/Rows[3]/RT	value	7

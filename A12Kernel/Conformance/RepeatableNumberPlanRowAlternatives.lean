@@ -25,6 +25,7 @@ private def rbId : FieldId := 3
 private def rcId : FieldId := 4
 private def rtId : FieldId := 5
 private def rdId : FieldId := 6
+private def sId : FieldId := 7
 
 private def rowsPath : GroupPath := ["Alt", "Rows"]
 
@@ -35,10 +36,15 @@ private def number (id : FieldId) (name : String) : FlatFieldDecl where
   repeatableScope := [10]
   policy := { kind := .number { scale := 0, signed := true } }
 
+/-- A Number in a sibling repeatable group, which no row of `Rows` binds. -/
+private def sibling : FlatFieldDecl :=
+  { number sId "S" with groupPath := ["Alt", "Sib"], repeatableScope := [20] }
+
 private def model : FlatModel where
   fields := [number g1Id "G1", number g2Id "G2", number raId "RA", number rbId "RB",
-    number rcId "RC", number rtId "RT", number rdId "RD"]
-  repeatableGroups := [{ level := 10, path := rowsPath, repeatability := some 3 }]
+    number rcId "RC", number rtId "RT", number rdId "RD", sibling]
+  repeatableGroups := [{ level := 10, path := rowsPath, repeatability := some 3 },
+    { level := 20, path := ["Alt", "Sib"], repeatability := some 3 }]
 
 private def world : World := { now := { epochMillis := 0 } }
 
@@ -116,6 +122,24 @@ although `G2` holds, so selection aborts rather than passing on; and a malformed
 clean miss poisons it too. -/
 example : reports? [(.absent, .absent), (.malformed, .value 1), (.absent, .malformed)] =
     some [none, some 1, none, none, none, none] := by
+  native_decide
+
+/- Lazy selection: a malformed second guard is never read once the first holds, so rows `1`/`x` and
+`0`/`x` select `RA` while `x`/`x` poisons, as the Kernel computes them. An eager scan of every guard
+would poison all three rows. -/
+example : reports? [(.value 1, .malformed), (.malformed, .malformed), (.value 0, .malformed)] =
+    some [some 7, some 8, none, none, some 7, some 8] := by
+  native_decide
+
+/- Every guard's admission is asked before any alternative's own class: beside an unguarded first
+alternative, a second guard reading the sibling group's `S` is refused as unbound, where the Kernel
+reports `MVK_NO_WILDCARD` alone and not `MVK_ERROR_EMPTY_PRECONDITION`, and so is a guard naming no
+field, where it reports `MVK_INVALID_ENTITY` alone. Neither class is projected here. -/
+example :
+    (match table [(none, "RA"), (some (.fieldFilled sId), "RB")] with
+      | .error (some error) => some error | _ => none) = some (.guardNotRowBound 2) ∧
+    (match table [(none, "RA"), (some (.fieldFilled 99), "RB")] with
+      | .error (some error) => some error | _ => none) = some (.guardNotRowBound 2) := by
   native_decide
 
 /- The two static refusals, each in the first or the later position: an unguarded alternative among
