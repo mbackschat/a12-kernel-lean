@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
@@ -7,16 +7,16 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 namespace A12Kernel
 
 inductive FullDateFirstFilledComputationElabError where
-  | shape (cause : TemporalFirstFilledStarComputationElabError)
+  | shape (cause : TemporalFirstFilledShapeElabError)
   | targetPolicy (cause : FullDateTargetElabError)
   deriving Repr, DecidableEq
 
 /-- Carrier-specific direct-star shape retained beneath the checked full-Date computation boundary. -/
 inductive FullDateFirstFilledShape (model : FlatModel) where
   | iso
-      (shape : CheckedTemporalFirstFilledStarComputation model .fullDateIso)
+      (shape : CheckedTemporalFirstFilledShape model .fullDateIso)
   | dotted
-      (shape : CheckedTemporalFirstFilledStarComputation model .fullDateDotted)
+      (shape : CheckedTemporalFirstFilledShape model .fullDateDotted)
 
 /-- One fixed full-Date target and one direct single-level starred source sharing one exact admitted declaration format. The private constructor keeps the separately checked target policy tied to the assembly route. -/
 structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
@@ -27,17 +27,17 @@ structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
 /-- Check the two exact bounded full-Date formats. The ISO composition is externally measured; dotted target rendering is measured separately while its direct `FirstFilledValue` composition remains pending. Wider formats, policies, operands, nesting, validation use, and materialized-document reconstruction stay outside. -/
 def checkFullDateFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
+    (authored : SurfaceFirstFilledSource) :
     Except FullDateFirstFilledComputationElabError
       (CheckedFullDateFirstFilledComputation model) := do
-  match checkTemporalFirstFilledStarComputation
+  match checkTemporalFirstFilledShape
       model declaringGroup targetField authored .fullDateIso with
   | .ok shape =>
       let targetPolicy ← elaborateFullDateTarget model targetField
         |>.mapError .targetPolicy
       pure { shape := .iso shape, targetPolicy }
   | .error (.targetCarrier _) =>
-      let shape ← checkTemporalFirstFilledStarComputation
+      let shape ← checkTemporalFirstFilledShape
         model declaringGroup targetField authored .fullDateDotted
           |>.mapError .shape
       let targetPolicy ← elaborateFullDateTarget model targetField
@@ -72,11 +72,11 @@ namespace CheckedFullDateFirstFilledComputation
 
 /-- Execute one checked carrier over immutable rows, then let the existing target policy render and classify the selected typed Date. -/
 private def executeWith
-    (shape : CheckedTemporalFirstFilledStarComputation model carrier)
+    (shape : CheckedTemporalFirstFilledShape model carrier)
     (targetPolicy : CheckedFullDateTarget model)
     (input : CheckedDocument model) :
     Except FullDateFirstFilledComputationFault FullDateTargetOutcome := do
-  let resolved ← shape.source.resolveCheckedField input []
+  let resolved ← shape.source.resolve input
     |>.mapError .source
   targetPolicy.evaluate (evalFullDateFirstFilledCells resolved.cells)
     |>.mapError .target

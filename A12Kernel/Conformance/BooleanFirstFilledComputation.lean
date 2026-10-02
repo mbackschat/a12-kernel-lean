@@ -65,13 +65,13 @@ private def nestedStar : SurfaceStarFieldPath := {
 }
 
 private def checked? (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
-  (checkBooleanFirstFilledComputation model ["Review"] targetField authored).toOption
+  (checkBooleanFirstFilledComputation model ["Review"] targetField (.star authored)).toOption
 
 /-- The same check with the declaring group varied instead of the target, which is how a target
 outside the declaring group is expressed under a single model root. -/
 private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :=
-  (checkBooleanFirstFilledComputation model declaringGroup targetField authored).toOption
+  (checkBooleanFirstFilledComputation model declaringGroup targetField (.star authored)).toOption
 
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=

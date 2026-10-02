@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue
@@ -8,40 +8,40 @@ import A12Kernel.Semantics.FirstFilledValue
 namespace A12Kernel
 
 abbrev DateFragmentFirstFilledComputationElabError :=
-  TemporalFirstFilledStarComputationElabError
+  TemporalFirstFilledShapeElabError
 
 /-- One fixed DateFragment target and one direct single-level starred source sharing one exact admitted declaration format. -/
 inductive CheckedDateFragmentFirstFilledComputation (model : FlatModel) where
   | month
-      (shape : CheckedTemporalFirstFilledStarComputation model .monthFragment)
+      (shape : CheckedTemporalFirstFilledShape model .monthFragment)
   | year
-      (shape : CheckedTemporalFirstFilledStarComputation model .yearFragment)
+      (shape : CheckedTemporalFirstFilledShape model .yearFragment)
   | yearMonth
       (shape :
-        CheckedTemporalFirstFilledStarComputation model .yearMonthFragment)
+        CheckedTemporalFirstFilledShape model .yearMonthFragment)
   | monthDay
       (shape :
-        CheckedTemporalFirstFilledStarComputation model .monthDayFragment)
+        CheckedTemporalFirstFilledShape model .monthDayFragment)
 
 /-- Check the four exact admitted DateFragment formats. Direct runtime calibration remains exact only for `MM`; wider operands, nesting, and validation use stay outside. -/
 def checkDateFragmentFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
+    (authored : SurfaceFirstFilledSource) :
     Except DateFragmentFirstFilledComputationElabError
       (CheckedDateFragmentFirstFilledComputation model) :=
-  match checkTemporalFirstFilledStarComputation
+  match checkTemporalFirstFilledShape
       model declaringGroup targetField authored .monthFragment with
   | .ok shape => pure (.month shape)
   | .error (.targetCarrier _) =>
-      match checkTemporalFirstFilledStarComputation
+      match checkTemporalFirstFilledShape
           model declaringGroup targetField authored .yearFragment with
       | .ok shape => pure (.year shape)
       | .error (.targetCarrier _) =>
-          match checkTemporalFirstFilledStarComputation model declaringGroup
+          match checkTemporalFirstFilledShape model declaringGroup
               targetField authored .yearMonthFragment with
           | .ok shape => pure (.yearMonth shape)
           | .error (.targetCarrier _) => do
-              let shape ← checkTemporalFirstFilledStarComputation model
+              let shape ← checkTemporalFirstFilledShape model
                 declaringGroup targetField authored .monthDayFragment
               pure (.monthDay shape)
           | .error cause => throw cause
@@ -76,21 +76,21 @@ namespace CheckedDateFragmentFirstFilledComputation
 
 /-- Evaluate the shared checked DateFragment token scan after a caller has resolved its own scalar or addressed source environment. -/
 def evalResolvedDateFragmentFirstFilled
-    (resolved : ResolvedCheckedStarField) : TokenComputationResult :=
+    (cells : List CheckedAddressedCell) (hasOpenTail : Bool) : TokenComputationResult :=
   let side : ResolvedValueListSide .token := {
-    cells := resolved.cells.map dateFragmentFirstFilledCellAt
-    hasUninstantiatedTail := resolved.topology.domain.hasOpenTail
+    cells := cells.map dateFragmentFirstFilledCellAt
+    hasUninstantiatedTail := hasOpenTail
     hasHaving := false
   }
   (evalFirstFilledToken side).asComputationResult
 
 /-- Execute one checked source over immutable rows and retain only the value/clear/poison token boundary. -/
 private def executeWith
-    (shape : CheckedTemporalFirstFilledStarComputation model carrier)
+    (shape : CheckedTemporalFirstFilledShape model carrier)
     (input : CheckedDocument model) :
     Except CheckedStarDocumentError TokenComputationResult := do
-  let resolved ← shape.source.resolveCheckedField input []
-  pure (evalResolvedDateFragmentFirstFilled resolved)
+  let resolved ← shape.source.resolve input
+  pure (evalResolvedDateFragmentFirstFilled resolved.cells resolved.hasOpenTail)
 
 /-- Execute every admitted DateFragment policy through the same checked document and exact-token scan. -/
 def execute (operation : CheckedDateFragmentFirstFilledComputation model)

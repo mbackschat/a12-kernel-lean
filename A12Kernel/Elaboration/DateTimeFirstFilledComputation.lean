@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.DateTimeComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
@@ -7,22 +7,22 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 namespace A12Kernel
 
 inductive DateTimeFirstFilledComputationElabError where
-  | shape (cause : TemporalFirstFilledStarComputationElabError)
+  | shape (cause : TemporalFirstFilledShapeElabError)
   | targetPolicy (cause : DateTimeTargetElabError)
   deriving Repr, DecidableEq
 
 /-- One fixed ISO whole-second DateTime target and one direct single-level starred source of the same carrier. -/
 structure CheckedDateTimeFirstFilledComputation (model : FlatModel) where
   private mk ::
-  shape : CheckedTemporalFirstFilledStarComputation model .dateTimeIso
+  shape : CheckedTemporalFirstFilledShape model .dateTimeIso
   targetPolicy : CheckedDateTimeTarget model
 
 /-- Check the bounded DateTime computation shape. Alternate formats, operands, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
 def checkDateTimeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
+    (authored : SurfaceFirstFilledSource) :
     Except DateTimeFirstFilledComputationElabError (CheckedDateTimeFirstFilledComputation model) := do
-  let shape ← checkTemporalFirstFilledStarComputation model declaringGroup targetField authored .dateTimeIso |>.mapError .shape
+  let shape ← checkTemporalFirstFilledShape model declaringGroup targetField authored .dateTimeIso |>.mapError .shape
   let targetPolicy ← elaborateDateTimeTarget model targetField |>.mapError .targetPolicy
   pure { shape, targetPolicy }
 
@@ -52,7 +52,7 @@ namespace CheckedDateTimeFirstFilledComputation
 /-- Execute the checked source over immutable rows and render the selected instant through the existing DateTime target policy. -/
 def execute (operation : CheckedDateTimeFirstFilledComputation model) (input : CheckedDocument model) :
     Except DateTimeFirstFilledComputationFault DateTimeTargetOutcome := do
-  let resolved ← operation.shape.source.resolveCheckedField input [] |>.mapError .source
+  let resolved ← operation.shape.source.resolve input |>.mapError .source
   operation.targetPolicy.evaluate (evalDateTimeFirstFilledCells resolved.cells) |>.mapError .target
 
 /-- Execute and classify the one checked FirstFilled outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/

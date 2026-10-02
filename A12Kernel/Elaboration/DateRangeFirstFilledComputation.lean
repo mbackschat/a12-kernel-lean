@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.FieldEntityList
@@ -10,40 +10,40 @@ import A12Kernel.Semantics.TemporalTarget
 namespace A12Kernel
 
 inductive DateRangeFirstFilledComputationElabError where
-  | shape (cause : TemporalFirstFilledStarComputationElabError)
+  | shape (cause : TemporalFirstFilledShapeElabError)
   deriving Repr, DecidableEq
 
 /-- One fixed DateRange target and one direct single-level starred source sharing one admitted declaration profile. -/
 inductive CheckedDateRangeFirstFilledComputation (model : FlatModel) where
   | isoSlash
-      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeIsoSlash)
+      (shape : CheckedTemporalFirstFilledShape model .dateRangeIsoSlash)
   | dayMonthYearDash
-      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeDayMonthYearDash)
+      (shape : CheckedTemporalFirstFilledShape model .dateRangeDayMonthYearDash)
   | yearFragment
-      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeYearFragment)
+      (shape : CheckedTemporalFirstFilledShape model .dateRangeYearFragment)
   | yearMonthFragment
-      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeYearMonthFragment)
+      (shape : CheckedTemporalFirstFilledShape model .dateRangeYearMonthFragment)
   | monthFragment
-      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeMonthFragment)
+      (shape : CheckedTemporalFirstFilledShape model .dateRangeMonthFragment)
   | monthDayFragment
-      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeMonthDayFragment)
+      (shape : CheckedTemporalFirstFilledShape model .dateRangeMonthDayFragment)
   | monthConcatenated
       (shape :
-        CheckedTemporalFirstFilledStarComputation model .dateRangeMonthConcatenated)
+        CheckedTemporalFirstFilledShape model .dateRangeMonthConcatenated)
   | dayMonthDotted
       (shape :
-        CheckedTemporalFirstFilledStarComputation model .dateRangeDayMonthDotted)
+        CheckedTemporalFirstFilledShape model .dateRangeDayMonthDotted)
 
 /-- Offer one admitted declaration profile for the authored target. A target-carrier mismatch means "not this profile", so the caller may offer the next one; every other refusal is reached before the carrier comparison and is therefore shared by all profiles. -/
 private def offerDateRangeFirstFilledCarrier (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath)
+    (authored : SurfaceFirstFilledSource)
     (carrier : TemporalFirstFilledStarCarrier)
-    (wrap : CheckedTemporalFirstFilledStarComputation model carrier →
+    (wrap : CheckedTemporalFirstFilledShape model carrier →
       CheckedDateRangeFirstFilledComputation model) :
-    Except TemporalFirstFilledStarComputationElabError
+    Except TemporalFirstFilledShapeElabError
       (Option (CheckedDateRangeFirstFilledComputation model)) :=
-  match checkTemporalFirstFilledStarComputation model declaringGroup targetField
+  match checkTemporalFirstFilledShape model declaringGroup targetField
       authored carrier with
   | .ok shape => pure (some (wrap shape))
   | .error (.targetCarrier _) => pure none
@@ -51,9 +51,9 @@ private def offerDateRangeFirstFilledCarrier (model : FlatModel)
 
 /-- Take the first offered profile that owns the target, preserving authored offer order. -/
 private def firstOfferedDateRangeFirstFilled {model : FlatModel} :
-    List (Unit → Except TemporalFirstFilledStarComputationElabError
+    List (Unit → Except TemporalFirstFilledShapeElabError
       (Option (CheckedDateRangeFirstFilledComputation model))) →
-    Except TemporalFirstFilledStarComputationElabError
+    Except TemporalFirstFilledShapeElabError
       (Option (CheckedDateRangeFirstFilledComputation model))
   | [] => pure none
   | offer :: rest => do
@@ -64,7 +64,7 @@ private def firstOfferedDateRangeFirstFilled {model : FlatModel} :
 /-- Check one of the admitted matching DateRange declaration profiles without widening operands, nesting, or document architecture. -/
 def checkDateRangeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
+    (authored : SurfaceFirstFilledSource) :
     Except DateRangeFirstFilledComputationElabError
       (CheckedDateRangeFirstFilledComputation model) := do
   let offer := offerDateRangeFirstFilledCarrier model declaringGroup targetField authored
@@ -318,11 +318,11 @@ def targetDeclaration :
 
 /-- Execute one checked carrier through the single document and render its exact or yearless cell through the retained target policy. -/
 private def executeWith
-    (shape : CheckedTemporalFirstFilledStarComputation model carrier)
+    (shape : CheckedTemporalFirstFilledShape model carrier)
     (format : DateRangeInputFormat)
     (input : CheckedDocument model) :
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
-  let resolved ← shape.source.resolveCheckedField input []
+  let resolved ← shape.source.resolve input
     |>.mapError .source
   format.evaluateComputationResult
       (evalDateRangeFirstFilledCells resolved.cells)

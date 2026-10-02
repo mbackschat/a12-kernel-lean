@@ -94,7 +94,7 @@ private def star (field : String) : SurfaceStarFieldPath := {
 private def checkedFor? (candidate : FlatModel)
     (targetField : FieldId) (field : String) :=
   (checkDateRangeFirstFilledComputation
-    candidate ["Cart"] targetField (star field)).toOption
+    candidate ["Cart"] targetField (.star (star field))).toOption
 
 private def checked? := checkedFor? model
 
@@ -102,7 +102,7 @@ private def checked? := checkedFor? model
 group is expressed under a single model root. -/
 private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId) (field : String) :=
   (checkDateRangeFirstFilledComputation
-    model declaringGroup targetField (star field)).toOption
+    model declaringGroup targetField (.star (star field))).toOption
 
 private def preparedFor? (candidate : FlatModel) :
     Option (PreparedFlatStringContext candidate builtinStringPatternCompiler) :=

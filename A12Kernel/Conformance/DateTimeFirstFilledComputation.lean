@@ -60,7 +60,7 @@ private def nestedStar : SurfaceStarFieldPath := {
 }
 
 private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
-  (checkDateTimeFirstFilledComputation model declaringGroup targetField authored).toOption
+  (checkDateTimeFirstFilledComputation model declaringGroup targetField (.star authored)).toOption
 
 private def checked? (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
   checkedAt? ["Cart"] targetField authored

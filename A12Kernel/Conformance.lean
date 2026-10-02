@@ -202,6 +202,7 @@ import A12Kernel.Conformance.FixedRepetitionHaving
 import A12Kernel.Conformance.FixedCurrentRepetitionNumeric
 import A12Kernel.Conformance.BoundCurrentRepetitionNumeric
 import A12Kernel.Conformance.HavingFilterDiagnostic
+import A12Kernel.Conformance.FirstFilledFieldList
 import A12Kernel.Conformance.FirstFilledValue
 import A12Kernel.Conformance.FirstFilledValueElaboration
 import A12Kernel.Conformance.FlatEnumeration

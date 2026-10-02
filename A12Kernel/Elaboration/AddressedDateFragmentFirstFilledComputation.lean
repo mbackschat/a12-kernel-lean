@@ -141,7 +141,7 @@ private def evaluateAtWithRead
     targetField := { field := operation.targetField, path := targetPath }
     result :=
       CheckedDateFragmentFirstFilledComputation.evalResolvedDateFragmentFirstFilled
-        resolved
+        resolved.cells resolved.topology.domain.hasOpenTail
   }
 
 /-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact

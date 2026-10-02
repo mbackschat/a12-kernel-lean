@@ -1,11 +1,10 @@
-import A12Kernel.Elaboration.CheckedStarDocument
-import A12Kernel.Elaboration.CheckedStarShape
+import A12Kernel.Elaboration.FirstFilledFieldSource
 import A12Kernel.Elaboration.BooleanComputationResult
 import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Typed Boolean `FirstFilledValue` result and fixed computation
 
-This module owns the fixed direct one-star Boolean computation and specializes the shared target-polymorphic typed result/application fold.
+This module owns the fixed-target Boolean computation over a direct star or a direct list and specializes the shared target-polymorphic typed result/application fold.
 -/
 
 namespace A12Kernel
@@ -17,60 +16,83 @@ inductive BooleanFirstFilledComputationElabError where
   | source (cause : StarPathElabError)
   | sourceKind (path : List String) (actual : SurfaceScalarKind)
   | sourceShape (path : List String)
+  /-- A list source the shared entity list or its plain-field reading refuses. -/
+  | list (cause : FirstFilledListElabError)
+  /-- A list source naming the target itself. -/
+  | targetSelfReference (path : List String)
   deriving Repr, DecidableEq
 
-/-- One fixed Boolean target and one direct single-level starred Boolean source certified against the same model. -/
+/-- One fixed Boolean target and one Boolean source, a direct single-level star or a direct list of
+plain nonrepeatable fields, certified against the same model. -/
 structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   private mk ::
   target : FlatFieldDecl
-  source : CheckedStarFieldPath model
+  source : FirstFilledFieldSource model
   /-- The group the computation is declared in, which the target need not lie in. -/
   declaringGroup : GroupPath
-  /-- The declaring group is a representable path, certified by the star elaboration above rather
+  /-- The declaring group is a representable path, certified by the source's elaboration rather
   than re-tested here. Placement itself is unconstrained; only representability survives. -/
   declaringGroupValid : GroupPath.isValid declaringGroup = true
   targetBoolean : target.policy.kind = .boolean
   targetFixed : target.repeatableScope = []
-  sourceBoolean : source.declaration.policy.kind = .boolean
-  sourceDirectSingleStar : source.isDirectSingleStar = true
+  sourceBoolean : source.declarations.all (·.policy.kind == .boolean) = true
+  sourceShape : source.admittedShape = true
+  excludesTarget : source.referencesField target.id = false
 
-/-- Check the exact externally measured Boolean computation shape. Wider `entitySpec`, nested repetition, validation use, and target application remain outside this boundary. -/
-def checkBooleanFirstFilledComputation
-    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
-    Except BooleanFirstFilledComputationElabError
-      (CheckedBooleanFirstFilledComputation model) := do
-  match hStar : elaborateStarFieldPath model declaringGroup authored with
-  | .error cause => .error (.source cause)
-  | .ok source => do
-    let target ← model.lookupUniqueId targetField |>.mapError .target
-    -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
-    -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
-    -- derives no iteration, so the Kernel admits it from an unrelated group.
-    if hFixed : target.repeatableScope = [] then
-      if hTargetKind : target.policy.kind = .boolean then
-        if hSourceKind : source.declaration.policy.kind = .boolean then
-          if hShape : source.isDirectSingleStar = true then
+private def checkBooleanFirstFilledSourceAgainst (model : FlatModel) (target : FlatFieldDecl)
+    (declaringGroup : GroupPath) (declaringGroupValid : GroupPath.isValid declaringGroup = true)
+    (source : FirstFilledFieldSource model) :
+    Except BooleanFirstFilledComputationElabError (CheckedBooleanFirstFilledComputation model) := do
+  if hFixed : target.repeatableScope = [] then
+    if hTargetKind : target.policy.kind = .boolean then
+      if hSourceKind : source.declarations.all (·.policy.kind == .boolean) = true then
+        if hShape : source.admittedShape = true then
+          if hExcludes : source.referencesField target.id = false then
             pure {
-              target
-              source
-              declaringGroup
-              declaringGroupValid :=
-                elaborateStarFieldPath_declaringGroupValid hStar
+              target, source, declaringGroup, declaringGroupValid
               targetBoolean := hTargetKind
               targetFixed := hFixed
               sourceBoolean := hSourceKind
-              sourceDirectSingleStar := hShape
-            }
-          else
-            throw (.sourceShape source.declaration.path)
-        else
-          throw (.sourceKind source.declaration.path
-            source.declaration.policy.kind.surfaceKind)
+              sourceShape := hShape
+              excludesTarget := hExcludes }
+          else throw (.targetSelfReference target.path)
+        else throw (.sourceShape (source.declarations.head?.map (·.path) |>.getD target.path))
       else
-        throw (.targetKind target.path target.policy.kind.surfaceKind)
+        let other := (source.declarations.find? (·.policy.kind != .boolean)).getD target
+        throw (.sourceKind other.path other.policy.kind.surfaceKind)
     else
-      throw (.targetRepeatable target.path)
+      throw (.targetKind target.path target.policy.kind.surfaceKind)
+  else
+    throw (.targetRepeatable target.path)
+
+/-- Check the externally measured Boolean computation shapes: a direct single-level star, or a direct
+list read as the star is. Wider `entitySpec`, nested repetition, validation use, and target
+application remain outside this boundary. -/
+def checkBooleanFirstFilledComputation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceFirstFilledSource) :
+    Except BooleanFirstFilledComputationElabError
+      (CheckedBooleanFirstFilledComputation model) := do
+  match authored with
+  | .star path =>
+    match hStar : elaborateStarFieldPath model declaringGroup path with
+    | .error cause => .error (.source cause)
+    | .ok source => do
+      let target ← model.lookupUniqueId targetField |>.mapError .target
+      -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+      -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+      -- derives no iteration, so the Kernel admits it from an unrelated group.
+      checkBooleanFirstFilledSourceAgainst model target declaringGroup
+        (elaborateStarFieldPath_declaringGroupValid hStar) (.star source)
+  | .list list => do
+    -- As on the temporal shape: the list resolves at the target's group first, the target after it.
+    let targetGroup :=
+      ((model.lookupUniqueId targetField).toOption.map (·.groupPath)).getD declaringGroup
+    let checked ← elaborateFirstFilledFieldList model declaringGroup targetGroup list
+      |>.mapError .list
+    let target ← model.lookupUniqueId targetField |>.mapError .target
+    checkBooleanFirstFilledSourceAgainst model target declaringGroup checked.declaringGroupValid
+      (.list checked.fields)
 
 /-- Classify one checked Boolean source cell for computation-phase first-filled selection. -/
 def booleanFirstFilledCellAt (cell : CheckedCell) : FirstFilledBooleanCell :=
@@ -129,7 +151,7 @@ namespace CheckedBooleanFirstFilledComputation
 def execute (operation : CheckedBooleanFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except CheckedStarDocumentError FirstFilledBooleanComputationResult := do
-  let resolved ← operation.source.resolveCheckedField input []
+  let resolved ← operation.source.resolve input
   pure (evalFirstFilledBoolean
     (resolved.cells.map fun cell => booleanFirstFilledCellAt cell.cell))
 

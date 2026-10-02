@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.TimeComputation
 
 /-! # Direct one-star Time `FirstFilledValue` computation -/
@@ -6,23 +6,23 @@ import A12Kernel.Elaboration.TimeComputation
 namespace A12Kernel
 
 inductive TimeFirstFilledComputationElabError where
-  | shape (cause : TemporalFirstFilledStarComputationElabError)
+  | shape (cause : TemporalFirstFilledShapeElabError)
   | targetPolicy (cause : TimeTargetElabError)
   deriving Repr, DecidableEq
 
 /-- One fixed `HH:mm:ss` Time target and one direct single-level starred source of the same bounded carrier. -/
 structure CheckedTimeFirstFilledComputation (model : FlatModel) where
   private mk ::
-  shape : CheckedTemporalFirstFilledStarComputation model .timeHms
+  shape : CheckedTemporalFirstFilledShape model .timeHms
   targetPolicy : CheckedClockFormatTarget model
 
 /-- Check the bounded Time computation shape. Wider formats, policies, operands, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
 def checkTimeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
+    (authored : SurfaceFirstFilledSource) :
     Except TimeFirstFilledComputationElabError
       (CheckedTimeFirstFilledComputation model) := do
-  let shape ← checkTemporalFirstFilledStarComputation
+  let shape ← checkTemporalFirstFilledShape
     model declaringGroup targetField authored .timeHms
       |>.mapError .shape
   let targetPolicy ← elaborateClockFormatTarget model targetField
@@ -53,7 +53,7 @@ namespace CheckedTimeFirstFilledComputation
 def execute (operation : CheckedTimeFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except CheckedStarDocumentError TimeTargetOutcome := do
-  let resolved ← operation.shape.source.resolveCheckedField input []
+  let resolved ← operation.shape.source.resolve input
   pure (operation.targetPolicy.evaluate
     (evalTimeFirstFilledCells resolved.cells))
 

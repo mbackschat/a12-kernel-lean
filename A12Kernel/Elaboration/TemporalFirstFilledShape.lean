@@ -1,7 +1,11 @@
-import A12Kernel.Elaboration.CheckedStarDocument
-import A12Kernel.Elaboration.CheckedStarShape
+import A12Kernel.Elaboration.FirstFilledFieldSource
 
-/-! # Shared direct-star temporal `FirstFilledValue` computation shape -/
+/-! # Shared fixed-target temporal `FirstFilledValue` computation shape
+
+One fixed target and one source, a direct single-level star or a direct list of plain nonrepeatable
+fields, sharing a completed scalar temporal or DateRange profile. A DateRange list is the direct
+DateRange carrier's, which owns its measured profile classes, so this shape admits a list only over the
+scalar temporal profiles. -/
 
 namespace A12Kernel
 
@@ -130,77 +134,109 @@ def TemporalFirstFilledStarCarrier.acceptsSource
       targetComponents == sourceComponents
   | _, _ => target == source
 
-inductive TemporalFirstFilledStarComputationElabError where
+inductive TemporalFirstFilledShapeElabError where
   | target (cause : ResolveError)
   | targetRepeatable (path : List String)
   | targetCarrier (path : List String)
   | source (cause : StarPathElabError)
   | sourceCarrier (path : List String)
   | sourceShape (path : List String)
+  /-- A list source the shared entity list or its plain-field reading refuses. -/
+  | list (cause : FirstFilledListElabError)
+  /-- A list source naming the target itself. -/
+  | targetSelfReference (path : List String)
   deriving Repr, DecidableEq
 
-/-- One fixed target and one direct single-level starred source with the same completed scalar temporal or DateRange carrier.
+/-- One fixed target and one source sharing a completed scalar temporal or DateRange carrier.
 
-The declaring group is retained because a consumer needs the authored declaration site, **not** because it constrains where the target may sit, and not because it is always the operand's resolution base — an absolute operand resolves from the model root regardless of it. This family carries no placement gate: its target is always fixed and its operand is always a star aggregate, so no iteration is ever derived and the Kernel's containment gate cannot fire. See [the fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement), which admits this exact shape from an unrelated sibling group. -/
-structure CheckedTemporalFirstFilledStarComputation
+The declaring group is retained because a consumer needs the authored declaration site, **not** because it constrains where the target may sit, and not because it is always the operand's resolution base — an absolute operand resolves from the model root regardless of it. This family carries no placement gate: its target is always fixed and its source is a star aggregate or a list of nonrepeatable fields, so no iteration is ever derived and the Kernel's containment gate cannot fire. See [the fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement), which admits the star shape from an unrelated sibling group. -/
+structure CheckedTemporalFirstFilledShape
     (model : FlatModel) (carrier : TemporalFirstFilledStarCarrier) where
   private mk ::
   target : FlatFieldDecl
-  source : CheckedStarFieldPath model
+  source : FirstFilledFieldSource model
   /-- The group the computation is declared in, which the target need not lie in or below. -/
   declaringGroup : GroupPath
-  /-- The declaring group is a representable path, certified by the star elaboration above rather
+  /-- The declaring group is a representable path, certified by the source's elaboration rather
   than re-tested here. Placement itself is unconstrained; only representability survives. -/
   declaringGroupValid : GroupPath.isValid declaringGroup = true
-  /-- The source's own declared profile, which a DateRange crossing lets differ from the target's. -/
+  /-- The source's own declared profile, which a DateRange crossing lets differ from the target's;
+  every listed field repeats it. -/
   sourceProfile : TemporalFirstFilledStarCarrier
   targetCarrier : target.temporalFirstFilledStarCarrier? = some carrier
   targetFixed : target.repeatableScope = []
   sourceCarrier :
-    source.declaration.temporalFirstFilledStarCarrier? = some sourceProfile
+    source.declarations.all (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true
   sourceAccepted : carrier.acceptsSource sourceProfile = true
-  sourceDirectSingleStar : source.isDirectSingleStar = true
+  sourceShape : source.admittedShape = true
+  excludesTarget : source.referencesField target.id = false
 
-/-- Check the target/source/direct-star shape shared by the completed DateFragment, full-Date, Time, DateTime, and DateRange computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
-def checkTemporalFirstFilledStarComputation
-    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) (carrier : TemporalFirstFilledStarCarrier) :
-    Except TemporalFirstFilledStarComputationElabError
-      (CheckedTemporalFirstFilledStarComputation model carrier) := do
-  match hStar : elaborateStarFieldPath model declaringGroup authored with
-  | .error cause => .error (.source cause)
-  | .ok source => do
-    let target ← model.lookupUniqueId targetField |>.mapError .target
-    -- No placement test. `elaborateStarFieldPath` above already rejects an unrepresentable declaring
-    -- group, and placement itself is unconstrained for this shape: a fixed target under a star
-    -- aggregate derives no iteration, so the Kernel admits it from an unrelated sibling group.
-    if hFixed : target.repeatableScope = [] then
-      if hTarget : target.temporalFirstFilledStarCarrier? = some carrier then
-        match hSource : source.declaration.temporalFirstFilledStarCarrier? with
-        | none => throw (.sourceCarrier source.declaration.path)
+private def checkTemporalFirstFilledSourceAgainst (model : FlatModel)
+    (target : FlatFieldDecl) (carrier : TemporalFirstFilledStarCarrier)
+    (declaringGroup : GroupPath) (declaringGroupValid : GroupPath.isValid declaringGroup = true)
+    (source : FirstFilledFieldSource model) :
+    Except TemporalFirstFilledShapeElabError (CheckedTemporalFirstFilledShape model carrier) := do
+  if hFixed : target.repeatableScope = [] then
+    if hTarget : target.temporalFirstFilledStarCarrier? = some carrier then
+      match source.declarations with
+      | [] => throw (.sourceShape target.path)
+      | first :: _ =>
+        match first.temporalFirstFilledStarCarrier? with
+        | none => throw (.sourceCarrier first.path)
         | some sourceProfile =>
-          if hAccepted : carrier.acceptsSource sourceProfile = true then
-            if hShape : source.isDirectSingleStar = true then
-              pure {
-                target
-                source
-                declaringGroup
-                declaringGroupValid :=
-                  elaborateStarFieldPath_declaringGroupValid hStar
-                sourceProfile
-                targetCarrier := hTarget
-                targetFixed := hFixed
-                sourceCarrier := hSource
-                sourceAccepted := hAccepted
-                sourceDirectSingleStar := hShape
-              }
-            else
-              throw (.sourceShape source.declaration.path)
+          if hSource : source.declarations.all
+              (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true then
+            if hAccepted : carrier.acceptsSource sourceProfile = true then
+              if hShape : source.admittedShape = true then
+                if hExcludes : source.referencesField target.id = false then
+                  pure {
+                    target, source, declaringGroup, declaringGroupValid, sourceProfile
+                    targetCarrier := hTarget
+                    targetFixed := hFixed
+                    sourceCarrier := hSource
+                    sourceAccepted := hAccepted
+                    sourceShape := hShape
+                    excludesTarget := hExcludes }
+                else throw (.targetSelfReference target.path)
+              else throw (.sourceShape first.path)
+            else throw (.sourceCarrier first.path)
           else
-            throw (.sourceCarrier source.declaration.path)
-      else
-        throw (.targetCarrier target.path)
-    else
-      throw (.targetRepeatable target.path)
+            -- A list whose fields do not all repeat the first's profile. Each profile has one
+            -- format, so two differing profiles either differ in format, which the Kernel refuses
+            -- (spec/07's identical-format rule), or share one across kinds, which the Kernel admits
+            -- and this carrier set does not represent; neither claims a Kernel class here.
+            throw (.sourceCarrier ((source.declarations.find?
+              (·.temporalFirstFilledStarCarrier? != some sourceProfile)).map (·.path) |>.getD first.path))
+    else throw (.targetCarrier target.path)
+  else throw (.targetRepeatable target.path)
+
+/-- Check the target and source shared by the completed DateFragment, full-Date, Time, DateTime, and DateRange computations. Runtime payload and target-policy evaluation remain carrier-owned, and a list over a DateRange profile is refused here because the direct DateRange carrier owns it. -/
+def checkTemporalFirstFilledShape
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceFirstFilledSource) (carrier : TemporalFirstFilledStarCarrier) :
+    Except TemporalFirstFilledShapeElabError
+      (CheckedTemporalFirstFilledShape model carrier) := do
+  match authored with
+  | .star path =>
+    match hStar : elaborateStarFieldPath model declaringGroup path with
+    | .error cause => .error (.source cause)
+    | .ok source => do
+      let target ← model.lookupUniqueId targetField |>.mapError .target
+      -- No placement test. `elaborateStarFieldPath` above already rejects an unrepresentable
+      -- declaring group, and placement itself is unconstrained for this shape: a fixed target under
+      -- a star aggregate derives no iteration, so the Kernel admits it from an unrelated sibling group.
+      checkTemporalFirstFilledSourceAgainst model target carrier declaringGroup
+        (elaborateStarFieldPath_declaringGroupValid hStar) (.star source)
+  | .list list => do
+    -- The shape resolves first, placed at the target's group as on every measured computation
+    -- carrier, and the target after it, as the direct DateRange list does.
+    let targetGroup :=
+      ((model.lookupUniqueId targetField).toOption.map (·.groupPath)).getD declaringGroup
+    let checked ← elaborateFirstFilledFieldList model declaringGroup targetGroup list
+      |>.mapError .list
+    let target ← model.lookupUniqueId targetField |>.mapError .target
+    if carrier.dateRangeComponents?.isSome then throw (.sourceShape target.path)
+    checkTemporalFirstFilledSourceAgainst model target carrier declaringGroup
+      checked.declaringGroupValid (.list checked.fields)
 
 end A12Kernel
