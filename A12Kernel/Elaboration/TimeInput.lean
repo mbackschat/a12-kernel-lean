@@ -96,4 +96,39 @@ def CheckedTimeInputField.observe (checked : CheckedTimeInputField)
     (phase : Phase) (raw : RawCell String) : CellObservation TimeOfDay :=
   observeCell phase (checked.checkStored raw)
 
+/-- The day a stored clock is anchored on to give it a `Value`: 1970-01-01, the day `spec/05` names for
+the Kernel's own Time constants. -/
+def timeAnchorDate : CivilDate :=
+  { parts := { year := 1970, month := 1, day := 1 }, real := by decide }
+
+/-- The bounded classifier cannot anchor a clock outside its exact model-zone profile. -/
+inductive TimeInputError where
+  | unsupportedZone (zoneId : String)
+  | unanchored (time : TimeOfDay)
+  deriving Repr, DecidableEq
+
+/-- Classify stored Time text under its certified declaration into a `Value`, anchoring the clock on
+`timeAnchorDate` in the model zone. The anchor exists because a `Value` must carry an instant; no
+reader audited on 2026-10-02 observes it, since a date-free field comparison compares clocks, a sub-day
+difference refuses a date-free operand, and extraction, aggregation and distinct counting read the clock.
+Formal text failures are successful classifications with `checkStored`'s one cause. -/
+def CheckedTimeInputField.classifyStoredForModel (_checked : CheckedTimeInputField)
+    (zoneId text : String) : Except TimeInputError RawCell := do
+  let profile ← match ModelZone.ConcreteProfile.ofId? zoneId with
+    | some profile => pure profile
+    | none => throw (.unsupportedZone zoneId)
+  if text.isEmpty then
+    pure .presentEmpty
+  else
+    match decodeTimeLiteral? text with
+    | none => pure (.rejected .dateFormat)
+    | some clock =>
+        let anchored := do
+          let day ← FullDate.ofCivil? timeAnchorDate
+          let wall ← LocalDateTime.ofDateHms? day clock.hour clock.minute clock.second
+          profile.resolveLocal? wall
+        match anchored with
+        | some instant => pure (.parsed (.temporal (.time instant clock)))
+        | none => throw (.unanchored clock)
+
 end A12Kernel

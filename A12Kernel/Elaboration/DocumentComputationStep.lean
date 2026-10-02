@@ -4,14 +4,15 @@ import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
 import A12Kernel.Elaboration.EnumerationComputation
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.FullDateComputation
+import A12Kernel.Elaboration.TimeComputation
 
 /-! # Whole-document computation steps
 
 A computation whose evaluator reads the whole document joins a scalar plan as one step. The step carries
 its target, the fields it reads, a proof that it does not read its own target, and an evaluator returning
 the target's outcome together with the cell a later computation reads for it. Day and sub-day DateTime
-shifts, a full-Date computation and an Enumeration copy are its instances; each is one constructor here,
-and the plan's laws are stated once over the step rather than once per family.
+shifts, a full-Date computation, a Time construction and an Enumeration copy are its instances; each is
+one constructor here, and the plan's laws are stated once over the step rather than once per family.
 
 The read-back cell is the rule every instance shares. A later computation reads a completed target as the
 document would read its stored rendering, a cleared one as empty, and an errored or poisoned one as
@@ -22,9 +23,9 @@ offset its text denotes rather than at the instant computed
 Date the target retains as errored reaches its readers as poison under both presence tests
 ([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-document-step-join)).
 
-A Time construction is not an instance yet. A clock declaration has no `Value` derivable from its stored
-text (`CheckedDocument.temporallyCoherent`), so a read-back has to choose the instant a Time value
-carries; no reader observes it, since date-free comparisons compare clocks. -/
+A completed Time is read back through `CheckedTimeInputField.classifyStoredForModel`, which anchors the
+clock on one fixed day because a `Value` must carry an instant; that classifier names the readers
+audited for never observing it. -/
 
 namespace A12Kernel
 
@@ -32,6 +33,7 @@ namespace A12Kernel
 inductive DocumentTargetOutcome where
   | dateTime (outcome : DateTimeTargetOutcome)
   | fullDate (outcome : FullDateTargetOutcome)
+  | time (outcome : TimeTargetOutcome)
   | enumeration (outcome : StringTargetOutcome)
   deriving Repr, DecidableEq
 
@@ -42,8 +44,10 @@ inductive DocumentComputationStepFault where
   | dateTimeDayShift (cause : DateTimeDayShiftComputationFault)
   | dateTimeSubdayShift (cause : DateTimeSubdayShiftComputationFault)
   | fullDate (cause : FullDateComputationFault)
+  | timeConstruction (cause : TimeComponentsFault)
   | dateTimeRead (cause : DateTimeInputError)
   | fullDateRead (cause : FullDateInputError)
+  | timeRead (cause : TimeInputError)
   | targetNotReadable
   deriving Repr, DecidableEq
 
@@ -83,6 +87,15 @@ def fullDate (model : FlatModel) (target : FieldId) :
   | .accepted stored =>
       storedText model target (certifyFullDateInputField · |>.toOption)
         CheckedFullDateInputField.classifyStoredForModel .fullDateRead stored.text
+
+/-- A completed Time target, read back from its rendering with the clock anchored in the model zone. -/
+def time (model : FlatModel) (target : FieldId) :
+    TimeTargetOutcome → Except DocumentComputationStepFault CheckedCell
+  | .noValue => pure empty
+  | .poison _ => pure poison
+  | .accepted stored =>
+      storedText model target (certifyTimeInputField · |>.toOption)
+        CheckedTimeInputField.classifyStoredForModel .timeRead stored.text
 
 /-- A completed Enumeration target, read as its declaration reads the stored token. -/
 def enumeration (target : CheckedEnumerationComputationTarget model) :
@@ -152,6 +165,18 @@ def ofFullDate (operation : CheckedFullDateComputation model) :
     let outcome ← (operation.evaluateOutcome world document).mapError .fullDate
     let cell ← DocumentComputationReadBack.fullDate model operation.target.checked.target.id outcome
     pure (.fullDate outcome, cell)
+
+/-- A Time construction from document-only components. -/
+def ofTimeConstruction (operation : CheckedTimeConstructionComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.checked.target.id
+  targetKind := .temporal .time
+  referencesField := operation.components.referencesField
+  excludesTarget := operation.targetNotReferenced
+  run _ document := do
+    let outcome ← (operation.evaluateOutcome document).mapError .timeConstruction
+    let cell ← DocumentComputationReadBack.time model operation.target.checked.target.id outcome
+    pure (.time outcome, cell)
 
 /-- An Enumeration copy of a field or a literal, read from the document's checked cells. -/
 def ofEnumeration (operation : CheckedEnumerationComputationOperation model) :
