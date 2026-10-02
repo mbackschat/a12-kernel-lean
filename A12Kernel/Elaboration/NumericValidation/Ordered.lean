@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.NumericValidation.Core
-import A12Kernel.Elaboration.FilledFieldGroupCount
+import A12Kernel.Elaboration.FieldFillList
 
 /-! # Checked ordered numeric validation
 
@@ -23,9 +23,9 @@ inductive OrderedNumericValidationAtom (model : FlatModel) where
   A starred member contributes its in-capacity instantiated row count, which needs document row
   topology, so this arm resolves only on the addressed route. -/
   | filledGroupCountMixed (operands : List (CheckedGroupCountOperand model))
-  /-- `NumberOfFilledFields` over one fixed or starred group operand, read on the addressed route
-  because the group's checked extent needs the document's row topology. -/
-  | filledFieldCount (source : CheckedFilledFieldCountGroupSource model)
+  /-- `NumberOfFilledFields` over a field-fill list, read on the addressed route because a starred or
+  group operand's checked extent needs the document's row topology. -/
+  | filledFieldCount (source : CheckedFieldFillList model)
 
 /-- One model-indexed numeric comparison whose atom resolver, rather than the containing leaf, owns relevance timing and addressed-source selection. -/
 abbrev OrderedNumericComparison (model : FlatModel) :=

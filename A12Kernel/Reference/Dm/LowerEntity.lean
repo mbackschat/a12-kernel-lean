@@ -84,6 +84,11 @@ def lowerEntityOperand (model : FlatModel) (group : GroupPath) :
         if filter.isSome then refuse "EntityOperand" "filtered starred group"
         pure (.starredGroup { base := path.base, groups := path.starGroups })
       else if path.segments.any (·.star) then
+        -- A starred path names a group below its star when its unstarred spelling names no field.
+        let unstarred : Path := { path with segments := path.segments.map fun segment => { segment with star := false } }
+        if (unstarred.toFieldPath?).all (!namesField model group ·) then
+          if filter.isSome || category.isSome then refuse "EntityOperand" "filtered starred group"
+          return .starredGroup { base := path.base, groups := path.starGroups }
         let some star := path.toStarFieldPath? | refuse "EntityOperand" "star path"
         if category.isSome then refuse "EntityOperand" "category on a star"
         match filter with

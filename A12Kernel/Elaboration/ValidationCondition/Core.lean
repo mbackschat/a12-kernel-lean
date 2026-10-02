@@ -251,10 +251,10 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   /-- An explicit `Valid`/`Invalid` predicate over a registered custom type. The operand is a single
   nonrepeatable field, so this leaf reads like a flat one and carries no iteration of its own. -/
   | customFieldValidity (leaf : CheckedCustomFieldValidityLeaf model)
-  /-- One of the seven field-fill quantifiers over one fixed or starred group operand. The leaf is
+  /-- One of the seven field-fill quantifiers over a field-fill list. The leaf is
   not a projection of `NumberOfFilledFields`: a formally invalid cell leaves the count unavailable
   while `AtLeastOneFieldFilled` still fires on a filled sibling. -/
-  | fieldFill (operator : FieldFillQuantifier) (source : CheckedFilledFieldCountGroupSource model)
+  | fieldFill (operator : FieldFillQuantifier) (source : CheckedFieldFillList model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -547,7 +547,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
-      source.source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
+      source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
 
 
 end ValidationConditionLeaf

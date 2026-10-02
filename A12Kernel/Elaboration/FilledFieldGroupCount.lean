@@ -39,6 +39,15 @@ def declarations (checked : CheckedFilledFieldCountGroupSource model) :
     List FlatFieldDecl :=
   checked.first :: checked.rest
 
+/-- The validation observation of every cell in the operand's in-capacity extent, the one stream the
+    count, the tally and an entity list holding this operand all read. -/
+def observations (checked : CheckedFilledFieldCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (List CellObservation) := do
+  let resolved ← document.resolveCheckedGroupEntityOperandCore outer
+    checked.source.boundLevelCount checked.declarations
+  pure (resolved.inCapacityAddressedCells.map fun addressed => observeCell .validation addressed.cell)
+
 /-- Evaluate the measured full-validation group extent with the existing empty/filled/formal-invalid count semantics. This returns the count only; comparison movement for a group source remains outside until a non-vacuous polarity observation fixes it.
 
     The domain is the **in-capacity** projection, opted into here exactly as the starred carrier's
@@ -52,12 +61,8 @@ def declarations (checked : CheckedFilledFieldCountGroupSource model) :
 def evaluateCheckedDocumentValidation
     (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError FilledFieldCount := do
-  let resolved ← document.resolveCheckedGroupEntityOperandCore outer
-    checked.source.boundLevelCount checked.declarations
-  pure (numberOfFilledFields
-    (resolved.inCapacityAddressedCells.map fun addressed =>
-      observeCell .validation addressed.cell))
+    Except CheckedAddressingError FilledFieldCount :=
+  numberOfFilledFields <$> checked.observations document outer
 
 /-- Lift the validation count against the operand's declared **slot capacity**, so the count stays
     grow-only until every slot the operand can reach is filled.
@@ -74,16 +79,22 @@ def evaluateCheckedDocumentValidation
     and [nested-star](../../docs/sources/group-and-iteration-probes.md#src-nested-star-bound-outer-level)
     captures, read through the population replay on 2026-10-02. No retained row types a starred
     count at capacity. An unretained maximum returns `none`, which no authorable model reaches. -/
+def countCapacity? (checked : CheckedFilledFieldCountGroupSource model) : Option Nat :=
+  match checked.source with
+  | .fixed _ => model.groupSubtreeSlotCapacity? checked.source.groupPath
+  | .starredPresence _ | .starred _ =>
+      model.declarationsSlotCapacity? checked.source.boundLevelCount checked.declarations
+
+/-- The declared slots the declared-range field-fill predicates read. -/
+def fillCapacity? (checked : CheckedFilledFieldCountGroupSource model) : Option Nat :=
+  model.declarationsSlotCapacity? checked.source.boundLevelCount checked.declarations
+
 def evaluateCheckedDocumentValidationOperand?
     (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option NumericOperand) := do
   let count ← checked.evaluateCheckedDocumentValidation document outer
-  let capacity? := match checked.source with
-    | .fixed _ => model.groupSubtreeSlotCapacity? checked.source.groupPath
-    | .starredPresence _ | .starred _ =>
-        model.declarationsSlotCapacity? checked.source.boundLevelCount checked.declarations
-  pure (capacity?.bind fun capacity => (count.availableWithFillability? capacity).map
+  pure (checked.countCapacity?.bind fun capacity => (count.availableWithFillability? capacity).map
     fun available => .value available.1 available.2)
 
 /-- The extensional validation tally of the group operand's in-capacity extent.
@@ -94,11 +105,9 @@ def evaluateCheckedDocumentValidationOperand?
 def validationFillTally (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError ValidationFillTally := do
-  let resolved ← document.resolveCheckedGroupEntityOperandCore outer
-    checked.source.boundLevelCount checked.declarations
-  pure (resolved.inCapacityAddressedCells.foldl (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
-    fun tally addressed =>
-      tally.combine (observeCell .validation addressed.cell).asValidationFillTally)
+  let observations ← checked.observations document outer
+  pure (observations.foldl (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
+    fun tally observation => tally.combine observation.asValidationFillTally)
 
 /-- Answer a field-fill operator over the group operand's in-capacity extent and declared tail.
 
@@ -118,8 +127,7 @@ def evaluateCheckedDocumentValidationFill?
   let tally ← checked.validationFillTally document outer
   match operator with
   | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled =>
-      pure ((model.declarationsSlotCapacity? checked.source.boundLevelCount
-        checked.declarations).map fun capacity =>
+      pure (checked.fillCapacity?.map fun capacity =>
           operator.evalValidation { tally with
             uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })
   | .noFieldFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled

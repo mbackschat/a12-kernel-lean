@@ -383,7 +383,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
   | .filledFieldCount source =>
       match context.input with
       | .checked document => do
-          match ← source.evaluateCheckedDocumentValidationOperand? document context.outer with
+          match ← source.evaluateCountOperand? document context.outer with
           | some operand => pure operand.toValidationArithmetic
           | none => pure (.error .groupState)
       | .legacy _ _ | .partialView _ _ => pure (.error .groupState)

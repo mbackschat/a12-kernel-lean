@@ -10,7 +10,7 @@ A condition whose every leaf has a flat form is elaborated whole by the flat car
 connectives are kept and each leaf is offered, in a fixed order, to the carriers that exist for it:
 the flat leaf, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
-against a literal, and the field-fill quantifiers and `NumberOfFilledFields` over one group. The first carrier that admits a
+against a literal, and the field-fill quantifiers and `NumberOfFilledFields` over an entity list. The first carrier that admits a
 leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
@@ -47,18 +47,6 @@ private def fieldFillOp? : String → Option FieldFillQuantifier
   | "NotAllFieldsFilled" => some .notAllFieldsFilled
   | "NotExactlyOneFieldFilled" => some .notExactlyOneFieldFilled
   | "FieldsNotCollectivelyFilled" => some .fieldsNotCollectivelyFilled
-  | _ => none
-
-/-- A sole field-fill operand naming a group: starred when any segment carries the star. A path the
-model resolves to a field is not a group operand. -/
-private def fieldFillGroup? (model : FlatModel) (rowGroup : GroupPath) :
-    List Argument → Option SurfaceFieldFillGroupOperand
-  | [.mk (.entity { path, index := none, category := none }) none none] =>
-      if path.correlated then none
-      else if path.segments.any (·.star) then
-        some (.starred { base := path.base, groups := path.starGroups })
-      else if (path.toFieldPath?).any (namesField model rowGroup) then none
-      else (path.toGroupPath?).map .fixed
   | _ => none
 
 private def plain : Argument → Option Expr
@@ -99,20 +87,19 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         elaborated "Flat" (CheckedValidationCondition.fromFlat checked)]
     | none => []
   let fieldFill := match leaf with
-    | .call id arguments none none => match fieldFillOp? id, fieldFillGroup? model rowGroup arguments with
-        | some operator, some operand =>
-            [elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator operand)]
-        | _, _ => []
-    | .compare op (.call "NumberOfFilledFields" arguments none none) (.number threshold) =>
-        match fieldFillGroup? model rowGroup arguments with
-        | some operand => [do
-            let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
-            let some threshold := decodeNumber? threshold
-              | refuse "NumberOfFilledFields" "threshold"
-            let checked ← elaborated "NumberOfFilledFields"
-              (elaborateFilledFieldCountComparison model rowGroup operand numericOp threshold.value)
-            elaborated "NumberOfFilledFields" (CheckedValidationCondition.fromOrderedNumeric checked)]
+    | .call id arguments none none => match fieldFillOp? id with
+        | some operator => [do
+            let source ← lowerEntitySource model rowGroup arguments
+            elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator source)]
         | none => []
+    | .compare op (.call "NumberOfFilledFields" arguments none none) (.number threshold) =>
+        [do
+          let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
+          let some threshold := decodeNumber? threshold | refuse "NumberOfFilledFields" "threshold"
+          let source ← lowerEntitySource model rowGroup arguments
+          let checked ← elaborated "NumberOfFilledFields"
+            (elaborateFilledFieldCountComparison model rowGroup source numericOp threshold.value)
+          elaborated "NumberOfFilledFields" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
   let groupCount := match leaf with
     | .compare op (.call "NumberOfFilledGroups" arguments none none) (.number threshold) => [do

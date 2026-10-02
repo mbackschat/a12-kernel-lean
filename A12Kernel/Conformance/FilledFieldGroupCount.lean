@@ -146,7 +146,7 @@ filled-group count is, while a quantifier keeps the gate unless an all-empty ext
 `NumberOfFilledFields(Flat) < n` fires on the empty documents of the
 [nested-capacity](../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
 capture. -/
-private def starredOperandSurface : SurfaceFieldFillGroupOperand := .starred starredSource.group
+private def starredOperandSurface : SurfaceFieldEntitySource := { first := .starredGroup starredSource.group, rest := [] }
 
 example :
     ((elaborateFilledFieldCountComparison starredModel ["Order"] starredOperandSurface .less 2).toOption.bind

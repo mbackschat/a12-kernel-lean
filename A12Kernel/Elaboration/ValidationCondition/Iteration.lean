@@ -286,7 +286,7 @@ private def ValidationConditionLeaf.iterationGuardAt
       ResolvedGroupListOperands.iterationGuardAt operator operands level
   -- No guard rule is measured for a field-fill operand at a level its binding scope reaches.
   | .fieldFill _ source =>
-      if source.source.bindingScope.contains level then .unclassified else .noReference
+      if source.bindingScope.contains level then .unclassified else .noReference
   | .orderedNumeric _ comparison =>
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status

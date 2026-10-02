@@ -82,31 +82,25 @@ theorem checkedFilledFieldCountGroupSource_tally_uninstantiated_zero
     (resolved : checked.validationFillTally document outer = .ok tally) :
     tally.uninstantiated = 0 := by
   unfold CheckedFilledFieldCountGroupSource.validationFillTally at resolved
-  cases core :
-      document.resolveCheckedGroupEntityOperandCore outer
-        checked.source.boundLevelCount checked.declarations with
+  cases core : checked.observations document outer with
   | error error => simp [core, bind, Except.bind] at resolved
-  | ok value =>
+  | ok observations =>
       rw [core] at resolved
       simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at resolved
       subst resolved
-      generalize value.inCapacityAddressedCells = cells
       suffices general :
-          ∀ (start : ValidationFillTally) (remaining : List CheckedAddressedCell),
+          ∀ (start : ValidationFillTally) (remaining : List CellObservation),
             start.uninstantiated = 0 →
-              (remaining.foldl (init := start) fun tally addressed =>
-                tally.combine
-                  (observeCell .validation addressed.cell).asValidationFillTally).uninstantiated =
-                0 by
-        exact general _ cells rfl
+              (remaining.foldl (init := start) fun tally observation =>
+                tally.combine observation.asValidationFillTally).uninstantiated = 0 by
+        exact general _ observations rfl
       intro start remaining
       induction remaining generalizing start with
       | nil => intro zero; exact zero
       | cons head rest hypothesis =>
           intro zero
           refine hypothesis _ ?_
-          cases observation : observeCell .validation head.cell <;>
-            simp [ValidationFillTally.combine, observation, zero]
+          cases head <;> simp [ValidationFillTally.combine, CellObservation.asValidationFillTally, zero]
 
 /-- With retained capacity, every group operator is the shared validation evaluator on the same
 instantiated classifications plus the missing declared slots. This also preserves the four
@@ -123,6 +117,7 @@ theorem checkedFilledFieldCountGroupSource_fill_with_declared_capacity
         uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })) := by
   cases operator <;>
     simp [CheckedFilledFieldCountGroupSource.evaluateCheckedDocumentValidationFill?,
+      CheckedFilledFieldCountGroupSource.fillCapacity?,
       resolved, available, FieldFillQuantifier.evalValidation,
       bind, Except.bind, pure, Except.pure]
 

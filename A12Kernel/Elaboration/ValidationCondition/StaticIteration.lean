@@ -303,7 +303,7 @@ private def orderedNumericAtomIterationScope :
   -- level and refused from outside it
   -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
   | .filledFieldCount source =>
-      let scope := source.source.bindingScope
+      let scope := source.bindingScope
       pure (if scope.isEmpty then none else some scope)
   | .filledGroupCountMixed operands =>
       mergeIterationScopeList (operands.map fun operand =>
