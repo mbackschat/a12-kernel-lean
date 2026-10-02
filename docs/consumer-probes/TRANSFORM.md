@@ -24,6 +24,52 @@ Certify A1→A1 for one warning-suppressed addressed division extremum and retur
 
 The accepted isolated consumer retained division and power as distinct identities, kept field order, and distinguished the suppression-only A4→A5 pair. Root independently killed both dependency-only and derived-scale-only certifiers as well as the generic-binary and ignored-suppression accounts while preserving the natural digest.
 
+<a id="task-rule-negation"></a>
+## Rule negation probe
+
+Given an English condition text, produce the condition that fires exactly where the original is decided false, as Kernel-language text, or refuse it naming the predicate that has no complement. The handover is the [negation use case](../USE-CASES.md#cross-category-use-case-negation), the [rule-negation capability record](../implementation/validation-messages-and-custom.md#cap-rule-negation), and the [concrete syntax](../../spec/12-concrete-syntax.md) for reading and printing; the consumer receives no Lean source, no Kernel, and no expected output.
+
+The fixture is the 32 inputs below. Lean acceptance parses each answer with `parseText`, requires the tree to equal the Lean `negateText` result up to parentheses that change no grouping and regrouping within one connective, and requires each refusal to name the predicate Lean refuses. The probe is green when all 32 agree and every wrong account below is killed by at least one named input.
+
+| id | input |
+|---|---|
+| `N01` | `FieldFilled(Amount)` |
+| `N02` | `FieldNotFilled(/Order/Lines*/Price)` |
+| `N03` | `[Amount] > 100` |
+| `N04` | `[Amount] < 0 And [Total] >= 10` |
+| `N05` | `[Code] == "A" Or [Code] != "B"` |
+| `N06` | `FieldFilled(A) And (FieldFilled(B) Or [C] <= 3)` |
+| `N07` | `AllFieldsFilled(A, B, C)` |
+| `N08` | `NotAllFieldsFilled(Rows*/R)` |
+| `N09` | `AtLeastOneFieldFilled(A, Rows*/R, Detail)` |
+| `N10` | `NoFieldFilled(A, B)` |
+| `N11` | `FieldsNotCollectivelyFilled(A, B, C)` |
+| `N12` | `FieldFilled(X) Or FieldsNotCollectivelyFilled(A, B)` |
+| `N13` | `MoreThanOneFieldFilled(A, B, C)` |
+| `N14` | `NotExactlyOneFieldFilled(A, B, C) And FieldFilled(D)` |
+| `N15` | `GroupFilled(Address)` |
+| `N16` | `AllGroupsFilled(G, H) Or NoGroupFilled(G, H)` |
+| `N17` | `GroupsNotCollectivelyFilled(G, H)` |
+| `N18` | `[Name] PatternMatched "[A-Z]+"` |
+| `N19` | `FieldValueIncludedInValueList(Kind, "AB", "CD")` |
+| `N20` | `AtLeastOneFieldValueIncludedInValueList(A, B In "x", "y")` |
+| `N21` | `NoFieldValueIncludedInValueList(Rows*/Tag In "x")` |
+| `N22` | `Valid(Iban, "IBAN")` |
+| `N23` | `NumberOfFilledFields(A, B) == 1` |
+| `N24` | `Sum(Rows*/Amount) > [Limit] And FieldFilled(Limit)` |
+| `N25` | `FieldValuesNotUnique(A, B)` |
+| `N26` | `[A] DiffersWithToleranceRange2 [B]` |
+| `N27` | `FieldFilled(A) And DateRangesOverlap(P1, P2)` |
+| `N28` | `CustomCondition CheckIt` |
+| `N29` | `Valid(Date(D, M, Y)) Or FieldNotFilled(D)` |
+| `N30` | `AtLeastOneFieldValueIncludedInValueList(A, B In "x", "y" @From ../Rows)` |
+| `N31` | `@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) [Rate] == 1.50` |
+| `N32` | `(FieldFilled(A) Or FieldFilled(B)) And (FieldNotFilled(C) Or [D] > 2)` |
+
+Wrong accounts and the inputs that kill them: connectives kept rather than dualized (`N04`, `N06`, `N16`); `<` flipped to `>` (`N04`); a parenthesis dropped where the result would mix `And` and `Or` (`N06`, `N12`, `N32`); a complement invented for `FieldValuesNotUnique`, a tolerance comparison, `DateRangesOverlap` or `CustomCondition` (`N25` to `N28`); `Valid(Field, "Type")` negated to `Invalid` (`N22`); `FieldsNotCollectivelyFilled` given a single-predicate complement (`N11`, `N12`, `N17`); `MoreThanOneFieldFilled` or `NotExactlyOneFieldFilled` complemented by anything other than the stated count comparison (`N13`, `N14`); an `In` list, an `@From` scope or the suppression preamble dropped (`N20`, `N21`, `N30`, `N31`); a guard conjunct kept un-negated, as a guarded pair would (`N14`, `N24`, `N29`).
+
+Excluded: German spellings, whose complements the [keyword catalog](../../spec/12-concrete-syntax.md#5-keyword-catalog-english--german-verified-pairs) does not list; static legality, including the iteration-guard refusal; the negated rule's message, polarity and evaluation; Kernel correspondence beyond what the capability record cites.
+
 ## Lab record
 
 | Run | Status | Current result |
