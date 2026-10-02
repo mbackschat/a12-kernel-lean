@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.TemporalDistinctCount
 import A12Kernel.Elaboration.TokenEntityValueList
+import A12Kernel.Elaboration.NumberEntityValueList
 import A12Kernel.Elaboration.NumericAggregate.Entities
 
 /-! # Group operands and a filtered star leave an over-limit row out
@@ -23,10 +24,10 @@ The Kernel answers the over-limit document as the one without its third row on e
 full validation, under a partial scope of the whole root, and under one naming rows 1 and 2 of each
 group; partial validation skips the filtered scan under both scopes.
 
-Two of the grid's rows have no lock here. Its `NRows` value lists take a sole `Y` on the values side,
-which the Kernel admits and Lean's Number value list refuses as `tooFewFields`. Under the rows-1-and-2
-scope its token value lists fire, where Lean answers unknown because it counts only a wildcard index
-as covering a value list's extent. Both are recorded as gaps rather than locked.
+The `NRows` value lists retain their sole `Y` value-side operand on full validation, and the starred
+field also runs under whole-root partial validation. Partial Number group resolution remains
+unsupported. The rows-1-and-2 partial scope remains a separate gap: the token value lists fire on the Kernel where
+Lean answers unknown because it counts only a wildcard index as covering the list extent.
 -/
 
 namespace A12Kernel.Conformance.CapacityGroupConsumers
@@ -190,6 +191,24 @@ example :
     values overLimit = ["1", "1", "fired", "fired", "fired", "fired", "9"] ∧
       values noThird = ["1", "1", "fired", "fired", "fired", "fired", "9"] ∧
       values inCapacity = ["2", "2", "notFired", "notFired", "notFired", "notFired", "7"] := by
+  native_decide
+
+private def numberLists (rows : List (List (String × String))) : Option (List Verdict) := do
+  let document ← document? rows
+  let elaborateSide := fun operand => (elaborateNumberEntityValueListSource model ["Rg"]
+    { quantifier := .no, fields := { first := operand, rest := [] }
+      values := { first := .field (bare "Y"), rest := [] } }).toOption
+  let field ← elaborateSide (.star (star "NRows" "V"))
+  let group ← elaborateSide (.starredGroup (starredGroup "NRows"))
+  let fullField ← (field.evaluateFull document []).toOption
+  let fullGroup ← (group.evaluateFull document []).toOption
+  let .evaluated partialField ← (field.evaluatePartial document [] wholeRoot).toOption | none
+  pure [fullField, fullGroup, partialField]
+
+example :
+    numberLists overLimit = some (List.replicate 3 (.fired .omission)) ∧
+      numberLists noThird = some (List.replicate 3 (.fired .omission)) ∧
+      numberLists inCapacity = some (List.replicate 3 .notFired) := by
   native_decide
 
 private def sumValue : Option PartialValidationNumberAggregateViewResult → String

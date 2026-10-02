@@ -258,11 +258,13 @@ theorem checkedStarNumberSource_presentFirstFilledHeadStops
     FirstFilledScanState.enter, FirstFilledScanState.step,
     FirstFilledScanResult.asNumber]
 
-/-- Checked multi-operand authoring always retains either an already-many first source or a genuine trailing operand. -/
+/-- First-filled authoring applies the many-required rule, under which the shared Number
+list retains an already-many first slot or a trailing operand. -/
 theorem checkedFirstFilledNumberSource_requiredMultiplicity
-    (checked : CheckedFirstFilledNumberSource model) :
+    (checked : CheckedFirstFilledNumberSource model)
+    (hArity : checked.arity = .manyRequired) :
     (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
-  checkedNumberEntitySource_requiredMultiplicity checked
+  checkedNumberEntitySource_requiredMultiplicity checked hArity
 
 /-- Checked multi-operand authoring contains no repeated direct non-wildcard field reference. -/
 theorem checkedFirstFilledNumberSource_uniqueDirectOperands

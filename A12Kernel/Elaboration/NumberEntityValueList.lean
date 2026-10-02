@@ -29,15 +29,15 @@ inductive NumberEntityValueListElabError where
   | duplicateOperand (field : FieldId)
   deriving Repr, DecidableEq
 
-/-- Check both ordinary entity-list shapes, then apply the parser's combined direct-reference uniqueness gate. -/
+/-- Check both nonempty, sole-allowed entity-list sides, then apply the parser's combined direct-reference uniqueness gate. -/
 def elaborateNumberEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceNumberEntityValueListSource) :
     Except NumberEntityValueListElabError
       (CheckedNumberEntityValueListSource model) := do
-  let fields ← elaborateNumberEntitySource model declaringGroup authored.fields
+  let fields ← elaborateNumberEntitySource model declaringGroup authored.fields (arity := .soleAllowed)
     |>.mapError .fields
-  let values ← elaborateNumberEntitySource model declaringGroup authored.values
+  let values ← elaborateNumberEntitySource model declaringGroup authored.values (arity := .soleAllowed)
     |>.mapError .values
   match hUnique : firstDuplicateDirectNumberEntityField?
       (fields.operands ++ values.operands) with

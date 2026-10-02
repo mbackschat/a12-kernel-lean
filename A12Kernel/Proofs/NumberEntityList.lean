@@ -29,11 +29,15 @@ theorem checkedEntityGroupSource_everyDeclarationCovers_iff
           (declaration.repeatableScope.drop source.boundLevelCount) = true := by
   simp [CheckedEntityGroupSource.everyDeclarationCovers]
 
-/-- Every checked Number entity list has either an already-many first slot or at least one trailing slot. A group slot is already-many by itself, so this is deliberately weaker than requiring a star. -/
+/-- A Number list certified under the many-required rule retains an already-many first slot
+or a trailing slot; sole-allowed value-list sides do not imply this property. -/
 theorem checkedNumberEntitySource_requiredMultiplicity
-    (checked : CheckedNumberEntitySource model) :
-    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
-  checked.requiredMultiplicity
+    (checked : CheckedNumberEntitySource model)
+    (hArity : checked.arity = .manyRequired) :
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true := by
+  have := checked.requiredMultiplicity
+  rw [hArity] at this
+  simpa [EntityListArity.allowsSole] using this
 
 /-- A retained group slot omits no descendant: every declaration anywhere in the group's recursive
     subtree is present in the slot's certified expansion. This is what lets a consumer read the

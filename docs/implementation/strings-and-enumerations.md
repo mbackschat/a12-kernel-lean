@@ -182,6 +182,8 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 
 - `boundary`: Scalar, multi-field, and direct/plain/filtered-star String/Enumeration/Number membership and quantifiers with typed operation-specific payloads. Partial starred entries filter concrete cells before reading and use their own existential covering-identifier extent gate per current iteration row, independent of the aggregate family's universal gate
 - `owner`: [`ValueList.lean`](../../A12Kernel/Semantics/ValueList.lean), entity-list/value-list elaboration owners
+- `number-arity`: both Number entity-valued sides retain `EntityListArity.soleAllowed` through the common Number certificate; aggregate callers keep `manyRequired`. The multiplicity laws require that recorded rule explicitly. [Locks](../../A12Kernel/Conformance/NumberEntityValueList.lean) cover both singleton sides, each mixed singleton/multiple orientation, starred sides, all three quantifiers, partial relevance, cross-side duplication and the unchanged ordinary-list refusal.
+- `number-evidence`: [capacity locks](../../A12Kernel/Conformance/CapacityGroupConsumers.lean) consume the retained [Number value-list rows](../sources/group-list-and-capacity-probes.md#src-group-capacity-consumers) for full starred-field/group evaluation and whole-root partial starred-field evaluation. These observations compare firing only; verdict polarity and the broader singleton matrix remain internally tested. Partial group resolution and condition-tree composition remain open.
 - `assurance`: E/P closed for named shapes; multiple upstream L locks; C none
 - `remains`: Remaining shapes and operators: [SG8](../SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion)
 

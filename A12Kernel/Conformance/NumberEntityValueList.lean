@@ -223,6 +223,55 @@ private def partialSnapshot (surface : SurfaceNumberEntityValueListSource)
           | .ok .skippedHaving => .elaboration
           | .error cause => .structural cause
 
+example :
+    let single := fun name => entitySource (direct name) []
+    let run := fun quantifier name => fullSnapshot
+      (authored quantifier (single name) (single "Needle")) (data .seven)
+    [run .atLeastOne "Match", run .no "Match", run .notAll "Match",
+      run .atLeastOne "Other", run .no "Other", run .notAll "Other"] =
+      [.verdict (.fired .value), .verdict .notFired, .verdict .notFired,
+       .verdict .notFired, .verdict (.fired .value), .verdict (.fired .value)] ∧
+      (elaborateNumberEntitySource model ["Form"] (single "Match")).isOk = false ∧
+      (elaborateNumberEntityValueListSource model ["Form"]
+        (authored .atLeastOne (single "Match") (single "Match"))).toOption.isNone = true := by
+  native_decide
+
+example :
+    let single := fun name => entitySource (direct name) []
+    let admit := fun fields values => (elaborateNumberEntityValueListSource model ["Form"]
+      (authored .no fields values)).isOk
+    [admit (single "Match") values,
+      admit (entitySource (direct "Match") [direct "Other"]) (single "Needle"),
+      admit (entitySource star []) (single "Needle"),
+      admit (single "Needle") (entitySource star [])] = List.replicate 4 true ∧
+      partialSnapshot (authored .atLeastOne (single "Match") (single "Needle"))
+        (data .seven) = .verdict (.fired .value) := by
+  native_decide
+
+example :
+    let surface := authored .atLeastOne
+      (entitySource (direct "Match") []) (entitySource (direct "Needle") [])
+    (elaborateNumberEntityValueListSource model ["Form"] surface).toOption.map
+      (fun checked => (checked.fields.arity, checked.values.arity,
+        checked.fields.operands.length, checked.values.operands.length)) =
+        some (.soleAllowed, .soleAllowed, 1, 1) ∧
+      (elaborateNumberEntitySource model ["Form"] values).toOption.map (·.arity) =
+        some .manyRequired := by
+  native_decide
+
+example :
+    let stringModel : FlatModel := { model with fields := model.fields.map fun field =>
+      if field.id == 3 then { field with policy := { kind := .string } } else field }
+    let single := fun name => entitySource (direct name) []
+    let check := fun fields values =>
+      match elaborateNumberEntityValueListSource stringModel ["Form"]
+          (authored .atLeastOne (single fields) (single values)) with
+      | .ok _ => none
+      | .error error => some error
+    check "Match" "Needle" = some (.values (.fieldKindMismatch ["Form", "Needle"] .string)) ∧
+      check "Needle" "Match" = some (.fields (.fieldKindMismatch ["Form", "Needle"] .string)) := by
+  native_decide
+
 /- A fields-side `No` match hides a later semantic UNKNOWN, while reversing the same operands exposes it. -/
 example :
     fullSnapshot

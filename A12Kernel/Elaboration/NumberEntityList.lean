@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # Shared checked Number entity lists
 
-This boundary owns the common authoring contract for Number-valued entity lists consumed by `FirstFilledValue`, `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues`. It resolves every direct, plain-star, filtered-star, and group slot in authored order; inherits direct-field duplication, fixed-group duplication, and strict-overlap rejection from the shared shape; requires either multiple slots or one already-many slot; and certifies every expanded declaration as Number-valued. Runtime consumers retain their own scan semantics.
+This boundary owns the common authoring contract for Number-valued entity lists consumed by `FirstFilledValue`, `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues`. It resolves every direct, plain-star, filtered-star, and group slot in authored order; inherits direct-field duplication, fixed-group duplication, and strict-overlap rejection from the shared shape; retains the consuming operator’s arity rule; and certifies every expanded declaration as Number-valued. Runtime consumers retain their own scan semantics.
 -/
 
 namespace A12Kernel
@@ -177,7 +177,8 @@ structure CheckedNumberEntitySource (model : FlatModel) where
   first : CheckedNumberEntityOperand model
   rest : List (CheckedNumberEntityOperand model)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
+  arity : EntityListArity := .manyRequired
+  requiredMultiplicity : (arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateDirectNumberEntityField? (first :: rest) = none
 
@@ -294,7 +295,7 @@ private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
 
 /-- The expansion-kind gate is **each operator's own question about the expansion's values**, which is why this projection is keyed by the operator where every gate the shared checker owns is not. One group whose subtree contains a String draws a different class under each of `Sum` and the extrema, and reading one carrier's class off a sibling is precisely the inference the Kernel refutes. The distinct count is stronger still: its class is not a property of the operator alone, so it is projected below rather than claimed.
 
-    Shape refusals delegate to the shared checker, because the star, arity, and duplicate gates do not vary by carrier.
+    Shape refusals delegate to the shared checker, which already applied the consumer’s arity rule and the common star and duplicate gates.
 
     The extrema's class is additionally keyed by the **kind** that arrived, not merely by the operand failing to be a Number; see `extremaRefuseKind`. `Sum` needs no such split, because its admitted set and this family's representable set coincide, so nothing reaching its arm is a model the Kernel would accept. What stays open for `Sum` is only whether some unmeasured kind draws a *different* code, never whether it is refused.
 
@@ -453,7 +454,7 @@ def certifyNumberEntityShape (model : FlatModel)
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
   let first ← certifyNumberEntityOperand model declaringGroup shape.first
   let rest ← certifyNumberEntityOperands model declaringGroup shape.rest
-  if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
+  if hMultiplicity : (shape.arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectNumberEntityField? (first :: rest) with
     | some _ => throw .incoherentCore
@@ -461,18 +462,22 @@ def certifyNumberEntityShape (model : FlatModel)
         first
         rest
         modelWellFormed := shape.modelWellFormed
+        arity := shape.arity
         requiredMultiplicity := hMultiplicity
         uniqueDirectOperands := hDuplicate }
   else
     throw .incoherentCore
 
-/-- Validate one Number entity list in kernel order: resolve all references, apply the shared duplicate, overlap, and root-group gates, require multiple slots or one already-many slot, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
+/-- Resolve and certify a Number list under its consumer’s arity rule. Aggregates keep the
+many-required default; entity-valued membership uses the sole-allowed rule
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-capacity-consumers)). -/
 def elaborateNumberEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource)
-    (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath := declaringGroup) :
+    (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath := declaringGroup)
+    (arity : EntityListArity := .manyRequired) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
   let shape ←
-    elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := fixedTargetGroup?)
+    elaborateFieldEntityShape model declaringGroup authored arity (fixedTargetGroup? := fixedTargetGroup?)
       (writtenGroup := writtenGroup)
     |>.mapError NumberEntityElabError.shape
   certifyNumberEntityShape model declaringGroup shape
