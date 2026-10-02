@@ -119,9 +119,9 @@ example :
 /-! ## The per-row read
 
 A bound operand is read at the row the environment binds, and its whole input is the cell's **stored
-text**: a partially known Date denotes an interval, so it has no `Value` form and the Date kind accepts
-no `Value` that could stand for one. The placement therefore carries text and no parsed value by
-construction, and the classifier that owns the text is the only thing that decides its meaning.
+text**: a partially known Date denotes an interval, so its placement carries `Value.partialDate` with
+that spelling rather than a point value, and the classifier that owns the text is the only thing that
+decides its meaning.
 
 **Internal, not measured.** The admission above is Kernel-measured; what a bound operand *evaluates* to
 per row is this project's account, built from the already-measured classifier plus the shared addressed
@@ -144,8 +144,20 @@ private def faultOf (result : Except ValueAsDateReadFault Verdict) :
   | .ok _ => none
   | .error fault => some fault
 
+/-- The raw cell a stored text places as: an admitted partially known value as `Value.partialDate`
+with its spelling, and the classifier's own rejection otherwise. No row below stores a fully known
+value. -/
+private def placedRaw (stored : String) : RawCell :=
+  match certifyPartialDateInputField rowSource with
+  | .error _ => .rejected .dateFormat
+  | .ok checked =>
+      match checked.classifyStored stored with
+      | .presentEmpty => .presentEmpty
+      | .rejected cause => .rejected cause
+      | .admitted _ => .parsed (.partialDate stored)
+
 private def rowCell (row : Nat) (stored : String)
-    (raw : RawCell := .presentEmpty) : ClassifiedCellInput :=
+    (raw : RawCell := placedRaw stored) : ClassifiedCellInput :=
   { address := { field := 0, path := [row] }, stored, raw }
 
 private def documentOf (cells : List ClassifiedCellInput)
@@ -241,28 +253,22 @@ example :
       some (.nonPartialDateField { field := 0, path := [1] }) := by
   native_decide
 
-/- A partial-precision Date declaration admits **two** encodings, because it still holds ordinary fully
-known values alongside partial ones. A partially known value has no `Value` form, so its cell carries a
-stored text and no parsed value; a value that does have one still places ordinarily. The stored-text read
-is the same either way, which is what lets the classifier stay the only thing that decides meaning.
-
-An *empty* text with a rejection is refused under both rules, so the widening does not reach it. -/
+/- A partially known value has one encoding, `Value.partialDate` with the stored spelling. A stored text
+beside no value and a text value are refused, as is an empty text with a rejection. -/
 example :
     (documentOf [rowCell 1 "00.01.2024"]).isSome = true ∧
-      (documentOf [rowCell 1 "00.01.2024"
-        (.parsed (.str "00.01.2024"))]).isSome = true ∧
+      (documentOf [rowCell 1 "00.01.2024" .presentEmpty]).isNone = true ∧
+      (documentOf [rowCell 1 "00.01.2024" (.parsed (.str "00.01.2024"))]).isNone = true ∧
       (documentOf [rowCell 1 "" (.rejected .dateFormat)]).isNone = true := by
   native_decide
 
-/- Both encodings hand the classifier the same text, and an absent cell hands it none. -/
+/- The stored-text read hands the classifier the placed spelling, and an absent cell hands it none. -/
 example :
     let read (cells : List ClassifiedCellInput) : Option (Option String) := do
       let document ← documentOf cells
       (document.readStoredText { field := 0, path := [1] }).toOption.map
         (fun cell => cell.parsed)
     read [rowCell 1 "00.01.2024"] = some (some "00.01.2024") ∧
-      read [rowCell 1 "00.01.2024" (.parsed (.str "00.01.2024"))] =
-        some (some "00.01.2024") ∧
       read [] = some none := by
   native_decide
 

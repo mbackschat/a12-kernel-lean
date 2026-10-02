@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.DateRangeInput
+import A12Kernel.Elaboration.PartialDateInput
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.ScalarText
@@ -204,28 +205,14 @@ private def ClassifiedCellInput.ordinaryCoherent
     | .empty | .presentEmpty => false
 
 /-- Whether a declaration may hold a value whose stored text is its **whole** input. That is a Date
-declaring a partial precision: such a declaration still holds ordinary fully known values, which have a
-`Value` form, but it *may* hold a partially known one, which denotes an interval and has none.
-
-Keyed on the declaration because that is what a placement check can see, and deliberately permissive
-rather than exclusive: which of the two a given cell holds is a property of its stored text, and only the
-partial-Date classifier decides that. -/
+declaring a partial precision: such a declaration holds ordinary fully known values and partially known
+ones, the latter as `Value.partialDate` carrying the stored spelling, so its text is the one channel
+that reads both. -/
 private def FlatFieldDecl.mayStorePartialDateText
     (declaration : FlatFieldDecl) : Bool :=
   match declaration.policy.kind, declaration.toTemporalTargetPolicy? with
   | .temporal .date _, some policy => policy.partialMode != .full
   | _, _ => false
-
-/-- Coherence for a cell on a partial-precision Date declaration. It **adds** one admitted encoding to
-the ordinary rule rather than replacing it: a nonempty stored text may be placed with no parsed value at
-all, because a partially known Date has no `Value` form and the Date kind accepts none that could stand
-for one. A fully known value on the same declaration still places ordinarily, which is why this is a
-widening and not a restriction. -/
-private def ClassifiedCellInput.partialDateCoherent
-    (input : ClassifiedCellInput) : Bool :=
-  input.ordinaryCoherent ||
-    (input.numericDecimal.isNone && !input.stored.isEmpty &&
-      input.raw == .presentEmpty)
 
 private def ClassifiedCellInput.numberCoherent
     (input : ClassifiedCellInput) (constraints : NumericTargetConstraints)
@@ -271,6 +258,19 @@ private def ClassifiedCellInput.canonicalScalarCoherent
   match declaration.policy.kind with
   | .boolean => input.raw == classifyStoredBooleanText input.stored
   | .confirm => input.raw == classifyStoredConfirmText input.stored
+  | .temporal _ _ =>
+      -- A Date cell holds a temporal value or, on a partial-precision declaration, the partially
+      -- known value its own classifier admits for exactly the stored text. A text value and a
+      -- stored text placed with no value are refused, so a partially known value has one encoding.
+      match input.raw with
+      | .parsed (.temporal _) => true
+      | .parsed (.partialDate text) =>
+          text == input.stored &&
+            match certifyPartialDateInputField declaration with
+            | .ok checked => checked.admitsPartiallyKnownText text
+            | .error _ => false
+      | .parsed _ => false
+      | .empty | .presentEmpty | .rejected _ => true
   | .dateRange =>
       match declaration.toDateRangeDeclarationPolicy? with
       | none => true
@@ -292,8 +292,7 @@ private def checkPlacedCell
     | .number info =>
         input.numberCoherent declaration.numericTargetConstraints info
     | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange =>
-        if declaration.mayStorePartialDateText then input.partialDateCoherent
-        else input.ordinaryCoherent
+        input.ordinaryCoherent
   if !coherent then throw (.incoherentCell input.address)
   if !input.canonicalScalarCoherent model declaration then
     throw (.incoherentCell input.address)
@@ -477,12 +476,11 @@ def read (checked : CheckedDocument model) (address : CellAddr) :
 
 /-- Read one placed cell's **stored text**, for a Date declaring a partial precision.
 
-The text is the one channel that carries every value such a declaration can hold. A *partially* known
-Date denotes an interval, so it has no `Value` form and the Date kind accepts none that could stand for
-one; a fully known value on the same declaration does have one. Reading the text therefore serves both,
-and which of the two a cell holds is left entirely to the partial-Date classifier that owns it: this read
-reports presence, emptiness, an earlier formal rejection, and over-repetition, and decides nothing about
-the text itself.
+The text is the one channel that carries every value such a declaration can hold: a *partially* known
+Date, which denotes an interval and is placed as `Value.partialDate` with its spelling, and a fully known
+one, placed as a temporal value. Reading the text therefore serves both, and what it denotes is left
+entirely to the partial-Date classifier that owns it: this read reports presence, emptiness, an earlier
+formal rejection, and over-repetition, and decides nothing about the text itself.
 
 Refused for any other declaration, so a caller cannot reach a Number's or a full Date's text by a route
 that skips that kind's own read.

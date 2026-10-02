@@ -643,6 +643,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Cross-kind temporal format admission in the original measured subset, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-format-vocabulary)
 <a id="src-partial-date-input-causes"></a>
 - [Which formal cause a partially known Date draws, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-partial-date-input-causes)
+<a id="src-partial-date-presence"></a>
+- [A partially known Date is filled on both arms, a component-omitting Date and a DateFragment too, and only a too-deep omission makes presence unknown, measured locally 2026-10-02](sources/temporal-and-message-probes.md#src-partial-date-presence)
 <a id="src-date-decoded-identity-witness"></a>
 - [Whether two stored Date texts can decode to one instant, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-decoded-identity-witness)
 <a id="src-temporal-aggregate-gate"></a>

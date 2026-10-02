@@ -128,6 +128,7 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .enumeration, .enum _ => true
   | .temporal _ components, .temporal actual =>
       components.family? == some actual.kind
+  | .temporal _ components, .partialDate _ => components.family? == some .date
   | .dateRange, .dateRange _ => true
   | _, _ => false
 

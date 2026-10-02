@@ -178,4 +178,15 @@ def CheckedPartialDateInputField.classifyStored
   classifyPartialDateStored checked.format checked.mode
     checked.policy.youngerThan1900Check text
 
+/-- Whether the declaration admits `text` as a **partially** known value, the one a cell places as
+`Value.partialDate`; a fully known value places as a temporal value instead. -/
+def CheckedPartialDateInputField.admitsPartiallyKnownText
+    (checked : CheckedPartialDateInputField) (text : String) : Bool :=
+  match checked.classifyStored text with
+  | .admitted value =>
+      match value.value with
+      | .full _ => false
+      | .omittedDay _ | .omittedMonth _ | .omittedYear => true
+  | .presentEmpty | .rejected _ => false
+
 end A12Kernel

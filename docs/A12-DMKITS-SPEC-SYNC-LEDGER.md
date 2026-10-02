@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-02-04"></a>
+### `SPEC-2026-10-02-04` — an admitted partially known Date is filled on both arms, and only a too-deep omission leaves presence unknown
+
+- `status`: pending
+- `origin`: locally originated. Lean had placed a partially known value as a stored text beside no value, which its presence readers took as empty; the measurement that found the divergence is new on both sides.
+- `clause`: [`05`](../spec/05-dates-and-time.md) §6, a new paragraph before the formal-cause one.
+- `delta`: `FieldFilled` holds and `FieldNotFilled` does not for a partially known value such as `2024-06-00` at `DAY_OPTIONAL` or `0000-00-00` at `YEAR_OPTIONAL`, on both arms, and `NumberOfFilledFields` counts it beside a filled component-omitting Date and DateFragment; `2024-00-00` at `DAY_OPTIONAL` is the date error and leaves both tests unknown.
+- `basis`: this project's [presence checkpoint](SOURCES.md#src-partial-date-presence) at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model and projection retained beside it.
+- `surfaces`: any peer reader that decides presence from a decoded point value, which a partially known Date does not have.
+- `acceptance`: confirm `FieldFilled(PD)` fires for `2024-06-00` at `DAY_OPTIONAL` and `NumberOfFilledFields` over that field and a filled `yyyy-MM` Date counts `2`; or supply a carrier on which a partially known value reads as empty.
+- `limit`: `yyyy-MM-dd` at two precisions, direct fields; `MONTH_OPTIONAL`, the dotted spelling, requiredness and a group's filled state are unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-02-03"></a>
 ### `SPEC-2026-10-02-03` — the division check is a walk from each operator and power through value functions, cut at the first brace, addition or power; a call is never itself checked, and a lone unsortable leader is refused
 

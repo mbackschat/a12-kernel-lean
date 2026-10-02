@@ -2645,3 +2645,11 @@ Lean treatment: `AuthoredNumericExpr.divisionWalk` is the one walk, asked at eve
 **Before choosing among accounts, list the rows each account would answer differently, and if there are none, the accounts are not yet chosen between.** Where the candidates keep multiplying with each new row — here three in one batch — the rule is not compositional, and the cheaper route is to read the mechanism, write down what only it predicts, and measure exactly those rows: here every order-sensitive prediction held, the walk's grids being those rows ([checkpoint](sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk)).
 
 Limit: the rounding family inside a walk is measured on `RoundDown` only.
+
+## LF205 — a value with no point form is still a value; encoding it as "no value" makes every presence reader answer empty
+
+A partially known Date such as `2024-06-00` denotes an interval, so it has no `Value` form, and the checked document placed it as a stored text beside no value. Only the stored-text read saw it; `FieldFilled`, `NumberOfFilledFields` and the uniqueness stream read the checked cell, found it present-empty and answered not filled, where the Kernel answers filled on both arms ([checkpoint](sources/temporal-and-message-probes.md#src-partial-date-presence)). A second admitted encoding, a text value, failed the formal check as malformed instead, so the two encodings of one value disagreed with each other as well as with the Kernel.
+
+Lean treatment: `Value.partialDate` carries the stored spelling, and the checked document admits it only where the declaration's classifier admits that exact text as partial, refusing the other two encodings.
+
+**"No point form" and "no value" are different facts; collapsing them moves a value out of every reader that tests presence.** When a domain value cannot be represented by the existing value type, give it its own arm rather than leaning on an absence encoding, because absence is the one observation every presence, count and requiredness reader already interprets. The tell is a value admitted through a side channel that only one reader consults.

@@ -264,6 +264,7 @@ import A12Kernel.Conformance.OmittingDateInput
 import A12Kernel.Conformance.ParallelComputationClearing
 import A12Kernel.Conformance.ParallelComputationClearingPlan
 import A12Kernel.Conformance.ParallelNumericAlternativeTable
+import A12Kernel.Conformance.PartialDatePresence
 import A12Kernel.Conformance.ParallelNumericCrossGroupGuard
 import A12Kernel.Conformance.ParallelNumericJoinedOperands
 import A12Kernel.Conformance.ParallelNumericRun

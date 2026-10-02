@@ -1,0 +1,548 @@
+{
+ "header": {
+  "id": "Pres2_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Pres2_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Pr",
+     "name": "Pr",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Pr/PD",
+        "name": "PD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/PY",
+        "name": "PY",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "YEAR_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/FY",
+        "name": "FY",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/GF",
+        "name": "GF",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KPD",
+        "name": "KPD",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KNPD",
+        "name": "KNPD",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KPY",
+        "name": "KPY",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KNPY",
+        "name": "KNPY",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KFY",
+        "name": "KFY",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KNFY",
+        "name": "KNFY",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KGF",
+        "name": "KGF",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/KNGF",
+        "name": "KNGF",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pr/C",
+        "name": "C",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KPDComp",
+        "name": "KPDComp",
+        "Computation": {
+         "computedFieldRelPath": "../KPD",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(PD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KNPDComp",
+        "name": "KNPDComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNPD",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(PD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KPYComp",
+        "name": "KPYComp",
+        "Computation": {
+         "computedFieldRelPath": "../KPY",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(PY)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KNPYComp",
+        "name": "KNPYComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNPY",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(PY)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KFYComp",
+        "name": "KFYComp",
+        "Computation": {
+         "computedFieldRelPath": "../KFY",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(FY)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KNFYComp",
+        "name": "KNFYComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNFY",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(FY)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KGFComp",
+        "name": "KGFComp",
+        "Computation": {
+         "computedFieldRelPath": "../KGF",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(GF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/KNGFComp",
+        "name": "KNGFComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNGF",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(GF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pr/CComp",
+        "name": "CComp",
+        "Computation": {
+         "computedFieldRelPath": "../C",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfFilledFields(PD, PY, FY, GF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/FPD",
+        "name": "FPD",
+        "Rule": {
+         "errorEntityRelPath": "../PD",
+         "errorCode": "FPD",
+         "errorCondition": "FieldFilled(PD)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "FPD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/NPD",
+        "name": "NPD",
+        "Rule": {
+         "errorEntityRelPath": "../PD",
+         "errorCode": "NPD",
+         "errorCondition": "FieldNotFilled(PD)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NPD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/FPY",
+        "name": "FPY",
+        "Rule": {
+         "errorEntityRelPath": "../PY",
+         "errorCode": "FPY",
+         "errorCondition": "FieldFilled(PY)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "FPY"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/NPY",
+        "name": "NPY",
+        "Rule": {
+         "errorEntityRelPath": "../PY",
+         "errorCode": "NPY",
+         "errorCondition": "FieldNotFilled(PY)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NPY"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/FFY",
+        "name": "FFY",
+        "Rule": {
+         "errorEntityRelPath": "../FY",
+         "errorCode": "FFY",
+         "errorCondition": "FieldFilled(FY)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "FFY"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/NFY",
+        "name": "NFY",
+        "Rule": {
+         "errorEntityRelPath": "../FY",
+         "errorCode": "NFY",
+         "errorCondition": "FieldNotFilled(FY)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NFY"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/FGF",
+        "name": "FGF",
+        "Rule": {
+         "errorEntityRelPath": "../GF",
+         "errorCode": "FGF",
+         "errorCondition": "FieldFilled(GF)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "FGF"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/NGF",
+        "name": "NGF",
+        "Rule": {
+         "errorEntityRelPath": "../GF",
+         "errorCode": "NGF",
+         "errorCondition": "FieldNotFilled(GF)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NGF"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pr/CNT",
+        "name": "CNT",
+        "Rule": {
+         "errorEntityRelPath": "../PD",
+         "errorCode": "CNT",
+         "errorCondition": "NumberOfFilledFields(PD, PY, FY, GF) == 4",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "CNT"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
