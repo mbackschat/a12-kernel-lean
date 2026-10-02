@@ -193,6 +193,29 @@ private def checkedComputationSnapshot
     | .ok result => .computation result
     | .error cause => .error cause)
 
+private def keepAll (group : String) : SurfaceCorrelatedHaving :=
+  .compareRepetitions .equal
+    { origin := .inner, group := .path (groupPath group) }
+    { origin := .inner, group := .path (groupPath group) }
+
+private def overLimitPrimaryData : DocumentData :=
+  { instantiatedRows := [1, 2, 3].map fun row => { group := 10, path := [row] }
+    cells := directPresentData.cells ++ [{
+      address := { field := primary.id, path := [3] }
+      stored := "7"
+      raw := .parsed (.num 7) }] }
+
+/- A third row beyond the capacity of two is left out of a computation's scan, plain or filtered, so it
+falls through to the fallback rather than reading the row as poison
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-first-filled-capacity)). -/
+example :
+    checkedComputationSnapshot (source (.star (star "Primary")) [.field (bare "Fallback")])
+        overLimitPrimaryData = some (.computation (.value 9 true)) ∧
+      checkedComputationSnapshot
+        (source (.starHaving (star "Primary") (keepAll "Primary")) [.field (bare "Fallback")])
+        overLimitPrimaryData = some (.computation (.value 9 true)) := by
+  native_decide
+
 /- The immutable checked document supplies both direct and repeated cells without changing authored prefix order or missing polarity. -/
 example :
     checkedValidationSnapshot

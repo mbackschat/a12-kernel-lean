@@ -187,6 +187,9 @@ def diagnostic? (error : NumericComputationElabError) : Option KernelStaticDiagn
   error.targetDiagnostic? <|> error.iterationDiagnostic? <|> error.groupCountDiagnostic? <|>
     match error with
     | .resolve cause => cause.diagnostic?
+    -- A `CurrentRepetition` naming no group, measured at a row target
+    -- ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)).
+    | .currentRepetitionSource (.unknownGroup _) => some .invalidEntity
     | _ => none
 
 end NumericComputationElabError
@@ -473,7 +476,7 @@ private def FlatModel.resolveTemporalNumericComputationField
 
 /-- Refuse an operand that reads per row, for the atoms that are not entity lists: the product
     aggregate and the group count. Each scope lists the repeatable levels one operand leaves for its
-    evaluation to bind, and this arm's target repeats at none, so the first nonempty scope is refused
+    evaluation to bind, and the first that holds a level the target's scope does not hold is refused
     with the class `UnboundOperandLevel` selects. An entity list asks the same question list-wide
     inside its shape, ahead of its duplicate scans
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/

@@ -307,6 +307,17 @@ example :
       some (.accepted { text := "A", nonempty := by decide }) := by
   native_decide
 
+/- A fourth row beyond the capacity of three is left out of the scan, so its `Y` does not decide it and
+the scan falls through to the direct `A`
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-first-filled-capacity)). -/
+example :
+    outcomeOf (source categoryStar [direct "Compatible"]) [1, 2, 3, 4]
+        (directRead (.parsed (.enum "A")) .empty)
+        (fun environment field =>
+          if field == repeated.id && environment == [(10, 4)] then .parsed (.enum "Y") else .empty) =
+      some (.accepted { text := "A", nonempty := by decide }) := by
+  native_decide
+
 /- Computation `Having` prefetches one kept successor before consuming the current target. An invalid filter while searching for that successor therefore poisons before the first filled token is returned. -/
 example :
     outcomeOf (source filteredCategoryStar []) [1, 2]

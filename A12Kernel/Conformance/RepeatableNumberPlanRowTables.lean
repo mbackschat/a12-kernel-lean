@@ -131,37 +131,49 @@ example : (plan?.map fun plan => plan.execution.map (·.targetField)) =
     some ([("CA" : String), "MX", "DV", "AB", "FF", "K", "KN", "VN"].map idOf) := by
   native_decide
 
-/-- A row `T` beside a fixed `Box` holding a nested repeatable `In` and a fixed `Pad`, for the reading
-scope's static boundary. -/
+/-- A row `T` beside fixed `Box`, holding a nested repeatable `In`, `Pad` and `Pad2` inside the row,
+and fixed `Out`, holding a repeatable `OutRows`, and `Out2` outside it, for the reading scope's static
+boundary. -/
 private def nested : FlatModel where
-  fields := [
-    { id := 0, groupPath := rowsPath, name := "T", repeatableScope := [10]
-      policy := { kind := .number { scale := 0, signed := true } } },
-    { id := 1, groupPath := rowsPath ++ ["Box", "In"], name := "S", repeatableScope := [10, 20]
-      policy := { kind := .number { scale := 0, signed := true } } },
-    { id := 2, groupPath := rowsPath ++ ["Pad"], name := "U", repeatableScope := [10]
-      policy := { kind := .number { scale := 0, signed := true } } }]
+  fields := [("T", rowsPath, [10]), ("S", rowsPath ++ ["Box", "In"], [10, 20]),
+      ("U", rowsPath ++ ["Pad"], [10]), ("V", rowsPath ++ ["Pad2"], [10]),
+      ("W", ["Rg", "Out"], []), ("X", ["Rg", "Out", "OutRows"], [30]), ("Y", ["Rg", "Out2"], [])].zipIdx.map
+    fun ((name, groupPath, repeatableScope), id) =>
+      { id, groupPath, name, repeatableScope, policy := { kind := .number { scale := 0, signed := true } } }
   repeatableGroups := [{ level := 10, path := rowsPath },
-    { level := 20, path := rowsPath ++ ["Box", "In"] }]
+    { level := 20, path := rowsPath ++ ["Box", "In"] }, { level := 30, path := ["Rg", "Out", "OutRows"] }]
 
 private def nestedTable (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable nested) :=
   elaborateCompleteNumericTargetComputationTable nested rowsPath 0 [(none, expression)]
     (targetScope := .row)
 
+/-- `NumberOfFilledGroups` over two fixed groups, each `parents` levels up and then down `groups`. -/
+private def groupCount (operands : List (Nat × List String)) :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  .atom (.numeric (.filledGroupCount (operands.map fun (parents, groups) =>
+    .fixed (.path { base := .relative parents, groups }))))
+
+/-- The plan's refusal of a one-table plan at the row target, `none` where it certifies. -/
+private def planned (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Option (Option RepeatableNumberPlanError) :=
+  (nestedTable expression).toOption.map fun table =>
+    match certifyRepeatableNumberPlan [table] with
+    | .ok _ => none
+    | .error error => some error
+
 /- The target's scope binds only its own levels: a read crossing the nested level below it is refused
-`MVK_NO_WILDCARD` ([`spec/09`](../../spec/09-computations.md) §5), while a count of the fixed `Box`
-above that level beside a fixed `Pad` is elaborated and then refused by the plan, because that count
-reads `Box`'s rows across the whole document rather than under the row. -/
+`MVK_NO_WILDCARD` ([`spec/09`](../../spec/09-computations.md) §5). A count of fixed groups inside the
+row is elaborated and then refused by the plan, whether a group holds a repeatable level or not,
+because the group-count reader enumerates a fixed group only outside every repeatable level; a count
+of fixed groups outside the row runs, one holding a repeatable level included. -/
 example :
     (match nestedTable (.atom (.numeric (.field { base := .relative 0, groups := ["Box", "In"], field := "S" }))) with
       | .error error => error.diagnostic? == some .noWildcard
       | .ok _ => false) = true ∧
-    (match nestedTable (.atom (.numeric (.filledGroupCount
-        [.fixed (.path { base := .relative 0, groups := ["Box"] }),
-          .fixed (.path { base := .relative 0, groups := ["Pad"] })]))) with
-      | .ok table => (certifyRepeatableNumberPlan [table] matches .error (.rowOperationUnmeasured 0))
-      | .error _ => false) = true := by
+    planned (groupCount [(0, ["Pad"]), (0, ["Pad2"])]) = some (some (.rowGroupInsideRepeatable 0)) ∧
+    planned (groupCount [(0, ["Box"]), (0, ["Pad"])]) = some (some (.rowGroupInsideRepeatable 0)) ∧
+    planned (groupCount [(1, ["Out"]), (1, ["Out2"])]) = some none := by
   native_decide
 
 end A12Kernel.Conformance.RepeatableNumberPlanRowTables

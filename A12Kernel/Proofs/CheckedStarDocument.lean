@@ -44,7 +44,7 @@ theorem resolveCheckedField_addressing_error
     (source : CheckedStarFieldPath model) (checked : CheckedDocument model)
     (outer : Env) (cause : StarAddressingError)
     (failed :
-      source.path.resolve checked.source.toDocument outer = .error cause) :
+      source.path.resolveInCapacity checked.source.toDocument outer = .error cause) :
     source.resolveCheckedField checked outer = .error (.addressing cause) := by
   unfold CheckedStarFieldPath.resolveCheckedField
     CheckedStarFieldPath.resolveCheckedFieldWithRead
@@ -69,7 +69,7 @@ theorem resolveCheckedField_empty_topology
     (source : CheckedStarFieldPath model) (checked : CheckedDocument model)
     (outer : Env) (topology : ResolvedStarTopology)
     (resolved :
-      source.path.resolve checked.source.toDocument outer = .ok topology)
+      source.path.resolveInCapacity checked.source.toDocument outer = .ok topology)
     (empty : topology.environments = []) :
     match source.resolveCheckedField checked outer with
     | .ok projected =>

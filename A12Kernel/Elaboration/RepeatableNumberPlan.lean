@@ -38,9 +38,9 @@ namespace A12Kernel
 inductive RepeatableNumberPlanError where
   | empty
   | duplicateTarget (target : FieldId)
-  /-- A table at a repeatable target counts a fixed group with a repeatable descendant, whose rows
-  that count reads across the whole document rather than under the row. -/
-  | rowOperationUnmeasured (target : FieldId)
+  /-- A table at a repeatable target counts a fixed group inside a repeatable level, which the
+  group-count reader enumerates only outside every repeatable level. -/
+  | rowGroupInsideRepeatable (target : FieldId)
   /-- `step` is a step ordering could not place and `reads` a pending target it reads. -/
   | cycle (step reads : FieldId)
   deriving Repr, DecidableEq
@@ -58,22 +58,24 @@ structure CheckedRepeatableNumberPlan (model : FlatModel) where
     CheckedNumericComputationTable.targetField CheckedNumericComputationTable.referencesField
     execution = none
 
-/-- Whether a fixed group's content is cells alone, so it holds no row a count would read across the
-whole document. -/
-private def fixedGroupHoldsNoRow (model : FlatModel) (reference : ResolvedGroupReference) : Bool :=
-  (reference.computationDescendants? model).isSome
+/-- Whether a fixed group lies outside every repeatable level, where the group-count reader reads its
+cells and its descendants' rows, which are then all its own. -/
+private def fixedGroupOutsideRepeatable (model : FlatModel) (reference : ResolvedGroupReference) :
+    Bool :=
+  (model.repeatableScopeForGroupPath reference.path).isEmpty
 
-/-- Whether a row runs the atom. Every star is read through the row as its outer environment; a fixed
-group with a repeatable descendant is not starred, and its rows are counted across the document. -/
+/-- Whether a row runs the atom. Every star is read through the row as its outer environment, and a
+fixed group outside every repeatable level reads the same at every row; one inside a level is a group
+the reader cannot enumerate. -/
 private def rowEvaluable : CheckedNumericComputationAtom model → Bool
-  | .numeric (.filledGroupCount groups) => groups.all (fixedGroupHoldsNoRow model)
+  | .numeric (.filledGroupCount groups) => groups.all (fixedGroupOutsideRepeatable model)
   | .filledGroupCountMixed operands => operands.all fun
-      | .fixed reference => fixedGroupHoldsNoRow model reference
+      | .fixed reference => fixedGroupOutsideRepeatable model reference
       | .starred _ | .starredPresence _ => true
   | _ => true
 
 /-- The target of a table at a repeatable target holding an atom a row does not run. -/
-private def rowOperationUnmeasured? (table : CheckedNumericComputationTable model) :
+private def rowGroupInsideRepeatable? (table : CheckedNumericComputationTable model) :
     Option FieldId :=
   if !table.readingScope.isEmpty && !table.selectableAlternatives.all
       (·.operation.operation.core.expression.allAtoms rowEvaluable) then
@@ -94,8 +96,8 @@ def certifyRepeatableNumberPlan (steps : List (CheckedNumericComputationTable mo
             CheckedNumericComputationTable.referencesField steps.length steps) with
       | some (step, reads) => .error (.cycle step reads)
       | none =>
-        match steps.findSome? rowOperationUnmeasured? with
-        | some target => .error (.rowOperationUnmeasured target)
+        match steps.findSome? rowGroupInsideRepeatable? with
+        | some target => .error (.rowGroupInsideRepeatable target)
         | none => .ok {
             authored := steps
             execution := _

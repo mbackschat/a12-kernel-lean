@@ -1506,6 +1506,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [At a row target a Number aggregate's star binds the row only above its first starred level and its `$` filter operand reads the row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-star-aggregates)
 <a id="src-row-star-scans"></a>
 - [At a row target the scans, value counts, product sum and starred group count bind the row, and on the computation arm each leaves an over-limit row out, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-star-scans)
+<a id="src-first-filled-capacity"></a>
+- [A typed or filtered `FirstFilledValue` star leaves an over-limit row out on the computation arm, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-first-filled-capacity)
 <a id="src-repeatable-nested-star-aggregate"></a>
 - [A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-nested-star-aggregate)
 <a id="src-computation-precondition-names"></a>

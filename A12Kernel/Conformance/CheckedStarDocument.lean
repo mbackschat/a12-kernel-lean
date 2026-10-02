@@ -158,12 +158,13 @@ private def overLimitSnapshot : Option OverLimitSnapshot := do
       observeCell .validation entry.cell
   }
 
-/- An actual over-limit row stays in canonical order as a formal cell and does not manufacture an omitted declared tail. -/
+/- An actual over-limit row is left out of the projection, the in-capacity rows keeping canonical order,
+and does not manufacture an omitted declared tail
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-first-filled-capacity)). -/
 example : overLimitSnapshot = some {
     hasOpenTail := false
     observations := [
       .value (.num 1),
-      .unknown .overRepetition,
       .empty]
   } := by
   native_decide

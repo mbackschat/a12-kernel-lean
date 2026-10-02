@@ -1,0 +1,462 @@
+{
+ "header": {
+  "id": "Ffo_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Ffo_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rg",
+     "name": "Rg",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rg/FS",
+        "name": "FS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/FB",
+        "name": "FB",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/FD",
+        "name": "FD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "FULL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/KS",
+        "name": "KS",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/KB",
+        "name": "KB",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/KD",
+        "name": "KD",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/FE",
+        "name": "FE",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/FN",
+        "name": "FN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/KE",
+        "name": "KE",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rg/KF",
+        "name": "KF",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/KEComp",
+        "name": "KEComp",
+        "Computation": {
+         "computedFieldRelPath": "../KE",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldNotFilled(FE)",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/KFComp",
+        "name": "KFComp",
+        "Computation": {
+         "computedFieldRelPath": "../KF",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldNotFilled(FN)",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/FEComp",
+        "name": "FEComp",
+        "Computation": {
+         "computedFieldRelPath": "../FE",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Rows*/Code)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/FNComp",
+        "name": "FNComp",
+        "Computation": {
+         "computedFieldRelPath": "../FN",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Rows*/Num Having [Rows/Gate] > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/KSComp",
+        "name": "KSComp",
+        "Computation": {
+         "computedFieldRelPath": "../KS",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldNotFilled(FS)",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/KBComp",
+        "name": "KBComp",
+        "Computation": {
+         "computedFieldRelPath": "../KB",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldNotFilled(FB)",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/KDComp",
+        "name": "KDComp",
+        "Computation": {
+         "computedFieldRelPath": "../KD",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldNotFilled(FD)",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/FSComp",
+        "name": "FSComp",
+        "Computation": {
+         "computedFieldRelPath": "../FS",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Rows*/Tag)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/FBComp",
+        "name": "FBComp",
+        "Computation": {
+         "computedFieldRelPath": "../FB",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Rows*/Flag)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Rg/FDComp",
+        "name": "FDComp",
+        "Computation": {
+         "computedFieldRelPath": "../FD",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Rows*/Day)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Tag",
+           "name": "Tag",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Flag",
+           "name": "Flag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Day",
+           "name": "Day",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd",
+              "datePrecision": "FULL"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Code",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Num",
+           "name": "Num",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Gate",
+           "name": "Gate",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

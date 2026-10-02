@@ -1,0 +1,116 @@
+{
+ "model": "Ffo_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "o1-over-limit-only",
+   "documentInline": {
+    "Rg": {
+     "FS": "zz",
+     "FB": "false",
+     "FD": "1999-09-09",
+     "KS": "99",
+     "KB": "99",
+     "KD": "99",
+     "FE": "B",
+     "FN": "99",
+     "KE": "99",
+     "KF": "99",
+     "Rows": [
+      {},
+      {},
+      {
+       "Tag": "x",
+       "Flag": "true",
+       "Day": "2020-01-01",
+       "Code": "A",
+       "Num": "7",
+       "Gate": "1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "o2-in-capacity",
+   "documentInline": {
+    "Rg": {
+     "FS": "zz",
+     "FB": "false",
+     "FD": "1999-09-09",
+     "KS": "99",
+     "KB": "99",
+     "KD": "99",
+     "FE": "B",
+     "FN": "99",
+     "KE": "99",
+     "KF": "99",
+     "Rows": [
+      {},
+      {
+       "Tag": "x",
+       "Flag": "true",
+       "Day": "2020-01-01",
+       "Code": "A",
+       "Num": "7",
+       "Gate": "1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "o3-malformed",
+   "documentInline": {
+    "Rg": {
+     "FS": "zz",
+     "FB": "false",
+     "FD": "1999-09-09",
+     "KS": "99",
+     "KB": "99",
+     "KD": "99",
+     "FE": "B",
+     "FN": "99",
+     "KE": "99",
+     "KF": "99",
+     "Rows": [
+      {},
+      {
+       "Tag": "x",
+       "Flag": "true",
+       "Day": "bad",
+       "Code": "A",
+       "Num": "x",
+       "Gate": "1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "o4-none",
+   "documentInline": {
+    "Rg": {
+     "FS": "zz",
+     "FB": "false",
+     "FD": "1999-09-09",
+     "KS": "99",
+     "KB": "99",
+     "KD": "99",
+     "FE": "B",
+     "FN": "99",
+     "KE": "99",
+     "KF": "99",
+     "Rows": [
+      {},
+      {}
+     ]
+    }
+   }
+  }
+ ]
+}

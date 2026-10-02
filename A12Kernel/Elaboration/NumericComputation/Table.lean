@@ -264,7 +264,7 @@ consume placement, but Analyze and Transform consumers do. -/
 def declaringGroups (table : CheckedNumericComputationTable model) : List GroupPath :=
   table.checkedAlternatives.map (·.operation.operation.declaringGroup)
 
-/-- Select first through computation-phase scalar guards, then evaluate only that checked operation. The context's read decides which row the operands are read at: the repeatable plan supplies a row-local one. -/
+/-- Select first through computation-phase scalar guards, then evaluate only that checked operation with the scalar evaluator. The context's read decides which row the operands are read at. -/
 def evaluate (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult :=

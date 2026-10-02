@@ -282,14 +282,14 @@ private def addressedCell (source : CheckedStarFieldPath model)
     Except CheckedStarDocumentError CheckedAddressedCell :=
   checked.addressedCell environment source.declaration.id
 
-/-- Resolve topology against the immutable checked document and observe each concrete leaf once through a caller-supplied exact-address view. Exact environment and address remain owned by the immutable document; each leaf's stored text is its placement's, so a value an earlier plan step overlaid reads with its own rendering. -/
+/-- Resolve topology's in-capacity extent against the immutable checked document and observe each concrete leaf once through a caller-supplied exact-address view. Every caller is a computation-arm `FirstFilledValue`, which leaves an over-limit row out rather than reading it as poison ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-first-filled-capacity)). Exact environment and address remain owned by the immutable document; each leaf's stored text is its placement's, so a value an earlier plan step overlaid reads with its own rendering. -/
 def resolveCheckedFieldWithRead (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (outer : Env) :
     Except CheckedStarDocumentError ResolvedCheckedStarField := do
   let topology ←
-    (source.path.resolve checked.source.toDocument outer).mapError .addressing
+    (source.path.resolveInCapacity checked.source.toDocument outer).mapError .addressing
   let cells ← topology.environments.mapM fun environment =>
     checked.addressedCellWithRead read environment source.declaration.id
   pure { topology, cells }

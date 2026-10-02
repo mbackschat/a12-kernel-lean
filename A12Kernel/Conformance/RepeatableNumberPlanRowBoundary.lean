@@ -166,8 +166,9 @@ private def classOf (declaringGroup : GroupPath) (expression : AuthoredNumericEx
 
 /- The static models, each the Kernel's sole code: a read below the target's levels, alone or inside
 `Max`, and a read of the sibling repeatable group; a Number and a String copied into the row target
-from the fixed `Fx`, which it does not lie below, and a guarded constant from there; and a String
-copied inside the row. -/
+from the fixed `Fx`, which it does not lie below, and a guarded constant from there; a String copied
+inside the row; and `CurrentRepetition(Rows)` from the row, which names a `Rows` inside `Rows`. The
+grid's `CurrentRepetition($Rows)` has no Lean surface, a group path carrying no origin. -/
 example :
     classOf rows (plain (absolute ["Rg", "Rows", "Sub"] "IA")) = some .noWildcard ∧
     classOf rows (.extremumCall .maximum (.extremum .maximum
@@ -178,6 +179,8 @@ example :
     classOf ["Rg", "Fx"] (.literal { value := 1, authoredScale := 0 })
       (some (.fieldFilled (absolute rows "A"))) = some .fieldNotInRuleGroup ∧
     classOf rows (plain (bare "S1")) = some .invalidCompareToEnumOrString ∧
+    classOf rows (.atom (.currentRepetition { base := .relative 0, groups := ["Rows"] })) =
+      some .invalidEntity ∧
     classOf rows (plain (bare "A")) = none := by
   native_decide
 

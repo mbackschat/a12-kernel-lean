@@ -129,6 +129,23 @@ example :
         some (.addressing (.missingBinding 10)) := by
   native_decide
 
+/- A third item beyond the capacity of two holds `6 * 6`, which would fire the guarded product if read;
+the checked-document route leaves the row out, as the Kernel's validation arm does
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)), so the
+in-capacity product stays `0`. -/
+example :
+    (do
+      let rule ← guardedPlainStarProductRule?
+      let base := plainStarProductData false
+      let outcomes ← evalOrdinaryRule? rule { base with
+        instantiatedRows := base.instantiatedRows ++ [{ group := 20, path := [1, 3] }]
+        cells := base.cells ++ [innerAmount.id, innerPrice.id].map fun field =>
+          { address := { field, path := [1, 3] }, stored := "6", raw := .parsed (.num 6) } }
+      let outcome ← outcomes.head?
+      pure (outcome.2.verdict, outcome.2.message?.map (·.errorAddress))) =
+      some (.notFired, none) := by
+  native_decide
+
 private def instantiatedEmptySectionsData : DocumentData :=
   { instantiatedRows := [
       { group := 10, path := [2] },

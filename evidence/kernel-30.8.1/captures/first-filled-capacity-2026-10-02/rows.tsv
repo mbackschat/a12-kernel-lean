@@ -1,0 +1,50 @@
+# row	field	outcome	value
+o1-over-limit-only	Rg/FB	cleared	
+o1-over-limit-only	Rg/FD	cleared	
+o1-over-limit-only	Rg/FE	cleared	
+o1-over-limit-only	Rg/FN	value	0
+o1-over-limit-only	Rg/FS	cleared	
+o1-over-limit-only	Rg/KB	value	1
+o1-over-limit-only	Rg/KD	value	1
+o1-over-limit-only	Rg/KE	value	1
+o1-over-limit-only	Rg/KF	cleared	
+o1-over-limit-only	Rg/KS	value	1
+o1-over-limit-only	Rg/Rows[3]/Code	operand-error	zuGrosseKontextnummer
+o1-over-limit-only	Rg/Rows[3]/Day	operand-error	zuGrosseKontextnummer
+o1-over-limit-only	Rg/Rows[3]/Flag	operand-error	zuGrosseKontextnummer
+o1-over-limit-only	Rg/Rows[3]/Gate	operand-error	zuGrosseKontextnummer
+o1-over-limit-only	Rg/Rows[3]/Num	operand-error	zuGrosseKontextnummer
+o1-over-limit-only	Rg/Rows[3]/Tag	operand-error	zuGrosseKontextnummer
+o1-over-limit-only	Rg/Rows[3]	operand-error	zuGrosseZeile
+o2-in-capacity	Rg/FB	value	true
+o2-in-capacity	Rg/FD	value	2020-01-01
+o2-in-capacity	Rg/FE	value	A
+o2-in-capacity	Rg/FN	value	7
+o2-in-capacity	Rg/FS	value	x
+o2-in-capacity	Rg/KB	cleared	
+o2-in-capacity	Rg/KD	cleared	
+o2-in-capacity	Rg/KE	cleared	
+o2-in-capacity	Rg/KF	cleared	
+o2-in-capacity	Rg/KS	cleared	
+o3-malformed	Rg/FB	value	true
+o3-malformed	Rg/FD	cleared	
+o3-malformed	Rg/FE	value	A
+o3-malformed	Rg/FN	cleared	
+o3-malformed	Rg/FS	value	x
+o3-malformed	Rg/KB	cleared	
+o3-malformed	Rg/KD	cleared	
+o3-malformed	Rg/KE	cleared	
+o3-malformed	Rg/KF	cleared	
+o3-malformed	Rg/KS	cleared	
+o3-malformed	Rg/Rows[2]/Day	operand-error	datumFormatFalsch
+o3-malformed	Rg/Rows[2]/Num	operand-error	zahlHatUngueltigeZeichen
+o4-none	Rg/FB	cleared	
+o4-none	Rg/FD	cleared	
+o4-none	Rg/FE	cleared	
+o4-none	Rg/FN	value	0
+o4-none	Rg/FS	cleared	
+o4-none	Rg/KB	value	1
+o4-none	Rg/KD	value	1
+o4-none	Rg/KE	value	1
+o4-none	Rg/KF	cleared	
+o4-none	Rg/KS	value	1

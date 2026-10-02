@@ -316,6 +316,7 @@ import A12Kernel.Conformance.ScalarComputationPlanDocument
 import A12Kernel.Conformance.ScalarComputationPlanCustom
 import A12Kernel.Conformance.ScalarComputationPlanExtractor
 import A12Kernel.Conformance.ScalarComputationPlanFirstFilled
+import A12Kernel.Conformance.ScalarComputationPlanFirstFilledCapacity
 import A12Kernel.Conformance.ScalarComputationPlanOperators
 import A12Kernel.Conformance.ScalarComputationRun
 import A12Kernel.Conformance.ScalarText
