@@ -1,0 +1,15 @@
+# row	field	outcome	value
+a01-first-and-second	Alt/Rows/RD	value	8
+a01-first-and-second	Alt/Rows/RT	value	7
+a01-first-and-second	Alt/Rows[2]/RD	value	8
+a01-first-and-second	Alt/Rows[2]/RT	value	7
+a01-first-and-second	Alt/Rows[3]/RD	value	4
+a01-first-and-second	Alt/Rows[3]/RT	value	3
+a02-none-and-poison	Alt/Rows/RD	value	1
+a02-none-and-poison	Alt/Rows/RT	cleared	
+a02-none-and-poison	Alt/Rows[2]/RD	cleared	
+a02-none-and-poison	Alt/Rows[2]/RT	cleared	
+a02-none-and-poison	Alt/Rows[3]/RD	cleared	
+a02-none-and-poison	Alt/Rows[3]/RT	cleared	
+a02-none-and-poison	formal	zahlHatUngueltigeZeichen	Alt/Rows[2]/G1
+a02-none-and-poison	formal	zahlHatUngueltigeZeichen	Alt/Rows[3]/G2
