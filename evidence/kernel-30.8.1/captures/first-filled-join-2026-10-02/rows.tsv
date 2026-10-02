@@ -1,0 +1,139 @@
+# row	field	outcome	value
+r1-fresh	Fj/BA	value	false
+r1-fresh	Fj/BF	value	false
+r1-fresh	Fj/DA	value	2026-05-04
+r1-fresh	Fj/DF	value	2026-05-04
+r1-fresh	Fj/EA	value	1
+r1-fresh	Fj/EF	value	1
+r1-fresh	Fj/GA	value	2026-05
+r1-fresh	Fj/GF	value	2026-05
+r1-fresh	Fj/KB	value	1
+r1-fresh	Fj/KD	value	1
+r1-fresh	Fj/KE	value	1
+r1-fresh	Fj/KG	value	1
+r1-fresh	Fj/KM	value	1
+r1-fresh	Fj/KNB	cleared	
+r1-fresh	Fj/KND	cleared	
+r1-fresh	Fj/KNE	cleared	
+r1-fresh	Fj/KNG	cleared	
+r1-fresh	Fj/KNM	cleared	
+r1-fresh	Fj/KNR	cleared	
+r1-fresh	Fj/KNT	cleared	
+r1-fresh	Fj/KR	value	1
+r1-fresh	Fj/KT	value	1
+r1-fresh	Fj/MA	value	2026-05-04T08:30:00
+r1-fresh	Fj/MF	value	2026-05-04T08:30:00
+r1-fresh	Fj/RA	value	2026-05-04/2026-05-10
+r1-fresh	Fj/RF	value	2026-05-04/2026-05-10
+r1-fresh	Fj/TA	value	08:30:00
+r1-fresh	Fj/TF	value	08:30:00
+r2-cleared-upstream	Fj/BA	cleared	
+r2-cleared-upstream	Fj/BF	value	true
+r2-cleared-upstream	Fj/DA	cleared	
+r2-cleared-upstream	Fj/DF	value	2026-07-08
+r2-cleared-upstream	Fj/EA	cleared	
+r2-cleared-upstream	Fj/EF	value	3
+r2-cleared-upstream	Fj/GA	cleared	
+r2-cleared-upstream	Fj/GF	value	2026-07
+r2-cleared-upstream	Fj/KB	value	1
+r2-cleared-upstream	Fj/KD	value	1
+r2-cleared-upstream	Fj/KE	value	1
+r2-cleared-upstream	Fj/KG	value	1
+r2-cleared-upstream	Fj/KM	value	1
+r2-cleared-upstream	Fj/KNB	cleared	
+r2-cleared-upstream	Fj/KND	cleared	
+r2-cleared-upstream	Fj/KNE	cleared	
+r2-cleared-upstream	Fj/KNG	cleared	
+r2-cleared-upstream	Fj/KNM	cleared	
+r2-cleared-upstream	Fj/KNR	cleared	
+r2-cleared-upstream	Fj/KNT	cleared	
+r2-cleared-upstream	Fj/KR	value	1
+r2-cleared-upstream	Fj/KT	value	1
+r2-cleared-upstream	Fj/MA	cleared	
+r2-cleared-upstream	Fj/MF	value	2026-07-08T09:45:00
+r2-cleared-upstream	Fj/RA	cleared	
+r2-cleared-upstream	Fj/RF	value	2026-07-08/2026-07-10
+r2-cleared-upstream	Fj/TA	cleared	
+r2-cleared-upstream	Fj/TF	value	09:45:00
+r3-poisoned-upstream	Fj/BA	cleared	
+r3-poisoned-upstream	Fj/DA	cleared	
+r3-poisoned-upstream	Fj/DF	cleared	
+r3-poisoned-upstream	Fj/EA	cleared	
+r3-poisoned-upstream	Fj/EF	cleared	
+r3-poisoned-upstream	Fj/GA	cleared	
+r3-poisoned-upstream	Fj/GF	cleared	
+r3-poisoned-upstream	Fj/KB	cleared	
+r3-poisoned-upstream	Fj/KD	cleared	
+r3-poisoned-upstream	Fj/KE	cleared	
+r3-poisoned-upstream	Fj/KG	cleared	
+r3-poisoned-upstream	Fj/KM	cleared	
+r3-poisoned-upstream	Fj/KNB	cleared	
+r3-poisoned-upstream	Fj/KND	cleared	
+r3-poisoned-upstream	Fj/KNE	cleared	
+r3-poisoned-upstream	Fj/KNG	cleared	
+r3-poisoned-upstream	Fj/KNM	cleared	
+r3-poisoned-upstream	Fj/KNR	cleared	
+r3-poisoned-upstream	Fj/KNT	cleared	
+r3-poisoned-upstream	Fj/KR	cleared	
+r3-poisoned-upstream	Fj/KT	cleared	
+r3-poisoned-upstream	Fj/MA	cleared	
+r3-poisoned-upstream	Fj/MF	cleared	
+r3-poisoned-upstream	Fj/RA	cleared	
+r3-poisoned-upstream	Fj/RF	cleared	
+r3-poisoned-upstream	Fj/TA	cleared	
+r3-poisoned-upstream	Fj/TF	cleared	
+r4-all-empty	Fj/BA	cleared	
+r4-all-empty	Fj/DA	cleared	
+r4-all-empty	Fj/DF	cleared	
+r4-all-empty	Fj/EA	cleared	
+r4-all-empty	Fj/EF	cleared	
+r4-all-empty	Fj/GA	cleared	
+r4-all-empty	Fj/GF	cleared	
+r4-all-empty	Fj/KB	cleared	
+r4-all-empty	Fj/KD	cleared	
+r4-all-empty	Fj/KE	cleared	
+r4-all-empty	Fj/KG	cleared	
+r4-all-empty	Fj/KM	cleared	
+r4-all-empty	Fj/KNB	value	1
+r4-all-empty	Fj/KND	value	1
+r4-all-empty	Fj/KNE	value	1
+r4-all-empty	Fj/KNG	value	1
+r4-all-empty	Fj/KNM	value	1
+r4-all-empty	Fj/KNR	value	1
+r4-all-empty	Fj/KNT	value	1
+r4-all-empty	Fj/KR	cleared	
+r4-all-empty	Fj/KT	cleared	
+r4-all-empty	Fj/MA	cleared	
+r4-all-empty	Fj/MF	cleared	
+r4-all-empty	Fj/RA	cleared	
+r4-all-empty	Fj/RF	cleared	
+r4-all-empty	Fj/TA	cleared	
+r4-all-empty	Fj/TF	cleared	
+r5-fresh-before-malformed	Fj/BA	value	false
+r5-fresh-before-malformed	Fj/BF	value	false
+r5-fresh-before-malformed	Fj/DA	value	2026-05-04
+r5-fresh-before-malformed	Fj/DF	value	2026-05-04
+r5-fresh-before-malformed	Fj/EA	value	1
+r5-fresh-before-malformed	Fj/EF	value	1
+r5-fresh-before-malformed	Fj/GA	value	2026-05
+r5-fresh-before-malformed	Fj/GF	value	2026-05
+r5-fresh-before-malformed	Fj/KB	value	1
+r5-fresh-before-malformed	Fj/KD	value	1
+r5-fresh-before-malformed	Fj/KE	value	1
+r5-fresh-before-malformed	Fj/KG	value	1
+r5-fresh-before-malformed	Fj/KM	value	1
+r5-fresh-before-malformed	Fj/KNB	cleared	
+r5-fresh-before-malformed	Fj/KND	cleared	
+r5-fresh-before-malformed	Fj/KNE	cleared	
+r5-fresh-before-malformed	Fj/KNG	cleared	
+r5-fresh-before-malformed	Fj/KNM	cleared	
+r5-fresh-before-malformed	Fj/KNR	cleared	
+r5-fresh-before-malformed	Fj/KNT	cleared	
+r5-fresh-before-malformed	Fj/KR	value	1
+r5-fresh-before-malformed	Fj/KT	value	1
+r5-fresh-before-malformed	Fj/MA	value	2026-05-04T08:30:00
+r5-fresh-before-malformed	Fj/MF	value	2026-05-04T08:30:00
+r5-fresh-before-malformed	Fj/RA	value	2026-05-04/2026-05-10
+r5-fresh-before-malformed	Fj/RF	value	2026-05-04/2026-05-10
+r5-fresh-before-malformed	Fj/TA	value	08:30:00
+r5-fresh-before-malformed	Fj/TF	value	08:30:00

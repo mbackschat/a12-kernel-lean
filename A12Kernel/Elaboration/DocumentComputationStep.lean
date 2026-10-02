@@ -1,20 +1,27 @@
+import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeConstructionComputation
+import A12Kernel.Elaboration.DateRangeFirstFilledComputation
+import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
 import A12Kernel.Elaboration.EnumerationComputation
+import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.FullDateComputation
+import A12Kernel.Elaboration.FullDateFirstFilledComputation
 import A12Kernel.Elaboration.TimeComputation
+import A12Kernel.Elaboration.TimeFirstFilledComputation
 
 /-! # Whole-document computation steps
 
 A computation whose evaluator reads the whole document joins a scalar plan as one step. The step carries
 its target, the fields it reads, a proof that it does not read its own target, and an evaluator returning
 the target's outcome together with the cell a later computation reads for it. Day and sub-day DateTime
-shifts, a full-Date computation, a Time construction, an Enumeration copy and a DateRange construction
-are its instances; each is
-one constructor here, and the plan's laws are stated once over the step rather than once per family.
+shifts, a full-Date computation, a Time construction, an Enumeration copy, a DateRange construction and
+the fixed-target `FirstFilledValue` over a Boolean, Time, DateTime, full Date, DateRange or Enumeration
+are its instances; each is one constructor here, and the plan's laws are stated once over the step rather
+than once per family.
 
 The read-back cell is the rule every instance shares. A later computation reads a completed target as the
 document would read its stored rendering, a cleared one as empty, and an errored or poisoned one as
@@ -25,7 +32,10 @@ offset its text denotes rather than at the instant computed
 Date the target retains as errored reaches its readers as poison under both presence tests
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)), and so does an
 inverted DateRange the target retains as errored
-([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-date-range-join)).
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-date-range-join)). A
+`FirstFilledValue` reading a cleared upstream target falls through to its next source, and one reading a
+poisoned upstream ends its scan, on every kind measured at a join
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-first-filled-join)).
 
 A completed Time is read back through `CheckedTimeInputField.classifyStoredForModel`, which anchors the
 clock on one fixed day because a `Value` must carry an instant; that classifier names the readers
@@ -40,6 +50,7 @@ inductive DocumentTargetOutcome where
   | time (outcome : TimeTargetOutcome)
   | enumeration (outcome : StringTargetOutcome)
   | dateRange (outcome : DateRangeTargetOutcome)
+  | boolean (outcome : BooleanComputationOutcome)
   deriving Repr, DecidableEq
 
 /-- The target family of a whole-document step, which fixes its target kind and the outcome it reports
@@ -50,6 +61,7 @@ inductive DocumentTargetFamily where
   | time
   | enumeration
   | dateRange
+  | boolean
   deriving Repr, DecidableEq
 
 namespace DocumentTargetFamily
@@ -60,6 +72,7 @@ def kind : DocumentTargetFamily → SurfaceScalarKind
   | .time => .temporal .time
   | .enumeration => .enumeration
   | .dateRange => .dateRange
+  | .boolean => .boolean
 
 /-- The family's cleared outcome, for a step whose guard does not hold. -/
 def noValue : DocumentTargetFamily → DocumentTargetOutcome
@@ -68,6 +81,7 @@ def noValue : DocumentTargetFamily → DocumentTargetOutcome
   | .time => .time .noValue
   | .enumeration => .enumeration .noValue
   | .dateRange => .dateRange .noValue
+  | .boolean => .boolean .noValue
 
 /-- The family's poisoned outcome, for a step whose guard reads poison. -/
 def poison (cause : FormalCause) : DocumentTargetFamily → DocumentTargetOutcome
@@ -76,6 +90,7 @@ def poison (cause : FormalCause) : DocumentTargetFamily → DocumentTargetOutcom
   | .time => .time (.poison cause)
   | .enumeration => .enumeration (.poison cause)
   | .dateRange => .dateRange (.poison cause)
+  | .boolean => .boolean (.poison cause)
 
 end DocumentTargetFamily
 
@@ -88,6 +103,11 @@ inductive DocumentComputationStepFault where
   | fullDate (cause : FullDateComputationFault)
   | timeConstruction (cause : TimeComponentsFault)
   | dateRangeConstruction (cause : DateRangeConstructionComputationFault)
+  | firstFilledSource (cause : CheckedStarDocumentError)
+  | dateTimeFirstFilled (cause : DateTimeFirstFilledComputationFault)
+  | fullDateFirstFilled (cause : FullDateFirstFilledComputationFault)
+  | dateRangeFirstFilled (cause : DateRangeFirstFilledComputationFault)
+  | enumerationFirstFilled (cause : CheckedAddressingError)
   | dateTimeRead (cause : DateTimeInputError)
   | fullDateRead (cause : FullDateInputError)
   | timeRead (cause : TimeInputError)
@@ -157,6 +177,13 @@ def dateRange (model : FlatModel) (policy : DateRangeDeclarationPolicy) :
       let raw ← (classifyStoredDateRangeForModel model.timeZoneId model.baseYear policy stored.text).mapError
         .dateRangeRead
       pure (checkAdmittedRawCell raw)
+
+/-- A completed Boolean target, read back from its rendering as the document classifies a stored
+Boolean. -/
+def boolean : BooleanComputationOutcome → CheckedCell
+  | .noValue => empty
+  | .poison _ => poison
+  | .value value => checkAdmittedRawCell (classifyStoredBooleanText (toString value))
 
 end DocumentComputationReadBack
 
@@ -260,6 +287,80 @@ def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation
     let result ← (operation.execute document).mapError .dateRangeConstruction
     let cell ← DocumentComputationReadBack.dateRange model operation.target.policy result.outcome
     pure (.dateRange result.outcome, cell)
+
+/-- A fixed-target Boolean `FirstFilledValue`. -/
+def ofBooleanFirstFilled (operation : CheckedBooleanFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.id
+  family := .boolean
+  referencesField := operation.source.referencesField
+  excludesTarget := operation.excludesTarget
+  run _ document := do
+    let outcome ← (operation.execute document).mapError .firstFilledSource
+    pure (.boolean outcome, DocumentComputationReadBack.boolean outcome)
+
+/-- A fixed-target Time `FirstFilledValue`. -/
+def ofTimeFirstFilled (operation : CheckedTimeFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.shape.target.id
+  family := .time
+  referencesField := operation.shape.source.referencesField
+  excludesTarget := operation.shape.excludesTarget
+  run _ document := do
+    let outcome ← (operation.execute document).mapError .firstFilledSource
+    let cell ← DocumentComputationReadBack.time model operation.shape.target.id outcome
+    pure (.time outcome, cell)
+
+/-- A fixed-target DateTime `FirstFilledValue`. -/
+def ofDateTimeFirstFilled (operation : CheckedDateTimeFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.shape.target.id
+  family := .dateTime
+  referencesField := operation.shape.source.referencesField
+  excludesTarget := operation.shape.excludesTarget
+  run _ document := do
+    let outcome ← (operation.execute document).mapError .dateTimeFirstFilled
+    let cell ← DocumentComputationReadBack.dateTime model operation.shape.target.id outcome
+    pure (.dateTime outcome, cell)
+
+/-- A fixed-target full-Date `FirstFilledValue`. -/
+def ofFullDateFirstFilled (operation : CheckedFullDateFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.shape.targetField
+  family := .fullDate
+  referencesField := operation.shape.referencesField
+  excludesTarget := operation.shape.excludesTarget
+  run _ document := do
+    let outcome ← (operation.execute document).mapError .fullDateFirstFilled
+    let cell ← DocumentComputationReadBack.fullDate model operation.shape.targetField outcome
+    pure (.fullDate outcome, cell)
+
+/-- A fixed-target DateRange `FirstFilledValue` over a direct field list. -/
+def ofDateRangeFirstFilledDirect (operation : CheckedDateRangeFirstFilledDirectComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.source.id
+  family := .dateRange
+  referencesField field := operation.sources.any (·.direct.source.id == field)
+  excludesTarget := by
+    simp only [List.any_eq_false, beq_iff_eq]
+    exact fun source _ => source.excludesTarget
+  run _ document := do
+    let outcome ← (operation.execute document).mapError .dateRangeFirstFilled
+    let cell ← DocumentComputationReadBack.dateRange model operation.target.policy outcome
+    pure (.dateRange outcome, cell)
+
+/-- A fixed-target Enumeration `FirstFilledValue`, read from the document's checked cells. -/
+def ofEnumerationFirstFilled (operation : CheckedEnumerationFirstFilledComputationOperation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.field
+  family := .enumeration
+  referencesField := operation.source.referencesField
+  excludesTarget := operation.targetNotReferenced
+  run _ document := do
+    let selected ← (operation.source.evaluateCheckedDocument document []).mapError
+      .enumerationFirstFilled
+    let outcome := selected.asComputationResult.asExactStringTargetOutcome
+    pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target outcome)
 
 /-- A step under a presence guard read through the same overlaid document the step reads: a guard that
 holds runs the step, one that does not clears the target, read as empty, and one that reads poison

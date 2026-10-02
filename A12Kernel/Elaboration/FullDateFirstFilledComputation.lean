@@ -18,7 +18,22 @@ inductive FullDateFirstFilledShape (model : FlatModel) where
   | dotted
       (shape : CheckedTemporalFirstFilledShape model .fullDateDotted)
 
-/-- One fixed full-Date target and one direct single-level starred source sharing one exact admitted declaration format. The private constructor keeps the separately checked target policy tied to the assembly route. -/
+namespace FullDateFirstFilledShape
+
+def targetField : FullDateFirstFilledShape model → FieldId
+  | .iso shape | .dotted shape => shape.target.id
+
+def referencesField : FullDateFirstFilledShape model → FieldId → Bool
+  | .iso shape | .dotted shape => shape.source.referencesField
+
+theorem excludesTarget (shape : FullDateFirstFilledShape model) :
+    shape.referencesField shape.targetField = false := by
+  cases shape with
+  | iso shape | dotted shape => exact shape.excludesTarget
+
+end FullDateFirstFilledShape
+
+/-- One fixed full-Date target and one direct star or direct list source sharing one exact admitted declaration format. The private constructor keeps the separately checked target policy tied to the assembly route. -/
 structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
   private mk ::
   shape : FullDateFirstFilledShape model

@@ -188,7 +188,7 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
   | .document _ (.fullDate (.errored _ _)) | .document _ (.dateTime (.errored _ _))
   | .document _ (.dateRange (.errored _ _)) | .document _ (.enumeration (.errored _ _))
-  | .document _ (.time _) => none
+  | .document _ (.time _) | .document _ (.boolean _) => none
 
 private def values? (cells : List ClassifiedCellInput) : Option (List String) := do
   let input ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := fixed ++ cells }).toOption

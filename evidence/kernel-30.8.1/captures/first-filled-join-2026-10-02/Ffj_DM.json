@@ -1,0 +1,1268 @@
+{
+ "header": {
+  "id": "Ffj_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Ffj_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Fj",
+     "name": "Fj",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Fj/B1",
+        "name": "B1",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/B2",
+        "name": "B2",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/B3",
+        "name": "B3",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/BA",
+        "name": "BA",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/BF",
+        "name": "BF",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KB",
+        "name": "KB",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KNB",
+        "name": "KNB",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/G1",
+        "name": "G1",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/G2",
+        "name": "G2",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/G3",
+        "name": "G3",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/GA",
+        "name": "GA",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/GF",
+        "name": "GF",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KG",
+        "name": "KG",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KNG",
+        "name": "KNG",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/T1",
+        "name": "T1",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/T2",
+        "name": "T2",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/T3",
+        "name": "T3",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/TA",
+        "name": "TA",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/TF",
+        "name": "TF",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KT",
+        "name": "KT",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KNT",
+        "name": "KNT",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/M1",
+        "name": "M1",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/M2",
+        "name": "M2",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/M3",
+        "name": "M3",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/MA",
+        "name": "MA",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/MF",
+        "name": "MF",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KM",
+        "name": "KM",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KNM",
+        "name": "KNM",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/D1",
+        "name": "D1",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/D2",
+        "name": "D2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/D3",
+        "name": "D3",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/DA",
+        "name": "DA",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/DF",
+        "name": "DF",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KD",
+        "name": "KD",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KND",
+        "name": "KND",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/R1",
+        "name": "R1",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/R2",
+        "name": "R2",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/R3",
+        "name": "R3",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/RA",
+        "name": "RA",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/RF",
+        "name": "RF",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KR",
+        "name": "KR",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KNR",
+        "name": "KNR",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            },
+            {
+             "value": "3"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            },
+            {
+             "value": "3"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/E3",
+        "name": "E3",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            },
+            {
+             "value": "3"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/EA",
+        "name": "EA",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            },
+            {
+             "value": "3"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/EF",
+        "name": "EF",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            },
+            {
+             "value": "3"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KE",
+        "name": "KE",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fj/KNE",
+        "name": "KNE",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KBComp",
+        "name": "KBComp",
+        "Computation": {
+         "computedFieldRelPath": "../KB",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(BF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KNBComp",
+        "name": "KNBComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNB",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(BF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/BFComp",
+        "name": "BFComp",
+        "Computation": {
+         "computedFieldRelPath": "../BF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(BA, B3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/BAComp",
+        "name": "BAComp",
+        "Computation": {
+         "computedFieldRelPath": "../BA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(B1, B2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KGComp",
+        "name": "KGComp",
+        "Computation": {
+         "computedFieldRelPath": "../KG",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(GF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KNGComp",
+        "name": "KNGComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNG",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(GF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/GFComp",
+        "name": "GFComp",
+        "Computation": {
+         "computedFieldRelPath": "../GF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(GA, G3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/GAComp",
+        "name": "GAComp",
+        "Computation": {
+         "computedFieldRelPath": "../GA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(G1, G2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KTComp",
+        "name": "KTComp",
+        "Computation": {
+         "computedFieldRelPath": "../KT",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(TF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KNTComp",
+        "name": "KNTComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNT",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(TF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/TFComp",
+        "name": "TFComp",
+        "Computation": {
+         "computedFieldRelPath": "../TF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(TA, T3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/TAComp",
+        "name": "TAComp",
+        "Computation": {
+         "computedFieldRelPath": "../TA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(T1, T2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KMComp",
+        "name": "KMComp",
+        "Computation": {
+         "computedFieldRelPath": "../KM",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(MF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KNMComp",
+        "name": "KNMComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNM",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(MF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/MFComp",
+        "name": "MFComp",
+        "Computation": {
+         "computedFieldRelPath": "../MF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(MA, M3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/MAComp",
+        "name": "MAComp",
+        "Computation": {
+         "computedFieldRelPath": "../MA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(M1, M2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KDComp",
+        "name": "KDComp",
+        "Computation": {
+         "computedFieldRelPath": "../KD",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(DF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KNDComp",
+        "name": "KNDComp",
+        "Computation": {
+         "computedFieldRelPath": "../KND",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(DF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/DFComp",
+        "name": "DFComp",
+        "Computation": {
+         "computedFieldRelPath": "../DF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(DA, D3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/DAComp",
+        "name": "DAComp",
+        "Computation": {
+         "computedFieldRelPath": "../DA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(D1, D2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KRComp",
+        "name": "KRComp",
+        "Computation": {
+         "computedFieldRelPath": "../KR",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(RF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KNRComp",
+        "name": "KNRComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNR",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(RF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/RFComp",
+        "name": "RFComp",
+        "Computation": {
+         "computedFieldRelPath": "../RF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(RA, R3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/RAComp",
+        "name": "RAComp",
+        "Computation": {
+         "computedFieldRelPath": "../RA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(R1, R2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KEComp",
+        "name": "KEComp",
+        "Computation": {
+         "computedFieldRelPath": "../KE",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(EF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/KNEComp",
+        "name": "KNEComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNE",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(EF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/EFComp",
+        "name": "EFComp",
+        "Computation": {
+         "computedFieldRelPath": "../EF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(EA, E3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Fj/EAComp",
+        "name": "EAComp",
+        "Computation": {
+         "computedFieldRelPath": "../EA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(E1, E2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
