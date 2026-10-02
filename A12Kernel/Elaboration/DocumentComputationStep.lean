@@ -226,6 +226,23 @@ def boolean : BooleanComputationOutcome → CheckedCell
   | .poison _ => poison
   | .value value => checkAdmittedRawCell (classifyStoredBooleanText (toString value))
 
+/-- A stored component-omitting Date rendering, read as the earliest date it denotes, the rule
+`dateFragment` states. -/
+def omittingDateText (model : FlatModel) (target : FieldId) (text : String) :
+    Except DocumentComputationStepFault CheckedCell := do
+  let declaration ← (model.lookupUniqueId target).toOption.getDM (throw .targetNotReadable)
+  let field ← (certifyOmittingDateInputField declaration).toOption.getDM
+    (throw .targetNotReadable)
+  let profile ← (ModelZone.ConcreteProfile.ofId? model.timeZoneId).getDM
+    (throw .targetNotReadable)
+  let earliest : Option CivilDate :=
+    match field.classifyStoredForModel model.baseYear text with
+    | .admitted value => value.earliestCivil? model.baseYearOrDefault
+    | .presentEmpty | .rejected _ => none
+  let date ← earliest.getDM (throw .targetNotReadable)
+  let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
+  pure (checkAdmittedRawCell (.parsed (.temporal (.date value))))
+
 /-- A completed DateFragment target, read as the earliest date it denotes, which is how the Kernel
 completes a fragment at runtime: missing month and day become `01` and a missing year the Base Year,
 measured by comparison against a full Date (the DateFragment runtime-completion supplement in
@@ -238,19 +255,7 @@ def dateFragment (model : FlatModel) (target : FieldId) :
     StringTargetOutcome → Except DocumentComputationStepFault CheckedCell
   | .noValue => pure empty
   | .poison _ | .errored _ _ => pure poison
-  | .accepted stored => do
-      let declaration ← (model.lookupUniqueId target).toOption.getDM (throw .targetNotReadable)
-      let field ← (certifyOmittingDateInputField declaration).toOption.getDM
-        (throw .targetNotReadable)
-      let profile ← (ModelZone.ConcreteProfile.ofId? model.timeZoneId).getDM
-        (throw .targetNotReadable)
-      let earliest : Option CivilDate :=
-        match field.classifyStoredForModel model.baseYear stored.text with
-        | .admitted value => value.earliestCivil? model.baseYearOrDefault
-        | .presentEmpty | .rejected _ => none
-      let date ← earliest.getDM (throw .targetNotReadable)
-      let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
-      pure (checkAdmittedRawCell (.parsed (.temporal (.date value))))
+  | .accepted stored => omittingDateText model target stored.text
 
 /-- A completed String target, read back as the cell a String table's completion places, so a reader
 cannot tell a String `FirstFilledValue` from any other computed String. -/

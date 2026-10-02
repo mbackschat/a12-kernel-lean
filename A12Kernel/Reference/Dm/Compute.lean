@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Reference.Dm.LowerDocument
+import A12Kernel.Reference.Dm.LowerRows
 import A12Kernel.Elaboration.RepeatableNumberPlan
 import A12Kernel.Elaboration.MixedComputationPlan
 
@@ -104,7 +105,8 @@ inductive LoweredComputation (model : FlatModel)
   | number (table : CheckedNumericComputationTable model) (row : Bool)
   | string (table : CheckedStringComputationTable model)
   | document (step : CheckedDocumentComputationStep model)
-  | stringConstantRows (operation : CheckedRepeatableStringConstantComputation model)
+  /-- A computation into a repeatable target of a kind other than Number, run at every row. -/
+  | rows (step : RowStep model)
 
 /-- Lower one computation onto its target kind's checked table. -/
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
@@ -134,11 +136,9 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
       pure (target, .number table row)
   | .string => do
       if row then
-        let (none, [none], [.string literal]) := (common, guards, operations)
+        let (none, [none], [operation]) := (common, guards, operations)
           | refuse "StringComputation" "row target"
-        let operation ← elaborated "StringComputation"
-          (checkRepeatableStringConstantComputation model computation.group target.id literal)
-        return (target, .stringConstantRows operation)
+        return (target, .rows (← lowerRowStep model computation.group target operation))
       if operations.any fun | .call "FirstFilledValue" _ none none => true | _ => false then
         return ← document
       let alternatives ← (guards.zip operations).mapM fun (precondition, operation) => do
@@ -150,6 +150,11 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
   | kind =>
       if !row then
         if let .ok lowered := document then return lowered
+      else if let (none, [none], [operation]) := (common, guards, operations) then
+        match lowerRowStep model computation.group target operation with
+        | .ok step => return (target, .rows step)
+        -- A carrier's own refusal names the gate; an operation no row carrier names meets the generic one.
+        | .error refusal => if refusal.construct != "RowComputation" then throw refusal
       let name := match kind.surfaceKind with
         | .number => "Number" | .boolean => "Boolean" | .confirm => "Confirm" | .string => "String"
         | .enumeration => "Enumeration" | .dateRange => "DateRange"
@@ -192,7 +197,7 @@ def runComputations (world : World) (prepared : PreparedFlatStringContext model 
     | .number table _ => .number table
     | .string table => .string table
     | .document step => .document step
-    | .stringConstantRows operation => .rows (.ofRepeatableStringConstant operation)
+    | .rows step => .rows (step compilePattern)
   let plan ← elaborated "ComputationPlan" (certifyMixedComputationPlan steps)
   let outcomes ← elaborated "ComputationRun" (plan.execute world prepared.patterns checked)
   pure (outcomes.filterMap fun

@@ -130,4 +130,26 @@ example :
      (lowerComputation dm.flat .english (computation [{ precondition := none, operation := "1" }])).toOption.isSome].all id := by
   native_decide
 
+private def rowModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Order", "Rows"], name := "Due", policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" }, repeatableScope := [10] },
+      { id := 2, groupPath := ["Order", "Rows"], name := "Flag", policy := { kind := .boolean }, repeatableScope := [10] },
+      { id := 3, groupPath := ["Order", "Rows"], name := "Amt", policy := { kind := .number { scale := 0, signed := true } },
+        repeatableScope := [10] },
+      { id := 4, groupPath := ["Order", "Rows"], name := "Text", policy := { kind := .string }, repeatableScope := [10] }]
+    repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 5 }] }
+
+/- A row target of a kind other than Number lowers onto the row step its operation names: a Date
+literal, `True` and `FieldValueAsString` each admit, and an operation no row carrier names is refused. -/
+example :
+    let computation (target operation : String) : DmComputation :=
+      { group := ["Order", "Rows"], name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+        alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
+    let admitted (target operation : String) :=
+      (lowerComputation rowModel .english (computation target operation)).toOption.isSome
+    [admitted "Due" "\"05.03.2024\"", admitted "Flag" "True", admitted "Text" "FieldValueAsString(Amt)",
+     !admitted "Due" "[Amt]"].all id := by
+  native_decide
+
 end A12Kernel.Dm.LowerLocks

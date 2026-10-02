@@ -95,14 +95,35 @@ def decodeNumber? (text : String) : Option DecodedNumericLiteral := do
 private def twoDigits? (text : String) : Option Nat :=
   if text.length == 2 && text.all Char.isDigit then text.toNat? else none
 
-/-- A `DD.MM.YYYY` date constant resolved in the model zone; any other text is not a date (spec
-§12.2: zero padding and a real calendar date are part of the shape). -/
-def dateConstant? (model : FlatModel) (text : String) : Option SurfaceLiteral := do
+private def dateConstantParts? (text : String) : Option (Nat × Nat × Nat) := do
   let [day, month, year] := text.splitOn "." | none
   let day ← twoDigits? day
   let month ← twoDigits? month
   if year.length != 4 || !year.all Char.isDigit then none
-  let civil ← CivilDate.ofYmd? (← year.toNat?) month day
+  pure (← year.toNat?, month, day)
+
+/-- The calendar date a `DD.MM.YYYY` literal names; any other text is not a date (spec §12.2: zero
+padding and a real calendar date are part of the shape). -/
+def civilDateConstant? (text : String) : Option CivilDate := do
+  let (year, month, day) ← dateConstantParts? text
+  CivilDate.ofYmd? year month day
+
+/-- The clock an exact `HH:mm:ss` literal names, a real one only ([`spec/05`](../../../spec/05-dates-and-time.md)
+§1, the literal typing note). -/
+def timeConstant? (text : String) : Option TimeOfDay := do
+  let [hour, minute, second] := text.splitOn ":" | none
+  TimeOfDay.ofHms? (← twoDigits? hour) (← twoDigits? minute) (← twoDigits? second)
+
+/-- The wall label a date literal joined by `T` to a clock literal names. -/
+def dateTimeConstant? (text : String) : Option LocalDateTime := do
+  let [date, clock] := text.splitOn "T" | none
+  let (year, month, day) ← dateConstantParts? date
+  let time ← timeConstant? clock
+  LocalDateTime.ofYmdHms? year month day time.hour time.minute time.second
+
+/-- A `DD.MM.YYYY` date constant resolved in the model zone. -/
+def dateConstant? (model : FlatModel) (text : String) : Option SurfaceLiteral := do
+  let civil ← civilDateConstant? text
   let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
   let value ← profile.resolveStoredDate? civil
   pure (.date { year := true, month := true, day := true, hour := false, minute := false,

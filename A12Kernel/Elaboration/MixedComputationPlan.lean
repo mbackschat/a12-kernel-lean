@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.ScalarComputationRun
 import A12Kernel.Elaboration.RepeatableNumberPlan
-import A12Kernel.Elaboration.RepeatableStringConstantComputation
+import A12Kernel.Elaboration.RowComputationStep
 
 /-! # One computation plan over every target kind, fixed and repeatable
 
@@ -20,45 +20,12 @@ runs through the repeatable Number plan's own fixed and row executors with that 
 a String table reads completed fixed targets through their String-family cell, as in the scalar
 plan; a whole-document step and a row step read the overlaid document.
 
-A **row step** is a checked computation into a repeatable target of a kind other than Number, run once
-per instantiated target row by its own carrier and read back per row as the whole-document steps
-are. Its instances are the row carriers; each is one constructor.
+A **row step** ([`RowComputationStep`](RowComputationStep.lean)) is a checked computation into a
+repeatable target of a kind other than Number, run once per instantiated target row by its own carrier.
 -/
 
 namespace A12Kernel
 
-/-- Why a row step failed structurally. -/
-inductive RowComputationStepFault where
-  | readBack (cause : DocumentComputationStepFault)
-  | stringConstant (cause : RepeatableStringConstantComputationFault)
-  deriving Repr, DecidableEq
-
-/-- One checked computation into a repeatable non-Number target, run at every instantiated row. -/
-structure CheckedRowComputationStep (model : FlatModel) (compilePattern : StringPatternCompiler) where
-  private mk ::
-  target : FieldId
-  family : DocumentTargetFamily
-  referencesField : FieldId → Bool
-  excludesTarget : referencesField target = false
-  run : World → PreparedFlatStringPatterns model compilePattern → CheckedDocument model →
-    Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell))
-
-namespace CheckedRowComputationStep
-
-/-- A String constant written into every row of a repeatable String target. -/
-def ofRepeatableStringConstant (operation : CheckedRepeatableStringConstantComputation model) :
-    CheckedRowComputationStep model compilePattern where
-  target := operation.checkedTarget.targetField
-  family := .string
-  referencesField _ := false
-  excludesTarget := rfl
-  run _ patterns document := do
-    let outcomes ← (operation.execute patterns document).mapError .stringConstant
-    outcomes.mapM fun entry => do
-      let cell ← (DocumentComputationReadBack.string entry.outcome).mapError .readBack
-      pure (entry.targetField, .string entry.outcome, cell)
-
-end CheckedRowComputationStep
 
 /-- One plan step with its family retained. A Number table runs at its fixed target or at every row
 of its target's scope, by its own reading scope. -/

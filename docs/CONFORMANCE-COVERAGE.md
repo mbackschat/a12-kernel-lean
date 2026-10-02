@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-02; HEAD was `8b40cd7d`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-02; HEAD was `9c92d65d`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 837 retained Kernel observation rows through Lean, 4248 of the 4268 rule and computation instances Lean admits match the Kernel, 0 diverge, 20 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
+**Replaying 837 retained Kernel observation rows through Lean, 4346 of the 4386 rule and computation instances Lean admits match the Kernel, 0 diverge, 40 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -76,16 +76,16 @@ Each instance, one rule or computation on one document row, lands in one tier:
 - **match**: the same outcome. A rule that fires on neither side matches too.
 - **tier 1**: a different outcome.
 - **tier 2**: Lean cannot represent the rule, computation, model or document. The construct column names the construct no carrier admitted, or the carrier whose elaborator refused it.
-- **unattributed**: a computation reading, by name, the target of a refused computation, so neither its agreement nor its divergence is attributable to it.
+- **unattributed**: a computation reading, by name, the target of a refused computation, directly or through other computations, so neither its agreement nor its divergence is attributable to it.
 - **fault**: Lean admitted the rule or plan but failed running it.
 - **absent**: no comparable Kernel observation: none retained, an unreadable artifact or model file, or engines that disagree. These are counted as rows below.
 
 | | rules | computations |
 |---|---|---|
-| match | 3650 | 598 |
+| match | 3650 | 696 |
 | tier 1 | 0 | 0 |
-| tier 2 | 252 | 226 |
-| unattributed | 0 | 20 |
+| tier 2 | 252 | 108 |
+| unattributed | 0 | 40 |
 | fault | 0 | 0 |
 
 Of the 837 rows, 161 have no matching row in a retained artifact, and 23 could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
@@ -96,33 +96,30 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 
 | instances | members | arm | construct |
 |---|---|---|---|
-| 49 | 29 | computation | `DateComputation` |
-| 42 | 14 | computation | `StringComputation` |
 | 36 | 36 | validation | `Comparison/DifferenceInDays` |
 | 30 | 3 | validation | `PatternMatched` |
 | 30 | 3 | validation | `PatternViolated` |
 | 28 | 12 | validation | `Comparison/Sum` |
 | 27 | 5 | validation | `AtLeastOneFieldValueIncludedInValueList` |
+| 26 | 6 | computation | `FirstFilledValue` |
 | 24 | 6 | computation | `Guard/Comparison` |
-| 23 | 7 | computation | `TimeComputation` |
 | 21 | 3 | validation | `FieldValuesNotUnique` |
 | 20 | 2 | validation | `Invalid` |
 | 20 | 2 | validation | `Valid` |
+| 19 | 14 | computation | `DateComputation` |
 | 19 | 8 | row | `Document` |
-| 18 | 8 | computation | `BooleanComputation` |
-| 18 | 8 | computation | `ConfirmComputation` |
 | 16 | 8 | validation | `Comparison/MinValue` |
-| 14 | 2 | computation | `FirstFilledValue` |
 | 14 | 8 | computation | `Having` |
-| 10 | 3 | computation | `EnumerationComputation` |
 | 9 | 2 | validation | `Comparison/FirstFilledValue` |
 | 8 | 4 | validation | `Comparison/MaxValue` |
+| 8 | 2 | computation | `EnumerationComputation` |
 | 8 | 1 | computation | `NumberOfFilledFields` |
 | 5 | 1 | validation | `Comparison` |
-| 4 | 3 | computation | `DateTimeComputation` |
 | 4 | 4 | row | `Prepare` |
+| 4 | 3 | computation | `RowComputation` |
+| 4 | 2 | computation | `StringComputation` |
 | 2 | 1 | validation | `AllFieldsFilled` |
-| 2 | 1 | computation | `DateRangeComputation` |
+| 1 | 1 | computation | `DateTimeComputation` |
 
 ### Tier-1 divergences
 
@@ -182,8 +179,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 233514 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 11826 | 5% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 233531 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 11875 | 5% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
