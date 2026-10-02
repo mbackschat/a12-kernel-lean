@@ -2693,3 +2693,35 @@ The DM reader's leaf dispatch built its comparison carriers as `match lowerNumer
 Lean treatment: the `match` is parenthesized and [`LowerLocks.lean`](../A12Kernel/Reference/Dm/LowerLocks.lean) admits a star-free group operand through the entity carrier. Opening the route also exposed a second fault the old shape had hidden: the entity carrier answered a plain second-root read the scalar carriers refuse on purpose, so it now refuses any comparison reading no entity list. A scan for an infix operator line following an unparenthesized `match` with arms, which flags the original, found no other instance among the tracked Lean files on 2026-10-02, and a cold review's rescan at `8b40cd7d` agreed.
 
 **Parenthesize a `match` that is an operand.** Indentation states the intent to a reader and nothing to the parser, and the failure is silent because each branch still type-checks: the list is merely shorter on one of them. When a carrier list behaves as if one member were missing on some inputs, check where its last `match` ends before suspecting the carrier.
+
+## LF211 — an artifact captured before its model was extended in place records the extension's absence as the Kernel's
+
+Three row-extent artifacts retained for the String first-filled carrier predated the computation their model file now holds, because the model had been extended in place after they were captured. Replayed, they showed no outcome for that computation, and that absence read as a Kernel verdict the Lean carrier contradicted. Nothing in the artifact marked it stale: its request and its observations agreed with each other, and only the model beside them had moved.
+
+Lean treatment: none in the theory. The three requests were rerun against the retained model and the new artifacts replace the old ones (`39e8b1df`).
+
+**Never extend a retained model in place.** An artifact is evidence about the model it was run on, so a model that changes after capture silently re-labels every artifact beside it; author the extension as a new model file, or rerun every request that shares the file in the same change.
+
+## LF212 — a fixture-only declaration encoding hides an over-refusal that only reader-decoded models reach
+
+The temporal first-filled classifier recognised a DateFragment only as a full-component Date at `YEAR_OPTIONAL`. Every fixture declared its fragments that way, so every fixture-built case passed, while the DM reader decodes a fragment as a component-omitting Date at full precision, so every reader-decoded fragment target was refused. The same encoding sat in the DateRange construction endpoint classifier, which no reader route reaches yet, so only fixtures had ever exercised it. Two sites, one cause: the conformance fixtures and the reader each spelled the declaration encoding themselves, and they disagreed.
+
+Lean treatment: the format-to-components reading moved from the reader into `TemporalComponents.ofFormat`, and both classifiers and every affected fixture now use it (`b2278f60`, `b849747a`). A sweep of the `Elaboration/`, `Semantics/` and `Reference/` trees for fragment readings keyed on partial precision found no third site on 2026-10-02. The move also made the measured cross-kind list hold in Lean: a DATE and a DATE_FRAGMENT declared `yyyy` now read as one profile, locked through the model reader in [`LowerLocks.lean`](../A12Kernel/Reference/Dm/LowerLocks.lean).
+
+**Let a fixture build a declaration through the reader's own encoding function, never a hand-spelled equivalent.** A fixture that encodes a declaration its own way tests a model no reader produces, and agreement between such fixtures and the classifier is agreement between two copies of one guess.
+
+## LF213 — a lowering that falls back to a second carrier on the first's refusal reports the wrong refusal
+
+Two reader paths discarded a carrier's refusal. A Date target tried the full-Date carrier and, on its refusal, the DateFragment one, so a fragment-shaped target whose own carrier refused for a real reason reported the full-Date mismatch instead; and a fixed temporal target's refusal fell through to the row route, whose answer named only the operator. Either way the replay attributed the row to something other than the gate that refused it, and the real refusal reached nobody.
+
+Lean treatment: the Date lowerings now pick their carrier from the target's own profile before elaborating, and a fixed temporal target's own refusal propagates (`b2278f60`, `2062bc72`).
+
+**Choose a carrier by the target's declared profile, then let its refusal stand.** A fallback chain is correct only when the carriers' admissions are disjoint and each refusal is a mismatch, and that is the case where the dispatch can be decided up front anyway.
+
+## LF214 — merging a fixed and an addressed carrier is a separating audit of the pair
+
+The full-Date pair disagreed on a target declaring the pre-1900 check: the fixed carrier refused it and the addressed one admitted it. Neither carrier's locks showed the disagreement, because each family's cases ran against its own carrier only, and the two had been written at different times against different evidence. Merging them forced one answer, and the measured mechanism chose it: the target policy owns that check, as measured for a copy, a constant, and this operation at a repeatable target.
+
+Lean treatment: the merged carrier admits the checked target at both addresses through `ownsBefore1900` (`b75fc94a`); the fixed-target crossing stays external evidence pending in [SG6](gaps/numeric-and-temporal.md#gap-sg6).
+
+**When two carriers express one operation at two address classes, diff their admissions before merging them.** Each difference is either a measured placement split, which the merged carrier must keep, or a defect in one side, and only the evidence says which; a merge that keeps the union or the intersection without that step picks an account by accident.

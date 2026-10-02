@@ -293,6 +293,36 @@ example :
         (computation ["Form", "Rows", "Tasks"] "Target" "FirstFilledValue(../Choices*/Choice)")).toOption.isSome].all id := by
   native_decide
 
+/-- One DM date declaration read through the model reader, so the declared kind reaches the lowering
+only as the reader leaves it. -/
+private def readDate (id : FieldId) (name typeName formatKey format : String) : FlatFieldDecl :=
+  let fieldJson := Lean.Json.mkObj [("fieldType", Lean.Json.mkObj [("type", typeName),
+    (typeName, Lean.Json.mkObj [(formatKey, format)])])]
+  (readFieldType id ["Xf"] name [] fieldJson).toOption.getD
+    { id, groupPath := ["Xf"], name, policy := { kind := .string } }
+
+/- The measured pair of the [format-string checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string):
+a DATE and a DATE_FRAGMENT declared `yyyy` share one format and lower onto the one fragment carrier,
+the declared kind consulted nowhere, while two complete dates spelled differently are two formats and
+are refused beside their same-format control. -/
+example :
+    let model : FlatModel := { fields := [readDate 1 "YrDate" "DateType" "format" "yyyy",
+      readDate 2 "YrFrag" "DateFragmentType" "formatOfFragment" "yyyy",
+      readDate 3 "YrTarget" "DateType" "format" "yyyy",
+      readDate 4 "Dotted" "DateType" "format" "dd.MM.yyyy",
+      readDate 5 "Iso" "DateType" "format" "yyyy-MM-dd",
+      readDate 6 "Target" "DateType" "format" "yyyy-MM-dd",
+      readDate 7 "Iso2" "DateType" "format" "yyyy-MM-dd"] }
+    let lowers (target operation : String) : Bool :=
+      (lowerComputation model .english
+        { group := ["Xf"], name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+          alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption.isSome
+    [model.fields.all (·.temporalTargetPolicy.isSome),
+     lowers "YrTarget" "FirstFilledValue(YrDate, YrFrag)",
+     !lowers "Target" "FirstFilledValue(Dotted, Iso)",
+     lowers "Target" "FirstFilledValue(Iso, Iso2)"].all id := by
+  native_decide
+
 private def rangeModel : FlatModel :=
   let range (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
       FlatFieldDecl :=
