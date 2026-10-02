@@ -1,0 +1,15 @@
+{
+ "computedField": "/G/T",
+ "alternatives": [
+  {
+   "operation": "[Nope2]",
+   "precondition": "FieldFilled(Nope)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

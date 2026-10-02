@@ -37,6 +37,40 @@ def WellFormed (condition : ComputationCondition) (model : FlatModel) : Prop :=
 
 end ComputationCondition
 
+/-- A computation precondition as authored, its presence leaves naming their field by path. -/
+inductive SurfaceComputationCondition where
+  | fieldFilled (field : SurfaceFieldPath)
+  | fieldNotFilled (field : SurfaceFieldPath)
+  | and (left right : SurfaceComputationCondition)
+  | or (left right : SurfaceComputationCondition)
+  deriving Repr, DecidableEq
+
+/-- Resolve one presence leaf's field as a computation operand, bound by the target's scope rather
+than the declaring group's, a name reaching a group taking the group slot's class: a fixed group draws
+`MVK_NO_GROUPS_ALLOWED` and an unbound repeatable one its level's class, as an unbound field does
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-computation-precondition-names)). -/
+private def FlatModel.resolveComputationPresence (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
+    Except ResolveError FieldId :=
+  (·.id) <$> model.resolvePresenceOperand declaringGroup targetGroup reference
+    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference)
+
+/-- Resolve a precondition's names left to right against a validated model, so its first unresolved
+name is the one reported. -/
+def FlatModel.elaborateComputationCondition (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) :
+    SurfaceComputationCondition → Except ResolveError ComputationCondition
+  | .fieldFilled reference =>
+      (.leaf ∘ .fieldFilled) <$> model.resolveComputationPresence declaringGroup targetGroup reference
+  | .fieldNotFilled reference =>
+      (.leaf ∘ .fieldNotFilled) <$> model.resolveComputationPresence declaringGroup targetGroup reference
+  | .and left right => do
+      let left ← model.elaborateComputationCondition declaringGroup targetGroup left
+      pure (.and left (← model.elaborateComputationCondition declaringGroup targetGroup right))
+  | .or left right => do
+      let left ← model.elaborateComputationCondition declaringGroup targetGroup left
+      pure (.or left (← model.elaborateComputationCondition declaringGroup targetGroup right))
+
 /-- The one-based position of the first alternative whose guard its carrier refuses. A table's
 certifier asks this of every alternative before any alternative's own class, as the Kernel asks a
 guard's name and its index gates ahead of an unguarded alternative wherever either stands

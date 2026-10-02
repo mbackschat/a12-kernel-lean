@@ -1482,6 +1482,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A row table asks every guard's row binding before any alternative's own class, and selects lazily, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-table-guard-order)
 <a id="src-repeatable-nested-star-aggregate"></a>
 - [A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-nested-star-aggregate)
+<a id="src-computation-precondition-names"></a>
+- [A computation precondition's presence slot answers the rule slot's classes, bound by the target, ahead of its operation's and an unguarded sibling's classes, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-computation-precondition-names)
 <a id="src-join-operators-and-guards"></a>
 - [Operators and guards at a join, cycle classes, and a self-read asked after the authoring and scale gates on every shape, measured locally 2026-10-01](sources/computation-scheduling-probes.md#src-join-operators-and-guards)
 <a id="src-two-level-repeatable-join"></a>

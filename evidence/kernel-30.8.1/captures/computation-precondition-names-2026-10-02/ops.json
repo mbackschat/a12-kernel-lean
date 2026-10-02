@@ -1,0 +1,182 @@
+[
+ {
+  "id": "g01",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g01.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g02",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g02.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g04.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g05.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g06",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g06.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g07",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g07.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g08",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g08.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g09",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g09.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g16",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g16.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g17",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g17.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g18",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g18.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g19",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g19.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g20",
+  "verb": "computation",
+  "args": [
+   "add",
+   "g20.json",
+   "--dry-run"
+  ]
+ }
+]

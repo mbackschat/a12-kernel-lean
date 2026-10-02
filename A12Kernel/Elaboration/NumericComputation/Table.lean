@@ -118,9 +118,10 @@ def certifyNumericComputationTable
         remaining := checkedRemaining
       }
 
-/-- Why a whole Number computation is refused: one alternative's operation, numbered from 1, or the
-table assembled from the checked operations. -/
+/-- Why a whole Number computation is refused: one alternative's authored guard or operation, numbered
+from 1, or the table assembled from the checked operations. -/
 inductive NumericComputationTableElabError where
+  | precondition (alternative : Nat) (error : ResolveError)
   | operation (alternative : Nat) (error : NumericComputationElabError)
   | table (error : NumericComputationTableError)
   deriving Repr, DecidableEq
@@ -131,59 +132,95 @@ namespace NumericComputationTableElabError
 the Kernel reports several codes this is the first of them; the reads of the target it reports once
 per occurrence are not counted. -/
 def diagnostic? : NumericComputationTableElabError → Option KernelStaticDiagnostic
+  | .precondition _ error => error.diagnostic?
   | .operation _ error => error.diagnostic?
   | .table error => error.diagnostic?
 
 end NumericComputationTableElabError
 
-/-- Elaborate a whole Number computation from its authored alternatives, each an already-resolved
-precondition beside an authored operation, in the two stages the Kernel asks
+/-- Elaborate a whole Number computation from its authored alternatives, each a precondition resolution
+already attempted beside an authored operation, in the two stages the Kernel asks
 ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
 
 First each alternative in authored order is asked everything but a read of its target: its guard's
-admission, then its operation's names, authoring, kinds and scale. The first alternative failing one
-of them reports that refusal alone, whatever any other alternative holds, so neither a computation-wide
-names stage nor a computation-wide scale stage exists. Then the alternatives' own classes are asked in
-authored order: an unguarded alternative among several refuses as such, once, and its own reads of the
-target go unreported, while every other alternative's guard or operation reading the target refuses as
-that read. Warning suppression is the whole computation's and lifts only the scale gate.
-
-A guard's name is resolved by the caller, so a guard that does not resolve meets this elaborator as an
-unadmitted guard, asked in its alternative's place. -/
-def elaborateNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
+names and admission, then its operation's names, authoring, kinds and scale. The first alternative
+failing one of them reports that refusal alone, whatever any other alternative holds, so neither a
+computation-wide names stage nor a computation-wide scale stage exists. A guard's name answers ahead of
+its own operation's classes, as the joined text puts the precondition first
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-computation-precondition-names)).
+Then the alternatives' own classes are asked in authored order: an unguarded alternative among several
+refuses as such, once, and its own reads of the target go unreported, while every other alternative's
+guard or operation reading the target refuses as that read. Warning suppression is the whole
+computation's and lifts only the scale gate. -/
+private def elaborateNumericTargetComputationTableWith (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
-    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
-    (suppressExactScaleWarning : Bool := false) :
+    (alternatives : List (Except ResolveError (Option ComputationCondition) ×
+      AuthoredNumericExpr SurfaceNumericAtom))
+    (suppressExactScaleWarning : Bool) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
-  let elaborated := alternatives.zipIdx.map fun ((precondition, expression), index) =>
-    (index + 1, precondition,
+  let elaborated := alternatives.zipIdx.map fun ((guard, expression), index) =>
+    (index + 1, guard,
       elaborateNumericTargetComputationOperation model declaringGroup target expression
         suppressExactScaleWarning)
-  let otherRefusal? := elaborated.findSome? fun (index, precondition, result) =>
-    if !precondition.all (·.wellFormedBool model) then
-      some (.table (.guardNotAdmitted index))
-    else
-      match result with
-      | .error (.targetSelfReference _) | .ok _ => none
-      | .error error => some (.operation index error)
+  let otherRefusal? := elaborated.findSome? fun (index, guard, result) =>
+    match guard with
+    | .error error => some (.precondition index error)
+    | .ok precondition =>
+        if !precondition.all (·.wellFormedBool model) then
+          some (.table (.guardNotAdmitted index))
+        else
+          match result with
+          | .error (.targetSelfReference _) | .ok _ => none
+          | .error error => some (.operation index error)
   let several := alternatives.length > 1
-  let alternativeRefusal? := elaborated.findSome? fun (index, precondition, result) =>
-    match precondition with
-    | none => if several then some (.table (.unguardedAlternative index)) else
+  let alternativeRefusal? := elaborated.findSome? fun (index, guard, result) =>
+    match guard with
+    | .error error => some (.precondition index error)
+    | .ok none => if several then some (.table (.unguardedAlternative index)) else
         match result with
         | .error error => some (.operation index error)
         | .ok _ => none
-    | some guard =>
-        if guard.referencesField target then some (.table (.guardTargetReference index)) else
+    | .ok (some precondition) =>
+        if precondition.referencesField target then some (.table (.guardTargetReference index)) else
           match result with
           | .error error => some (.operation index error)
           | .ok _ => none
   match otherRefusal? <|> alternativeRefusal? with
   | some refusal => .error refusal
   | none => do
-      let checked ← elaborated.mapM fun (index, precondition, result) =>
-        result.mapError (.operation index) |>.map fun operation => { precondition, operation }
+      let checked ← elaborated.mapM fun (index, guard, result) => do
+        let precondition ← guard.mapError (.precondition index)
+        let operation ← result.mapError (.operation index)
+        pure { precondition, operation }
       (certifyNumericComputationTable checked).mapError .table
+
+/-- Elaborate a whole Number computation whose guards the caller has already resolved. A guard that
+names no model field meets it as an unadmitted guard, asked in its alternative's place. -/
+def elaborateNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
+    (target : FieldId)
+    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
+    (suppressExactScaleWarning : Bool := false) :
+    Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
+  elaborateNumericTargetComputationTableWith model declaringGroup target
+    (alternatives.map fun (precondition, expression) => (.ok precondition, expression))
+    suppressExactScaleWarning
+
+/-- Elaborate a whole Number computation whose guards are authored by name, each resolved against the
+target's group as the computation's operands are. -/
+def elaborateNumericTargetComputationTableFromSurface (model : FlatModel) (declaringGroup : GroupPath)
+    (target : FieldId)
+    (alternatives : List (Option SurfaceComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
+    (suppressExactScaleWarning : Bool := false) :
+    Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
+  -- A target the model does not own fails in its operation's elaboration; its guards then resolve
+  -- against the declaring group, and no measured row reaches that pairing.
+  let targetGroup := ((model.lookupUniqueId target).toOption.map (·.groupPath)).getD declaringGroup
+  elaborateNumericTargetComputationTableWith model declaringGroup target
+    (alternatives.map fun (precondition, expression) =>
+      (precondition.mapM fun authored => do
+        model.validate
+        model.elaborateComputationCondition declaringGroup targetGroup authored, expression))
+    suppressExactScaleWarning
 
 namespace CheckedNumericComputationTable
 

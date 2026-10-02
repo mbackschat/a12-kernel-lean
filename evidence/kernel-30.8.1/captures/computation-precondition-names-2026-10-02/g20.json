@@ -1,0 +1,15 @@
+{
+ "computedField": "/G/T",
+ "alternatives": [
+  {
+   "operation": "[A]",
+   "precondition": "FieldNotFilled(Rows/R)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+{
+ "computedField": "/G/T",
+ "alternatives": [
+  {
+   "operation": "[A]"
+  },
+  {
+   "operation": "[N]",
+   "precondition": "FieldFilled(Sub)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}
