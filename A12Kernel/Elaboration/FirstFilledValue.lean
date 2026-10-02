@@ -199,7 +199,7 @@ private def scanComputationFirstFilledNumberOperand
       | .continue next => pure (.inl next)
       | .done result => pure (.inr result.asNumber)
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       match scanFirstFilledItems
           (source.checkedValueListCellAt .computation starRead)
           resolved.environments
@@ -208,7 +208,7 @@ private def scanComputationFirstFilledNumberOperand
       | .inl next => pure (.inl next)
       | .inr result => pure (.inr result.asNumber)
   | .starHaving source => do
-      let resolved ← source.source.source.path.resolve document outer
+      let resolved ← source.source.source.path.resolveInCapacity document outer
       match scanFilteredComputationFirstFilled source.having
           { read := filterRead } outer
           (source.source.checkedValueListCellAt .computation starRead)
@@ -306,7 +306,7 @@ def evaluateCheckedDocumentValidation
   scanCheckedDocumentValidationOperands document outer scope
     checked.operands {}
 
-/-- Scan one unfiltered checked Number star through a caller-supplied exact-address view while retaining immutable topology and the shared cross-operand prefix state. -/
+/-- Scan one unfiltered checked Number star over its in-capacity extent through a caller-supplied exact-address view while retaining immutable topology and the shared cross-operand prefix state. -/
 def scanCheckedStarDocumentComputationWithRead
     (source : CheckedStarNumberSource model)
     (document : CheckedDocument model)
@@ -315,7 +315,7 @@ def scanCheckedStarDocumentComputationWithRead
     Except CheckedAddressingError
       (FirstFilledScanState ⊕ FirstFilledNumberResult) := do
   let resolved ←
-    (source.source.path.resolve document.source.toDocument outer)
+    (source.source.path.resolveInCapacity document.source.toDocument outer)
       |>.mapError .addressing
   match ← scanFirstFilledItemsResolving
       (fun environment => do
@@ -343,7 +343,7 @@ private def scanCheckedDocumentComputationOperand
         outer state
   | .starHaving source => do
       let resolved ←
-        (source.source.source.path.resolve document.source.toDocument outer)
+        (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       match ← scanFilteredComputationFirstFilledResolving source.having
           document.resolvingCorrelationContext outer

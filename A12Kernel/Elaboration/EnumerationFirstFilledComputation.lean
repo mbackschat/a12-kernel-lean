@@ -401,7 +401,7 @@ private def scanEnumerationFirstFilledOperand
       | .continue next => pure (.inl next)
       | .done result => pure (.inr result.asToken)
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       match source.filter with
       | none =>
           pure (scanEnumerationFirstFilledStar source starRead resolved.environments
@@ -467,7 +467,7 @@ private def scanCheckedDocumentOperand
       | .done result => pure (.inr result.asToken)
   | .star source => do
       let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
+        (source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       match source.filter with
       | none =>

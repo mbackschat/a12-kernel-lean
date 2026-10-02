@@ -240,12 +240,12 @@ def selectedSideAt (checked : CheckedNumericProductAggregate model)
     rightSigned := checked.right.field.info.signed
     hasUninstantiatedTail := resolved.domain.hasOpenTail }
 
-/-- Resolve the common topology once and evaluate the paired-row fold in the requested phase. -/
+/-- Resolve the common topology's in-capacity extent once and evaluate the paired-row fold in the requested phase, an over-limit pair contributing nothing on either arm ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)). -/
 def evaluateAt (checked : CheckedNumericProductAggregate model)
     (phase : Phase) (document : Document) (outer : Env)
     (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError NumericOperand := do
-  let resolved ← checked.left.source.path.resolve document outer
+  let resolved ← checked.left.source.path.resolveInCapacity document outer
   pure (evalNumericProductAggregate (checked.selectedSideAt phase resolved read))
 
 /-- Classify one product operand from the immutable checked input while retaining path-owned over-repetition. -/
@@ -256,12 +256,12 @@ private def checkedDocumentValueListCellAt
   let addressed ← document.addressedCell environment source.field.id
   pure (source.checkedValueListCell phase addressed.cell environment)
 
-/-- Resolve the product's one certified topology against the immutable checked input, then read each left/right pair in kernel encounter order. -/
+/-- Resolve the in-capacity extent of the product's one certified topology against the immutable checked input, then read each left/right pair in kernel encounter order. -/
 def evaluateCheckedDocumentAt (checked : CheckedNumericProductAggregate model)
     (phase : Phase) (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand := do
   let resolved ←
-    (checked.left.source.path.resolve document.source.toDocument outer)
+    (checked.left.source.path.resolveInCapacity document.source.toDocument outer)
       |>.mapError .addressing
   let rows ← resolved.environments.mapM fun environment => do
     let left ←

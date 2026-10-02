@@ -2669,3 +2669,11 @@ The row-step batch let the complete Number elaborator admit a repeatable target 
 Lean treatment: the elaborator takes a `ComputationTargetScope`, fixed by default with the old refusal, and only the repeatable plan's row tables name `.row`; the [boundary grid](sources/computation-scheduling-probes.md#src-row-target-boundary) locks both scopes' refusals.
 
 **A default is a contract with every existing caller; changing it widens all of them at once, and a gate at one consumer covers only that consumer.** When a capability is new for one consumer, add it as an opt-in at the entry that consumer calls, and leave every other call site exactly as it was. The tell is a guard added downstream "so the others refuse it", which names the consumers you remembered rather than the ones that exist.
+
+## LF208 — a fix swept by carrier reaches the routes someone named; sweep by the call that chooses the behaviour
+
+The 2026-08-31 capacity sweep moved `FirstFilledValue` and the token distinct count to the in-capacity extent on the routes its checkpoint exercised, and the row-scan grid then found the Number `FirstFilledValue`, the token and Boolean value counts over a starred field and `SumOfProducts` still reading a star's whole topology on the route the authored plans evaluate through. Each read an over-limit cell as over-repetition poison where the Kernel leaves the row out, at a row target and at a fixed root alike. No lock had placed an over-limit row on that route, so nothing failed.
+
+Lean treatment: every computation-arm star resolution now calls `StarPath.resolveInCapacity`, found by searching for the physical resolver's call sites rather than by carrier, and the [row-scan grid](sources/computation-scheduling-probes.md#src-row-star-scans) locks the four measured carriers, each failing alone when reverted. The validation-arm sites that still take the whole topology are an open item in [the capacity gap](gaps/paths-and-groups.md).
+
+**When a behaviour is chosen at each call site, a sweep that enumerates operators or carriers finds the routes its fixtures happen to reach and certifies the rest by name.** Enumerate the call that makes the choice instead, and classify every hit; a carrier with two evaluation routes is two entries in that list, not one. The tell is a parallel route of a fixed operator that no case of the fix exercises.

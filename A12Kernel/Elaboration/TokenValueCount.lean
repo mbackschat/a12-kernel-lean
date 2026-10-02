@@ -277,7 +277,7 @@ end CheckedTokenValueCountGroupSource
 
 namespace CheckedTokenEntityOperand
 
-/-- Resolve one token slot at computation phase. Filtered stars reuse the shared one-kept-successor traversal and retain per-slot filter provenance for the value-count fold.
+/-- Resolve one token slot at computation phase, a star over its in-capacity extent ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)). Filtered stars reuse the shared one-kept-successor traversal and retain per-slot filter provenance for the value-count fold.
 
     A group slot refuses: this route reads through caller-supplied functions over a raw `Document`, which cannot answer which rows of the group's subtree exist, and computation over a group extent has no retained observation behind it either. -/
 def resolvedValueCountComputationSide
@@ -292,7 +292,7 @@ def resolvedValueCountComputationSide
   | .field source =>
       pure (.inl (source.resolvedSideAt .computation directRead))
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       match source.filter with
       | none =>
           pure (.inl (resolved.toResolvedSide

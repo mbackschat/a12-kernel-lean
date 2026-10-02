@@ -1,0 +1,183 @@
+# row	field	outcome	value
+g01-clean	Rg/Rows/ALL	value	15
+g01-clean	Rg/Rows/AMX	value	10
+g01-clean	Rg/Rows/CA	value	1
+g01-clean	Rg/Rows/M	value	3
+g01-clean	Rg/Rows/S	value	5
+g01-clean	Rg/Rows/SC	value	5
+g01-clean	Rg/Rows/SG	value	14
+g01-clean	Rg/Rows/SIB	value	16
+g01-clean	Rg/Rows/Sub/IALL	value	11
+g01-clean	Rg/Rows/Sub/IC	value	2
+g01-clean	Rg/Rows/Sub/ISUM	value	5
+g01-clean	Rg/Rows/Sub[2]/IALL	value	11
+g01-clean	Rg/Rows/Sub[2]/IC	value	3
+g01-clean	Rg/Rows/Sub[2]/ISUM	value	5
+g01-clean	Rg/Rows[2]/ALL	value	15
+g01-clean	Rg/Rows[2]/AMX	value	10
+g01-clean	Rg/Rows[2]/CA	value	4
+g01-clean	Rg/Rows[2]/M	value	6
+g01-clean	Rg/Rows[2]/S	value	6
+g01-clean	Rg/Rows[2]/SC	value	6
+g01-clean	Rg/Rows[2]/SG	value	10
+g01-clean	Rg/Rows[2]/SIB	value	16
+g01-clean	Rg/Rows[2]/Sub/IALL	value	11
+g01-clean	Rg/Rows[2]/Sub/IC	value	6
+g01-clean	Rg/Rows[2]/Sub/ISUM	value	6
+g01-clean	Rg/Rows[3]/ALL	value	15
+g01-clean	Rg/Rows[3]/AMX	value	10
+g01-clean	Rg/Rows[3]/CA	value	10
+g01-clean	Rg/Rows[3]/M	value	0
+g01-clean	Rg/Rows[3]/S	value	0
+g01-clean	Rg/Rows[3]/SC	value	0
+g01-clean	Rg/Rows[3]/SG	value	0
+g01-clean	Rg/Rows[3]/SIB	value	16
+g02-inner-malformed	Rg/Rows/ALL	value	15
+g02-inner-malformed	Rg/Rows/AMX	value	10
+g02-inner-malformed	Rg/Rows/CA	value	1
+g02-inner-malformed	Rg/Rows/M	cleared	
+g02-inner-malformed	Rg/Rows/S	cleared	
+g02-inner-malformed	Rg/Rows/SC	cleared	
+g02-inner-malformed	Rg/Rows/SG	value	14
+g02-inner-malformed	Rg/Rows/SIB	value	16
+g02-inner-malformed	Rg/Rows/Sub/IALL	cleared	
+g02-inner-malformed	Rg/Rows/Sub/IC	value	2
+g02-inner-malformed	Rg/Rows/Sub/ISUM	cleared	
+g02-inner-malformed	Rg/Rows/Sub[2]/IALL	cleared	
+g02-inner-malformed	Rg/Rows/Sub[2]/IC	cleared	
+g02-inner-malformed	Rg/Rows/Sub[2]/ISUM	cleared	
+g02-inner-malformed	Rg/Rows[2]/ALL	value	15
+g02-inner-malformed	Rg/Rows[2]/AMX	value	10
+g02-inner-malformed	Rg/Rows[2]/CA	value	4
+g02-inner-malformed	Rg/Rows[2]/M	value	6
+g02-inner-malformed	Rg/Rows[2]/S	value	6
+g02-inner-malformed	Rg/Rows[2]/SC	value	6
+g02-inner-malformed	Rg/Rows[2]/SG	value	10
+g02-inner-malformed	Rg/Rows[2]/SIB	value	16
+g02-inner-malformed	Rg/Rows[2]/Sub/IALL	cleared	
+g02-inner-malformed	Rg/Rows[2]/Sub/IC	value	6
+g02-inner-malformed	Rg/Rows[2]/Sub/ISUM	value	6
+g02-inner-malformed	Rg/Rows[3]/ALL	value	15
+g02-inner-malformed	Rg/Rows[3]/AMX	value	10
+g02-inner-malformed	Rg/Rows[3]/CA	value	10
+g02-inner-malformed	Rg/Rows[3]/M	value	0
+g02-inner-malformed	Rg/Rows[3]/S	value	0
+g02-inner-malformed	Rg/Rows[3]/SC	value	0
+g02-inner-malformed	Rg/Rows[3]/SG	value	0
+g02-inner-malformed	Rg/Rows[3]/SIB	value	16
+g02-inner-malformed	Rg/Rows/Sub[2]/IA	operand-error	zahlHatUngueltigeZeichen
+g03-outer-malformed	Rg/Rows/ALL	cleared	
+g03-outer-malformed	Rg/Rows/AMX	cleared	
+g03-outer-malformed	Rg/Rows/CA	value	1
+g03-outer-malformed	Rg/Rows/M	value	3
+g03-outer-malformed	Rg/Rows/S	value	5
+g03-outer-malformed	Rg/Rows/SC	value	5
+g03-outer-malformed	Rg/Rows/SG	cleared	
+g03-outer-malformed	Rg/Rows/SIB	value	16
+g03-outer-malformed	Rg/Rows/Sub/IALL	value	11
+g03-outer-malformed	Rg/Rows/Sub/IC	value	2
+g03-outer-malformed	Rg/Rows/Sub/ISUM	value	5
+g03-outer-malformed	Rg/Rows/Sub[2]/IALL	value	11
+g03-outer-malformed	Rg/Rows/Sub[2]/IC	value	3
+g03-outer-malformed	Rg/Rows/Sub[2]/ISUM	value	5
+g03-outer-malformed	Rg/Rows[2]/ALL	cleared	
+g03-outer-malformed	Rg/Rows[2]/AMX	cleared	
+g03-outer-malformed	Rg/Rows[2]/CA	cleared	
+g03-outer-malformed	Rg/Rows[2]/M	value	6
+g03-outer-malformed	Rg/Rows[2]/S	value	6
+g03-outer-malformed	Rg/Rows[2]/SC	value	6
+g03-outer-malformed	Rg/Rows[2]/SG	cleared	
+g03-outer-malformed	Rg/Rows[2]/SIB	value	16
+g03-outer-malformed	Rg/Rows[2]/Sub/IALL	value	11
+g03-outer-malformed	Rg/Rows[2]/Sub/IC	value	6
+g03-outer-malformed	Rg/Rows[2]/Sub/ISUM	value	6
+g03-outer-malformed	Rg/Rows[3]/ALL	cleared	
+g03-outer-malformed	Rg/Rows[3]/AMX	cleared	
+g03-outer-malformed	Rg/Rows[3]/CA	value	10
+g03-outer-malformed	Rg/Rows[3]/M	value	0
+g03-outer-malformed	Rg/Rows[3]/S	value	0
+g03-outer-malformed	Rg/Rows[3]/SC	value	0
+g03-outer-malformed	Rg/Rows[3]/SG	cleared	
+g03-outer-malformed	Rg/Rows[3]/SIB	value	16
+g03-outer-malformed	Rg/Rows[2]/A	operand-error	zahlHatUngueltigeZeichen
+g04-over-limit	Rg/Rows/ALL	value	15
+g04-over-limit	Rg/Rows/AMX	value	10
+g04-over-limit	Rg/Rows/CA	value	1
+g04-over-limit	Rg/Rows/M	value	3
+g04-over-limit	Rg/Rows/S	value	5
+g04-over-limit	Rg/Rows/SC	value	5
+g04-over-limit	Rg/Rows/SG	value	14
+g04-over-limit	Rg/Rows/SIB	value	16
+g04-over-limit	Rg/Rows/Sub/IALL	value	11
+g04-over-limit	Rg/Rows/Sub/IC	value	2
+g04-over-limit	Rg/Rows/Sub/ISUM	value	5
+g04-over-limit	Rg/Rows/Sub[2]/IALL	value	11
+g04-over-limit	Rg/Rows/Sub[2]/IC	value	3
+g04-over-limit	Rg/Rows/Sub[2]/ISUM	value	5
+g04-over-limit	Rg/Rows/Sub[3]/IALL	cleared	
+g04-over-limit	Rg/Rows/Sub[3]/IC	cleared	
+g04-over-limit	Rg/Rows/Sub[3]/ISUM	cleared	
+g04-over-limit	Rg/Rows[2]/ALL	value	15
+g04-over-limit	Rg/Rows[2]/AMX	value	10
+g04-over-limit	Rg/Rows[2]/CA	value	4
+g04-over-limit	Rg/Rows[2]/M	value	6
+g04-over-limit	Rg/Rows[2]/S	value	6
+g04-over-limit	Rg/Rows[2]/SC	value	6
+g04-over-limit	Rg/Rows[2]/SG	value	10
+g04-over-limit	Rg/Rows[2]/SIB	value	16
+g04-over-limit	Rg/Rows[2]/Sub/IALL	value	11
+g04-over-limit	Rg/Rows[2]/Sub/IC	value	6
+g04-over-limit	Rg/Rows[2]/Sub/ISUM	value	6
+g04-over-limit	Rg/Rows[3]/ALL	value	15
+g04-over-limit	Rg/Rows[3]/AMX	value	10
+g04-over-limit	Rg/Rows[3]/CA	value	10
+g04-over-limit	Rg/Rows[3]/M	value	0
+g04-over-limit	Rg/Rows[3]/S	value	0
+g04-over-limit	Rg/Rows[3]/SC	value	0
+g04-over-limit	Rg/Rows[3]/SG	value	0
+g04-over-limit	Rg/Rows[3]/SIB	value	16
+g04-over-limit	Rg/Rows[4]/ALL	cleared	
+g04-over-limit	Rg/Rows[4]/AMX	cleared	
+g04-over-limit	Rg/Rows[4]/CA	cleared	
+g04-over-limit	Rg/Rows[4]/M	cleared	
+g04-over-limit	Rg/Rows[4]/S	cleared	
+g04-over-limit	Rg/Rows[4]/SC	cleared	
+g04-over-limit	Rg/Rows[4]/SG	cleared	
+g04-over-limit	Rg/Rows[4]/SIB	cleared	
+g04-over-limit	Rg/Rows/Sub[3]/IA	operand-error	zuGrosseKontextnummer
+g04-over-limit	Rg/Rows[4]/A	operand-error	zuGrosseKontextnummer
+g04-over-limit	Rg/Rows/Sub[3]	operand-error	zuGrosseZeile
+g04-over-limit	Rg/Rows[4]	operand-error	zuGrosseZeile
+g05-empty-sources	Rg/Rows/ALL	value	11
+g05-empty-sources	Rg/Rows/AMX	value	10
+g05-empty-sources	Rg/Rows/CA	value	1
+g05-empty-sources	Rg/Rows/M	value	4
+g05-empty-sources	Rg/Rows/S	value	4
+g05-empty-sources	Rg/Rows/SC	value	4
+g05-empty-sources	Rg/Rows/SG	value	10
+g05-empty-sources	Rg/Rows/SIB	value	0
+g05-empty-sources	Rg/Rows/Sub/IALL	value	10
+g05-empty-sources	Rg/Rows/Sub/IC	value	0
+g05-empty-sources	Rg/Rows/Sub/ISUM	value	4
+g05-empty-sources	Rg/Rows/Sub[2]/IALL	value	10
+g05-empty-sources	Rg/Rows/Sub[2]/IC	value	4
+g05-empty-sources	Rg/Rows/Sub[2]/ISUM	value	4
+g05-empty-sources	Rg/Rows[2]/ALL	value	11
+g05-empty-sources	Rg/Rows[2]/AMX	value	10
+g05-empty-sources	Rg/Rows[2]/CA	value	0
+g05-empty-sources	Rg/Rows[2]/M	value	6
+g05-empty-sources	Rg/Rows[2]/S	value	6
+g05-empty-sources	Rg/Rows[2]/SC	value	6
+g05-empty-sources	Rg/Rows[2]/SG	value	11
+g05-empty-sources	Rg/Rows[2]/SIB	value	0
+g05-empty-sources	Rg/Rows[2]/Sub/IALL	value	10
+g05-empty-sources	Rg/Rows[2]/Sub/IC	value	6
+g05-empty-sources	Rg/Rows[2]/Sub/ISUM	value	6
+g05-empty-sources	Rg/Rows[3]/ALL	value	11
+g05-empty-sources	Rg/Rows[3]/AMX	value	10
+g05-empty-sources	Rg/Rows[3]/CA	value	10
+g05-empty-sources	Rg/Rows[3]/M	value	0
+g05-empty-sources	Rg/Rows[3]/S	value	0
+g05-empty-sources	Rg/Rows[3]/SC	value	0
+g05-empty-sources	Rg/Rows[3]/SG	value	0
+g05-empty-sources	Rg/Rows[3]/SIB	value	0

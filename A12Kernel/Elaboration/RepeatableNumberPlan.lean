@@ -11,8 +11,12 @@ aggregate reads rows through the plan. At a repeatable target the table runs at 
 target's scope, selecting among its guarded alternatives as a fixed table selects, through a context
 reading each operand at its own scope under that row, as an ordinary operand is read
 ([`spec/09`](../../spec/09-computations.md) §5): an inner row reads an enclosing row's target at that
-row. Such a table is elaborated with the row target scope and admits only operations the scalar
-evaluator runs, so no aggregate reads rows from inside a row.
+row. Such a table is elaborated with the row target scope. An atom over a star reads from the row as
+the validation arm reads from an iterating row: the star binds the levels above its first starred
+level to the row and reopens the rest, and a `$` operand of its filter reads at the row, measured for
+the Number aggregates ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-star-aggregates))
+and for the scans, value counts, product sum and starred group count
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)).
 
 Every read goes through one overlay: a completed step's outcome at its exact address, a target of a
 step not yet run as clean empty, and the immutable document otherwise. A stale stored value in a plan
@@ -34,9 +38,9 @@ namespace A12Kernel
 inductive RepeatableNumberPlanError where
   | empty
   | duplicateTarget (target : FieldId)
-  /-- A table at a repeatable target holds an operation the scalar evaluator cannot run, such as an
-  aggregate over a star, whose read from inside a row no measurement covers. -/
-  | rowTableNotScalar (target : FieldId)
+  /-- A table at a repeatable target counts a fixed group with a repeatable descendant, whose rows
+  that count reads across the whole document rather than under the row. -/
+  | rowOperationUnmeasured (target : FieldId)
   /-- `step` is a step ordering could not place and `reads` a pending target it reads. -/
   | cycle (step reads : FieldId)
   deriving Repr, DecidableEq
@@ -54,13 +58,29 @@ structure CheckedRepeatableNumberPlan (model : FlatModel) where
     CheckedNumericComputationTable.targetField CheckedNumericComputationTable.referencesField
     execution = none
 
-/-- The target of a table at a repeatable target holding an operation the scalar evaluator cannot run. -/
-private def rowTableNotScalar? (table : CheckedNumericComputationTable model) : Option FieldId :=
-  if !table.readingScope.isEmpty && !table.atomsSupportScalarEvaluation then
+/-- Whether a fixed group's content is cells alone, so it holds no row a count would read across the
+whole document. -/
+private def fixedGroupHoldsNoRow (model : FlatModel) (reference : ResolvedGroupReference) : Bool :=
+  (reference.computationDescendants? model).isSome
+
+/-- Whether a row runs the atom. Every star is read through the row as its outer environment; a fixed
+group with a repeatable descendant is not starred, and its rows are counted across the document. -/
+private def rowEvaluable : CheckedNumericComputationAtom model → Bool
+  | .numeric (.filledGroupCount groups) => groups.all (fixedGroupHoldsNoRow model)
+  | .filledGroupCountMixed operands => operands.all fun
+      | .fixed reference => fixedGroupHoldsNoRow model reference
+      | .starred _ | .starredPresence _ => true
+  | _ => true
+
+/-- The target of a table at a repeatable target holding an atom a row does not run. -/
+private def rowOperationUnmeasured? (table : CheckedNumericComputationTable model) :
+    Option FieldId :=
+  if !table.readingScope.isEmpty && !table.selectableAlternatives.all
+      (·.operation.operation.core.expression.allAtoms rowEvaluable) then
     some table.targetField else none
 
 /-- Certify an authored plan by ordering it. A forward read left after ordering can only wait on or
-close a cycle; a row table the scalar evaluator cannot run is refused once the order stands. -/
+close a cycle; a row table holding an atom a row does not run is refused once the order stands. -/
 def certifyRepeatableNumberPlan (steps : List (CheckedNumericComputationTable model)) :
     Except RepeatableNumberPlanError (CheckedRepeatableNumberPlan model) :=
   if steps.isEmpty then .error .empty else
@@ -74,8 +94,8 @@ def certifyRepeatableNumberPlan (steps : List (CheckedNumericComputationTable mo
             CheckedNumericComputationTable.referencesField steps.length steps) with
       | some (step, reads) => .error (.cycle step reads)
       | none =>
-        match steps.findSome? rowTableNotScalar? with
-        | some target => .error (.rowTableNotScalar target)
+        match steps.findSome? rowOperationUnmeasured? with
+        | some target => .error (.rowOperationUnmeasured target)
         | none => .ok {
             authored := steps
             execution := _
@@ -137,7 +157,8 @@ private def executeFixed (table : CheckedNumericComputationTable model) (world :
 
 /-- Run a table at a repeatable target once per row of its scope. A row selects and evaluates through
 a context reading every field at its own scope under the row, so a field of the row reads that row's
-cell and a field above it the enclosing one. An over-limit row clears without reading a guard. -/
+cell and a field above it the enclosing one, and with the row as the outer environment a star binds.
+An over-limit row clears without reading a guard. -/
 private def executeRows (table : CheckedNumericComputationTable model) (world : World)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
@@ -153,8 +174,13 @@ private def executeRows (table : CheckedNumericComputationTable model) (world : 
              source := input.numericTargetPlacementStateAt target })
     (fun environment => do
       let target ← addressAt environment
-      let outcome ← supportedOutcome table <|
-        table.evaluate { read := cellAt input read environment, world := some world, row := environment }
+      let outcome ← supportedOutcome table <| table.evaluateIn {
+          scalar := { read := cellAt input read environment, world := some world, row := environment }
+          document := input.source.toDocument
+          outer := environment
+          filterRead := cellAt input read
+          starRead := cellAt input read
+        }
       pure { targetField := target, outcome, source := input.numericTargetPlacementStateAt target })
 
 def executeSteps (plan : CheckedRepeatableNumberPlan model) (world : World)

@@ -68,12 +68,12 @@ theorem checkedNumericProductAggregate_scaleSummary
       (NumericScaleSummary.field checked.right.field.info.scale) := by
   rfl
 
-/-- Once the common path resolves, phase-specific checked evaluation delegates exactly to one shared-topology product side and the pure fold. -/
+/-- Once the common path resolves to its in-capacity extent, phase-specific checked evaluation delegates exactly to one shared-topology product side and the pure fold. -/
 theorem checkedNumericProductAggregate_evaluateAt_of_resolved
     (checked : CheckedNumericProductAggregate model) (phase : Phase)
     (document : Document) (outer : Env)
     (read : Env → FieldId → CheckedCell) (resolved : ResolvedStarTopology)
-    (resolvedPath : checked.left.source.path.resolve document outer = .ok resolved) :
+    (resolvedPath : checked.left.source.path.resolveInCapacity document outer = .ok resolved) :
     checked.evaluateAt phase document outer read =
       .ok (evalNumericProductAggregate
         (checked.selectedSideAt phase resolved read)) := by

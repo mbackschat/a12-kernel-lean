@@ -594,7 +594,7 @@ def resolvedValidationSide
   | .group source =>
       .error (.unsupportedGroupOperand source.groupPath)
 
-/-- Resolve one Boolean/Confirm slot at computation phase. Filtered stars preserve one-kept-successor selection and stop on the first reached filter or value poison. -/
+/-- Resolve one Boolean/Confirm slot at computation phase, a star over its in-capacity extent ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)). Filtered stars preserve one-kept-successor selection and stop on the first reached filter or value poison. -/
 def resolvedComputationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : Document) (outer : Env)
@@ -606,7 +606,7 @@ def resolvedComputationSide
   | .field source =>
       pure (.inl (directSideAt source .computation directRead))
   | .star source => do
-      let resolved ← source.source.path.resolve document outer
+      let resolved ← source.source.path.resolveInCapacity document outer
       match source.filter with
       | none =>
           pure (.inl (resolved.toResolvedSide

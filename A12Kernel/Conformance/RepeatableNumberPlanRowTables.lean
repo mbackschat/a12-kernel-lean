@@ -131,14 +131,18 @@ example : (plan?.map fun plan => plan.execution.map (·.targetField)) =
     some ([("CA" : String), "MX", "DV", "AB", "FF", "K", "KN", "VN"].map idOf) := by
   native_decide
 
-/-- A row `T` beside a nested repeatable `In`, for the reading scope's static boundary. -/
+/-- A row `T` beside a fixed `Box` holding a nested repeatable `In` and a fixed `Pad`, for the reading
+scope's static boundary. -/
 private def nested : FlatModel where
   fields := [
     { id := 0, groupPath := rowsPath, name := "T", repeatableScope := [10]
       policy := { kind := .number { scale := 0, signed := true } } },
-    { id := 1, groupPath := rowsPath ++ ["In"], name := "S", repeatableScope := [10, 20]
+    { id := 1, groupPath := rowsPath ++ ["Box", "In"], name := "S", repeatableScope := [10, 20]
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 2, groupPath := rowsPath ++ ["Pad"], name := "U", repeatableScope := [10]
       policy := { kind := .number { scale := 0, signed := true } } }]
-  repeatableGroups := [{ level := 10, path := rowsPath }, { level := 20, path := rowsPath ++ ["In"] }]
+  repeatableGroups := [{ level := 10, path := rowsPath },
+    { level := 20, path := rowsPath ++ ["Box", "In"] }]
 
 private def nestedTable (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable nested) :=
@@ -146,17 +150,17 @@ private def nestedTable (expression : AuthoredNumericExpr SurfaceNumericComputat
     (targetScope := .row)
 
 /- The target's scope binds only its own levels: a read crossing the nested level below it is refused
-`MVK_NO_WILDCARD` ([`spec/09`](../../spec/09-computations.md) §5), while a `Sum` over that level's
-star is admitted and then refused by the plan, because no measurement covers an aggregate read from
-inside a row. -/
+`MVK_NO_WILDCARD` ([`spec/09`](../../spec/09-computations.md) §5), while a count of the fixed `Box`
+above that level beside a fixed `Pad` is elaborated and then refused by the plan, because that count
+reads `Box`'s rows across the whole document rather than under the row. -/
 example :
-    (match nestedTable (.atom (.numeric (.field { base := .relative 0, groups := ["In"], field := "S" }))) with
+    (match nestedTable (.atom (.numeric (.field { base := .relative 0, groups := ["Box", "In"], field := "S" }))) with
       | .error error => error.diagnostic? == some .noWildcard
       | .ok _ => false) = true ∧
-    (match nestedTable (.atom (.numeric (.aggregate .sum
-        { first := .star { base := .relative 0, groups := [{ name := "In", starred := true }], field := "S" }
-          rest := [] }))) with
-      | .ok table => (certifyRepeatableNumberPlan [table] matches .error (.rowTableNotScalar 0))
+    (match nestedTable (.atom (.numeric (.filledGroupCount
+        [.fixed (.path { base := .relative 0, groups := ["Box"] }),
+          .fixed (.path { base := .relative 0, groups := ["Pad"] })]))) with
+      | .ok table => (certifyRepeatableNumberPlan [table] matches .error (.rowOperationUnmeasured 0))
       | .error _ => false) = true := by
   native_decide
 

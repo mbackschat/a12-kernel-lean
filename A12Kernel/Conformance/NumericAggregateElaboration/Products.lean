@@ -279,6 +279,17 @@ example :
         zeros = some (.poison .declaredConstraint) := by
   native_decide
 
+/- A fourth row beyond the group's capacity of three is left out of the pairs on both phases, so its
+`5 * 5` adds nothing to the in-capacity `2`
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)). -/
+example :
+    let cells (first fourth : Int) : RowIndex → RawCell := fun row =>
+      if row == 1 then .parsed (.num first) else if row == 4 then .parsed (.num fourth) else .empty
+    productCheckedValidationOf [1, 2, 3, 4] (cells 1 5) (cells 2 5) =
+        some (.value 2 { canGrow := true, canShrink := true }) ∧
+      productComputationOf [1, 2, 3, 4] (cells 1 5) (cells 2 5) = some (.value 2) := by
+  native_decide
+
 /- `SumOfProducts` is **not** an all-rows aggregate for partial relevance: it reaches neither the Kernel's shared combiner nor that combiner's pre-loop whole-repetition survey, so enumerating every concrete row evaluates it where `Sum`/`MaxValue`/`MinValue`/`NumberOfDifferentValues` stay UNKNOWN. Measured per operator against the Kernel at a12-dmkits `6fe8d501`/`12491e4f`, with a wildcard positive control proving a silent concrete row is a relevance decision rather than an operator that never fires. Covering only one of the two declarations remains insufficient, which is the case that separates per-cell relevance from no relevance gate at all. -/
 example :
     let left := cells3 (.parsed (.num 2)) (.parsed (.num 4)) (.parsed (.num 0))

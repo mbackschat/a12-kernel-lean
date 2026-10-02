@@ -1,0 +1,466 @@
+{
+ "header": {
+  "id": "Ragg_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Ragg_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rg",
+     "name": "Rg",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Rg/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/A",
+           "name": "A",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/CA",
+           "name": "CA",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/S",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/M",
+           "name": "M",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/SC",
+           "name": "SC",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/ALL",
+           "name": "ALL",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/AMX",
+           "name": "AMX",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/SIB",
+           "name": "SIB",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/SG",
+           "name": "SG",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/SComp",
+           "name": "SComp",
+           "Computation": {
+            "computedFieldRelPath": "../S",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(Sub*/IA)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/MComp",
+           "name": "MComp",
+           "Computation": {
+            "computedFieldRelPath": "../M",
+            "computationAlternatives": [
+             {
+              "operation": "MaxValue(Sub*/IA)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/SCComp",
+           "name": "SCComp",
+           "Computation": {
+            "computedFieldRelPath": "../SC",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(Sub*/IC)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/ALLComp",
+           "name": "ALLComp",
+           "Computation": {
+            "computedFieldRelPath": "../ALL",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(/Rg/Rows*/CA)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/AMXComp",
+           "name": "AMXComp",
+           "Computation": {
+            "computedFieldRelPath": "../AMX",
+            "computationAlternatives": [
+             {
+              "operation": "MaxValue(/Rg/Rows*/A)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/SIBComp",
+           "name": "SIBComp",
+           "Computation": {
+            "computedFieldRelPath": "../SIB",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(/Rg/Oth*/OX)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/SGComp",
+           "name": "SGComp",
+           "Computation": {
+            "computedFieldRelPath": "../SG",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(/Rg/Rows*/A Having [/Rg/Rows/A] > [$A])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CAComp",
+           "name": "CAComp",
+           "Computation": {
+            "computedFieldRelPath": "../CA",
+            "computationAlternatives": [
+             {
+              "operation": "[A]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Rg/Rows/Sub",
+           "name": "Sub",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Sub/IA",
+              "name": "IA",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Sub/IC",
+              "name": "IC",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Sub/ISUM",
+              "name": "ISUM",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Sub/IALL",
+              "name": "IALL",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Rg/Rows/Sub/ISUMComp",
+              "name": "ISUMComp",
+              "Computation": {
+               "computedFieldRelPath": "../ISUM",
+               "computationAlternatives": [
+                {
+                 "operation": "Sum(../Sub*/IA)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Rg/Rows/Sub/IALLComp",
+              "name": "IALLComp",
+              "Computation": {
+               "computedFieldRelPath": "../IALL",
+               "computationAlternatives": [
+                {
+                 "operation": "Sum(../../Rows*/Sub*/IA)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Rg/Rows/Sub/ICComp",
+              "name": "ICComp",
+              "Computation": {
+               "computedFieldRelPath": "../IC",
+               "computationAlternatives": [
+                {
+                 "operation": "[IA]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/Oth",
+        "name": "Oth",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Oth/OX",
+           "name": "OX",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
