@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-02; HEAD was `57ab215a`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-02; HEAD was `c3d40ed2`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Whole-Kernel conformance is not quantified here. 471 of 495 diagnostic identifiers occur in Lean source (95%); 24 do not.**
+**Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 471 of 495 diagnostic identifiers occur in Lean source (95%); 24 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -32,12 +32,45 @@ An occurrence can be a definition, fixture, comment, request, or list of exclusi
 | Capture directory / `inputHash` marker | A directory retaining probe artifacts / an input-identity field in the selected compact observation files. Neither count measures independent semantic cases. |
 | Velocity | Changes in the historical table's selected counts. Unchanged counts can accompany semantic progress; the table is not a measure of completed behaviour per hour. |
 
+## Axis 0 — Kernel constructs by arm
+
+The denominator is every construct in a12-dmkits' [operator catalog](../../a12-rulekit/rulekit/src/main/resources/catalog/operators.json), on the validation arm (a rule's error condition) and the computation arm (an operation or its guard). Each cell's level is this repository's judgment in [`CONFORMANCE-CONSTRUCTS.tsv`](CONFORMANCE-CONSTRUCTS.tsv), classified 2026-10-02 at `c3d40ed2`: **broad** represents the construct's main authoring forms on that arm across the operand kinds the Kernel admits, with conformance locks; **partial** represents some of them; **absent** has no Lean surface there. A cell is **calibrated** when a retained capture or checkpoint measures the construct on that arm, which for many cells is static admission only, not a runtime value. Constructs compose freely, so a broad cell can still miss a composition no catalog row names.
+
+| | validation | computation | both arms |
+|---|---|---|---|
+| Constructs | 110 | 110 | |
+| Admitted by the Kernel | 110 | 107 | 217 |
+| Broad | 63 | 35 | 98 (45%) |
+| Partial | 40 | 35 | 75 (34%) |
+| Absent | 7 | 37 | 44 (20%) |
+
+Of the admitted cells, 162 are calibrated, 18 are represented without a Kernel observation and 37 are neither represented nor measured; the Kernel refuses 3 constructs on the computation arm.
+
+The open cells group by the shared mechanism that would close them, a construct counted once for each route its gap names; [the conformance economy proposal](CONFORMANCE-ECONOMY-PROPOSAL.md#closing-routes) defines each route:
+
+| constructs | route |
+|---|---|
+| 39 | `guard` |
+| 26 | `temporal-expr` |
+| 15 | `rule-leaf` |
+| 10 | `calibration-only` |
+| 9 | `having` |
+| 4 | `rounding-spelling` |
+| 4 | `semantic-index` |
+| 4 | `string-expr` |
+| 3 | `banded-rounding` |
+| 2 | `family-batch` |
+| 2 | `host-regex` |
+| 1 | `custom-orchestration` |
+
+Remaining effort per construct, estimated at classification: 14 L, 54 M, 42 S (S at most one family batch, M two to four, L a new mechanism).
+
 ## Axis 1 — diagnostic vocabulary, with a finite denominator
 
 | | classes | share |
 |---|---|---|
 | Distinct identifiers in the selected diagnostic catalogs and runtime formal-code constants | 495 | 100% |
-| Named in `spec/` or `docs/` prose | 303 | 61% |
+| Named in `spec/` or `docs/` prose | 304 | 61% |
 | Named in Lean source under `A12Kernel/` | 471 | 95% |
 | Named in JSON under `evidence/` | 222 | 44% |
 | Touched by any of the three | 489 | 98% |
@@ -73,7 +106,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 285 |
+| `remaining` rows across those gaps | 290 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 10 |
 | Ledger entries `handed-off` | 0 |
@@ -86,8 +119,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 230186 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8789 | 3% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 232122 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 8788 | 3% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
@@ -96,7 +129,7 @@ Tracked Lean files in neither estate: 0. A nonzero value means the ratio above m
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 253 |
+| Retained capture directories under `../evidence/` | 263 |
 | `inputHash` markers in `*-obs.json` and `semantic-observations.json` | 746 |
 
 The marker count excludes other observation formats, including runtime `artifact.json` files with `rows` arrays. It is neither a total observation count nor a count of independent behavioural discriminators.

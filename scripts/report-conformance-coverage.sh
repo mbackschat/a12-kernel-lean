@@ -329,6 +329,44 @@ if [[ "$mode" == "print" ]]; then
   exit 0
 fi
 
+# Axis 0: every Kernel construct on each arm. The denominator is a12-dmkits' operator catalog, read-only;
+# the classification is this repository's dated judgment in docs/CONFORMANCE-CONSTRUCTS.tsv, and the two
+# must name the same constructs, so a construct the catalog gains fails the report until it is classified.
+operator_catalog="../a12-rulekit/rulekit/src/main/resources/catalog/operators.json"
+construct_table="docs/CONFORMANCE-CONSTRUCTS.tsv"
+if [[ ! -f "$operator_catalog" ]]; then
+  echo "the a12-dmkits operator catalog ${operator_catalog} is required for the construct denominator" >&2
+  exit 1
+fi
+grep -o '"id" *: *"[A-Za-z0-9]*"' "$operator_catalog" | sed 's/.*"\([A-Za-z0-9]*\)"$/\1/' | sort -u > "$work/catalog-ids"
+awk -F'\t' '!/^#/ && NF { print $1 }' "$construct_table" | sort > "$work/classified-ids"
+if ! cmp -s "$work/catalog-ids" "$work/classified-ids"; then
+  echo "${construct_table} and the operator catalog name different constructs:" >&2
+  comm -3 "$work/catalog-ids" "$work/classified-ids" >&2
+  exit 1
+fi
+classified_on="$(awk '/^# classified / { print $3 " at \`" $6 "\`"; exit }' "$construct_table")"
+read -r constructs admitted_cells broad_cells partial_cells absent_cells calibrated_cells pending_cells \
+    unmeasured_cells val_broad val_partial val_absent comp_broad comp_partial comp_absent comp_refused <<<"$(awk -F'\t' '
+  !/^#/ && NF {
+    constructs++
+    for (arm = 0; arm < 2; arm++) {
+      kernel = $(3 + 3 * arm); lean = $(4 + 3 * arm); evidence = $(5 + 3 * arm)
+      if (kernel == "no") { if (arm == 1) refused++; continue }
+      cells++
+      level[lean]++; side[arm, lean]++; proof[evidence]++
+    }
+  }
+  END {
+    print constructs+0, cells+0, level["broad"]+0, level["partial"]+0, level["absent"]+0,
+      proof["calibrated"]+0, proof["pending"]+0, proof["none"]+0,
+      side[0, "broad"]+0, side[0, "partial"]+0, side[0, "absent"]+0,
+      side[1, "broad"]+0, side[1, "partial"]+0, side[1, "absent"]+0, refused+0
+  }' "$construct_table")"
+awk -F'\t' '!/^#/ && NF && $10 != "-" { n = split($10, routes, ","); for (i = 1; i <= n; i++) print routes[i] }' \
+    "$construct_table" | sort | uniq -c | sort -k1,1nr -k2 > "$work/routes"
+awk -F'\t' '!/^#/ && NF { print $9 }' "$construct_table" | sort | uniq -c | sort -k2 > "$work/sizes"
+
 {
 cat <<HEADER
 # Kernel conformance coverage
@@ -343,7 +381,7 @@ Working-tree counts generated on ${today}; HEAD was \`${revision}\`. The vocabul
 
 ## Headline
 
-**Whole-Kernel conformance is not quantified here. ${in_lean} of ${total_classes} diagnostic identifiers occur in Lean source ($(percent "$in_lean" "$total_classes")%); ${modelled_untouched} do not.**
+**Of the ${admitted_cells} construct-by-arm cells the Kernel admits, Lean represents ${broad_cells} broadly ($(percent "$broad_cells" "$admitted_cells")%), ${partial_cells} partially and ${absent_cells} not at all, as classified on ${classified_on} in [Axis 0](#axis-0--kernel-constructs-by-arm).** ${in_lean} of ${total_classes} diagnostic identifiers occur in Lean source ($(percent "$in_lean" "$total_classes")%); ${modelled_untouched} do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -364,6 +402,35 @@ An occurrence can be a definition, fixture, comment, request, or list of exclusi
 | Theory / support / evidence estate | Groups of tracked Lean source counted by nonblank lines: executable semantics, proofs and cases / supporting process and tooling / the evidence subset of support. |
 | Capture directory / \`inputHash\` marker | A directory retaining probe artifacts / an input-identity field in the selected compact observation files. Neither count measures independent semantic cases. |
 | Velocity | Changes in the historical table's selected counts. Unchanged counts can accompany semantic progress; the table is not a measure of completed behaviour per hour. |
+
+## Axis 0 — Kernel constructs by arm
+
+The denominator is every construct in a12-dmkits' [operator catalog](../../a12-rulekit/rulekit/src/main/resources/catalog/operators.json), on the validation arm (a rule's error condition) and the computation arm (an operation or its guard). Each cell's level is this repository's judgment in [\`CONFORMANCE-CONSTRUCTS.tsv\`](CONFORMANCE-CONSTRUCTS.tsv), classified ${classified_on}: **broad** represents the construct's main authoring forms on that arm across the operand kinds the Kernel admits, with conformance locks; **partial** represents some of them; **absent** has no Lean surface there. A cell is **calibrated** when a retained capture or checkpoint measures the construct on that arm, which for many cells is static admission only, not a runtime value. Constructs compose freely, so a broad cell can still miss a composition no catalog row names.
+
+| | validation | computation | both arms |
+|---|---|---|---|
+| Constructs | ${constructs} | ${constructs} | |
+| Admitted by the Kernel | $(( val_broad + val_partial + val_absent )) | $(( comp_broad + comp_partial + comp_absent )) | ${admitted_cells} |
+| Broad | ${val_broad} | ${comp_broad} | ${broad_cells} ($(percent "$broad_cells" "$admitted_cells")%) |
+| Partial | ${val_partial} | ${comp_partial} | ${partial_cells} ($(percent "$partial_cells" "$admitted_cells")%) |
+| Absent | ${val_absent} | ${comp_absent} | ${absent_cells} ($(percent "$absent_cells" "$admitted_cells")%) |
+
+Of the admitted cells, ${calibrated_cells} are calibrated, ${pending_cells} are represented without a Kernel observation and ${unmeasured_cells} are neither represented nor measured; the Kernel refuses ${comp_refused} constructs on the computation arm.
+
+The open cells group by the shared mechanism that would close them, a construct counted once for each route its gap names; [the conformance economy proposal](CONFORMANCE-ECONOMY-PROPOSAL.md#closing-routes) defines each route:
+
+| constructs | route |
+|---|---|
+HEADER
+
+while read -r route_count route; do
+  printf '| %s | `%s` |\n' "$route_count" "$route"
+done < "$work/routes"
+
+printf '\nRemaining effort per construct, estimated at classification: '
+awk '{ printf "%s%s %s", (NR > 1 ? ", " : ""), $1, $2 } END { print " (S at most one family batch, M two to four, L a new mechanism)." }' "$work/sizes"
+
+cat <<HEADER2
 
 ## Axis 1 — diagnostic vocabulary, with a finite denominator
 
@@ -386,7 +453,7 @@ Ordered by count for lookup. Semantic priority remains with the plan and live ga
 
 | untouched | catalog | route |
 |---|---|---|
-HEADER
+HEADER2
 
 while read -r class_count catalog; do
   printf '| %s | `%s` | %s |\n' "$class_count" "$catalog" "$(route_for "$catalog")"
