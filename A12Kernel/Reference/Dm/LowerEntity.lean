@@ -100,10 +100,13 @@ def lowerEntityOperand (model : FlatModel) (group : GroupPath) :
         | some field, _ =>
             if namesField model group field then
               pure (.field field (match category with | some name => .projected name | none => .stored))
+            else if category.isSome then refuse "EntityOperand" "category on a group"
             else match path.toGroupPath? with
               | some groupPath => pure (.group (.path groupPath))
               | none => refuse "EntityOperand" "path"
-        | none, some groupPath => pure (.group (.path groupPath))
+        | none, some groupPath =>
+            if category.isSome then refuse "EntityOperand" "category on a group"
+            pure (.group (.path groupPath))
         | none, none => refuse "EntityOperand" "path"
   | .mk expr _ _ => refuse "EntityOperand" expr.construct
 

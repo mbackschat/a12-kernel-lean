@@ -81,6 +81,9 @@ def targetOf (language : Language) (model : FlatModel) (computation : DmComputat
       | .entity { path, index := none, category := none } => some path
       | _ => none
     | refuse "Target" computation.targetRelPath
+  -- The path is written from the element, one step below its group; a relative path without that
+  -- step is outside every retained model, so it is refused rather than read at the group.
+  if !path.absolute && path.ups == 0 then refuse "Target" computation.targetRelPath
   let relative := if path.absolute then path else { path with ups := path.ups - 1 }
   let some field := relative.toFieldPath? | refuse "Target" computation.targetRelPath
   elaborated "Target" (model.resolveFieldDeclarationUnchecked computation.group field)

@@ -44,6 +44,9 @@ def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Low
       | .entity { path, index := none, category := none } => some path
       | _ => none
     | refuse "ErrorEntity" rule.errorEntityRelPath
+  -- The path is written from the element, one step below its group; a relative path without that
+  -- step is outside every retained model, so it is refused rather than read at the group.
+  if !path.absolute && path.ups == 0 then refuse "ErrorEntity" rule.errorEntityRelPath
   let relative := if path.absolute then path else { path with ups := path.ups - 1 }
   let some field := relative.toFieldPath? | refuse "ErrorEntity" rule.errorEntityRelPath
   let declaration ← elaborated "ErrorEntity" (model.resolveFieldDeclarationUnchecked rule.group field)

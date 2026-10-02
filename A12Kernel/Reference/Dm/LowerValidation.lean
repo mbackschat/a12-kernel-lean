@@ -112,27 +112,35 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         elaborated "NumberOfFilledGroups" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
   let specific := match leaf with
-    | .call id [.mk operand none none] none none =>
-        match presenceOp? id, groupPresenceOp? id, operand.fieldEntity?, operand.groupReference? with
-        | some op, _, some path, _ =>
-            [elaborated id (CheckedValidationCondition.fromRepeatableFieldPresence model rowGroup op path)]
-        | _, some op, _, some group =>
-            [elaborated id (CheckedValidationCondition.fromGroupPresence model rowGroup group op)]
-        | _, _, _, _ => []
+    -- One arm for every call: a one-operand group-list quantifier such as `NoGroupFilled(Rows*)`
+    -- must reach the group-list carrier, which a separate one-argument arm would shadow.
     | .call id arguments none none =>
-        match groupQuantifier? id, (arguments.mapM plain).bind (·.mapM (groupListOperand? model rowGroup)) with
+        let presence := match arguments with
+          | [.mk operand none none] =>
+              match presenceOp? id, groupPresenceOp? id, operand.fieldEntity?, operand.groupReference? with
+              | some op, _, some path, _ =>
+                  [elaborated id (CheckedValidationCondition.fromRepeatableFieldPresence model rowGroup op path)]
+              | _, some op, _, some group =>
+                  [elaborated id (CheckedValidationCondition.fromGroupPresence model rowGroup group op)]
+              | _, _, _, _ => []
+          | _ => []
+        presence ++ match groupQuantifier? id,
+            (arguments.mapM plain).bind (·.mapM (groupListOperand? model rowGroup)) with
         | some quantifier, some operands =>
             [elaborated id (CheckedValidationCondition.fromGroupList model rowGroup quantifier operands)]
         | _, _ => []
     | .compare op left right =>
         match lowerNumericComparison op left right suppress with
         | .ok surface =>
+            -- The addressed carrier first: it reads under the rule's row environment, so a group
+            -- count below a repeatable ancestor runs inside an iterating rule, where the scalar
+            -- carrier, also admitting it, has no row to read at.
             [do let checked ← elaborated "NumericComparison"
-                  (elaborateNumericComparison model rowGroup surface)
-                elaborated "NumericComparison" (CheckedValidationCondition.fromNumeric checked),
-             do let checked ← elaborated "NumericComparison"
                   (elaborateRepeatableNumericComparison model rowGroup surface)
-                elaborated "NumericComparison" (CheckedValidationCondition.fromOrderedNumeric checked)]
+                elaborated "NumericComparison" (CheckedValidationCondition.fromOrderedNumeric checked),
+             do let checked ← elaborated "NumericComparison"
+                  (elaborateNumericComparison model rowGroup surface)
+                elaborated "NumericComparison" (CheckedValidationCondition.fromNumeric checked)]
         | .error refusal => [.error refusal]
       ++ [do
         let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
