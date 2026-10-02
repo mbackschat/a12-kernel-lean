@@ -101,7 +101,9 @@ the Kernel's own Time constants. -/
 def timeAnchorDate : CivilDate :=
   { parts := { year := 1970, month := 1, day := 1 }, real := by decide }
 
-/-- The bounded classifier cannot anchor a clock outside its exact model-zone profile. -/
+/-- The bounded classifier cannot anchor a clock outside its exact model-zone profile. No witness of
+`unanchored` is known as of 2026-10-02, since neither concrete profile has a transition on the anchor
+day; it is the fail-closed answer to the profile's own refusal rather than an asserted impossibility. -/
 inductive TimeInputError where
   | unsupportedZone (zoneId : String)
   | unanchored (time : TimeOfDay)

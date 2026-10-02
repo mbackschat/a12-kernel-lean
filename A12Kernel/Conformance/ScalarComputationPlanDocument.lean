@@ -181,8 +181,8 @@ private def dateCell (field : FieldId) (text : String) : ClassifiedCellInput :=
 private def tokenCell (field : FieldId) (token : String) : ClassifiedCellInput :=
   { address := { field, path := [] }, stored := token, raw := .parsed (.enum token) }
 
-/-- A Number cell classified by its own declaration, so the Kernel's out-of-range seed `99` for `NH`
-is formally invalid here as it is there. -/
+/-- A Number cell classified by its own declaration, so the Kernel rows' out-of-range seed `99` for `NH`
+reaches the document checker as a coherent cell. -/
 private def numberCell (field : FieldId) (amount : Int) : ClassifiedCellInput :=
   let decimal : NumericInputDecimal := { unscaled := amount, scale := 0 }
   { address := { field, path := [] }
@@ -194,7 +194,8 @@ private def numberCell (field : FieldId) (amount : Int) : ClassifiedCellInput :=
     numericDecimal := some decimal }
 
 /-- Every computed target seeded as the Kernel rows were, so a stale read would show, except the Time
-targets: the Kernel's `00:00:00` would read as the `0` an absent `T0` also gives, so `01:01:01` stands in. -/
+targets: the Kernel's `00:00:00` would read as the `0` an absent `T0` also gives, so `01:01:01` stands in,
+the seed of the checkpoint's `seed-claim` run. -/
 private def seeds : List ClassifiedCellInput :=
   [ndId, nd2Id, ndgId, kdgId, kndgId, neId, ne2Id, keId, kneId, ntId, nhId, nt2Id].map
       (numberCell · 99) ++

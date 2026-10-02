@@ -267,13 +267,22 @@ def numberFormalReadText? : ScalarComputationCompletion → Option String
       | _ => none
   | .string _ | .document _ _ _ => none
 
+/-- The input regime a completed Number places: the decimal identity applying it stores
+([`RunApplication`](NumericComputation/RunApplication.lean)). -/
+def numberInput? : ScalarComputationCompletion → Option NumericStoredInput
+  | .number completion =>
+      match completion.outcome with
+      | .accepted stored => some (.ofStoredNumber stored)
+      | _ => none
+  | .string _ | .document _ _ _ => none
+
 /-- The placement a completed target takes in the document a whole-document step reads. A completed
-Number carries its rendering as both its input regime and its formal-read text, as a document cell
-storing that text would, so no placement read sees it as empty. -/
+Number carries the input regime its application stores and its formal-read text, so no placement read
+sees it as empty. -/
 def placement (completion : ScalarComputationCompletion) : CheckedCellPlacement where
   address := { field := completion.targetField, path := [] }
   cell := completion.numberCell
-  numericInput := completion.numberFormalReadText?.map .text
+  numericInput := completion.numberInput?
   numericFormalReadText := completion.numberFormalReadText?
 
 end ScalarComputationCompletion

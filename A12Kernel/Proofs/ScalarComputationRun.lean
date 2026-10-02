@@ -387,7 +387,7 @@ theorem scalarComputationRun_documentFor_find_listed
         simp only [List.any_append, List.any_map, Bool.or_eq_true, List.any_eq_true]
         exact Or.inr ⟨field, by simp [hFind, listed], by simp⟩
 
-/-- On every address the model admits, a whole-document step reads exactly what the Number context reads, so the two cannot disagree about a completed, pending, or ordinary field. -/
+/-- On every valid nonrepeatable address, a whole-document step reads exactly what the Number context reads, so the two cannot disagree about a completed, pending, or ordinary field. -/
 theorem scalarComputationRun_documentFor_read
     (run : CheckedScalarComputationRun model) (world : World)
     (state : ScalarComputationRunState) (input : CheckedDocument model) (field : FieldId)

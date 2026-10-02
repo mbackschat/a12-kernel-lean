@@ -196,8 +196,9 @@ example :
 
 /- Row `e01` of the [errored-target grid](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-errored-target):
    a shift past year 9999 renders a five-digit year its own target rejects. The Kernel reports that
-   attempt as an errored outcome, so the view retains it as a computed error rather than clearing the
-   source-filled target, and the run reports an error. -/
+   attempt as an errored outcome, so the view lists it among the computed errors rather than the
+   clears, its application empties the target as an errored full Date's does, and the run reports an
+   error. -/
 example : (do
     let operation ← (elaborateDateTimeDayShiftComputation
       model source.id (.literal 2) target.id).toOption

@@ -1,0 +1,25 @@
+# row	field	outcome	value
+f01-clean-seed010101	Fam/DC	value	10.03.2024
+f01-clean-seed010101	Fam/EC	value	1
+f01-clean-seed010101	Fam/KE	value	5
+f01-clean-seed010101	Fam/KNE	cleared	
+f01-clean-seed010101	Fam/ND	value	0
+f01-clean-seed010101	Fam/NE	value	1
+f01-clean-seed010101	Fam/NT	value	10
+f01-clean-seed010101	Fam/TC	value	10:30:00
+f03-t0-malformed-seed010101	Fam/DC	value	10.03.2024
+f03-t0-malformed-seed010101	Fam/EC	value	1
+f03-t0-malformed-seed010101	Fam/KE	value	5
+f03-t0-malformed-seed010101	Fam/KNE	cleared	
+f03-t0-malformed-seed010101	Fam/ND	value	0
+f03-t0-malformed-seed010101	Fam/NE	value	1
+f03-t0-malformed-seed010101	Fam/NT	cleared	
+f03-t0-malformed-seed010101	Fam/TC	cleared	
+f07-t0-absent-seed010101	Fam/DC	value	10.03.2024
+f07-t0-absent-seed010101	Fam/EC	value	1
+f07-t0-absent-seed010101	Fam/KE	value	5
+f07-t0-absent-seed010101	Fam/KNE	cleared	
+f07-t0-absent-seed010101	Fam/ND	value	0
+f07-t0-absent-seed010101	Fam/NE	value	1
+f07-t0-absent-seed010101	Fam/NT	value	0
+f07-t0-absent-seed010101	Fam/TC	cleared	
