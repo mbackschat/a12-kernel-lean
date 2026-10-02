@@ -1,135 +1,147 @@
-import A12Kernel.Elaboration.FirstFilledFieldSource
+import A12Kernel.Elaboration.AddressedRepeatableTarget
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.StringComputationRunApplication
+import A12Kernel.Elaboration.TokenEntityList
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Fixed-target ordinary String `FirstFilledValue` computation
+/-! # Ordinary String `FirstFilledValue` at a fixed or a repeatable target
 
-The source is a direct single-level star or a direct list of plain nonrepeatable fields, read through
-the shared [`FirstFilledFieldSource`](FirstFilledFieldSource.lean); the list is measured at a join, a
-cleared upstream falling through and a poisoned one ending the scan
-([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-extractor-join)). -/
+One carrier serves both address classes. The source is the shared String/Enumeration entity list,
+its shape asked against the target's group, so every repeatable level an operand leaves unstarred is
+bound by the target's rows ([`spec/09`](../../spec/09-computations.md) §1). A fixed target runs once,
+at its single instance, the empty environment; a repeatable one runs at every instantiated row of its
+scope and clears an over-limit row. The scan is the kind-neutral computation walk
+`scanComputationFirstFilledSelections`, here over token cells.
+
+Placement stays split, as measured: a repeatable target must lie at or below the declaring group and
+must not be an index field, while a fixed target is unrestricted until an operand derives iteration
+([`spec/09`](../../spec/09-computations.md) §1).
+-/
 
 namespace A12Kernel
 
-/-- The declaration-local ordinary evaluated-String carrier shared by fixed and addressed String first-filled targets. -/
+/-- The declaration-local ordinary evaluated-String carrier of a String first-filled target. -/
 def FlatFieldDecl.isOrdinaryStringComputationCarrier
     (declaration : FlatFieldDecl) : Bool :=
   declaration.policy.kind == .string &&
     declaration.stringValueMode == .evaluated &&
     declaration.customType.isNone && declaration.enumeration.isNone
 
+namespace CheckedTokenEntityOperand
+
+/-- The declarations one slot reads: a field's, a star's, or every slot of a group's expansion. -/
+def declarations : CheckedTokenEntityOperand model → List FlatFieldDecl
+  | .field source => [source.declaration]
+  | .star source => [source.source.declaration]
+  | .group source => source.slots.map (·.declaration)
+
+/-- Resolve one reached slot at the scan's environment `outer`: a field read at it, a star's
+in-capacity rows below it, filtered or not, and a group's cells in the shared walk's order. -/
+def computationSelection (document : Document) (outer : Env)
+    (read : Env → FieldId → CheckedCell) :
+    CheckedTokenEntityOperand model →
+      Except StarAddressingError (FirstFilledComputationSelection .token)
+  | .field source => pure (.cell (source.valueListCellAt .computation (read outer)))
+  | .star source => do
+      let resolved ← source.source.path.resolveInCapacity document outer
+      let classify := source.valueListCellAt .computation read
+      pure <| match source.filter with
+        | none => .rows resolved.environments resolved.domain.hasOpenTail classify
+        | some having => .filtered having.condition { read } resolved.environments
+            resolved.domain.hasOpenTail classify
+  | .group source => (.side ·) <$> source.resolvedSideIn .computation document outer read
+
+end CheckedTokenEntityOperand
+
 inductive StringFirstFilledComputationElabError where
   | target (cause : ResolveError)
-  | targetRepeatable (path : List String)
+  /-- A repeatable target's placement, which the shared repeatable-target certificate owns. -/
+  | placement (cause : AddressedRepeatableTargetElabError)
   | targetNotOrdinaryString (path : List String)
-  | source (cause : StarPathElabError)
+  | source (cause : TokenEntityElabError)
   | sourceNotOrdinaryString (path : List String)
-  | sourceShape (path : List String)
-  /-- A list source the shared entity list or its plain-field reading refuses. -/
-  | list (cause : FirstFilledListElabError)
-  /-- A list source naming the target itself. -/
+  /-- A source naming the target itself. -/
   | targetSelfReference (path : List String)
+  | declaringGroupInvalid (group : GroupPath)
+  /-- A star reopening more than one level, which no row measures on this carrier: this project's
+  limit, claiming no class. -/
+  | unsupportedStar (path : List String)
   deriving Repr, DecidableEq
 
-/-- Project the source star's own refusals, whose classes belong to the path rather than the
-    carrier: an unstarred level below the first star is the missing-star class on every carrier
-    measured, the String `FirstFilledValue` computation among them
-    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
-    The other refusals stay unmapped. -/
+/-- Project the source's shape refusals, whose classes belong to the path rather than the carrier: an
+unstarred level the target does not bind draws its class on every carrier measured, the String
+`FirstFilledValue` computation among them
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
+and a source naming the target the target-read class, measured on this carrier
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep),
+row `F01`). The other refusals are unmeasured here and claim no class. -/
 def StringFirstFilledComputationElabError.diagnostic? :
     StringFirstFilledComputationElabError → Option KernelStaticDiagnostic
-  | .source cause => cause.diagnostic?
-  -- A list's shape refusals are the shared entity list's, whose classes one carrier's row fixes for
-  -- every carrier; a list naming the target is the target-read class, measured on this carrier
-  -- ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep),
-  -- row `F01`).
-  | .list (.shape cause) => cause.diagnostic?
+  | .source (.shape cause) => cause.diagnostic?
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
-  -- Named rather than wildcarded, so a new refusal must be classified rather than absorbed. None of
-  -- these is measured on this carrier, and an unsupported list operand is this project's limit.
-  | .target _ | .targetRepeatable _ | .targetNotOrdinaryString _ | .sourceNotOrdinaryString _
-  | .sourceShape _ | .list .unsupportedOperand => none
+  | .target _ | .placement _ | .targetNotOrdinaryString _ | .source _
+  | .sourceNotOrdinaryString _ | .declaringGroupInvalid _ | .unsupportedStar _ => none
 
-/-- One fixed ordinary String target and one ordinary String source, a direct single-level star or a
-direct list of plain nonrepeatable fields, certified against the same model. -/
+/-- One ordinary String target, fixed or repeatable, and one ordinary String entity-list source
+bound by the target's rows, certified against the same model. -/
 structure CheckedStringFirstFilledComputation (model : FlatModel) where
   private mk ::
+  targetField : FieldId
   target : FlatFieldDecl
-  source : FirstFilledFieldSource model
-  /-- The group the computation is declared in, which the target need not lie in. -/
+  targetOwned : model.lookupUniqueId targetField = .ok target
+  source : CheckedTokenEntitySource model
+  /-- The group the computation is declared in, which a fixed target need not lie in. -/
   declaringGroup : GroupPath
-  /-- The declaring group is a representable path, certified by the source's elaboration rather
-  than re-tested here. Placement itself is unconstrained; only representability survives. -/
   declaringGroupValid : GroupPath.isValid declaringGroup = true
-  targetFixed : target.repeatableScope = []
+  /-- A repeatable target lies at or below the declaring group and is no index field. -/
+  targetPlaced : (target.repeatableScope.isEmpty ||
+    (GroupPath.isPrefixOf declaringGroup target.groupPath && !model.isIndexField targetField)) = true
   targetOrdinary : target.isOrdinaryStringComputationCarrier = true
-  sourceOrdinary : source.declarations.all (·.isOrdinaryStringComputationCarrier) = true
-  sourceShape : source.admittedShape = true
-  excludesTarget : source.referencesField target.id = false
+  sourceOrdinary :
+    source.operands.all (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true
+  excludesTarget : source.referencesField targetField = false
 
-private def checkStringFirstFilledSourceAgainst (model : FlatModel) (target : FlatFieldDecl)
-    (declaringGroup : GroupPath) (declaringGroupValid : GroupPath.isValid declaringGroup = true)
-    (source : FirstFilledFieldSource model) :
-    Except StringFirstFilledComputationElabError (CheckedStringFirstFilledComputation model) := do
-  if hFixed : target.repeatableScope = [] then
-    if hTarget : target.isOrdinaryStringComputationCarrier = true then
-      if hSource : source.declarations.all (·.isOrdinaryStringComputationCarrier) = true then
-        if hShape : source.admittedShape = true then
-          if hExcludes : source.referencesField target.id = false then
-            pure {
-              target, source, declaringGroup, declaringGroupValid
-              targetFixed := hFixed
-              targetOrdinary := hTarget
-              sourceOrdinary := hSource
-              sourceShape := hShape
-              excludesTarget := hExcludes }
-          else throw (.targetSelfReference target.path)
-        else throw (.sourceShape (source.declarations.head?.map (·.path) |>.getD target.path))
-      else
-        let other :=
-          (source.declarations.find? (!·.isOrdinaryStringComputationCarrier)).getD target
-        throw (.sourceNotOrdinaryString other.path)
-    else
-      throw (.targetNotOrdinaryString target.path)
-  else
-    throw (.targetRepeatable target.path)
-
-/-- Check the fixed target and its star or list source without collapsing ordinary String target
-policy into exact-token acceptance. -/
+/-- Check the target's placement and carrier, then the source against the target's group. -/
 def checkStringFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceFirstFilledSource) :
-    Except StringFirstFilledComputationElabError
-      (CheckedStringFirstFilledComputation model) := do
-  match authored with
-  | .star path =>
-    match hStar : elaborateStarFieldPath model declaringGroup path with
-    | .error cause => .error (.source cause)
-    | .ok source => do
-      let target ← model.lookupUniqueId targetField |>.mapError .target
-      -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
-      -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
-      -- derives no iteration, so the Kernel admits it from an unrelated group.
-      checkStringFirstFilledSourceAgainst model target declaringGroup
-        (elaborateStarFieldPath_declaringGroupValid hStar) (.star source)
-  | .list list => do
-    -- As on the Boolean carrier: the list resolves at the target's group first, the target after it.
-    let targetGroup :=
-      ((model.lookupUniqueId targetField).toOption.map (·.groupPath)).getD declaringGroup
-    let checked ← elaborateFirstFilledFieldList model declaringGroup targetGroup list
-      |>.mapError .list
-    let target ← model.lookupUniqueId targetField |>.mapError .target
-    checkStringFirstFilledSourceAgainst model target declaringGroup checked.declaringGroupValid
-      (.list checked.fields)
-
-/-- Classify one prepared ordinary String source cell for computation-phase first-filled selection. -/
-def stringFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
-  match observeCell .computation cell with
-  | .empty => .empty
-  | .value (.str value) => .present value
-  | .value _ => .unknown .malformed
-  | .unknown cause | .poison cause => .unknown cause
+    (authored : SurfaceTokenEntitySource) :
+    Except StringFirstFilledComputationElabError (CheckedStringFirstFilledComputation model) := do
+  match hOwned : model.lookupUniqueId targetField with
+  | .error cause => throw (.target cause)
+  | .ok target =>
+    if !target.repeatableScope.isEmpty then
+      discard <| (checkAddressedRepeatableTarget model declaringGroup targetField).mapError .placement
+    if hTarget : target.isOrdinaryStringComputationCarrier = true then
+      let source ← (elaborateTokenEntitySource model declaringGroup authored
+          (fixedTargetGroup? := some target.groupPath)).mapError .source
+      if let some star := source.operands.findSome? fun
+          | .star star => if star.source.reopenedScope.length == 1 then none else some star
+          | _ => none then
+        throw (.unsupportedStar star.source.declaration.path)
+      if hSource : source.operands.all
+          (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true then
+        if hExcludes : source.referencesField targetField = false then
+          if hValid : GroupPath.isValid declaringGroup = true then
+            if hPlaced : (target.repeatableScope.isEmpty || (GroupPath.isPrefixOf declaringGroup
+                target.groupPath && !model.isIndexField targetField)) = true then
+              pure {
+                targetField, target, source, declaringGroup
+                targetOwned := hOwned
+                declaringGroupValid := hValid
+                targetPlaced := hPlaced
+                targetOrdinary := hTarget
+                sourceOrdinary := hSource
+                excludesTarget := hExcludes }
+            -- The repeatable-target certificate above already refused every placement failing here.
+            else throw (.placement (.targetOutsideDeclaringGroup target.path declaringGroup))
+          else throw (.declaringGroupInvalid declaringGroup)
+        else throw (.targetSelfReference target.path)
+      else
+        let other := ((source.operands.flatMap (·.declarations)).find?
+          (!·.isOrdinaryStringComputationCarrier)).getD target
+        throw (.sourceNotOrdinaryString other.path)
+    else throw (.targetNotOrdinaryString target.path)
 
 namespace TokenComputationResult
 
@@ -144,76 +156,150 @@ def asStringStore : TokenComputationResult → StringStore
 end TokenComputationResult
 
 inductive StringFirstFilledComputationFault where
-  | source (cause : CheckedStarDocumentError)
   | targetPatternUnavailable (field : FieldId)
+  | targetRows (cause : ActualRowEnvironmentError)
+  | targetEnvironment (cause : EnvBindingError)
+  | source (cause : StarAddressingError)
   deriving Repr, DecidableEq
 
-/-- One checked ordinary String first-filled result retaining its admitted operation. -/
-structure StringFirstFilledComputationRunView (model : FlatModel)
-    (ResidualMessage : Type) where
+/-- One target instance's outcome at its exact address before source-relative classification. -/
+structure StringFirstFilledComputationOutcome where
+  targetField : CellAddr
+  outcome : StringTargetOutcome
+  deriving Repr, DecidableEq
+
+/-- One checked String first-filled result retaining its admitted operation. -/
+structure StringFirstFilledComputationRunView (model : FlatModel) (ResidualMessage : Type) where
   private mk ::
   operation : CheckedStringFirstFilledComputation model
-  string : StringComputationRunView ResidualMessage
+  string : StringComputationRunView ResidualMessage CellAddr
 
 namespace CheckedStringFirstFilledComputation
 
-/-- Evaluate a resolved source through the shared ordered token scan. -/
-def evalResolvedStringFirstFilled
-    (resolved : ResolvedFirstFilledSource) : TokenComputationResult :=
-  let side : ResolvedValueListSide .token := {
-    cells := resolved.cells.map fun cell => stringFirstFilledCellAt cell.cell
-    hasUninstantiatedTail := resolved.hasOpenTail
-    hasHaving := false
-  }
-  (evalFirstFilledToken side).asComputationResult
+def referencesField (operation : CheckedStringFirstFilledComputation model) (field : FieldId) :
+    Bool :=
+  operation.source.referencesField field
 
-/-- Select the first filled source, then run the exact declaration-owned String target policy and the
-target's already recovered matcher. -/
-def executeWith (operation : CheckedStringFirstFilledComputation model)
-    (matcher : Option (String → Bool)) (input : CheckedDocument model) :
-    Except StringFirstFilledComputationFault StringTargetOutcome := do
-  let resolved ← operation.source.resolve input |>.mapError .source
-  pure (operation.target.stringPolicy.checkTargetWithPattern matcher
-    (evalResolvedStringFirstFilled resolved).asStringStore)
+/-- Scan the source at one target instance's environment, then run the exact declaration-owned
+String target policy and the target's prepared matcher. -/
+def evaluateAt (operation : CheckedStringFirstFilledComputation model)
+    (matcher : Option (String → Bool)) (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
+    Except StringFirstFilledComputationFault StringFirstFilledComputationOutcome := do
+  let targetPath ← environment.pathForScope operation.target.repeatableScope
+    |>.mapError .targetEnvironment
+  let selected ← scanComputationFirstFilledSelections environment
+      (·.computationSelection input.source.toDocument environment (input.computationCellAt read))
+      operation.source.operands {}
+    |>.mapError .source
+  let result : FirstFilledTokenResult := match selected with
+    | .inl _ => .noValue
+    | .inr result => result.asToken
+  pure {
+    targetField := { field := operation.targetField, path := targetPath }
+    outcome := operation.target.stringPolicy.checkTargetWithPattern matcher
+      result.asComputationResult.asStringStore }
 
-/-- Select the first filled source, then run the exact declaration-owned String target policy and prepared matcher. -/
-def execute (operation : CheckedStringFirstFilledComputation model)
-    (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
-    Except StringFirstFilledComputationFault StringTargetOutcome := do
-  let matcher ← match patterns.targetMatcher? operation.target.id with
+/-- The no-value outcome an over-limit target row takes instead of a scan, at its exact address, so
+the application projection clears it. -/
+def clearedAt (operation : CheckedStringFirstFilledComputation model) (environment : Env) :
+    Except StringFirstFilledComputationFault StringFirstFilledComputationOutcome := do
+  let targetPath ← environment.pathForScope operation.target.repeatableScope
+    |>.mapError .targetEnvironment
+  pure { targetField := { field := operation.targetField, path := targetPath }, outcome := .noValue }
+
+/-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
+scope with a clear at each over-limit row, through a caller-supplied exact-address view. -/
+def executeWithMatcher (operation : CheckedStringFirstFilledComputation model)
+    (matcher : Option (String → Bool)) (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except StringFirstFilledComputationFault (List StringFirstFilledComputationOutcome) :=
+  if operation.target.repeatableScope.isEmpty then
+    (·::[]) <$> operation.evaluateAt matcher input read []
+  else
+    input.computationRowOutcomes operation.target.repeatableScope .targetRows
+      operation.clearedAt (operation.evaluateAt matcher input read)
+
+/-- Run with the target's prepared matcher, which must be present before any instance runs. -/
+def executeWithRead (operation : CheckedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except StringFirstFilledComputationFault (List StringFirstFilledComputationOutcome) := do
+  let matcher ← match patterns.targetMatcher? operation.targetField with
     | some matcher => pure matcher
-    | none => throw (.targetPatternUnavailable operation.target.id)
-  operation.executeWith matcher input
+    | none => throw (.targetPatternUnavailable operation.targetField)
+  operation.executeWithMatcher matcher input read
 
-/-- Classify the rich target outcome relative to the immutable source target. -/
-def executeResult (operation : CheckedStringFirstFilledComputation model)
-    (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+def execute (operation : CheckedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model) :
+    Except StringFirstFilledComputationFault (List StringFirstFilledComputationOutcome) :=
+  operation.executeWithRead patterns input input.read
+
+/-- Classify caller-view outcomes against the immutable source target at the same addresses. -/
+def executeResultWithRead (operation : CheckedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except StringFirstFilledComputationFault
       (StringFirstFilledComputationRunView model ResidualMessage) := do
-  let outcome ← operation.execute patterns input
+  let outcomes ← operation.executeWithRead patterns input read
   pure {
     operation
-    string := StringComputationRunView.fromSourcedOutcomes residualMessages [{
-      targetField := operation.target.id
-      outcome
-      source := input.sourceStringTargetState operation.target.id
-    }]
-  }
+    string := StringComputationRunView.fromSourcedOutcomes residualMessages
+      (outcomes.map fun entry => {
+        targetField := entry.targetField
+        outcome := entry.outcome
+        source := input.sourceStringTargetStateAt entry.targetField }) }
+
+def executeResult (operation : CheckedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except StringFirstFilledComputationFault
+      (StringFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead patterns input input.read residualMessages
 
 end CheckedStringFirstFilledComputation
 
 namespace StringFirstFilledComputationRunView
 
-/-- Apply retained source-relative actions to a separate checked destination without reclassifying against it. -/
-def applyToChecked
-    (view : StringFirstFilledComputationRunView model ResidualMessage)
+/-- Apply retained exact-address actions to a separate same-model destination without reclassifying them. -/
+def applyToChecked (view : StringFirstFilledComputationRunView model ResidualMessage)
     (destination : CheckedDocument model) :
-    Except (StringComputationRunView.StringComputationRunApplicationError FieldId)
-      (StringComputationDestination FieldId) :=
-  view.string.applyTo destination.sourceStringTargetState
+    Except (StringComputationRunView.StringComputationRunApplicationError CellAddr)
+      (StringComputationDestination CellAddr) :=
+  view.string.applyTo destination.sourceStringTargetStateAt
 
 end StringFirstFilledComputationRunView
+
+/-- Failure while composing selected formal-input preparation with String `FirstFilledValue`. -/
+inductive StringFirstFilledCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : StringFirstFilledComputationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedStringFirstFilledComputation
+
+/-- Bind every source declaration and the computed target to the shared eager inventory. -/
+def formalInputPlan (operation : CheckedStringFirstFilledComputation model) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    ((operation.source.operands.flatMap (·.declarations)).map (·.id)) [operation.targetField]
+
+/-- Prepare the selected sources once, retain every eager finding, and run lazily through the
+prepared read. -/
+def executeResultWithFormalInputs (operation : CheckedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model) :
+    Except StringFirstFilledCheckedResultFault
+      (StringFirstFilledComputationRunView model ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead patterns input prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands with
+  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
+
+end CheckedStringFirstFilledComputation
 
 end A12Kernel

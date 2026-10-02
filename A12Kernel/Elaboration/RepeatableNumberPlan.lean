@@ -100,12 +100,7 @@ def read (plan : CheckedRepeatableNumberPlan model) (input : CheckedDocument mod
       .ok (NumericDependencyCell.ofObservation .empty).checked
     else input.read address
 
-def cellAt (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (environment : Env) (field : FieldId) : CheckedCell :=
-  match input.checkedCellWithRead read environment field with
-  | .ok cell => cell
-  | .error _ => malformedCheckedCell
+abbrev cellAt (input : CheckedDocument model) := input.computationCellAt
 
 def supportedOutcome (table : CheckedNumericComputationTable model) :
     Except NumericComputationFault NumericTargetCheckResult →

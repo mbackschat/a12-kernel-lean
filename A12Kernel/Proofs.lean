@@ -29,7 +29,6 @@ import A12Kernel.Proofs.AddressedNumericLeaf
 import A12Kernel.Proofs.AddressedNumericOperationConsumer
 import A12Kernel.Proofs.AddressedRangeAsNumber
 import A12Kernel.Proofs.AddressedRepetitionComputation
-import A12Kernel.Proofs.AddressedStringFirstFilledComputation
 import A12Kernel.Proofs.AddressedStringLength
 import A12Kernel.Proofs.AddressedTimeConstructionFormalInput
 import A12Kernel.Proofs.AddressedTimeFromDateTime

@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.RepeatableTimeConstantComputation
 import A12Kernel.Elaboration.RepeatableDateTimeConstantComputation
 import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.AddressedFieldValueAsString
-import A12Kernel.Elaboration.AddressedStringFirstFilledComputation
+import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.AddressedTimeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateTimeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedFullDateFirstFilledComputation
@@ -36,7 +36,7 @@ inductive RowComputationStepFault where
   | dateTimeLabelUnresolved
   | booleanConstant (cause : RepeatableBooleanConstantComputationFault)
   | fieldValueAsString (cause : AddressedFieldValueAsStringFault)
-  | stringFirstFilled (cause : AddressedStringFirstFilledComputationFault)
+  | stringFirstFilled (cause : StringFirstFilledComputationFault)
   | timeFirstFilled (cause : AddressedTimeFirstFilledComputationFault)
   | dateTimeFirstFilled (cause : AddressedDateTimeFirstFilledComputationFault)
   | fullDateFirstFilled (cause : AddressedFullDateFirstFilledComputationFault)
@@ -157,10 +157,10 @@ def ofAddressedFieldValueAsString? (operation : CheckedAddressedFieldValueAsStri
     readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .string
       fun _ => DocumentComputationReadBack.string
 
-/-- A per-row String `FirstFilledValue` over a sibling star. -/
-def ofAddressedStringFirstFilled? (operation : CheckedAddressedStringFirstFilledComputation model) :
+/-- A per-row String `FirstFilledValue` over its entity-list source. -/
+def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .string (· == operation.source.declaration.id) fun _ _ patterns document => do
+  checked? operation.targetField .string operation.referencesField fun _ _ patterns document => do
     let outcomes ← (operation.execute patterns document).mapError .stringFirstFilled
     readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .string
       fun _ => DocumentComputationReadBack.string

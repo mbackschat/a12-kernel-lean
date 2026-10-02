@@ -457,19 +457,20 @@ def ofEnumerationFirstFilled (operation : CheckedEnumerationFirstFilledComputati
     let outcome := selected.asComputationResult.asExactStringTargetOutcome
     pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target outcome)
 
-/-- A fixed-target String `FirstFilledValue`, checked against its target's prepared pattern. -/
+/-- A fixed-target String `FirstFilledValue` at its single instance, checked against its target's
+prepared pattern. -/
 def ofStringFirstFilled (operation : CheckedStringFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
-  target := operation.target.id
+  target := operation.targetField
   family := .string
-  referencesField := operation.source.referencesField
+  referencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
   run _ matchers document := do
-    let matcher ← (matchers operation.target.id).getDM
-      (throw (.stringFirstFilled (.targetPatternUnavailable operation.target.id)))
-    let outcome ← (operation.executeWith matcher document).mapError .stringFirstFilled
-    let cell ← DocumentComputationReadBack.string outcome
-    pure (.string outcome, cell)
+    let matcher ← (matchers operation.targetField).getDM
+      (throw (.stringFirstFilled (.targetPatternUnavailable operation.targetField)))
+    let entry ← (operation.evaluateAt matcher document document.read []).mapError .stringFirstFilled
+    let cell ← DocumentComputationReadBack.string entry.outcome
+    pure (.string entry.outcome, cell)
 
 /-- A fixed-target Custom `FirstFilledValue`, whose selected token its matching Custom declaration
 accepts unchecked, read back as a String completion is. -/

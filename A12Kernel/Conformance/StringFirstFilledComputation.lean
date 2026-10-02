@@ -68,13 +68,13 @@ private def nestedStar : SurfaceStarFieldPath := {
 }
 
 private def checked? (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
-  (checkStringFirstFilledComputation model ["Review"] targetField (.star authored)).toOption
+  (checkStringFirstFilledComputation model ["Review"] targetField ⟨.star authored, []⟩).toOption
 
 /-- The same check with the declaring group varied instead of the target, which is how a target
 outside the declaring group is expressed under a single model root. -/
 private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :=
-  (checkStringFirstFilledComputation model declaringGroup targetField (.star authored)).toOption
+  (checkStringFirstFilledComputation model declaringGroup targetField ⟨.star authored, []⟩).toOption
 
 private def customValidator : RegisteredCustomFieldValidator := fun _ _ => none
 
@@ -125,19 +125,20 @@ private def outcomeFor? (targetField : FieldId)
     Option StringTargetOutcome := do
   let operation ← checked? targetField (star source.name)
   let input ← document? (some "OLD") sourceCell
-  operation.execute prepared.patterns input |>.toOption
+  let outcomes ← operation.execute prepared.patterns input |>.toOption
+  (·.outcome) <$> outcomes.head?
 
 private def outcome? (sourceCell : Option ClassifiedCellInput) :
     Option StringTargetOutcome :=
   outcomeFor? target.id sourceCell
 
-/- The checked boundary retains only a fixed ordinary evaluated-String target and a direct single-level ordinary String star. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and the repeatable target is refused on the fixed-target gate rather than on placement. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- The checked boundary retains an ordinary evaluated-String target and an ordinary String source. A fixed target's placement is unrestricted: declaring at `["Review", "Rows"]` puts it *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted, a star aggregate deriving no iteration. An unrepresentable declaring group is still refused. The repeatable target inside the declaring group is admitted, its star over its own group reading the whole list at every row as the Kernel does ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent) `rerun`). A star reopening two levels stays this project's limit. -/
 example :
     (checked? target.id (star source.name)).isSome = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star source.name)).isSome = true ∧
       (checkedAt? [] target.id (star source.name)).isNone = true ∧
       (checked? patternTarget.id (star source.name)).isSome = true ∧
-      (checked? repeatedTarget.id (star source.name)).isNone = true ∧
+      (checked? repeatedTarget.id (star source.name)).isSome = true ∧
       (checked? customTarget.id (star source.name)).isNone = true ∧
       (checked? rawTarget.id (star source.name)).isNone = true ∧
       (checked? target.id (star rawSource.name)).isNone = true ∧
@@ -160,14 +161,14 @@ example :
   native_decide
 
 private structure ResultApplicationSummary where
-  unchangedChanges : List (StringComputedInstance FieldId)
+  unchangedChanges : List (StringComputedInstance CellAddr)
   changedValue : StringTargetState
-  cleared : List FieldId
+  cleared : List CellAddr
   clearedValue : StringTargetState
-  rejectedErrors : List (StringComputedError FieldId)
-  rejectedCleared : List FieldId
+  rejectedErrors : List (StringComputedError CellAddr)
+  rejectedCleared : List CellAddr
   rejectedValue : StringTargetState
-  poisonCleared : List FieldId
+  poisonCleared : List CellAddr
   poisonValue : StringTargetState
   unrelatedValue : StringTargetState
   residual : List FormalCause
@@ -197,15 +198,15 @@ private def resultApplicationSummary? : Option ResultApplicationSummary := do
   let poisonApplied ← poison.applyToChecked destination |>.toOption
   pure {
     unchangedChanges := unchanged.string.withChanges
-    changedValue := changedApplied target.id
+    changedValue := changedApplied { field := target.id, path := [] }
     cleared := cleared.string.cleared
-    clearedValue := clearedApplied target.id
+    clearedValue := clearedApplied { field := target.id, path := [] }
     rejectedErrors := rejected.string.withErrors
     rejectedCleared := rejected.string.cleared
-    rejectedValue := rejectedApplied target.id
+    rejectedValue := rejectedApplied { field := target.id, path := [] }
     poisonCleared := poison.string.cleared
-    poisonValue := poisonApplied target.id
-    unrelatedValue := changedApplied unrelated.id
+    poisonValue := poisonApplied { field := target.id, path := [] }
+    unrelatedValue := changedApplied { field := unrelated.id, path := [] }
     residual := poison.string.formalErrorsInOperands
   }
 
@@ -213,16 +214,16 @@ private def resultApplicationSummary? : Option ResultApplicationSummary := do
 example : resultApplicationSummary? = some {
     unchangedChanges := []
     changedValue := .presentValue ⟨"A7", by decide⟩
-    cleared := [target.id]
+    cleared := [{ field := target.id, path := [] }]
     clearedValue := .presentEmpty
     rejectedErrors := [{
-      targetField := target.id
+      targetField := { field := target.id, path := [] }
       attempted := ⟨"ABCD", by decide⟩
       cause := .tooLong
     }]
     rejectedCleared := []
     rejectedValue := .presentEmpty
-    poisonCleared := [target.id]
+    poisonCleared := [{ field := target.id, path := [] }]
     poisonValue := .presentEmpty
     unrelatedValue := .presentValue ⟨"KEEP", by decide⟩
     residual := [.malformed]
@@ -294,7 +295,7 @@ example :
       base := .absolute
       groups := [{ name := "Review" }, { name := "Rows", starred := true }, { name := "Details" }]
       field := nestedSource.name }
-    (match checkStringFirstFilledComputation model ["Review"] target.id (.star belowStar) with
+    (match checkStringFirstFilledComputation model ["Review"] target.id ⟨.star belowStar, []⟩ with
       | .error error => error.diagnostic?
       | .ok _ => none) = some .noWildcard := by
   native_decide
@@ -305,21 +306,20 @@ private def plainEntry (field : String) : SurfaceFieldEntityOperand :=
 private def listChecked? (targetField : FieldId) (entries : List SurfaceFieldEntityOperand) :
     Except StringFirstFilledComputationElabError (CheckedStringFirstFilledComputation model) :=
   match entries with
-  | [] => .error (.list (.shape .tooFewFields))
-  | first :: rest => checkStringFirstFilledComputation model ["Review"] targetField (.list { first, rest })
+  | [] => .error (.source (.shape .tooFewFields))
+  | first :: rest => checkStringFirstFilledComputation model ["Review"] targetField { first, rest }
 
-/- A direct list is the shared entity list: a lone field is too few, a star beside a field is an operand
-this list does not read, a non-ordinary String member is refused as on a star, and a list naming the
-target is the target-read class, as the Kernel reports for a String `FirstFilledValue` listing its
-target. -/
+/- A list is the shared entity list: a lone field is too few, a star beside a field is read in authored
+order as the Kernel admits it on the mixed Enumeration list, a String carrier crossing no row measures
+([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-mixed-chain-string-target-rejection)), a
+non-ordinary String member is refused as on a star, and a list naming the target is the target-read
+class, as the Kernel reports for a String `FirstFilledValue` listing its target. -/
 example :
     ((listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry minimumTarget.name]).isOk &&
     (match listChecked? patternTarget.id [plainEntry unrelated.name] with
       | .error error => error.diagnostic? == some .paramSizeInvalidN
       | .ok _ => false) &&
-    (match listChecked? patternTarget.id [.star (star source.name), plainEntry unrelated.name] with
-      | .error (.list .unsupportedOperand) => true
-      | _ => false) &&
+    (listChecked? patternTarget.id [.star (star source.name), plainEntry unrelated.name]).isOk &&
     (match listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry customTarget.name] with
       | .error (.sourceNotOrdinaryString _) => true
       | _ => false) &&

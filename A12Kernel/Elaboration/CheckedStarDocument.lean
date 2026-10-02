@@ -157,6 +157,16 @@ def checkedCellWithRead (checked : CheckedDocument model)
   let address ← checked.cellAddress environment field
   read address |>.mapError .document
 
+/-- One field's checked cell at an environment through a caller-supplied exact-address view, the
+computation scans' read. An address the environment cannot form reads as malformed: each scanning
+carrier's binding certificate makes that unreachable, so no semantic channel carries it. -/
+def computationCellAt (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) (field : FieldId) : CheckedCell :=
+  match checked.checkedCellWithRead read environment field with
+  | .ok cell => cell
+  | .error _ => malformedCheckedCell
+
 /-- Retain one model-owned field instance under its exact immutable address and stored payload while observing its checked cell through a caller-supplied exact-address view. -/
 def addressedCellWithRead (checked : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)

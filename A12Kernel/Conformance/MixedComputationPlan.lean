@@ -39,7 +39,7 @@ private def labels : SurfaceStarFieldPath :=
     field := "Label" }
 
 private def steps? : Option (List (MixedComputationStep model builtinStringPatternCompiler)) := do
-  let reader ← (checkStringFirstFilledComputation model ["Probe"] note.id (.star labels)).toOption
+  let reader ← (checkStringFirstFilledComputation model ["Probe"] note.id ⟨.star labels, []⟩).toOption
   let constant ← (checkRepeatableStringConstantComputation model ["Probe"] label.id "NEW").toOption
   pure [.document (.ofStringFirstFilled reader), .rows (.ofRepeatableStringConstant constant)]
 

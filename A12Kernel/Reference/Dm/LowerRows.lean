@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.LowerCore
+import A12Kernel.Reference.Dm.LowerEntity
 import A12Kernel.Reference.Dm.Parser
 import A12Kernel.Elaboration.MixedComputationPlan
 
@@ -91,13 +92,21 @@ private def timeComponents (model : FlatModel) (group : GroupPath) :
         (← timeComponent model group second))
   | _ => refuse "Time" "arity"
 
-/-- `FirstFilledValue` over one sibling star, onto the addressed carrier of the target's kind. -/
+/-- `FirstFilledValue` onto the carrier of the target's kind: a String one over any entity list,
+the others over one sibling star. -/
 private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
-    (star : SurfaceStarFieldPath) : Lowering (RowStep model) :=
+    (arguments : List Argument) : Lowering (RowStep model) := do
+  if target.policy.kind == .string then
+    return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofStringFirstFilled?
+      (← elaborated "FirstFilledValue" (checkStringFirstFilledComputation model group target.id
+        (← lowerEntitySource model group arguments))))
+  let star ← match arguments with
+    | [.mk (.entity { path, index := none, category := none }) none none] =>
+        match path.segments.any (·.star), path.toStarFieldPath? with
+        | true, some star => pure star
+        | _, _ => refuse "FirstFilledValue" "row source"
+    | _ => refuse "FirstFilledValue" "row source"
   match target.policy.kind with
-  | .string => do
-      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedStringFirstFilled?
-        (← elaborated "FirstFilledValue" (checkAddressedStringFirstFilledComputation model group target.id star)))
   | .temporal .time _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedTimeFirstFilled?
         (← elaborated "FirstFilledValue" (checkAddressedTimeFirstFilledComputation model group target.id star)))
@@ -119,10 +128,7 @@ def lowerRowStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl
       let some path := source.fieldEntity? | refuse "FieldValueAsString" "operand"
       stepOf "FieldValueAsString" (CheckedRowComputationStep.ofAddressedFieldValueAsString?
         (← elaborated "FieldValueAsString" (checkAddressedFieldValueAsString model group target.id path)))
-  | .call "FirstFilledValue" [.mk (.entity { path, index := none, category := none }) none none] none none =>
-      match path.segments.any (·.star), path.toStarFieldPath? with
-      | true, some star => firstFilledRow model group target star
-      | _, _ => refuse "FirstFilledValue" "row source"
+  | .call "FirstFilledValue" arguments none none => firstFilledRow model group target arguments
   | .call "DateFromDateTime" [.mk source none none] none none => do
       let some path := source.fieldEntity? | refuse "DateFromDateTime" "operand"
       stepOf "DateFromDateTime" (CheckedRowComputationStep.ofAddressedDateFromDateTime?

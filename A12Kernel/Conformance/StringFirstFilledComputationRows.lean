@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedStringFirstFilledFormalInput
+import A12Kernel.Elaboration.StringFirstFilledComputation
 
 /-! # Exact-address repeatable ordinary String `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedStringFirstFilledComputation
+namespace A12Kernel.Conformance.StringFirstFilledComputationRows
 
 open A12Kernel
 
@@ -121,63 +121,61 @@ private def targetDescendantStar : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedAddressedStringFirstFilledComputation model) :=
-  (checkAddressedStringFirstFilledComputation model
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+    Option (CheckedStringFirstFilledComputation model) :=
+  (checkStringFirstFilledComputation model
+    ["Projects", "Tasks"] target.id ⟨.star (siblingStar source.name), []⟩).toOption
 
 private def elabError? (checked : Except
-    AddressedStringFirstFilledComputationElabError
-    (CheckedAddressedStringFirstFilledComputation model)) :=
+    StringFirstFilledComputationElabError
+    (CheckedStringFirstFilledComputation model)) :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary separates repeatable target placement, ordinary String carrier admission, sibling-star scope, and self-reference. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
-example : operation?.isSome = true ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] 99 (siblingStar source.name)) =
+/- The checked boundary separates repeatable target placement, ordinary String carrier admission, the
+shared walk over the source's unstarred levels, and self-reference. Placement is containment: the
+ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects",
+"Choices"]` — which shares the target's enclosing prefix without containing it — is refused. The walk
+is the shared entity list's, asked against the target's group
+([`spec/09`](../../spec/09-computations.md) §1): a level beside the target's group declaring an index
+the target's path does not draws `MVK_ERROR_FIELD_NO_INDEX`, one declaring none `MVK_NO_WILDCARD`,
+while a fully starred root star and a star below the target's own row leave no level unbound and are
+admitted. A star reopening two levels is this project's limit. -/
+example :
+    let classOf (group : GroupPath) (field : FieldId) (star : SurfaceStarFieldPath) :=
+      (elabError? (checkStringFirstFilledComputation model group field ⟨.star star, []⟩)).bind
+        (·.diagnostic?)
+    let admitted (group : GroupPath) (field : FieldId) (star : SurfaceStarFieldPath) :=
+      (checkStringFirstFilledComputation model group field ⟨.star star, []⟩).toOption.isSome
+    operation?.isSome = true ∧
+    elabError? (checkStringFirstFilledComputation model
+      ["Projects", "Tasks"] 99 ⟨.star (siblingStar source.name), []⟩) =
         some (.target (.unknownFieldId 99)) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Summary"] target.id (siblingStar source.name)) =
-        some (.targetOutsideDeclaringGroup target.path ["Summary"]) ∧
-    (checkAddressedStringFirstFilledComputation model
-      ["Projects"] target.id absoluteSiblingStar).toOption.isSome = true ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Choices"] target.id absoluteSiblingStar) =
-        some (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] numberTarget.id (siblingStar source.name)) =
+    elabError? (checkStringFirstFilledComputation model
+      ["Summary"] target.id ⟨.star (siblingStar source.name), []⟩) =
+        some (.placement (.targetOutsideDeclaringGroup target.path ["Summary"])) ∧
+    admitted ["Projects"] target.id absoluteSiblingStar = true ∧
+    elabError? (checkStringFirstFilledComputation model
+      ["Projects", "Choices"] target.id ⟨.star absoluteSiblingStar, []⟩) =
+        some (.placement (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"])) ∧
+    elabError? (checkStringFirstFilledComputation model
+      ["Projects", "Tasks"] numberTarget.id ⟨.star (siblingStar source.name), []⟩) =
         some (.targetNotOrdinaryString numberTarget.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] rawTarget.id (siblingStar source.name)) =
+    elabError? (checkStringFirstFilledComputation model
+      ["Projects", "Tasks"] rawTarget.id ⟨.star (siblingStar source.name), []⟩) =
         some (.targetNotOrdinaryString rawTarget.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar numberSource.name)) =
-        some (.sourceNotOrdinaryString numberSource.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar rawSource.name)) =
-        some (.sourceNotOrdinaryString rawSource.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id nestedSiblingStar) =
-        some (.sourceShape nestedSource.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id partialBindingStar) =
-        some (.sourceScope nestedSource.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["OtherTasks"] unboundTarget.id absoluteSiblingStar) =
-        some (.sourceScope source.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id rootStar) =
-        some (.sourceScope rootSource.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id targetDescendantStar) =
-        some (.sourceScope targetDescendantSource.path) ∧
-    elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id selfStar) =
-        some (.targetSelfReference target.id) := by
+    admitted ["Projects", "Tasks"] target.id (siblingStar numberSource.name) = false ∧
+    admitted ["Projects", "Tasks"] target.id (siblingStar rawSource.name) = false ∧
+    elabError? (checkStringFirstFilledComputation model
+      ["Projects", "Tasks"] target.id ⟨.star nestedSiblingStar, []⟩) =
+        some (.unsupportedStar nestedSource.path) ∧
+    classOf ["Projects", "Tasks"] target.id partialBindingStar = some .errorFieldNoIndex ∧
+    classOf ["OtherTasks"] unboundTarget.id absoluteSiblingStar = some .noWildcard ∧
+    admitted ["Projects", "Tasks"] target.id rootStar = true ∧
+    admitted ["Projects", "Tasks"] target.id targetDescendantStar = true ∧
+    elabError? (checkStringFirstFilledComputation model
+      ["Projects", "Tasks"] target.id ⟨.star selfStar, []⟩) =
+        some (.targetSelfReference target.path) := by
   native_decide
 
 private def patternCompiler : StringPatternCompiler := fun pattern =>
@@ -258,8 +256,8 @@ private def runtimePrepared : PreparedFlatStringContext runtimeModel patternComp
     patternCompiler runtimeModel).toOption.get (by native_decide)
 
 private def runtimeProjection? (seeded : Bool) : Option RuntimeProjection := do
-  let operation ← (checkAddressedStringFirstFilledComputation runtimeModel
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+  let operation ← (checkStringFirstFilledComputation runtimeModel
+    ["Projects", "Tasks"] target.id ⟨.star (siblingStar source.name), []⟩).toOption
   let sourceCells := inputCells.filter fun item =>
     item.address != address source.id [1, 1] &&
       item.address != address source.id [5, 1] &&
@@ -446,4 +444,4 @@ example : formalInputSummary? = some {
   } := by
   native_decide
 
-end A12Kernel.Conformance.AddressedStringFirstFilledComputation
+end A12Kernel.Conformance.StringFirstFilledComputationRows
