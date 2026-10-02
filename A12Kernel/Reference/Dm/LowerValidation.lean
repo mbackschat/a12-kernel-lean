@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.NumericValidation.EntityComparison
 import A12Kernel.Elaboration.FieldFillRule
+import A12Kernel.Elaboration.StringContext
 
 /-! # Lowering a rule condition onto the checked validation carriers
 
@@ -141,7 +142,18 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
             (← lowerNumericExpr atom right) suppress)
         elaborated "EntityComparison" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
-  flat ++ specific ++ groupCount ++ fieldFill
+  let pattern := match leaf with
+    | .compare op (.value { path, index := none, category := none }) (.string source) =>
+        match op, path.toFieldPath? with
+        | .patternMatched, some field => [elaborated "PatternMatched"
+            (CheckedValidationCondition.fromStringPattern model rowGroup builtinStringPatternCompiler
+              { op := .matched, field, source })]
+        | .patternViolated, some field => [elaborated "PatternViolated"
+            (CheckedValidationCondition.fromStringPattern model rowGroup builtinStringPatternCompiler
+              { op := .violated, field, source })]
+        | _, _ => []
+    | _ => []
+  flat ++ specific ++ groupCount ++ fieldFill ++ pattern
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

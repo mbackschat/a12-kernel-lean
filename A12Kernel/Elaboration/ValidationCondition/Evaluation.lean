@@ -50,6 +50,9 @@ def evalSelected (context : ValidationEvaluationContext)
       if isRelevant leaf.operand.source then
         leaf.evalAt context.fields .validation
       else .unknown
+  | .stringPattern leaf =>
+      if isRelevant leaf.condition.field.id then leaf.condition.evalSelected context.fields
+      else .unknown
   | .fieldFill _ _ => .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
@@ -62,7 +65,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator [.starredGroupPresence _] =>
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
-  | .customFieldValidity _ => true
+  | .customFieldValidity _ | .stringPattern _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -132,6 +135,18 @@ def evalAddressedPartial?
             match cell? with
             | some cell => leaf.evalCell .validation cell
             | none => .unknown
+      else
+        pure .unknown)
+  -- The covered cell replaces its own read in the scalar context, so both routes share the
+  -- condition's `evalSelected`.
+  | .stringPattern leaf =>
+      let source := leaf.condition.field.id
+      some (if isRelevant source then
+        context.readPartialCell context.outer source |>.map fun cell? =>
+          match cell? with
+          | some cell => leaf.condition.evalSelected { context.scalar.fields with
+              read := fun field => if field == source then cell else context.scalar.fields.read field }
+          | none => .unknown
       else
         pure .unknown)
   | .orderedNumeric _ comparison =>

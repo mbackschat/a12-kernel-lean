@@ -20,6 +20,7 @@ inductive ValidationConditionAssemblyError where
   | repetitionNotUnique (error : RepetitionNotUniqueElabError)
   | iteratedDateRange (error : IteratedDateRangeConditionElabError)
   | multipleRepetitionNotUnique
+  | stringPattern (error : StringPatternConditionElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -62,7 +63,7 @@ def groupListDiagnostic? :
   -- these is measured as its own class through this projection.
   | .invalidModel _ | .repeatableFieldRequired _ | .emptyGroupList | .rowGroupMismatch _ _
   | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique
-  | .incoherentCore => none
+  | .stringPattern _ | .incoherentCore => none
 
 end ValidationConditionAssemblyError
 
@@ -102,6 +103,19 @@ def fromCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
       | .ok leaf =>
           checkCore model rowGroup (ValidationCondition.customFieldValidity leaf)
             (by rw [hModel]; rfl)
+
+/-- Assemble one `PatternMatched`/`PatternViolated` leaf at a rule group, keeping the compiler that
+    admitted its pattern beside the checked condition. -/
+def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
+    (compilePattern : StringPatternCompiler) (surface : SurfaceStringPatternCondition) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  match hModel : model.validate with
+  | .error error => .error (.invalidModel error)
+  | .ok () => do
+      let condition ← (elaborateStringPatternCondition compilePattern model rowGroup surface).mapError
+        .stringPattern
+      checkCore model rowGroup (.leaf (.stringPattern { compilePattern, condition }))
+        (by rw [hModel]; rfl)
 
 /-- Lift one checked numeric comparison at its certified rule-instance group. -/
 def fromNumeric (comparison : CheckedNumericComparison model) :

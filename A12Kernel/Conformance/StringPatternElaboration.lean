@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringPattern
+import A12Kernel.Elaboration.ValidationCondition.Assembly
 
 /-! # Checked authored String-pattern conformance locks -/
 
@@ -433,6 +434,35 @@ example :
       (elaborateAndEvalStringPatternFull compileDeclared invalidModel ["Claim"]
         (raw (.parsed (.str "A"))) true (condition "A")) =
       some (.preparation (.pattern .javaSyntax)) := by
+  native_decide
+
+/-! ## The pattern pair as validation leaves
+
+Over a readable nonempty value the two operators are complements: their conjunction never fires and
+their disjunction always does. An empty value fires neither, and a formally unavailable one leaves
+both UNKNOWN, so the pair is not exhaustive there. The Kernel shows the first two regions on the
+[negation pair grid](../../evidence/kernel-30.8.1/captures/negation-pair-grid-2026-10-02/request.json),
+whose pattern rows this theory cannot replay without a host Java-pattern compiler; the grid holds no
+formally unavailable String. -/
+
+private def leafPair? (join : ValidationCondition model → ValidationCondition model →
+    ValidationCondition model) (cell : RawCell) : Option (Verdict × Bool) := do
+  let matched ← (CheckedValidationCondition.fromStringPattern model ["Claim"] compilePattern
+    (condition)).toOption
+  let violated ← (CheckedValidationCondition.fromStringPattern model ["Claim"] compilePattern
+    (condition (op := .violated))).toOption
+  let tree := join matched.core violated.core
+  let context : ValidationEvaluationContext :=
+    { fields := model.checkContext (raw cell), groups := GroupPresenceContext.unavailable }
+  pure (ValidationCondition.evalSelected tree context (fun _ => true), tree.canFireOnEmpty)
+
+example :
+    [leafPair? .and (.parsed (.str "ABC")), leafPair? .and (.parsed (.str "xyz")),
+     leafPair? .or (.parsed (.str "ABC")), leafPair? .or (.parsed (.str "xyz")),
+     leafPair? .or .empty, leafPair? .or (.rejected .declaredConstraint)] =
+      [some (.notFired, false), some (.notFired, false),
+       some (.fired .value, false), some (.fired .value, false),
+       some (.notFired, false), some (.unknown, false)] := by
   native_decide
 
 end A12Kernel.Conformance.StringPatternElaboration

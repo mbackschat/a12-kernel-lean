@@ -331,6 +331,10 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
         concreteFieldPointer declaration environment
   | .customFieldValidity leaf =>
       (concreteFieldPointer leaf.operand.declaration environment).map ([·])
+  | .stringPattern leaf =>
+      match model.lookupUniqueId leaf.condition.field.id with
+      | .ok declaration => (concreteFieldPointer declaration environment).map ([·])
+      | .error _ => .error .unclassifiedLeaf
   | .fieldFill _ source =>
       sievedFieldPointers model
         (fun declaration => source.declarations.any (·.id == declaration.id)) environment

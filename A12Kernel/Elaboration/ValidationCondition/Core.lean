@@ -7,6 +7,7 @@ import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Elaboration.CurrentRepetition
 import A12Kernel.Elaboration.IteratedDateRangeCondition
 import A12Kernel.Elaboration.CustomFieldValidity
+import A12Kernel.Elaboration.StringPattern
 
 /-! # Shared resolved validation conditions
 
@@ -255,6 +256,9 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   not a projection of `NumberOfFilledFields`: a formally invalid cell leaves the count unavailable
   while `AtLeastOneFieldFilled` still fires on a filled sibling. -/
   | fieldFill (operator : FieldFillQuantifier) (source : CheckedFieldFillList model)
+  /-- `PatternMatched` or `PatternViolated` over one ordinary nonrepeatable String field, read like a
+  flat leaf through the field's validation-phase String. -/
+  | stringPattern (leaf : CheckedStringPatternLeaf model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -438,6 +442,8 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   -- The value-specified gate answers UNKNOWN for an empty operand before any registry contact, so
   -- neither polarity of the explicit predicate can fire on one.
   | .customFieldValidity _ => false
+  -- An empty operand is never matched, so neither operator fires on an empty instance.
+  | .stringPattern _ => false
   | .fieldFill operator _ => match operator with
       | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => true
       | .allFieldsFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
@@ -464,6 +470,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
         declaration.id == field
   | .customFieldValidity leaf, field => leaf.operand.source == field
   | .fieldFill _ source, field => source.declarations.any (·.id == field)
+  | .stringPattern leaf, field => leaf.condition.referencesField field
 
 /-- Whether a leaf reaches `field` for the rule's error-field gates. The ordered numeric carrier
     and the DateRange overlap leaves own filters, and there a body's unmarked reads do not count
@@ -475,7 +482,8 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
-  | leaf@(.customFieldValidity _), field | leaf@(.fieldFill _ _), field =>
+  | leaf@(.customFieldValidity _), field | leaf@(.fieldFill _ _), field
+  | leaf@(.stringPattern _), field =>
       leaf.referencesField field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. The ordered numeric carrier and the DateRange overlap leaves can own one; scalar leaves cannot manufacture the marker. -/
@@ -486,7 +494,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
-  | .customFieldValidity _ | .fieldFill _ _ => false
+  | .customFieldValidity _ | .fieldFill _ _ | .stringPattern _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
@@ -548,6 +556,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
       source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
+  | .stringPattern leaf => model.admitsOrdinaryStringPatternField leaf.condition.field
 
 
 end ValidationConditionLeaf

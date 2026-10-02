@@ -421,6 +421,12 @@ def referencesField (checked : CheckedStringPatternCondition model compilePatter
 
 end CheckedStringPatternCondition
 
+/-- A checked pattern condition together with the compiler that admitted it, so a validation leaf can
+carry the exact matcher without its leaf family being indexed by a compiler. -/
+structure CheckedStringPatternLeaf (model : FlatModel) where
+  compilePattern : StringPatternCompiler
+  condition : CheckedStringPatternCondition model compilePattern
+
 inductive PreparedStringPatternEvaluationError where
   | preparation (error : DeclaredStringPatternElabError)
   | condition (error : StringPatternConditionElabError)
