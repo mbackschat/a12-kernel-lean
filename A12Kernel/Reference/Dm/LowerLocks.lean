@@ -378,6 +378,24 @@ example :
       (fun (first, second) => (having first).isSome && having first == having second) := by
   native_decide
 
+/- The reader keeps a literal's authored scale, a written trailing zero included, and its sign and
+width, so the equality scale gate `HavingNumberLiteral` locks sees what the measured rows wrote. -/
+example :
+    let literal? (text : String) : Option (SurfaceComparisonOp × Rat × Int) :=
+      match parseText .english text with
+      | .ok parsed =>
+          match lowerHaving parsed.body with
+          | .ok (.compareNumberLiteral op _ literal) => some (op, literal.value, literal.authoredScale)
+          | _ => none
+      | .error _ => none
+    [literal? "[Rows/V] == 1.0" == some (.equal, 1, 1),
+     literal? "[Rows/V] == 1.50" == some (.equal, 3 / 2, 2),
+     literal? "1.5 == [Rows/V]" == some (.equal, 3 / 2, 1),
+     literal? "1.5 > [Rows/V]" == some (.less, 3 / 2, 1),
+     literal? "[Rows/V] > -1" == some (.greater, -1, 0),
+     literal? "[Rows/V] < 1234567890123456" == some (.less, 1234567890123456, 0)].all id := by
+  native_decide
+
 private def rangeModel : FlatModel :=
   let range (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
       FlatFieldDecl :=

@@ -87,6 +87,12 @@ inductive CorrelationElabError where
       String against a Number ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), a
       class the ordering gates never draw. -/
   | equalityFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
+  /-- A field compared with a Number literal by `==` or `!=` that is not a Number. The partner is
+      known to be a Number literal, so the class is the ordinary equality ladder's against a
+      Number literal ([KF270](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)), measured on the
+      filter leaf at the String row
+      ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid)). -/
+  | literalEqualityFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   /-- The reference does not name a String field carrying evaluated values. A raw-mode String
       declaration reaches this arm too, matching every other checked String consumer. -/
   | fieldNotStringValue (path : List String) (actual : SurfaceScalarKind)
@@ -172,13 +178,13 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .wildcardOnRuleGroup | .wildcardWithParentNavigation _ =>
       some .noWildcardsAllowed
   | .equalityScaleMismatch _ _ _ _ | .literalScaleMismatch _ _ _ => some .invalidCompareDecimalPlaces
+  | .literalEqualityFieldNotNumber _ actual => literalComparisonDiagnostic? .number actual
   | .outerLevelUnbound _ unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
   -- Named rather than wildcarded. `stringLeafOutsideStarRoute` and `disjunctionOutsideStarRoute`
   -- are the legacy one-group route's own narrowness — the Kernel accepts both — and
   -- `equalityFieldNotNumber` is both routes' Number fragment's, its class depending on a pair it
-  -- does not carry; the rest are routing, an unmeasured operator gate, or unreachable by
-  -- construction.
+  -- does not carry; the rest are routing or unreachable by construction.
   | .invalidGroupReference _ | .fieldScopeMismatch _ _ _ | .equalityFieldNotNumber _ _
   | .constantLeafBesideIteratedLeaf _ _ _
   | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
@@ -348,7 +354,7 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       let resolved ← (resolvers.number reference.origin reference.field).mapError fun
         | .fieldNotNumber path actual =>
             match coreOp with
-            | .equal | .notEqual => .equalityFieldNotNumber path actual
+            | .equal | .notEqual => .literalEqualityFieldNotNumber path actual
             | _ => .orderingFieldNotNumber path actual .number
         | error => error
       if !coreOp.acceptsLiteralScale resolved.core.field literal then

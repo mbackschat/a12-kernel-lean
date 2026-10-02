@@ -1254,7 +1254,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>
 - [The distinct count's temporal identity is the decoded date on both codegen strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
 <a id="src-having-number-leaf-grid"></a>
-- [A filter's Number field takes every ordinary operator against a literal on either side, under the ordinary literal scale gate on equality alone](sources/having-filter-probes.md#src-having-number-leaf-grid)
+- [A filter's Number field takes every ordinary operator against a literal on either side, under the ordinary literal scale gate on `==` and `!=` alone](sources/having-filter-probes.md#src-having-number-leaf-grid)
 <a id="src-filter-reference-two-levels-above"></a>
 - [Both filter gates read path membership and nothing about depth, and the admitted constant is keyed to the referenced level](sources/having-filter-probes.md#src-filter-reference-two-levels-above)
 <a id="src-filter-reference-level-runtime"></a>

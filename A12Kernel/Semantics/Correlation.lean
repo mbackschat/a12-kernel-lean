@@ -35,16 +35,6 @@ inductive CorrelationComparisonOp where
   | greaterEqual
   deriving Repr, DecidableEq
 
-/-- The operator that states the same comparison with its operands exchanged, so a literal written
-first reads as the literal written second. -/
-def CorrelationComparisonOp.flip : CorrelationComparisonOp → CorrelationComparisonOp
-  | .equal => .equal
-  | .notEqual => .notEqual
-  | .lessThan => .greaterThan
-  | .lessEqual => .greaterEqual
-  | .greaterThan => .lessThan
-  | .greaterEqual => .lessEqual
-
 structure HavingNumberRef where
   origin : HavingOrigin
   field : FlatNumberField

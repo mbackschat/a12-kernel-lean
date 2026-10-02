@@ -68,12 +68,11 @@ private def aggregate (op : NumericAggregateOp) (operand : SurfaceFieldEntityOpe
 private def copy (field : String) : AuthoredNumericExpr SurfaceNumericComputationAtom :=
   .atom (.numeric (.field { base := .relative 0, groups := [], field }))
 
-/-- `[/Rg/Rows/A] > [$A]`, a starred row's `A` against the computing row's own, authored with its
-operands swapped because this correlated surface spells an ordering only as `<`. -/
+/-- `[/Rg/Rows/A] > [$A]`, a starred row's `A` against the computing row's own. -/
 private def greaterThanOwn : SurfaceCorrelatedHaving :=
-  .compareNumbers .less
-    { origin := .outer, field := { base := .relative 0, groups := [], field := "A" } }
+  .compareNumbers .greater
     { origin := .inner, field := { base := .absolute, groups := rowsPath, field := "A" } }
+    { origin := .outer, field := { base := .relative 0, groups := [], field := "A" } }
 
 private def step? (group : GroupPath) (target : String)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :

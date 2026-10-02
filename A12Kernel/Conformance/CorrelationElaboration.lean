@@ -316,6 +316,31 @@ example : havingOf (elaborateSingleCorrelatedRule model items.path
       { origin := .outer, source := .repeatable items.level }) := by
   native_decide
 
+/- `CurrentRepetition` against itself is admitted under every ordering operator, as the
+[filter-leaf grid](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid) measures
+statically for `>` and `>=`; the rows compare by index, which `HavingNumberLiteral` locks. -/
+example :
+    [(SurfaceComparisonOp.greater, CorrelationComparisonOp.greaterThan),
+     (.greaterEqual, .greaterEqual), (.lessEqual, .lessEqual)].all fun (surface, core) =>
+      havingOf (elaborateSingleCorrelatedRule model items.path
+        (absoluteRule (.compareRepetitions surface
+          (ruleGroupRef .inner) (ruleGroupRef .outer)))) ==
+      some (.compareRepetitions core
+        { origin := .inner, source := .repeatable items.level }
+        { origin := .outer, source := .repeatable items.level }) := by
+  native_decide
+
+/- The legacy one-group route takes the Number-literal leaf beside the correlated leaf, under the
+same equality scale gate as the star route. -/
+example :
+    let withLiteral (op : SurfaceComparisonOp) (literal : DecodedNumericLiteral) :=
+      elaborateSingleCorrelatedRule model ["Order"] (absoluteRule (.and (equalCount .inner .outer)
+        (.compareNumberLiteral op (numberRef .inner (absolute items.path "Count")) literal)))
+    (havingOf (withLiteral .less { value := 6, authoredScale := 0 })).isSome &&
+      errorOf (withLiteral .equal { value := 1, authoredScale := 1 }) ==
+        some (.literalScaleMismatch countDecl.path 0 1) := by
+  native_decide
+
 /- A star written on `RuleGroup` reaches the keyword-specific diagnostic before repetition matching. -/
 example : errorOf (elaborateSingleCorrelatedRule model items.path
     (absoluteRule (.compareRepetitions .equal

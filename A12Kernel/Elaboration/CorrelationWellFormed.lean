@@ -14,7 +14,7 @@ def CorrelationComparisonOp.acceptsScales (op : CorrelationComparisonOp)
   | .equal | .notEqual => left.info.scale == right.info.scale
   | .lessThan | .lessEqual | .greaterThan | .greaterEqual => true
 
-/-- The ordinary comparison's literal scale gate: an equality admits a literal only when the field's
+/-- The ordinary comparison's literal scale gate: `==` and `!=` accept a literal only when the field's
     declared scale can hold its authored fraction digits, while ordering is exempt, as measured on
     the filter leaf ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid)). -/
 def CorrelationComparisonOp.acceptsLiteralScale (op : CorrelationComparisonOp)
@@ -49,7 +49,7 @@ def HavingRepetitionRef.availableIn (reference : HavingRepetitionRef) (model : F
   (reference.scope? model).any fun scope =>
     repeatableScopeAvailable scope (reference.origin.availableLevels candidateLevels outerLevels)
 
-/-- Operator-specific static scale law for one filter leaf. Ordering is deliberately exempt. -/
+/-- Operator-specific static scale law for one filter leaf: `==` and `!=` are gated, ordering is exempt. -/
 def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
   | .compareNumbers op left right =>
       op.acceptsScales left.field right.field

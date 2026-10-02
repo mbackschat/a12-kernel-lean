@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.Correlation
 A filter body is the ordinary condition production, so a Number field is compared with a literal by
 the ordinary operator and the ordinary literal scale gate. The
 [filter-leaf grid](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid) admits all
-six operators and a literal on either side, refuses an equality whose literal carries more fraction
+six operators and a literal on either side, refuses `==` and `!=` whose literal carries more fraction
 digits than the field's scale with `MVK_INVALID_COMPARE_DEC_PLACES`, and exempts ordering from that
 gate. The cases below lock that admission and the leaf's truth: an empty field compares as zero, a
 malformed one is unknown on validation and poison on computation.
@@ -48,9 +48,9 @@ private def refusal? (having : SurfaceCorrelatedHaving) : Option CorrelationElab
   | .error error => some error
   | .ok _ => none
 
-/- Every operator is admitted against a literal; an equality literal must fit the field's scale,
-counting a written trailing zero, while ordering is exempt; the refusal projects to the measured
-class. -/
+/- Every operator is admitted against a literal; under `==` and `!=` the literal must fit the field's
+scale, counting a written trailing zero, while every ordering operator is exempt; the refusal
+projects to the measured class. -/
 example :
     [SurfaceComparisonOp.equal, .notEqual, .less, .lessEqual, .greater, .greaterEqual].all
         (fun op => (checked? (leaf op "V" (literal 6))).isOk) &&
@@ -58,7 +58,12 @@ example :
         some (.literalScaleMismatch ["Probe", "Rows", "V"] 0 1) &&
       refusal? (leaf .equal "V" (literal 1 1)) ==
         some (.literalScaleMismatch ["Probe", "Rows", "V"] 0 1) &&
-      (checked? (leaf .less "V" (literal (3 / 2) 1))).isOk &&
+      refusal? (leaf .notEqual "V" (literal (3 / 2) 1)) ==
+        some (.literalScaleMismatch ["Probe", "Rows", "V"] 0 1) &&
+      refusal? (leaf .notEqual "V" (literal 1 1)) ==
+        some (.literalScaleMismatch ["Probe", "Rows", "V"] 0 1) &&
+      [SurfaceComparisonOp.less, .lessEqual, .greater, .greaterEqual].all
+        (fun op => (checked? (leaf op "V" (literal (3 / 2) 1))).isOk) &&
       (checked? (leaf .equal "W" (literal (3 / 2) 1))).isOk &&
       refusal? (leaf .equal "W" (literal (1505 / 1000) 3)) ==
         some (.literalScaleMismatch ["Probe", "Rows", "W"] 2 3) &&
@@ -67,13 +72,14 @@ example :
         some .invalidCompareDecimalPlaces := by
   native_decide
 
-/- A String field ordered against a literal draws the ordering class that reads both sides, as the
-grid measures; an equality claims none. -/
+/- A String field ordered against a literal draws the ordering class that reads both sides, and
+compared by `==` or `!=` the equality ladder's class against a Number literal, as the grid measures. -/
 example :
     ((refusal? (leaf .less "S" (literal 6))).bind CorrelationElabError.diagnostic? ==
         some .invalidTypeForComparison) &&
-      (match refusal? (leaf .equal "S" (literal 6)) with
-        | some (.equalityFieldNotNumber _ _) => true | _ => false) := by
+      [SurfaceComparisonOp.equal, .notEqual].all (fun op =>
+        (refusal? (leaf op "S" (literal 6))).bind CorrelationElabError.diagnostic? ==
+          some .invalidCompareToEnumOrString) := by
   native_decide
 
 private def checkedNumber : RawCell → CheckedCell :=
@@ -108,13 +114,20 @@ example :
         [.fls, .fls, .tru, .unknown], [.fls, .tru, .fls, .unknown], [.fls, .tru, .tru, .unknown]] := by
   native_decide
 
+/- A repetition leaf's ordering operators compare row indices, the left row against the right. -/
+example :
+    [CorrelationComparisonOp.lessEqual, .greaterThan, .greaterEqual].map (fun op =>
+      [(1, 2), (2, 2), (3, 2)].map fun (left, right) => op.holdsRow left right) =
+      [[true, true, false], [false, false, true], [false, true, true]] := by
+  native_decide
+
 /- On the computation arm the malformed cell is poison, not a dropped row, and an empty one still
-compares as zero. -/
+compares as zero, so `< 6` holds on it where a skipped row would not. -/
 example :
     ([1, 2, 4].map fun row =>
-      (CorrelatedHaving.compareNumberLiteral .greaterThan reference (literal 6)).evalComputationIn
+      (CorrelatedHaving.compareNumberLiteral .lessThan reference (literal 6)).evalComputationIn
         context (frame row)) =
-      [.notTrue, .notTrue, .poison .malformed] := by
+      [.holds, .holds, .poison .malformed] := by
   native_decide
 
 end A12Kernel.Conformance.HavingNumberLiteral

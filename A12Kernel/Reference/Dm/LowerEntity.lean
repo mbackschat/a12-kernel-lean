@@ -29,9 +29,9 @@ private def presencePolarity? : String → Option HavingPresencePolarity
   | "FieldNotFilled" => some .notFilled
   | _ => none
 
-/-- A `Having` body (spec §9). Which comparison arm a read takes follows its right side: a quoted
-literal compares a String, `CurrentRepetition` on both sides compares rows, and two field reads
-compare Numbers. -/
+/-- A `Having` body (spec §9). Which comparison arm a read takes follows its operands: a quoted
+literal compares a String, `CurrentRepetition` on both sides compares rows, two field reads compare
+Numbers, and a field beside a Number literal on either side compares the field with that literal. -/
 partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
   | .parens body => lowerHaving body
   | .logic op (first :: rest) => do

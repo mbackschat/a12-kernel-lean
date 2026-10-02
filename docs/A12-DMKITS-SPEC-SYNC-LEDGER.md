@@ -36,15 +36,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 ## Current queue
 
 <a id="spec-2026-10-02-08"></a>
-### `SPEC-2026-10-02-08` — a filter's Number field takes every ordinary operator against a literal on either side, and the literal scale gate binds equality alone
+### `SPEC-2026-10-02-08` — a filter's Number field takes every ordinary operator against a literal on either side, and the literal scale gate binds `==` and `!=` alone
 
 - `status`: pending
 - `origin`: locally originated. `spec/07` §3 listed a Number `!=` as the filter's measured Number comparison; this grid measures the rest of the operator and literal surface.
 - `clause`: [`07`](../spec/07-repetition-and-iteration.md) §3, the bullet that the filter's condition is the ordinary condition production.
-- `delta`: inside `Sum(Rows*/V Having <leaf>)` all six operators are admitted between a Number field and an integer literal, and `6 < [Rows/V]` and `6 == [Rows/V]` with the literal first; on a scale-0 field `== 1.5`, `== 1.0` and `== 1.50` draw `MVK_INVALID_COMPARE_DEC_PLACES` while `< 1.5` is admitted, on a scale-2 field `== 1.505` draws it and `< 1.505` is admitted, and `[Rows/V] == [Rows/W]` across scales 0 and 2 draws it while `>`, `>=` and `<` are admitted; `1 < 2` draws `MVK_INVALID_COMPARE_TO_CONST`, `[Rows/V] == "6"` `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`, `[Rows/S] < 6` `MVK_INVALID_TYPE_FOR_COMPARISON`, and `[Rows/V] + 1 < 6` and `CurrentRepetition(Rows)` against a literal are admitted.
-- `basis`: this project's [checkpoint](SOURCES.md#src-having-number-leaf-grid), 29 `rule check` verdicts at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model, operations and observations retained beside it.
-- `surfaces`: a filter fragment that admits only `==`, `!=` and `<`, that reads a literal only on the right, that applies the scale gate to ordering too or not at all, or that ignores a written trailing zero.
-- `acceptance`: confirm `== 1.0` refused beside `< 1.5` admitted on the scale-0 field, which separates the equality-only gate from a gate on every operator and from a value-based gate, and `6 < [Rows/V]` admitted, or supply a row on which one fails.
+- `delta`: inside `Sum(Rows*/V Having <leaf>)` all six operators are admitted between a Number field and an integer literal, and all six with the literal first; on a scale-0 field `== 1.5`, `== 1.0`, `== 1.50`, `!= 1.5`, `!= 1.0`, `1.5 == [Rows/V]` and `1.5 != [Rows/V]` draw `MVK_INVALID_COMPARE_DEC_PLACES` while `<`, `<=`, `>` and `>=` against `1.5` and `1.5 > [Rows/V]` are admitted, on a scale-2 field `== 1.505` draws it and `< 1.505` is admitted, and `==` and `!=` between `[Rows/V]` and `[Rows/W]` across scales 0 and 2 draw it while `<`, `<=`, `>` and `>=` are admitted; `1 < 2` draws `MVK_INVALID_COMPARE_TO_CONST`, `[Rows/V] == "6"`, `[Rows/S] == 6` and `[Rows/S] != 6` `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`, `[Rows/S] < 6` `MVK_INVALID_TYPE_FOR_COMPARISON`, and `[Rows/V] + 1 < 6` and `CurrentRepetition(Rows)` against a literal are admitted.
+- `basis`: this project's [checkpoint](SOURCES.md#src-having-number-leaf-grid), 29 and 17 `rule check` verdicts in two runs at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model, operations and observations retained beside it.
+- `surfaces`: a filter fragment that admits only `==`, `!=` and `<`, that reads a literal only on the right, that applies the scale gate to ordering too, to `==` alone or not at all, or that ignores a written trailing zero.
+- `acceptance`: confirm `== 1.0` and `!= 1.5` refused beside `<= 1.5` admitted on the scale-0 field, which separates the `==`/`!=` gate from a gate on every operator, on `==` alone and on the value, and `6 < [Rows/V]` admitted, or supply a row on which one fails.
 - `limit`: one model, `en_US`, integer and short fractional literals, nonnegative field scales; a literal whose integer part ends in zeros is not exercised.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
