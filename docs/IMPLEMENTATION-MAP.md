@@ -440,6 +440,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Partial validation](implementation/validation-messages-and-custom.md#cap-partial-validation)
 <a id="cap-fill-group-quantifiers"></a>
 - [Fill/group quantifiers](implementation/validation-messages-and-custom.md#cap-fill-group-quantifiers)
+<a id="cap-rule-negation"></a>
+- [Rule negation and `Non<Operation>` twins](implementation/validation-messages-and-custom.md#cap-rule-negation)
 <a id="cap-presence-contradiction-analyzer"></a>
 - [Presence contradiction analyzer](implementation/validation-messages-and-custom.md#cap-presence-contradiction-analyzer)
 <a id="cap-whole-rule-authoring-and-rendering"></a>

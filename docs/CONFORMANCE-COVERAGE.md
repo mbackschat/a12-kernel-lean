@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-02; HEAD was `f2391d93`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-02; HEAD was `f4d27810`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 590 retained Kernel observation rows through Lean, 1522 of the 1522 rule and computation instances Lean represents match the Kernel and 0 diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
+**Replaying 802 retained Kernel observation rows through Lean, 3412 of the 3412 rule and computation instances Lean represents match the Kernel and 0 diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -67,7 +67,7 @@ Remaining effort per construct, estimated at classification: 14 L, 54 M, 42 S (S
 
 ## Axis R — population replay
 
-The [replay executable](../A12Kernel/ReplayMain.lean) reads each of the 171 retained `kernelProbe` requests with document rows, its DM-JSON model and its documents. It parses every rule condition and computation operation and lowers each onto the checked carriers the theory already has. Each rule and computation is then run and compared with the Kernel's retained artifact.
+The [replay executable](../A12Kernel/ReplayMain.lean) reads each of the 226 retained `kernelProbe` requests with document rows, its DM-JSON model and its documents. It parses every rule condition and computation operation and lowers each onto the checked carriers the theory already has. Each rule and computation is then run and compared with the Kernel's retained artifact.
 
 A rule is compared by the messages it fires: code, pointer and message type. A computation is compared by the Kernel's change projection for its target.
 
@@ -81,13 +81,13 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 979 | 543 |
+| match | 2813 | 599 |
 | tier 1 | 0 | 0 |
-| tier 2 | 302 | 282 |
+| tier 2 | 462 | 226 |
 | unattributed | 0 | 19 |
 | fault | 2 | 0 |
 
-Of the 590 rows, 152 have no matching row in a retained artifact, and 20 could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
+Of the 802 rows, 152 have no matching row in a retained artifact, and 32 could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
 
 ### Tier-2 clusters
 
@@ -95,34 +95,33 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 
 | instances | members | arm | construct |
 |---|---|---|---|
-| 112 | 36 | validation | `Comparison/NumberOfDifferentValues` |
-| 88 | 11 | validation | `Comparison/NumberOfValueInFields` |
-| 56 | 7 | computation | `NumberComputation` |
+| 239 | 75 | validation | `Comparison/NumberOfDifferentValues` |
 | 49 | 29 | computation | `DateComputation` |
 | 42 | 14 | computation | `StringComputation` |
+| 36 | 36 | validation | `Comparison/DifferenceInDays` |
+| 28 | 12 | validation | `Comparison/Sum` |
+| 27 | 5 | validation | `AtLeastOneFieldValueIncludedInValueList` |
 | 24 | 6 | computation | `Guard/Comparison` |
 | 23 | 7 | computation | `TimeComputation` |
 | 21 | 3 | validation | `FieldValuesNotUnique` |
+| 20 | 2 | validation | `PatternMatched` |
+| 20 | 2 | validation | `PatternViolated` |
+| 19 | 8 | row | `Document` |
+| 18 | 4 | validation | `AtLeastOneGroupFilled` |
 | 18 | 8 | computation | `BooleanComputation` |
-| 18 | 18 | validation | `Comparison/DifferenceInDays` |
 | 18 | 8 | computation | `ConfirmComputation` |
-| 16 | 8 | validation | `Comparison/Sum` |
+| 18 | 4 | validation | `NoGroupFilled` |
+| 16 | 8 | validation | `Comparison/MinValue` |
 | 14 | 2 | computation | `FirstFilledValue` |
 | 14 | 8 | computation | `Having` |
 | 10 | 3 | computation | `EnumerationComputation` |
-| 9 | 2 | validation | `AtLeastOneGroupFilled` |
+| 9 | 2 | validation | `Comparison/FirstFilledValue` |
 | 9 | 9 | row | `IO` |
-| 9 | 2 | validation | `NoGroupFilled` |
-| 8 | 4 | validation | `Comparison/MinValue` |
+| 8 | 4 | validation | `Comparison/MaxValue` |
 | 8 | 1 | computation | `NumberOfFilledFields` |
-| 7 | 3 | row | `Document` |
-| 6 | 2 | validation | `Comparison/NumberOfFilledFields` |
-| 5 | 2 | validation | `AllFieldsFilled` |
-| 4 | 2 | validation | `Comparison/MaxValue` |
 | 4 | 3 | computation | `DateTimeComputation` |
 | 4 | 4 | row | `Prepare` |
-| 3 | 1 | validation | `AtLeastOneFieldFilled` |
-| 3 | 1 | validation | `NotAllFieldsFilled` |
+| 2 | 1 | validation | `AllFieldsFilled` |
 | 2 | 1 | computation | `DateRangeComputation` |
 
 ### Tier-1 divergences
@@ -136,7 +135,7 @@ None over this population.
 | Distinct identifiers in the selected diagnostic catalogs and runtime formal-code constants | 495 | 100% |
 | Named in `spec/` or `docs/` prose | 304 | 61% |
 | Named in Lean source under `A12Kernel/` | 472 | 95% |
-| Named in JSON under `evidence/` | 222 | 44% |
+| Named in JSON under `evidence/` | 223 | 45% |
 | Touched by any of the three | 489 | 98% |
 | **Untouched everywhere** | **6** | **1%** |
 
@@ -161,9 +160,9 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 216 | 100% |
-| Citing a Kernel checkpoint or calibration | 127 | 58% |
-| Carrying an explicit evidence-pending note | 54 | 25% |
+| Capability records in [`implementation/`](implementation/) | 217 | 100% |
+| Citing a Kernel checkpoint or calibration | 128 | 58% |
+| Carrying an explicit evidence-pending note | 54 | 24% |
 
 ## Axis 3 — open obligation load
 
@@ -183,8 +182,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 232474 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 11121 | 4% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 233155 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 11470 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
@@ -193,7 +192,7 @@ Tracked Lean files in neither estate: 0. A nonzero value means the ratio above m
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 264 |
+| Retained capture directories under `../evidence/` | 266 |
 | `inputHash` markers in `*-obs.json` and `semantic-observations.json` | 746 |
 
 The marker count excludes other observation formats, including runtime `artifact.json` files with `rows` arrays. It is neither a total observation count nor a count of independent behavioural discriminators.
@@ -285,4 +284,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-10-02T01:48:13+02:00 | `9e94502f` | 489 | 471 | 6 | 126 | 24 |
 | 2026-10-02T14:19:09+02:00 | `04943a90` | 489 | 472 | 6 | 126 | 24 |
 | 2026-10-02T14:19:09+02:00 | `04943a90` | 489 | 472 | 6 | 127 | 24 |
+| 2026-10-02T17:21:08+02:00 | `f4d27810` | 489 | 472 | 6 | 128 | 24 |
 <!-- velocity-history:end -->

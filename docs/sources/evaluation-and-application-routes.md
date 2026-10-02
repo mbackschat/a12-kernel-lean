@@ -513,3 +513,59 @@ Repeatable computation additionally uses `CalculatedFieldIterationLimitCreator`,
 - `limit`: `en_US`, `validateFull` only, one root group of nonrepeatable fields, no repeatable or index carrier. Values reaching the Kernel through display-to-internal conversion are a different entry point and are unmeasured here. The field declaring `leadingZerosAllowed: true` is excluded from the replay: it retains a leading zero that this project's `StoredNumber` cannot represent, so its length reading is unmodelled and recorded as an open row.
 - `bytes`: [`runtime-formal-number-cascade`](../../evidence/kernel-30.8.1/captures/runtime-formal-number-cascade/) — `FormalNum_DM.json` SHA-256 `ce7f4f0592c4d03b43663a0b02b41ba50f038d3633f7effda8298db631562b8e`, `request.json` `7b7630376de54d84a113bd1a602e974ec84de6bfd2912c9f14b19d09bc61ac73`, `artifact.json` `7d9f5a15e4193f0b8b2e3ed6f3616a2f6cebc53fdb38249d5c6fdeec96a7ab40`, `request2.json` `beea844c841742743eba1fb53251a006f7b313c22c24c6f6611d6f8641f38f4b`, `artifact2.json` `e337ccb17303fd4092702ded83e58780c37570742dfa06089ff17370e9197aaa`.
 - `sync`: behavioral and locally originated, outbound as `SPEC-2026-09-07-13`.
+
+<a id="src-negation-pair-grid"></a>
+#### Over ten separating documents no predicate fires together with its complement, and every cell where neither fires is a formally invalid operand, an empty operand, the empty-instance gate, or a guarded pair that is not a negation, measured locally 2026-10-02
+
+- `revision`: one `:adapter:kernelProbe` request at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8` in the pinned measurement checkout, `source.state: CLEAN` in the artifact and `git status --short` empty before and after. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `validateFull`, `enginesAgree: true` on all ten rows.
+- `question`: the [negation consumer](../USE-CASES.md#cross-category-use-case-negation) needs each predicate pair's three regions, where the original fires, where its complement fires and where neither does, on the Kernel rather than on the Lean evaluators alone.
+- `model`: `Neg_DM`, root `/Probe` with Numbers `A`, `B`, `C`, String `S`, Boolean `F`, Confirm `K`, fixed groups `G` (Numbers `X`, `Y`) and `H` (Number `Z`), and repeatable `Rows` (max 2) with Number `R`. Each pair is two rules, `<pair>P` the original and `<pair>N` its complement, with the original's operand as error field.
+- `pairs`: `PRES` is `FieldFilled(A)` against `FieldNotFilled(A)`, and `GPRES` the same over group `G`.
+- `pairs`: `ALLF`, `ONEF`, `COLF`, `MTOF` and `NEOF` are the field quantifiers over `(A, B, C)` against `NotAllFieldsFilled`, `NoFieldFilled`, `(AllFieldsFilled Or NoFieldFilled)`, `NumberOfFilledFields <= 1` and `NumberOfFilledFields == 1`.
+- `pairs`: `ALLG`, `ONEG` and `COLG` are the group quantifiers over `(G, H)` against their complements in the same pattern.
+- `pairs`: `SONE` and `SALL` are `FieldFilled(A) And` a quantifier over `Rows*/R`, against the same guard with the complement quantifier.
+- `pairs`: `GT` and `EQ` compare `[A]` with `5` by `>` against `<=` and by `==` against `!=`; `BOOL` and `CONF` compare `[F]` and `[K]` with `True` by `==` against `!=`.
+- `pairs`: `PAT` is `[S] PatternMatched "[A-Z]+"` against `PatternViolated`, and `VL` `FieldValueIncludedInValueList(S, "AB", "CD")` against its `Not` form.
+- `documents`: `all-filled` fills every field and two rows, `all-empty` places every fixed field without a value, and `blank` places nothing.
+- `documents`: `one-filled` has `A=3`, `S=zz`, `F=false`, `G/X` and one empty row, and `two-filled` has `A=5`, `B=7`, `S=XY`, `G/X`, `H/Z` and one filled row.
+- `documents`: `invalid-alone` has `A`, `G/X` and the row's `R` malformed beside empties and `S="a b"`, and `invalid-one-filled` and `invalid-two-filled` add one and two filled siblings to a malformed `A`.
+- `documents`: `over-limit` has `A=7` and three rows of which only the third is filled, and `rows-none-a` has `A=7` and no rows.
+- `matrix`: each cell is the original then the complement, `v` a VALUE firing, `o` an OMISSION firing, `u` none.
+
+| pair | all-filled | all-empty | blank | one-filled | two-filled | invalid-alone | invalid-one-filled | invalid-two-filled | over-limit | rows-none-a |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `PRES` | `vu` | `uo` | `uo` | `vu` | `vu` | `uu` | `uu` | `uu` | `vu` | `vu` |
+| `ALLF` | `vu` | `uo` | `uo` | `uo` | `uo` | `uo` | `uo` | `uu` | `uo` | `uo` |
+| `ONEF` | `vu` | `uo` | `uo` | `vu` | `vu` | `uu` | `vu` | `vu` | `vu` | `vu` |
+| `COLF` | `uv` | `uo` | `uo` | `ou` | `ou` | `uu` | `ou` | `uu` | `ou` | `ou` |
+| `MTOF` | `vu` | `uo` | `uo` | `uo` | `vu` | `uu` | `uu` | `vu` | `uo` | `uo` |
+| `NEOF` | `vu` | `ou` | `ou` | `uo` | `vu` | `uu` | `uu` | `vu` | `uo` | `uo` |
+| `GPRES` | `vu` | `uo` | `uo` | `vu` | `vu` | `uu` | `vu` | `uu` | `uo` | `uo` |
+| `ALLG` | `vu` | `uo` | `uo` | `uo` | `vu` | `uo` | `uo` | `uu` | `uo` | `uo` |
+| `ONEG` | `vu` | `uo` | `uo` | `vu` | `vu` | `uu` | `vu` | `vu` | `uo` | `uo` |
+| `COLG` | `uv` | `uo` | `uo` | `ou` | `uv` | `uu` | `ou` | `uu` | `uo` | `uo` |
+| `SONE` | `vu` | `uu` | `uu` | `uo` | `vu` | `uu` | `uu` | `uu` | `uo` | `uo` |
+| `SALL` | `vu` | `uu` | `uu` | `uo` | `uo` | `uu` | `uu` | `uu` | `uo` | `uo` |
+| `GT` | `vu` | `uu` | `uu` | `uv` | `uv` | `uu` | `uu` | `uu` | `vu` | `vu` |
+| `EQ` | `uv` | `uu` | `uu` | `uv` | `vu` | `uu` | `uu` | `uu` | `uv` | `uv` |
+| `PAT` | `vu` | `uu` | `uu` | `uv` | `vu` | `uv` | `uu` | `uu` | `uu` | `uu` |
+| `VL` | `vu` | `uu` | `uu` | `uv` | `uv` | `uv` | `uu` | `uu` | `uu` | `uu` |
+| `BOOL` | `vu` | `uu` | `uu` | `uv` | `uu` | `uu` | `uu` | `uu` | `uu` | `uu` |
+| `CONF` | `vu` | `uu` | `uu` | `uo` | `uo` | `uo` | `uo` | `uo` | `uo` | `uo` |
+
+- `outcome`: no cell fires both members. Outside the guarded pairs, every cell where neither fires has one of three causes: a malformed member of the operand, an operand without a value, or the empty-instance gate on `all-empty` and `blank`.
+- `outcome`: `SONE` and `SALL` keep the guard on both sides, so they are a guarded pair and not a negation: De Morgan negates the guard too, and the guarded complement is silent wherever `A` is empty.
+- `outcome`: polarity is per pair, not shared. `AllFieldsFilled` fires VALUE where `NotAllFieldsFilled` fires OMISSION, and `[K] != True` fires OMISSION on every document with content and no `K`, where its original cannot fire at all.
+- `limit`: one document set over flat operands, a fixed group and one repeatable level; the pattern pair is not replayed by Lean, whose only built-in pattern compiler is the ASCII-digits one.
+- `bytes`: [`negation-pair-grid-2026-10-02`](../../evidence/kernel-30.8.1/captures/negation-pair-grid-2026-10-02/) — `Neg_DM.json` SHA-256 `7d3dd20309d6c8ff50c6f081623a4fe4575991b265d2676c8346fbaeface639a`, `request.json` `549285e306344be03f07b37ae7e0074b8a1dacae0e33fd3b69246db0151c0274`, `artifact.json` `8108a7b87f08f8045869a58acaa0d837cf92a659142e27d3f7a237835f0ef53a`, its Kernel message text redacted in place.
+
+<a id="src-negated-corpus"></a>
+#### Every retained corpus rule negated by De Morgan over the complement table never fires together with its original, and the Kernel statically refuses exactly the negations that turn an iteration guard into its complement, measured locally 2026-10-02
+
+- `revision`: 54 `:adapter:kernelProbe` requests at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8` in the pinned measurement checkout, `source.state: CLEAN` in every artifact and `git status --short` empty before and after. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, each request's own validation observations, `enginesAgree: true` on all 202 rows.
+- `method`: every rule of the 56 loadable models the retained `kernelProbe` requests name was parsed, negated with [`negateText`](../../A12Kernel/Reference/Dm/Negate.lean) and printed with [`printText`](../../A12Kernel/Reference/Dm/Print.lean) in the model's language. Of 346 rules, 342 negate and four refuse, all `FieldValuesNotUnique`, which has no complement. Each request was copied with its documents, its rules replaced by their negations, and a refused rule dropped.
+- `static`: the Kernel refused 45 negated rules in 13 requests as inconsistent, every one with `MVK_NEG_CONDITION_IN_ITERATION`; they were dropped and those requests rerun. Of the 28 whose original request retains an artifact, Lean refuses 23 with `negativeConditionInIteration` and five earlier, at a carrier it does not represent; it admits none.
+- `outcome`: over the 1519 rule-row pairs where the Kernel observed both the original and its negation, none fires both, 1338 fire exactly one, and 181 fire neither.
+- `outcome`: the population replay of the negated requests gives 1391 matches, no divergence and 255 refusals, and negation never changes Lean's coverage: every rule-row whose original matches has a negation that matches, and every refused original has a refused negation.
+- `limit`: the corpus is this project's own probe models, so it covers the predicates they exercise rather than the language; the 181 silent pairs are not classified individually.
+- `bytes`: [`negated-corpus-2026-10-02`](../../evidence/kernel-30.8.1/captures/negated-corpus-2026-10-02/), 297 files in 54 request directories; SHA-256 `baed83876f9c4042c33d521fda446ed647b80f1b40bd24c68754f953a33f6478` over the `shasum -a 256` listing of its files in C-locale path order, its Kernel message text redacted in place.
