@@ -725,6 +725,8 @@ def elaborateCompleteNumericComputationOperation
       model.checkNumericCopyComparison checkedDeclaringGroup.val targetField expression
       let (target, targetGroup) ← model.resolveNumericComputationTarget targetField
       model.checkNumericOperationNodes checkedDeclaringGroup.val targetGroup expression
+      -- The node walk already elaborated every atom by this same function, a field through the same
+      -- declaration read, so this pass refuses nothing new and only rebuilds the checked tree.
       let resolved ← model.resolveNumericComputationAtoms checkedDeclaringGroup.val
         targetGroup expression
       if !resolved.isAdmittedResolvedNumericOperation then
