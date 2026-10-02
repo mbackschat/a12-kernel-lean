@@ -117,15 +117,15 @@ theorem checkedConstructedDateNowExtractor_read
   simp [CheckedConstructedDateStringField.classify, parsed]
   rfl
 
-/-- A reached `yyyy`-declared temporal field contributes the year parsed from its retained stored text; it does not silently become the `YearFromDate` projection. The hypothesis constrains the observed **payload**, not the declaration, so this covers every date-bearing declared kind the gate admits. -/
+/-- A reached `yyyy`-declared temporal field contributes the year parsed from its retained stored text; it does not silently become the `YearFromDate` projection. The hypothesis is the formal check's own format-family test on the observed **payload**, not the declaration, so this covers every declared kind the gate admits. -/
 @[simp] theorem checkedConstructedDateYear_classify_value
     (checked : CheckedConstructedDateYearField model)
     (value : TemporalValue) (text : String) (amount : Nat)
-    (dateKind : value.kind = .date)
+    (holds : checked.source.holdsValue value = true)
     (parsed : parseAsciiNatural? text = some amount) :
     checked.classify (.value (.temporal value)) (some text) =
       .ok (.value amount) := by
-  simp [CheckedConstructedDateYearField.classify, dateKind, parsed]
+  simp [CheckedConstructedDateYearField.classify, holds, parsed]
   rfl
 
 /-- Direct temporal extraction preserves the distinction between an empty operand and one unavailable for an exact formal cause. -/

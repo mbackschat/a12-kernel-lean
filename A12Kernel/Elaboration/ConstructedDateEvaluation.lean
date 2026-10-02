@@ -99,7 +99,8 @@ def classify (checked : CheckedConstructedDateYearField model)
   | .empty => pure .empty
   | .unknown cause | .poison cause => pure (.unavailable cause)
   | .value (.temporal value) =>
-      if value.kind != .date then
+      -- The formal check's own format-family test, not the declared kind (LF203).
+      if !checked.source.holdsValue value then
         throw (.payloadKind checked.source.id)
       else
         match stored with

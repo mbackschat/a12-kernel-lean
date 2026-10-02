@@ -114,6 +114,7 @@ structure CheckedValueAsDateSource (model : FlatModel) where
   source : CheckedTemporalTargetPolicy model
   endpoint : ValueAsDateEndpoint
   format : FullDateTargetFormat
+  /-- The admission's own kind rule; `elaborateValueAsDateSourceIn` states why it reads the kind. -/
   sourceIsDate : source.target.kind = .date
   sourceIsPartial : source.policy.partialMode ≠ .full
   formatMatches :
@@ -200,6 +201,9 @@ def elaborateValueAsDateSourceIn
   let source ←
     elaborateTemporalTargetPolicyIn model scope sourceField
       |>.mapError .sourcePolicy
+  -- The admission's own kind rule rather than a re-check of the formal one (LF203): the Kernel's
+  -- model types declare a date precision on a DATE declaration only (source read of its model
+  -- facade), and no measurement admits another kind here, so any other kind is refused.
   if hKind : source.target.kind = .date then
     if hMode : source.policy.partialMode ≠ .full then
       match hFormat :
