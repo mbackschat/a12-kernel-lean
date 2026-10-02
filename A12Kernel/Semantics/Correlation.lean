@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Iteration
+import A12Kernel.Semantics.NumericLiteral
 
 /-! # A12Kernel.Semantics.Correlation — captured outer `$` inside Having
 
@@ -22,12 +23,27 @@ inductive HavingOrigin where
 def Env.uniqueRowAt? (env : Env) (level : RepeatableLevel) : Option RowIndex :=
   (env.bindingAt level).toOption
 
-/-- The comparison subset needed to separate inner/outer routing and self-exclusion. -/
+/-- A filter leaf's comparison operator. A filter body is the ordinary condition production, so all
+six ordinary operators are admitted on its Number and repetition leaves
+([checkpoint](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid)). -/
 inductive CorrelationComparisonOp where
   | equal
   | notEqual
   | lessThan
+  | lessEqual
+  | greaterThan
+  | greaterEqual
   deriving Repr, DecidableEq
+
+/-- The operator that states the same comparison with its operands exchanged, so a literal written
+first reads as the literal written second. -/
+def CorrelationComparisonOp.flip : CorrelationComparisonOp → CorrelationComparisonOp
+  | .equal => .equal
+  | .notEqual => .notEqual
+  | .lessThan => .greaterThan
+  | .lessEqual => .greaterEqual
+  | .greaterThan => .lessThan
+  | .greaterEqual => .lessEqual
 
 structure HavingNumberRef where
   origin : HavingOrigin
@@ -111,6 +127,10 @@ inductive CorrelatedHavingLeaf where
       (left right : HavingNumberRef)
   | compareRepetitions (op : CorrelationComparisonOp)
       (left right : HavingRepetitionRef)
+  /-- A Number field against a literal, the literal written second. Only the field is read; the
+      literal's scale is a static gate the elaborator owns. -/
+  | compareNumberLiteral (op : CorrelationComparisonOp) (reference : HavingNumberRef)
+      (literal : DecodedNumericLiteral)
   /-- A String field against a literal. The operator is an `EqualityOp` rather than the wider
       comparison type because the kernel refuses a String field in a numeric ordering comparison,
       so the exclusion is carried by this type instead of by a runtime check. -/
@@ -135,6 +155,10 @@ def compareRepetitions (op : CorrelationComparisonOp)
     (left right : HavingRepetitionRef) : CorrelatedHaving :=
   .leaf (.compareRepetitions op left right)
 
+def compareNumberLiteral (op : CorrelationComparisonOp) (reference : HavingNumberRef)
+    (literal : DecodedNumericLiteral) : CorrelatedHaving :=
+  .leaf (.compareNumberLiteral op reference literal)
+
 def compareStringLiteral (op : EqualityOp) (reference : HavingStringRef)
     (expected : String) : CorrelatedHaving :=
   .leaf (.compareStringLiteral op reference expected)
@@ -148,6 +172,7 @@ def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.compareNumbers _ left right) =>
       [left.field.id, right.field.id].eraseDups
   | .leaf (.compareRepetitions _ _ _) => []
+  | .leaf (.compareNumberLiteral _ reference _) => [reference.field.id]
   | .leaf (.compareStringLiteral _ reference _) => [reference.field.id]
   | .leaf (.presence _ reference) => [reference.field]
   | .and left right | .or left right =>
@@ -163,6 +188,8 @@ def markedFieldIds : CorrelatedHaving → List FieldId
   | .leaf (.compareNumbers _ left right) =>
       ([left, right].filter (·.origin == .outer)).map (·.field.id) |>.eraseDups
   | .leaf (.compareRepetitions _ _ _) => []
+  | .leaf (.compareNumberLiteral _ reference _) =>
+      if reference.origin == .outer then [reference.field.id] else []
   | .leaf (.compareStringLiteral _ reference _) =>
       if reference.origin == .outer then [reference.field.id] else []
   | .leaf (.presence _ reference) =>
@@ -186,12 +213,14 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
 private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .compareNumbers _ left right => left.origin.isInner || right.origin.isInner
   | .compareRepetitions _ left right => left.origin.isInner || right.origin.isInner
+  | .compareNumberLiteral _ reference _ => reference.origin.isInner
   | .compareStringLiteral _ reference _ => reference.origin.isInner
   | .presence _ reference => reference.origin.isInner
 
 private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .compareNumbers _ left right => left.origin.isOuter || right.origin.isOuter
   | .compareRepetitions _ left right => left.origin.isOuter || right.origin.isOuter
+  | .compareNumberLiteral _ reference _ => reference.origin.isOuter
   | .compareStringLiteral _ reference _ => reference.origin.isOuter
   | .presence _ reference => reference.origin.isOuter
 
@@ -348,12 +377,19 @@ def HavingNumberRef.resolve (reference : HavingNumberRef)
     CorrelatedNumberOperand :=
   reference.resolveIn context.asCorrelationContext (frame.toCorrelationFrame context)
 
+/-- The ordinary Number comparison operator a filter leaf's operator is. -/
+def CorrelationComparisonOp.toNumeric : CorrelationComparisonOp → NumericComparisonOp
+  | .equal => .equal
+  | .notEqual => .notEqual
+  | .lessThan => .less
+  | .lessEqual => .lessEqual
+  | .greaterThan => .greater
+  | .greaterEqual => .greaterEqual
+
+/-- A filter Number comparison holds exactly as the ordinary comparison does. -/
 def CorrelationComparisonOp.holdsRat (op : CorrelationComparisonOp)
     (left right : Rat) : Bool :=
-  match op with
-  | .equal => NumericComparisonOp.equal.holds left right
-  | .notEqual => NumericComparisonOp.notEqual.holds left right
-  | .lessThan => NumericComparisonOp.less.holds left right
+  op.toNumeric.holds left right
 
 def CorrelationComparisonOp.holdsRow (op : CorrelationComparisonOp)
     (left right : RowIndex) : Bool :=
@@ -361,6 +397,9 @@ def CorrelationComparisonOp.holdsRow (op : CorrelationComparisonOp)
   | .equal => left == right
   | .notEqual => left != right
   | .lessThan => left < right
+  | .lessEqual => left ≤ right
+  | .greaterThan => right < left
+  | .greaterEqual => right ≤ left
 
 def CorrelationComparisonOp.evalOperands (op : CorrelationComparisonOp)
     (left right : CorrelatedNumberOperand) : K :=
@@ -380,6 +419,8 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
       op.evalOperands (left.resolveIn context frame) (right.resolveIn context frame)
   | .compareRepetitions op left right =>
       op.evalRows (frame.rowAt? left) (frame.rowAt? right)
+  | .compareNumberLiteral op reference literal =>
+      op.evalOperands (reference.resolveIn context frame) (.value literal.value)
   | .compareStringLiteral op reference expected =>
       CorrelatedHavingLeaf.verdictTruth
         ((reference.resolveInAt .validation context frame).evalDirectString op expected)
@@ -404,6 +445,9 @@ def CorrelatedHavingLeaf.evalTruthInResolving
       pure (op.evalRows
         (some (← frame.rowAtResolving context left))
         (some (← frame.rowAtResolving context right)))
+  | .compareNumberLiteral op reference literal => do
+      pure (op.evalOperands
+        (← reference.resolveInAtResolving .validation context frame) (.value literal.value))
   | .compareStringLiteral op reference expected => do
       pure (CorrelatedHavingLeaf.verdictTruth
         ((← reference.resolveInAtResolving .validation context frame).evalDirectString
@@ -440,6 +484,10 @@ def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
           | none => .notTrue
           | some rightRow =>
               if op.holdsRow leftRow rightRow then .holds else .notTrue
+  | .compareNumberLiteral op reference literal =>
+      match reference.resolveInAt .computation context frame with
+      | .unknown cause => .poison cause
+      | .value value => if op.holdsRat value literal.value then .holds else .notTrue
   | .compareStringLiteral op reference expected =>
       match reference.resolveInAt .computation context frame with
       | .unknown cause => .poison cause
@@ -480,6 +528,10 @@ def CorrelatedHavingLeaf.evalComputationInResolving
       let leftRow ← frame.rowAtResolving context left
       let rightRow ← frame.rowAtResolving context right
       pure (if op.holdsRow leftRow rightRow then .holds else .notTrue)
+  | .compareNumberLiteral op reference literal => do
+      match ← reference.resolveInAtResolving .computation context frame with
+      | .unknown cause => pure (.poison cause)
+      | .value value => pure (if op.holdsRat value literal.value then .holds else .notTrue)
   | .compareStringLiteral op reference expected => do
       match ← reference.resolveInAtResolving .computation context frame with
       | .unknown cause => pure (.poison cause)
@@ -628,6 +680,9 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
         frame.rowAt? left = some leftRow ∧
         frame.rowAt? right = some rightRow ∧
         op.holdsRow leftRow rightRow = true
+  | .compareNumberLiteral op reference literal =>
+      ∃ value, reference.resolveIn context frame = .value value ∧
+        op.holdsRat value literal.value = true
   | .compareStringLiteral op reference expected =>
       ∃ messagePolarity,
         (reference.resolveInAt .validation context frame).evalDirectString op expected

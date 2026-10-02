@@ -1,0 +1,147 @@
+[
+ {
+  "id": "ctl",
+  "verb": "rule",
+  "args": ["check", "--code", "ctl", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "lt",
+  "verb": "rule",
+  "args": ["check", "--code", "lt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] < 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "gt",
+  "verb": "rule",
+  "args": ["check", "--code", "gt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] > 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "le",
+  "verb": "rule",
+  "args": ["check", "--code", "le", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] <= 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "ge",
+  "verb": "rule",
+  "args": ["check", "--code", "ge", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] >= 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "eq",
+  "verb": "rule",
+  "args": ["check", "--code", "eq", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] == 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "ne",
+  "verb": "rule",
+  "args": ["check", "--code", "ne", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] != 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "litleft",
+  "verb": "rule",
+  "args": ["check", "--code", "litleft", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having 6 < [Rows/V]) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "litlefteq",
+  "verb": "rule",
+  "args": ["check", "--code", "litlefteq", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having 6 == [Rows/V]) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "frac0eq",
+  "verb": "rule",
+  "args": ["check", "--code", "frac0eq", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] == 1.5) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "frac0lt",
+  "verb": "rule",
+  "args": ["check", "--code", "frac0lt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] < 1.5) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "frac2eq",
+  "verb": "rule",
+  "args": ["check", "--code", "frac2eq", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/W] == 1.5) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "frac3eq",
+  "verb": "rule",
+  "args": ["check", "--code", "frac3eq", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/W] == 1.505) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "frac3lt",
+  "verb": "rule",
+  "args": ["check", "--code", "frac3lt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/W] < 1.505) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "trail",
+  "verb": "rule",
+  "args": ["check", "--code", "trail", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] == 1.0) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "neg",
+  "verb": "rule",
+  "args": ["check", "--code", "neg", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] > -1) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "ffgt",
+  "verb": "rule",
+  "args": ["check", "--code", "ffgt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] > [Rows/W]) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "ffge",
+  "verb": "rule",
+  "args": ["check", "--code", "ffge", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] >= [Rows/W]) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "ffeq",
+  "verb": "rule",
+  "args": ["check", "--code", "ffeq", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] == [Rows/W]) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "fflt",
+  "verb": "rule",
+  "args": ["check", "--code", "fflt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] < [Rows/W]) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "replit",
+  "verb": "rule",
+  "args": ["check", "--code", "replit", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) > 2) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "repge",
+  "verb": "rule",
+  "args": ["check", "--code", "repge", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) >= CurrentRepetition(Rows)) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "repgt",
+  "verb": "rule",
+  "args": ["check", "--code", "repgt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) > CurrentRepetition(Rows)) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "strnum",
+  "verb": "rule",
+  "args": ["check", "--code", "strnum", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/S] < 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "numstr",
+  "verb": "rule",
+  "args": ["check", "--code", "numstr", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] == \"6\") == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "arith",
+  "verb": "rule",
+  "args": ["check", "--code", "arith", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] + 1 < 6) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "bigint",
+  "verb": "rule",
+  "args": ["check", "--code", "bigint", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] < 1234567890123456) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "eqfrac2on0",
+  "verb": "rule",
+  "args": ["check", "--code", "eqfrac2on0", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having [Rows/V] == 1.50) == 1", "--message", "en_US=probe"]
+ },
+ {
+  "id": "litlitlt",
+  "verb": "rule",
+  "args": ["check", "--code", "litlitlt", "--field", "/Probe/Err", "--condition", "FieldFilled(Err) And Sum(Rows*/V Having 1 < 2) == 1", "--message", "en_US=probe"]
+ }
+]

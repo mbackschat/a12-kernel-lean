@@ -59,6 +59,10 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
               pure (.compareNumbers surfaceOp { origin := leftOrigin, field := leftField }
                 { origin := rightOrigin, field := rightField })
           | _, _ => refuse "Having" "field comparison"
+      | .value { path, index := none, category := none }, .number text =>
+          numberLiteral surfaceOp path text
+      | .number text, .value { path, index := none, category := none } =>
+          numberLiteral (flip surfaceOp) path text
       | .call "CurrentRepetition" [.mk (.entity { path := leftPath, index := none, category := none })
             none none] none none,
           .call "CurrentRepetition" [.mk (.entity { path := rightPath, index := none, category := none })
@@ -70,6 +74,21 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
           | _, _ => refuse "Having" "CurrentRepetition"
       | _, _ => refuse "Having" "comparison shape"
   | other => refuse "Having" other.construct
+where
+  /-- A field compared with a Number literal; a literal written first is the same comparison with
+  its operator flipped. -/
+  numberLiteral (op : SurfaceComparisonOp) (path : Path) (text : String) :
+      Lowering SurfaceCorrelatedHaving :=
+    match path.havingField?, decodeNumber? text with
+    | some (origin, field), some literal => pure (.compareNumberLiteral op { origin, field } literal)
+    | _, _ => refuse "Having" "Number literal comparison"
+  flip : SurfaceComparisonOp → SurfaceComparisonOp
+    | .equal => .equal
+    | .notEqual => .notEqual
+    | .less => .greater
+    | .lessEqual => .greaterEqual
+    | .greater => .less
+    | .greaterEqual => .lessEqual
 
 /-- Whether an unstarred path names a field of the model, read at the operator's group. -/
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=

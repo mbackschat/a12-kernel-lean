@@ -383,11 +383,11 @@ example : (elaborateSingleCorrelatedRule model ["Order"]
     (absoluteRule (mismatched .less))).isOk = true := by
   native_decide
 
-example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
-    (absoluteRule (.compareNumbers .greater
-      (numberRef .inner (absolute items.path "Count"))
-      (numberRef .outer (absolute items.path "Count"))))) =
-    some (.unsupportedOperator .greater) := by
+/- Every ordering operator is scale-exempt between two fields of different scales, as the
+[filter-leaf grid](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid) measures `>`,
+`>=` and `<` on a scale-0 and a scale-2 field. -/
+example : [SurfaceComparisonOp.lessEqual, .greater, .greaterEqual].all (fun op =>
+    (elaborateSingleCorrelatedRule model ["Order"] (absoluteRule (mismatched op))).isOk) = true := by
   native_decide
 
 example : errorOf (elaborateSingleCorrelatedRule model ["Order"]

@@ -365,6 +365,19 @@ example :
        (lowered ["Xf"] "CheckedYear" "FirstFilledValue(Y1, Y2)")].all id := by
   native_decide
 
+/- A filter's Number literal written first is the same comparison with its operator flipped, so the
+reader lowers `6 < [Rows/V]` to the leaf it lowers `[Rows/V] > 6` to, for every operator. -/
+example :
+    let having (text : String) : Option SurfaceCorrelatedHaving :=
+      match parseText .english text with
+      | .ok parsed => (lowerHaving parsed.body).toOption
+      | .error _ => none
+    [("6 < [Rows/V]", "[Rows/V] > 6"), ("6 <= [Rows/V]", "[Rows/V] >= 6"),
+     ("6 > [Rows/V]", "[Rows/V] < 6"), ("6 >= [Rows/V]", "[Rows/V] <= 6"),
+     ("6 == [Rows/V]", "[Rows/V] == 6"), ("6 != [Rows/V]", "[Rows/V] != 6")].all
+      (fun (first, second) => (having first).isSome && having first == having second) := by
+  native_decide
+
 private def rangeModel : FlatModel :=
   let range (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
       FlatFieldDecl :=

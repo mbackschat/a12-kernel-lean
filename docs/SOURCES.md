@@ -243,45 +243,25 @@ The letter is the peer's `-2026-10-02`, delivered by its session and frozen at S
 
 ### Inbound 2026-10-01a handback
 
+Deleted from this hub; the records' full text is `docs/SOURCES.md` at `cdb479d937968be6e4a839191fe6cd9dd7c86fbd`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+
 <a id="inbound-2026-10-01a-provenance"></a>
-#### Reviewed 2026-10-01a handback — the group argument's event order holds on the peer's own models in both condition languages, a parent walk is checked before the names after it, and a reserved dotted suffix splits by whether it may end a name
-
-a12-dmkits `main` at `98525518a68615d229c5652a5ca232b4fd95b2a6`, read on 2026-10-01, with `5c295eb54` and `2af2d0f03` its first two commits after `c785a4b6f`. The letter is the peer's `-2026-10-01a`, delivered by the user with SHA-256 `43d23c2cfee9eb34aa2bb1949f633dd3e4195433b964507feefbe20a4c079a20`; it answers this project's 2026-10-01 reply against `bb10b630`. Its §3 reports the peer's host, demo, mutation and performance verification and is recorded as no claim. The retained resources named below were read at `98525518a` and replayed here: every one of their 513 model byte strings reproduces its recorded SHA-256.
-
+- Reviewed 2026-10-01a handback — the group argument's event order holds on the peer's own models in both condition languages, a parent walk is checked before the names after it, and a reserved dotted suffix splits by whether it may end a name
 <a id="inbound-2026-10-01a-event-order"></a>
-**Claim.** Its §1 (`MessageGroupEventAgreementTest.groupArgumentsFollowGrammarDecisionsAndReachedFaults` at `5c295eb54`, resource `message-group-events.json`, with the peer's `kf214`) runs 284 typed Library models, 142 per condition language with ten plain-message controls, through the Kernel's consistency check. Its rows confirm every delta row of [`SPEC-2026-10-01-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01), which is accepted on them, and they answer that entry's German `limit`: `RegelKontext`, `LfdNr`, `Fuer`, `Referenzjahr` and `Wert` take the roles of `RuleGroup`, `RootGroup`, `For`, `BaseYear` and `value`, so `$#RegelKontext/Loans$` from the root draws `RULEGROUP_IMMEDIATELY_BELOW_ROOT`, `$#LfdNr/Loans$` `INVALID_GROUP` and `$#LfdNr-x$` `MVK_UNEXPECTED_TOKEN`. A keyed `For` argument stays unmeasured.
-
+- Reviewed 2026-10-01a event-order grid — the peer's typed models in both condition languages confirm every delta row of [`SPEC-2026-10-01-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01)
 <a id="inbound-2026-10-01a-parent-walk-and-dotted-names"></a>
-Its §2 adds two grids. The parent grid (`MessageGroupParentBoundaryAgreementTest.parentActionsPrecedeOnlyTheTokensTheyActuallyPrecede` at `2af2d0f03`, resource `message-group-parent-boundaries.json`) crosses both languages, a rule declared at the root, one level below it or two, one to three up-steps and six following forms. A walk's depth check answers before the names after it: from the root `$#../RuleGroup$` draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, and from `/Library/RootGroup/Archive` `$#../..RuleGroup$` draws `MVK_UNEXPECTED_TOKEN` while `$#../../RuleGroup$` draws the above-root class, the walk reaching the root exactly in both. The core grid adds that from `Loans` `$#..Wrong/$`, `$#..Wrong//%$` and `$#..Wrong/%$` draw `INVALID_ENTITY` and `$#../../Loans//%$` the above-root class, and that a `%` right after an up-step draws `MVK_LEXER_STANDARD_ERROR` at every depth.
-
-The dotted grid (`MessageGroupDottedBoundaryAgreementTest.reservedDottedSuffixesRetainMeasuredSilence` at `98525518a`, resource `message-group-dotted-boundaries.json`) puts each language's ten terminals after `Loans.`: the words that may end a dotted name, `RootGroup`/`LfdNr`, `Zeile`, `Usb` and `index`, draw `INVALID_GROUP`, the others `MVK_UNEXPECTED_TOKEN`, and every quoted suffix `INVALID_GROUP`. The peer's portable checker declines the ten unquoted reserved suffixes; its Kernel column is the one taken here.
-
-**Classification.** Behavioral and inbound from a committed, reviewed revision, so no outbound entry follows for these rows. They extend [`spec/11`](../spec/11-messages-and-custom.md)'s group-position clauses. This project's [walk and dotted-name grid](sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names) then measured the shapes these rows leave open, outbound as [`SPEC-2026-10-01-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-02).
-
-**Lean.** Corrected and locked. Replayed through [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean) on each model, with the Kernel's English and German terminal bundles, the earlier decoder disagreed on 54 of the 513 rows, all of them group arguments: it checked a parent walk only after the whole path parsed, and read a dot as a token after the name. [`MessageGroupArgument`](../A12Kernel/Elaboration/MessageGroupArgument.lean) now ends the walk where the parser decides, defers a later fault to the walk's check, and joins a dotted continuation into its segment, and the [decoder locks](../A12Kernel/Conformance/MessageGroupArgument.lean) carry the German keyword set.
-
-A 55th row, the name position's `$Book$` with two `Book` fields, differed only because the replay's first fixture left out the models' short-name flag; with it Lean resolves the ambiguity, and once the projection took the name position's classes ([checkpoint](sources/message-and-pointer-probes.md#src-message-name-position-refusals)) all 513 rows agree through `namedRuleDiagnostic?` itself.
+- Reviewed 2026-10-01a parent and dotted grids — a parent walk's depth check answers before the names after it, and a reserved dotted suffix that may end a name draws `INVALID_GROUP` while the others draw `MVK_UNEXPECTED_TOKEN`
 
 ### Inbound 2026-10-01 handback
 
+Deleted from this hub; the records' full text is `docs/SOURCES.md` at `cdb479d937968be6e4a839191fe6cd9dd7c86fbd`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
+
 <a id="inbound-2026-10-01-provenance"></a>
-#### Reviewed 2026-10-01 handback — the group argument's availability, fallback and refusal layers hold on the peer's own model, a keyword followed by a token is still the keyword, and an absent key makes a mixed product zero in either operand order
-
-a12-dmkits `main` at `c785a4b6fa6ccfde4458ae2432dd951c992d6a1d`, read on 2026-10-01, with `2743a7aab` its parent. The letter is the peer's `-2026-10-01`, delivered by the user with SHA-256 `6a6ef916712aa30a3e197c982a3b964bab8a72fa9e499e93f1cd5653a73cd94b`; it replaces its `-2026-09-30a` letter as the current handback and answers this project's 2026-09-30 reply. The locks named below were read at that revision, not run here. Its §3 reports the peer's checker, mutation, performance and delivery verification and is recorded as no claim.
-
+- Reviewed 2026-10-01 handback — the group argument's availability, fallback and refusal layers hold on the peer's own model, a keyword followed by a token is still the keyword, and an absent key makes a mixed product zero in either operand order
 <a id="inbound-2026-10-01-group-arguments"></a>
-**Claim.** Its §1 (`MessageGroupArgumentAgreementTest.groupArgumentsPreserveMeasuredClassesAndExplicitSilence` at `c785a4b6f`, with the peer's `kf214`) runs 77 rule messages through the Kernel's consistency check on an independently typed Library model with fixed `Loans/Details` and `Returns` groups, each condition and model beside a plain-message control. Its rows confirm every delta row of [`SPEC-2026-09-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01), which is accepted on them.
-
-Its review controls add rows this project did not hold, all in [`spec/11`](../spec/11-messages-and-custom.md)'s group-position clauses. A `,`, `{`, `}`, `@`, `=` or `^` after a known or an unknown name draws `MVK_LEXER_STANDARD_ERROR`. From `Loans` reading `../Returns/Borrower`, `$#..Wrong/Missing$` draws `INVALID_ENTITY` and `$#..Library/Missing$` `INVALID_GROUP`, so the turning point is checked before the child below it. `$#..Library/..$`, `$#/..$` and `$#/../Loans$` draw `MVK_UNEXPECTED_TOKEN`.
-
-The keyword rows answer this project's [argument-layer](sources/message-and-pointer-probes.md#src-message-group-argument-layers) limit on a keyword followed by a token. From a root-declared rule `$#RuleGroup/Loans$` and `$#RuleGroup-x$` draw `RULEGROUP_IMMEDIATELY_BELOW_ROOT`; from `Loans`, `$#RuleGroup/Details$` and `$#RuleGroup-x$` draw `MVK_UNEXPECTED_TOKEN`. `$#RootGroup-x$` draws `MVK_UNEXPECTED_TOKEN` and `$#RootGroup/Loans$` `INVALID_GROUP`. The peer's checker declines these six rows. This project's [argument-event grid](sources/message-and-pointer-probes.md#src-message-group-argument-events) then named the mechanism behind them and measured it on retired terminals, a group named `RootGroup` and the fault order, outbound as [`SPEC-2026-10-01-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01).
-
-**Classification.** Behavioral and inbound from a committed, reviewed revision, so no outbound entry follows. The keyword rows narrow `spec/11`'s sentence that the terminal match is on the raw argument.
-
-**Lean.** Corrected and locked. [`ValidationMessageAuthoring`](../A12Kernel/Elaboration/ValidationMessageAuthoring.lean) matched a group keyword only as the whole argument and asked a trailing token before availability, so five of the six keyword rows drew the group class. Its group argument is now decoded by [`MessageGroupArgument`](../A12Kernel/Elaboration/MessageGroupArgument.lean) in the parser's event order that the argument-event grid measures, and the [decoder locks](../A12Kernel/Conformance/MessageGroupArgument.lean) and [template locks](../A12Kernel/Conformance/MessageGroupPosition.lean) carry the six keyword rows and that grid's. The punctuation, turning-point and up-step rows already agreed with Lean when replayed on this project's fixture.
-
+- Reviewed 2026-10-01 group-argument grid — the peer's Library model confirms every delta row of [`SPEC-2026-09-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01), and a group keyword followed by a token is still the keyword
 <a id="inbound-2026-10-01-mixed-absent-product"></a>
-Its §2 (`AbsentKeyedProductDiffTest.anAbsentKeyMakesTheMixedProductZeroInEitherOperandOrder` at `2743a7aab`, with the peer's `kf475`) answers this project's provenance request on the [keyed products](#inbound-2026-09-30a-keyed-products). On a parcel model with `P1` weights 2 and 5 and no `P3` row, `SumOfProducts` of `P1` against `P3` and of `P3` against `P1` compared with 0 each fire one omission at the root guard on both Kernel strategies, while the comparison with 1 stays silent. The rows are [`spec/07`](../spec/07-repetition-and-iteration.md)'s `SumOfProducts` evaluation paragraph, and they have no Lean carrier, as [SG29](gaps/paths-and-groups.md#gap-sg29) records.
+- Reviewed 2026-10-01 mixed-product handback — an absent key makes the mixed product zero in either operand order
 
 ### Inbound 2026-09-30a handback
 
@@ -1271,6 +1251,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The distinct count folds a component-omitting date at its declared precision](sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>
 - [The distinct count's temporal identity is the decoded date on both codegen strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
+<a id="src-having-number-leaf-grid"></a>
+- [A filter's Number field takes every ordinary operator against a literal on either side, under the ordinary literal scale gate on equality alone](sources/having-filter-probes.md#src-having-number-leaf-grid)
 <a id="src-filter-reference-two-levels-above"></a>
 - [Both filter gates read path membership and nothing about depth, and the admitted constant is keyed to the referenced level](sources/having-filter-probes.md#src-filter-reference-two-levels-above)
 <a id="src-filter-reference-level-runtime"></a>

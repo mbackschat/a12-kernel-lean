@@ -385,6 +385,11 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
               CorrelationComparisonOp.evalRows, leftResolved, rightResolved]
+      | compareNumberLiteral op reference literal =>
+          cases resolved : reference.resolveIn context frame <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+              CorrelationComparisonOp.evalOperands, resolved]
       | compareStringLiteral op reference expected =>
           -- The String leaf's truth is a projection of the shared direct-String verdict, so the
           -- bridge is decided by that verdict alone rather than by the operand's own cases.
@@ -753,7 +758,7 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
     CorrelatedHaving.compareNumbers, CorrelatedHavingLeaf.evalTruthIn,
     CorrelationComparisonOp.evalOperands,
     innerSelected, outerSelected,
-    CorrelationComparisonOp.holdsRat, NumericComparisonOp.holds]
+    CorrelationComparisonOp.holdsRat, CorrelationComparisonOp.toNumeric, NumericComparisonOp.holds]
 
 /-- **A filter whose truth does not depend on the candidate selects all of them or none.** This is
     the internal law behind a measured runtime fact: a filter reference naming a repeatable level the
@@ -808,6 +813,9 @@ theorem correlatedHaving_referencesMarkedField_referencesField
       simp at member
       rcases member with rfl | rfl <;> simp
     | compareRepetitions => simp [CorrelatedHaving.markedFieldIds] at marked
+    | compareNumberLiteral op reference literal =>
+      simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
+      split at marked <;> simp_all
     | compareStringLiteral op reference expected =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all

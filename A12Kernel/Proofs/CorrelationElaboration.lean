@@ -121,8 +121,16 @@ theorem correlatedHaving_wellFormed_equalityScalesAgree
                 CorrelatedHavingLeaf.equalityScalesAgree,
                 Bool.and_eq_true] at wellFormed ⊢
               exact wellFormed.2
-          | lessThan =>
+          | lessThan | lessEqual | greaterThan | greaterEqual =>
               rfl
+      | compareNumberLiteral op reference literal =>
+          simp only [CorrelatedHaving.wellFormedForSingleGroup,
+            ConditionTree.allLeaves,
+            CorrelatedHavingLeaf.wellFormedForSingleGroup,
+            CorrelatedHaving.equalityScalesAgree,
+            CorrelatedHavingLeaf.equalityScalesAgree,
+            Bool.and_eq_true] at wellFormed ⊢
+          exact wellFormed.2
       | compareRepetitions =>
           rfl
       | compareStringLiteral | presence =>

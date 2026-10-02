@@ -336,12 +336,12 @@ private def correlationElaborationResult : CorrelationElabError →
       pure (.make .fieldKindMismatch "$.rule"
         (Json.mkObj [("path", toJson path), ("expected", toJson "number")]))
   -- The public filter vocabulary carries `compareNumbers`, `compareRepetitions`, and `and` only
-  -- (`CorrelatedHavingFormTag.all`), so no request can build a String leaf, a presence leaf, or a
-  -- disjunction, and none of these arms is reachable on this route. Reaching one means the checked
+  -- (`CorrelatedHavingFormTag.all`), so no request can build a String leaf, a Number-literal leaf, a
+  -- presence leaf, or a disjunction, and none of these arms is reachable on this route. Reaching one means the checked
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
   | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
-  | .disjunctionOutsideStarRoute => throw .incoherentCore
+  | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _ => throw .incoherentCore
   -- The constant leaf splits from the placement refusal for the Kernel projection only; the public
   -- code stays the one this input always had.
   | .fieldOutsideGroup origin fieldPath expectedGroup
@@ -363,10 +363,6 @@ private def correlationElaborationResult : CorrelationElabError →
       pure (.make .equalityScaleMismatch "$.rule.having"
         (Json.mkObj [("leftPath", toJson leftPath), ("leftScale", toJson leftScale),
           ("rightPath", toJson rightPath), ("rightScale", toJson rightScale)]))
-  | .unsupportedOperator operator =>
-      let tag := Support.ComparisonOperator.ofSurface operator |>.tag
-      pure (.make .operator "$.rule.having"
-        (Json.mkObj [("operator", toJson tag)]))
   | .missingInner =>
       pure (.make .missingInner "$.rule.having")
   | .missingOuter =>

@@ -173,6 +173,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
       pure [← havingNumberReferencePointer source environment left,
         ← havingNumberReferencePointer source environment right]
   | .leaf (.compareRepetitions _ _ _) => pure []
+  | .leaf (.compareNumberLiteral _ reference _) => do
+      pure [← havingNumberReferencePointer source environment reference]
   | .leaf (.compareStringLiteral _ reference _) => do
       pure [← havingStringReferencePointer source environment reference]
   | .leaf (.presence _ reference) => do
