@@ -232,7 +232,7 @@ example :
         | .error (.shape (.sourceCarrier path)) => path == ["Fc", "M1"] | _ => false) &&
       (match checkFullDateFirstFilledComputation model ["Fc"] 17 (list ["D1", "D2"]) with
         | .error (.shape (.sourceCarrier path)) => path == ["Fc", "D1"] | _ => false) &&
-      (match checkTemporalFirstFilledShape model ["Fc"] 20 (list ["R1", "R2"]) .dateRangeIsoSlash with
+      (match checkTemporalFirstFilledSite model ["Fc"] 20 (list ["R1", "R2"]) with
         | .error (.sourceShape path) => path == ["Fc", "RTgt"] | _ => false)) = true := by
   native_decide
 
