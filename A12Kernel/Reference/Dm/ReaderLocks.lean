@@ -82,4 +82,14 @@ example :
         some 0].all id := by
   native_decide
 
+/- The model file writes its Base Year as a string; an integer-only read silently dropped it, and a
+yearless list beside a dated one then failed the component-set gate the Base Year supplements. -/
+example :
+    let read (info : Json) := (readModel (Json.mkObj [("content", Json.mkObj [("modelInfo", info),
+      ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[])])])])).toOption.map (·.flat.baseYear)
+    [read (Json.mkObj [("baseYear", "2024")]) == some (some 2024),
+     read (Json.mkObj []) == some none,
+     read (Json.mkObj [("baseYear", "next")]) == none].all id := by
+  native_decide
+
 end A12Kernel.Dm.ReaderLocks

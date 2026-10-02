@@ -234,6 +234,16 @@ def readModel (json : Json) : Except String DmModel := do
   let ((), state) ← (roots.toList.forM (readElement [] [])).run {}
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
+  -- The file writes the Base Year as a string; an unreadable one fails the read rather than leave
+  -- the model without the year its partial dates are supplemented by.
+  let baseYear ← match info.getObjVal? "baseYear" with
+    | .error _ => pure none
+    | .ok (.str text) => match text.toInt? with
+        | some year => pure (some year)
+        | none => throw s!"baseYear {text} is no integer"
+    | .ok other => match other.getInt? with
+        | .ok year => pure (some year)
+        | .error _ => throw "baseYear is no integer"
   let mut refusals := state.refusals.toList
   let mut groups := []
   for group in state.groups.toList do
@@ -249,7 +259,7 @@ def readModel (json : Json) : Except String DmModel := do
       fields := state.fields.toList
       repeatableGroups := groups
       fieldRefByShortNameAllowed := (bool? config "fieldRefByShortNameAllowed").getD false
-      baseYear := (info.getObjValAs? Int "baseYear").toOption
+      baseYear
       timeZoneId := (str? config "timeZone").getD "UTC" }
     rules := state.rules.toList
     computations := state.computations.toList
