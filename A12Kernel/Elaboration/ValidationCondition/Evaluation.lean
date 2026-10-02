@@ -50,6 +50,7 @@ def evalSelected (context : ValidationEvaluationContext)
       if isRelevant leaf.operand.source then
         leaf.evalAt context.fields .validation
       else .unknown
+  | .fieldFill _ _ => .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
@@ -216,6 +217,16 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
         (RepeatableFieldPresenceOperator.filled.eval
           (observeCell .validation cell))
         (comparison.eval coordinate))
+  -- The group source reads the checked document's in-capacity extent. An unretained maximum the
+  -- declared-range quantifiers need answers UNKNOWN rather than an invented tail.
+  | .fieldFill operator source =>
+      match context.input with
+      | .checked document => do
+          let outcome? ← source.evaluateCheckedDocumentValidationFill? operator document
+            context.outer
+          pure ((outcome?.map ValidationFillOutcome.asConservativeVerdict).getD .unknown)
+      | .legacy _ _ | .partialView _ _ =>
+          .error (.checkedDocumentRequired source.source.groupPath)
   | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
 
 /-- Evaluate one reached leaf with the rule-owned current-row RNU result. Every other leaf delegates to the established addressed evaluator unchanged. -/

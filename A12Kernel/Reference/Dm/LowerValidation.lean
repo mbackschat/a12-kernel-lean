@@ -2,14 +2,15 @@ import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.NumericValidation.EntityComparison
+import A12Kernel.Elaboration.FieldFillRule
 
 /-! # Lowering a rule condition onto the checked validation carriers
 
 A condition whose every leaf has a flat form is elaborated whole by the flat carrier. Otherwise its
 connectives are kept and each leaf is offered, in a fixed order, to the carriers that exist for it:
 the flat leaf, repeatable field presence, group presence, the group-list quantifiers, the filled-group
-numeric comparison, scalar, then addressed, then over entity lists, and the starred filled-group
-count against a literal. The first carrier that admits a
+numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
+against a literal, and the field-fill quantifiers and `NumberOfFilledFields` over one group. The first carrier that admits a
 leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
@@ -36,6 +37,28 @@ private def groupQuantifier? : String → Option GroupFillQuantifier
   | "AtLeastOneGroupFilled" => some .atLeastOneGroupFilled
   | "NotAllGroupsFilled" => some .notAllGroupsFilled
   | "GroupsNotCollectivelyFilled" => some .groupsNotCollectivelyFilled
+  | _ => none
+
+private def fieldFillOp? : String → Option FieldFillQuantifier
+  | "AllFieldsFilled" => some .allFieldsFilled
+  | "NoFieldFilled" => some .noFieldFilled
+  | "AtLeastOneFieldFilled" => some .atLeastOneFieldFilled
+  | "MoreThanOneFieldFilled" => some .moreThanOneFieldFilled
+  | "NotAllFieldsFilled" => some .notAllFieldsFilled
+  | "NotExactlyOneFieldFilled" => some .notExactlyOneFieldFilled
+  | "FieldsNotCollectivelyFilled" => some .fieldsNotCollectivelyFilled
+  | _ => none
+
+/-- A sole field-fill operand naming a group: starred when any segment carries the star. A path the
+model resolves to a field is not a group operand. -/
+private def fieldFillGroup? (model : FlatModel) (rowGroup : GroupPath) :
+    List Argument → Option SurfaceFieldFillGroupOperand
+  | [.mk (.entity { path, index := none, category := none }) none none] =>
+      if path.correlated then none
+      else if path.segments.any (·.star) then
+        some (.starred { base := path.base, groups := path.starGroups })
+      else if (path.toFieldPath?).any (namesField model rowGroup) then none
+      else (path.toGroupPath?).map .fixed
   | _ => none
 
 private def plain : Argument → Option Expr
@@ -75,6 +98,22 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
         elaborated "Flat" (CheckedValidationCondition.fromFlat checked)]
     | none => []
+  let fieldFill := match leaf with
+    | .call id arguments none none => match fieldFillOp? id, fieldFillGroup? model rowGroup arguments with
+        | some operator, some operand =>
+            [elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator operand)]
+        | _, _ => []
+    | .compare op (.call "NumberOfFilledFields" arguments none none) (.number threshold) =>
+        match fieldFillGroup? model rowGroup arguments with
+        | some operand => [do
+            let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
+            let some threshold := decodeNumber? threshold
+              | refuse "NumberOfFilledFields" "threshold"
+            let checked ← elaborated "NumberOfFilledFields"
+              (elaborateFilledFieldCountComparison model rowGroup operand numericOp threshold.value)
+            elaborated "NumberOfFilledFields" (CheckedValidationCondition.fromOrderedNumeric checked)]
+        | none => []
+    | _ => []
   let groupCount := match leaf with
     | .compare op (.call "NumberOfFilledGroups" arguments none none) (.number threshold) => [do
         let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
@@ -115,7 +154,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
             (← lowerNumericExpr atom right) suppress)
         elaborated "EntityComparison" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
-  flat ++ specific ++ groupCount
+  flat ++ specific ++ groupCount ++ fieldFill
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

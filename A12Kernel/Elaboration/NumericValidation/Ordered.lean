@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericValidation.Core
+import A12Kernel.Elaboration.FilledFieldGroupCount
 
 /-! # Checked ordered numeric validation
 
@@ -22,6 +23,9 @@ inductive OrderedNumericValidationAtom (model : FlatModel) where
   A starred member contributes its in-capacity instantiated row count, which needs document row
   topology, so this arm resolves only on the addressed route. -/
   | filledGroupCountMixed (operands : List (CheckedGroupCountOperand model))
+  /-- `NumberOfFilledFields` over one fixed or starred group operand, read on the addressed route
+  because the group's checked extent needs the document's row topology. -/
+  | filledFieldCount (source : CheckedFilledFieldCountGroupSource model)
 
 /-- One model-indexed numeric comparison whose atom resolver, rather than the containing leaf, owns relevance timing and addressed-source selection. -/
 abbrev OrderedNumericComparison (model : FlatModel) :=
@@ -90,7 +94,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .booleanValueCount source => source.scaleSummary
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
-  | .filledGroupCountMixed _ => NumericScaleSummary.field 0
+  | .filledGroupCountMixed _ | .filledFieldCount _ => NumericScaleSummary.field 0
 
 /-- Structural coordinates and group counts retain their binding requirements independently of
     field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
@@ -108,7 +112,7 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .tokenValueCount source => source.source.directFields?.isNone
   | .booleanValueCount source => source.directFields?.isNone
   | .aggregate _ _ | .sumOfProducts _ => true
-  | .filledGroupCountMixed _ => true
+  | .filledGroupCountMixed _ | .filledFieldCount _ => true
 
 def admitted (atom : OrderedNumericValidationAtom model)
     (rowGroup : GroupPath)
@@ -143,6 +147,8 @@ def admitted (atom : OrderedNumericValidationAtom model)
         scope == .sameGroupAddressed) &&
         CheckedGroupCountOperand.admittedArity operands &&
         !operands.any CheckedGroupCountOperand.isRoot
+  | .filledFieldCount _ =>
+      scope == .modelWideCheckedComputation || scope == .sameGroupAddressed
 
 def referencesField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=
@@ -157,6 +163,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
       source.left.field.id == field || source.right.field.id == field
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
+  | .filledFieldCount source => source.declarations.any (·.id == field)
 
 /-- Whether this atom reaches `field` for the rule's error-field gates: as `referencesField` does,
     except that a filter's unmarked reads do not count. The Kernel's gates keep only the references
@@ -170,7 +177,8 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .tokenValueCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .booleanValueCount source =>
       source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => atom.referencesField field
+  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ =>
+      atom.referencesField field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
 def hasHaving : OrderedNumericValidationAtom model → Bool
@@ -178,7 +186,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
       source.hasHaving
   | .tokenValueCount source => source.source.hasHaving
   | .booleanValueCount source => source.hasHaving
-  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
+  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ => false
 
 end OrderedNumericValidationAtom
 
@@ -235,7 +243,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ => false
+  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=

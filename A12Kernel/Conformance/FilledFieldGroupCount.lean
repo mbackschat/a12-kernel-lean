@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.FilledFieldGroupCount
+import A12Kernel.Elaboration.FieldFillRule
 
 /-! # Checked group-scope `NumberOfFilledFields` conformance
 
@@ -123,6 +124,39 @@ example :
     starredCount twoRows fourFilled = some (.value 4) ∧
     starredCount [] [] = some (.value 0) ∧
     starredCount twoRows [cell 10 [2] "a2"] = some (.value 1) := by
+  native_decide
+
+/- A terminal star's count moves against its slot capacity, ten rows of two fields here, so below
+it the count is grow-only: the Kernel types `== 0` and `== 1` members OMISSION on the
+[starred-extent](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)
+capture. No retained row types a starred count at capacity, so none is locked. -/
+private def starredOperand (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let checked ← starredChecked?
+  let document ← (checkDocument starredPrepared "en_US" { instantiatedRows := rows, cells }).toOption
+  (checked.evaluateCheckedDocumentValidationOperand? document []).toOption.join
+
+example :
+    starredOperand [] [] = some (.value 0 .growOnly) ∧
+    starredOperand twoRows [cell 10 [2] "a2"] = some (.value 1 .growOnly) := by
+  native_decide
+
+/- On the rule carriers, a count comparison is evaluated on an instance without content, as the
+filled-group count is, while a quantifier keeps the gate unless an all-empty extent fires it:
+`NumberOfFilledFields(Flat) < n` fires on the empty documents of the
+[nested-capacity](../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
+capture. -/
+private def starredOperandSurface : SurfaceFieldFillGroupOperand := .starred starredSource.group
+
+example :
+    ((elaborateFilledFieldCountComparison starredModel ["Order"] starredOperandSurface .less 2).toOption.bind
+        fun comparison => (CheckedValidationCondition.fromOrderedNumeric comparison).toOption.map
+          (·.core.canFireOnEmpty),
+     (CheckedValidationCondition.fromFieldFill starredModel ["Order"] .atLeastOneFieldFilled
+        starredOperandSurface).toOption.map (·.core.canFireOnEmpty),
+     (CheckedValidationCondition.fromFieldFill starredModel ["Order"] .noFieldFilled
+        starredOperandSurface).toOption.map (·.core.canFireOnEmpty)) =
+      (some true, some false, some true) := by
   native_decide
 
 private def nestedModel : FlatModel :=

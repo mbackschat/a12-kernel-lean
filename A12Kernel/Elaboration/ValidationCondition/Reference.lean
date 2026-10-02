@@ -261,6 +261,9 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env) :
   | .tokenValueCount source => source.referencePointers environment
   | .booleanValueCount source => source.referencePointers environment
   | .sumOfProducts source => source.referencePointers environment
+  | .filledFieldCount source =>
+      sievedFieldPointers model
+        (fun declaration => source.declarations.any (·.id == declaration.id)) environment
   | .filledGroupCountMixed operands =>
       -- Routed through the same sieve as the scalar group count, so a star in the list cannot
       -- change which references a message may project.
@@ -328,6 +331,9 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
         concreteFieldPointer declaration environment
   | .customFieldValidity leaf =>
       (concreteFieldPointer leaf.operand.declaration environment).map ([·])
+  | .fieldFill _ source =>
+      sievedFieldPointers model
+        (fun declaration => source.declarations.any (·.id == declaration.id)) environment
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :

@@ -68,8 +68,12 @@ def evaluateCheckedDocumentValidation
     a starred level also multiplies in every level the star reopens, since kernel 30.8.1 types
     `Rows*/Detail` `VALUE` only once both of Detail's fields are filled in both rows `Rows` admits
     ([checkpoint](../../docs/SOURCES.md#src-below-star-group-runtime)).
-    A terminal repeatable star has no movement measurement on this carrier and returns `none`, as
-    does an unretained maximum, which no authorable model reaches. -/
+    A terminal repeatable star runs against the same slot capacity: below it the Kernel types an
+    `== 0` and an `== 1` member OMISSION and a `> 0` member VALUE, on the
+    [starred-extent](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)
+    and [nested-star](../../docs/sources/group-and-iteration-probes.md#src-nested-star-bound-outer-level)
+    captures, read through the population replay on 2026-10-02. No retained row types a starred
+    count at capacity. An unretained maximum returns `none`, which no authorable model reaches. -/
 def evaluateCheckedDocumentValidationOperand?
     (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -77,9 +81,8 @@ def evaluateCheckedDocumentValidationOperand?
   let count ← checked.evaluateCheckedDocumentValidation document outer
   let capacity? := match checked.source with
     | .fixed _ => model.groupSubtreeSlotCapacity? checked.source.groupPath
-    | .starredPresence _ =>
+    | .starredPresence _ | .starred _ =>
         model.declarationsSlotCapacity? checked.source.boundLevelCount checked.declarations
-    | .starred _ => none
   pure (capacity?.bind fun capacity => (count.availableWithFillability? capacity).map
     fun available => .value available.1 available.2)
 

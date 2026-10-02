@@ -188,7 +188,7 @@ private def numericEntityGuardShape? :
   -- The guard shape exists for Number entity operations whose references sit at a queried level.
   -- A group count references groups, not levelled Number entities, so it has no shape here — the
   -- same answer the scalar leaf gives.
-  | .ordinary _ | .filledGroupCountMixed _ => none
+  | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ => none
 
 private def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool
@@ -284,6 +284,9 @@ private def ValidationConditionLeaf.iterationGuardAt
       if guard.repeatableScope.contains level then .guarded else .noReference
   | .groupList operator operands =>
       ResolvedGroupListOperands.iterationGuardAt operator operands level
+  -- No guard rule is measured for a field-fill operand at a level its binding scope reaches.
+  | .fieldFill _ source =>
+      if source.source.bindingScope.contains level then .unclassified else .noReference
   | .orderedNumeric _ comparison =>
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status
@@ -409,6 +412,7 @@ def supportsOrdinaryIteration
     -- A nonrepeatable operand read is environment-insensitive, exactly as a flat leaf's is, so the
     -- default `false` here would narrow the fragment without a reason.
     | .customFieldValidity _ => true
+    | .fieldFill _ _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/

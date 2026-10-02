@@ -302,6 +302,9 @@ private def orderedNumericAtomIterationScope :
   -- its first star is read per row, on the rule every other star follows: bound from inside that
   -- level and refused from outside it
   -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
+  | .filledFieldCount source =>
+      let scope := source.source.bindingScope
+      pure (if scope.isEmpty then none else some scope)
   | .filledGroupCountMixed operands =>
       mergeIterationScopeList (operands.map fun operand =>
         let scope := operand.bindingScope

@@ -176,7 +176,7 @@ def resolve (atom : OrderedNumericValidationAtom model)
   | .aggregate _ _ | .sumOfProducts _ => .error .groupState
   -- A starred member's contribution is an instantiated row count, which this scalar context
   -- carries no document to read. The addressed resolver owns the arm.
-  | .filledGroupCountMixed _ => .error .groupState
+  | .filledGroupCountMixed _ | .filledFieldCount _ => .error .groupState
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
 def addressedDirectRelevant
@@ -378,6 +378,15 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
               | none => pure (.error .groupState)
               | some available =>
                   pure (.ok (.value available.1 available.2))
+  -- A formally invalid operand leaves the count unavailable, and the group source reads the checked
+  -- document's in-capacity extent, which neither the legacy nor the partial input carries.
+  | .filledFieldCount source =>
+      match context.input with
+      | .checked document => do
+          match ← source.evaluateCheckedDocumentValidationOperand? document context.outer with
+          | some operand => pure operand.toValidationArithmetic
+          | none => pure (.error .groupState)
+      | .legacy _ _ | .partialView _ _ => pure (.error .groupState)
 
 end OrderedNumericValidationAtom
 
@@ -669,7 +678,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
               | none => pure (.error .groupState)
               | some available => pure (.ok (.value available.1 available.2))
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ =>
+  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

@@ -251,6 +251,10 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   /-- An explicit `Valid`/`Invalid` predicate over a registered custom type. The operand is a single
   nonrepeatable field, so this leaf reads like a flat one and carries no iteration of its own. -/
   | customFieldValidity (leaf : CheckedCustomFieldValidityLeaf model)
+  /-- One of the seven field-fill quantifiers over one fixed or starred group operand. The leaf is
+  not a projection of `NumberOfFilledFields`: a formally invalid cell leaves the count unavailable
+  while `AtLeastOneFieldFilled` still fires on a filled sibling. -/
+  | fieldFill (operator : FieldFillQuantifier) (source : CheckedFilledFieldCountGroupSource model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -411,14 +415,18 @@ private def countsFilledGroups (comparison : NumericComparisonOf Atom) (isCount 
 A comparison reading a filled-group count is, whatever else it reads: the Kernel fires
 `NumberOfFilledGroups(G1, G2) < 2`, `== 0` and `NumberOfFilledGroups(G1, G2) + [W] < 2` over a blank
 root, the last reading the empty `W` as `0`, while `[W] < 5` stays silent there
-([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)). -/
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)).
+A group's filled-field count is too: `NumberOfFilledFields(Flat) < n` fires on the empty documents
+of the [nested-capacity](../../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
+and [deep-capacity](../../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
+captures, read through the population replay on 2026-10-02. -/
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .flat condition => condition.canFireOnEmpty
   | .numeric _ comparison => countsFilledGroups comparison fun
       | .filledGroupCount _ => true
       | _ => false
   | .orderedNumeric _ comparison => countsFilledGroups comparison fun
-      | .ordinary (.filledGroupCount _) | .filledGroupCountMixed _ => true
+      | .ordinary (.filledGroupCount _) | .filledGroupCountMixed _ | .filledFieldCount _ => true
       | _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
@@ -430,6 +438,10 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   -- The value-specified gate answers UNKNOWN for an empty operand before any registry contact, so
   -- neither polarity of the explicit predicate can fire on one.
   | .customFieldValidity _ => false
+  | .fieldFill operator _ => match operator with
+      | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => true
+      | .allFieldsFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
+      | .fieldsNotCollectivelyFilled => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .flat condition, field => condition.referencesField field
@@ -451,6 +463,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       condition.operandDeclarations.any fun declaration =>
         declaration.id == field
   | .customFieldValidity leaf, field => leaf.operand.source == field
+  | .fieldFill _ source, field => source.declarations.any (·.id == field)
 
 /-- Whether a leaf reaches `field` for the rule's error-field gates. The ordered numeric carrier
     and the DateRange overlap leaves own filters, and there a body's unmarked reads do not count
@@ -462,7 +475,8 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
-  | leaf@(.customFieldValidity _), field => leaf.referencesField field
+  | leaf@(.customFieldValidity _), field | leaf@(.fieldFill _ _), field =>
+      leaf.referencesField field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. The ordered numeric carrier and the DateRange overlap leaves can own one; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
@@ -472,7 +486,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
-  | .customFieldValidity _ => false
+  | .customFieldValidity _ | .fieldFill _ _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
@@ -488,6 +502,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => true
   | .iteratedDateRange _ => true
+  | .fieldFill _ _ => true
   | _ => false
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
@@ -530,6 +545,9 @@ def wellFormedBool (rowGroup : GroupPath) :
   -- because none is measured — whether the Kernel requires the operand inside the rule's group is
   -- untested for this predicate.
   | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
+  -- The rule's row must bind every level the operand leaves unstarred above its own depth.
+  | .fieldFill _ source =>
+      source.source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
 
 
 end ValidationConditionLeaf
