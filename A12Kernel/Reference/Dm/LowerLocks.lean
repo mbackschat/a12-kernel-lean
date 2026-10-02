@@ -17,7 +17,12 @@ private def model : FlatModel :=
       { id := 3, groupPath := ["Order", "Head"], name := "Code", policy := { kind := .string } },
       { id := 4, groupPath := ["Order"], name := "Amt", policy := { kind := .number { scale := 0, signed := true } } },
       { id := 2, groupPath := ["Order", "Rows"], name := "Note", policy := { kind := .string },
-        repeatableScope := [10] }]
+        repeatableScope := [10] },
+      { id := 5, groupPath := ["Order"], name := "Due1", policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 6, groupPath := ["Order"], name := "Due2", policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 7, groupPath := ["Other"], name := "O", policy := { kind := .number { scale := 0, signed := true } } }]
     repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 5 }] }
 
 private def admitted (text : String) : Bool :=
@@ -42,6 +47,16 @@ example :
 integral literal. -/
 example :
     [admitted "NumberOfFilledFields(Head) < 2", !admitted "NumberOfFilledFields(Head) < 1.5"].all id := by
+  native_decide
+
+/- `NumberOfDifferentValues` reaches the String/Enumeration and temporal carriers once the Number one
+refuses its list, a star-free group operand included, which lowers to the scalar surface first; a
+list mixing the families stays refused, and so does a plain second-root read, which the entity-list
+carrier must not answer for the scalar carriers that refuse it. -/
+example :
+    [admitted "NumberOfDifferentValues(Ref, Head/Code) == 1", admitted "NumberOfDifferentValues(Rows*/Note) > 1",
+     admitted "NumberOfDifferentValues(Head) > 0", admitted "NumberOfDifferentValues(Due1, Due2) == 1",
+     !admitted "NumberOfDifferentValues(Ref, Due1) == 1", !admitted "[/Other/O] + [Amt] < 5"].all id := by
   native_decide
 
 private def admittedSuppressed (text : String) : Bool :=

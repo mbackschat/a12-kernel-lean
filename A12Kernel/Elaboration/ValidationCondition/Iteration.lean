@@ -188,7 +188,11 @@ private def numericEntityGuardShape? :
   -- The guard shape exists for Number entity operations whose references sit at a queried level.
   -- A group count references groups, not levelled Number entities, so it has no shape here — the
   -- same answer the scalar leaf gives.
-  | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ => none
+  -- The token distinct count shares the Number one's fold, but no measurement crosses that carrier
+  -- boundary for the guard, so it classifies nothing and an iterating rule it alone would guard stays
+  -- refused as unclassified.
+  | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
+  | .temporalDistinctCount _ => none
 
 private def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool

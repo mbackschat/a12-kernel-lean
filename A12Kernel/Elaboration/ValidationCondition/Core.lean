@@ -440,7 +440,8 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .numeric _ comparison => countsOnSmallSide comparison NumericValidationAtom.isEmptyGateCount
   | .orderedNumeric _ comparison => countsOnSmallSide comparison fun
       | .ordinary atom => NumericValidationAtom.isEmptyGateCount atom
-      | .filledGroupCountMixed _ | .filledFieldCount _ | .aggregate .distinctCount _ => true
+      | .filledGroupCountMixed _ | .filledFieldCount _ | .aggregate .distinctCount _
+      | .tokenDistinctCount _ | .temporalDistinctCount _ => true
       | _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty

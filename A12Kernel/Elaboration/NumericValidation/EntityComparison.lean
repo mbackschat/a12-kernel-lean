@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.NumericValidation.Resolution
 import A12Kernel.Elaboration.NumericComputation.Atom
 import A12Kernel.Elaboration.BooleanValueCount
+import A12Kernel.Elaboration.NumericValidation.Ordered
 
 /-! # Validation comparisons over entity-list operands
 
@@ -16,10 +17,15 @@ the entity-list elaborators' own: called with no target group they bind no level
 rule reads an entity list (`elaborateNumberEntitySource`). Ordinary operands resolve as
 `elaborateRepeatableNumericComparison` resolves them.
 
-Two forms keep the carriers that already own them, so neither acquires a second representation. A
-list of plain fields only belongs to the scalar comparison, and the addressed scope admits it in
-neither atom form, so it is refused as incoherent. The filled-group count belongs to
-`elaborateNumericComparison` and `elaborateMixedFilledGroupCountComparison`.
+Three forms keep the carriers that already own them, so none acquires a second representation. A
+comparison reading no entity list at all belongs to the scalar comparisons, including one they
+refuse, such as a read of a second root. A list of plain fields only belongs to the scalar
+comparison, and the addressed scope admits it in neither atom form, so it is refused as incoherent.
+The filled-group count belongs to `elaborateNumericComparison` and
+`elaborateMixedFilledGroupCountComparison`.
+
+`NumberOfDifferentValues` is one operator over three checked carriers, Number, String/Enumeration
+and temporal, tried in that order on the same authored list.
 -/
 
 namespace A12Kernel
@@ -55,6 +61,20 @@ private def SurfaceNumericAtom.ofEntityAtom? :
 private def resolveEntityAtom (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except EntityNumericComparisonElabError (OrderedNumericValidationAtom model)
+  -- `NumberOfDifferentValues` is one operator over three carriers: a list the Number one refuses is
+  -- offered to the String/Enumeration one, then to the temporal one, and a list all refuse keeps
+  -- the Number refusal.
+  | .numeric (.aggregate .distinctCount source) =>
+      match elaborateNumberEntitySource model rowGroup source with
+      | .ok checked => pure (.aggregate .distinctCount checked)
+      | .error error =>
+          match elaborateTokenDistinctCountSource model rowGroup source with
+          | .ok checked => pure (.tokenDistinctCount checked)
+          | .error _ =>
+              match (elaborateTemporalDistinctCountSource model rowGroup source).toOption.bind
+                  fun temporal => (checkTemporalDistinctCountRun temporal).toOption with
+              | some run => pure (.temporalDistinctCount run)
+              | none => throw (.numberSource error)
   | .numeric (.aggregate op source) =>
       (elaborateNumberEntitySource model rowGroup source).map (.aggregate op) |>.mapError .numberSource
   | .numeric (.filledGroupCount _) => throw .groupCount
@@ -89,6 +109,14 @@ def elaborateEntityNumericComparison (model : FlatModel) (rowGroup : GroupPath)
   match hModel : model.validate with
   | .error error => .error (.ordinary (.resolve error))
   | .ok () => do
+      -- A comparison reading no entity list is the scalar carriers' even when they refuse it, such
+      -- as a second root's field, so this carrier never answers in their place. A group count passes
+      -- on to its own refusal, which names the carriers owning it.
+      let readsList : SurfaceNumericComputationAtom → Bool
+        | .numeric (.aggregate _ _) | .numeric (.filledGroupCount _) => true
+        | .numeric _ => false
+        | _ => true
+      if !(left.anyAtom readsList || right.anyAtom readsList) then throw .incoherent
       let core : OrderedNumericComparison model := {
         op, suppressExactScaleWarning
         left := ← left.mapM (resolveEntityAtom model rowGroup)

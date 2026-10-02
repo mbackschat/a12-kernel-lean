@@ -219,6 +219,17 @@ def CheckedTokenValueCountSource.referencePointers
   (·.flatten) <$> checked.source.operands.mapM
     (CheckedTokenEntityOperand.referencePointers environment)
 
+/-- A temporal slot refuses a filter on the Boolean/Confirm carrier's terms: the token carrier's
+    measured filter coordinates do not cross to it. -/
+def CheckedTemporalDistinctCountOperand.referencePointers (environment : Env) :
+    CheckedTemporalDistinctCountOperand model →
+      Except ReferenceProjectionError (List MessagePointer)
+  | .slot (.field source) => (concreteFieldPointer source.declaration environment).map ([·])
+  | .slot (.star path _ none) => (starFieldPointer path environment).map ([·])
+  | .slot (.star _ _ (some _)) => .error .filteredStarOperand
+  | .slot (.group source) => source.source.referencePointers environment
+  | .group source => source.source.referencePointers environment
+
 /-- The Boolean/Confirm companion has the same optional-filter shape, but it does not inherit the token carrier's measured coordinate account and therefore still refuses a filter. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
 def CheckedBooleanValueCountOperand.referencePointers (environment : Env) :
     CheckedBooleanValueCountOperand model expected →
@@ -259,6 +270,10 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env) :
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       source.referencePointers environment
   | .tokenValueCount source => source.referencePointers environment
+  | .tokenDistinctCount source =>
+      (·.flatten) <$> source.operands.mapM (CheckedTokenEntityOperand.referencePointers environment)
+  | .temporalDistinctCount run =>
+      (·.flatten) <$> run.source.operands.mapM (CheckedTemporalDistinctCountOperand.referencePointers environment)
   | .booleanValueCount source => source.referencePointers environment
   | .sumOfProducts source => source.referencePointers environment
   | .filledFieldCount source =>

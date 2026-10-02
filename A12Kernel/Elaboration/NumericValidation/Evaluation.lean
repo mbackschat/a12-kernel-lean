@@ -176,7 +176,8 @@ def resolve (atom : OrderedNumericValidationAtom model)
   | .aggregate _ _ | .sumOfProducts _ => .error .groupState
   -- A starred member's contribution is an instantiated row count, which this scalar context
   -- carries no document to read. The addressed resolver owns the arm.
-  | .filledGroupCountMixed _ | .filledFieldCount _ => .error .groupState
+  | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
+  | .temporalDistinctCount _ => .error .groupState
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
 def addressedDirectRelevant
@@ -386,6 +387,22 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
           match ← source.evaluateCountOperand? document context.outer with
           | some operand => pure operand.toValidationArithmetic
           | none => pure (.error .groupState)
+      | .legacy _ _ | .partialView _ _ => pure (.error .groupState)
+  | .tokenDistinctCount source =>
+      match context.input with
+      | .legacy document read => do
+          let result ←
+            (source.evaluateDistinctValidation document context.outer
+              context.scalar.fields.read read).mapError .addressing
+          pure result.toValidationArithmetic
+      | .checked document | .partialView document _ =>
+          (source.evaluateCheckedDocumentDistinctValidation
+            document context.outer).map NumericOperand.toValidationArithmetic
+  -- The temporal fold reads the checked document's decoded cells, which the legacy input lacks.
+  | .temporalDistinctCount run =>
+      match context.input with
+      | .checked document =>
+          (run.evaluate document context.outer).map NumericOperand.toValidationArithmetic
       | .legacy _ _ | .partialView _ _ => pure (.error .groupState)
 
 end OrderedNumericValidationAtom
@@ -678,7 +695,8 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
               | none => pure (.error .groupState)
               | some available => pure (.ok (.value available.1 available.2))
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _ =>
+  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _
+  | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

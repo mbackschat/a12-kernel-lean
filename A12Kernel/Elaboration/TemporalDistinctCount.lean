@@ -138,6 +138,21 @@ def path : CheckedTemporalDistinctCountOperand model → List String
   | .slot operand => operand.path
   | .group source => source.groupPath
 
+/-- Whether this slot reads `field`. `filterReads` decides which of a filter's reads count: every
+    read for a dependency or pointer, only the marked ones for the rule's error-field gates. -/
+def referencesField (operand : CheckedTemporalDistinctCountOperand model) (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
+  match operand with
+  | .slot (.field source) => source.declaration.id == field
+  | .slot (.star _ source filter) =>
+      source.declaration.id == field || filter.any (filterReads · field)
+  | .slot (.group source) => source.declarations.any (·.id == field)
+  | .group source => source.declarations.any (·.id == field)
+
+def hasHaving : CheckedTemporalDistinctCountOperand model → Bool
+  | .slot operand => operand.hasHaving
+  | .group _ => false
+
 end CheckedTemporalDistinctCountOperand
 
 inductive TemporalDistinctCountElabError where
@@ -212,6 +227,13 @@ namespace CheckedTemporalDistinctCountSource
 def operands (checked : CheckedTemporalDistinctCountSource model) :
     List (CheckedTemporalDistinctCountOperand model) :=
   checked.first :: checked.rest
+
+def referencesField (checked : CheckedTemporalDistinctCountSource model) (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
+  checked.operands.any (·.referencesField field filterReads)
+
+def hasHaving (checked : CheckedTemporalDistinctCountSource model) : Bool :=
+  checked.operands.any (·.hasHaving)
 
 /-- The list's shared component set, which every operand carries by construction. -/
 def components (checked : CheckedTemporalDistinctCountSource model) :

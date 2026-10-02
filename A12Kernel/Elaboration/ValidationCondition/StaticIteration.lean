@@ -292,6 +292,20 @@ private def orderedNumericAtomIterationScope :
       checkedNumberSourceIterationScope source
   | .tokenValueCount source =>
       checkedTokenSourceIterationScope source.source
+  | .tokenDistinctCount source => checkedTokenSourceIterationScope source
+  | .temporalDistinctCount run => do
+      let groupScope (source : CheckedEntityGroupSource model) :=
+        let scope := source.bindingScope
+        if scope.isEmpty then none else some scope
+      mergeIterationScopeList (← run.source.operands.mapM fun operand =>
+        match operand with
+        | .slot (.field _) => pure none
+        | .slot (.star path _ none) => pure (checkedStarBindingScope path)
+        | .slot (.star path _ (some filter)) => do
+            mergeIterationScopes (checkedStarBindingScope path)
+              (← mergeIterationScopeList (correlatedHavingOuterIterationScopes model filter))
+        | .slot (.group source) => pure (groupScope source.source)
+        | .group source => pure (groupScope source.source))
   | .booleanValueCount source =>
       checkedBooleanValueCountSourceIterationScope source
   | .sumOfProducts source =>

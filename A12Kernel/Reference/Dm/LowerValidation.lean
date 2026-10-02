@@ -134,7 +134,10 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
             [elaborated id (CheckedValidationCondition.fromGroupList model rowGroup quantifier operands)]
         | _, _ => []
     | .compare op left right =>
-        match lowerNumericComparison op left right suppress with
+        -- Parenthesized so the entity-list attempt follows either outcome of scalar lowering: a
+        -- star-free aggregate such as `NumberOfDifferentValues(Shell)` lowers to the scalar
+        -- surface and must still reach the entity carrier when the scalar ones refuse it.
+        (match lowerNumericComparison op left right suppress with
         | .ok surface =>
             -- The addressed carrier first: it reads under the rule's row environment, so a group
             -- count below a repeatable ancestor runs inside an iterating rule, where the scalar
@@ -145,7 +148,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
              do let checked ← elaborated "NumericComparison"
                   (elaborateNumericComparison model rowGroup surface)
                 elaborated "NumericComparison" (CheckedValidationCondition.fromNumeric checked)]
-        | .error refusal => [.error refusal]
+        | .error refusal => [.error refusal])
       ++ [do
         let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
         let atom := lowerComputationNumericAtom model rowGroup

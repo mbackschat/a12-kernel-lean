@@ -1,5 +1,7 @@
 import A12Kernel.Elaboration.NumericValidation.Core
 import A12Kernel.Elaboration.FieldFillList
+import A12Kernel.Elaboration.TokenDistinctCount
+import A12Kernel.Elaboration.TemporalDistinctCount
 
 /-! # Checked ordered numeric validation
 
@@ -26,6 +28,12 @@ inductive OrderedNumericValidationAtom (model : FlatModel) where
   /-- `NumberOfFilledFields` over a field-fill list, read on the addressed route because a starred or
   group operand's checked extent needs the document's row topology. -/
   | filledFieldCount (source : CheckedFieldFillList model)
+  /-- `NumberOfDifferentValues` over a String/Enumeration entity list, the token half of the
+  operator a Number list owns through `aggregate .distinctCount`. -/
+  | tokenDistinctCount (source : CheckedTokenEntitySource model)
+  /-- `NumberOfDifferentValues` over a temporal entity list sharing one component set, admitted
+  only where the temporal fold has an evaluator. -/
+  | temporalDistinctCount (run : CheckedTemporalDistinctCountRun model)
 
 /-- One model-indexed numeric comparison whose atom resolver, rather than the containing leaf, owns relevance timing and addressed-source selection. -/
 abbrev OrderedNumericComparison (model : FlatModel) :=
@@ -95,6 +103,8 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
   | .filledGroupCountMixed _ | .filledFieldCount _ => NumericScaleSummary.field 0
+  | .tokenDistinctCount source => source.distinctScaleSummary
+  | .temporalDistinctCount _ => NumericScaleSummary.field 0
 
 /-- Structural coordinates and group counts retain their binding requirements independently of
     field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
@@ -112,7 +122,8 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .tokenValueCount source => source.source.directFields?.isNone
   | .booleanValueCount source => source.directFields?.isNone
   | .aggregate _ _ | .sumOfProducts _ => true
-  | .filledGroupCountMixed _ | .filledFieldCount _ => true
+  | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
+  | .temporalDistinctCount _ => true
 
 def admitted (atom : OrderedNumericValidationAtom model)
     (rowGroup : GroupPath)
@@ -147,7 +158,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
         scope == .sameGroupAddressed) &&
         CheckedGroupCountOperand.admittedArity operands &&
         !operands.any CheckedGroupCountOperand.isRoot
-  | .filledFieldCount _ =>
+  | .filledFieldCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       scope == .modelWideCheckedComputation || scope == .sameGroupAddressed
 
 def referencesField (atom : OrderedNumericValidationAtom model)
@@ -164,6 +175,8 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
   | .filledFieldCount source => source.declarations.any (·.id == field)
+  | .tokenDistinctCount source => source.referencesField field
+  | .temporalDistinctCount run => run.source.referencesField field
 
 /-- Whether this atom reaches `field` for the rule's error-field gates: as `referencesField` does,
     except that a filter's unmarked reads do not count. The Kernel's gates keep only the references
@@ -177,6 +190,9 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .tokenValueCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .booleanValueCount source =>
       source.referencesField field CorrelatedHaving.referencesMarkedField
+  | .tokenDistinctCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
+  | .temporalDistinctCount run =>
+      run.source.referencesField field CorrelatedHaving.referencesMarkedField
   | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ =>
       atom.referencesField field
 
@@ -186,6 +202,8 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
       source.hasHaving
   | .tokenValueCount source => source.source.hasHaving
   | .booleanValueCount source => source.hasHaving
+  | .tokenDistinctCount source => source.hasHaving
+  | .temporalDistinctCount run => run.source.hasHaving
   | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ => false
 
 end OrderedNumericValidationAtom
@@ -243,7 +261,8 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _ => false
+  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _
+  | .tokenDistinctCount _ | .temporalDistinctCount _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=
