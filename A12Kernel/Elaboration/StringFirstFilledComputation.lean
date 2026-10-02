@@ -40,10 +40,16 @@ inductive StringFirstFilledComputationElabError where
 def StringFirstFilledComputationElabError.diagnostic? :
     StringFirstFilledComputationElabError → Option KernelStaticDiagnostic
   | .source cause => cause.diagnostic?
+  -- A list's shape refusals are the shared entity list's, whose classes one carrier's row fixes for
+  -- every carrier; a list naming the target is the target-read class, measured on this carrier
+  -- ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep),
+  -- row `F01`).
+  | .list (.shape cause) => cause.diagnostic?
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
   -- Named rather than wildcarded, so a new refusal must be classified rather than absorbed. None of
-  -- these is measured on this carrier.
+  -- these is measured on this carrier, and an unsupported list operand is this project's limit.
   | .target _ | .targetRepeatable _ | .targetNotOrdinaryString _ | .sourceNotOrdinaryString _
-  | .sourceShape _ | .list _ | .targetSelfReference _ => none
+  | .sourceShape _ | .list .unsupportedOperand => none
 
 /-- One fixed ordinary String target and one ordinary String source, a direct single-level star or a
 direct list of plain nonrepeatable fields, certified against the same model. -/

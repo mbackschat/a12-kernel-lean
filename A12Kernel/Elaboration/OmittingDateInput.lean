@@ -179,16 +179,18 @@ def certifyOmittingDateInputField (declaration : FlatFieldDecl) :
 /-- The value a component-omitting Date declaration stores. The two arms are not interchangeable: a
 year-bearing value denotes an interval of concrete dates and resolves to endpoints, while a yearless one
 denotes a calendar position with no year and therefore has no `FullDate` form at all. Keeping them
-separate is what stops a consumer from silently completing a yearless value against some year. -/
+separate is what stops a consumer from silently completing a yearless value against some year: a
+completion names its year, as `OmittingDateStoredValue.earliestCivil?` takes it. -/
 inductive OmittingDateStoredValue where
   | yearBearing (value : PartiallyKnownDateValue)
   | yearless (value : MonthDayValue)
   deriving Repr, DecidableEq
 
 /-- The earliest concrete date an admitted value denotes, which is how the Kernel completes a date
-fragment wherever it needs one: an omitted day is the 1st, an omitted month January, and a yearless value
-takes `year`, the caller's choice of Base Year. A year-bearing value with its year omitted completes to
-none. -/
+fragment where it needs one concrete date, a comparison or a computed fragment's read-back: an omitted
+day is the 1st, an omitted month January, and a yearless value takes `year`, the caller's choice of Base
+Year. A range's finish completes to the latest date instead, which this does not cover. A year-bearing
+value with its year omitted completes to none; `classifyStoredForModel` never produces that arm. -/
 def OmittingDateStoredValue.earliestCivil? (year : Int) : OmittingDateStoredValue → Option CivilDate
   | .yearBearing (.full date) => some date.civil
   | .yearBearing (.omittedDay date) => some date.first.civil

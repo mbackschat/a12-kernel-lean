@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.StringFirstFilledComputation
+import A12Kernel.Elaboration.DocumentComputationStep
 
 /-! # Direct one-star ordinary String `FirstFilledValue` locks -/
 
@@ -297,6 +297,63 @@ example :
     (match checkStringFirstFilledComputation model ["Review"] target.id (.star belowStar) with
       | .error error => error.diagnostic?
       | .ok _ => none) = some .noWildcard := by
+  native_decide
+
+private def plainEntry (field : String) : SurfaceFieldEntityOperand :=
+  .field { base := .relative 0, groups := [], field }
+
+private def listChecked? (targetField : FieldId) (entries : List SurfaceFieldEntityOperand) :
+    Except StringFirstFilledComputationElabError (CheckedStringFirstFilledComputation model) :=
+  match entries with
+  | [] => .error (.list (.shape .tooFewFields))
+  | first :: rest => checkStringFirstFilledComputation model ["Review"] targetField (.list { first, rest })
+
+/- A direct list is the shared entity list: a lone field is too few, a star beside a field is an operand
+this list does not read, a non-ordinary String member is refused as on a star, and a list naming the
+target is the target-read class, as the Kernel reports for a String `FirstFilledValue` listing its
+target. -/
+example :
+    ((listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry minimumTarget.name]).isOk &&
+    (match listChecked? patternTarget.id [plainEntry unrelated.name] with
+      | .error error => error.diagnostic? == some .paramSizeInvalidN
+      | .ok _ => false) &&
+    (match listChecked? patternTarget.id [.star (star source.name), plainEntry unrelated.name] with
+      | .error (.list .unsupportedOperand) => true
+      | _ => false) &&
+    (match listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry customTarget.name] with
+      | .error (.sourceNotOrdinaryString _) => true
+      | _ => false) &&
+    (match listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry patternTarget.name] with
+      | .error error => error.diagnostic? == some .errorReferenceToCalculatedField &&
+          (match error with | .targetSelfReference _ => true | _ => false)
+      | .ok _ => false)) = true := by
+  native_decide
+
+/-- The pattern target's `FirstFilledValue(Unrelated, Minimum)` run as a plan step over a document
+holding `text` in `Unrelated`, with the given matcher lookup. -/
+private def stepOutcome? (matchers : StringTargetMatchers) (text : String) :
+    Option (Except DocumentComputationStepFault DocumentTargetOutcome) := do
+  let operation ← (listChecked? patternTarget.id
+    [plainEntry unrelated.name, plainEntry minimumTarget.name]).toOption
+  let data : DocumentData :=
+    { instantiatedRows := [], cells := [placed unrelated text (.parsed (.str text))] }
+  let document ← (checkDocument prepared "en_US" data).toOption
+  pure (((CheckedDocumentComputationStep.ofStringFirstFilled operation).run world matchers document).map
+    (·.1))
+
+/- A plan step checks its String target against the prepared pattern it is handed, so `AB` is rejected
+and `AA` accepted under `A+`, the rejection an errored write; a lookup holding no entry for the target is the step's structural fault,
+never an unchecked write. Internal: no Kernel row is read. -/
+example :
+    ((match stepOutcome? prepared.patterns.targetMatcher? "AB" with
+      | some (.ok (.string (.errored _ _))) => true
+      | _ => false) &&
+    (match stepOutcome? prepared.patterns.targetMatcher? "AA" with
+      | some (.ok (.string (.accepted _))) => true
+      | _ => false) &&
+    (match stepOutcome? (fun _ => none) "AA" with
+      | some (.error (.stringFirstFilled (.targetPatternUnavailable _))) => true
+      | _ => false)) = true := by
   native_decide
 
 end A12Kernel.Conformance.StringFirstFilledComputation

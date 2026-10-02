@@ -302,7 +302,7 @@ private def monthValues? (baseYear : Option Int) (m1 m2 : Option String) : Optio
 
 /- Rows `o1` and `o2`: with no Base Year the Kernel computes a yearless fragment target and its guard
 reads it filled, so the completed target is read back rather than refused; its year is
-`baseYearOrDefault`, which no measured reader observes. A declared Base Year supplies the year. -/
+`baseYearOrDefault`, whose exact year no measured row observes. A declared Base Year supplies the year. -/
 example :
     monthValues? none (some "03") none = some ["03", "1"] ∧
     monthValues? none none (some "04") = some ["04", "1"] ∧

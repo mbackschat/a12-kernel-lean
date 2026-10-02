@@ -72,13 +72,13 @@ private def world : World := {
 }
 
 private def checked? (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
-  (checkCustomFirstFilledComputation model ["Review"] targetField authored).toOption
+  (checkCustomFirstFilledComputation model ["Review"] targetField (.star authored)).toOption
 
 /-- The same check with the declaring group varied instead of the target, which is how a target
 outside the declaring group is expressed under a single model root. -/
 private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :=
-  (checkCustomFirstFilledComputation model declaringGroup targetField authored).toOption
+  (checkCustomFirstFilledComputation model declaringGroup targetField (.star authored)).toOption
 
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=

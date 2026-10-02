@@ -393,9 +393,13 @@ structure FlatModel where
 def FlatModel.hasBaseYear (model : FlatModel) : Bool := model.baseYear.isSome
 
 /-- The year the Kernel completes a yearless date fragment with: the declared Base Year, else `2000`
-(read in the Kernel's runtime source, `getBaseYearOrDefault`). With no Base Year declared no measured
-reader observes it, since a comparison, `YearFromDate` and `AddDays` over a yearless fragment are each
-refused at authoring ([checkpoint](../../../docs/sources/temporal-and-message-probes.md#src-partial-date-readers)). -/
+(read in the Kernel's runtime source, `getBaseYearOrDefault`). With no Base Year declared, a day
+difference over a yearless `MM-dd` value measures a leap default year
+([checkpoint](../../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year)),
+and no witness of the exact year is known: `YearFromDate` and `AddDays` over a yearless fragment are
+refused at authoring ([checkpoint](../../../docs/sources/temporal-and-message-probes.md#src-partial-date-readers)),
+and so is its comparison with a year-bearing date (the comparability partition in
+[`kf93`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf93)). -/
 def FlatModel.baseYearOrDefault (model : FlatModel) : Int := model.baseYear.getD 2000
 
 /-- The resolved gate of a model-declared required field. -/

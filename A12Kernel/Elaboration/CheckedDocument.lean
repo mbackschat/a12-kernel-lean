@@ -266,10 +266,11 @@ private def ClassifiedCellInput.canonicalScalarCoherent
   | .confirm => input.raw == classifyStoredConfirmText input.stored
   | .temporal _ _ =>
       -- The partially known arm is admitted only on a precision-partial declaration whose own
-      -- classifier admits exactly the stored text as partially known. On that declaration a text
-      -- value and a partially known text placed with no value are refused too, the two encodings the
-      -- arm replaced. Whether a temporal value or a rejection agrees with its text stays the
-      -- `temporallyCoherent` property's question, as on every other temporal declaration.
+      -- classifier admits exactly the stored text as partially known, and a text value there is
+      -- refused, one of the two encodings the arm replaced; the other, a stored text beside no value,
+      -- is refused by `ordinaryCoherent` before this check. Whether a temporal value or a rejection
+      -- agrees with its text stays the `temporallyCoherent` property's question, as on every other
+      -- temporal declaration.
       match certifyPartialDateInputField declaration with
       | .error _ =>
           match input.raw with
@@ -280,8 +281,7 @@ private def ClassifiedCellInput.canonicalScalarCoherent
           | .parsed (.temporal _) => true
           | .parsed (.partialDate text) => text == input.stored && checked.admitsPartiallyKnownText text
           | .parsed _ => false
-          | .presentEmpty => !checked.admitsPartiallyKnownText input.stored
-          | .empty | .rejected _ => true
+          | .empty | .presentEmpty | .rejected _ => true
   | .dateRange =>
       match declaration.toDateRangeDeclarationPolicy? with
       | none => true
@@ -572,11 +572,19 @@ def stringComputationContext (checked : CheckedDocument model) :
         | _ => checked.flatContext.read field
     | .error _ => malformedCheckedCell
 
+/-- The cell a concrete date takes in the model zone, as the fragment read-back builds it, so a
+classifier-completed date is compared with an actual cell by instant and calendar basis as well as by
+parts, exactly as a complete Date is. -/
+private def canonicalDateCell? (model : FlatModel) (date : CivilDate) : Option RawCell := do
+  let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
+  let value ← profile.resolveStoredDate? date
+  pure (.parsed (.temporal (.date value)))
+
 /-- Whether a cell on a precision-partial declaration holds what that declaration's classifier makes of
 its stored text: a partially known text is the `partialDate` arm carrying it, and a fully known one that
-date. -/
-private def partialDateCellAgrees (owner : CheckedPartialDateInputField) (stored : String)
-    (actual : RawCell) : Bool :=
+date in the model zone. -/
+private def partialDateCellAgrees (model : FlatModel) (owner : CheckedPartialDateInputField)
+    (stored : String) (actual : RawCell) : Bool :=
   match owner.classifyStored stored, actual with
   | .presentEmpty, .presentEmpty => true
   | .rejected expected, .rejected found => expected == found
@@ -584,21 +592,22 @@ private def partialDateCellAgrees (owner : CheckedPartialDateInputField) (stored
       text == stored && match value.value with
         | .full _ => false
         | .omittedDay _ | .omittedMonth _ | .omittedYear => true
-  | .admitted value, .parsed (.temporal (.date found)) =>
+  | .admitted value, .parsed (.temporal (.date _)) =>
       match value.value with
-      | .full date => date.civil.parts == found.parts
+      | .full date => (canonicalDateCell? model date.civil).any (temporalCellAgrees · actual)
       | .omittedDay _ | .omittedMonth _ | .omittedYear => false
   | _, _ => false
 
-/-- Whether a cell on a component-omitting declaration holds the earliest date its stored text denotes,
-its year from `FlatModel.baseYearOrDefault` where the format names none. -/
+/-- Whether a cell on a component-omitting declaration holds the earliest date its stored text denotes
+in the model zone, its year from `FlatModel.baseYearOrDefault` where the format names none. -/
 private def omittingDateCellAgrees (model : FlatModel) (owner : CheckedOmittingDateInputField)
     (stored : String) (actual : RawCell) : Bool :=
   match owner.classifyStoredForModel model.baseYear stored, actual with
   | .presentEmpty, .presentEmpty => true
   | .rejected expected, .rejected found => expected == found
-  | .admitted value, .parsed (.temporal (.date found)) =>
-      (value.earliestCivil? model.baseYearOrDefault).any (·.parts == found.parts)
+  | .admitted value, .parsed (.temporal (.date _)) =>
+      ((value.earliestCivil? model.baseYearOrDefault).bind (canonicalDateCell? model)).any
+        (temporalCellAgrees · actual)
   | _, _ => false
 
 /-- Whether every placed temporal cell whose declaration a classifier owns agrees with the value that
@@ -632,7 +641,7 @@ def temporallyCoherent (checked : CheckedDocument model) : Bool :=
         match declaration.policy.kind with
         | .temporal _ components =>
             match certifyPartialDateInputField declaration, certifyOmittingDateInputField declaration with
-            | .ok owner, _ => partialDateCellAgrees owner input.stored input.raw
+            | .ok owner, _ => partialDateCellAgrees model owner input.stored input.raw
             | .error _, .ok owner => omittingDateCellAgrees model owner input.stored input.raw
             | .error _, .error _ =>
             if components == TemporalComponents.fullDate then

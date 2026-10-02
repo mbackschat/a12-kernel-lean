@@ -176,6 +176,47 @@ example :
     coherent? [cell 7 "2024-06" (canonicalDate "1999-12-31")] = some false := by
   native_decide
 
+/- A fully known partial text and a fragment are compared with the model-zone cell their date takes, by
+instant and calendar basis as a complete Date is, not by date parts alone: the right parts at the epoch
+under the legacy basis are incoherent on both. -/
+example :
+    let misplaced (year month day : Nat) : RawCell := .parsed (.temporal (.date {
+      instant := { epochMillis := 0 }
+      parts := { year := (year : Int), month, day }
+      basis := .legacyHybrid }))
+    coherent? [cell 3 "2024-06-15" (misplaced 2024 6 15)] = some false ∧
+    coherent? [cell 7 "2024-06" (misplaced 2024 6 1)] = some false := by
+  native_decide
+
+/-- Whether a one-field model holding `stored` under a yearless fragment `format` reads coherent beside
+the model-zone cell of the given date, in a model with the given Base Year. -/
+private def yearlessCoherent? (baseYear : Option Int) (format stored : String)
+    (year : Int) (month day : Nat) : Option Bool := do
+  let field : FlatFieldDecl := {
+    id := 1, groupPath := ["Policy"], name := "Due"
+    policy := { kind := .temporal .date TemporalComponents.fullDate }
+    temporalTargetPolicy := some { format, partialMode := .yearOptional } }
+  let yearless : FlatModel := { fields := [field], timeZoneId := "Europe/Berlin", baseYear }
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler yearless).toOption
+  let profile ← ModelZone.ConcreteProfile.ofId? yearless.timeZoneId
+  let date ← CivilDate.ofParts? { year, month, day }
+  let value ← profile.resolveStoredDate? date
+  let checked ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [
+    { address := { field := 1, path := [] }, stored, raw := .parsed (.temporal (.date value)) }] }).toOption
+  pure checked.temporallyCoherent
+
+/- **A yearless fragment holds its Base Year's date, or the default year's.** With no Base Year an `MM`
+value is coherent only in 2000, with Base Year 2011 only in 2011, and a February 29 is coherent under the
+leap Base Year 2024. -/
+example :
+    yearlessCoherent? none "MM" "03" 2000 3 1 = some true ∧
+    yearlessCoherent? none "MM" "03" 2011 3 1 = some false ∧
+    yearlessCoherent? (some 2011) "MM" "03" 2011 3 1 = some true ∧
+    yearlessCoherent? (some 2011) "MM" "03" 2000 3 1 = some false ∧
+    yearlessCoherent? (some 2024) "MM-dd" "02-29" 2024 2 29 = some true := by
+  native_decide
+
 /- **The declared coverage limit, asserted rather than assumed.** A Time and a Date whose declared
 format no classifier certifies are reported coherent no matter what value they carry, because neither
 has an owner able to derive one. A consumer reading `true` must not conclude that these were checked. -/

@@ -1,10 +1,13 @@
-import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.FirstFilledFieldSource
 import A12Kernel.Elaboration.ExactTokenComputationResult
-import A12Kernel.Elaboration.CheckedStarShape
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Direct one-star Custom `FirstFilledValue` computation -/
+/-! # Fixed-target Custom `FirstFilledValue` computation
+
+The source is a direct single-level star or a direct list of plain nonrepeatable fields, read through
+the shared [`FirstFilledFieldSource`](FirstFilledFieldSource.lean); the list is measured at a join
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-extractor-join)). -/
 
 namespace A12Kernel
 
@@ -17,62 +20,83 @@ inductive CustomFirstFilledComputationElabError where
       (expected : CustomFieldTypeDeclaration)
       (actual : Option CustomFieldTypeDeclaration)
   | sourceShape (path : List String)
+  /-- A list source the shared entity list or its plain-field reading refuses. -/
+  | list (cause : FirstFilledListElabError)
+  /-- A list source naming the target itself. -/
+  | targetSelfReference (path : List String)
   deriving Repr, DecidableEq
 
-/-- One fixed Custom target and one direct single-level starred source carrying the same Custom declaration. -/
+/-- One fixed Custom target and one source carrying the same Custom declaration, a direct single-level
+star or a direct list of plain nonrepeatable fields. -/
 structure CheckedCustomFirstFilledComputation (model : FlatModel) where
   private mk ::
   target : FlatFieldDecl
-  source : CheckedStarFieldPath model
+  source : FirstFilledFieldSource model
   customType : CustomFieldTypeDeclaration
   /-- The group the computation is declared in, which the target need not lie in. -/
   declaringGroup : GroupPath
-  /-- The declaring group is a representable path, certified by the star elaboration above rather
+  /-- The declaring group is a representable path, certified by the source's elaboration rather
   than re-tested here. Placement itself is unconstrained; only representability survives. -/
   declaringGroupValid : GroupPath.isValid declaringGroup = true
   targetCustom : target.customType = some customType
   targetFixed : target.repeatableScope = []
-  sourceCustom : source.declaration.customType = some customType
-  sourceDirectSingleStar : source.isDirectSingleStar = true
+  sourceCustom : source.declarations.all (·.customType == some customType) = true
+  sourceShape : source.admittedShape = true
+  excludesTarget : source.referencesField target.id = false
 
-/-- Check the exact externally measured Custom computation shape. The validated model already guarantees that every Custom declaration is an evaluated String field. -/
-def checkCustomFirstFilledComputation
-    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
-    Except CustomFirstFilledComputationElabError
-      (CheckedCustomFirstFilledComputation model) := do
-  match hStar : elaborateStarFieldPath model declaringGroup authored with
-  | .error cause => .error (.source cause)
-  | .ok source => do
-    let target ← model.lookupUniqueId targetField |>.mapError .target
-    -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
-    -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
-    -- derives no iteration, so the Kernel admits it from an unrelated group.
-    if hFixed : target.repeatableScope = [] then
-      match hTarget : target.customType with
-      | none => throw (.targetNotCustom target.path)
-      | some customType =>
-        if hSource : source.declaration.customType = some customType then
-          if hShape : source.isDirectSingleStar = true then
+private def checkCustomFirstFilledSourceAgainst (model : FlatModel) (target : FlatFieldDecl)
+    (declaringGroup : GroupPath) (declaringGroupValid : GroupPath.isValid declaringGroup = true)
+    (source : FirstFilledFieldSource model) :
+    Except CustomFirstFilledComputationElabError (CheckedCustomFirstFilledComputation model) := do
+  if hFixed : target.repeatableScope = [] then
+    match hTarget : target.customType with
+    | none => throw (.targetNotCustom target.path)
+    | some customType =>
+      if hSource : source.declarations.all (·.customType == some customType) = true then
+        if hShape : source.admittedShape = true then
+          if hExcludes : source.referencesField target.id = false then
             pure {
-              target
-              source
-              customType
-              declaringGroup
-              declaringGroupValid :=
-                elaborateStarFieldPath_declaringGroupValid hStar
+              target, source, customType, declaringGroup, declaringGroupValid
               targetCustom := hTarget
               targetFixed := hFixed
               sourceCustom := hSource
-              sourceDirectSingleStar := hShape
-            }
-          else
-            throw (.sourceShape source.declaration.path)
-        else
-          throw (.sourceCustomTypeMismatch source.declaration.path customType
-            source.declaration.customType)
-    else
-      throw (.targetRepeatable target.path)
+              sourceShape := hShape
+              excludesTarget := hExcludes }
+          else throw (.targetSelfReference target.path)
+        else throw (.sourceShape (source.declarations.head?.map (·.path) |>.getD target.path))
+      else
+        let other := (source.declarations.find? (·.customType != some customType)).getD target
+        throw (.sourceCustomTypeMismatch other.path customType other.customType)
+  else
+    throw (.targetRepeatable target.path)
+
+/-- Check the measured Custom computation shapes, a direct single-level star or a direct list. The
+validated model already guarantees that every Custom declaration is an evaluated String field. -/
+def checkCustomFirstFilledComputation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceFirstFilledSource) :
+    Except CustomFirstFilledComputationElabError
+      (CheckedCustomFirstFilledComputation model) := do
+  match authored with
+  | .star path =>
+    match hStar : elaborateStarFieldPath model declaringGroup path with
+    | .error cause => .error (.source cause)
+    | .ok source => do
+      let target ← model.lookupUniqueId targetField |>.mapError .target
+      -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+      -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+      -- derives no iteration, so the Kernel admits it from an unrelated group.
+      checkCustomFirstFilledSourceAgainst model target declaringGroup
+        (elaborateStarFieldPath_declaringGroupValid hStar) (.star source)
+  | .list list => do
+    -- As on the Boolean carrier: the list resolves at the target's group first, the target after it.
+    let targetGroup :=
+      ((model.lookupUniqueId targetField).toOption.map (·.groupPath)).getD declaringGroup
+    let checked ← elaborateFirstFilledFieldList model declaringGroup targetGroup list
+      |>.mapError .list
+    let target ← model.lookupUniqueId targetField |>.mapError .target
+    checkCustomFirstFilledSourceAgainst model target declaringGroup checked.declaringGroupValid
+      (.list checked.fields)
 
 /-- Classify one already prepared Custom source cell for computation-phase first-filled selection. -/
 def customFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
@@ -95,10 +119,10 @@ namespace CheckedCustomFirstFilledComputation
 def execute (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except CheckedStarDocumentError TokenComputationResult := do
-  let resolved ← operation.source.resolveCheckedField input []
+  let resolved ← operation.source.resolve input
   let side : ResolvedValueListSide .token := {
     cells := resolved.cells.map fun cell => customFirstFilledCellAt cell.cell
-    hasUninstantiatedTail := resolved.topology.domain.hasOpenTail
+    hasUninstantiatedTail := resolved.hasOpenTail
     hasHaving := false
   }
   pure (evalFirstFilledToken side).asComputationResult

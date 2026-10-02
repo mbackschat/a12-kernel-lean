@@ -190,9 +190,10 @@ def elaborateDateFromDateTimeComputation
       (CheckedDateFromDateTimeComputation model) := do
   let source ← elaborateDateFromDateTime model sourceField |>.mapError .source
   let target ← elaborateFullDateTarget model targetField |>.mapError .target
-  -- A DateTime source and a clock or Date target are different declarations in a well-formed model,
-  -- since one identifier resolves to one declaration and the two kinds gate it apart; the inequality
-  -- is checked rather than derived because neither certificate retains its own lookup.
+  -- A complete-DateTime source and a clock or Date target are different declarations in a well-formed
+  -- model, since one identifier resolves to one declaration and the target's format and component
+  -- gates refuse a complete DateTime; the inequality is checked rather than derived because neither
+  -- certificate retains its own lookup.
   if distinct : source.source.id = target.checked.target.id then throw .incoherentCore
   else pure { source, target, sourceDistinct := distinct }
 

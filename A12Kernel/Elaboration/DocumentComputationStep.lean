@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
+import A12Kernel.Elaboration.CustomFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeConstructionComputation
 import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
@@ -26,7 +27,7 @@ its target, the fields it reads, a proof that it does not read its own target, a
 the target's outcome together with the cell a later computation reads for it. Day, sub-day and mixed
 DateTime shifts, a full-Date computation, `TimeFromDateTime` and `DateFromDateTime`, a Time construction,
 an Enumeration copy, a DateRange construction and the fixed-target `FirstFilledValue` over a Boolean,
-String, DateFragment, Time, DateTime, full Date, DateRange or Enumeration are its instances; each is one
+String, Custom, DateFragment, Time, DateTime, full Date, DateRange or Enumeration are its instances; each is one
 constructor here, and the plan's laws are stated once over the step rather than once per family. A
 String target is checked against its prepared pattern, which the plan hands every step as the lookup
 `StringTargetMatchers`.
@@ -232,7 +233,7 @@ measured by comparison against a full Date (the DateFragment runtime-completion 
 equal to its month's first day
 ([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-partial-date-readers)). A yearless
 fragment in a model declaring no Base Year is computed by the Kernel and completes to
-`FlatModel.baseYearOrDefault`, a year no measured reader observes. -/
+`FlatModel.baseYearOrDefault`, whose leap-ness is measured and whose exact year has no witness. -/
 def dateFragment (model : FlatModel) (target : FieldId) :
     StringTargetOutcome → Except DocumentComputationStepFault CheckedCell
   | .noValue => pure empty
@@ -462,6 +463,19 @@ def ofStringFirstFilled (operation : CheckedStringFirstFilledComputation model) 
     let matcher ← (matchers operation.target.id).getDM
       (throw (.stringFirstFilled (.targetPatternUnavailable operation.target.id)))
     let outcome ← (operation.executeWith matcher document).mapError .stringFirstFilled
+    let cell ← DocumentComputationReadBack.string outcome
+    pure (.string outcome, cell)
+
+/-- A fixed-target Custom `FirstFilledValue`, whose selected token its matching Custom declaration
+accepts unchecked, read back as a String completion is. -/
+def ofCustomFirstFilled (operation : CheckedCustomFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.id
+  family := .string
+  referencesField := operation.source.referencesField
+  excludesTarget := operation.excludesTarget
+  run _ _ document := do
+    let outcome := (← (operation.execute document).mapError .firstFilledSource).asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.string outcome
     pure (.string outcome, cell)
 

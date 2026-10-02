@@ -1,0 +1,339 @@
+{
+ "header": {
+  "id": "Rs_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Rs_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rg",
+     "name": "Rg",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Rg/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/A",
+           "name": "A",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/B",
+           "name": "B",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/CA",
+           "name": "CA",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/MX",
+           "name": "MX",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/DV",
+           "name": "DV",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/AB",
+           "name": "AB",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/FF",
+           "name": "FF",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/VN",
+           "name": "VN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/K",
+           "name": "K",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/KN",
+           "name": "KN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/KComp",
+           "name": "KComp",
+           "Computation": {
+            "computedFieldRelPath": "../K",
+            "computationAlternatives": [
+             {
+              "operation": "1",
+              "precondition": "FieldFilled(FF)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/KNComp",
+           "name": "KNComp",
+           "Computation": {
+            "computedFieldRelPath": "../KN",
+            "computationAlternatives": [
+             {
+              "operation": "1",
+              "precondition": "FieldNotFilled(FF)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/MXComp",
+           "name": "MXComp",
+           "Computation": {
+            "computedFieldRelPath": "../MX",
+            "computationAlternatives": [
+             {
+              "operation": "Max([CA], [B])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/DVComp",
+           "name": "DVComp",
+           "Computation": {
+            "computedFieldRelPath": "../DV",
+            "computationAlternatives": [
+             {
+              "operation": "RoundAccounting([CA] / [B], 2)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/ABComp",
+           "name": "ABComp",
+           "Computation": {
+            "computedFieldRelPath": "../AB",
+            "computationAlternatives": [
+             {
+              "operation": "Abs([CA] - [B])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/FFComp",
+           "name": "FFComp",
+           "Computation": {
+            "computedFieldRelPath": "../FF",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(CA, B)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/VNComp",
+           "name": "VNComp",
+           "Computation": {
+            "computedFieldRelPath": "../VN",
+            "computationAlternatives": [
+             {
+              "operation": "NumberOfValueInFields(5 In CA, B)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CAComp",
+           "name": "CAComp",
+           "Computation": {
+            "computedFieldRelPath": "../CA",
+            "computationAlternatives": [
+             {
+              "operation": "[A]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

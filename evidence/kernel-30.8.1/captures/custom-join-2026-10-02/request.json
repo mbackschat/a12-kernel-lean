@@ -1,0 +1,91 @@
+{
+ "model": "Xc_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-02T00:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "customFieldTypes": {
+  "Code": {
+   "maxLength": 3
+  }
+ },
+ "rows": [
+  {
+   "name": "r1-fresh",
+   "documentInline": {
+    "Xc": {
+     "C1": "AA",
+     "C2": null,
+     "C3": "A",
+     "CA": "AAA",
+     "CF": "AAA",
+     "KC": 99,
+     "KNC": 99,
+     "VC": 99
+    }
+   }
+  },
+  {
+   "name": "r2-cleared-upstream",
+   "documentInline": {
+    "Xc": {
+     "C1": null,
+     "C2": null,
+     "C3": "A",
+     "CA": "AAA",
+     "CF": "AAA",
+     "KC": 99,
+     "KNC": 99,
+     "VC": 99
+    }
+   }
+  },
+  {
+   "name": "r3-poisoned-upstream",
+   "documentInline": {
+    "Xc": {
+     "C1": "BBBB",
+     "C2": null,
+     "C3": "A",
+     "CA": "AAA",
+     "CF": "AAA",
+     "KC": 99,
+     "KNC": 99,
+     "VC": 99
+    }
+   }
+  },
+  {
+   "name": "r4-all-absent",
+   "documentInline": {
+    "Xc": {
+     "C1": null,
+     "C2": null,
+     "C3": null,
+     "CA": "AAA",
+     "CF": "AAA",
+     "KC": 99,
+     "KNC": 99,
+     "VC": 99
+    }
+   }
+  },
+  {
+   "name": "r5-malformed-unread",
+   "documentInline": {
+    "Xc": {
+     "C1": "AA",
+     "C2": null,
+     "C3": "BBBB",
+     "CA": "AAA",
+     "CF": "AAA",
+     "KC": 99,
+     "KNC": 99,
+     "VC": 99
+    }
+   }
+  }
+ ]
+}

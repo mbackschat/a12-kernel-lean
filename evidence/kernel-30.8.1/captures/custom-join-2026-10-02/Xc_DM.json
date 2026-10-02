@@ -1,0 +1,246 @@
+{
+ "header": {
+  "id": "Xc_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Xc_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Xc",
+     "name": "Xc",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Xc/C1",
+        "name": "C1",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "Code"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Xc/C2",
+        "name": "C2",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "Code"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Xc/C3",
+        "name": "C3",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "Code"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Xc/CA",
+        "name": "CA",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "Code"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Xc/CF",
+        "name": "CF",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "Code"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Xc/KC",
+        "name": "KC",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Xc/KNC",
+        "name": "KNC",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Xc/VC",
+        "name": "VC",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Xc/KCComp",
+        "name": "KCComp",
+        "Computation": {
+         "computedFieldRelPath": "../KC",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(CF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Xc/KNCComp",
+        "name": "KNCComp",
+        "Computation": {
+         "computedFieldRelPath": "../KNC",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldNotFilled(CF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Xc/VCComp",
+        "name": "VCComp",
+        "Computation": {
+         "computedFieldRelPath": "../VC",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(\"AA\" In CA, C3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Xc/CFComp",
+        "name": "CFComp",
+        "Computation": {
+         "computedFieldRelPath": "../CF",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(CA, C3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Xc/CAComp",
+        "name": "CAComp",
+        "Computation": {
+         "computedFieldRelPath": "../CA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(C1, C2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
