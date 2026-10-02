@@ -203,7 +203,7 @@ private def checkTemporalFirstFilledSourceAgainst (model : FlatModel)
           else
             -- A list whose fields do not all repeat the first's profile. Each profile has one
             -- format, so two differing profiles either differ in format, which the Kernel refuses
-            -- (spec/07's identical-format rule), or share one across kinds, which the Kernel admits
+            -- (`MVK_VARYING_TYPES_NOT_ALLOWED`, docs/sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string), or share one across kinds, which the Kernel admits
             -- and this carrier set does not represent; neither claims a Kernel class here.
             throw (.sourceCarrier ((source.declarations.find?
               (·.temporalFirstFilledStarCarrier? != some sourceProfile)).map (·.path) |>.getD first.path))
