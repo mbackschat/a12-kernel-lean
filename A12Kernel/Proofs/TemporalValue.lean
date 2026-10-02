@@ -18,7 +18,7 @@ theorem flatTemporalDate_projects_instant_and_component
       context.resolveDateNumericOperand field part =
         .value (part.extract date.parts) .fixed := by
   simp [FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
-    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, observed, family,
+    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?]
 
 /-- The universal range reaches the established resolved range whenever both endpoint projections succeed. -/
@@ -59,7 +59,7 @@ theorem flatTemporalDateTime_projects_all_consumers
       context.resolveTimeNumericOperand field timePart =
         .value (timePart.extract time) .fixed := by
   simp [FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
-    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand,
+    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy,
     FlatContext.resolveTimeNumericOperand, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?,
     TemporalValue.time?]

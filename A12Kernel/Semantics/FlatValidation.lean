@@ -367,15 +367,17 @@ def FlatContext.resolveTimeComparisonOperand (context : FlatContext)
     (field : FlatTemporalField) : SimpleComparisonOperand TimeOfDay :=
   context.resolveTemporalFieldBy field TemporalValue.time?
 
-/-- Resolve one checked field holding a date for direct numeric date-component extraction. -/
-def FlatContext.resolveDateNumericOperand (context : FlatContext)
-    (field : FlatTemporalField) (part : DateNumericPart) : NumericOperand :=
+/-- Resolve one checked temporal field to one numeric component for direct extraction: empty is the
+symmetric zero, and a value its field does not hold, or one without the projected component, is
+malformed. -/
+def FlatContext.resolveTemporalNumericOperandBy (context : FlatContext)
+    (field : FlatTemporalField) (project : TemporalValue → Option Rat) : NumericOperand :=
   match context.observeValidationAt field.id with
   | .empty => .value 0 .both
   | .value (.temporal value) =>
       if field.holdsValue value then
-        match value.dateParts? with
-        | some parts => .value (part.extract parts) .fixed
+        match project value with
+        | some amount => .value amount .fixed
         | none => .unknown .malformed
       else
         .unknown .malformed
@@ -383,21 +385,15 @@ def FlatContext.resolveDateNumericOperand (context : FlatContext)
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
+/-- Resolve one checked field holding a date for direct numeric date-component extraction. -/
+def FlatContext.resolveDateNumericOperand (context : FlatContext)
+    (field : FlatTemporalField) (part : DateNumericPart) : NumericOperand :=
+  context.resolveTemporalNumericOperandBy field fun value => value.dateParts?.map part.extract
+
 /-- Resolve one checked field holding a clock for direct numeric clock-component extraction. -/
 def FlatContext.resolveTimeNumericOperand (context : FlatContext)
     (field : FlatTemporalField) (part : TimeNumericPart) : NumericOperand :=
-  match context.observeValidationAt field.id with
-  | .empty => .value 0 .both
-  | .value (.temporal value) =>
-      if field.holdsValue value then
-        match value.time? with
-        | some clock => .value (part.extract clock) .fixed
-        | none => .unknown .malformed
-      else
-        .unknown .malformed
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .unknown cause
+  context.resolveTemporalNumericOperandBy field fun value => value.time?.map part.extract
 
 /-- Resolve one already-selected local calendar label through the injected model-zone capability without imposing stored-Date admission. -/
 def FlatContext.resolveLocalDateComparisonOperand
