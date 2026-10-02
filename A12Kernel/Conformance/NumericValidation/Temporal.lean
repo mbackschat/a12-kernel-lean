@@ -7,6 +7,62 @@ namespace A12Kernel.Conformance.NumericValidation.Temporal
 open A12Kernel
 open A12Kernel.Conformance.NumericValidation.Support
 
+private def dateLiteral (year : Option Int) (month day : Nat) : SurfaceDateDifferenceOperand :=
+  .literal { year, month, day }
+
+private def literalDateCell (year : Int) (month day : Nat) : RawCell :=
+  let parts : DateParts := { year, month, day }
+  match CalendarDayDifferenceOperand.ofParts .utc parts with
+  | .value _ instant => .parsed (.temporal (.date { instant, parts, basis := .storedGregorian }))
+  | _ => .rejected .malformed
+
+/- The retained Base-Year ladder separates authored year presence from runtime completion; swapping
+endpoints must reverse the signed result (yearless-anchor-base-year, spec/05 §1). -/
+example :
+    let left := dateLiteral none 2 28
+    let right := dateLiteral none 3 1
+    let result (year : Option Int) (value : Rat) :=
+      verdictOf (comparison .equal (dayDifference left right) value) raw true { model with baseYear := year }
+    [result none 2, result (some 2023) 1, result (some 2024) 2,
+      verdictOf (comparison .equal (dayDifference right left) (-1)) raw true
+        { model with baseYear := some 2023 }] = List.replicate 4 (some (.fired .value)) := by
+  native_decide
+
+example :
+    let literal := dateLiteral none 1 1
+    let mixed := dayDifference literal (dateOperand "NoYear")
+    verdictOf (comparison .equal mixed 59)
+        (temporalRaw 11 (literalDateCell 2023 3 1)) true { model with baseYear := some 2023 } =
+        some (.fired .value) ∧
+      verdictOf (comparison .less mixed 1) (temporalRaw 11 .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .equal mixed 0) (temporalRaw 11 (.rejected .malformed)) = some .unknown ∧
+      errorOf (comparison .equal (dayDifference literal (dateLiteral (some 2024) 3 1)) 60) =
+        some .incompatibleDateDifference ∧
+      verdictOf (comparison .equal (dayDifference literal (dateLiteral (some 2024) 3 1)) 60)
+        raw true { model with baseYear := some 2024 } = some (.fired .value) := by
+  native_decide
+
+example :
+    let invalid := dateLiteral none 2 29
+    errorOf (comparison .equal (dayDifference invalid (dateLiteral none 3 1)) 1)
+        { model with baseYear := some 2024 } = some .incompatibleDateDifference ∧
+      verdictOf (comparison .equal
+        (dateDifference .months (dateLiteral (some 2024) 1 1) (dateLiteral (some 2024) 3 1)) 2) =
+        some (.fired .value) ∧
+      verdictOf (comparison .equal
+        (dateDifference .years (dateLiteral (some 2023) 3 1) (dateLiteral (some 2024) 3 1)) 1) =
+        some (.fired .value) := by
+  native_decide
+
+example :
+    let literal : AuthoredDateLiteral := { year := none, month := 3, day := 1 }
+    let admitted (anchor : Int) := NumericValidationAtom.admitted
+      { model with baseYear := some 2023 } ["Order"] .sameGroup
+      (.dayDifference .utc (.literal literal anchor) (.literal literal anchor))
+    admitted 2023 = true ∧ admitted 2024 = false ∧
+      (ResolvedDateDifferenceOperand.literal literal 2023).references 11 = false := by
+  native_decide
+
 private def fullDateField : FlatFieldDecl := {
   id := 24
   groupPath := ["Order"]

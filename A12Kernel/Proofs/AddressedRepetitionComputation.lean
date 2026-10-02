@@ -73,7 +73,7 @@ private theorem admitsDateDifferenceEndpoint_not_target {model : FlatModel}
     (admitted : target.admitsDateDifferenceEndpoint operand = true) :
     operand.references target.targetField = false := by
   cases operand with
-  | baseYear _ _ => rfl
+  | baseYear _ _ | literal _ _ => rfl
   | field source =>
       simp only [CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint,
         CheckedAddressedNumericTarget.admitsSourceField] at admitted
@@ -193,7 +193,7 @@ private theorem admitsDateDifferenceEndpoint_rowBound {model : FlatModel}
     ∃ owned, model.lookupUniqueId field = .ok owned ∧
       owned.repetitionBoundBy target.targetDeclaration.repeatableScope = true := by
   cases operand with
-  | baseYear _ _ => simp [ResolvedDateDifferenceOperand.references] at referenced
+  | baseYear _ _ | literal _ _ => simp [ResolvedDateDifferenceOperand.references] at referenced
   | field source =>
       simp only [ResolvedDateDifferenceOperand.references] at referenced
       cases (by simpa using referenced : source.id = field)

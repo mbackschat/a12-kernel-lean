@@ -49,6 +49,11 @@ def entityTextOperand? : Expr → Option SurfaceTextFieldOperand
   | _ => none
 
 private def dateDifferenceOperand? : Expr → Option SurfaceDateDifferenceOperand
+  | .string text =>
+      match civilDateConstant? text, yearlessDateConstant? text with
+      | some date, _ => some (.literal { year := some date.parts.year, month := date.parts.month, day := date.parts.day })
+      | _, some (month, day) => some (.literal { year := none, month, day })
+      | _, _ => none
   | .constant "Now" => some .now
   | .constant "BaseYear" => some (.baseYear .direct)
   | expr => (expr.fieldEntity?).map .field

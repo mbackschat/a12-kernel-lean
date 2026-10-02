@@ -41,6 +41,9 @@ private def resolveDateDifferenceOperandWith
       Except NumericValidationElabError FlatTemporalField) :
     SurfaceDateDifferenceOperand →
       Except NumericValidationElabError ResolvedDateDifferenceOperand
+  | .literal source =>
+      if source.valid then pure (.literal source model.baseYearOrDefault)
+      else throw .incompatibleDateDifference
   | .field reference => return .field (← resolveField reference)
   | .baseYear source =>
       match model.baseYear with
@@ -156,7 +159,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       let resolveOperand (reference : SurfaceDateDifferenceOperand) :
           Except NumericValidationElabError FlatTemporalOperand :=
         match reference with
-        | .baseYear _ => throw .incompatibleDateDifference
+        | .baseYear _ | .literal _ => throw .incompatibleDateDifference
         | .now => pure .nowValue
         | .field path => do
             let field ← resolveTemporalNumericField model rowGroup writtenGroup path
@@ -332,7 +335,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
       let resolveOperand (operand : SurfaceDateDifferenceOperand) :
           Except NumericValidationElabError FlatTemporalOperand :=
         match operand with
-        | .baseYear _ => throw .incompatibleDateDifference
+        | .baseYear _ | .literal _ => throw .incompatibleDateDifference
         | .now => pure .nowValue
         | .field reference => do
             let declaration ←

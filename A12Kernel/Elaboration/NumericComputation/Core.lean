@@ -80,6 +80,7 @@ def FlatModel.admitsNumericComputationOperand
         | .field source =>
             model.admitsTemporalComputationOperand scope source
               (unit.admittedBy model.hasBaseYear source.components)
+        | .literal source year => source.admittedIn model year
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
@@ -101,6 +102,7 @@ def FlatModel.admitsNumericComputationOperand
         | .field source =>
             model.admitsTemporalComputationOperand scope source
               (CalendarDayDifference.admittedBy source.components)
+        | .literal source year => source.admittedIn model year
         | .baseYear year _ => model.baseYear == some year
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
         admitted left && admitted right &&
@@ -415,6 +417,9 @@ private def FlatModel.elaborateNumericComputationAtom
                 (fun source =>
                   unit.admittedBy model.hasBaseYear source.components)
               pure (.field field)
+          | .literal source =>
+              if source.valid then pure (.literal source model.baseYearOrDefault)
+              else throw .incompatibleDateDifference
           | .baseYear source =>
               match model.baseYear with
               | some year => pure (.baseYear year source)
@@ -430,7 +435,7 @@ private def FlatModel.elaborateNumericComputationAtom
     | .numeric (.dateTimeDifference unit left right) => do
         let resolveOperand : SurfaceDateDifferenceOperand →
             Except NumericComputationElabError FlatTemporalOperand
-          | .baseYear _ => throw .incompatibleDateDifference
+          | .baseYear _ | .literal _ => throw .incompatibleDateDifference
           | .now => pure .nowValue
           | .field reference => do
               let field ← model.resolveTemporalNumericComputationField
@@ -460,6 +465,9 @@ private def FlatModel.elaborateNumericComputationAtom
                 (fun source =>
                   CalendarDayDifference.admittedBy source.components)
               pure (.field field)
+          | .literal source =>
+              if source.valid then pure (.literal source model.baseYearOrDefault)
+              else throw .incompatibleDateDifference
           | .baseYear source =>
               match model.baseYear with
               | some year => pure (.baseYear year source)

@@ -330,6 +330,18 @@ private def stampTwoRef : SurfaceFieldPath :=
 private def days (left right : SurfaceDateDifferenceOperand) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .add (repetition innerPath) (.atom (.dayDifference left right))
+example :
+    let expression := days
+      (.literal { year := none, month := 2, day := 28 })
+      (.literal { year := none, month := 3, day := 1 })
+    let checked := checkAddressedRepetitionComputation
+      { model with baseYear := some 2023 } innerPath 1 expression
+    (checked.toOption.bind fun operation =>
+      (operation.evaluateAtEnvironmentWithRead
+        (fun address => .error (.incoherentCell address)) [(10, 1), (20, 2)]).toOption) =
+      some (.value 3) := by
+  native_decide
+
 private def hours (left right : SurfaceDateDifferenceOperand) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .add (repetition innerPath) (.atom (.dateTimeDifference .hours left right))

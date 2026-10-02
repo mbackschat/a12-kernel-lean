@@ -5,9 +5,9 @@ import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked calendar differences
 
-This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences use decoded date parts; day differences preserve both the decoded local Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. Stored/full Dates plus direct or range-selected Base-Year sources share the boundary.
+This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences use decoded date parts; day differences preserve both the decoded local Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. Stored/full Dates, admitted date literals and direct or range-selected Base-Year sources share the boundary.
 
-The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance while refusing legacy-hybrid values. Checked field/Base-Year lowering, per-operation kind/component gates, concrete profile selection, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` legacy-hybrid execution, wider authored temporal operands, and temporal targets remain outside.
+The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance while refusing legacy-hybrid values. Checked field/literal/Base-Year lowering, per-operation kind/component gates, concrete profile selection, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` legacy-hybrid execution, wider authored temporal operands, and temporal targets remain outside.
 -/
 
 namespace A12Kernel
@@ -210,16 +210,20 @@ def ofObservation : CellObservation Value → CalendarDayDifferenceOperand
   | .value _ => .unavailable .malformed
   | .unknown cause | .poison cause => .unavailable cause
 
-/-- Resolve one direct or range-selected Base-Year endpoint at midnight in the already selected concrete profile. -/
-def ofBaseYear (profile : ModelZone.ConcreteProfile) (year : Int)
-    (source : BaseYearDateSource) : CalendarDayDifferenceOperand :=
-  let parts := source.parts year
+/-- Resolve an admitted calendar endpoint at midnight in its model-zone profile. -/
+def ofParts (profile : ModelZone.ConcreteProfile)
+    (parts : DateParts) : CalendarDayDifferenceOperand :=
   match LocalDateTime.ofYmdHms? parts.year parts.month parts.day 0 0 0 with
   | none => .unsupportedCalendar
   | some localDateTime =>
       match profile.resolveLocal? localDateTime with
       | some instant => .value localDateTime instant
       | none => .unsupportedCalendar
+
+/-- Resolve one direct or range-selected Base-Year endpoint through the common midnight boundary. -/
+def ofBaseYear (profile : ModelZone.ConcreteProfile) (year : Int)
+    (source : BaseYearDateSource) : CalendarDayDifferenceOperand :=
+  ofParts profile (source.parts year)
 
 /-- Formal unavailability dominates empty substitution. Empty then yields symmetric numeric zero; present values delegate to the selected exact-instant calendar-step profile. -/
 def evaluate (profile : ModelZone.ConcreteProfile)

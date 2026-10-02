@@ -83,6 +83,7 @@ def readDateRangeBoundNumeric (context : ScalarComputationContext)
 
 def readDateDifferenceOperand (context : ScalarComputationContext) :
     ResolvedDateDifferenceOperand → DateDifferenceOperand
+  | .literal source year => .value (source.parts year)
   | .field source => DateDifferenceOperand.ofObservation
       (observeCell .computation (context.read source.id))
   | .baseYear year source => .value (source.parts year)
@@ -90,6 +91,7 @@ def readDateDifferenceOperand (context : ScalarComputationContext) :
 def readCalendarDayDifferenceOperand (context : ScalarComputationContext)
     (profile : ModelZone.ConcreteProfile) :
     ResolvedDateDifferenceOperand → CalendarDayDifferenceOperand
+  | .literal source year => CalendarDayDifferenceOperand.ofParts profile (source.parts year)
   | .field source => CalendarDayDifferenceOperand.ofObservation
       (observeCell .computation (context.read source.id))
   | .baseYear year source =>
@@ -525,7 +527,7 @@ def NumericComputationAtom.numericComputationFault? :
         | .field source =>
             if unit.admittedBy true source.components then none
             else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ => none
+        | .baseYear _ _ | .literal _ _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right
@@ -544,7 +546,7 @@ def NumericComputationAtom.numericComputationFault? :
         | .field source =>
             if CalendarDayDifference.admittedBy source.components then none
             else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ => none
+        | .baseYear _ _ | .literal _ _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right

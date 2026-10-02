@@ -7,6 +7,19 @@ namespace A12Kernel.Conformance.NumericComputation.Temporal
 open A12Kernel
 open A12Kernel.Conformance.NumericComputation.Support
 
+example :
+    let first : SurfaceDateDifferenceOperand := .literal { year := none, month := 2, day := 28 }
+    let second : SurfaceDateDifferenceOperand := .literal { year := none, month := 3, day := 1 }
+    checkedResultOfIn { model with baseYear := some 2023 }
+        (surfaceDayDifference first second) = some (.value 1) ∧
+      checkedResultOfIn { model with baseYear := some 2024 }
+        (surfaceDayDifference second first) = some (.value (-2)) ∧
+      checkedResultOfIn noBaseYearModel (surfaceDayDifference first second) = some (.value 2) ∧
+      checkedResultOf (surfaceDateDifference .months
+        (.literal { year := some 2024, month := 1, day := 1 })
+        (.literal { year := some 2024, month := 3, day := 1 })) = some (.value 2) := by
+  native_decide
+
 /- Checked computation shares the temporal component source seam and admits both direct operation-form wrappers. -/
 example :
     checkedResultOf (surfaceDateFieldPart "DateTime" .day)

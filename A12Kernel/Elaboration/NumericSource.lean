@@ -202,13 +202,40 @@ def FlatContext.resolveTemporalNumericOperand (context : FlatContext)
   | .date part => context.resolveDateNumericOperand field part
   | .time part => context.resolveTimeNumericOperand field part
 
+/-- A date literal keeps written year presence apart from its model-dependent completion.
+The omitted-year calendar gate uses a common year (spec/05 §1), even in a leap Base Year. -/
+structure AuthoredDateLiteral where
+  year : Option Int
+  month : Nat
+  day : Nat
+  deriving Repr, DecidableEq
+
+namespace AuthoredDateLiteral
+
+def valid (literal : AuthoredDateLiteral) : Bool :=
+  (CivilDate.ofYmd? (literal.year.getD 2023) literal.month literal.day).isSome
+
+/-- Certify both the authored calendar and the model's completion year at checked entry points. -/
+def admittedIn (literal : AuthoredDateLiteral) (model : FlatModel) (anchorYear : Int) : Bool :=
+  literal.valid && anchorYear == model.baseYearOrDefault
+
+def components (literal : AuthoredDateLiteral) : TemporalComponents :=
+  { TemporalComponents.fullDate with year := literal.year.isSome }
+
+def parts (literal : AuthoredDateLiteral) (anchorYear : Int) : DateParts :=
+  { year := literal.year.getD anchorYear, month := literal.month, day := literal.day }
+
+end AuthoredDateLiteral
+
 inductive SurfaceDateDifferenceOperand where
+  | literal (source : AuthoredDateLiteral)
   | field (path : SurfaceFieldPath)
   | baseYear (source : BaseYearDateSource)
   | now
   deriving Repr, DecidableEq
 
 inductive ResolvedDateDifferenceOperand where
+  | literal (source : AuthoredDateLiteral) (anchorYear : Int)
   | field (source : FlatTemporalField)
   | baseYear (year : Int) (source : BaseYearDateSource)
   deriving Repr, DecidableEq
@@ -216,19 +243,23 @@ inductive ResolvedDateDifferenceOperand where
 namespace ResolvedDateDifferenceOperand
 
 def isField : ResolvedDateDifferenceOperand → Bool
+  | .literal _ _ => false
   | .field _ => true
   | .baseYear _ _ => false
 
 def components : ResolvedDateDifferenceOperand → TemporalComponents
+  | .literal source _ => source.components
   | .field source => source.components
   | .baseYear _ _ => TemporalComponents.baseYear
 
 def references (field : FieldId) : ResolvedDateDifferenceOperand → Bool
+  | .literal _ _ => false
   | .field source => source.id == field
   | .baseYear _ _ => false
 
 def validationOperand (context : FlatContext) :
     ResolvedDateDifferenceOperand → DateDifferenceOperand
+  | .literal source year => .value (source.parts year)
   | .field source => DateDifferenceOperand.ofObservation
       (context.observeValidationAt source.id)
   | .baseYear year source => .value (source.parts year)
@@ -236,6 +267,7 @@ def validationOperand (context : FlatContext) :
 def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
     (context : FlatContext) :
     ResolvedDateDifferenceOperand → CalendarDayDifferenceOperand
+  | .literal source year => CalendarDayDifferenceOperand.ofParts profile (source.parts year)
   | .field source => CalendarDayDifferenceOperand.ofObservation
       (context.observeValidationAt source.id)
   | .baseYear year source =>

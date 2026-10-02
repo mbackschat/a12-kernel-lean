@@ -16,8 +16,8 @@ def CheckedAddressedNumericTarget.admitsSourceField
   | .error _ => false
 
 /-- One endpoint of a completed-period difference. A field endpoint answers exactly the scope rule
-    above; the Base-Year endpoint reads no cell and is admitted only at the year this model declares,
-    so a forged constant cannot enter a checked operand. The unit's own component gate is applied
+    above; literals and Base-Year endpoints read no cell and retain their model's completion year,
+    so a forged anchor cannot enter a checked operand. The unit's own component gate is applied
     once over the pair rather than here, because its year position is satisfiable by the model's
     Base Year and that is a property of the pair's agreement, not of one endpoint. -/
 def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
@@ -25,6 +25,7 @@ def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
     ResolvedDateDifferenceOperand → Bool
   | .field source =>
       target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
+  | .literal source year => source.admittedIn model year
   | .baseYear year _ => model.baseYear == some year
 
 /-- One endpoint of a sub-day difference. Only a field is admitted, because `Now` needs an evaluation
@@ -162,6 +163,9 @@ private def resolveDateDifferenceEndpoint (target : CheckedAddressedNumericTarge
       match declaration.toTemporalField? with
       | some field => pure (.field field)
       | none => throw .unsupportedExpression
+  | .literal source =>
+      if source.valid then pure (.literal source model.baseYearOrDefault)
+      else throw .unsupportedExpression
   | .baseYear source =>
       match model.baseYear with
       | some year => pure (.baseYear year source)
@@ -180,7 +184,7 @@ private def resolveSubdayEndpoint (target : CheckedAddressedNumericTarget model)
       match declaration.toTemporalField? with
       | some field => pure (.fieldValue field)
       | none => throw .unsupportedExpression
-  | .baseYear _ | .now => throw .unsupportedExpression
+  | .baseYear _ | .now | .literal _ => throw .unsupportedExpression
 
 /-- Resolve a field the target's declaring group names, asking the field read's group gate from the
     target's scope, for a bracket read and an operator's field parameter ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
@@ -331,7 +335,7 @@ private def readAddressedAtom (model : FlatModel) (atom : NumericComputationAtom
 private def ResolvedDateDifferenceOperand.endpointField? :
     ResolvedDateDifferenceOperand → Option FieldId
   | .field source => some source.id
-  | .baseYear _ _ => none
+  | .baseYear _ _ | .literal _ _ => none
 
 /-- The same projection for a sub-day endpoint. Only the field form is admitted here, so every other
     shape reports no field and would read nothing even if one were reachable. -/

@@ -32,6 +32,15 @@ private def admitted (text : String) : Bool :=
   | .ok parsed => (lowerCondition model ["Order"] false parsed.body).toOption.isSome
   | .error _ => false
 
+/- The Base-Year ladder's literal endpoints must reach the shared numeric carrier, including the
+reversed mixed endpoint. Invalid calendar text stays outside it (spec/05 §1). -/
+example :
+    [admitted "DifferenceInDays(\"28.02.\", \"01.03.\") > 1",
+     admitted "DifferenceInDays(\"01.01.2024\", Due1) == 0",
+     admitted "DifferenceInDays(Due1, \"01.01.2024\") == 0",
+     !admitted "DifferenceInDays(\"29.02.\", \"01.03.\") == 1"].all id := by
+  native_decide
+
 /- A one-operand group-list quantifier reaches the group-list carrier rather than stopping at the
 one-argument presence arm, which admits only `FieldFilled` and `GroupFilled` forms. -/
 example :
