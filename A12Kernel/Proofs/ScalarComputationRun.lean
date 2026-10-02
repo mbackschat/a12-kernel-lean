@@ -160,7 +160,7 @@ theorem scalarComputationRun_evaluateStep_faultIdentity
       | ok completion =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
   | document step =>
-      cases result : step.run world (run.documentFor state input) with
+      cases result : step.run world patterns.targetMatcher? (run.documentFor state input) with
       | error cause =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
           subst fault

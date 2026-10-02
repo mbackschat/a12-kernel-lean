@@ -1,10 +1,14 @@
-import A12Kernel.Elaboration.CheckedStarDocument
-import A12Kernel.Elaboration.CheckedStarShape
+import A12Kernel.Elaboration.FirstFilledFieldSource
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Direct one-star ordinary String `FirstFilledValue` computation -/
+/-! # Fixed-target ordinary String `FirstFilledValue` computation
+
+The source is a direct single-level star or a direct list of plain nonrepeatable fields, read through
+the shared [`FirstFilledFieldSource`](FirstFilledFieldSource.lean); the list is measured at a join, a
+cleared upstream falling through and a poisoned one ending the scan
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-extractor-join)). -/
 
 namespace A12Kernel
 
@@ -22,6 +26,10 @@ inductive StringFirstFilledComputationElabError where
   | source (cause : StarPathElabError)
   | sourceNotOrdinaryString (path : List String)
   | sourceShape (path : List String)
+  /-- A list source the shared entity list or its plain-field reading refuses. -/
+  | list (cause : FirstFilledListElabError)
+  /-- A list source naming the target itself. -/
+  | targetSelfReference (path : List String)
   deriving Repr, DecidableEq
 
 /-- Project the source star's own refusals, whose classes belong to the path rather than the
@@ -35,59 +43,79 @@ def StringFirstFilledComputationElabError.diagnostic? :
   -- Named rather than wildcarded, so a new refusal must be classified rather than absorbed. None of
   -- these is measured on this carrier.
   | .target _ | .targetRepeatable _ | .targetNotOrdinaryString _ | .sourceNotOrdinaryString _
-  | .sourceShape _ => none
+  | .sourceShape _ | .list _ | .targetSelfReference _ => none
 
-/-- One fixed ordinary String target and one direct single-level ordinary String star. -/
+/-- One fixed ordinary String target and one ordinary String source, a direct single-level star or a
+direct list of plain nonrepeatable fields, certified against the same model. -/
 structure CheckedStringFirstFilledComputation (model : FlatModel) where
   private mk ::
   target : FlatFieldDecl
-  source : CheckedStarFieldPath model
+  source : FirstFilledFieldSource model
   /-- The group the computation is declared in, which the target need not lie in. -/
   declaringGroup : GroupPath
-  /-- The declaring group is a representable path, certified by the star elaboration above rather
+  /-- The declaring group is a representable path, certified by the source's elaboration rather
   than re-tested here. Placement itself is unconstrained; only representability survives. -/
   declaringGroupValid : GroupPath.isValid declaringGroup = true
   targetFixed : target.repeatableScope = []
   targetOrdinary : target.isOrdinaryStringComputationCarrier = true
-  sourceOrdinary : source.declaration.isOrdinaryStringComputationCarrier = true
-  sourceDirectSingleStar : source.isDirectSingleStar = true
+  sourceOrdinary : source.declarations.all (·.isOrdinaryStringComputationCarrier) = true
+  sourceShape : source.admittedShape = true
+  excludesTarget : source.referencesField target.id = false
 
-/-- Check the fixed target and direct-star source without collapsing ordinary String target policy into exact-token acceptance. -/
-def checkStringFirstFilledComputation
-    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
-    Except StringFirstFilledComputationElabError
-      (CheckedStringFirstFilledComputation model) := do
-  match hStar : elaborateStarFieldPath model declaringGroup authored with
-  | .error cause => .error (.source cause)
-  | .ok source => do
-    let target ← model.lookupUniqueId targetField |>.mapError .target
-    -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
-    -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
-    -- derives no iteration, so the Kernel admits it from an unrelated group.
-    if hFixed : target.repeatableScope = [] then
-      if hTarget : target.isOrdinaryStringComputationCarrier = true then
-        if hSource : source.declaration.isOrdinaryStringComputationCarrier = true then
-          if hShape : source.isDirectSingleStar = true then
+private def checkStringFirstFilledSourceAgainst (model : FlatModel) (target : FlatFieldDecl)
+    (declaringGroup : GroupPath) (declaringGroupValid : GroupPath.isValid declaringGroup = true)
+    (source : FirstFilledFieldSource model) :
+    Except StringFirstFilledComputationElabError (CheckedStringFirstFilledComputation model) := do
+  if hFixed : target.repeatableScope = [] then
+    if hTarget : target.isOrdinaryStringComputationCarrier = true then
+      if hSource : source.declarations.all (·.isOrdinaryStringComputationCarrier) = true then
+        if hShape : source.admittedShape = true then
+          if hExcludes : source.referencesField target.id = false then
             pure {
-              target
-              source
-              declaringGroup
-              declaringGroupValid :=
-                elaborateStarFieldPath_declaringGroupValid hStar
+              target, source, declaringGroup, declaringGroupValid
               targetFixed := hFixed
               targetOrdinary := hTarget
               sourceOrdinary := hSource
-              sourceDirectSingleStar := hShape
-            }
-          else
-            throw (.sourceShape source.declaration.path)
-        else
-          throw (.sourceNotOrdinaryString source.declaration.path)
+              sourceShape := hShape
+              excludesTarget := hExcludes }
+          else throw (.targetSelfReference target.path)
+        else throw (.sourceShape (source.declarations.head?.map (·.path) |>.getD target.path))
       else
-        throw (.targetNotOrdinaryString target.path)
+        let other :=
+          (source.declarations.find? (!·.isOrdinaryStringComputationCarrier)).getD target
+        throw (.sourceNotOrdinaryString other.path)
     else
-      throw (.targetRepeatable target.path)
+      throw (.targetNotOrdinaryString target.path)
+  else
+    throw (.targetRepeatable target.path)
+
+/-- Check the fixed target and its star or list source without collapsing ordinary String target
+policy into exact-token acceptance. -/
+def checkStringFirstFilledComputation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceFirstFilledSource) :
+    Except StringFirstFilledComputationElabError
+      (CheckedStringFirstFilledComputation model) := do
+  match authored with
+  | .star path =>
+    match hStar : elaborateStarFieldPath model declaringGroup path with
+    | .error cause => .error (.source cause)
+    | .ok source => do
+      let target ← model.lookupUniqueId targetField |>.mapError .target
+      -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+      -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+      -- derives no iteration, so the Kernel admits it from an unrelated group.
+      checkStringFirstFilledSourceAgainst model target declaringGroup
+        (elaborateStarFieldPath_declaringGroupValid hStar) (.star source)
+  | .list list => do
+    -- As on the Boolean carrier: the list resolves at the target's group first, the target after it.
+    let targetGroup :=
+      ((model.lookupUniqueId targetField).toOption.map (·.groupPath)).getD declaringGroup
+    let checked ← elaborateFirstFilledFieldList model declaringGroup targetGroup list
+      |>.mapError .list
+    let target ← model.lookupUniqueId targetField |>.mapError .target
+    checkStringFirstFilledSourceAgainst model target declaringGroup checked.declaringGroupValid
+      (.list checked.fields)
 
 /-- Classify one prepared ordinary String source cell for computation-phase first-filled selection. -/
 def stringFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
@@ -125,13 +153,22 @@ namespace CheckedStringFirstFilledComputation
 
 /-- Evaluate a resolved source through the shared ordered token scan. -/
 def evalResolvedStringFirstFilled
-    (resolved : ResolvedCheckedStarField) : TokenComputationResult :=
+    (resolved : ResolvedFirstFilledSource) : TokenComputationResult :=
   let side : ResolvedValueListSide .token := {
     cells := resolved.cells.map fun cell => stringFirstFilledCellAt cell.cell
-    hasUninstantiatedTail := resolved.topology.domain.hasOpenTail
+    hasUninstantiatedTail := resolved.hasOpenTail
     hasHaving := false
   }
   (evalFirstFilledToken side).asComputationResult
+
+/-- Select the first filled source, then run the exact declaration-owned String target policy and the
+target's already recovered matcher. -/
+def executeWith (operation : CheckedStringFirstFilledComputation model)
+    (matcher : Option (String → Bool)) (input : CheckedDocument model) :
+    Except StringFirstFilledComputationFault StringTargetOutcome := do
+  let resolved ← operation.source.resolve input |>.mapError .source
+  pure (operation.target.stringPolicy.checkTargetWithPattern matcher
+    (evalResolvedStringFirstFilled resolved).asStringStore)
 
 /-- Select the first filled source, then run the exact declaration-owned String target policy and prepared matcher. -/
 def execute (operation : CheckedStringFirstFilledComputation model)
@@ -141,10 +178,7 @@ def execute (operation : CheckedStringFirstFilledComputation model)
   let matcher ← match patterns.targetMatcher? operation.target.id with
     | some matcher => pure matcher
     | none => throw (.targetPatternUnavailable operation.target.id)
-  let resolved ← operation.source.resolveCheckedField input []
-    |>.mapError .source
-  pure (operation.target.stringPolicy.checkTargetWithPattern matcher
-    (evalResolvedStringFirstFilled resolved).asStringStore)
+  operation.executeWith matcher input
 
 /-- Classify the rich target outcome relative to the immutable source target. -/
 def executeResult (operation : CheckedStringFirstFilledComputation model)

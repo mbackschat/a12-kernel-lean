@@ -153,12 +153,12 @@ computation's and lifts only the scale gate. -/
 private def elaborateNumericTargetComputationTableWith (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
     (alternatives : List (Except ResolveError (Option ComputationCondition) ×
-      AuthoredNumericExpr SurfaceNumericAtom))
+      AuthoredNumericExpr SurfaceNumericComputationAtom))
     (suppressExactScaleWarning : Bool) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   let elaborated := alternatives.zipIdx.map fun ((guard, expression), index) =>
     (index + 1, guard,
-      elaborateNumericTargetComputationOperation model declaringGroup target expression
+      elaborateCompleteNumericTargetComputationOperation model declaringGroup target expression
         suppressExactScaleWarning)
   let otherRefusal? := elaborated.findSome? fun (index, guard, result) =>
     match guard with
@@ -192,15 +192,34 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
         pure { precondition, operation }
       (certifyNumericComputationTable checked).mapError .table
 
-/-- Elaborate a whole Number computation whose guards the caller has already resolved. A guard that
-names no model field meets it as an unadmitted guard, asked in its alternative's place. -/
+/-- An ordinary numeric expression as a complete computation expression, the embedding
+`elaborateNumericTargetComputationOperation` applies. -/
+private def AuthoredNumericExpr.asComplete (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  expression.map fun atom => .numeric atom.toNumberEntityComputationAtom
+
+/-- Elaborate a whole Number computation over the complete computation surface, `FirstFilledValue`
+and the value counts included, whose guards the caller has already resolved. A guard that names no
+model field meets it as an unadmitted guard, asked in its alternative's place. -/
+def elaborateCompleteNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
+    (target : FieldId)
+    (alternatives :
+      List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericComputationAtom))
+    (suppressExactScaleWarning : Bool := false) :
+    Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
+  elaborateNumericTargetComputationTableWith model declaringGroup target
+    (alternatives.map fun (precondition, expression) => (.ok precondition, expression))
+    suppressExactScaleWarning
+
+/-- Elaborate a whole Number computation over ordinary numeric atoms, whose guards the caller has
+already resolved. -/
 def elaborateNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
     (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
     (suppressExactScaleWarning : Bool := false) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
-  elaborateNumericTargetComputationTableWith model declaringGroup target
-    (alternatives.map fun (precondition, expression) => (.ok precondition, expression))
+  elaborateCompleteNumericTargetComputationTable model declaringGroup target
+    (alternatives.map fun (precondition, expression) => (precondition, expression.asComplete))
     suppressExactScaleWarning
 
 /-- Elaborate a whole Number computation whose guards are authored by name, each resolved against the
@@ -217,7 +236,8 @@ def elaborateNumericTargetComputationTableFromSurface (model : FlatModel) (decla
     (alternatives.map fun (precondition, expression) =>
       (precondition.mapM fun authored => do
         model.validate
-        model.elaborateComputationCondition declaringGroup targetGroup authored, expression))
+        model.elaborateComputationCondition declaringGroup targetGroup authored,
+        expression.asComplete))
     suppressExactScaleWarning
 
 namespace CheckedNumericComputationTable

@@ -218,7 +218,8 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
       some (target, "-")
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
   | .document _ (.dateTime _) | .document _ (.enumeration (.errored _ _))
-  | .document _ (.dateRange _) | .document _ (.boolean _) | .document _ (.dateFragment _) => none
+  | .document _ (.dateRange _) | .document _ (.boolean _) | .document _ (.dateFragment _)
+  | .document _ (.string _) => none
 
 private def values? (reported : List FieldId) (cells : List ClassifiedCellInput) :
     Option (List String) := do

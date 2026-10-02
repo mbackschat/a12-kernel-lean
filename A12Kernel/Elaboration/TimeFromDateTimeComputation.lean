@@ -12,12 +12,14 @@ namespace A12Kernel
 inductive TimeFromDateTimeComputationElabError where
   | source (error : ValueAsDateTimeExtractionElabError)
   | target (error : TimeTargetElabError)
+  | incoherentCore
   deriving Repr, DecidableEq
 
 /-- One checked complete-DateTime source paired with the existing declaration-owned Time target. -/
 structure CheckedTimeFromDateTimeComputation (model : FlatModel) where
   source : CheckedDateTimeSource model
   target : CheckedClockFormatTarget model
+  sourceDistinct : source.source.id ≠ target.checked.target.id
 
 /-- Resolve one nonrepeatable complete-DateTime source and one complete Time target in the same model. -/
 def elaborateTimeFromDateTimeComputation
@@ -26,7 +28,11 @@ def elaborateTimeFromDateTimeComputation
       (CheckedTimeFromDateTimeComputation model) := do
   let source ← elaborateDateTimeSource model sourceField |>.mapError .source
   let target ← elaborateClockFormatTarget model targetField |>.mapError .target
-  pure { source, target }
+  -- A DateTime source and a clock or Date target are different declarations in a well-formed model,
+  -- since one identifier resolves to one declaration and the two kinds gate it apart; the inequality
+  -- is checked rather than derived because neither certificate retains its own lookup.
+  if distinct : source.source.id = target.checked.target.id then throw .incoherentCore
+  else pure { source, target, sourceDistinct := distinct }
 
 namespace ValueAsDateTimeTimeOperand
 

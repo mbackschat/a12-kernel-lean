@@ -148,7 +148,7 @@ private def evaluateAtWithRead
     targetField := { field := operation.targetField, path := targetPath }
     outcome := operation.target.stringPolicy.checkTargetWithPattern matcher
       (CheckedStringFirstFilledComputation.evalResolvedStringFirstFilled
-        resolved).asStringStore
+        { cells := resolved.cells, hasOpenTail := resolved.topology.domain.hasOpenTail }).asStringStore
   }
 
 /-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact

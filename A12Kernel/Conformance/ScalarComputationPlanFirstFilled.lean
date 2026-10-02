@@ -208,7 +208,7 @@ private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .number _ (.rejected _ _) | .number _ (.invalidNoValue _) | .string _ _
   | .document _ (.dateTime (.errored _ _)) | .document _ (.fullDate (.errored _ _))
   | .document _ (.dateRange (.errored _ _)) | .document _ (.enumeration (.errored _ _))
-  | .document _ (.dateFragment (.errored _ _)) => none
+  | .document _ (.dateFragment (.errored _ _)) | .document _ (.string _) => none
 
 /-- Every kind's `XA`, `XF`, `KX` and `KNX`, over one document built from each kind's sources. -/
 private def values? (sources : Kind → List (Option String)) : Option (List (List String)) := do

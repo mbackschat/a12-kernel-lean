@@ -6,6 +6,10 @@ import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
+import A12Kernel.Elaboration.DateFromDateTime
+import A12Kernel.Elaboration.DateTimeMixedShiftComputation
+import A12Kernel.Elaboration.StringFirstFilledComputation
+import A12Kernel.Elaboration.TimeFromDateTimeComputation
 import A12Kernel.Elaboration.EnumerationComputation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.ExactTokenComputationResult
@@ -19,11 +23,13 @@ import A12Kernel.Elaboration.TimeFirstFilledComputation
 
 A computation whose evaluator reads the whole document joins a scalar plan as one step. The step carries
 its target, the fields it reads, a proof that it does not read its own target, and an evaluator returning
-the target's outcome together with the cell a later computation reads for it. Day and sub-day DateTime
-shifts, a full-Date computation, a Time construction, an Enumeration copy, a DateRange construction and
-the fixed-target `FirstFilledValue` over a Boolean, DateFragment, Time, DateTime, full Date, DateRange or Enumeration
-are its instances; each is one constructor here, and the plan's laws are stated once over the step rather
-than once per family.
+the target's outcome together with the cell a later computation reads for it. Day, sub-day and mixed
+DateTime shifts, a full-Date computation, `TimeFromDateTime` and `DateFromDateTime`, a Time construction,
+an Enumeration copy, a DateRange construction and the fixed-target `FirstFilledValue` over a Boolean,
+String, DateFragment, Time, DateTime, full Date, DateRange or Enumeration are its instances; each is one
+constructor here, and the plan's laws are stated once over the step rather than once per family. A
+String target is checked against its prepared pattern, which the plan hands every step as the lookup
+`StringTargetMatchers`.
 
 The read-back cell is the rule every instance shares. A later computation reads a completed target as the
 document would read its stored rendering, a cleared one as empty, and an errored or poisoned one as
@@ -54,6 +60,7 @@ inductive DocumentTargetOutcome where
   | dateRange (outcome : DateRangeTargetOutcome)
   | boolean (outcome : BooleanComputationOutcome)
   | dateFragment (outcome : StringTargetOutcome)
+  | string (outcome : StringTargetOutcome)
   deriving Repr, DecidableEq
 
 /-- The rendering a completed target stores, which a reader pairs with its read-back cell; a cleared,
@@ -66,8 +73,9 @@ def DocumentTargetOutcome.storedText? : DocumentTargetOutcome → Option String
   | .dateRange (.accepted stored) => some stored.text
   | .boolean (.value value) => some (toString value)
   | .dateFragment (.accepted stored) => some stored.text
+  | .string (.accepted stored) => some stored.text
   | .dateTime _ | .fullDate _ | .time _ | .enumeration _ | .dateRange _ | .boolean _
-  | .dateFragment _ => none
+  | .dateFragment _ | .string _ => none
 
 /-- The target family of a whole-document step: the family of the outcome it computes, and the outcome it
 reports when a guard keeps it from running. It is not the target's declared kind, which a temporal
@@ -81,6 +89,7 @@ inductive DocumentTargetFamily where
   | dateRange
   | boolean
   | dateFragment
+  | string
   deriving Repr, DecidableEq
 
 namespace DocumentTargetFamily
@@ -93,6 +102,7 @@ def kind : DocumentTargetFamily → SurfaceScalarKind
   | .dateRange => .dateRange
   | .boolean => .boolean
   | .dateFragment => .temporal .date
+  | .string => .string
 
 /-- The family's cleared outcome, for a step whose guard does not hold. -/
 def noValue : DocumentTargetFamily → DocumentTargetOutcome
@@ -103,6 +113,7 @@ def noValue : DocumentTargetFamily → DocumentTargetOutcome
   | .dateRange => .dateRange .noValue
   | .boolean => .boolean .noValue
   | .dateFragment => .dateFragment .noValue
+  | .string => .string .noValue
 
 /-- The family's poisoned outcome, for a step whose guard reads poison. -/
 def poison (cause : FormalCause) : DocumentTargetFamily → DocumentTargetOutcome
@@ -113,6 +124,7 @@ def poison (cause : FormalCause) : DocumentTargetFamily → DocumentTargetOutcom
   | .dateRange => .dateRange (.poison cause)
   | .boolean => .boolean (.poison cause)
   | .dateFragment => .dateFragment (.poison cause)
+  | .string => .string (.poison cause)
 
 end DocumentTargetFamily
 
@@ -130,9 +142,15 @@ inductive DocumentComputationStepFault where
   | fullDateFirstFilled (cause : FullDateFirstFilledComputationFault)
   | dateRangeFirstFilled (cause : DateRangeFirstFilledComputationFault)
   | enumerationFirstFilled (cause : CheckedAddressingError)
+  | stringFirstFilled (cause : StringFirstFilledComputationFault)
+  | timeFromDateTime (cause : ValueAsDateTimeExtractionFault)
+  | dateFromDateTime (cause : DateFromDateTimeComputationFault)
+  | dateTimeDayThenSubdayShift (cause : DateTimeMixedShiftComputationFault)
+  | dateTimeSubdayThenDayShift (cause : DateTimeReverseMixedShiftComputationFault)
   | dateTimeRead (cause : DateTimeInputError)
   | fullDateRead (cause : FullDateInputError)
   | timeRead (cause : TimeInputError)
+  | stringRead (cause : StringDependencyFault)
   | dateRangeRead (cause : DateRangeInputError)
   | targetNotReadable
   deriving Repr, DecidableEq
@@ -233,7 +251,17 @@ def dateFragment (model : FlatModel) (target : FieldId) :
       let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
       pure (checkAdmittedRawCell (.parsed (.temporal (.date value))))
 
+/-- A completed String target, read back as the cell a String table's completion places, so a reader
+cannot tell a String `FirstFilledValue` from any other computed String. -/
+def string (outcome : StringTargetOutcome) : Except DocumentComputationStepFault CheckedCell :=
+  (StringDependencyCell.ofOutcome outcome).map (·.checked) |>.mapError .stringRead
+
 end DocumentComputationReadBack
+
+/-- The prepared pattern each String target is checked against, as
+`PreparedFlatStringPatterns.targetMatcher?` recovers it: `none` for a target the preparation does not
+own, `some none` for one declaring no pattern. -/
+abbrev StringTargetMatchers := FieldId → Option (Option (String → Bool))
 
 /-- One checked whole-document computation as a plan step. Only this module's instances construct one,
 so every step's cell is the read-back of its own outcome. -/
@@ -243,7 +271,7 @@ structure CheckedDocumentComputationStep (model : FlatModel) where
   family : DocumentTargetFamily
   referencesField : FieldId → Bool
   excludesTarget : referencesField target = false
-  run : World → CheckedDocument model →
+  run : World → StringTargetMatchers → CheckedDocument model →
     Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell)
 
 namespace CheckedDocumentComputationStep
@@ -260,7 +288,7 @@ def ofDateTimeDayShift (operation : CheckedDateTimeDayShiftComputation model) :
     operation.shift.source.id == field || operation.shift.amount.referencesField field
   excludesTarget := by
     simp [operation.sourceDistinct, operation.amountExcludesTarget]
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.evaluateOutcome document).mapError .dateTimeDayShift
     let cell ← DocumentComputationReadBack.dateTime model operation.target.checked.target.id outcome
     pure (.dateTime outcome, cell)
@@ -274,7 +302,7 @@ def ofDateTimeSubdayShift (operation : CheckedDateTimeSubdayShiftComputation mod
     operation.shift.source.id == field || operation.shift.amount.referencesField field
   excludesTarget := by
     simp [operation.sourceDistinct, operation.amountExcludesTarget]
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.evaluateOutcome document).mapError .dateTimeSubdayShift
     let cell ← DocumentComputationReadBack.dateTime model operation.target.checked.target.id outcome
     pure (.dateTime outcome, cell)
@@ -293,7 +321,7 @@ def ofFullDate (operation : CheckedFullDateComputation model) :
     revert admitted
     cases operation.operand <;>
       simp [FlatModel.admitsFullDateComputationOperand]
-  run world document := do
+  run world _ document := do
     let outcome ← (operation.evaluateOutcome world document).mapError .fullDate
     let cell ← DocumentComputationReadBack.fullDate model operation.target.checked.target.id outcome
     pure (.fullDate outcome, cell)
@@ -305,7 +333,7 @@ def ofTimeConstruction (operation : CheckedTimeConstructionComputation model) :
   family := .time
   referencesField := operation.components.referencesField
   excludesTarget := operation.targetNotReferenced
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.evaluateOutcome document).mapError .timeConstruction
     let cell ← DocumentComputationReadBack.time model operation.target.checked.target.id outcome
     pure (.time outcome, cell)
@@ -317,7 +345,7 @@ def ofEnumeration (operation : CheckedEnumerationComputationOperation model) :
   family := .enumeration
   referencesField := operation.source.referencesField
   excludesTarget := operation.targetNotReferenced
-  run _ document :=
+  run _ _ document :=
     let outcome := (operation.source.evaluate document.flatContext).asExactStringTargetOutcome
     pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target outcome)
 
@@ -331,7 +359,7 @@ def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation
       operation.construction.finish.checked.target.id == field
   excludesTarget := by
     simp [operation.startNotTarget, operation.finishNotTarget]
-  run _ document := do
+  run _ _ document := do
     let result ← (operation.execute document).mapError .dateRangeConstruction
     let cell ← DocumentComputationReadBack.dateRange model operation.target.policy result.outcome
     pure (.dateRange result.outcome, cell)
@@ -343,7 +371,7 @@ def ofBooleanFirstFilled (operation : CheckedBooleanFirstFilledComputation model
   family := .boolean
   referencesField := operation.source.referencesField
   excludesTarget := operation.excludesTarget
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.execute document).mapError .firstFilledSource
     pure (.boolean outcome, DocumentComputationReadBack.boolean outcome)
 
@@ -354,7 +382,7 @@ def ofTimeFirstFilled (operation : CheckedTimeFirstFilledComputation model) :
   family := .time
   referencesField := operation.shape.source.referencesField
   excludesTarget := operation.shape.excludesTarget
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.execute document).mapError .firstFilledSource
     let cell ← DocumentComputationReadBack.time model operation.shape.target.id outcome
     pure (.time outcome, cell)
@@ -366,7 +394,7 @@ def ofDateTimeFirstFilled (operation : CheckedDateTimeFirstFilledComputation mod
   family := .dateTime
   referencesField := operation.shape.source.referencesField
   excludesTarget := operation.shape.excludesTarget
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.execute document).mapError .dateTimeFirstFilled
     let cell ← DocumentComputationReadBack.dateTime model operation.shape.target.id outcome
     pure (.dateTime outcome, cell)
@@ -378,7 +406,7 @@ def ofFullDateFirstFilled (operation : CheckedFullDateFirstFilledComputation mod
   family := .fullDate
   referencesField := operation.shape.referencesField
   excludesTarget := operation.shape.excludesTarget
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.execute document).mapError .fullDateFirstFilled
     let cell ← DocumentComputationReadBack.fullDate model operation.shape.targetField outcome
     pure (.fullDate outcome, cell)
@@ -390,7 +418,7 @@ def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputa
   family := .dateFragment
   referencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ document := do
+  run _ _ document := do
     let result ← (operation.execute document).mapError .firstFilledSource
     let outcome := result.asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.dateFragment model operation.targetField outcome
@@ -405,7 +433,7 @@ def ofDateRangeFirstFilledDirect (operation : CheckedDateRangeFirstFilledDirectC
   excludesTarget := by
     simp only [List.any_eq_false, beq_iff_eq]
     exact fun source _ => source.excludesTarget
-  run _ document := do
+  run _ _ document := do
     let outcome ← (operation.execute document).mapError .dateRangeFirstFilled
     let cell ← DocumentComputationReadBack.dateRange model operation.target.policy outcome
     pure (.dateRange outcome, cell)
@@ -417,11 +445,81 @@ def ofEnumerationFirstFilled (operation : CheckedEnumerationFirstFilledComputati
   family := .enumeration
   referencesField := operation.source.referencesField
   excludesTarget := operation.targetNotReferenced
-  run _ document := do
+  run _ _ document := do
     let selected ← (operation.source.evaluateCheckedDocument document []).mapError
       .enumerationFirstFilled
     let outcome := selected.asComputationResult.asExactStringTargetOutcome
     pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target outcome)
+
+/-- A fixed-target String `FirstFilledValue`, checked against its target's prepared pattern. -/
+def ofStringFirstFilled (operation : CheckedStringFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.id
+  family := .string
+  referencesField := operation.source.referencesField
+  excludesTarget := operation.excludesTarget
+  run _ matchers document := do
+    let matcher ← (matchers operation.target.id).getDM
+      (throw (.stringFirstFilled (.targetPatternUnavailable operation.target.id)))
+    let outcome ← (operation.executeWith matcher document).mapError .stringFirstFilled
+    let cell ← DocumentComputationReadBack.string outcome
+    pure (.string outcome, cell)
+
+/-- `TimeFromDateTime` over a field. -/
+def ofTimeFromDateTime (operation : CheckedTimeFromDateTimeComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.checked.target.id
+  family := .time
+  referencesField field := operation.source.source.id == field
+  excludesTarget := by simp [operation.sourceDistinct]
+  run _ _ document := do
+    let outcome ← (operation.evaluateOutcome document).mapError .timeFromDateTime
+    let cell ← DocumentComputationReadBack.time model operation.target.checked.target.id outcome
+    pure (.time outcome, cell)
+
+/-- `DateFromDateTime` over a field. -/
+def ofDateFromDateTime (operation : CheckedDateFromDateTimeComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.checked.target.id
+  family := .fullDate
+  referencesField field := operation.source.source.id == field
+  excludesTarget := by simp [operation.sourceDistinct]
+  run _ _ document := do
+    let outcome ← (operation.evaluateOutcome document).mapError .dateFromDateTime
+    let cell ← DocumentComputationReadBack.fullDate model operation.target.checked.target.id outcome
+    pure (.fullDate outcome, cell)
+
+/-- A field-backed calendar-day shift followed by a sub-day shift. -/
+def ofDateTimeDayThenSubdayShift (operation : CheckedDateTimeDayThenSubdayShiftComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.checked.target.id
+  family := .dateTime
+  referencesField field := operation.shift.source.id == field ||
+    operation.shift.amount.referencesField field || operation.nextAmount.referencesField field
+  excludesTarget := by
+    have amounts := operation.amountsExcludeTarget
+    simp only [Bool.or_eq_false_iff] at amounts
+    simp [operation.sourceDistinct, amounts.1, amounts.2]
+  run _ _ document := do
+    let outcome ← (operation.evaluateOutcome document).mapError .dateTimeDayThenSubdayShift
+    let cell ← DocumentComputationReadBack.dateTime model operation.target.checked.target.id outcome
+    pure (.dateTime outcome, cell)
+
+/-- A field-backed sub-day shift followed by a calendar-day shift. -/
+def ofDateTimeSubdayThenDayShift (operation : CheckedDateTimeSubdayThenDayShiftComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.checked.target.id
+  family := .dateTime
+  referencesField field := operation.shift.source.id == field ||
+    operation.shift.amount.referencesField field || operation.nextAmount.referencesField field
+  excludesTarget := by
+    have amounts := operation.amountsExcludeTarget
+    simp only [Bool.or_eq_false_iff] at amounts
+    simp [operation.sourceDistinct, amounts.1, amounts.2]
+  run _ _ document := do
+    let outcome ← (operation.evaluateOutcome document).mapError .dateTimeSubdayThenDayShift
+    let cell ← DocumentComputationReadBack.dateTime model operation.target.checked.target.id outcome
+    pure (.dateTime outcome, cell)
 
 /-- A step under a presence guard read through the same overlaid document the step reads: a guard that
 holds runs the step, one that does not clears the target, read as empty, and one that reads poison
@@ -436,9 +534,9 @@ def guarded (guard : ComputationCondition) (step : CheckedDocumentComputationSte
   family := step.family
   referencesField field := guard.referencesField field || step.referencesField field
   excludesTarget := by simp [guardExcludesTarget, step.excludesTarget]
-  run world document :=
+  run world matchers document :=
     match guard.eval (document.scalarComputationContext world) with
-    | .holds => step.run world document
+    | .holds => step.run world matchers document
     | .notTrue => pure (step.family.noValue, DocumentComputationReadBack.empty)
     | .poison cause => pure (step.family.poison cause, DocumentComputationReadBack.poison)
 

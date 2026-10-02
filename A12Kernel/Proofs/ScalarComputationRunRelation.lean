@@ -91,7 +91,7 @@ theorem scalarComputationRun_evaluateStep_target
           exact checkedNumericComputationTable_evaluateCompletion_target
             table (run.numberContext world state input) numberCompletion result
   | document step =>
-      cases result : step.run world (run.documentFor state input) with
+      cases result : step.run world patterns.targetMatcher? (run.documentFor state input) with
       | error fault =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
       | ok computed =>

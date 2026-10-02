@@ -174,12 +174,14 @@ certificates retain their existing finer diagnostics rather than introducing ano
 inductive DateFromDateTimeComputationElabError where
   | source (error : DateFromDateTimeElabError)
   | target (error : FullDateTargetElabError)
+  | incoherentCore
   deriving Repr, DecidableEq
 
 /-- One checked extraction paired with the existing declaration-owned full-Date target. -/
 structure CheckedDateFromDateTimeComputation (model : FlatModel) where
   source : CheckedDateFromDateTime model
   target : CheckedFullDateTarget model
+  sourceDistinct : source.source.id ≠ target.checked.target.id
 
 /-- Resolve one nonrepeatable complete-DateTime source and one full-Date target in the same model. -/
 def elaborateDateFromDateTimeComputation
@@ -188,7 +190,11 @@ def elaborateDateFromDateTimeComputation
       (CheckedDateFromDateTimeComputation model) := do
   let source ← elaborateDateFromDateTime model sourceField |>.mapError .source
   let target ← elaborateFullDateTarget model targetField |>.mapError .target
-  pure { source, target }
+  -- A DateTime source and a clock or Date target are different declarations in a well-formed model,
+  -- since one identifier resolves to one declaration and the two kinds gate it apart; the inequality
+  -- is checked rather than derived because neither certificate retains its own lookup.
+  if distinct : source.source.id = target.checked.target.id then throw .incoherentCore
+  else pure { source, target, sourceDistinct := distinct }
 
 /-- Structural failure outside the rich full-Date target result domain. -/
 inductive DateFromDateTimeComputationFault where

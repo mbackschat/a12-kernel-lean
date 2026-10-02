@@ -389,7 +389,7 @@ def evaluateStep (run : CheckedScalarComputationRun model)
       | .ok completion => .ok (.number completion)
       | .error cause => .error (.number cause)
   | .document step =>
-      match step.run world (run.documentFor state input) with
+      match step.run world patterns.targetMatcher? (run.documentFor state input) with
       | .ok (outcome, cell) => .ok (.document step.target outcome cell)
       | .error cause => .error (.document step.target step.targetKind cause)
 

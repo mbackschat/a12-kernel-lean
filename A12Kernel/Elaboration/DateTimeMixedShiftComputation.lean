@@ -18,6 +18,8 @@ structure CheckedDateTimeDayThenSubdayShiftComputation (model : FlatModel) where
   nextAmount : CheckedTemporalShiftAmount model
   target : CheckedDateTimeTarget model
   sourceDistinct : shift.source.id ≠ target.checked.target.id
+  amountsExcludeTarget : (shift.amount.referencesField target.checked.target.id ||
+    nextAmount.referencesField target.checked.target.id) = false
 
 /-- One checked dynamic day-then-sub-day shift and declaration-owned target. -/
 structure CheckedNowDateTimeDayThenSubdayShiftComputation (model : FlatModel) where
@@ -25,6 +27,8 @@ structure CheckedNowDateTimeDayThenSubdayShiftComputation (model : FlatModel) wh
   nextUnit : DateTimeSubdayUnit
   nextAmount : CheckedTemporalShiftAmount model
   target : CheckedDateTimeTarget model
+  amountsExcludeTarget : (shift.amount.referencesField target.checked.target.id ||
+    nextAmount.referencesField target.checked.target.id) = false
 
 /-- One checked field-backed sub-day-then-day shift and its distinct target. -/
 structure CheckedDateTimeSubdayThenDayShiftComputation (model : FlatModel) where
@@ -32,12 +36,16 @@ structure CheckedDateTimeSubdayThenDayShiftComputation (model : FlatModel) where
   nextAmount : CheckedTemporalShiftAmount model
   target : CheckedDateTimeTarget model
   sourceDistinct : shift.source.id ≠ target.checked.target.id
+  amountsExcludeTarget : (shift.amount.referencesField target.checked.target.id ||
+    nextAmount.referencesField target.checked.target.id) = false
 
 /-- One checked dynamic sub-day-then-day shift and declaration-owned target. -/
 structure CheckedNowDateTimeSubdayThenDayShiftComputation (model : FlatModel) where
   shift : CheckedShiftedNowDateTimeSource model
   nextAmount : CheckedTemporalShiftAmount model
   target : CheckedDateTimeTarget model
+  amountsExcludeTarget : (shift.amount.referencesField target.checked.target.id ||
+    nextAmount.referencesField target.checked.target.id) = false
 
 /-- Check one bounded field-backed mixed shift and complete-DateTime target. -/
 def elaborateDateTimeDayThenSubdayShiftComputation
@@ -51,10 +59,16 @@ def elaborateDateTimeDayThenSubdayShiftComputation
   let shift ←
     elaborateDateTimeDayShift model sourceField dayAmount |>.mapError .shift
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
+  -- No admitted amount reads a DateTime field, so the amount check refuses nothing reachable; it
+  -- carries the inequality a plan step needs, as the single shifts' check does.
   if distinct : shift.source.id = target.checked.target.id then
     throw (.targetSelfReference targetField)
+  else if amountsRead : (shift.amount.referencesField target.checked.target.id ||
+      nextAmount.referencesField target.checked.target.id) = true then
+    throw (.targetSelfReference targetField)
   else
-    pure { shift, nextUnit, nextAmount, target, sourceDistinct := distinct }
+    pure { shift, nextUnit, nextAmount, target, sourceDistinct := distinct
+           amountsExcludeTarget := by simpa using amountsRead }
 
 /-- Check one dynamic mixed shift and target without sampling the execution world. -/
 def elaborateNowDateTimeDayThenSubdayShiftComputation
@@ -67,7 +81,11 @@ def elaborateNowDateTimeDayThenSubdayShiftComputation
   let shift ←
     elaborateNowDateTimeDayShift model dayAmount |>.mapError .shift
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
-  pure { shift, nextUnit, nextAmount, target }
+  if amountsRead : (shift.amount.referencesField target.checked.target.id ||
+      nextAmount.referencesField target.checked.target.id) = true then
+    throw (.targetSelfReference targetField)
+  else
+    pure { shift, nextUnit, nextAmount, target, amountsExcludeTarget := by simpa using amountsRead }
 
 /-- Check one bounded reverse-order mixed shift and complete-DateTime target. -/
 def elaborateDateTimeSubdayThenDayShiftComputation
@@ -82,8 +100,12 @@ def elaborateDateTimeSubdayThenDayShiftComputation
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
   if distinct : shift.source.id = target.checked.target.id then
     throw (.targetSelfReference targetField)
+  else if amountsRead : (shift.amount.referencesField target.checked.target.id ||
+      nextAmount.referencesField target.checked.target.id) = true then
+    throw (.targetSelfReference targetField)
   else
-    pure { shift, nextAmount, target, sourceDistinct := distinct }
+    pure { shift, nextAmount, target, sourceDistinct := distinct
+           amountsExcludeTarget := by simpa using amountsRead }
 
 /-- Check one dynamic reverse-order mixed shift without sampling its world. -/
 def elaborateNowDateTimeSubdayThenDayShiftComputation
@@ -95,7 +117,11 @@ def elaborateNowDateTimeSubdayThenDayShiftComputation
   let shift ← elaborateShiftedNowDateTimeSource model unit subdayAmount
     |>.mapError .shift
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
-  pure { shift, nextAmount, target }
+  if amountsRead : (shift.amount.referencesField target.checked.target.id ||
+      nextAmount.referencesField target.checked.target.id) = true then
+    throw (.targetSelfReference targetField)
+  else
+    pure { shift, nextAmount, target, amountsExcludeTarget := by simpa using amountsRead }
 
 /-- Structural execution failure outside the rich DateTime target outcome. -/
 inductive DateTimeMixedShiftComputationFault where

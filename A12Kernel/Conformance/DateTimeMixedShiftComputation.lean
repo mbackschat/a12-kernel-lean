@@ -182,6 +182,18 @@ example :
         some (.targetSelfReference target.id) := by
   native_decide
 
+/- No amount reads a DateTime field, the target included: an expression amount reading one is refused as
+not a direct Number expression before any mixed shift sees it. Each mixed shift still checks that its
+amounts exclude the target, as the single shifts do, because a plan step needs that inequality. -/
+example :
+    (match elaborateTemporalExpressionShiftAmount model ["Order"]
+        (.atom (.dateTimeDifference .hours
+          (.field { base := .relative 0, groups := [], field := target.name })
+          (.field { base := .relative 0, groups := [], field := source.name }))) with
+      | .error .expressionNotDirectNumber => true
+      | _ => false) = true := by
+  native_decide
+
 /- One dynamic carrier consumes each supplied world independently. All elapsed units
    preserve the inner day landing, including Berlin gap and overlap identity. -/
 example : (do

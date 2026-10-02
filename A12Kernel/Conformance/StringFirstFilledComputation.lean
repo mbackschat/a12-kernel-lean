@@ -68,13 +68,13 @@ private def nestedStar : SurfaceStarFieldPath := {
 }
 
 private def checked? (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
-  (checkStringFirstFilledComputation model ["Review"] targetField authored).toOption
+  (checkStringFirstFilledComputation model ["Review"] targetField (.star authored)).toOption
 
 /-- The same check with the declaring group varied instead of the target, which is how a target
 outside the declaring group is expressed under a single model root. -/
 private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :=
-  (checkStringFirstFilledComputation model declaringGroup targetField authored).toOption
+  (checkStringFirstFilledComputation model declaringGroup targetField (.star authored)).toOption
 
 private def customValidator : RegisteredCustomFieldValidator := fun _ _ => none
 
@@ -294,7 +294,7 @@ example :
       base := .absolute
       groups := [{ name := "Review" }, { name := "Rows", starred := true }, { name := "Details" }]
       field := nestedSource.name }
-    (match checkStringFirstFilledComputation model ["Review"] target.id belowStar with
+    (match checkStringFirstFilledComputation model ["Review"] target.id (.star belowStar) with
       | .error error => error.diagnostic?
       | .ok _ => none) = some .noWildcard := by
   native_decide
