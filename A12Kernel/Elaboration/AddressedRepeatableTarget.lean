@@ -75,4 +75,21 @@ def checkAddressedRepeatableTarget
     else
       throw (.target (.invalidRuleGroup declaringGroup))
 
+/-- The certificate names the field it was asked for, so its declaration is that field's. -/
+theorem checkAddressedRepeatableTarget_targetField
+    (checked : checkAddressedRepeatableTarget model declaringGroup targetField = .ok target) :
+    target.targetField = targetField := by
+  unfold checkAddressedRepeatableTarget at checked
+  split at checked
+  · cases checked
+  · split at checked
+    · split at checked
+      · split at checked
+        · cases checked
+        · split at checked
+          · cases checked
+          · cases checked; rfl
+      · cases checked
+    · cases checked
+
 end A12Kernel

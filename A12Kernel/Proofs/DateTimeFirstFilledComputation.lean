@@ -45,42 +45,6 @@ theorem checkedDateTimeFirstFilled_executeResult_projects
   subst view
   exact ⟨rfl, rfl⟩
 
-/-- Successful whole-call composition preserves the exact prepared DateTime result, including eager findings, model-zone rendering, and source-relative actions. -/
-theorem checkedDateTimeFirstFilled_executeResultWithFormalInputs_exact
-    (operation : CheckedDateTimeFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (result : DateTimeFirstFilledComputationRunView model
-      ComputationFormalInputFinding)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeResultWithRead input
-      prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands = .ok result) :
-    operation.executeResultWithFormalInputs input = .ok result := by
-  rw [CheckedDateTimeFirstFilledComputation.executeResultWithFormalInputs,
-    planned]
-  simp only [Except.mapError, bind, Except.bind, preparation, executed]
-
-/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged DateTime fault. -/
-theorem checkedDateTimeFirstFilled_executeResultWithFormalInputs_failure_exact
-    (operation : CheckedDateTimeFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (fault : DateTimeFirstFilledComputationFault)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeResultWithRead input
-      prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands = .error fault) :
-    operation.executeResultWithFormalInputs input =
-      .error (.execution prepared.formalErrorsInOperands fault) := by
-  rw [CheckedDateTimeFirstFilledComputation.executeResultWithFormalInputs,
-    planned]
-  simp only [Except.mapError, bind, Except.bind, preparation, executed]
-
 /-- Application is exactly the common DateTime fold over the separately supplied document's exact cell-state projection. -/
 theorem dateTimeFirstFilledRun_applyToChecked_delegates
     (view : DateTimeFirstFilledComputationRunView model ResidualMessage)

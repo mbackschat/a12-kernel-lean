@@ -81,39 +81,6 @@ theorem checkedDateFragmentFirstFilled_executeResult_hasNoTargetErrors
   exact congrArg Except.ok
     (addressedTokenResults_haveNoTargetErrors outcomes input messages)
 
-/-- Successful whole-call composition preserves the exact prepared DateFragment result, including
-its eager findings and exact token/action partitions. -/
-theorem checkedDateFragmentFirstFilled_executeResultWithFormalInputs_exact
-    (operation : CheckedDateFragmentFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (result : DateFragmentFirstFilledComputationRunView model ComputationFormalInputFinding)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeResultWithRead input prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands = .ok result) :
-    operation.executeResultWithFormalInputs input = .ok result := by
-  rw [CheckedDateFragmentFirstFilledComputation.executeResultWithFormalInputs, planned]
-  simp only [Except.mapError, bind, Except.bind, preparation, executed]
-
-/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged
-DateFragment fault. -/
-theorem checkedDateFragmentFirstFilled_executeResultWithFormalInputs_failure_exact
-    (operation : CheckedDateFragmentFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (fault : FirstFilledSiteFault)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeResultWithRead input prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands = .error fault) :
-    operation.executeResultWithFormalInputs input =
-      .error (.execution prepared.formalErrorsInOperands fault) := by
-  rw [CheckedDateFragmentFirstFilledComputation.executeResultWithFormalInputs, planned]
-  simp only [Except.mapError, bind, Except.bind, preparation, executed]
-
 /-- Checked application delegates to the established source-classified String fold. -/
 theorem dateFragmentFirstFilled_applyToChecked_delegates
     (view : DateFragmentFirstFilledComputationRunView model ResidualMessage)

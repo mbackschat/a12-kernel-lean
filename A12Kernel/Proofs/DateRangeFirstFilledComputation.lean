@@ -87,45 +87,6 @@ theorem dateRangeFirstFilledRun_applyToChecked_delegates
       view.dateRange.applyTo destination.sourceDateRangeTargetStateAt := by
   rfl
 
-/-- Successful whole-call composition scans through the selected prepared read and projects its eager inventory unchanged into the DateRange result. -/
-theorem checkedDateRangeFirstFilled_executeResultWithFormalInputs_exact
-    (operation : CheckedDateRangeFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (outcomes : List DateRangeFirstFilledComputationOutcome)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeWithRead input
-      prepared.preliminary.readComputation = .ok outcomes) :
-    (operation.executeResultWithFormalInputs input).map
-      (fun view => view.dateRange.formalErrorsInOperands) =
-        .ok prepared.formalErrorsInOperands := by
-  rw [CheckedDateRangeFirstFilledComputation.executeResultWithFormalInputs,
-    planned]
-  simp only [Except.mapError, bind, Except.bind, preparation]
-  rw [CheckedDateRangeFirstFilledComputation.executeResultWithRead,
-    executed]
-  rfl
-
-/-- A post-preparation starred execution failure retains the exact eager inventory beside the unchanged existing fault. -/
-theorem checkedDateRangeFirstFilled_executeResultWithFormalInputs_failure_exact
-    (operation : CheckedDateRangeFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (fault : DateRangeFirstFilledComputationFault)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeResultWithRead input
-      prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands = .error fault) :
-    operation.executeResultWithFormalInputs input =
-      .error (.execution prepared.formalErrorsInOperands fault) := by
-  rw [CheckedDateRangeFirstFilledComputation.executeResultWithFormalInputs,
-    planned]
-  simp only [Except.mapError, bind, Except.bind, preparation, executed]
-
 /-- Exhausting the checked direct source list keeps the no-value identity. -/
 theorem scanDirectDateRangeFirstFilled_nil :
     scanDirectDateRangeFirstFilled ([] :

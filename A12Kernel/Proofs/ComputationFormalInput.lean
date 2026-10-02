@@ -57,4 +57,26 @@ theorem computationFormalInputFindingIncludingPreliminary_selected
       exact computationFormalInputPreliminaryFinding_selected plan preliminary
         finding generated
 
+/-- A successful composition returns the run's exact result over the prepared read and findings. -/
+theorem runWithFormalInputs_exact {Cause Result : Type}
+    (input : CheckedDocument model) (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model) (result : Result)
+    (run : (CellAddr → Except CheckedDocumentError CheckedCell) →
+      List ComputationFormalInputFinding → Except Cause Result)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : run prepared.preliminary.readComputation prepared.formalErrorsInOperands = .ok result) :
+    runWithFormalInputs (.ok plan) input run = .ok result := by
+  simp only [runWithFormalInputs, Except.mapError, bind, Except.bind, preparation, executed]
+
+/-- A run fault after preparation retains the exact eager findings beside the unchanged fault. -/
+theorem runWithFormalInputs_failure_exact {Cause Result : Type}
+    (input : CheckedDocument model) (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model) (fault : Cause)
+    (run : (CellAddr → Except CheckedDocumentError CheckedCell) →
+      List ComputationFormalInputFinding → Except Cause Result)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : run prepared.preliminary.readComputation prepared.formalErrorsInOperands = .error fault) :
+    runWithFormalInputs (.ok plan) input run = .error (.execution prepared.formalErrorsInOperands fault) := by
+  simp only [runWithFormalInputs, Except.mapError, bind, Except.bind, preparation, executed]
+
 end A12Kernel

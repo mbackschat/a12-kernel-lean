@@ -9,7 +9,7 @@ temporal profiles. -/
 
 namespace A12Kernel
 
-/-- Completed scalar temporal and DateRange declaration profiles sharing the fixed-target computation shape. Additional policies remain excluded.
+/-- Completed scalar temporal and DateRange declaration profiles sharing the first-filled site. Additional policies remain excluded.
 
 One of those exclusions is now known legal rather than undecided, and is named so its absence is not
 read as a gate. A **partially known** Date — a full-format DATE declaration carrying `DAY_OPTIONAL`,
@@ -59,9 +59,9 @@ def TemporalFirstFilledStarCarrier.isDateFragment :
 
     `DATE_RANGE` stays keyed on its kind, and correctly: it is the one kind whose format is
     allowlisted as a `(format, separator)` **pair** rather than as a bare format string, so its
-    profile genuinely cannot be read off a format alone. Date profiles with optional pre-1900
-    checking remain outside until checked temporal input represents that declaration-owned source
-    check.
+    profile genuinely cannot be read off a format alone. A declaration carrying the opt-in pre-1900
+    check classifies as no profile: as a source it stays outside, and as a full-Date target its
+    target policy owns the check, read through `firstFilledTargetProfile`.
 
     A DateFragment is a component-omitting Date: its declared components are the ones its format
     names, at full precision, as the reader decodes a `DateFragmentType` and as the Kernel reads it
@@ -131,8 +131,9 @@ def TemporalFirstFilledStarCarrier.acceptsSource
 
 /-- A target declaration as a carrier whose target policy owns the pre-1900 check reads it: that
 policy reports an earlier Date as errored rather than refusing the target, measured for a full-Date
-copy ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)) and a
-Date constant ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)).
+copy at a fixed target ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)),
+a Date constant at a repeatable one ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)),
+and this operation at a repeatable one ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-full-date-repeatable-first-filled)).
 A source keeps the check and stays outside. -/
 def FlatFieldDecl.withoutBefore1900Check (declaration : FlatFieldDecl) : FlatFieldDecl :=
   { declaration with temporalTargetPolicy :=
@@ -142,6 +143,34 @@ def FlatFieldDecl.withoutBefore1900Check (declaration : FlatFieldDecl) : FlatFie
 def FlatFieldDecl.firstFilledTargetProfile (declaration : FlatFieldDecl)
     (ownsBefore1900 : Bool) : FlatFieldDecl :=
   if ownsBefore1900 then declaration.withoutBefore1900Check else declaration
+
+/-- The temporal `FirstFilledValue` carriers, one per family. -/
+inductive TemporalFirstFilledFamily where
+  | time
+  | dateTime
+  | dateFragment
+  | fullDate
+  | dateRange
+  deriving Repr, DecidableEq
+
+/-- The carrier family a target selects, read off its profile as every carrier reads it: by format
+and never by declared kind, so a DATE declared `HH:mm:ss` is a Time target as the Kernel measures it
+([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
+pre-1900 check is set aside for the choice alone, since a fragment carrying it is still the fragment
+carrier's to refuse. A declaration with no profile falls back on its declared kind, so the carrier
+that kind names states the refusal. -/
+def FlatFieldDecl.temporalFirstFilledFamily? (target : FlatFieldDecl) :
+    Option TemporalFirstFilledFamily :=
+  match target.withoutBefore1900Check.temporalFirstFilledStarCarrier?, target.policy.kind with
+  | some .timeHms, _ => some .time
+  | some .dateTimeIso, _ => some .dateTime
+  | some .fullDateIso, _ | some .fullDateDotted, _ => some .fullDate
+  | some carrier, _ => some (if carrier.isDateFragment then .dateFragment else .dateRange)
+  | none, .temporal .time _ => some .time
+  | none, .temporal .dateTime _ => some .dateTime
+  | none, .temporal .date _ => some .fullDate
+  | none, .dateRange => some .dateRange
+  | none, _ => none
 
 inductive TemporalFirstFilledSiteElabError where
   | site (cause : FirstFilledPlacementElabError)

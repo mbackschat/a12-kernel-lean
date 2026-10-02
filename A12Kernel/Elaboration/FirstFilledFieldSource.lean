@@ -2,10 +2,11 @@ import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.CheckedStarShape
 import A12Kernel.Elaboration.FieldEntityList
 
-/-! # The source of a fixed-target `FirstFilledValue`
+/-! # The source of a carrier-owned `FirstFilledValue`
 
-A fixed-target `FirstFilledValue` reads one direct single-level star or a direct list of plain
-nonrepeatable fields, and both feed the same ordered scan over checked cells. On a list the Kernel
+A `FirstFilledValue` on the shared first-filled site reads one star or a direct list of plain
+nonrepeatable fields, and both feed the same ordered scan over checked cells; the site decides which
+shapes each target placement admits. On a list the Kernel
 selects the first filled cell, lets an empty one fall through and ends the scan at a malformed one,
 measured on Boolean, DateFragment, Time and DateTime
 ([four-carrier checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-first-filled-formal-branch-four-carriers)).
@@ -15,7 +16,7 @@ and the read.
 
 namespace A12Kernel
 
-/-- An authored fixed-target `FirstFilledValue` source: one starred path or an entity list. -/
+/-- An authored `FirstFilledValue` source: one starred path or an entity list. -/
 inductive SurfaceFirstFilledSource where
   | star (path : SurfaceStarFieldPath)
   | list (source : SurfaceFieldEntitySource)
@@ -27,7 +28,7 @@ structure ResolvedFirstFilledSource where
   cells : List CheckedAddressedCell
   hasOpenTail : Bool
 
-/-- A checked fixed-target `FirstFilledValue` source. -/
+/-- A checked `FirstFilledValue` source. -/
 inductive FirstFilledFieldSource (model : FlatModel) where
   | star (source : CheckedStarFieldPath model)
   | list (fields : List FlatFieldDecl)
@@ -42,23 +43,11 @@ def declarations : FirstFilledFieldSource model → List FlatFieldDecl
 def referencesField (source : FirstFilledFieldSource model) (field : FieldId) : Bool :=
   source.declarations.any (·.id == field)
 
-/-- The shapes this source admits: a direct single-level star, or a list of at least two plain
-nonrepeatable fields. -/
+/-- The shapes this source admits at a fixed target: a direct single-level star, or a list of at
+least two plain nonrepeatable fields. -/
 def admittedShape : FirstFilledFieldSource model → Bool
   | .star source => source.isDirectSingleStar
   | .list fields => decide (2 ≤ fields.length) && fields.all (·.repeatableScope.isEmpty)
-
-/-- Read a star's rows, or each listed field once. -/
-def resolve (source : FirstFilledFieldSource model) (input : CheckedDocument model) :
-    Except CheckedStarDocumentError ResolvedFirstFilledSource :=
-  match source with
-  | .star path => do
-      let resolved ← path.resolveCheckedField input []
-      pure { cells := resolved.cells, hasOpenTail := resolved.topology.domain.hasOpenTail }
-  | .list fields => do
-      let cells ← fields.mapM fun declaration =>
-        input.addressedCellWithRead input.read [] declaration.id
-      pure { cells, hasOpenTail := false }
 
 end FirstFilledFieldSource
 

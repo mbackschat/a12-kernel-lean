@@ -140,33 +140,22 @@ def applyToChecked (view : TimeFirstFilledComputationRunView model ResidualMessa
 end TimeFirstFilledComputationRunView
 
 /-- Failure while composing selected formal-input preparation with Time `FirstFilledValue`. -/
-inductive TimeFirstFilledCheckedResultFault where
-  | formalInput (cause : ComputationFormalInputPlanError)
-  | preliminary (cause : CheckedIndexPreliminaryError)
-  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
-      (cause : FirstFilledSiteFault)
-  deriving Repr, DecidableEq
+abbrev TimeFirstFilledCheckedResultFault := ComputationFormalInputRunFault FirstFilledSiteFault
 
 namespace CheckedTimeFirstFilledComputation
 
 /-- Bind every source declaration and the computed target to the shared eager inventory. -/
 def formalInputPlan (operation : CheckedTimeFirstFilledComputation model) :
     Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model
-    (operation.shape.site.source.declarations.map (·.id)) [operation.targetField]
+  operation.shape.site.formalInputPlan
 
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the
 prepared read. -/
 def executeResultWithFormalInputs (operation : CheckedTimeFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except TimeFirstFilledCheckedResultFault
-      (TimeFirstFilledComputationRunView model ComputationFormalInputFinding) := do
-  let plan ← operation.formalInputPlan |>.mapError .formalInput
-  let prepared ← plan.prepare input |>.mapError .preliminary
-  match operation.executeResultWithRead input prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands with
-  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+      (TimeFirstFilledComputationRunView model ComputationFormalInputFinding) :=
+  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead input)
 
 end CheckedTimeFirstFilledComputation
 

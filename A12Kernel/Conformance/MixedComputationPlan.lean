@@ -41,7 +41,7 @@ private def labels : SurfaceStarFieldPath :=
 private def steps? : Option (List (MixedComputationStep model builtinStringPatternCompiler)) := do
   let reader ← (checkStringFirstFilledComputation model ["Probe"] note.id ⟨.star labels, []⟩).toOption
   let constant ← (checkRepeatableStringConstantComputation model ["Probe"] label.id "NEW").toOption
-  pure [.document (.ofStringFirstFilled reader), .rows (.ofRepeatableStringConstant constant)]
+  pure [.document (← CheckedDocumentComputationStep.ofStringFirstFilled? reader), .rows (.ofRepeatableStringConstant constant)]
 
 private def run? : Option (List (CellAddr × Option String)) := do
   let plan ← (certifyMixedComputationPlan (← steps?)).toOption

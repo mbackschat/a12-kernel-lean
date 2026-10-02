@@ -338,7 +338,7 @@ private def stepOutcome? (matchers : StringTargetMatchers) (text : String) :
   let data : DocumentData :=
     { instantiatedRows := [], cells := [placed unrelated text (.parsed (.str text))] }
   let document ← (checkDocument prepared "en_US" data).toOption
-  pure (((CheckedDocumentComputationStep.ofStringFirstFilled operation).run world matchers document).map
+  pure (((← CheckedDocumentComputationStep.ofStringFirstFilled? operation).run world matchers document).map
     (·.1))
 
 /- A plan step checks its String target against the prepared pattern it is handed, so `AB` is rejected

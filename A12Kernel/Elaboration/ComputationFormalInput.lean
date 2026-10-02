@@ -114,4 +114,26 @@ def prepare (plan : CheckedComputationFormalInputPlan model)
 
 end CheckedComputationFormalInputPlan
 
+/-- Failure of a computation run composed with its selected formal-input preparation: the plan, the
+preparation, or the run, the last beside the eager findings it was handed. -/
+inductive ComputationFormalInputRunFault (Cause : Type) where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding) (cause : Cause)
+  deriving Repr, DecidableEq
+
+/-- Prepare a plan's selected sources once, retain every eager finding, and run lazily through the
+prepared read, so a run fault keeps the findings it was handed. -/
+def runWithFormalInputs {Cause Result : Type}
+    (planned : Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model))
+    (input : CheckedDocument model)
+    (run : (CellAddr → Except CheckedDocumentError CheckedCell) →
+      List ComputationFormalInputFinding → Except Cause Result) :
+    Except (ComputationFormalInputRunFault Cause) Result := do
+  let plan ← planned |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match run prepared.preliminary.readComputation prepared.formalErrorsInOperands with
+  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
+
 end A12Kernel

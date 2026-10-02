@@ -72,12 +72,12 @@ private def guardStep? (target scanned : String) : Option (CheckedScalarComputat
 /-- The grid's computations in its authored order, the guards ahead of the scans they read. -/
 private def plan : CheckedScalarComputationPlan model :=
   let steps := ([guardStep? "KS" "FS", guardStep? "KB" "FB", guardStep? "KD" "FD", guardStep? "KE" "FE",
-    (checkStringFirstFilledComputation model ["Rg"] (idOf "FS") ⟨.star (rowsStarPath "Tag"), []⟩).toOption.map
-      fun operation => .document (.ofStringFirstFilled operation),
-    (checkBooleanFirstFilledComputation model ["Rg"] (idOf "FB") (rowsStar "Flag")).toOption.map
-      fun operation => .document (.ofBooleanFirstFilled operation),
-    (checkFullDateFirstFilledComputation model ["Rg"] (idOf "FD") (rowsStar "Day")).toOption.map
-      fun operation => .document (.ofFullDateFirstFilled operation),
+    (checkStringFirstFilledComputation model ["Rg"] (idOf "FS") ⟨.star (rowsStarPath "Tag"), []⟩).toOption.bind
+      fun operation => (CheckedDocumentComputationStep.ofStringFirstFilled? operation).map .document,
+    (checkBooleanFirstFilledComputation model ["Rg"] (idOf "FB") (rowsStar "Flag")).toOption.bind
+      fun operation => (CheckedDocumentComputationStep.ofBooleanFirstFilled? operation).map .document,
+    (checkFullDateFirstFilledComputation model ["Rg"] (idOf "FD") (rowsStar "Day")).toOption.bind
+      fun operation => (CheckedDocumentComputationStep.ofFullDateFirstFilled? operation).map .document,
     (elaborateEnumerationFirstFilledComputation model ["Rg"] (idOf "FE")
       { first := .star (rowsStarPath "Code"), rest := [] }).toOption.map
       fun operation => .document (.ofEnumerationFirstFilled operation)].mapM id).get (by native_decide)

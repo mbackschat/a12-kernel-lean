@@ -2714,7 +2714,7 @@ Lean treatment: the format-to-components reading moved from the reader into `Tem
 
 Two reader paths discarded a carrier's refusal. A Date target tried the full-Date carrier and, on its refusal, the DateFragment one, so a fragment-shaped target whose own carrier refused for a real reason reported the full-Date mismatch instead; and a fixed temporal target's refusal fell through to the row route, whose answer named only the operator. Either way the replay attributed the row to something other than the gate that refused it, and the real refusal reached nobody.
 
-Lean treatment: the Date lowerings now pick their carrier from the target's own profile before elaborating, and a fixed temporal target's own refusal propagates (`b2278f60`, `2062bc72`).
+Lean treatment: a fixed temporal target's own refusal propagates (`b2278f60`), and both temporal lowerings pick their carrier from `FlatFieldDecl.temporalFirstFilledFamily?`, the target's profile read as every carrier reads it. The first fix, in `2062bc72`, still chose by declared kind before the profile, so a DATE declared `HH:mm:ss` reached the full-Date carrier; a cold review found it and the shared family function replaced both dispatches, locked in [`LowerLocks.lean`](../A12Kernel/Reference/Dm/LowerLocks.lean).
 
 **Choose a carrier by the target's declared profile, then let its refusal stand.** A fallback chain is correct only when the carriers' admissions are disjoint and each refusal is a mismatch, and that is the case where the dispatch can be decided up front anyway.
 

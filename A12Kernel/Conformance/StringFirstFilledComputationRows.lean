@@ -58,7 +58,7 @@ private def targetDescendantSource := stringField 12 "TaskDetailCode"
 private def model : FlatModel := {
   fields := [source, target, fixedTarget, rawSource, rawTarget,
     numberSource, numberTarget, nestedSource, unboundTarget, rootSource,
-    targetDescendantSource]
+    targetDescendantSource, stringField 13 "TaskPeer" ["Projects", "Tasks"] [10, 30]]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 6 },
     { level := 20, path := ["Projects", "Choices"], repeatability := some 2,
@@ -173,6 +173,10 @@ example :
     classOf ["OtherTasks"] unboundTarget.id absoluteSiblingStar = some .noWildcard ∧
     admitted ["Projects", "Tasks"] target.id rootStar = true ∧
     admitted ["Projects", "Tasks"] target.id targetDescendantStar = true ∧
+    (checkStringFirstFilledComputation model ["Projects", "Tasks"] target.id
+      ⟨.star (siblingStar source.name), [.star rootStar]⟩).toOption.isSome = true ∧
+    admitted ["Projects", "Tasks"] target.id
+      { base := .relative 1, groups := [{ name := "Tasks", starred := true }], field := "TaskPeer" } = true ∧
     elabError? (checkStringFirstFilledComputation model
       ["Projects", "Tasks"] target.id ⟨.star selfStar, []⟩) =
         some (.targetSelfReference target.path) := by

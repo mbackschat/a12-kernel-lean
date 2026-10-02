@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
+import A12Kernel.Elaboration.DocumentComputationStep
 
 /-! # Exact-address repeatable Boolean `FirstFilledValue` locks -/
 
@@ -104,6 +105,13 @@ private def operation? :
     Option (CheckedBooleanFirstFilledComputation model) :=
   (checkBooleanFirstFilledComputation model
     ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
+
+/- A repeatable target has no whole-document step, which reads and writes one root address: the
+row carrier runs it through `execute` at every row instead. -/
+example :
+    (operation?.map fun operation => (CheckedDocumentComputationStep.ofBooleanFirstFilled? operation).isNone) =
+      some true := by
+  native_decide
 
 private def elabError? (checked :
     Except BooleanFirstFilledComputationElabError

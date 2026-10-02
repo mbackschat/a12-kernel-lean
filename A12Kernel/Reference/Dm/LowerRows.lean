@@ -7,8 +7,9 @@ import A12Kernel.Elaboration.MixedComputationPlan
 
 A row target computes one value per instantiated row, so its operation is lowered onto the row step
 of the carrier that operation names. A constant is placed by its literal's shape, Boolean and Confirm
-by `True` and `False`; `FieldValueAsString`, `FirstFilledValue` over one sibling star, `DateFromDateTime`
-and the `Time(...)` construction each have one addressed carrier. Each carrier owns its target's
+by `True` and `False`; `FieldValueAsString`, `DateFromDateTime` and the `Time(...)` construction each
+have one addressed carrier, and `FirstFilledValue` the one carrier per kind that also serves a fixed
+target, a temporal target's chosen by its profile. Each carrier owns its target's
 admission, its sources' placement and its refusal of a read of its own target, so the reader only
 names it; the step's certificate that it excludes its target restates what the carrier ensures.
 -/
@@ -113,28 +114,27 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
   if target.customType.isSome then
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofCustomFirstFilled?
       (← elaborated "FirstFilledValue" (checkCustomFirstFilledComputation model group target.id (.star star))))
-  match target.policy.kind with
-  | .boolean => do
-      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofBooleanFirstFilled?
-        (← elaborated "FirstFilledValue" (checkBooleanFirstFilledComputation model group target.id (.star star))))
-  | .temporal .time _ => do
+  match target.temporalFirstFilledFamily?, target.policy.kind with
+  | some .time, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofTimeFirstFilled?
         (← elaborated "FirstFilledValue" (checkTimeFirstFilledComputation model group target.id (.star star))))
-  | .temporal .dateTime _ => do
+  | some .dateTime, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateTimeFirstFilled?
         (← elaborated "FirstFilledValue" (checkDateTimeFirstFilledComputation model group target.id (.star star))))
-  | .temporal .date _ =>
-      if target.temporalFirstFilledStarCarrier?.any (·.isDateFragment) then
-        stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateFragmentFirstFilled?
-          (← elaborated "FirstFilledValue" (checkDateFragmentFirstFilledComputation model group target.id
-            (.star star))))
-      else
+  | some .dateFragment, _ => do
+      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateFragmentFirstFilled?
+        (← elaborated "FirstFilledValue" (checkDateFragmentFirstFilledComputation model group target.id
+          (.star star))))
+  | some .fullDate, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofFullDateFirstFilled?
         (← elaborated "FirstFilledValue" (checkFullDateFirstFilledComputation model group target.id (.star star))))
-  | .dateRange => do
+  | some .dateRange, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateRangeFirstFilled?
         (← elaborated "FirstFilledValue" (checkDateRangeFirstFilledComputation model group target.id star)))
-  | _ => refuse "FirstFilledValue" "row target kind"
+  | none, .boolean => do
+      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofBooleanFirstFilled?
+        (← elaborated "FirstFilledValue" (checkBooleanFirstFilledComputation model group target.id (.star star))))
+  | none, _ => refuse "FirstFilledValue" "row target kind"
 
 /-- The row step one unguarded operation into a repeatable target names. -/
 def lowerRowStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :

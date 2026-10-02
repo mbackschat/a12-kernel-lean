@@ -2,8 +2,9 @@ import A12Kernel.Elaboration.FirstFilledPlacement
 
 /-! # Laws of the shared first-filled site
 
-Every carrier placed on the site runs through `CheckedFirstFilledSite.instances`, so its address laws
-are stated once here rather than once per carrier.
+Every carrier placed on the site runs through `CheckedFirstFilledSite.instances` and reads the
+site's source, so its placement laws are stated once here rather than once per carrier: a fixed
+target's single instance, and a repeatable target's one bound sibling star.
 -/
 
 namespace A12Kernel
@@ -19,5 +20,18 @@ theorem firstFilledSite_instances_fixed {Outcome Fault : Type}
   simp [CheckedFirstFilledSite.instances, CheckedDocument.computationTargetOutcomes, fixed,
     Env.pathForScope]
   rfl
+
+/-- A repeatable target reads one sibling star: one reopened axis, below a nonempty binding whose
+every level the target's own row binds. -/
+theorem firstFilledSite_repeatable_readsBoundSiblingStar (site : CheckedFirstFilledSite model)
+    (repeatable : site.target.repeatableScope ≠ []) :
+    ∃ star, site.source = .star star ∧ star.reopenedScope.length = 1 ∧ star.bindingScope ≠ [] ∧
+      star.bindingScope.all site.target.repeatableScope.contains = true := by
+  obtain ⟨targetField, target, owned, source, declaringGroup, valid, placement⟩ := site
+  cases placement with
+  | fixed fixed _ => exact absurd fixed repeatable
+  | rows _ _ placement =>
+      exact ⟨_, rfl, placement.sourceSingleReopenedAxis, placement.sourceBindingNonempty,
+        placement.sourceBindingBound⟩
 
 end A12Kernel

@@ -145,33 +145,22 @@ def applyToChecked
 end CustomFirstFilledComputationRunView
 
 /-- Failure while composing selected formal-input preparation with Custom `FirstFilledValue`. -/
-inductive CustomFirstFilledCheckedResultFault where
-  | formalInput (cause : ComputationFormalInputPlanError)
-  | preliminary (cause : CheckedIndexPreliminaryError)
-  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
-      (cause : FirstFilledSiteFault)
-  deriving Repr, DecidableEq
+abbrev CustomFirstFilledCheckedResultFault := ComputationFormalInputRunFault FirstFilledSiteFault
 
 namespace CheckedCustomFirstFilledComputation
 
 /-- Bind every source declaration and the computed target to the shared eager inventory. -/
 def formalInputPlan (operation : CheckedCustomFirstFilledComputation model) :
     Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model
-    (operation.site.source.declarations.map (·.id)) [operation.targetField]
+  operation.site.formalInputPlan
 
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the
 prepared read. -/
 def executeResultWithFormalInputs (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except CustomFirstFilledCheckedResultFault
-      (CustomFirstFilledComputationRunView model ComputationFormalInputFinding) := do
-  let plan ← operation.formalInputPlan |>.mapError .formalInput
-  let prepared ← plan.prepare input |>.mapError .preliminary
-  match operation.executeResultWithRead input prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands with
-  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+      (CustomFirstFilledComputationRunView model ComputationFormalInputFinding) :=
+  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead input)
 
 end CheckedCustomFirstFilledComputation
 

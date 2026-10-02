@@ -63,42 +63,6 @@ theorem checkedFullDateFirstFilled_executeResult_projects
   subst view
   exact ⟨rfl, rfl⟩
 
-/-- Successful whole-call composition preserves the exact prepared FULL Date result, including its eager findings, target rendering, and source-relative actions. -/
-theorem checkedFullDateFirstFilled_executeResultWithFormalInputs_exact
-    (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (result : FullDateFirstFilledComputationRunView model
-      ComputationFormalInputFinding)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeResultWithRead input
-      prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands = .ok result) :
-    operation.executeResultWithFormalInputs input = .ok result := by
-  rw [CheckedFullDateFirstFilledComputation.executeResultWithFormalInputs,
-    planned]
-  simp only [Except.mapError, bind, Except.bind, preparation, executed]
-
-/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged FULL Date fault. -/
-theorem checkedFullDateFirstFilled_executeResultWithFormalInputs_failure_exact
-    (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (plan : CheckedComputationFormalInputPlan model)
-    (prepared : ComputationFormalInputPreparation model)
-    (fault : FullDateFirstFilledComputationFault)
-    (planned : operation.formalInputPlan = .ok plan)
-    (preparation : plan.prepare input = .ok prepared)
-    (executed : operation.executeResultWithRead input
-      prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands = .error fault) :
-    operation.executeResultWithFormalInputs input =
-      .error (.execution prepared.formalErrorsInOperands fault) := by
-  rw [CheckedFullDateFirstFilledComputation.executeResultWithFormalInputs,
-    planned]
-  simp only [Except.mapError, bind, Except.bind, preparation, executed]
-
 /-- Application is exactly the common FullDate fold over the separately supplied document's exact cell-state projection. -/
 theorem fullDateFirstFilledRun_applyToChecked_delegates
     (view : FullDateFirstFilledComputationRunView model ResidualMessage)

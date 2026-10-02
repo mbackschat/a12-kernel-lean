@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
+import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
@@ -62,7 +63,8 @@ private def model : FlatModel :=
       date 12 "D1", date 13 "D2", date 14 "DTgt",
       boolean 15 "B3", { boolean 16 "RB" with groupPath := ["Fc", "Rows"], repeatableScope := [10] },
       { date 17 "DD" with temporalTargetPolicy := some { format := "dd.MM.yyyy", partialMode := .full } },
-      range 18 "R1", range 19 "R2", range 20 "RTgt"]
+      range 18 "R1", range 19 "R2", range 20 "RTgt",
+      { date 21 "RD" with groupPath := ["Fc", "Rows"], repeatableScope := [10] }]
     repeatableGroups := [{ level := 10, path := ["Fc", "Rows"], repeatability := some 3 }]
     timeZoneId := "Europe/Berlin" }
 
@@ -234,6 +236,24 @@ example :
         | .error (.shape (.sourceCarrier path)) => path == ["Fc", "D1"] | _ => false) &&
       (match checkTemporalFirstFilledSite model ["Fc"] 20 (list ["R1", "R2"]) with
         | .error (.sourceShape path) => path == ["Fc", "RTgt"] | _ => false)) = true := by
+  native_decide
+
+/- Each temporal carrier owns its own target-profile gate after the site has paired target and source:
+a full-Date pair admitted by the site is refused by the Time, DateTime, DateFragment and starred
+DateRange carriers under their own target error, and a Time pair by the full-Date carrier. -/
+example :
+    let dateStar : SurfaceStarFieldPath :=
+      { base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "RD" }
+    ((match checkTimeFirstFilledComputation model ["Fc"] 14 (list ["D1", "D2"]) with
+        | .error (.targetNotTime path) => path == ["Fc", "DTgt"] | _ => false) &&
+      (match checkDateTimeFirstFilledComputation model ["Fc"] 14 (list ["D1", "D2"]) with
+        | .error (.targetNotDateTime path) => path == ["Fc", "DTgt"] | _ => false) &&
+      (match checkDateFragmentFirstFilledComputation model ["Fc"] 14 (list ["D1", "D2"]) with
+        | .error (.targetNotFragment path) => path == ["Fc", "DTgt"] | _ => false) &&
+      (match checkDateRangeFirstFilledComputation model ["Fc"] 14 dateStar with
+        | .error (.targetNotDateRange path) => path == ["Fc", "DTgt"] | _ => false) &&
+      (match checkFullDateFirstFilledComputation model ["Fc"] 8 (list ["T1", "T2"]) with
+        | .error (.targetNotFullDate path) => path == ["Fc", "TTgt"] | _ => false)) = true := by
   native_decide
 
 end A12Kernel.Conformance.FirstFilledFieldList

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.AddressedFirstFilledStar
 import A12Kernel.Elaboration.FirstFilledFieldSource
+import A12Kernel.Elaboration.ComputationFormalInput
 
 /-! # Where a carrier-owned `FirstFilledValue` target sits
 
@@ -77,22 +78,24 @@ def checkFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath) (targe
                  placement := .fixed hFixed hShape }
         else throw (.sourceShape ((checked.fields.head?.map (·.path)).getD target.path))
     else
-      let repeatable ← (checkAddressedRepeatableTarget model declaringGroup targetField).mapError
-        .repeatableTarget
+      match hRepeatable : checkAddressedRepeatableTarget model declaringGroup targetField with
+      | .error cause => throw (.repeatableTarget cause)
+      | .ok repeatable =>
+      have hDeclares : repeatable.declaration = target := by
+        have looked := repeatable.owned
+        rw [checkAddressedRepeatableTarget_targetField hRepeatable, hOwned] at looked
+        exact (Except.ok.inj looked).symm
       match authored with
       | .list _ => throw (.rowList target.path)
       | .star path =>
         match hStar : elaborateStarFieldPath model declaringGroup path with
         | .error cause => throw (.source cause)
         | .ok star =>
-        if hDeclares : repeatable.declaration = target then
           let placement ← (checkFirstFilledStarPlacement targetField target hOwned
             (by intro empty; exact hFixed empty) star).mapError .starPlacement
           pure { targetField, target, targetOwned := hOwned, source := .star star, declaringGroup
                  declaringGroupValid := elaborateStarFieldPath_declaringGroupValid hStar
                  placement := .rows repeatable hDeclares placement }
-        -- The repeatable-target certificate looked the same field up, so its declaration is this one.
-        else throw (.target (.invalidRuleGroup declaringGroup))
 
 namespace FirstFilledFieldSource
 
@@ -135,6 +138,11 @@ def instances {Outcome Fault : Type} (site : CheckedFirstFilledSite model)
     run { field := site.targetField, path } environment
   input.computationTargetOutcomes site.target.repeatableScope onRowError (addressed clearOnly)
     (addressed produce)
+
+/-- Bind every source declaration and the computed target to the shared eager inventory. -/
+def formalInputPlan (site : CheckedFirstFilledSite model) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model (site.source.declarations.map (·.id)) [site.targetField]
 
 end CheckedFirstFilledSite
 

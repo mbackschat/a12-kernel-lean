@@ -59,8 +59,8 @@ private def numberStep? (target : String) (guard : Option ComputationCondition)
     [(guard, expression)]).toOption.map .number
 
 private def firstFilled? (target first second : String) : Option (CheckedScalarComputationStep model) :=
-  (checkCustomFirstFilledComputation model ["Xc"] (idOf target) (.list (entities first second))).toOption.map
-    fun operation => .document (.ofCustomFirstFilled operation)
+  (checkCustomFirstFilledComputation model ["Xc"] (idOf target) (.list (entities first second))).toOption.bind
+    fun operation => (CheckedDocumentComputationStep.ofCustomFirstFilled? operation).map .document
 
 /-- The grid's computations in its authored order, every reader ahead of what it reads. -/
 private def plan : CheckedScalarComputationPlan model :=

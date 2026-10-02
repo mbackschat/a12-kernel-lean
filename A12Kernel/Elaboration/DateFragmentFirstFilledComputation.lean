@@ -134,33 +134,22 @@ def applyToChecked
 end DateFragmentFirstFilledComputationRunView
 
 /-- Failure while composing selected formal-input preparation with DateFragment `FirstFilledValue`. -/
-inductive DateFragmentFirstFilledCheckedResultFault where
-  | formalInput (cause : ComputationFormalInputPlanError)
-  | preliminary (cause : CheckedIndexPreliminaryError)
-  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
-      (cause : FirstFilledSiteFault)
-  deriving Repr, DecidableEq
+abbrev DateFragmentFirstFilledCheckedResultFault := ComputationFormalInputRunFault FirstFilledSiteFault
 
 namespace CheckedDateFragmentFirstFilledComputation
 
 /-- Bind every source declaration and the computed target to the shared eager inventory. -/
 def formalInputPlan (operation : CheckedDateFragmentFirstFilledComputation model) :
     Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model
-    (operation.shape.site.source.declarations.map (·.id)) [operation.targetField]
+  operation.shape.site.formalInputPlan
 
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the
 prepared read. -/
 def executeResultWithFormalInputs (operation : CheckedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except DateFragmentFirstFilledCheckedResultFault
-      (DateFragmentFirstFilledComputationRunView model ComputationFormalInputFinding) := do
-  let plan ← operation.formalInputPlan |>.mapError .formalInput
-  let prepared ← plan.prepare input |>.mapError .preliminary
-  match operation.executeResultWithRead input prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands with
-  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+      (DateFragmentFirstFilledComputationRunView model ComputationFormalInputFinding) :=
+  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead input)
 
 end CheckedDateFragmentFirstFilledComputation
 

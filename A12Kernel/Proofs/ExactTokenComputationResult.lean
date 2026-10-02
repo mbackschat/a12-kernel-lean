@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.StringComputationRunResult
+import A12Kernel.Proofs.StringComputationRunApplication
 
 /-! # Exact-token computation target projection laws -/
 
@@ -70,5 +71,16 @@ theorem addressedTokenResults_haveNoTargetErrors
   | nil => rfl
   | cons head tail ih =>
       simp [addressedTokenResult_hasNoTargetError, ih]
+
+/-- One exact-address token outcome's every retained action names its own target address, so a
+carrier whose `executeResult` projects its instances through this owner owns each action at the
+instance that produced it. -/
+theorem addressedTokenResult_actionsOwned
+    (entry : AddressedTokenComputationOutcome)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (projectAddressedTokenResults input residualMessages [entry]).actionTargets.all
+      (· == entry.targetField) = true := by
+  simp only [projectAddressedTokenResults, List.map]
+  exact oneTargetStringResult_actionsOwned _ _ _ _
 
 end A12Kernel

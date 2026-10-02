@@ -148,33 +148,22 @@ def applyToChecked (view : DateTimeFirstFilledComputationRunView model ResidualM
 end DateTimeFirstFilledComputationRunView
 
 /-- Failure while composing selected formal-input preparation with DateTime `FirstFilledValue`. -/
-inductive DateTimeFirstFilledCheckedResultFault where
-  | formalInput (cause : ComputationFormalInputPlanError)
-  | preliminary (cause : CheckedIndexPreliminaryError)
-  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
-      (cause : DateTimeFirstFilledComputationFault)
-  deriving Repr, DecidableEq
+abbrev DateTimeFirstFilledCheckedResultFault := ComputationFormalInputRunFault DateTimeFirstFilledComputationFault
 
 namespace CheckedDateTimeFirstFilledComputation
 
 /-- Bind every source declaration and the computed target to the shared eager inventory. -/
 def formalInputPlan (operation : CheckedDateTimeFirstFilledComputation model) :
     Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model
-    (operation.shape.site.source.declarations.map (·.id)) [operation.targetField]
+  operation.shape.site.formalInputPlan
 
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the
 prepared read. -/
 def executeResultWithFormalInputs (operation : CheckedDateTimeFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except DateTimeFirstFilledCheckedResultFault
-      (DateTimeFirstFilledComputationRunView model ComputationFormalInputFinding) := do
-  let plan ← operation.formalInputPlan |>.mapError .formalInput
-  let prepared ← plan.prepare input |>.mapError .preliminary
-  match operation.executeResultWithRead input prepared.preliminary.readComputation
-      prepared.formalErrorsInOperands with
-  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+      (DateTimeFirstFilledComputationRunView model ComputationFormalInputFinding) :=
+  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead input)
 
 end CheckedDateTimeFirstFilledComputation
 

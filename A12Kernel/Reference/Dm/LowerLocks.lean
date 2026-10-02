@@ -295,11 +295,15 @@ example :
 
 /-- One DM date declaration read through the model reader, so the declared kind reaches the lowering
 only as the reader leaves it. -/
-private def readDate (id : FieldId) (name typeName formatKey format : String) : FlatFieldDecl :=
+private def readDate (id : FieldId) (name typeName formatKey format : String)
+    (groupPath : GroupPath := ["Xf"]) (scope : List RepeatableLevel := []) (before1900 := false) :
+    FlatFieldDecl :=
+  let body := (formatKey, Lean.Json.str format) ::
+    (if before1900 then [("youngerThan1900Check", Lean.Json.bool true)] else [])
   let fieldJson := Lean.Json.mkObj [("fieldType", Lean.Json.mkObj [("type", typeName),
-    (typeName, Lean.Json.mkObj [(formatKey, format)])])]
-  (readFieldType id ["Xf"] name [] fieldJson).toOption.getD
-    { id, groupPath := ["Xf"], name, policy := { kind := .string } }
+    (typeName, Lean.Json.mkObj body)])]
+  (readFieldType id groupPath name scope fieldJson).toOption.getD
+    { id, groupPath, name, policy := { kind := .string } }
 
 /- The measured pair of the [format-string checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string):
 a DATE and a DATE_FRAGMENT declared `yyyy` share one format and lower onto the one fragment carrier,
@@ -321,6 +325,44 @@ example :
      lowers "YrTarget" "FirstFilledValue(YrDate, YrFrag)",
      !lowers "Target" "FirstFilledValue(Dotted, Iso)",
      lowers "Target" "FirstFilledValue(Iso, Iso2)"].all id := by
+  native_decide
+
+/- A temporal target's carrier is chosen by its profile, which the format decides, so a DATE declared
+`HH:mm:ss` is a Time target and a TIME declared `yyyy-MM-dd` a full-Date one, at a fixed target and at
+a row, as the [format-gate checkpoint](../../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)
+measures the target gate. A DateFragment target carrying the pre-1900 check is the fragment
+carrier's to refuse, not the full-Date carrier's. -/
+example :
+    let rows : List RepeatableGroupDecl :=
+      [{ level := 10, path := ["Xf", "Rows"], repeatability := some 3 },
+       { level := 20, path := ["Xf", "Rows", "Choices"], repeatability := some 3 },
+       { level := 30, path := ["Xf", "Rows", "Tasks"], repeatability := some 3 }]
+    let model : FlatModel := { repeatableGroups := rows, fields := [
+      readDate 1 "ClockDate" "DateType" "format" "HH:mm:ss",
+      readDate 2 "T1" "TimeType" "format" "HH:mm:ss",
+      readDate 3 "T2" "TimeType" "format" "HH:mm:ss",
+      readDate 4 "DayTime" "TimeType" "format" "yyyy-MM-dd",
+      readDate 5 "D1" "DateType" "format" "yyyy-MM-dd",
+      readDate 6 "D2" "DateType" "format" "yyyy-MM-dd",
+      readDate 7 "CheckedYear" "DateFragmentType" "formatOfFragment" "yyyy" (before1900 := true),
+      readDate 8 "Y1" "DateFragmentType" "formatOfFragment" "yyyy",
+      readDate 9 "Y2" "DateFragmentType" "formatOfFragment" "yyyy",
+      readDate 10 "Target" "DateType" "format" "HH:mm:ss" ["Xf", "Rows", "Tasks"] [10, 30],
+      readDate 11 "Choice" "TimeType" "format" "HH:mm:ss" ["Xf", "Rows", "Choices"] [10, 20]] }
+    let lowered (group : GroupPath) (target operation : String) : Lowering Unit :=
+      (lowerComputation model .english
+        { group, name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+          alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).map
+        fun _ => ()
+    let refusedBy (carrier : String) : Lowering Unit → Bool
+      | .error refusal => (refusal.detail.splitOn carrier).length > 1
+      | .ok _ => false
+    [model.fields.all (·.temporalTargetPolicy.isSome),
+     (lowered ["Xf"] "ClockDate" "FirstFilledValue(T1, T2)").isOk,
+     (lowered ["Xf"] "DayTime" "FirstFilledValue(D1, D2)").isOk,
+     (lowered ["Xf", "Rows", "Tasks"] "Target" "FirstFilledValue(../Choices*/Choice)").isOk,
+     refusedBy "DateFragmentFirstFilledComputationElabError"
+       (lowered ["Xf"] "CheckedYear" "FirstFilledValue(Y1, Y2)")].all id := by
   native_decide
 
 private def rangeModel : FlatModel :=

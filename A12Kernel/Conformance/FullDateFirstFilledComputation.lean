@@ -41,11 +41,8 @@ private def monthSource : FlatFieldDecl := {
   id := 10
   groupPath := ["Cart", "Lines"]
   name := "Month"
-  policy := { kind := .temporal .date TemporalComponents.fullDate }
-  temporalTargetPolicy := some {
-    format := "MM"
-    partialMode := .yearOptional
-  }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM") }
+  temporalTargetPolicy := some { format := "MM" }
   repeatableScope := [10]
 }
 private def partialSource : FlatFieldDecl := {
@@ -309,6 +306,20 @@ example :
       stored := "copied-text-would-be-wrong"
       raw := .parsed (dateValue 1710892800000 2024 3 20)
     }] = some "VALUE|20.03.2024" := by
+  native_decide
+
+/- A fixed target carrying the pre-1900 check takes its target policy's runtime branch, as a row
+target does: the last day of 1899 is an errored attempt, the first of 1900 a value, and the unchecked control
+stores the 1899 date. The fixed
+placement itself is external evidence pending ([SG6](../../docs/gaps/numeric-and-temporal.md#gap-sg6)). -/
+example :
+    [signatureFor? checkedDottedTarget dottedSource [{
+        row := 1, stored := "31.12.1899", raw := .parsed (dateValue (-2209075200000) 1899 12 31) }],
+     signatureFor? checkedDottedTarget dottedSource [{
+        row := 1, stored := "01.01.1900", raw := .parsed (dateValue (-2208988800000) 1900 1 1) }],
+     signatureFor? dottedTarget dottedSource [{
+        row := 1, stored := "31.12.1899", raw := .parsed (dateValue (-2209075200000) 1899 12 31) }]] =
+      [some "ERRORED", some "VALUE|01.01.1900", some "VALUE|31.12.1899"] := by
   native_decide
 
 /- First-present and first-formal terminals both hide the suffix. Both order branches are now Kernel-calibrated on both codegen strategies at the [malformed-prefix checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports), including the separator that keeps them apart: an *empty* first row falls through and returns the second, so a malformed one terminating is a real asymmetry rather than an artifact of always taking the first row. The suffix is hidden from the VALUE only — the same checkpoint measures the eager operand inventory reporting a malformed suffix the scan never reached. -/

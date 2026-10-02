@@ -3,22 +3,10 @@ import A12Kernel.Elaboration.StarPath
 
 /-! # Shared exact-address first-filled star placement
 
-This module owns the carrier-neutral placement certificates shared by exact-address first-filled computations. Carrier identity remains with each computation boundary so its diagnostic order and value domain stay explicit.
+This module owns the carrier-neutral sibling-star placement certificate a repeatable first-filled target carries, through the shared site or directly on the Number carrier. Carrier identity remains with each computation boundary so its diagnostic order and value domain stay explicit.
 -/
 
 namespace A12Kernel
-
-/-- Compatibility name for first-filled consumers of the shared repeatable-target error. -/
-abbrev AddressedFirstFilledTargetElabError :=
-  AddressedRepeatableTargetElabError
-
-/-- Compatibility name for first-filled consumers of the shared repeatable-target certificate. -/
-abbrev CheckedAddressedFirstFilledTarget :=
-  CheckedAddressedRepeatableTarget
-
-/-- Compatibility entry point for existing first-filled consumers. -/
-abbrev checkAddressedFirstFilledTarget :=
-  checkAddressedRepeatableTarget
 
 inductive AddressedFirstFilledStarPlacementElabError where
   | sourceShape (path : List String)
@@ -56,12 +44,6 @@ theorem sourceBindingBound
     placement.sourceBindingPrefix).subset member
 
 end CheckedFirstFilledStarPlacement
-
-/-- Compatibility specialization for the established carrier-neutral target certificate. -/
-abbrev CheckedAddressedFirstFilledStarPlacement (model : FlatModel)
-    (target : CheckedAddressedFirstFilledTarget model)
-    (source : CheckedStarFieldPath model) : Type :=
-  CheckedFirstFilledStarPlacement model target.targetField target.declaration source
 
 /-- Certify the shared source placement from any already-checked target identity and declaration. Carrier-specific target admission remains outside this boundary. -/
 def checkFirstFilledStarPlacement
@@ -103,14 +85,5 @@ def checkFirstFilledStarPlacement
         throw (.sourceScope source.declaration.path)
   else
     throw (.sourceShape source.declaration.path)
-
-/-- Certify the carrier-neutral source placement after a computation has checked its source kind. -/
-def checkAddressedFirstFilledStarPlacement
-    (target : CheckedAddressedFirstFilledTarget model)
-    (source : CheckedStarFieldPath model) :
-    Except AddressedFirstFilledStarPlacementElabError
-      (CheckedAddressedFirstFilledStarPlacement model target source) := do
-  checkFirstFilledStarPlacement target.targetField target.declaration target.owned
-    target.repeatable source
 
 end A12Kernel

@@ -91,16 +91,16 @@ private def Kind.firstFilled? (kind : Kind) (target : FieldId) (first second : S
     Option (CheckedScalarComputationStep model) :=
   let list : SurfaceFirstFilledSource := .list (entities first second)
   (match kind with
-    | .boolean => (checkBooleanFirstFilledComputation model ["Fj"] target list).toOption.map
-        CheckedDocumentComputationStep.ofBooleanFirstFilled
-    | .fragment => (checkDateFragmentFirstFilledComputation model ["Fj"] target list).toOption.map
-        CheckedDocumentComputationStep.ofDateFragmentFirstFilled
-    | .time => (checkTimeFirstFilledComputation model ["Fj"] target list).toOption.map
-        CheckedDocumentComputationStep.ofTimeFirstFilled
-    | .dateTime => (checkDateTimeFirstFilledComputation model ["Fj"] target list).toOption.map
-        CheckedDocumentComputationStep.ofDateTimeFirstFilled
-    | .date => (checkFullDateFirstFilledComputation model ["Fj"] target list).toOption.map
-        CheckedDocumentComputationStep.ofFullDateFirstFilled
+    | .boolean => (checkBooleanFirstFilledComputation model ["Fj"] target list).toOption.bind
+        CheckedDocumentComputationStep.ofBooleanFirstFilled?
+    | .fragment => (checkDateFragmentFirstFilledComputation model ["Fj"] target list).toOption.bind
+        CheckedDocumentComputationStep.ofDateFragmentFirstFilled?
+    | .time => (checkTimeFirstFilledComputation model ["Fj"] target list).toOption.bind
+        CheckedDocumentComputationStep.ofTimeFirstFilled?
+    | .dateTime => (checkDateTimeFirstFilledComputation model ["Fj"] target list).toOption.bind
+        CheckedDocumentComputationStep.ofDateTimeFirstFilled?
+    | .date => (checkFullDateFirstFilledComputation model ["Fj"] target list).toOption.bind
+        CheckedDocumentComputationStep.ofFullDateFirstFilled?
     | .dateRange => (checkDateRangeFirstFilledDirectComputation model ["Fj"] target
         (entities first second)).toOption.map CheckedDocumentComputationStep.ofDateRangeFirstFilledDirect
     | .enumeration => (elaborateEnumerationFirstFilledComputation model ["Fj"] target
@@ -289,7 +289,7 @@ private def monthValues? (baseYear : Option Int) (m1 m2 : Option String) : Optio
   let firstFilled ← (checkDateFragmentFirstFilledComputation model ["Pm"] 0
     (.list (entities "M1" "M2"))).toOption
   let plan ← (certifyScalarComputationPlan
-    [.number guard, .document (.ofDateFragmentFirstFilled firstFilled)]).toOption
+    [.number guard, .document (← CheckedDocumentComputationStep.ofDateFragmentFirstFilled? firstFilled)]).toOption
   let cells := ([(1, m1), (2, m2), (0, some "01")].filterMap fun (id, text) =>
     text.map fun text => (id, text)).filterMap fun (id, text) =>
       (model.fields.find? (·.id == id)).map fun declaration =>

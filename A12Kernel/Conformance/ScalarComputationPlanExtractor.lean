@@ -105,7 +105,7 @@ private def authored : List (CheckedScalarComputationStep model) :=
       document? ((elaborateDateFromDateTimeComputation model (idOf "MA") (idOf "DD")).toOption.map
         .ofDateFromDateTime),
       document? ((checkStringFirstFilledComputation model ["Xj"] (idOf "SF")
-        (entities "SA" "S3")).toOption.map .ofStringFirstFilled),
+        (entities "SA" "S3")).toOption.bind CheckedDocumentComputationStep.ofStringFirstFilled?),
       numberStep? "QF" none (.atom (.firstFilled (entities "QA" "Q3"))),
       numberStep? "VN" none (.atom (.valueCount 5 (entities "QA" "Q3"))),
       numberStep? "VS" none (.atom (.tokenValueCount "AA"
@@ -117,10 +117,10 @@ private def authored : List (CheckedScalarComputationStep model) :=
         pure (.ofDateTimeDayShift operation),
       numberStep? "PC" none (.binary .add (.atom (.numeric (.field (bare "P2")))) (.literal one)),
       document? ((checkStringFirstFilledComputation model ["Xj"] (idOf "SA")
-        (entities "S1" "S2")).toOption.map .ofStringFirstFilled),
+        (entities "S1" "S2")).toOption.bind CheckedDocumentComputationStep.ofStringFirstFilled?),
       numberStep? "QA" none (.atom (.firstFilled (entities "Q1" "Q2"))),
       document? ((checkBooleanFirstFilledComputation model ["Xj"] (idOf "BA")
-        (.list (entities "B1" "B2"))).toOption.map .ofBooleanFirstFilled)]).mapM id
+        (.list (entities "B1" "B2"))).toOption.bind CheckedDocumentComputationStep.ofBooleanFirstFilled?)]).mapM id
     |>.get (by native_decide)
 
 private def plan : CheckedScalarComputationPlan model :=

@@ -372,7 +372,7 @@ def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation
     pure (.dateRange result.outcome, cell)
 
 /-- A fixed-target Boolean `FirstFilledValue` at its single instance. -/
-def ofBooleanFirstFilled (operation : CheckedBooleanFirstFilledComputation model) :
+private def ofBooleanFirstFilledAtRoot (operation : CheckedBooleanFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .boolean
@@ -384,7 +384,7 @@ def ofBooleanFirstFilled (operation : CheckedBooleanFirstFilledComputation model
     pure (.boolean entry.result, DocumentComputationReadBack.boolean entry.result)
 
 /-- A fixed-target Time `FirstFilledValue` at its single instance. -/
-def ofTimeFirstFilled (operation : CheckedTimeFirstFilledComputation model) :
+private def ofTimeFirstFilledAtRoot (operation : CheckedTimeFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .time
@@ -397,7 +397,7 @@ def ofTimeFirstFilled (operation : CheckedTimeFirstFilledComputation model) :
     pure (.time entry.outcome, cell)
 
 /-- A fixed-target DateTime `FirstFilledValue` at its single instance. -/
-def ofDateTimeFirstFilled (operation : CheckedDateTimeFirstFilledComputation model) :
+private def ofDateTimeFirstFilledAtRoot (operation : CheckedDateTimeFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .dateTime
@@ -410,7 +410,7 @@ def ofDateTimeFirstFilled (operation : CheckedDateTimeFirstFilledComputation mod
     pure (.dateTime entry.outcome, cell)
 
 /-- A fixed-target full-Date `FirstFilledValue` at its single instance. -/
-def ofFullDateFirstFilled (operation : CheckedFullDateFirstFilledComputation model) :
+private def ofFullDateFirstFilledAtRoot (operation : CheckedFullDateFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .fullDate
@@ -423,7 +423,7 @@ def ofFullDateFirstFilled (operation : CheckedFullDateFirstFilledComputation mod
     pure (.fullDate entry.outcome, cell)
 
 /-- A fixed-target DateFragment `FirstFilledValue` at its single instance. -/
-def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputation model) :
+private def ofDateFragmentFirstFilledAtRoot (operation : CheckedDateFragmentFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .dateFragment
@@ -438,7 +438,7 @@ def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputa
 
 /-- A fixed-target DateRange `FirstFilledValue` over a star, at its single instance, read back through
 the target's own declared range policy. -/
-def ofDateRangeFirstFilled (operation : CheckedDateRangeFirstFilledComputation model) :
+private def ofDateRangeFirstFilledAtRoot (operation : CheckedDateRangeFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .dateRange
@@ -480,7 +480,7 @@ def ofEnumerationFirstFilled (operation : CheckedEnumerationFirstFilledComputati
 
 /-- A fixed-target String `FirstFilledValue` at its single instance, checked against its target's
 prepared pattern. -/
-def ofStringFirstFilled (operation : CheckedStringFirstFilledComputation model) :
+private def ofStringFirstFilledAtRoot (operation : CheckedStringFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .string
@@ -495,7 +495,7 @@ def ofStringFirstFilled (operation : CheckedStringFirstFilledComputation model) 
 
 /-- A fixed-target Custom `FirstFilledValue` at its single instance, whose selected token its matching
 Custom declaration accepts unchecked, read back as a String completion is. -/
-def ofCustomFirstFilled (operation : CheckedCustomFirstFilledComputation model) :
+private def ofCustomFirstFilledAtRoot (operation : CheckedCustomFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
   family := .string
@@ -507,6 +507,47 @@ def ofCustomFirstFilled (operation : CheckedCustomFirstFilledComputation model) 
     let outcome := entry.result.asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.string outcome
     pure (.string outcome, cell)
+
+/-- A whole-document step reads and writes the target's one root address, so a `FirstFilledValue`
+carrier becomes one only at a fixed target. Each carrier also serves a repeatable target, which runs
+through its own `execute` at every row instead; at a fixed target that `execute` is this step's one
+evaluation, by `firstFilledSite_instances_fixed` on the shared site and by the fixed scope of
+`CheckedDocument.computationTargetOutcomes` for String. -/
+private def fixedTargetOnly (target : FlatFieldDecl) (step : CheckedDocumentComputationStep model) :
+    Option (CheckedDocumentComputationStep model) :=
+  if target.repeatableScope.isEmpty then some step else none
+
+def ofBooleanFirstFilled? (operation : CheckedBooleanFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofBooleanFirstFilledAtRoot operation)
+
+def ofTimeFirstFilled? (operation : CheckedTimeFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofTimeFirstFilledAtRoot operation)
+
+def ofDateTimeFirstFilled? (operation : CheckedDateTimeFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofDateTimeFirstFilledAtRoot operation)
+
+def ofFullDateFirstFilled? (operation : CheckedFullDateFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofFullDateFirstFilledAtRoot operation)
+
+def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofDateFragmentFirstFilledAtRoot operation)
+
+def ofDateRangeFirstFilled? (operation : CheckedDateRangeFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofDateRangeFirstFilledAtRoot operation)
+
+def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofStringFirstFilledAtRoot operation)
+
+def ofCustomFirstFilled? (operation : CheckedCustomFirstFilledComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  fixedTargetOnly operation.target (ofCustomFirstFilledAtRoot operation)
 
 /-- `TimeFromDateTime` over a field. -/
 def ofTimeFromDateTime (operation : CheckedTimeFromDateTimeComputation model) :
