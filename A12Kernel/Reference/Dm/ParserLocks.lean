@@ -100,4 +100,14 @@ example :
      (parseText .english "[ZeilenLueckenlos] > 0").toOption.isSome].all id := by
   native_decide
 
+/- Parentheses group conditions only: around a comparison side, an operation or an argument they are
+illegal, while a parenthesised condition and a braced operation are not. -/
+example :
+    let legal (text : String) := ((parseText .english text).toOption.map (·.body.parensLegal true)) == some true
+    [legal "(FieldFilled(A) Or FieldFilled(B)) And [C] > 1", legal "[A] > {[B] + 1}",
+     legal "Sum(Rows*/A Having ([$Rows/K] == 1)) > 0",
+     !legal "([A]) > 1", !legal "[A] > ([B])", !legal "Sum((Rows*/A)) > 0",
+     !legal "Max(([A] > 1), 2) > 0"].all id := by
+  native_decide
+
 end A12Kernel.Dm.ParserLocks

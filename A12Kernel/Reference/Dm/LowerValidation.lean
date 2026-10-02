@@ -178,9 +178,28 @@ private def firstAdmitted (construct : String) :
         | some (.error refusal) => .error { refusal with construct }
         | _ => refuse construct
 
+/-- The first comparison whose sides' decimal places the exact-scale gate refuses, unless the
+preamble suppresses it. The flat carrier has no scale gate of its own, so the gate runs here over
+every comparison before any carrier admits one. -/
+private partial def scaleRefusal? (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) :
+    Expr → Option Refusal
+  | .parens body => scaleRefusal? model rowGroup suppress body
+  | .logic _ parts => parts.findSome? (scaleRefusal? model rowGroup suppress)
+  | .compare op left right =>
+      match lowerNumericComparison op left right suppress with
+      | .ok surface => match elaborateNumericComparison model rowGroup surface with
+          | .error error@(.exactScaleMismatch _ _) =>
+              some { construct := "Comparison", detail := oneLine (repr error).pretty }
+          | _ => none
+      | .error _ => none
+  | _ => none
+
 /-- Lower a rule condition at its rule group. `suppress` is the `@SuppressWarning` preamble. -/
 partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) (condition : Expr) :
     Lowering (CheckedValidationCondition model) :=
+  match scaleRefusal? model rowGroup suppress condition with
+  | some refusal => .error refusal
+  | none =>
   let whole := (lowerFlat model rowGroup condition).bind fun surface =>
     (elaborate model rowGroup surface).toOption.bind fun checked =>
       (CheckedValidationCondition.fromFlat checked).toOption

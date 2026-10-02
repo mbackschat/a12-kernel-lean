@@ -90,7 +90,9 @@ def targetOf (language : Language) (model : FlatModel) (computation : DmComputat
 private def guards (language : Language) (model : FlatModel) (computation : DmComputation)
     (target : FlatFieldDecl) : Lowering (List (Option ComputationCondition)) := do
   let resolve (text : String) : Lowering ComputationCondition := do
-    let surface ← lowerGuard (← parsed language text).body
+    let guard := (← parsed language text).body
+    if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
+    let surface ← lowerGuard guard
     elaborated "Guard" (model.elaborateComputationCondition computation.group target.groupPath surface)
   let common ← computation.commonPrecondition.mapM resolve
   let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
@@ -110,7 +112,11 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
   let target ← targetOf language model computation
   let guards ← guards language model computation target
   let operations ← computation.alternatives.mapM fun alternative => do
-    pure (← parsed language alternative.operation).body
+    let body := (← parsed language alternative.operation).body
+    if !body.parensLegal false then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
+    pure body
+  if let some other := computation.errorCodesToSuppress.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
+    refuse "SuppressWarning" other
   let suppress := computation.errorCodesToSuppress.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   let row := !target.repeatableScope.isEmpty
   -- A whole-document step carries one operation and no precondition.

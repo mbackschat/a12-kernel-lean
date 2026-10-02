@@ -243,4 +243,22 @@ def parseLexemes (lexemes : Array Lexeme) : Except SyntaxError Text :=
 def parseText (language : Language) (text : String) : Except SyntaxError Text := do
   parseLexemes (← lex language text)
 
+/-- Whether every parenthesis groups a condition in a condition position (spec §12.3): a whole
+condition, a connective's part, a parenthesised condition's body or a filter body. A parenthesised
+comparison side, operation, argument or whole computation operation is `MVK_UNEXPECTED_TOKEN`. The
+grammar reads them all as one node, so this law is checked on the tree once the text's position,
+condition or operation, is known. -/
+partial def Expr.parensLegal (inCondition : Bool) : Expr → Bool
+  | .parens body => inCondition && body.parensLegal true
+  | .logic _ parts => parts.all (·.parensLegal true)
+  | .compare _ left right => left.parensLegal false && right.parensLegal false
+  | .arith _ left right => left.parensLegal false && right.parensLegal false
+  | .braces body => body.parensLegal false
+  | .call _ arguments listed _ =>
+      (arguments ++ listed.getD []).all fun
+        | .mk expr rangeEnd filter =>
+            expr.parensLegal false && (rangeEnd.all (·.parensLegal false)) &&
+              (filter.all (·.parensLegal true))
+  | _ => true
+
 end A12Kernel.Dm

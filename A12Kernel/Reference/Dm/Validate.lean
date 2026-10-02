@@ -59,6 +59,10 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule) :
   let text ← match parseText language rule.condition with
     | .ok text => pure text
     | .error error => refuse "Syntax" error.errorClass.code
+  if !text.body.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
+  -- The scale warning is the only suppressible one (spec §12.4); any other name is a static error.
+  if let some other := text.suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
+    refuse "SuppressWarning" other
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   let condition ← lowerCondition model.flat rule.group suppress text.body
   let errorField ← errorFieldOf language model.flat rule

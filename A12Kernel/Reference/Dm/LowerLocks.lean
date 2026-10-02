@@ -15,6 +15,7 @@ private def model : FlatModel :=
   { fields := [
       { id := 1, groupPath := ["Order"], name := "Ref", policy := { kind := .string } },
       { id := 3, groupPath := ["Order", "Head"], name := "Code", policy := { kind := .string } },
+      { id := 4, groupPath := ["Order"], name := "Amt", policy := { kind := .number { scale := 0, signed := true } } },
       { id := 2, groupPath := ["Order", "Rows"], name := "Note", policy := { kind := .string },
         repeatableScope := [10] }]
     repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 5 }] }
@@ -41,6 +42,18 @@ example :
 integral literal. -/
 example :
     [admitted "NumberOfFilledFields(Head) < 2", !admitted "NumberOfFilledFields(Head) < 1.5"].all id := by
+  native_decide
+
+private def admittedSuppressed (text : String) : Bool :=
+  match parseText .english text with
+  | .ok parsed => (lowerCondition model ["Order"] true parsed.body).toOption.isSome
+  | .error _ => false
+
+/- The exact-scale gate holds ahead of the flat carrier, which would otherwise admit a literal whose
+decimal places a scale-0 field refuses; the suppression preamble lifts it. -/
+example :
+    [admitted "[Amt] == 1", !admitted "[Amt] == 1.00", !admitted "FieldFilled(Ref) And 1.00 == [Amt]",
+     admittedSuppressed "[Amt] == 1.00"].all id := by
   native_decide
 
 private def ruleAt (errorPath : String) : DmRule :=
@@ -77,6 +90,15 @@ example :
                            condition := "FieldFilled(Marker) And NumberOfFilledGroups(Flat, Peer) == 2" }
     ((checkRule dm .english rule).toOption.map (·.condition.core.supportsOrdinaryIteration)) ==
       some true := by
+  native_decide
+
+/- The scale warning is the only suppressible name; a rule suppressing any other is refused. -/
+example :
+    let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US",
+                          refusals := [] }
+    let rule (condition : String) : DmRule := { ruleAt "../Ref" with condition }
+    [(checkRule dm .english (rule "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Ref)")).toOption.isSome,
+     (checkRule dm .english (rule "@SuppressWarning(Late_Fee) FieldFilled(Ref)")).toOption.isNone].all id := by
   native_decide
 
 end A12Kernel.Dm.LowerLocks
