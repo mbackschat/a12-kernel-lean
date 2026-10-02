@@ -58,7 +58,7 @@ parenCondition   = "(" , condition , ")" ;
 simpleCondition  = comparison
                  | fieldListPredicate         (* AllFieldsFilled(...), FieldValuesNotUnique(...), ... *)
                  | groupPredicate             (* GroupFilled(...), NumberOfFilledGroups(...) uses, ... *)
-                 | valueListPredicate         (* FieldValueIncludedInValueList(f In list), AtLeastOne...(...) *)
+                 | valueListPredicate         (* FieldValueIncludedInValueList(f In list) or (subject, members…) (06), AtLeastOne...(...) *)
                  | repetitionPredicate        (* RepetitionNotUnique(keys @From Group) *)
                  | dateValidity               (* Valid/Invalid ( Date(...) )  |  Valid(Field, "Type") *)
                  | customCondition ;          (* CustomCondition Name *)

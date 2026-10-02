@@ -29,7 +29,7 @@ The accepted isolated consumer retained division and power as distinct identitie
 
 Given an English condition text, produce the condition that fires exactly where the original is decided false, as Kernel-language text, or refuse it naming the predicate that has no complement. The handover is the [negation use case](../USE-CASES.md#cross-category-use-case-negation), the [rule-negation capability record](../implementation/validation-messages-and-custom.md#cap-rule-negation), and the [concrete syntax](../../spec/12-concrete-syntax.md) for reading and printing; the consumer receives no Lean source, no Kernel, and no expected output.
 
-The fixture is the 32 inputs below. Lean acceptance parses each answer with `parseText`, requires the tree to equal the Lean `negateText` result up to parentheses that change no grouping and regrouping within one connective, and requires each refusal to name the predicate Lean refuses. The probe is green when all 32 agree and every wrong account below is killed by at least one named input.
+The fixture is the 33 inputs below. Lean acceptance parses each answer with `parseText`, requires the tree to equal the Lean `negateText` result up to parentheses that change no grouping and regrouping within one connective, and requires each refusal to name the predicate Lean refuses. The probe is green when all 33 agree and every wrong account below is killed by at least one named input.
 
 | id | input |
 |---|---|
@@ -62,11 +62,12 @@ The fixture is the 32 inputs below. Lean acceptance parses each answer with `par
 | `N27` | `FieldFilled(A) And DateRangesOverlap(P1, P2)` |
 | `N28` | `CustomCondition CheckIt` |
 | `N29` | `Valid(Date(D, M, Y)) Or FieldNotFilled(D)` |
-| `N30` | `AtLeastOneFieldValueIncludedInValueList(A, B In "x", "y" @From ../Rows)` |
+| `N30` | `RepetitionNotUnique(A, B @From Rows)` |
 | `N31` | `@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) [Rate] == 1.50` |
 | `N32` | `(FieldFilled(A) Or FieldFilled(B)) And (FieldNotFilled(C) Or [D] > 2)` |
+| `N33` | `FieldValuesNotUnique(A, B) Or CustomCondition CheckIt` |
 
-Wrong accounts and the inputs that kill them: connectives kept rather than dualized (`N04`, `N06`, `N16`); `<` flipped to `>` (`N04`); a parenthesis dropped where the result would mix `And` and `Or` (`N06`, `N12`, `N32`); a complement invented for `FieldValuesNotUnique`, a tolerance comparison, `DateRangesOverlap` or `CustomCondition` (`N25` to `N28`); `Valid(Field, "Type")` negated to `Invalid` (`N22`); `FieldsNotCollectivelyFilled` given a single-predicate complement (`N11`, `N12`, `N17`); `MoreThanOneFieldFilled` or `NotExactlyOneFieldFilled` complemented by anything other than the stated count comparison (`N13`, `N14`); an `In` list, an `@From` scope or the suppression preamble dropped (`N20`, `N21`, `N30`, `N31`); a guard conjunct kept un-negated, as a guarded pair would (`N14`, `N24`, `N29`).
+Wrong accounts and the inputs that kill them: connectives kept rather than dualized (`N04`, `N06`, `N16`); `<` flipped to `>` (`N04`); a parenthesis dropped where the result would mix `And` and `Or` (`N06`, `N12`, `N32`); a complement invented for `FieldValuesNotUnique`, a tolerance comparison, `DateRangesOverlap` or `CustomCondition` (`N25` to `N28`); `Valid(Field, "Type")` negated to `Invalid` (`N22`); `FieldsNotCollectivelyFilled` given a single-predicate complement (`N11`, `N12`, `N17`); `MoreThanOneFieldFilled` or `NotExactlyOneFieldFilled` complemented by anything other than the stated count comparison (`N13`, `N14`); an `In` list or the suppression preamble dropped (`N20`, `N21`, `N31`); a complement invented for `RepetitionNotUnique` (`N30`); a refusal named by any leaf but the leftmost (`N33`); a guard conjunct kept un-negated, as a guarded pair would (`N14`, `N24`, `N29`).
 
 Excluded: German spellings, whose complements the [keyword catalog](../../spec/12-concrete-syntax.md#5-keyword-catalog-english--german-verified-pairs) does not list; static legality, including the iteration-guard refusal; the negated rule's message, polarity and evaluation; Kernel correspondence beyond what the capability record cites.
 
@@ -77,3 +78,20 @@ Excluded: German spellings, whose complements the [keyword catalog](../../spec/1
 | `transform-numeric-identity-01` | green | A cold standard-library consumer certified only an exact `RangeAsNumber(source, 1, 4)` identity and returned `not-certified` for an endpoint change, a Round-mode change, and ordered `Min` operand reversal. Dependency-only identity, derived-scale-only identity, mismatch-as-inequivalence, and finite-agreement-as-universal mutations were all killed. The Lean laws universally preserve Analyze, execution, and rich-result views for exact identity; conformance retains every changed parameter while making no inequivalence claim. The disposable artifact, implementation, and tests totaled 312 nonblank lines, took 148 seconds, and added no dependency or nonidentity semantic guess. |
 | `transform-boolean-declaration-relocation-02` | green | A fresh isolated standard-library consumer used 289 implementation and 480 artifact/test/report nonblank lines, all capability-local, in about 307 seconds. It certified the three exact declaration relocations under `fixedBooleanConstantRuntimeProjection`, rejected seven structural or claim controls, and retained unequal definition identity. All 75 source/destination state comparisons agreed; an independent checker reproduced digest `91a53728ebbc84564f033a4e3e71ae220e456476e29d2d3ddd1b4d3e19e6caab`, and final disposable Lean witnesses compiled in 4.9 seconds. Nine tests passed and all ten wrong accounts failed with no dependency, semantic question, or guess. Repeatable relocation, wider operations, generated validation, scheduling, materialized topology, Kernel runtime correspondence, protocol, shipment, compatibility, and inequivalence of refused transforms remain outside. |
 | `transform-extremum-domain-03` | green after corrected handover | Exact fingerprint identity certified only A1→A1; A1→A2, A1→A3, and A4→A5 remained `not-certified` without an inequivalence claim. Eleven natural tests passed, root reproduced digest `c1349a7330c9cbaaf4099fb335a801fad2cf99889b4b5f53cedb678b53c4b9e4`, and all eleven combined wrong accounts failed, including dependencies-only and scale-only certification. Wider rewrites, equivalence, recursive expressions, protocol, shipment, compatibility, and Kernel correspondence remain outside. |
+
+<a id="run-transform-rule-negation-04"></a>
+### Rule negation — `transform-rule-negation-04`
+
+- `task`: [Rule negation probe](#task-rule-negation), in its first, 32-input revision.
+- `status`: amber
+- `started-at`: 2026-10-02T18:25:08+02:00
+- `finished-at`: 2026-10-02T18:27:58+02:00
+- `duration-seconds`: 170
+- `semantic-basis`: `6f557ba962fe8b387a0ab62cb453db4e036328ce`
+- `oracle`: the Lean `negateText` result per input, compared after `parseText` up to grouping-only parentheses and same-connective regrouping, refusals by predicate name; reconciliation passed on all 32 inputs.
+- `consumer-access`: a fresh agent given only the task, the negation use case, the capability record and spec/12, with no repository, Lean source, Kernel, network or dependency access; it wrote Python 3 with the standard library.
+- `cost`: 352 implementation and 29 test nonblank lines, all capability-local.
+- `result`: all 32 answers agreed with Lean, 25 negations and seven refusals.
+- `wrong-accounts`: every pre-registered account was killed by a mutant at its named input.
+- `questions-and-guesses`: the capability record named the group-form and value-list pairs without spelling them, and the consumer guessed all four correctly; it also asked which leaf names a refusal when several refuse, and noted that `@From` is documented only on `RepetitionNotUnique`. The record now spells every pair, states the refusal order and the `@From` scope, and the task replaced `N30` and added `N33`.
+- `exclusions`: German spellings, static legality, messages, polarity, evaluation, and Kernel correspondence beyond the record's citations.
