@@ -1,6 +1,6 @@
 # Conformance economy proposal
 
-**Status: proposal, 2026-10-02, awaiting the owner's decisions in [§4](#4-decisions).** It changes how this project reaches Kernel 30.8.1 conformance, not what conformance means. Until it is adopted, [`PLAN.md`](PLAN.md) and the gap records keep governing the work.
+**Status: adopted 2026-10-02.** The owner adopted every recommendation in [§4](#4-decisions) and authorized broader assessment, fixes and improvements wherever they reach conformance faster or more economically, with the plan adapted as phases teach. It changes how this project reaches Kernel 30.8.1 conformance, not what conformance means. [`PLAN.md`](PLAN.md) carries the phase sequence.
 
 ## 1. Where conformance stands
 

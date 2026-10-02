@@ -71,7 +71,7 @@ The semantic center starts from an expanded model and resolved surface rule, the
 
 | In scope | Initially outside scope |
 |---|---|
-| Validation conditions and computations | Correctness of the complete bilingual text parser |
+| Validation conditions and computations, read from DM-JSON models and bilingual DSL text by a differentially tested reader | A correctness proof of that reader |
 | Documents, instantiated rows, formal checking, and phase-sensitive observations | The full structural/MVK diagnostic universe |
 | Paths, semantic indices, iteration, correlation, and ordering | Editors, form rendering, workflow, persistence, and wire protocols |
 | Kleene truth, directional fillability, verdict polarity, and partial validation | Proving the proprietary kernel implementation correct |
