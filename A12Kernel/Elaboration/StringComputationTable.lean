@@ -47,22 +47,35 @@ inductive StringComputationTableError where
   | guardTargetReference (alternative : Nat)
   deriving Repr, DecidableEq
 
-/-- Project the measured guard refusal: a guard reading the table's own target draws the class a
+/-- Project the measured guard refusals: a guard reading the table's own target draws the class a
 read of the target draws anywhere in a computation
-([`spec/09`](../../spec/09-computations.md) §1), measured in a sole and a later alternative. The
-structural refusals claim no class. -/
+([`spec/09`](../../spec/09-computations.md) §1), measured in a sole and a later alternative, and an
+unguarded alternative among several draws `MVK_ERROR_EMPTY_PRECONDITION` on a String target as on a
+Number one ([inbound](../../docs/SOURCES.md#inbound-2026-10-02a-alternative-walk)). The structural
+refusals claim no class. -/
 def StringComputationTableError.diagnostic? : StringComputationTableError → Option KernelStaticDiagnostic
   | .guardTargetReference _ => some .errorReferenceToCalculatedField
-  | .empty | .unguardedAlternative _ | .targetMismatch _ _ _ | .guardNotAdmitted _ => none
+  | .unguardedAlternative _ => some .errorEmptyPrecondition
+  | .empty | .targetMismatch _ _ _ | .guardNotAdmitted _ => none
 
+/-- Certify one row. `commonPrecondition` is joined onto the row's own guard, and `judgeCommon` asks
+its reads of the target here, which the caller sets at the first row the walk judges. -/
 private def certifyStringComputationAlternative
     (target : FieldId) (alternativeIndex : Nat) (guardRequired : Bool)
-    (alternative : ComputationAlternative (CheckedStringComputationOperation model)) :
+    (commonPrecondition : Option ComputationCondition) (judgeCommon : Bool)
+    (own : ComputationAlternative (CheckedStringComputationOperation model)) :
     Except StringComputationTableError (CheckedStringComputationAlternative model target) := do
+  if guardRequired && own.precondition.isNone then
+    throw (.unguardedAlternative alternativeIndex)
+  if judgeCommon && commonPrecondition.any (·.referencesField target) then
+    throw (.guardTargetReference alternativeIndex)
+  let alternative : ComputationAlternative (CheckedStringComputationOperation model) :=
+    { own with precondition := match commonPrecondition, own.precondition with
+        | none, guard => guard
+        | some common, none => some common
+        | some common, some guard => some (.and common guard) }
   if hSameTarget : alternative.operation.targetField = target then
-    if guardRequired && alternative.precondition.isNone then
-      throw (.unguardedAlternative alternativeIndex)
-    else if hGuard : alternative.precondition.all (·.wellFormedBool model) = true then
+    if hGuard : alternative.precondition.all (·.wellFormedBool model) = true then
       if hTarget : alternative.precondition.all
           (fun guard => !guard.referencesField target) = true then
         pure {
@@ -83,21 +96,28 @@ private def certifyStringComputationAlternative
     throw (.targetMismatch alternativeIndex target alternative.operation.targetField)
 
 private def certifyStringComputationAlternatives
-    (target : FieldId) (guardRequired : Bool) :
+    (target : FieldId) (guardRequired : Bool) (commonPrecondition : Option ComputationCondition) :
     Nat → List (ComputationAlternative (CheckedStringComputationOperation model)) →
       Except StringComputationTableError (List (CheckedStringComputationAlternative model target))
   | _, [] => pure []
   | alternativeIndex, alternative :: remaining => do
+      -- The first row was judged when it certified, an unguarded one among several having refused,
+      -- so it asked the common precondition's reads and no later row asks them again.
       let checked ← certifyStringComputationAlternative target alternativeIndex
-        guardRequired alternative
+        guardRequired commonPrecondition false alternative
       let checkedRemaining ← certifyStringComputationAlternatives target guardRequired
-        (alternativeIndex + 1) remaining
+        commonPrecondition (alternativeIndex + 1) remaining
       pure (checked :: checkedRemaining)
 
-/-- Consolidate a nonempty list of already-checked String operations into one model-certified table. Alternative positions are one-based. -/
+/-- Consolidate a nonempty list of already-checked String operations into one model-certified table. Alternative positions are one-based.
+
+    A common precondition guards no alternative: several alternatives without their own refuse as
+    unguarded, and its reads of the target are judged once, at the first row
+    ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-self-read-alternative-walk)). -/
 def certifyStringComputationTable
     (alternatives : List (ComputationAlternative
-      (CheckedStringComputationOperation model))) :
+      (CheckedStringComputationOperation model)))
+    (commonPrecondition : Option ComputationCondition := none) :
     Except StringComputationTableError (CheckedStringComputationTable model) :=
   match alternatives with
   | [] => .error .empty
@@ -106,9 +126,9 @@ def certifyStringComputationTable
       let policy := first.operation.targetPolicy
       let guardRequired := !remaining.isEmpty
       let checkedFirst ← certifyStringComputationAlternative target 1
-        guardRequired first
+        guardRequired commonPrecondition true first
       let checkedRemaining ← certifyStringComputationAlternatives target
-        guardRequired 2 remaining
+        guardRequired commonPrecondition 2 remaining
       pure {
         targetField := target
         targetPolicy := policy

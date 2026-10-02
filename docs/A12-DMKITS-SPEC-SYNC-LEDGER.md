@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-02-07"></a>
+### `SPEC-2026-10-02-07` — a common precondition's target read is judged once, at the first alternative the walk judges, and the projected class answers alone from any slot on repeatable and nested targets too
+
+- `status`: pending
+- `origin`: locally originated. Your [`2026-10-02a` letter](SOURCES.md#inbound-2026-10-02a-alternative-walk) reads the common precondition as judged first, on one row whose first alternative is judged; this grid places it, and measures the scopes that letter left open.
+- `clause`: [`09`](../spec/09-computations.md) §1, the stages bullet's alternatives sentences and the self-reference bullet's unmeasured list.
+- `delta`: a common `FieldFilled(T3)` over `[Base1]; FieldFilled(Gate1) => [Base2]` draws `MVK_ERROR_EMPTY_PRECONDITION` then `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`, over `FieldFilled(Gate1) => [Base1]; [Base2]` the reverse, over two or three preconditioned alternatives the reference class once, `[T3] + [T3] > 0` twice, and over `[T3]; [Base1]` the empty class alone. `[/Rep/RT For "a"]` draws `MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD` alone beside an unconditional `[RB]` in either order, from a common precondition over two unconditional or two preconditioned alternatives, and once for two reads under different keys. A repeatable `RT` and a nested `NT` follow the root rows.
+- `basis`: this project's [checkpoint](SOURCES.md#src-self-read-alternative-walk), 31 `computation add --dry-run` verdicts at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model and verdicts retained beside it.
+- `surfaces`: a checker that judges the common precondition ahead of the alternatives, once per alternative, or not at all, or that reports the empty class beside a projected self-read.
+- `acceptance`: confirm the `[Base1]; FieldFilled(Gate1) => [Base2]` and `FieldFilled(Gate1) => [Base1]; [Base2]` pair, which separates first-judged placement from common-first, the two-preconditioned row, which separates once from per alternative, and `[T3]; [Base1]` under the common read, or supply a row on which one fails.
+- `limit`: scale-0 Number targets under `FieldFilled` and one comparison common precondition; String and Enumeration targets under a common precondition, and a common precondition against another alternative's other gates, unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-02-06"></a>
 ### `SPEC-2026-10-02-06` — a count lifts the content gate from either side of `==` and `!=` and only from the small side of an ordering, on all three counts
 

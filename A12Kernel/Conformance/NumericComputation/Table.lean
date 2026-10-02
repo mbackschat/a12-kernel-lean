@@ -363,6 +363,37 @@ example :
         "MVK_ERROR_EMPTY_PRECONDITION", "MVK_ERROR_EMPTY_PRECONDITION"] := by
   native_decide
 
+/-- The class a whole computation with a common precondition draws. -/
+private def commonClass (common : ComputationCondition)
+    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
+    String :=
+  match elaborateNumericTargetComputationTable fractionModel ["Root"] targetId alternatives
+      (commonPrecondition := some common) with
+  | .ok _ => "admitted"
+  | .error error =>
+      (error.diagnostic?.map (·.kernelCode)).getD ("none:" ++ (reprStr error).takeWhile (!·.isWhitespace))
+
+/- A common precondition is no alternative's own guard: several alternatives without their own still
+refuse as unguarded, and the common precondition's reads of the target are judged once, at the first
+alternative the walk judges, so they go unjudged when it judges none and answer behind an earlier
+unguarded alternative (`self-read-alternative-walk-2026-10-02/static.tsv` C01, C02, C05, C07, C08, C10,
+C11). -/
+example :
+    let source := surfaceField ["Root"] "Source"
+    let later := surfaceField ["Root"] "Later"
+    let g := some (ComputationCondition.fieldFilled laterId)
+    let ownTarget := ComputationCondition.fieldFilled targetId
+    let other := ComputationCondition.fieldFilled sourceId
+    [commonClass other [(none, source), (none, later)], commonClass ownTarget [(none, source), (none, later)],
+      commonClass ownTarget [(g, source), (none, later)], commonClass ownTarget [(none, source), (g, later)],
+      commonClass ownTarget [(g, source)], commonClass ownTarget [(none, source)],
+      commonClass other [(none, source)]] =
+      ["MVK_ERROR_EMPTY_PRECONDITION", "MVK_ERROR_EMPTY_PRECONDITION",
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", "MVK_ERROR_EMPTY_PRECONDITION",
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD",
+        "admitted"] := by
+  native_decide
+
 /- The target's own lookup and the model's validation are no operand's reference, so neither claims the
 resolver class an operand's failure projects: a repeatable target would otherwise claim
 `MVK_NO_WILDCARD` and a model refusing its own declaration `MVK_FRACT_DIGITS_INVALID`. The default

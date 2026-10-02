@@ -315,7 +315,14 @@ private def walkRows : List (String × Expr × Option String) := [
     ("P12", mul (pw (f "N") (lit 2)) (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
     ("P13", mul (mx [dv (f "N") (f "N2"), dv (f "N2") (f "N")]) (pw (f "N") (lit 2)), some "MVK_TOO_MANY_DIV_FOR_CALC"),
     ("P14", dv (f "N") (mx [pw (f "N2") (lit 2), dv (f "N2") (f "N")]), some "MVK_INVALID_COMPARE_DEC_PLACES"),
-    ("P15", dv (f "N") (mx [dv (f "N2") (f "N"), pw (f "N2") (lit 2)]), some "MVK_TOO_MANY_DIV_FOR_CALC")]
+    ("P15", dv (f "N") (mx [dv (f "N2") (f "N"), pw (f "N2") (lit 2)]), some "MVK_TOO_MANY_DIV_FOR_CALC"),
+    -- The peer's controls (`o01`–`o04`): an addition or subtraction gives each operand its own walk,
+    -- and a brace re-walks its body, two divisions inside it included
+    -- ([inbound](../../../docs/SOURCES.md#inbound-2026-10-02a-alternative-walk)).
+    ("o01", add (dv (f "N") (f "N2")) (dv (f "N2") (f "N")), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("o02", sub (dv (f "N") (f "N2")) (dv (f "N2") (f "N")), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("o03", dv (f "N") (g (dv (f "N2") (f "N"))), some "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("o04", g twoDivisions, some "MVK_TOO_MANY_DIV_FOR_CALC")]
 
 example : (walkRows.filter fun (_, expression, expected) => codeOf expression != expected).map (·.1) =
     [] := by

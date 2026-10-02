@@ -196,6 +196,20 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-06a"></a>
 - Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
+### Inbound 2026-10-02a handback
+
+<a id="inbound-2026-10-02a-provenance"></a>
+#### Reviewed 2026-10-02a supplement — from two alternatives on an unguarded alternative's target reads go unjudged whatever its neighbours, each judged read reports its class in walk order, the projected class answers alone, and four division-walk controls pass or refuse as the walk predicts
+
+The letter is the peer's `-2026-10-02a`, delivered by its session and frozen at SHA-256 `b4f98c0f12a3f470243aa75449d86a00b68e12ab03e7973fdfe41854cc680397`; it supplements the `-2026-10-02` letter. Its rows are `checkConsistency` verdicts at a12-dmkits `fb9f2720ed8d7ccd769c6566d7a8bcb4d07c3c82`, locked in adapter tests at three commits, each read here and holding the test file it names: `d56e5725afb8482de26a9dbcb737b6aa43143f6e` (`UnguardedAlternativeSelfReadAgreementTest`), `9c6e84d654062047d7b706921012b3d67acbfc90` (`SelfReadMultiplicityAgreementTest`) and `97cfb199a9d0844aa488e2ec7628b927b8750a8a` (`DivisionWalkAgreementTest`). Its carriers are root nonrepeatable targets only.
+
+<a id="inbound-2026-10-02a-alternative-walk"></a>
+**Claim.** Its §1 has two unconditional alternatives draw `MVK_ERROR_EMPTY_PRECONDITION` alone with no preconditioned neighbour, either one reading the target or both, while a sole unconditional alternative draws the target-read class; the projected class is reported in every arrangement, with no empty class beside it. Its §2 reports the plain target-read class once per judged read, a precondition's reads included, and the empty class once, at the first unconditional alternative. Its §3 has `[Amount] / [Rate] + [Rate] / [Amount]`, the same with `-`, and `[Amount] / {[Rate] / [Amount]}` reach the scale class and `{[Amount] / [Rate] / [Amount]}` draw `MVK_TOO_MANY_DIV_FOR_CALC`. Its §4 is a source reading of the division walk and a single-walk reading of §1 and §2, both offered as hypotheses.
+
+**Classification.** Inbound from committed revisions; [`spec/09`](../spec/09-computations.md)'s stages bullet drops its "beside a preconditioned alternative" condition and places the projected class. The letter's reading that the common precondition is judged first does not hold: this project's [alternative-walk grid](sources/computation-scheduling-probes.md#src-self-read-alternative-walk) places it at the first judged alternative, which is outbound as [`SPEC-2026-10-02-07`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-07). §4 is not adopted: the spec's division-walk clause already states the cut the reading describes, and no row here separates the reading from it.
+
+**Lean.** The Number table already left an unguarded alternative's own reads unjudged from two alternatives on, without needing a guarded neighbour. The String table now projects the empty class, and §3's four rows are locked in [`OperationNodeGates`](../A12Kernel/Conformance/NumericComputation/OperationNodeGates.lean). The projected class against the empty class has no Lean carrier, and a String operation reading its target is refused before the table can leave it unjudged ([SG29](gaps/paths-and-groups.md#gap-sg29), [SG7](gaps/strings-and-messages.md#gap-sg7)).
+
 ### Inbound 2026-10-02 handback
 
 <a id="inbound-2026-10-02-provenance"></a>
@@ -1542,6 +1556,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A fill guard on a malformed source field poisons both guarded copies and their readers, on a root and per repeatable row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
 <a id="src-repeatable-row-alternatives"></a>
 - [A repeatable target's guarded alternatives select per row by first match and abort on a reached poisoned guard, and the fixed table's two refusals hold there, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)
+<a id="src-self-read-alternative-walk"></a>
+- [A common precondition's target read is judged once, at the first judged alternative, and goes unjudged when several alternatives carry no guard of their own; the projected class answers alone from any slot, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-self-read-alternative-walk)
 <a id="src-row-table-guard-order"></a>
 - [A row table asks every guard's row binding before any alternative's own class, and selects lazily, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-table-guard-order)
 <a id="src-repeatable-row-producers"></a>

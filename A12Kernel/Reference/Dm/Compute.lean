@@ -6,8 +6,8 @@ import A12Kernel.Elaboration.MixedComputationPlan
 
 /-! # Running a DM model's computations over one document
 
-Each computation is parsed and lowered onto the checked table of its target's kind, with its common
-precondition joined onto every alternative, or refused by the construct no carrier admits. The lowered
+Each computation is parsed and lowered onto the checked table of its target's kind, which joins its
+common precondition onto every alternative, or refused by the construct no carrier admits. The lowered
 steps, Number and String tables, whole-document targets and repeatable String constants, are certified
 together as one `MixedComputationPlan` and executed in its order over the checked document.
 
@@ -86,9 +86,11 @@ def targetOf (language : Language) (model : FlatModel) (computation : DmComputat
   let some field := relative.toFieldPath? | refuse "Target" computation.targetRelPath
   elaborated "Target" (model.resolveFieldDeclarationUnchecked computation.group field)
 
-/-- The resolved guards of every alternative with the common precondition joined on. -/
+/-- The resolved common precondition and every alternative's own guard, kept apart because the
+tables judge an alternative's guardedness by its own guard alone. -/
 private def guards (language : Language) (model : FlatModel) (computation : DmComputation)
-    (target : FlatFieldDecl) : Lowering (List (Option ComputationCondition)) := do
+    (target : FlatFieldDecl) :
+    Lowering (Option ComputationCondition × List (Option ComputationCondition)) := do
   let resolve (text : String) : Lowering ComputationCondition := do
     let guard := (← parsed language text).body
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
@@ -96,9 +98,7 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
     elaborated "Guard" (model.elaborateComputationCondition computation.group target.groupPath surface)
   let common ← computation.commonPrecondition.mapM resolve
   let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
-  pure ((ComputationAlternative.expandCommonPrecondition common
-    (own.map fun precondition => ({ precondition, operation := () } : ComputationAlternative Unit))).map
-      (·.precondition))
+  pure (common, own)
 
 inductive LoweredComputation (model : FlatModel)
   | number (table : CheckedNumericComputationTable model) (row : Bool)
@@ -110,7 +110,7 @@ inductive LoweredComputation (model : FlatModel)
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
     Lowering (FlatFieldDecl × LoweredComputation model) := do
   let target ← targetOf language model computation
-  let guards ← guards language model computation target
+  let (common, guards) ← guards language model computation target
   let operations ← computation.alternatives.mapM fun alternative => do
     let body := (← parsed language alternative.operation).body
     if !body.parensLegal false then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
@@ -121,7 +121,7 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
   let row := !target.repeatableScope.isEmpty
   -- A whole-document step carries one operation and no precondition.
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do
-    let ([none], [operation]) := (guards, operations)
+    let (none, [none], [operation]) := (common, guards, operations)
       | refuse "DocumentStep" "precondition or alternatives"
     pure (target, .document (← lowerDocumentStep model computation.group target operation))
   match target.policy.kind with
@@ -130,11 +130,11 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
         (lowerNumericExpr (lowerComputationNumericAtom model computation.group))
       let table ← elaborated "NumberComputation"
         (elaborateCompleteNumericTargetComputationTable model computation.group target.id
-          (guards.zip expressions) suppress (if row then .row else .fixed))
+          (guards.zip expressions) suppress (if row then .row else .fixed) common)
       pure (target, .number table row)
   | .string => do
       if row then
-        let ([none], [.string literal]) := (guards, operations)
+        let (none, [none], [.string literal]) := (common, guards, operations)
           | refuse "StringComputation" "row target"
         let operation ← elaborated "StringComputation"
           (checkRepeatableStringConstantComputation model computation.group target.id literal)
@@ -146,7 +146,7 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
         let checked ← elaborated "StringComputation"
           (elaborateStringComputationOperation model computation.group target.id expression)
         pure ({ precondition, operation := checked } : ComputationAlternative _)
-      pure (target, .string (← elaborated "StringComputation" (certifyStringComputationTable alternatives)))
+      pure (target, .string (← elaborated "StringComputation" (certifyStringComputationTable alternatives common)))
   | kind =>
       if !row then
         if let .ok lowered := document then return lowered

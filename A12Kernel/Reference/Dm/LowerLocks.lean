@@ -1,4 +1,4 @@
-import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Parser
 
 /-! # Locks for the leaf carrier dispatch
@@ -114,6 +114,20 @@ example :
     let rule (condition : String) : DmRule := { ruleAt "../Ref" with condition }
     [(checkRule dm .english (rule "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Ref)")).toOption.isSome,
      (checkRule dm .english (rule "@SuppressWarning(Late_Fee) FieldFilled(Ref)")).toOption.isNone].all id := by
+  native_decide
+
+/- The reader keeps a computation's common precondition apart from each alternative's own guard, so
+two alternatives without their own still refuse as unguarded, while one alternative under it is
+admitted (`self-read-alternative-walk-2026-10-02/static.tsv` C05). -/
+example :
+    let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US",
+                          refusals := [] }
+    let computation (alternatives : List DmAlternative) : DmComputation :=
+      { group := ["Order"], name := "C", targetRelPath := "../Amt", commonPrecondition := some "FieldFilled(Ref)"
+        alternatives, errorCodesToSuppress := [] }
+    [(lowerComputation dm.flat .english (computation [{ precondition := none, operation := "1" },
+        { precondition := none, operation := "2" }])).toOption.isNone,
+     (lowerComputation dm.flat .english (computation [{ precondition := none, operation := "1" }])).toOption.isSome].all id := by
   native_decide
 
 end A12Kernel.Dm.LowerLocks

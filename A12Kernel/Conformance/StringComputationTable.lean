@@ -186,4 +186,23 @@ example :
         some (.poison .malformed) := by
   native_decide
 
+/- A common precondition is no alternative's own guard, and its reads of the target are judged once,
+at the first row: two rows without their own refuse as unguarded under any common precondition, one
+self-reading included, and a guarded first row meets the common self-read
+(`self-read-alternative-walk-2026-10-02/static.tsv` C01, C05, C07). -/
+example :
+    let common (field : FieldId) := some (ComputationCondition.fieldFilled field)
+    let error (field : FieldId) alternatives :=
+      match certifyStringComputationTable alternatives (common field) with
+      | .ok _ => none
+      | .error error => some error
+    [error source.id [unguarded copySource, unguarded literalFallback],
+      error target.id [unguarded copySource, unguarded literalFallback],
+      error target.id [alternative (.fieldFilled source.id) copySource, unguarded literalFallback],
+      error source.id [unguarded copySource]] =
+      [some (.unguardedAlternative 1), some (.unguardedAlternative 1),
+        some (.guardTargetReference 1), none] ∧
+    (StringComputationTableError.unguardedAlternative 1).diagnostic? = some .errorEmptyPrecondition := by
+  native_decide
+
 end A12Kernel.Conformance.StringComputationTable
