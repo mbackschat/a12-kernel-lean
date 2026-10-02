@@ -47,11 +47,12 @@ theorem dateTimeComputationRun_applyTo_noActions
     (view : DateTimeComputationRunView ResidualMessage)
     (destination : DateTimeComputationDestination)
     (noChanges : view.withChanges = [])
+    (noErrors : view.withErrors = [])
     (noClears : view.cleared = []) :
     view.applyTo destination = .ok destination := by
   simp [DateTimeComputationRunView.applyTo,
-    TemporalValueComputationRunView.applyTo,
-    TemporalValueComputationRunView.actionTargets, noChanges, noClears,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets, noChanges, noErrors, noClears,
     TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- Duplicate action targets fail before destination state participates. -/
@@ -61,16 +62,15 @@ theorem dateTimeComputationRun_applyTo_duplicateTarget
     (duplicate : TemporalComputationApplicationTarget.firstDuplicate?
       view.actionTargets = some field) :
     view.applyTo destination = .error (.duplicateActionTarget field) := by
-  have duplicate' :
-      TemporalComputationApplicationTarget.firstDuplicate?
-        (TemporalValueComputationRunView.actionTargets view) =
-          some field := by
-    simpa [DateTimeComputationRunView.actionTargets] using duplicate
-  simp [DateTimeComputationRunView.applyTo,
-    TemporalValueComputationRunView.applyTo,
-    duplicate']
+  unfold DateTimeComputationRunView.applyTo
+  unfold TemporalErroredComputationRunView.applyTo
+  rw [show TemporalComputationApplicationTarget.firstDuplicate?
+      (TemporalErroredComputationRunView.actionTargets view
+        (fun computed => computed.targetField)
+        (fun computed => computed.targetField)) = some field by
+    simpa [DateTimeComputationRunView.actionTargets] using duplicate]
 
-/-- A checked DateTime application with admitted unique targets delegates exactly to the established value/clear fold over the checked document's source projection. -/
+/-- A checked DateTime application with admitted unique targets delegates exactly to the established clear/error/change fold over the checked document's source projection. -/
 theorem dateTimeComputationRun_applyToChecked_delegates
     (view : DateTimeComputationRunView ResidualMessage)
     (destination : CheckedDocument model)
@@ -93,12 +93,13 @@ theorem dateTimeComputationRun_unchanged_notApplied
     (DateTimeComputationRunView.fromOutcomes input messages
       [(target, .accepted value)]).applyTo destination = .ok destination := by
   simp [DateTimeComputationRunView.applyTo,
-    TemporalValueComputationRunView.applyTo,
-    TemporalValueComputationRunView.actionTargets,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
     DateTimeComputationRunView.fromOutcomesAt,
-    TemporalComputationRunView.fromValueOutcomes,
+    TemporalComputationRunView.fromErrorOutcomes,
     DateTimeComputationRunView.successfulInstance?,
+    DateTimeComputationRunView.computedError?,
     DateTimeComputationRunView.shouldClearAt,
     DateTimeTargetOutcome.hasComputedInstance,
     DateTimeComputationRunView.sourceValueChangedAt, unchanged,
@@ -115,15 +116,36 @@ theorem dateTimeComputationRun_changed_applies
       [(target, .accepted value)]).applyTo destination =
         .ok (destination.applyOutcome target (.accepted value)) := by
   simp [DateTimeComputationRunView.applyTo,
-    TemporalValueComputationRunView.applyTo,
-    TemporalValueComputationRunView.actionTargets,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
     DateTimeComputationRunView.fromOutcomesAt,
-    TemporalComputationRunView.fromValueOutcomes,
+    TemporalComputationRunView.fromErrorOutcomes,
     DateTimeComputationRunView.successfulInstance?,
+    DateTimeComputationRunView.computedError?,
     DateTimeComputationRunView.shouldClearAt,
     DateTimeTargetOutcome.hasComputedInstance,
     DateTimeComputationRunView.sourceValueChangedAt, changed,
+    TemporalComputationApplicationTarget.firstDuplicate?]
+
+/-- A target-rejected rendering applies the one-target errored transition. -/
+theorem dateTimeComputationRun_error_applies
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (target : FieldId) (attempted : StoredDateTime) (cause : DateTimeTargetError)
+    (destination : DateTimeComputationDestination) :
+    (DateTimeComputationRunView.fromOutcomes input messages
+      [(target, .errored attempted cause)]).applyTo destination =
+        .ok (destination.applyOutcome target (.errored attempted cause)) := by
+  simp [DateTimeComputationRunView.applyTo,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
+    DateTimeComputationRunView.fromOutcomes,
+    DateTimeComputationRunView.fromOutcomesAt,
+    TemporalComputationRunView.fromErrorOutcomes,
+    DateTimeComputationRunView.successfulInstance?,
+    DateTimeComputationRunView.computedError?,
+    DateTimeComputationRunView.shouldClearAt,
+    DateTimeTargetOutcome.hasComputedInstance,
     TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- A source-filled quiet no-value mints a retained clear action that creates or retains a present-empty destination target. -/
@@ -136,12 +158,13 @@ theorem dateTimeComputationRun_cleared_applies
       [(target, .noValue)]).applyTo destination =
         .ok (destination.applyRetainedClear target) := by
   simp [DateTimeComputationRunView.applyTo,
-    TemporalValueComputationRunView.applyTo,
-    TemporalValueComputationRunView.actionTargets,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
     DateTimeComputationRunView.fromOutcomesAt,
-    TemporalComputationRunView.fromValueOutcomes,
+    TemporalComputationRunView.fromErrorOutcomes,
     DateTimeComputationRunView.successfulInstance?,
+    DateTimeComputationRunView.computedError?,
     DateTimeComputationRunView.shouldClearAt,
     DateTimeTargetOutcome.hasComputedInstance, sourceFilled,
     TemporalComputationApplicationTarget.firstDuplicate?]

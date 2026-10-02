@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.TemporalValueComputationApplication
+import A12Kernel.Elaboration.TemporalErroredComputationApplication
 
 /-! # DateTime whole-result application
 
-This capsule applies an already-classified DateTime result to an explicitly supplied compatible destination. It distinguishes source-classified retained clears from accepted outcomes and never reclassifies an action against the destination. The bounded result domain has no target-error action.
+This capsule applies an already-classified DateTime result to an explicitly supplied compatible destination. It distinguishes source-classified retained clears, target-rejected attempts, and accepted outcomes, and never reclassifies an action against the destination.
 -/
 
 namespace A12Kernel
@@ -46,18 +46,25 @@ abbrev DateTimeComputationRunApplicationError
 def actionTargets {Target : Type}
     (view : DateTimeComputationRunView ResidualMessage Target) :
     List Target :=
-  TemporalValueComputationRunView.actionTargets view
+  TemporalErroredComputationRunView.actionTargets view
+    (fun computed => computed.targetField)
+    (fun computed => computed.targetField)
 
-/-- Apply the immutable V2 action collections in kernel order: clears, then source-relative changed successes. Duplicate targets fail before destination lookup. -/
+/-- Apply the immutable V2 action collections in kernel order: clears, rejected attempts, then source-relative changed successes. Duplicate targets fail before destination lookup. -/
 def applyTo {Target : Type} [DecidableEq Target]
     (view : DateTimeComputationRunView ResidualMessage Target)
     (destination : DateTimeComputationDestination Target) :
     Except (DateTimeComputationRunApplicationError Target)
       (DateTimeComputationDestination Target) :=
-  TemporalValueComputationRunView.applyTo view destination
+  TemporalErroredComputationRunView.applyTo view destination
+    (fun computed => computed.targetField)
+    (fun computed => computed.targetField)
+    TemporalValueComputationApplicationError.duplicateActionTarget
     DateTimeComputationDestination.applyRetainedClear
-    (fun current target value =>
-      current.applyOutcome target (.accepted value))
+    (fun current computed => current.applyOutcome computed.targetField
+      (.errored computed.attempted computed.cause))
+    (fun current computed => current.applyOutcome computed.targetField
+      (.accepted computed.value))
 
 /-- Fail-closed errors for checked nonrepeatable DateTime destination projection. -/
 inductive DateTimeComputationCheckedApplicationError where

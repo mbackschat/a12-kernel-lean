@@ -201,12 +201,13 @@ private def seeds : List ClassifiedCellInput :=
     [dcId, dc2Id, dcgId].map (dateCell · "01.01.2000") ++ [ecId, ec2Id].map (tokenCell · "2") ++
     [tcId, tc2Id].map (timeCell · "01:01:01")
 
-/-- A computed value, `E` for a target the Kernel retains as errored, or `-` for one it clears. -/
+/-- A computed value, `E ` before the attempted rendering of a target the Kernel retains as errored,
+or `-` for one it clears. -/
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.fullDate (.accepted stored)) => some (target, stored.text)
-  | .document target (.fullDate (.errored _ _)) => some (target, "E")
+  | .document target (.fullDate (.errored attempted _)) => some (target, s!"E {attempted.text}")
   | .document target (.fullDate .noValue) | .document target (.fullDate (.poison _)) =>
       some (target, "-")
   | .document target (.time (.accepted stored)) => some (target, stored.text)
@@ -249,7 +250,7 @@ as errored and its readers see poison, so the difference and both guards clear. 
 would give `0` and fire the filled guard; reading it as empty would fire the unfilled one. -/
 example :
     values? dateFields (inputs (d0 := some (dateCell d0Id "31.12.1899"))) =
-      some ["31.12.1899", "31.12.1899", "E", "0", "0", "-", "-", "-"] := by
+      some ["31.12.1899", "31.12.1899", "E 31.12.1899", "0", "0", "-", "-", "-"] := by
   native_decide
 
 /- Row `g05` and the first grid's `f02`: an absent Date clears every copy, and each cleared copy reads

@@ -194,6 +194,24 @@ example :
       some ([target.id], true) := by
   native_decide
 
+/- Row `e01` of the [errored-target grid](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-errored-target):
+   a shift past year 9999 renders a five-digit year its own target rejects. The Kernel reports that
+   attempt as an errored outcome, so the view retains it as a computed error rather than clearing the
+   source-filled target, and the run reports an error. -/
+example : (do
+    let operation ← (elaborateDateTimeDayShiftComputation
+      model source.id (.literal 2) target.id).toOption
+    let checked ← (checkDocument prepared "en_US"
+      (sourceData "9999-12-31T00:00:00" "2000-01-01T00:00:00"
+        (temporalRawOf "9999-12-31T00:00:00"))).toOption
+    let view ← operation.executeResult checked ([] : List FormalCause) |>.toOption
+    let applied ← view.applyTo
+      (destinationWith (.presentValue ⟨"2000-01-01T00:00:00", by decide⟩)) |>.toOption
+    pure (view.withErrors.map (fun error => (error.targetField, error.attempted.text)),
+      view.cleared, view.noErrorOccurred, applied target.id)) =
+    some ([(target.id, "10000-01-02T00:00:00")], [], false, .presentEmpty) := by
+  native_decide
+
 /- A DateTime day shift cannot read the field that it computes. -/
 example :
     let selfModel : FlatModel := {

@@ -361,6 +361,7 @@ run_cmd do
 #print axioms A12Kernel.dateTimeComputationRun_unchanged_notApplied
 #print axioms A12Kernel.dateTimeComputationRun_changed_applies
 #print axioms A12Kernel.dateTimeComputationRun_cleared_applies
+#print axioms A12Kernel.dateTimeComputationRun_error_applies
 #print axioms A12Kernel.dateTimeComputationRun_residualMessages_doNotAffectApplication
 #print axioms A12Kernel.equal_dateTime_delta_does_not_imply_equal_exact_application
 #print axioms A12Kernel.dateTimeComputationRun_shouldClear_iff

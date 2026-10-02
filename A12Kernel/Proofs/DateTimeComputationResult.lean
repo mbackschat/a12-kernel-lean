@@ -29,7 +29,7 @@ theorem dateTimeComputationRun_withChanges_subset
         input messages outcomes).withoutErrors := by
   simpa [DateTimeComputationRunView.fromOutcomes,
     DateTimeComputationRunView.fromOutcomesAt,
-    TemporalComputationRunView.fromValueOutcomes] using
+    TemporalComputationRunView.fromErrorOutcomes] using
     (List.mem_filter.mp member).1
 
 /-- The clear collection is precisely the source-filled, no-instance projection. -/
@@ -47,7 +47,7 @@ theorem dateTimeComputationRun_cleared_iff
   simp [DateTimeComputationRunView.fromOutcomes,
     DateTimeComputationRunView.fromOutcomesAt,
     DateTimeComputationRunView.shouldClear,
-    TemporalComputationRunView.fromValueOutcomes]
+    TemporalComputationRunView.fromErrorOutcomes]
 
 /-- Result construction retains the supplied residual channel exactly. -/
 theorem dateTimeComputationRun_formalErrors_exact
@@ -58,17 +58,13 @@ theorem dateTimeComputationRun_formalErrors_exact
       input messages outcomes).formalErrorsInOperands = messages := by
   rfl
 
-/-- The bounded DateTime error predicate is true exactly when the residual channel is empty; target-local errors are uninhabited. -/
+/-- The error predicate observes exactly its two error channels: a rejected rendering and a residual message. -/
 theorem dateTimeComputationRun_noErrorOccurred_iff
     (view : DateTimeComputationRunView ResidualMessage) :
     view.noErrorOccurred = true ↔
-      view.formalErrorsInOperands = [] := by
-  have noComputedErrors : view.withErrors = [] := by
-    cases errorList : view.withErrors with
-    | nil => rfl
-    | cons error _ => exact nomatch error
+      view.withErrors = [] ∧ view.formalErrorsInOperands = [] := by
   simp [DateTimeComputationRunView.noErrorOccurred,
-    TemporalComputationRunView.noErrorOccurred, noComputedErrors]
+    TemporalComputationRunView.noErrorOccurred]
 
 /-- Reordering DateTime outcomes or residual messages preserves the extensional result. -/
 theorem dateTimeComputationRun_fromOutcomes_permutation
@@ -87,11 +83,11 @@ theorem dateTimeComputationRun_fromOutcomes_permutation
     TemporalComputationRunView.ExtensionalEq,
     DateTimeComputationRunView.fromOutcomes,
     DateTimeComputationRunView.fromOutcomesAt,
-    TemporalComputationRunView.fromValueOutcomes]
+    TemporalComputationRunView.fromErrorOutcomes]
   exact ⟨
     outcomesPermutation.filterMap _,
     (outcomesPermutation.filterMap _).filter _,
-    List.Perm.nil,
+    outcomesPermutation.filterMap _,
     (outcomesPermutation.filter _).map _,
     messagesPermutation
   ⟩

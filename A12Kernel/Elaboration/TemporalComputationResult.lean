@@ -47,8 +47,11 @@ structure DateRangeComputedError (Target : Type := FieldId) where
   cause : DateRangeTargetError
   deriving Repr, DecidableEq
 
-/-- The bounded DateTime target has no target-local rejection outcome, so its computed-error collection is uninhabited. -/
-inductive DateTimeComputedError
+/-- One computed DateTime instance whose exact rendering its own target rejected. -/
+structure DateTimeComputedError (Target : Type := FieldId) where
+  targetField : Target
+  attempted : StoredDateTime
+  cause : DateTimeTargetError
   deriving Repr, DecidableEq
 
 /-- The admitted Time target has no target-local rejection outcome. -/
@@ -196,7 +199,7 @@ abbrev FullDateComputationRunView (ResidualMessage : Type)
 abbrev DateTimeComputationRunView (ResidualMessage : Type)
     (Target : Type := FieldId) :=
   TemporalComputationRunView
-    (DateTimeComputedInstance Target) DateTimeComputedError
+    (DateTimeComputedInstance Target) (DateTimeComputedError Target)
     ResidualMessage Target
 
 /-- DateRange specialization of the shared five result collections over an exact caller-selected target-key domain. -/
@@ -384,6 +387,12 @@ def successfulInstance? {Target : Type} :
   | (targetField, .accepted value) => some { targetField, value }
   | _ => none
 
+def computedError? {Target : Type} :
+    Target × DateTimeTargetOutcome → Option (DateTimeComputedError Target)
+  | (targetField, .errored attempted cause) =>
+      some { targetField, attempted, cause }
+  | _ => none
+
 def sourceValueChangedAt (sourceState : Target → DateTimeTargetState)
     (computed : DateTimeComputedInstance Target) : Bool :=
   (sourceState computed.targetField).storedValue != some computed.value
@@ -402,23 +411,23 @@ def shouldClear (input : CheckedDocument model)
     (entry : FieldId × DateTimeTargetOutcome) : Bool :=
   shouldClearAt input.sourceDateTimeTargetState entry
 
-/-- Build the five public DateTime projections over an exact caller-selected target-key domain and immutable source-state projection. The target-local error collection is empty by construction. -/
+/-- Build the five public DateTime projections over an exact caller-selected target-key domain and immutable source-state projection. -/
 def fromOutcomesAt (sourceState : Target → DateTimeTargetState)
     (residualMessages : List ResidualMessage)
     (outcomes : List (Target × DateTimeTargetOutcome)) :
     DateTimeComputationRunView ResidualMessage Target :=
-  TemporalComputationRunView.fromValueOutcomes successfulInstance?
-    (sourceValueChangedAt sourceState) (shouldClearAt sourceState)
+  TemporalComputationRunView.fromErrorOutcomes successfulInstance?
+    computedError? (sourceValueChangedAt sourceState) (shouldClearAt sourceState)
     residualMessages outcomes
 
-/-- Build the five public DateTime projections from rich outcomes and an already-classified residual channel. The target-local error collection is empty by construction. -/
+/-- Build the five public DateTime projections from rich outcomes and an already-classified residual channel. -/
 def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × DateTimeTargetOutcome)) :
     DateTimeComputationRunView ResidualMessage :=
   fromOutcomesAt input.sourceDateTimeTargetState residualMessages outcomes
 
-/-- The bounded DateTime result reports an error exactly when the supplied residual channel is nonempty. -/
+/-- The public error predicate observes exactly computed-instance errors and residual messages. -/
 def noErrorOccurred
     (view : DateTimeComputationRunView ResidualMessage Target) : Bool :=
   TemporalComputationRunView.noErrorOccurred view
