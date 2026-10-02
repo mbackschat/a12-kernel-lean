@@ -82,7 +82,7 @@ private def fixedStep? (operation : Option (CheckedNumericTargetComputationOpera
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation := ← operation } :
       ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.fixed table)
+  pure (.table table)
 
 private def rootSum? := fixedStep? (elaborateNumberEntityTargetComputationOperation model ["Rows"]
   rootSumId (.atom (.aggregate .sum { first := .star outerStar, rest := [] }))).toOption

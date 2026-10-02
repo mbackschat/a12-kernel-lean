@@ -121,13 +121,13 @@ example : comparisonDiagnostic? (fixedPath ++ ["Source"]) = some (some .noFields
   native_decide
 
 example :
-    !(model.admitsNumericComputationOperand
+    !(model.admitsNumericComputationOperand []
       (.numeric (.fixedCurrentRepetition
         { path := boundFixedPath, origin := .path }))) = true ∧
-    !(model.admitsNumericComputationOperand
+    !(model.admitsNumericComputationOperand []
       (.numeric (.fixedCurrentRepetition
         { path := ["Root"], origin := .ruleGroup }))) = true ∧
-    !(model.admitsNumericComputationOperand
+    !(model.admitsNumericComputationOperand []
       (.numeric (.fixedCurrentRepetition
         { path := fixedPath, origin := .path, boundRepeatableScope := [10] }))) = true := by
   native_decide

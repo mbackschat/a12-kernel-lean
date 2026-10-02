@@ -12,6 +12,13 @@ def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   | .ok declaration => declaration.repeatableScope.isEmpty && field.matchesDecl declaration
   | .error _ => false
 
+/-- Whether one model declaration is exactly this field, at whatever repeatable scope. A construct
+reading the field asks separately whether its own reading scope binds that declaration's levels. -/
+def FlatModel.ownsField (model : FlatModel) (field : FlatField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration => field.matchesDecl declaration
+  | .error _ => false
+
 /-- Stronger than presence admission: the exact nonrepeatable declaration must expose an evaluated String value. -/
 def FlatModel.admitsStringValueField (model : FlatModel)
     (field : FlatStringField) : Bool :=

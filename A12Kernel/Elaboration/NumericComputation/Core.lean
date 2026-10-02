@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericAggregate
@@ -9,7 +10,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, typed String/stored-Enumeration and Boolean/Confirm value counts, the distinct row-aligned `SumOfProducts` pair, and fixed distinct disjoint multi-group filled counts through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains each specialized checked source and the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, both product fields, and every counted group subtree; the Boolean/Confirm count cannot include its Number target by construction. Scale checking uses the selected declarations' union, integral count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources, reads dynamic `Now` only from its explicit optional `World`, fails structurally when that input is absent, and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates and every direct-only specialized source into its existing nonrepeatable atoms, while repeatable entity-list, token-count, product, and first-filled payloads retain their checked certificates through the full-only addressed validation context; fixed filled-group computation remains an explicit arm-crossing generated-validation boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
+This capsule checks one parser-independent numeric operation with an ordinary Number target against a validated model. Its reading scope is the target's repeatable scope, which binds every operand level it holds ([`spec/09`](../../../spec/09-computations.md) §5), so a fixed target reads only nonrepeatable operands and a repeatable one also reads its own row's and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, typed String/stored-Enumeration and Boolean/Confirm value counts, the distinct row-aligned `SumOfProducts` pair, and fixed distinct disjoint multi-group filled counts through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains each specialized checked source and the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, both product fields, and every counted group subtree; the Boolean/Confirm count cannot include its Number target by construction. Scale checking uses the selected declarations' union, integral count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources, reads dynamic `Now` only from its explicit optional `World`, fails structurally when that input is absent, and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates and every direct-only specialized source into its existing nonrepeatable atoms, while repeatable entity-list, token-count, product, and first-filled payloads retain their checked certificates through the full-only addressed validation context; fixed filled-group computation remains an explicit arm-crossing generated-validation boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
 
 The measured arithmetic surface retains the target through scale summarization so it reaches the target-scale gate before self-reference: `+`, `-`, or `*` reading the target on exactly one side, against an immediate literal or a different direct Number field. The gate order rather than the authored shape is what that surface encodes. Every other target read keeps its pre-existing immediate local refusal, including when a later operand would otherwise fail resolution, and receives no projected Kernel class. Both operand kinds are measured at both scale relations: a field operand whose declared scale differs from the target's reports the scale gate first and exposes the self-reference under suppression, exactly as a matching one does.
 
@@ -111,14 +112,16 @@ inductive NumericComputationElabError where
   /-- A root group beside any other operand. Reached only once containment is ruled out, because
   the Kernel checks the two gates in that order on both arms. -/
   | rootGroupInGroupCount (path : GroupPath)
-  /-- An operand leaves a repeatable level for its evaluation to bind, which this arm's fixed target
-  cannot do; the record carries what selects the class. -/
+  /-- An operand leaves a repeatable level for its evaluation to bind that the target's scope does
+  not; the record carries what selects the class. -/
   | unboundOperandLevel (unbound : UnboundOperandLevel)
   | targetSelfReference (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
   | unsupportedExpression
   | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
   | targetPolicyMismatch (target policy : NumField)
+  /-- A repeatable target's placement, which claims no class here. -/
+  | repeatableTarget (error : AddressedRepeatableTargetElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -190,50 +193,70 @@ structure NumericComputationOperation (model : FlatModel) where
   expression : AuthoredNumericExpr (CheckedNumericComputationAtom model)
   suppressExactScaleWarning : Bool := false
 
-private def FlatModel.admitsTemporalComputationOperand
-    (model : FlatModel) (source : FlatTemporalField) (accepts : Bool) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
-        declaration.toTemporalField? == some source && accepts
+/-- The levels an operation's rows bind: its target's repeatable scope, empty for a fixed target. -/
+def NumericComputationOperation.readingScope (operation : NumericComputationOperation model) :
+    List RepeatableLevel :=
+  model.fieldRepeatableScope operation.target.id
+
+/-- Whether one model field's declaration satisfies `admits` and its repeatable levels are bound by
+`scope`, the reading scope of the operation reading it. -/
+private def FlatModel.admitsDeclarationIn (model : FlatModel) (scope : List RepeatableLevel)
+    (field : FieldId) (admits : FlatFieldDecl → Bool) : Bool :=
+  match model.lookupUniqueId field with
+  | .ok declaration => declaration.repetitionBoundBy scope && admits declaration
   | .error _ => false
 
+/-- Whether every one of a list's direct fields is bound by `scope`. Its starred and group operands
+bind their own levels, which the list's shape asked against the same scope. -/
+private def FlatModel.directFieldsBoundBy (model : FlatModel) (scope : List RepeatableLevel)
+    (fields : List FieldId) : Bool :=
+  fields.all fun field => (model.fieldRepeatableScope field).all scope.contains
+
+private def FlatModel.admitsTemporalComputationOperand
+    (model : FlatModel) (scope : List RepeatableLevel) (source : FlatTemporalField) (accepts : Bool) :
+    Bool :=
+  model.admitsDeclarationIn scope source.id fun declaration =>
+    declaration.toTemporalField? == some source && accepts
+
 def FlatModel.admitsNumericComputationOperand
-    (model : FlatModel) : CheckedNumericComputationAtom model → Bool
-  | .firstFilled _ => true
-  | .valueCount _ _ => true
-  | .tokenValueCount _ => true
-  | .booleanValueCount _ => true
+    (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
+  | .firstFilled source | .valueCount _ source =>
+      model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
+  | .tokenValueCount source =>
+      model.directFieldsBoundBy scope
+        (source.source.operands.filterMap (·.directField?.map (·.operand.field.id)))
+  | .booleanValueCount source =>
+      model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
   | .sumOfProducts _ => true
   -- Every operand carries its own model certificate, so admission is settled at elaboration.
   | .filledGroupCountMixed _ => true
   | .numeric (.field declaration) =>
-      match model.lookupUniqueId declaration.id with
-      | .ok admitted =>
-          admitted == declaration &&
-            declaration.repeatableScope.isEmpty &&
-            declaration.toNumberField?.isSome
-      | .error _ => false
+      model.admitsDeclarationIn scope declaration.id fun admitted =>
+        admitted == declaration && declaration.toNumberField?.isSome
   | .numeric (.baseYear year) => model.baseYear == some year
   | .numeric (.fixedCurrentRepetition reference) =>
       reference.scalarRepetitionWellFormedBool model
   | .numeric (.boundCurrentRepetition _) => false
   | .numeric (.baseYearDatePart year _ _) => model.baseYear == some year
   | .numeric (.temporalFieldPart source part) =>
-      model.admitsTemporalComputationOperand source
+      model.admitsTemporalComputationOperand scope source
         (part.admittedBy source model.hasBaseYear)
   | .numeric (.dateRangeBoundPart source _ part) =>
-      model.nonrepeatableDateRangeSource source &&
+      model.admitsDeclarationIn scope source.id (·.policy.kind.surfaceKind == .dateRange) &&
         model.exposesDateRangeBoundPart source part
-  | .numeric (.stringLength source) => model.admitsStringValueField source
+  | .numeric (.stringLength source) =>
+      model.admitsDeclarationIn scope source.id (·.toStringValueField? == some source)
   | .numeric (.stringRange source start finish) =>
-      validStringRange start finish && model.admitsStringValueField source
+      validStringRange start finish &&
+        model.admitsDeclarationIn scope source.id (·.toStringValueField? == some source)
   | .numeric (.fieldValueAsNumber source) =>
-      model.admitsFieldValueAsNumberSource source
+      match model.certifiedFieldValueAsNumberDeclaration? source with
+      | some declaration => declaration.repetitionBoundBy scope
+      | none => false
   | .numeric (.dateDifference unit left right) =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
-            model.admitsTemporalComputationOperand source
+            model.admitsTemporalComputationOperand scope source
               (unit.admittedBy model.hasBaseYear source.components)
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
@@ -241,7 +264,7 @@ def FlatModel.admitsNumericComputationOperand
   | .numeric (.dateTimeDifference unit left right) =>
       let admitted : FlatTemporalOperand → Bool
         | .fieldValue source =>
-            model.admitsTemporalComputationOperand source
+            model.admitsTemporalComputationOperand scope source
               (unit.admittedBy source.components)
         | .nowValue => unit.admittedBy TemporalComponents.now
         | _ => false
@@ -254,28 +277,29 @@ def FlatModel.admitsNumericComputationOperand
   | .numeric (.dayDifference profile left right) =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
-            model.admitsTemporalComputationOperand source
+            model.admitsTemporalComputationOperand scope source
               (CalendarDayDifference.admittedBy source.components)
         | .baseYear year _ => model.baseYear == some year
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
         admitted left && admitted right &&
         CalendarDayDifference.yearCompatible model.hasBaseYear
           left.components right.components
-  | .numeric (.aggregate _ _) => true
+  | .numeric (.aggregate _ source) =>
+      model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
   | .numeric (.filledGroupCount groups) =>
       1 < groups.length &&
         (ResolvedGroupReferences.firstOverlap? groups).isNone &&
         groups.all fun reference =>
           model.hasGroupPath reference.path &&
             reference.origin == .path &&
-            (model.repeatableScopeForGroupPath reference.path).isEmpty
+            (model.repeatableScopeForGroupPath reference.path).all scope.contains
 
+/-- Whether the target is a model Number declaration. Its repeatable scope is the operation's reading
+scope, so a scalar executor asks `readingScope` separately. -/
 def FlatModel.admitsNumericComputationTarget
     (model : FlatModel) (target : FlatNumberField) : Bool :=
   match model.lookupUniqueId target.id with
-  | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
-        declaration.toNumberField? == some target
+  | .ok declaration => declaration.toNumberField? == some target
   | .error _ => false
 
 def FlatFieldDecl.numericScaleSummary
@@ -346,7 +370,7 @@ def CheckedNumericComputationAtom.references
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation model) : Bool :=
   model.admitsNumericComputationTarget operation.target &&
-    operation.expression.allAtoms model.admitsNumericComputationOperand &&
+    operation.expression.allAtoms (model.admitsNumericComputationOperand operation.readingScope) &&
     !operation.expression.anyAtom
       (CheckedNumericComputationAtom.references model operation.target.id) &&
     operation.expression.isAdmittedResolvedNumericOperation &&
@@ -378,11 +402,14 @@ structure CheckedNumericTargetComputationOperation (model : FlatModel) where
   policy : NumericTargetPolicy
   targetMatches : policy.info = operation.core.target.info
 
-/-- The fixed Number target and the group it lies in, which decides a per-row read's class. -/
+/-- The Number target and the group it lies in, which decides a per-row read's class. A repeatable
+target meets the placement every repeatable computation target meets, ahead of its kind. -/
 private def FlatModel.resolveNumericComputationTarget
-    (model : FlatModel) (target : FieldId) :
+    (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId) :
     Except NumericComputationElabError (FlatNumberField × GroupPath) := do
-  let declaration ← (model.resolveNonrepeatableDeclarationById target).mapError .targetResolve
+  let declaration ← (model.lookupUniqueId target).mapError .targetResolve
+  if !declaration.repeatableScope.isEmpty then
+    discard <| (checkAddressedRepeatableTarget model declaringGroup target).mapError .repeatableTarget
   match declaration.toNumberField? with
   | some field => pure (field, declaration.groupPath)
   | none => throw (.targetNotNumber target)
@@ -416,7 +443,7 @@ private def FlatModel.resolveTemporalNumericComputationField
     (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
     Except NumericComputationElabError FlatTemporalField := do
   let declaration ←
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference).mapError .resolve
+    (model.resolveComputationOperandUnchecked declaringGroup targetGroup reference).mapError .resolve
   match declaration.toTemporalField? with
   | some field =>
       if accepts field then pure field
@@ -432,7 +459,7 @@ private def FlatModel.resolveTemporalNumericComputationField
 def FlatModel.requireOperandLevelsBound (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (scopes : List (List RepeatableLevel)) :
     Except NumericComputationElabError Unit :=
-  match model.firstUnboundOperandLevel? declaringGroup targetGroup scopes with
+  match model.firstUnboundComputationLevel? declaringGroup targetGroup scopes with
   | none => pure ()
   | some unbound => throw (.unboundOperandLevel unbound)
 
@@ -701,7 +728,7 @@ private def FlatModel.checkNumericCopyComparison (model : FlatModel) (declaringG
     (targetField : FieldId) :
     AuthoredNumericExpr SurfaceNumericComputationAtom → Except NumericComputationElabError Unit
   | .atom (.numeric (.field reference)) => do
-      let target ← (model.resolveNonrepeatableDeclarationById targetField).mapError .targetResolve
+      let target ← (model.lookupUniqueId targetField).mapError .targetResolve
       if target.fieldValueReadRefusal?.isNone then
         let source ←
           (model.resolveComputationFieldValueRead declaringGroup target.groupPath reference).mapError
@@ -723,7 +750,8 @@ def elaborateCompleteNumericComputationOperation
       let checkedDeclaringGroup ←
         certifyNumericComputationDeclaringGroup declaringGroup
       model.checkNumericCopyComparison checkedDeclaringGroup.val targetField expression
-      let (target, targetGroup) ← model.resolveNumericComputationTarget targetField
+      let (target, targetGroup) ←
+        model.resolveNumericComputationTarget checkedDeclaringGroup.val targetField
       model.checkNumericOperationNodes checkedDeclaringGroup.val targetGroup expression
       -- The node walk already elaborated every atom by this same function, a field through the same
       -- declaration read, so this pass refuses nothing new and only rebuilds the checked tree.

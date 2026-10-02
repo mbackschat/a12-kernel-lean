@@ -37,7 +37,8 @@ def FlatTextFieldOperand.projectionRef? :
   | .string _ => none
   | .enumeration operand => some operand.projectionRef
 
-/-- One direct nonrepeatable String or stored/category Enumeration declaration. -/
+/-- One direct String or stored/category Enumeration declaration. The list's shape decided which reading
+scope binds its levels: none on a rule, its target's on a computation. -/
 structure CheckedTokenField (model : FlatModel) where
   declaration : FlatFieldDecl
   projectionRef : EnumerationProjectionRef
@@ -45,7 +46,7 @@ structure CheckedTokenField (model : FlatModel) where
   profile : DirectComparableField
   operandOwned :
     declaration.toTokenFieldComparison? projectionRef = some (operand, profile)
-  admitted : model.admitsField operand.field = true
+  admitted : model.ownsField operand.field = true
 
 /-- One starred String or stored/category Enumeration declaration with its exact optional checked filter. -/
 structure CheckedTokenStarSource (model : FlatModel) where
@@ -241,7 +242,7 @@ def certifyDirectTokenOperand (model : FlatModel)
             throw (.fieldKindMismatch declaration.path
               declaration.policy.kind.surfaceKind)
   | some (operand, profile) =>
-      if hAdmitted : model.admitsField operand.field = true then
+      if hAdmitted : model.ownsField operand.field = true then
         pure {
           declaration
           projectionRef
@@ -467,7 +468,7 @@ def elaborateProjectedTokenEntitySource (model : FlatModel)
           operand
       -- The shared shape's list-wide gate, asked of this boundary's own resolved slots.
       if let some targetGroup := fixedTargetGroup? then
-        if let some unbound := model.firstUnboundOperandLevel? declaringGroup targetGroup
+        if let some unbound := model.firstUnboundComputationLevel? declaringGroup targetGroup
             ((first :: rest).map ResolvedProjectedTokenEntityOperand.bindingScope) then
           throw (.shape (.unboundOperandLevel unbound))
       match firstDuplicateResolvedProjectedTokenField? (first :: rest) with

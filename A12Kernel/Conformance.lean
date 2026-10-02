@@ -298,6 +298,7 @@ import A12Kernel.Conformance.RepeatableNumberPlanGateSources
 import A12Kernel.Conformance.RepeatableNumberPlanNestedStar
 import A12Kernel.Conformance.RepeatableNumberPlanOperators
 import A12Kernel.Conformance.RepeatableNumberPlanRowAlternatives
+import A12Kernel.Conformance.RepeatableNumberPlanRowTables
 import A12Kernel.Conformance.RepeatableNumberNestedAggregateCascade
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.RepetitionNotUniqueDiagnostic

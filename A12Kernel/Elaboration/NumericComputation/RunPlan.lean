@@ -46,11 +46,22 @@ end CheckedNumericTargetComputationOperation
 
 namespace CheckedNumericComputationTable
 
-/-- Whether every operation can use the scalar evaluator if its guard selects it. -/
-def supportsScalarEvaluation
+/-- The levels the table's rows bind: its target's repeatable scope, empty for a fixed target. -/
+def readingScope (table : CheckedNumericComputationTable model) : List RepeatableLevel :=
+  model.fieldRepeatableScope table.targetField
+
+/-- Whether every operation can use the scalar evaluator if its guard selects it, for one row of the
+table's reading scope. -/
+def atomsSupportScalarEvaluation
     (table : CheckedNumericComputationTable model) : Bool :=
   table.selectableAlternatives.all
     (·.operation.supportsScalarEvaluation)
+
+/-- Whether the table can use the scalar evaluator: its target is fixed, so the one scalar context
+the executor supplies is the table's only row, and every operation can use it. -/
+def supportsScalarEvaluation
+    (table : CheckedNumericComputationTable model) : Bool :=
+  table.readingScope.isEmpty && table.atomsSupportScalarEvaluation
 
 /-- Whether any guard or complete Numeric expression reads one exact field. -/
 def referencesField (table : CheckedNumericComputationTable model)

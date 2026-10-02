@@ -171,7 +171,7 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup targetGroup : Gr
   | StringExpr.literal value => pure (.literal value)
   | StringExpr.range reference start finish => do
       let declaration ←
-        (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup
+        (model.resolveComputationOperandUnchecked declaringGroup targetGroup
           reference).mapError .resolve
       if !validStringRange start finish then
         throw (.invalidRange start finish)

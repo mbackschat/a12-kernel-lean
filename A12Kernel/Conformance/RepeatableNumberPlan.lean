@@ -70,7 +70,7 @@ private def rootSum? : Option (CheckedRepeatableNumberPlanStep model) := do
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation } :
       ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.fixed table)
+  pure (.table table)
 
 private def row? (operation : Option (CheckedRepeatableNumberRowOperation model))
     (guard : Option ComputationCondition := none) :

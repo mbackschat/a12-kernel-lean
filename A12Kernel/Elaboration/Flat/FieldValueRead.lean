@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat.Model
+import A12Kernel.Elaboration.Flat.ComputationBinding
 
 /-! # The field-value read's gates
 
@@ -124,7 +124,7 @@ def FlatModel.resolveProjectedFieldValueRead (model : FlatModel) (declaringGroup
 def FlatModel.computationGroupRead (model : FlatModel) (declaringGroup targetGroup : GroupPath)
     (reference : SurfaceFieldPath) : Unit → Option (GroupPath × Option UnboundOperandLevel) :=
   fun _ => (model.groupNamedBy? declaringGroup reference).map fun group =>
-    (group, (model.firstUnboundOperandLevel? declaringGroup targetGroup
+    (group, (model.firstUnboundComputationLevel? declaringGroup targetGroup
       [model.repeatableScopeForGroupPath group]).filter (!·.passesWalk))
 
 /-- A computation's nonrepeatable field-value read, whose gates are measured on a String, an
@@ -137,7 +137,7 @@ def FlatModel.resolveComputationFieldValueRead (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl :=
   checkFieldValueRead
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference)
+    (model.resolveComputationOperandUnchecked declaringGroup targetGroup reference)
     (model.computationGroupRead declaringGroup targetGroup reference)
 
 /-- A computation's read of a field an operator names as a parameter, which asks the group gate alone,
@@ -150,7 +150,7 @@ def FlatModel.resolveComputationEntityRead (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl :=
   displaceGroupRead
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference)
+    (model.resolveComputationOperandUnchecked declaringGroup targetGroup reference)
     (model.computationGroupRead declaringGroup targetGroup reference)
 
 end A12Kernel

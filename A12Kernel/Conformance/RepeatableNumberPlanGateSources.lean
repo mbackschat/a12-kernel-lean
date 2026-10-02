@@ -71,7 +71,7 @@ private def fixed? (target : FieldId) (guard : Option ComputationCondition)
   let table ← (certifyNumericComputationTable
     [({ precondition := guard, operation } :
       ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.fixed table)
+  pure (.table table)
 
 private def row? (operation : Option (CheckedRepeatableNumberRowOperation model))
     (guard : Option ComputationCondition := none) :

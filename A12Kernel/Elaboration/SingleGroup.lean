@@ -304,7 +304,7 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
       | .fixedTarget targetGroup =>
           -- Measured on a fixed child, a deeper one and the repeatable group itself, alone and
           -- beside a star ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)).
-          match model.firstUnboundOperandLevel? declaringGroup targetGroup [operandScope] with
+          match model.firstUnboundComputationLevel? declaringGroup targetGroup [operandScope] with
           | none => pure resolved
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
       | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }

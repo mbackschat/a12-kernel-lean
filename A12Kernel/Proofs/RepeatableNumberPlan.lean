@@ -36,7 +36,7 @@ theorem certifyRepeatableNumberPlan_cycle_readClosed
           (fieldId_firstDuplicate_none_iff_nodup _).mp noDuplicate
         exact computationAuthoredOrder_forward_readClosed _ _ steps.length steps
           (Nat.le_refl _) unique (by rw [forward]; simp)
-      · simp at refused
+      · split at refused <;> simp at refused
 
 /-- A certified plan's authored steps hold no read-closed steps, so every cyclic plan is refused. -/
 theorem repeatableNumberPlan_not_readClosed (plan : CheckedRepeatableNumberPlan model)

@@ -58,7 +58,7 @@ private def sum? (target : FieldId) (field : String) : Option (CheckedRepeatable
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation } :
       ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.fixed table)
+  pure (.table table)
 
 private def copy? : Option (CheckedRepeatableNumberPlanStep model) := do
   let operation ← (checkAddressedNumberField model innerPath ipId

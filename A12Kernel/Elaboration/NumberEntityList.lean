@@ -31,11 +31,12 @@ abbrev SurfaceNumberEntitySource := SurfaceFieldEntitySource
 /-- Consumer-neutral name for the established direct nonempty Number field-list payload. -/
 abbrev ResolvedDirectNumberEntityFields := ResolvedNumericAggregateFields
 
-/-- One direct nonrepeatable Number declaration certified against the source model. -/
+/-- One direct Number declaration certified against the source model. The list's shape decided which
+reading scope binds its levels: none on a rule, its target's on a computation. -/
 structure CheckedNumberEntityField (model : FlatModel) where
   declaration : FlatFieldDecl
   field : FlatNumberField
-  admitted : model.admitsField (.number field) = true
+  admitted : model.ownsField (.number field) = true
   fieldOwned : declaration.toNumberField? = some field
 
 /-- One authored group-scope slot certified as Number-valued.
@@ -202,7 +203,7 @@ def directFields? (checked : CheckedNumberEntitySource model) :
   let rest ← checked.rest.mapM CheckedNumberEntityOperand.directField?
   pure (first, rest)
 
-/-- Recover the legacy direct aggregate payload exactly when every checked entity-list operand is nonrepeatable. Scalar computation and generated validation share this narrowing rather than reconstructing or rechecking source syntax. -/
+/-- Recover the legacy direct aggregate payload exactly when every checked entity-list operand is a direct field. Scalar computation and generated validation share this narrowing rather than reconstructing or rechecking source syntax. -/
 def directResolvedFields?
     (checked : CheckedNumberEntitySource model) :
     Option ResolvedDirectNumberEntityFields := do
@@ -393,7 +394,7 @@ private def certifyNumberEntityOperand (model : FlatModel)
       match hField : declaration.toNumberField? with
       | none => throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
       | some field =>
-          if hAdmitted : model.admitsField (.number field) = true then
+          if hAdmitted : model.ownsField (.number field) = true then
             pure (.field {
               declaration
               field

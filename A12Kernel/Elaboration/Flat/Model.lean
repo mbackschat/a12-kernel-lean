@@ -835,20 +835,6 @@ def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
   | some unbound => throw (.unboundOperandLevel declaration.path unbound)
   | none => declaration.requireNonrepeatableAt (model.repeatableScopeForGroupPath declaringGroup)
 
-/-- Resolve a nonrepeatable operand of a computation after a caller has validated the model. A
-computation binds its operands by its target's scope rather than by the group declaring it
-([`spec/09`](../../../spec/09-computations.md)), and these carriers' targets are fixed, so a
-repeatable operand is refused wherever the computation is declared, with the class the target's
-position and its outermost level select
-([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
-def FlatModel.resolveNonrepeatableComputationOperandUnchecked (model : FlatModel)
-    (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
-    Except ResolveError FlatFieldDecl := do
-  let declaration ← model.resolveFieldDeclarationUnchecked declaringGroup reference
-  match model.firstUnboundOperandLevel? declaringGroup targetGroup [declaration.repeatableScope] with
-  | none => pure declaration
-  | some unbound => throw (.unboundOperandLevel declaration.path unbound)
-
 /-- Resolve one structured field path against a validated expanded model while preserving its repeatable scope for a later elaborator. -/
 def FlatModel.resolveFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do

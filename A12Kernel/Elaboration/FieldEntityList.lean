@@ -629,7 +629,7 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
         resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? writtenGroup
           authored.rest
       if let some targetGroup := fixedTargetGroup? then
-        if let some unbound := model.firstUnboundOperandLevel? declaringGroup targetGroup
+        if let some unbound := model.firstUnboundComputationLevel? declaringGroup targetGroup
             ((first :: rest).map ResolvedFieldEntityOperand.bindingScope) then
           throw (.unboundOperandLevel unbound)
       if categoryGate == .aheadOfRepeat then

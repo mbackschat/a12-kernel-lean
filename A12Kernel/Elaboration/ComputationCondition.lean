@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat.Model
+import A12Kernel.Elaboration.Flat.ComputationBinding
 import A12Kernel.Semantics.ComputationCondition
 
 /-! # Model-certified computation conditions
@@ -53,7 +53,7 @@ private def FlatModel.resolveComputationPresence (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FieldId :=
   (·.id) <$> model.resolvePresenceOperand declaringGroup targetGroup reference
-    (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference)
+    (model.resolveComputationOperandUnchecked declaringGroup targetGroup reference)
 
 /-- Resolve a precondition's names left to right against a validated model, so its first unresolved
 name is the one reported. -/

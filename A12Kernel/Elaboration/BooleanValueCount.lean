@@ -37,12 +37,13 @@ def FlatFieldDecl.toBooleanValueCountField? (expected : Bool)
   else
     none
 
-/-- One checked direct Boolean/Confirm operand. -/
+/-- One checked direct Boolean/Confirm operand. The list's shape decided which reading scope binds its
+levels: none on a rule, its target's on a computation. -/
 structure CheckedBooleanValueCountField (model : FlatModel)
     (expected : Bool) where
   declaration : FlatFieldDecl
   admitted :
-    model.admitsField declaration.toPresenceField = true
+    model.ownsField declaration.toPresenceField = true
   kindAllowed :
     booleanValueCountKindAllowed expected declaration.policy.kind = true
 
@@ -186,7 +187,7 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
       if hKind :
           booleanValueCountKindAllowed expected declaration.policy.kind = true then
         if hAdmitted :
-            model.admitsField declaration.toPresenceField = true then
+            model.ownsField declaration.toPresenceField = true then
           pure (.field { declaration, admitted := hAdmitted, kindAllowed := hKind })
         else
           throw .incoherentCore

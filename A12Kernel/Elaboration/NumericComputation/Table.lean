@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.NumericComputation.Target
 
 /-! # Checked Number computation tables
 
-This capsule consolidates a nonempty table of already-checked Number target operations. A sole source row may omit its precondition; every row in a multi-row source table must be guarded. Every row retains the same target and complete target policy. Selection reuses the shared first-match owner and delegates only the selected operation to the existing scalar Numeric evaluator.
+This capsule consolidates a nonempty table of already-checked Number target operations. A sole source row may omit its precondition; every row in a multi-row source table must be guarded. Every row retains the same target and complete target policy, and every guard reads only cells one row of the target's scope binds, as the table's operations do. Selection reuses the shared first-match owner and delegates only the selected operation to the existing scalar Numeric evaluator.
 -/
 
 namespace A12Kernel
@@ -15,7 +15,7 @@ structure CheckedNumericComputationAlternative (model : FlatModel)
   operation : CheckedNumericTargetComputationOperation model
   targetMatches : operation.operation.core.target.id = target
   policyMatches : operation.policy = policy
-  guardWellFormed : precondition.all (·.wellFormedBool model) = true
+  guardRowBound : precondition.all (·.rowBoundBool model (model.fieldRepeatableScope target)) = true
   guardExcludesTarget : precondition.all
     (fun guard => !guard.referencesField target) = true
 
@@ -60,7 +60,8 @@ def NumericComputationTableError.diagnostic? : NumericComputationTableError → 
 private def certifyNumericComputationAlternative
     (target : FieldId) (policy : NumericTargetPolicy) (alternativeIndex : Nat)
     (guardRequired : Bool)
-    (admitted : AdmittedComputationAlternative (·.wellFormedBool model)
+    (admitted : AdmittedComputationAlternative
+      (·.rowBoundBool model (model.fieldRepeatableScope target))
       (CheckedNumericTargetComputationOperation model)) :
     Except NumericComputationTableError
       (CheckedNumericComputationAlternative model target policy) := do
@@ -76,7 +77,7 @@ private def certifyNumericComputationAlternative
           operation := alternative.operation
           targetMatches := hTarget
           policyMatches := hPolicy
-          guardWellFormed := admitted.property
+          guardRowBound := admitted.property
           guardExcludesTarget := hGuardTarget
         }
       else
@@ -98,10 +99,11 @@ def certifyNumericComputationTable
   match alternatives with
   | [] => .error .empty
   | first :: remaining => do
+      let target := first.operation.operation.core.target.id
       let (first, remaining) ←
-        (ComputationAlternative.admitGuards (·.wellFormedBool model) first remaining).mapError
+        (ComputationAlternative.admitGuards
+          (·.rowBoundBool model (model.fieldRepeatableScope target)) first remaining).mapError
           .guardNotAdmitted
-      let target := first.val.operation.operation.core.target.id
       let policy := first.val.operation.policy
       let guardRequired := !remaining.isEmpty
       let checkedFirst ←
@@ -164,7 +166,7 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
     match guard with
     | .error error => some (.precondition index error)
     | .ok precondition =>
-        if !precondition.all (·.wellFormedBool model) then
+        if !precondition.all (·.rowBoundBool model (model.fieldRepeatableScope target)) then
           some (.table (.guardNotAdmitted index))
         else
           match result with

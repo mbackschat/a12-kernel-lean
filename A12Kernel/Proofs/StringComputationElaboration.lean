@@ -30,7 +30,7 @@ theorem elaborateStringExprCore_range (model : FlatModel)
     (declaration : FlatFieldDecl) (field : FieldId) (start finish : Nat)
     (startPositive : 1 ≤ start) (ordered : start ≤ finish)
     (resolved :
-      (model.resolveNonrepeatableComputationOperandUnchecked declaringGroup targetGroup reference).mapError
+      (model.resolveComputationOperandUnchecked declaringGroup targetGroup reference).mapError
         StringComputationElabError.resolve = .ok declaration)
     (admitted : admitStringComputationValueField declaration = .ok field) :
     elaborateStringExprCore model declaringGroup targetGroup (.range reference start finish) =
