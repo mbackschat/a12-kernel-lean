@@ -1,0 +1,63 @@
+# row	field	outcome	value
+s01-guard-holds	Gd/DC	value	2024-03-10
+s01-guard-holds	Gd/DCC	value	2024-03-10
+s01-guard-holds	Gd/DCN	cleared	
+s01-guard-holds	Gd/DR	value	2024-03-10/2024-04-20
+s01-guard-holds	Gd/DTA	value	2024-03-11T10:00:00
+s01-guard-holds	Gd/EC	value	1
+s01-guard-holds	Gd/ND	value	10
+s01-guard-holds	Gd/NDC	value	10
+s01-guard-holds	Gd/NDT	value	10
+s01-guard-holds	Gd/NE	value	1
+s01-guard-holds	Gd/NG	value	1
+s01-guard-holds	Gd/NR	value	10
+s02-guard-absent	Gd/DC	cleared	
+s02-guard-absent	Gd/DCC	value	2024-03-10
+s02-guard-absent	Gd/DCN	value	2024-03-10
+s02-guard-absent	Gd/DR	cleared	
+s02-guard-absent	Gd/DTA	cleared	
+s02-guard-absent	Gd/EC	cleared	
+s02-guard-absent	Gd/ND	value	0
+s02-guard-absent	Gd/NDC	value	10
+s02-guard-absent	Gd/NDT	value	0
+s02-guard-absent	Gd/NE	value	0
+s02-guard-absent	Gd/NG	value	1
+s02-guard-absent	Gd/NR	value	0
+s03-guard-malformed	Gd/DC	cleared	
+s03-guard-malformed	Gd/DCC	value	2024-03-10
+s03-guard-malformed	Gd/DCN	cleared	
+s03-guard-malformed	Gd/DR	cleared	
+s03-guard-malformed	Gd/DTA	cleared	
+s03-guard-malformed	Gd/EC	cleared	
+s03-guard-malformed	Gd/ND	cleared	
+s03-guard-malformed	Gd/NDC	value	10
+s03-guard-malformed	Gd/NDT	cleared	
+s03-guard-malformed	Gd/NE	cleared	
+s03-guard-malformed	Gd/NG	value	1
+s03-guard-malformed	Gd/NR	cleared	
+s03-guard-malformed	Gd/G	formal	zahlHatUngueltigeZeichen
+s04-computed-guard-absent-source	Gd/DC	cleared	
+s04-computed-guard-absent-source	Gd/DCC	value	2024-03-10
+s04-computed-guard-absent-source	Gd/DCN	value	2024-03-10
+s04-computed-guard-absent-source	Gd/DR	cleared	
+s04-computed-guard-absent-source	Gd/DTA	cleared	
+s04-computed-guard-absent-source	Gd/EC	cleared	
+s04-computed-guard-absent-source	Gd/ND	value	0
+s04-computed-guard-absent-source	Gd/NDC	value	10
+s04-computed-guard-absent-source	Gd/NDT	value	0
+s04-computed-guard-absent-source	Gd/NE	value	0
+s04-computed-guard-absent-source	Gd/NG	value	0
+s04-computed-guard-absent-source	Gd/NR	value	0
+s05-computed-guard-malformed-source	Gd/DC	value	2024-03-10
+s05-computed-guard-malformed-source	Gd/DCC	cleared	
+s05-computed-guard-malformed-source	Gd/DCN	cleared	
+s05-computed-guard-malformed-source	Gd/DR	value	2024-03-10/2024-04-20
+s05-computed-guard-malformed-source	Gd/DTA	value	2024-03-11T10:00:00
+s05-computed-guard-malformed-source	Gd/EC	value	1
+s05-computed-guard-malformed-source	Gd/ND	value	10
+s05-computed-guard-malformed-source	Gd/NDC	cleared	
+s05-computed-guard-malformed-source	Gd/NDT	value	10
+s05-computed-guard-malformed-source	Gd/NE	value	1
+s05-computed-guard-malformed-source	Gd/NG	cleared	
+s05-computed-guard-malformed-source	Gd/NR	value	10
+s05-computed-guard-malformed-source	Gd/N0	formal	zahlHatUngueltigeZeichen

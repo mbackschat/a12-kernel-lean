@@ -1474,6 +1474,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Full-Date and Enumeration copies are read fresh across a join, chained copies included, and a pre-1900 Date retained as errored reaches its readers as poison, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-document-step-join)
 <a id="src-date-range-join"></a>
 - [A DateRange construction reads a computed Date fresh, and its readers read a cleared range as empty and an errored one as poison, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-date-range-join)
+<a id="src-guarded-document-steps"></a>
+- [A presence guard on a whole-document step clears it as empty when not met and as poison when it reads poison, and a guard on a computed Number reads its completion, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-guarded-document-steps)
 <a id="src-guard-on-malformed-source"></a>
 - [A fill guard on a malformed source field poisons both guarded copies and their readers, on a root and per repeatable row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
 <a id="src-repeatable-row-alternatives"></a>

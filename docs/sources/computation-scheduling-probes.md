@@ -104,6 +104,21 @@ Dependency order, join, poison, empty-substitution, and fill-guard probes for au
 - `limit`: nonrepeatable fields, one exact profile, the direct two-field construction; an indexed or Base-Year construction at a join and a DateRange read by a DateRange comparison or a full-Date endpoint copy are not measured.
 - `sync`: confirms [`spec/09`](../../spec/09-computations.md) §1's ERRORED retention and its dependents' poison on a DateRange target, and opens no entry.
 
+<a id="src-guarded-document-steps"></a>
+#### A presence guard on a DateTime shift, a full-Date copy, a DateRange construction or an Enumeration copy clears its step as empty when not met and as poison when it reads poison, and a guard on a computed Number reads its completion, measured locally 2026-10-02
+
+- `revision`: one `:adapter:kernelProbe` run with `observe: ["validateFull", "compute"]`, over five documents, in the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, `source.state` `CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `enginesAgree: true` on every row, after a `model check` `KERNEL_CONFIRMED` valid; the checkout read clean before and after. The artifact `08aa69b836e85621c787bbc6e61d74ec56764f07896b66c8870c970a677dcea1` carries rendered Kernel text and is not retained.
+- `question`: no whole-document step took a precondition, and the [DateTime join checkpoint](#src-datetime-join) left its guarded `DTC` unlocked. Does a guard on each whole-document family act as a Number table's guard does, and does a guard on a computed field read its completion?
+- `model`: a nonrepeatable root `Gd` in `Europe/Berlin`: `DC = [D0]`, `DTA = AddDays(DT0, 1)`, `DR = DateRange(D0, D1)` and `EC = [E0]`, each under `FieldFilled(G)`, `DCN = [D0]` under `FieldNotFilled(G)`, `DCC = [D0]` under `FieldFilled(NG)` with `NG = [N0]`, and the readers `ND`, `NDT`, `NR`, `NE` and `NDC`, authored first, reading the day, hour, start day, value and day of the guarded targets. Every computed target is seeded with a value no row computes, and every row holds the sources `D0` `2024-03-10`, `D1` `2024-04-20`, `DT0` `2024-03-10T10:00:00` and `E0` `1`.
+- `claim-holds`: with `G` `1` every guarded step computes from the fresh sources, `DTA` `2024-03-11T10:00:00`, and each reader reads it, while `DCN` clears.
+- `claim-not-met`: with `G` absent the four `FieldFilled` steps clear and their readers read empty, `0` each, while `DCN` computes.
+- `claim-poison`: with `G` malformed the four steps and `DCN` clear, and so does every reader of them, where an empty read would give `0`.
+- `claim-computed-guard`: with `N0` absent, `NG` copies as `0`, which is filled, so `DCC` computes; with `N0` malformed, `NG`, `DCC` and `NDC` clear.
+- `retained`: in the [grid directory](../../evidence/kernel-30.8.1/captures/guarded-document-steps-2026-10-02/), `Gds_DM.json` `eb3fa241063ec771d71f82710f9338977d5f5d04309490f830b70f994be62492`, `request.json` `07630e05ad0314dc65ab34d38813faf4a2b24ba66b8762fbc18055c558253292`, and the outcome projection `rows.tsv` `5aaccae3be0d5409db875dcc43d29674af15b510227c794791a635dd74a4fd7a`, 62 rows.
+- `local-consequence`: one guard on `CheckedDocumentComputationStep` serves every whole-document family: it reads the overlaid document, runs the step when it holds, and otherwise reports the family's cleared or poisoned outcome with the empty or poison read-back.
+- `limit`: nonrepeatable fields, `FieldFilled` and `FieldNotFilled` leaves, one guard per step; a Time construction under a guard, a guard over two leaves and alternatives of whole-document steps are not measured.
+- `sync`: confirms [`spec/09`](../../spec/09-computations.md)'s precondition selection and its poison on the whole-document families, and opens no entry.
+
 <a id="src-computation-precondition-names"></a>
 #### A computation precondition's presence slot answers the rule slot's classes, bound by the target, and ahead of its own operation's and an unguarded sibling's classes, measured locally 2026-10-02
 

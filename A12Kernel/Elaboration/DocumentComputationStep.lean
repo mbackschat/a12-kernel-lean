@@ -42,6 +42,43 @@ inductive DocumentTargetOutcome where
   | dateRange (outcome : DateRangeTargetOutcome)
   deriving Repr, DecidableEq
 
+/-- The target family of a whole-document step, which fixes its target kind and the outcome it reports
+when a guard keeps it from running. -/
+inductive DocumentTargetFamily where
+  | dateTime
+  | fullDate
+  | time
+  | enumeration
+  | dateRange
+  deriving Repr, DecidableEq
+
+namespace DocumentTargetFamily
+
+def kind : DocumentTargetFamily → SurfaceScalarKind
+  | .dateTime => .temporal .dateTime
+  | .fullDate => .temporal .date
+  | .time => .temporal .time
+  | .enumeration => .enumeration
+  | .dateRange => .dateRange
+
+/-- The family's cleared outcome, for a step whose guard does not hold. -/
+def noValue : DocumentTargetFamily → DocumentTargetOutcome
+  | .dateTime => .dateTime .noValue
+  | .fullDate => .fullDate .noValue
+  | .time => .time .noValue
+  | .enumeration => .enumeration .noValue
+  | .dateRange => .dateRange .noValue
+
+/-- The family's poisoned outcome, for a step whose guard reads poison. -/
+def poison (cause : FormalCause) : DocumentTargetFamily → DocumentTargetOutcome
+  | .dateTime => .dateTime (.poison cause)
+  | .fullDate => .fullDate (.poison cause)
+  | .time => .time (.poison cause)
+  | .enumeration => .enumeration (.poison cause)
+  | .dateRange => .dateRange (.poison cause)
+
+end DocumentTargetFamily
+
 /-- A whole-document step's structural failure, or the model context its completed target cannot be read
 back in. `targetNotReadable` fails closed where the checked target does not certify as an input field of
 its family, and the two read faults carry the classifier's own context error. -/
@@ -128,7 +165,7 @@ so every step's cell is the read-back of its own outcome. -/
 structure CheckedDocumentComputationStep (model : FlatModel) where
   private mk ::
   target : FieldId
-  targetKind : SurfaceScalarKind
+  family : DocumentTargetFamily
   referencesField : FieldId → Bool
   excludesTarget : referencesField target = false
   run : World → CheckedDocument model →
@@ -136,11 +173,14 @@ structure CheckedDocumentComputationStep (model : FlatModel) where
 
 namespace CheckedDocumentComputationStep
 
+def targetKind (step : CheckedDocumentComputationStep model) : SurfaceScalarKind :=
+  step.family.kind
+
 /-- A field-backed DateTime day shift. -/
 def ofDateTimeDayShift (operation : CheckedDateTimeDayShiftComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.target.checked.target.id
-  targetKind := .temporal .dateTime
+  family := .dateTime
   referencesField field :=
     operation.shift.source.id == field || operation.shift.amount.referencesField field
   excludesTarget := by
@@ -154,7 +194,7 @@ def ofDateTimeDayShift (operation : CheckedDateTimeDayShiftComputation model) :
 def ofDateTimeSubdayShift (operation : CheckedDateTimeSubdayShiftComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.target.checked.target.id
-  targetKind := .temporal .dateTime
+  family := .dateTime
   referencesField field :=
     operation.shift.source.id == field || operation.shift.amount.referencesField field
   excludesTarget := by
@@ -168,7 +208,7 @@ def ofDateTimeSubdayShift (operation : CheckedDateTimeSubdayShiftComputation mod
 def ofFullDate (operation : CheckedFullDateComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.target.checked.target.id
-  targetKind := .temporal .date
+  family := .fullDate
   referencesField field :=
     match operation.operand with
     | .fieldValue source => source.id == field
@@ -187,7 +227,7 @@ def ofFullDate (operation : CheckedFullDateComputation model) :
 def ofTimeConstruction (operation : CheckedTimeConstructionComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.target.checked.target.id
-  targetKind := .temporal .time
+  family := .time
   referencesField := operation.components.referencesField
   excludesTarget := operation.targetNotReferenced
   run _ document := do
@@ -199,7 +239,7 @@ def ofTimeConstruction (operation : CheckedTimeConstructionComputation model) :
 def ofEnumeration (operation : CheckedEnumerationComputationOperation model) :
     CheckedDocumentComputationStep model where
   target := operation.target.field
-  targetKind := .enumeration
+  family := .enumeration
   referencesField := operation.source.referencesField
   excludesTarget := operation.targetNotReferenced
   run _ document :=
@@ -210,7 +250,7 @@ def ofEnumeration (operation : CheckedEnumerationComputationOperation model) :
 def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.target.source.id
-  targetKind := .dateRange
+  family := .dateRange
   referencesField field :=
     operation.construction.start.checked.target.id == field ||
       operation.construction.finish.checked.target.id == field
@@ -220,6 +260,33 @@ def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation
     let result ← (operation.execute document).mapError .dateRangeConstruction
     let cell ← DocumentComputationReadBack.dateRange model operation.target.policy result.outcome
     pure (.dateRange result.outcome, cell)
+
+/-- A step under a presence guard read through the same overlaid document the step reads: a guard that
+holds runs the step, one that does not clears the target, read as empty, and one that reads poison
+poisons it, read as poison, both without running the step. The Kernel guards a DateTime shift, a
+full-Date copy, a DateRange construction and an Enumeration copy that way, a guard on a computed Number
+reading its completion
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-guarded-document-steps)). -/
+def guarded (guard : ComputationCondition) (step : CheckedDocumentComputationStep model)
+    (guardExcludesTarget : guard.referencesField step.target = false) :
+    CheckedDocumentComputationStep model where
+  target := step.target
+  family := step.family
+  referencesField field := guard.referencesField field || step.referencesField field
+  excludesTarget := by simp [guardExcludesTarget, step.excludesTarget]
+  run world document :=
+    match guard.eval (document.scalarComputationContext world) with
+    | .holds => step.run world document
+    | .notTrue => pure (step.family.noValue, DocumentComputationReadBack.empty)
+    | .poison cause => pure (step.family.poison cause, DocumentComputationReadBack.poison)
+
+/-- Guard a step, refusing a guard that names a field the model does not own, as a Number table's
+certifier does, or that reads the step's own target, which the Kernel refuses as a read of the target
+anywhere in a computation. -/
+def guard? (guard : ComputationCondition) (step : CheckedDocumentComputationStep model) :
+    Option (CheckedDocumentComputationStep model) :=
+  if !guard.wellFormedBool model then none
+  else if h : guard.referencesField step.target = false then some (step.guarded guard h) else none
 
 end CheckedDocumentComputationStep
 
