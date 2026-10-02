@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
+import A12Kernel.Elaboration.NumericComputation.OperationTyping
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.NumericTarget
@@ -81,6 +82,9 @@ inductive NumericComputationElabError where
   | invalidModel (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
+  /-- The operation's operand typing refused it, with the class of the node that failed first, `none`
+  where that node's class is not measured. -/
+  | operationTyping (diagnostic : Option KernelStaticDiagnostic)
   | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
   | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
@@ -149,6 +153,7 @@ def targetDiagnostic? :
   | .authoring .tooManyDivisions => some .tooManyDivisionsInRegion
   | .authoring .directLeftNestedPower => some .nestedPowerOnLeft
   | .copyComparison _ _ refusal => some refusal.diagnostic
+  | .operationTyping diagnostic => diagnostic
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | _ => none
 
@@ -432,12 +437,10 @@ def FlatModel.requireOperandLevelsBound (model : FlatModel)
   | none => pure ()
   | some unbound => throw (.unboundOperandLevel unbound)
 
-private def FlatModel.resolveNumericComputationAtoms
-    (model : FlatModel) (declaringGroup targetGroup : GroupPath)
-    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
-    Except NumericComputationElabError
-      (AuthoredNumericExpr (CheckedNumericComputationAtom model)) :=
-  expression.mapM fun
+private def FlatModel.elaborateNumericComputationAtom
+    (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
+    SurfaceNumericComputationAtom →
+      Except NumericComputationElabError (CheckedNumericComputationAtom model)
     | .firstFilled source => do
         let checked ←
           (elaborateNumberEntitySource model declaringGroup source (fixedTargetGroup? := some targetGroup)).mapError
@@ -473,6 +476,8 @@ private def FlatModel.resolveNumericComputationAtoms
         if declaration.toNumberField?.isSome then
           pure (.numeric (.field declaration))
         else
+          -- The operand typing refuses a non-Number field first; this is the resolver's own
+          -- fail-closed answer for a caller that skips it.
           throw (.operandNotNumber declaration.path)
     | .numeric .baseYear =>
         match model.baseYear with
@@ -647,6 +652,37 @@ private def FlatModel.resolveNumericComputationAtoms
                 | some operand => throw (.rootGroupInGroupCount operand.groupPath)
                 | none => pure (.filledGroupCountMixed checked)
 
+private def FlatModel.resolveNumericComputationAtoms
+    (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Except NumericComputationElabError
+      (AuthoredNumericExpr (CheckedNumericComputationAtom model)) :=
+  expression.mapM (model.elaborateNumericComputationAtom declaringGroup targetGroup)
+
+/-- The type one operand contributes to the operation's typing walk: a field read by its declaration,
+and every other operand, once it elaborates, a Number. -/
+private def FlatModel.numericComputationAtomType
+    (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
+    SurfaceNumericComputationAtom → Except NumericComputationElabError NumericOperandType
+  | .numeric (.field reference) => do
+      let declaration ←
+        (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
+      pure (NumericOperandType.ofDeclaration declaration)
+  | atom => (model.elaborateNumericComputationAtom declaringGroup targetGroup atom).map fun _ => .number
+
+/-- Type the operation in post-order and refuse it at the first failing node, or where its well-typed
+result is not a Number, ahead of the authoring gates and the target's read
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-typing)). -/
+private def FlatModel.checkNumericOperationTyping
+    (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Except NumericComputationElabError Unit :=
+  match typeNumericOperation (model.numericComputationAtomType declaringGroup targetGroup) expression with
+  | .error (.operand error) => throw error
+  | .error (.typing diagnostic) => throw (.operationTyping diagnostic)
+  | .ok .number => pure ()
+  | .ok result => throw (.operationTyping result.numberTargetDiagnostic?)
+
 /-- Check computation-group syntax independently of whether the Numeric expression has an operand. -/
 private def certifyNumericComputationDeclaringGroup (declaringGroup : GroupPath) :
     Except NumericComputationElabError { group : GroupPath // GroupPath.isValid group = true } :=
@@ -686,6 +722,7 @@ def elaborateCompleteNumericComputationOperation
         certifyNumericComputationDeclaringGroup declaringGroup
       model.checkNumericCopyComparison checkedDeclaringGroup.val targetField expression
       let (target, targetGroup) ← model.resolveNumericComputationTarget targetField
+      model.checkNumericOperationTyping checkedDeclaringGroup.val targetGroup expression
       let resolved ← model.resolveNumericComputationAtoms checkedDeclaringGroup.val
         targetGroup expression
       if !resolved.isAdmittedResolvedNumericOperation then

@@ -1,0 +1,61 @@
+field t /Typ/T
+op Q01 ([N] + [N2]) * 2
+op Q02 2 * ([N] + [N2])
+op Q03 ([N] + [N2])
+op Q04 [N] * ([N2] + [S])
+op Q05 ([N] + [S]) - ([N] * [B])
+op Q06 ([N] * [B]) - ([N] + [S])
+op Q07 [N] + [S] - [N2]
+op Q08 [S] + [S2] - [N]
+op Q09 [S] + [S2] + [N]
+op Q10 [N] + [S] + [S2]
+op Q11 Abs([S] + [S2])
+op Q12 [E] + [E]
+op Q13 [S] + [E]
+op Q14 [E] + [S]
+op Q15 [D] + [D]
+op Q16 [D] - [D]
+op Q17 [TM] - [TM]
+op Q18 [B] + [B]
+op Q19 [N] + [S] * [N2]
+op Q20 [S] * [N] + [B]
+op Q21 Max([S] + [S2], [N])
+op Q22 Abs([N] - [S])
+op Q23 [N] + "x"
+op Q24 "x" + [N]
+op Q25 [S] + "x"
+op Q26 Max([N], [N2] + [S])
+op Q27 Max([N] + [S], [D])
+op Q28 Abs([S]) + [N]
+op Q29 [N] - Abs([S])
+op Q30 [S] - [N] + [B]
+comp Q01 t Q01
+comp Q02 t Q02
+comp Q03 t Q03
+comp Q04 t Q04
+comp Q05 t Q05
+comp Q06 t Q06
+comp Q07 t Q07
+comp Q08 t Q08
+comp Q09 t Q09
+comp Q10 t Q10
+comp Q11 t Q11
+comp Q12 t Q12
+comp Q13 t Q13
+comp Q14 t Q14
+comp Q15 t Q15
+comp Q16 t Q16
+comp Q17 t Q17
+comp Q18 t Q18
+comp Q19 t Q19
+comp Q20 t Q20
+comp Q21 t Q21
+comp Q22 t Q22
+comp Q23 t Q23
+comp Q24 t Q24
+comp Q25 t Q25
+comp Q26 t Q26
+comp Q27 t Q27
+comp Q28 t Q28
+comp Q29 t Q29
+comp Q30 t Q30

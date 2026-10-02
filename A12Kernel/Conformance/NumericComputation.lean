@@ -14,6 +14,7 @@ import A12Kernel.Conformance.NumericComputation.Table
 import A12Kernel.Conformance.NumericComputation.RunPlan
 import A12Kernel.Conformance.NumericComputation.SourceTarget
 import A12Kernel.Conformance.NumericComputation.NestedApplication
+import A12Kernel.Conformance.NumericComputation.OperationTyping
 
 /-! # Numeric computation-expression outcome locks
 

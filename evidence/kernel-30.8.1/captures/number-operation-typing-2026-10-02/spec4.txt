@@ -1,0 +1,29 @@
+field t /Typ/T
+op U01 {[N] + [S]} - [Nope]
+op U02 [S] - [Nope]
+op U03 [Nope] - [S]
+op U04 Abs([S]) + [Nope]
+op U05 Max([D], [D])
+op U06 Max([D], [TM])
+op U07 Max([TM], [D])
+op U08 Max([N], [N2]) + [S]
+op U09 [S] + Max([N], [D])
+op U10 Round([S], 2)
+op U11 [N] ^ [S]
+op U12 [S] ^ 2
+op U13 Min([B], [N])
+op U14 Max([E], [N])
+comp U01 t U01
+comp U02 t U02
+comp U03 t U03
+comp U04 t U04
+comp U05 t U05
+comp U06 t U06
+comp U07 t U07
+comp U08 t U08
+comp U09 t U09
+comp U10 t U10
+comp U11 t U11
+comp U12 t U12
+comp U13 t U13
+comp U14 t U14

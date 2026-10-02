@@ -959,6 +959,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-aggregate-operand-list-takes-paths-only"></a>
 - [Composition is one-way: an aggregate nests inside a wrapper, but no expression nests inside an aggregate's operand list](sources/computation-placement-and-constant-probes.md#src-aggregate-operand-list-takes-paths-only)
 
+<a id="src-number-operation-typing"></a>
+- [A Number computation's operation is typed in one post-order walk on the condition carrier's rules, and a well-typed non-Number result meets the target's comparison, measured locally 2026-10-02](sources/computation-placement-and-constant-probes.md#src-number-operation-typing)
+
 <a id="src-power-derived-scale-and-operand-shapes"></a>
 - [`^` restricts neither operand's shape; a non-literal exponent derives unknown scale, and that is what a computed target refuses](sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes)
 

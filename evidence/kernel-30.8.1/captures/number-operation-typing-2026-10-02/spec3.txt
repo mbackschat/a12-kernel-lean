@@ -1,0 +1,27 @@
+field t /Typ/T
+op R01 {[N] + [N2]} * 2
+op R02 {[N] + [S]} - {[N] * [B]}
+op R03 {[N] * [B]} - {[N] + [S]}
+op R04 [N] * {[N2] + [S]}
+op R05 {[S] + [S2]} * [N]
+op R06 {[N] + [S]} * {[S] + [S2]}
+op R07 {[S] + [S2]} + {[N] + [N2]}
+op R08 Abs({[S] + [S2]})
+op R09 {Abs([S])} - {[N] + [B]}
+op R10 {[N] - [B]} + {[N] + [S]}
+op R11 [N] + {[S] + [S2]}
+op R12 {[S]}
+op R13 {[S] + [S2]}
+comp R01 t R01
+comp R02 t R02
+comp R03 t R03
+comp R04 t R04
+comp R05 t R05
+comp R06 t R06
+comp R07 t R07
+comp R08 t R08
+comp R09 t R09
+comp R10 t R10
+comp R11 t R11
+comp R12 t R12
+comp R13 t R13

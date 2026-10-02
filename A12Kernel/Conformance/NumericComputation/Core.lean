@@ -192,8 +192,8 @@ example :
       targetDiagnosticOf (checkedErrorOf groupedTargetTimesLiteral) =
         some .errorReferenceToCalculatedField ∧
       targetDiagnosticOf (checkedErrorOf sameTarget) = some .errorReferenceToCalculatedField ∧
-      checkedErrorOf targetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
-      checkedErrorOf groupedTargetThenWrong = some (.operandNotNumber ["Root", "Wrong"]) ∧
+      checkedErrorOf targetThenWrong = some (.operationTyping (some .noStringOrNumberForAdd)) ∧
+      checkedErrorOf groupedTargetThenWrong = some (.operationTyping (some .noStringOrNumberForAdd)) ∧
       checkedErrorOf targetThenRepeatable =
         some (.resolve (.unboundOperandLevel ["Root", "Rows", "Repeated"] unboundRows)) ∧
       checkedErrorOf stringLengthTarget =
@@ -497,13 +497,13 @@ example :
           (checkedNumber (.parsed (.num 2)))) = some (.value 3) := by
   native_decide
 
-/- A String copied whole meets the generated comparison; nested in an expression it meets this
-   carrier's own operand gate, since the rows type only a whole-expression copy. -/
+/- A String copied whole meets the generated comparison; nested in an expression it meets the
+   operation's typing, whose `Abs` demands a Number. -/
 example :
     checkedErrorOf (surfaceField ["Root"] "Wrong") =
         some (.copyComparison target.path wrong.path (.kindArm .text)) ∧
       checkedErrorOf (.abs (surfaceField ["Root"] "Wrong")) =
-        some (.operandNotNumber wrong.path) ∧
+        some (.operationTyping (some .noNumber)) ∧
       checkedErrorOf (surfaceField ["Root", "Rows"] "Repeated") =
         some (.resolve (.unboundOperandLevel repeated.path unboundRows)) ∧
       checkedErrorOf (.literal { value := 1, authoredScale := 0 }) wrongId =

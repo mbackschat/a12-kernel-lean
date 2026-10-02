@@ -1,0 +1,193 @@
+field t /Typ/T
+op Saddr [N] + [S]
+op Saddl [S] + [N]
+op Ssubr [N] - [S]
+op Ssubl [S] - [N]
+op Smul [N] * [S]
+op Sdiv [N] / [S]
+op Spow [N] ^ [S]
+op Sbare [S]
+op Sabs Abs([S])
+op Smaxr Max([N], [S])
+op Smaxl Max([S], [N])
+op Smin Min([N], [S])
+op Snestmul ([N] + [S]) * 2
+op Snestsub 2 - ([S] * [N])
+op Sabsadd Abs([N] + [S])
+op Smaxadd Max([N] + [S], 1)
+op Saddlit [S] + 1
+op Baddr [N] + [B]
+op Baddl [B] + [N]
+op Bsubr [N] - [B]
+op Bsubl [B] - [N]
+op Bmul [N] * [B]
+op Bdiv [N] / [B]
+op Bpow [N] ^ [B]
+op Bbare [B]
+op Babs Abs([B])
+op Bmaxr Max([N], [B])
+op Bmaxl Max([B], [N])
+op Bmin Min([N], [B])
+op Bnestmul ([N] + [B]) * 2
+op Bnestsub 2 - ([B] * [N])
+op Babsadd Abs([N] + [B])
+op Bmaxadd Max([N] + [B], 1)
+op Baddlit [B] + 1
+op Eaddr [N] + [E]
+op Eaddl [E] + [N]
+op Esubr [N] - [E]
+op Esubl [E] - [N]
+op Emul [N] * [E]
+op Ediv [N] / [E]
+op Epow [N] ^ [E]
+op Ebare [E]
+op Eabs Abs([E])
+op Emaxr Max([N], [E])
+op Emaxl Max([E], [N])
+op Emin Min([N], [E])
+op Enestmul ([N] + [E]) * 2
+op Enestsub 2 - ([E] * [N])
+op Eabsadd Abs([N] + [E])
+op Emaxadd Max([N] + [E], 1)
+op Eaddlit [E] + 1
+op Daddr [N] + [D]
+op Daddl [D] + [N]
+op Dsubr [N] - [D]
+op Dsubl [D] - [N]
+op Dmul [N] * [D]
+op Ddiv [N] / [D]
+op Dpow [N] ^ [D]
+op Dbare [D]
+op Dabs Abs([D])
+op Dmaxr Max([N], [D])
+op Dmaxl Max([D], [N])
+op Dmin Min([N], [D])
+op Dnestmul ([N] + [D]) * 2
+op Dnestsub 2 - ([D] * [N])
+op Dabsadd Abs([N] + [D])
+op Dmaxadd Max([N] + [D], 1)
+op Daddlit [D] + 1
+op TMaddr [N] + [TM]
+op TMaddl [TM] + [N]
+op TMsubr [N] - [TM]
+op TMsubl [TM] - [N]
+op TMmul [N] * [TM]
+op TMdiv [N] / [TM]
+op TMpow [N] ^ [TM]
+op TMbare [TM]
+op TMabs Abs([TM])
+op TMmaxr Max([N], [TM])
+op TMmaxl Max([TM], [N])
+op TMmin Min([N], [TM])
+op TMnestmul ([N] + [TM]) * 2
+op TMnestsub 2 - ([TM] * [N])
+op TMabsadd Abs([N] + [TM])
+op TMmaxadd Max([N] + [TM], 1)
+op TMaddlit [TM] + 1
+op PSS2add [S] + [S2]
+op PSS2sub [S] - [S2]
+op PSBadd [S] + [B]
+op PSBsub [S] - [B]
+op PDSadd [D] + [S]
+op PDSsub [D] - [S]
+op PBEadd [B] + [E]
+op PBEsub [B] - [E]
+op PDTMadd [D] + [TM]
+op PDTMsub [D] - [TM]
+comp Saddr t Saddr
+comp Saddl t Saddl
+comp Ssubr t Ssubr
+comp Ssubl t Ssubl
+comp Smul t Smul
+comp Sdiv t Sdiv
+comp Spow t Spow
+comp Sbare t Sbare
+comp Sabs t Sabs
+comp Smaxr t Smaxr
+comp Smaxl t Smaxl
+comp Smin t Smin
+comp Snestmul t Snestmul
+comp Snestsub t Snestsub
+comp Sabsadd t Sabsadd
+comp Smaxadd t Smaxadd
+comp Saddlit t Saddlit
+comp Baddr t Baddr
+comp Baddl t Baddl
+comp Bsubr t Bsubr
+comp Bsubl t Bsubl
+comp Bmul t Bmul
+comp Bdiv t Bdiv
+comp Bpow t Bpow
+comp Bbare t Bbare
+comp Babs t Babs
+comp Bmaxr t Bmaxr
+comp Bmaxl t Bmaxl
+comp Bmin t Bmin
+comp Bnestmul t Bnestmul
+comp Bnestsub t Bnestsub
+comp Babsadd t Babsadd
+comp Bmaxadd t Bmaxadd
+comp Baddlit t Baddlit
+comp Eaddr t Eaddr
+comp Eaddl t Eaddl
+comp Esubr t Esubr
+comp Esubl t Esubl
+comp Emul t Emul
+comp Ediv t Ediv
+comp Epow t Epow
+comp Ebare t Ebare
+comp Eabs t Eabs
+comp Emaxr t Emaxr
+comp Emaxl t Emaxl
+comp Emin t Emin
+comp Enestmul t Enestmul
+comp Enestsub t Enestsub
+comp Eabsadd t Eabsadd
+comp Emaxadd t Emaxadd
+comp Eaddlit t Eaddlit
+comp Daddr t Daddr
+comp Daddl t Daddl
+comp Dsubr t Dsubr
+comp Dsubl t Dsubl
+comp Dmul t Dmul
+comp Ddiv t Ddiv
+comp Dpow t Dpow
+comp Dbare t Dbare
+comp Dabs t Dabs
+comp Dmaxr t Dmaxr
+comp Dmaxl t Dmaxl
+comp Dmin t Dmin
+comp Dnestmul t Dnestmul
+comp Dnestsub t Dnestsub
+comp Dabsadd t Dabsadd
+comp Dmaxadd t Dmaxadd
+comp Daddlit t Daddlit
+comp TMaddr t TMaddr
+comp TMaddl t TMaddl
+comp TMsubr t TMsubr
+comp TMsubl t TMsubl
+comp TMmul t TMmul
+comp TMdiv t TMdiv
+comp TMpow t TMpow
+comp TMbare t TMbare
+comp TMabs t TMabs
+comp TMmaxr t TMmaxr
+comp TMmaxl t TMmaxl
+comp TMmin t TMmin
+comp TMnestmul t TMnestmul
+comp TMnestsub t TMnestsub
+comp TMabsadd t TMabsadd
+comp TMmaxadd t TMmaxadd
+comp TMaddlit t TMaddlit
+comp PSS2add t PSS2add
+comp PSS2sub t PSS2sub
+comp PSBadd t PSBadd
+comp PSBsub t PSBsub
+comp PDSadd t PDSadd
+comp PDSsub t PDSsub
+comp PBEadd t PBEadd
+comp PBEsub t PBEsub
+comp PDTMadd t PDTMadd
+comp PDTMsub t PDTMsub
+op Cctl [N] + [N2]
+comp Cctl t Cctl

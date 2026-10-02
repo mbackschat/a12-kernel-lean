@@ -1,0 +1,11 @@
+field t /Typ/T
+op V01 [T] + [S]
+op V02 [S] + [T]
+op V03 {[T] + [N]} - [S]
+op V04 [T] - [S]
+op V05 Abs([S]) + [T]
+comp V01 t V01
+comp V02 t V02
+comp V03 t V03
+comp V04 t V04
+comp V05 t V05
