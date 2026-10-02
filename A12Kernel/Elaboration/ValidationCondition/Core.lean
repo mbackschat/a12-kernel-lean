@@ -429,20 +429,30 @@ private def NumericValidationAtom.isEmptyGateCount : NumericValidationAtom → B
   | .filledGroupCount _ | .aggregate .distinctCount _ => true
   | _ => false
 
-/-- Whether the leaf is evaluated on an instance without admitted content under full validation.
-A comparison is when a count stands on its small side, whatever else it reads, and not when the
-count stands only on the large side: over a blank root the Kernel fires `NumberOfFilledGroups(G1,
-G2) + [W] < 2`, `2 > …`, `== 0`, `!= 1`, `Abs(…) < 2`, `NumberOfFilledFields(A, W) < 1` and
-`NumberOfDifferentValues(A, W) < 1`, reading the empty `W` as `0`, and leaves `… >= 0`, `0 <= …`
-and `[W] < 5` silent ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)). -/
-def canFireOnEmpty : ValidationConditionLeaf model → Bool
-  | .flat condition => condition.canFireOnEmpty
+/-- Whether a comparison leaf lifts the empty-instance gate from wherever it stands in the
+condition: a count on its small side, whatever else it reads, and not a count only on the large
+side. Over a blank root the Kernel fires `NumberOfFilledGroups(G1, G2) + [W] < 2`, `2 > …`,
+`== 0`, `!= 1`, `Abs(…) < 2`, `1 >= NumberOfFilledFields(A, W)`, `NumberOfFilledFields(A, W) <= 1`
+and `NumberOfDifferentValues(A, W) < 1`, reading the empty `W` as `0`, and leaves `… >= 0`,
+`0 <= …` and `[W] < 5` silent
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)).
+The leaf lifts the gate beneath `And` too: `NumberOfFilledFields(A, W) < 1 And
+NumberOfFilledFields(A, W) >= 0` fires there, so this test does not compose like the presence
+test below ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-empty-gate-count-beneath-and)). -/
+def liftsEmptyGate : ValidationConditionLeaf model → Bool
   | .numeric _ comparison => countsOnSmallSide comparison NumericValidationAtom.isEmptyGateCount
   | .orderedNumeric _ comparison => countsOnSmallSide comparison fun
       | .ordinary atom => NumericValidationAtom.isEmptyGateCount atom
       | .filledGroupCountMixed _ | .filledFieldCount _ | .aggregate .distinctCount _
       | .tokenDistinctCount _ | .temporalDistinctCount _ => true
       | _ => false
+  | _ => false
+
+/-- Whether a presence leaf can hold on an instance without admitted content; it composes through
+`And` and `Or`. A comparison claims nothing here, `liftsEmptyGate` owning it. -/
+def canFireOnEmpty : ValidationConditionLeaf model → Bool
+  | .flat condition => condition.canFireOnEmpty
+  | .numeric _ _ | .orderedNumeric _ _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
   | .repeatableFieldPresence operator _ => operator.canFireOnEmpty
@@ -574,8 +584,12 @@ end ValidationConditionLeaf
 
 namespace ValidationCondition
 
+/-- Whether the rule is evaluated on an instance without admitted content under full validation:
+its presence leaves can hold there through `And` and `Or`, or a comparison anywhere in it lifts the
+gate. -/
 def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
-  condition.evalBool ValidationConditionLeaf.canFireOnEmpty
+  condition.evalBool ValidationConditionLeaf.canFireOnEmpty ||
+    condition.anyLeaf ValidationConditionLeaf.liftsEmptyGate
 
 def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=

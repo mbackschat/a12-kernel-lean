@@ -89,6 +89,7 @@ example :
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[])])])])).toOption.map (·.flat.baseYear)
     [read (Json.mkObj [("baseYear", "2024")]) == some (some 2024),
      read (Json.mkObj []) == some none,
+     read (Json.mkObj [("baseYear", Json.null)]) == some none,
      read (Json.mkObj [("baseYear", "next")]) == none].all id := by
   native_decide
 

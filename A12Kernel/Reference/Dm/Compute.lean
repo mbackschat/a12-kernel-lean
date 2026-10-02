@@ -51,7 +51,9 @@ partial def lowerGuard : Expr → Lowering SurfaceComputationCondition
 /-- A String computation's operation: field reads, literals, `FieldValueAsString`, `RangeAsString`
 and `+` concatenation. -/
 partial def lowerStringExpr : Expr → Lowering (StringExpr SurfaceFieldPath)
-  | .string text => pure (.literal text)
+  | .string text =>
+      if isTemporalConstant text then refuse "StringOperation" "temporal constant"
+      else pure (.literal text)
   | .value { path, index := none, category := none } => match path.toFieldPath? with
       | some field => pure (.field field)
       | none => refuse "StringOperand" "path"
@@ -117,9 +119,14 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
     let body := (← parsed language alternative.operation).body
     if !body.parensLegal false then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     pure body
-  if let some other := computation.errorCodesToSuppress.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
+  -- The entries reach the condition parser joined into one preamble (spec §12.4), so padding is
+  -- admitted and a second name is a parse failure, as in a rule's own text.
+  let suppressed ← if computation.errorCodesToSuppress.isEmpty then pure [] else
+    (·.suppressed) <$> parsed language
+      s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
+  if let some other := suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
     refuse "SuppressWarning" other
-  let suppress := computation.errorCodesToSuppress.contains "MVK_INVALID_COMPARE_DEC_PLACES"
+  let suppress := suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   let row := !target.repeatableScope.isEmpty
   -- A whole-document step carries one operation and no precondition.
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do

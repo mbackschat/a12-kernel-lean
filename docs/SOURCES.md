@@ -1297,6 +1297,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A comparison reading a filled-group count fires on an instance without content, where one of field reads alone does not, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)
 <a id="src-rule-bucket-empty-gate"></a>
 - [A count lifts the content gate only from a comparison's small side, a count of different values does too, and a once rule on a repeatable root runs with no gate, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)
+<a id="src-empty-gate-count-beneath-and"></a>
+- [A small-side count lifts the content gate from beneath `And` too, 2026-10-02](sources/group-list-and-capacity-probes.md#src-empty-gate-count-beneath-and)
 <a id="src-starred-group-quantifier-capacity"></a>
 - [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity)
 <a id="src-count-placement-overlap-list-grid"></a>
@@ -1499,6 +1501,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A yearless temporal literal resolves against the model's Base Year, while its calendar check ignores that year](sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year)
 <a id="src-temporal-constant-literal-composition"></a>
 - [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition)
+<a id="src-yearless-constant-family"></a>
+- [An omitted-year literal is a temporal constant at every target, 2026-10-02](sources/temporal-constant-and-base-year-probes.md#src-yearless-constant-family)
 
 <a id="src-datetime-constant-zone-split"></a>
 - [A DateTime constant is checked against two different zones at two different phases](sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split)

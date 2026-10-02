@@ -101,7 +101,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
           if threshold.authoredScale != 0 then refuse "NumberOfFilledFields" "fractional threshold"
           let source ← lowerEntitySource model rowGroup arguments
           let checked ← elaborated "NumberOfFilledFields"
-            (elaborateFilledFieldCountComparison model rowGroup source numericOp threshold.value)
+            (elaborateFilledFieldCountComparison model rowGroup source numericOp threshold.value.num)
           elaborated "NumberOfFilledFields" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
   let groupCount := match leaf with
@@ -112,7 +112,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         if threshold.authoredScale != 0 then refuse "NumberOfFilledGroups" "fractional threshold"
         let operands ← arguments.mapM lowerGroupCountOperand
         let checked ← elaborated "NumberOfFilledGroups"
-          (elaborateMixedFilledGroupCountComparison model rowGroup operands numericOp threshold.value)
+          (elaborateMixedFilledGroupCountComparison model rowGroup operands numericOp threshold.value.num)
         elaborated "NumberOfFilledGroups" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
   let specific := match leaf with
@@ -149,13 +149,21 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
                   (elaborateNumericComparison model rowGroup surface)
                 elaborated "NumericComparison" (CheckedValidationCondition.fromNumeric checked)]
         | .error refusal => [.error refusal])
-      ++ [do
-        let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
-        let atom := lowerComputationNumericAtom model rowGroup
-        let checked ← elaborated "EntityComparison"
-          (elaborateEntityNumericComparison model rowGroup numericOp (← lowerNumericExpr atom left)
-            (← lowerNumericExpr atom right) suppress)
-        elaborated "EntityComparison" (CheckedValidationCondition.fromOrderedNumeric checked)]
+      -- A comparison reading no entity list is not offered to the entity carrier, so the scalar
+      -- carriers' own refusal, such as a second root's, is the one reported.
+      ++ (match (do
+            let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
+            let atom := lowerComputationNumericAtom model rowGroup
+            match elaborateEntityNumericComparison model rowGroup numericOp
+                (← lowerNumericExpr atom left) (← lowerNumericExpr atom right) suppress with
+            | .error .readsNoList => pure none
+            | result => do
+                let checked ← elaborated "EntityComparison" result
+                some <$> elaborated "EntityComparison" (CheckedValidationCondition.fromOrderedNumeric checked)
+          : Lowering (Option (CheckedValidationCondition model))) with
+        | .ok none => []
+        | .ok (some checked) => [pure checked]
+        | .error refusal => [.error refusal])
     | _ => []
   let pattern := match leaf with
     | .compare op (.value { path, index := none, category := none }) (.string source) =>

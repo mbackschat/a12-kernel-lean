@@ -237,7 +237,7 @@ def readModel (json : Json) : Except String DmModel := do
   -- The file writes the Base Year as a string; an unreadable one fails the read rather than leave
   -- the model without the year its partial dates are supplemented by.
   let baseYear ← match info.getObjVal? "baseYear" with
-    | .error _ => pure none
+    | .error _ | .ok .null => pure none
     | .ok (.str text) => match text.toInt? with
         | some year => pure (some year)
         | none => throw s!"baseYear {text} is no integer"

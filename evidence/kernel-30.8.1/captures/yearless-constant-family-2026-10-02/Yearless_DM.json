@@ -1,0 +1,151 @@
+{
+ "header": {
+  "id": "Yearless_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Yearless_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Fix",
+     "name": "Fix",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Fix/S",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fix/FD",
+        "name": "FD",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fix/FM",
+        "name": "FM",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fix/FY",
+        "name": "FY",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {}
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Rep",
+     "name": "Rep",
+     "Group": {
+      "repeatability": 3,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rep/RS",
+        "name": "RS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rep/RD",
+        "name": "RD",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rep/RM",
+        "name": "RM",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rep/RY",
+        "name": "RY",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {}
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -106,6 +106,18 @@ private def namesRead (language : Language) (text : String) : List String :=
       | _ => none
   | .error _ => []
 
+/-- The names ending a path the text reads, a star after it included: the operand a group read
+such as `NumberOfFilledFields(G)` names. -/
+private def pathEndsRead (language : Language) (text : String) : List String :=
+  let rec ends : List Token → List String
+    | .name _ :: .symbol "*" :: .symbol "/" :: rest | .name _ :: .symbol "/" :: rest => ends rest
+    | .name name :: rest => name :: ends rest
+    | _ :: rest => ends rest
+    | [] => []
+  match lex language text with
+  | .ok lexemes => ends (lexemes.toList.map (·.token))
+  | .error _ => []
+
 private def targetName (computation : DmComputation) : String :=
   ((computation.targetRelPath.splitOn "/").getLast?.getD "").dropWhile (· == '.') |>.toString
 
@@ -125,15 +137,20 @@ private def replayComputations (line : String → String → String → String �
   let admitted := attempts.filterMap fun (computation, attempt) =>
     attempt.toOption.map fun (target, lowered) => (computation, target, lowered)
   if admitted.isEmpty then return
-  let reads (names : List String) (computation : DmComputation) :=
-    (computationTexts computation).any fun text => (namesRead language text).any names.contains
+  -- A fed target is read by its name, or through a group operand naming one of its groups.
+  let groupsOf (computation : DmComputation) : List String :=
+    (targetOf language model.flat computation).toOption.map (·.groupPath) |>.getD []
+  let reads (fed : List DmComputation) (computation : DmComputation) :=
+    (computationTexts computation).any fun text =>
+      (namesRead language text).any (fed.map targetName).contains ||
+        (pathEndsRead language text).any (fed.flatMap groupsOf).contains
   -- Feeding is transitive: a computation reading a fed one's target reads a value the refused
   -- computation upstream decided, so the closure over reads is taken, one round per computation.
-  let refusedTargets := attempts.filterMap fun (computation, attempt) =>
-    if attempt.toOption.isNone then some (targetName computation) else none
-  let fedTargets := (List.range model.computations.length).foldl (init := refusedTargets) fun fed _ =>
-    fed ++ (model.computations.filter fun computation =>
-      !fed.contains (targetName computation) && reads fed computation).map targetName
+  let refused := attempts.filterMap fun (computation, attempt) =>
+    if attempt.toOption.isNone then some computation else none
+  let fedTargets := (List.range model.computations.length).foldl (init := refused) fun fed _ =>
+    fed ++ model.computations.filter fun computation =>
+      !(fed.map targetName).contains (targetName computation) && reads fed computation
   match runComputations world prepared checked (admitted.map (·.2.2)) with
   | .error refusal =>
       -- A plan Lean certified and then failed to run is a fault; an uncertified plan is a refusal.
@@ -147,8 +164,8 @@ private def replayComputations (line : String → String → String → String �
         let expected := sorted (kernel.filter (unindexed ·.pointer == path))
         -- A computation reading a refused computation's target, directly or through another
         -- computation, may read a stored value the Kernel would have recomputed, so neither its
-        -- agreement nor its divergence is attributable to it. The test is by name and so
-        -- over-approximates the reads.
+        -- agreement nor its divergence is attributable to it. The test is by name, a group
+        -- operand naming one of the target's groups included, and so over-approximates the reads.
         if reads fedTargets computation then
           line computation.name "compute" "unattributed" s!"Fed\tlean={lean} kernel={expected}"
         else if lean == expected then line computation.name "compute" "match" ""

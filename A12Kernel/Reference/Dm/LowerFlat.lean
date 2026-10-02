@@ -16,7 +16,9 @@ private def literal? (model : FlatModel) : Expr → Option SurfaceLiteral
   | .number text => (decodeNumber? text).map (.number ·.value)
   | .constant "True" => some (.boolean true)
   | .constant "False" => some (.boolean false)
-  | .string text => (dateConstant? model text).orElse fun _ => some (.string text)
+  -- A temporal literal the flat surface has no constant for is not read as its text.
+  | .string text => (dateConstant? model text).orElse fun _ =>
+      if isTemporalConstant text then none else some (.string text)
   | _ => none
 
 private def textOperand? : Expr → Option SurfaceTextFieldOperand

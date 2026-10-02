@@ -49,15 +49,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-02-06"></a>
-### `SPEC-2026-10-02-06` — a count lifts the content gate from either side of `==` and `!=` and only from the small side of an ordering, on all three counts
+### `SPEC-2026-10-02-06` — a count lifts the content gate from either side of `==` and `!=` and only from the small side of an ordering, on all three counts, and from anywhere in the condition
 
 - `status`: pending
 - `origin`: locally originated. Your [rule-bucket rows](SOURCES.md#inbound-2026-10-02-rule-buckets) defeated this project's "anywhere in either operation" account; this grid measures the arms they leave open.
 - `clause`: [`03`](../spec/03-empty-and-required.md) §2, the row gate's empty-eligible family.
-- `delta`: over a blank root, with `C = NumberOfFilledGroups(G1, G2) + [W]`, `0 == C`, `C != 1` and `1 != C` fire OMISSION, while `0 <= C`, `C > -1` and `-1 < C` stay silent, as `C >= 0` does; `NumberOfDifferentValues(A, W) < 1` fires and `>= 0` stays silent, as `NumberOfFilledFields` does.
-- `basis`: this project's [checkpoint](SOURCES.md#src-rule-bucket-empty-gate) at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model, request and artifact retained beside it.
-- `surfaces`: a reader that admits a count from either side of every comparison, or from the left of every comparison, or admits only filled-field and filled-group counts.
-- `acceptance`: confirm these rows, or supply a blank-root carrier on which a count on the small side stays silent or one on the large side fires.
+- `delta`: over a blank root, with `C = NumberOfFilledGroups(G1, G2) + [W]`, `0 == C`, `C != 1` and `1 != C` fire OMISSION, while `0 <= C`, `C > -1` and `-1 < C` stay silent, as `C >= 0` does; `NumberOfDifferentValues(A, W) < 1` fires and `>= 0` stays silent, as `NumberOfFilledFields` does. With `F = NumberOfFilledFields(A, W)`, `1 >= F` and `F <= 1` fire. The count test does not compose through `And`: `F < 1 And F >= 0` fires in either order, while `F >= 0 And NumberOfFilledFields(A, B) >= 0` stays silent ([checkpoint](SOURCES.md#src-empty-gate-count-beneath-and)).
+- `basis`: this project's [rule-bucket](SOURCES.md#src-rule-bucket-empty-gate) and [`And`](SOURCES.md#src-empty-gate-count-beneath-and) checkpoints at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, models, requests and artifacts retained beside them.
+- `surfaces`: a reader that admits a count from either side of every comparison, or from the left of every comparison, or admits only filled-field and filled-group counts, or that composes the count test through `And`.
+- `acceptance`: confirm these rows, or supply a blank-root carrier on which a count on the small side stays silent, beneath `And` included, or one on the large side fires.
 - `limit`: fixed operands; the tolerance comparisons and the root-group count are unmeasured.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 

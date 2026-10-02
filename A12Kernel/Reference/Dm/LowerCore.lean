@@ -121,6 +121,25 @@ def dateTimeConstant? (text : String) : Option LocalDateTime := do
   let time ← timeConstant? clock
   LocalDateTime.ofYmdHms? year month day time.hour time.minute time.second
 
+/-- The month and day an omitted-year `DD.MM.` literal names, a real date in a common year only,
+whatever the Base Year ([`spec/05`](../../../spec/05-dates-and-time.md) §1): `"30.04."` names one,
+`"31.04."` and `"29.02."` are strings. -/
+def yearlessDateConstant? (text : String) : Option (Nat × Nat) := do
+  let [day, month, ""] := text.splitOn "." | none
+  let day ← twoDigits? day
+  let month ← twoDigits? month
+  -- 2023 stands for every common year, whose month lengths are all the check reads.
+  let _ ← CivilDate.ofYmd? 2023 month day
+  pure (month, day)
+
+/-- Whether a quoted literal is typed as a temporal constant rather than a string, by its content
+alone: a date with or without its year, a clock, or a date and a clock joined by `T`. The typing
+precedes every operand walk, so a site reading the literal as text must refuse it instead
+([`spec/05`](../../../spec/05-dates-and-time.md) §1, [`spec/12`](../../../spec/12-concrete-syntax.md) §2). -/
+def isTemporalConstant (text : String) : Bool :=
+  (civilDateConstant? text).isSome || (yearlessDateConstant? text).isSome ||
+    (timeConstant? text).isSome || (dateTimeConstant? text).isSome
+
 /-- A `DD.MM.YYYY` date constant resolved in the model zone. -/
 def dateConstant? (model : FlatModel) (text : String) : Option SurfaceLiteral := do
   let civil ← civilDateConstant? text

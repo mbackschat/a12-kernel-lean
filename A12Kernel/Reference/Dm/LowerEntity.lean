@@ -46,6 +46,7 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       match left, right with
       | .value { path, index := none, category := none }, .string expected =>
+          if isTemporalConstant expected then refuse "Having" "temporal constant" else
           match path.havingField?, surfaceOp with
           | some (origin, field), .equal => pure (.compareStrings .equal { origin, field } expected)
           | some (origin, field), .notEqual => pure (.compareStrings .notEqual { origin, field } expected)

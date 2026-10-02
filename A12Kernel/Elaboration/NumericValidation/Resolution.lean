@@ -547,7 +547,7 @@ other validation carriers. -/
 def elaborateMixedFilledGroupCountComparison
     (model : FlatModel) (rowGroup : GroupPath)
     (operands : List SurfaceGroupCountOperand)
-    (op : NumericComparisonOp) (threshold : Rat) (writtenGroup : GroupPath := rowGroup) :
+    (op : NumericComparisonOp) (threshold : Int) (writtenGroup : GroupPath := rowGroup) :
     Except NumericValidationElabError
       (CheckedOrderedNumericComparison model) := do
   if (SurfaceGroupCountOperand.fixedOnly? operands).isSome then
@@ -591,7 +591,7 @@ def elaborateMixedFilledGroupCountComparison
               let core : OrderedNumericComparison model := {
                 op := .ordinary op
                 left := .atom (.filledGroupCountMixed checked)
-                right := .literal { value := threshold, authoredScale := 0 }
+                right := .literal { value := (threshold : Rat), authoredScale := 0 }
                 suppressExactScaleWarning := false }
               if hCore : core.wellFormedInBool rowGroup .sameGroupAddressed = true then
                 pure {

@@ -294,6 +294,20 @@
 - `bytes`: [`rule-bucket-empty-gate-2026-10-02/`](../../evidence/kernel-30.8.1/captures/rule-bucket-empty-gate-2026-10-02/); SHA-256 model `d30f13b90fcb2b0d283e1127be7ae54d87f59b7cc30003d0f81aa7910f4ee13b`, request `4fb46b4111590819c2251f8109c31231e7d659c08423adaf8eef707746b0b871`, artifact `df426f9dc8a7ba7aa6c3bd13998d008e46651eb1652d7e962a9baf56b22b6b14`.
 - `sync`: the side rows beyond the peer's are outbound as [`SPEC-2026-10-02-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-06).
 
+<a id="src-empty-gate-count-beneath-and"></a>
+#### A small-side count lifts the content gate from beneath `And` too, and the small side of `>=` and `<=` is the measured one, measured locally 2026-10-02
+
+- `revision`: one `:adapter:kernelProbe` request at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8` in the pinned measurement checkout, `producer.source.state: CLEAN` and `git status --short` empty before and after. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `validateFull`, `enginesAgree: true` on all three rows.
+- `question`: a cold review read the Kernel's source as testing the small-side count over the whole condition, apart from the `And`/`Or`-composed negative-presence test, where Lean composed both. Does a small-side count lift the gate from beneath `And` beside a part that cannot fire on emptiness?
+- `model`: `Gate2_DM`, the rule-bucket model's root `Probe` alone, with Numbers `W`, `A`, `B` and fixed groups `G1`, `G2`. Every rule reports on `W` and reads it.
+- `rules`: with `F = NumberOfFilledFields(A, W)`, `F < 1 And F >= 0`, the reverse order, the group-count twin `C < 2 And C >= 0`, `F < 1 And NumberOfFilledFields(A, B) < 1`, `F >= 0 And NumberOfFilledFields(A, B) >= 0`, `F < 1 Or F >= 5`, `1 >= F`, `F <= 1` and `F >= 0`.
+- `documents`: `blank` `{}`, `probe-empty` `{"Probe":{}}` and the content control `probe-content` with `W=1`.
+- `claim`: **on `blank` and `probe-empty` every rule with a small-side count fires OMISSION, beneath `And` in either order included**, and the two rules with counts only on the large side stay silent; on `probe-content` those two fire VALUE.
+- `local-consequence`: Lean composed the count test through `And`, so the `And` rows were gated and silent. The count test is now a whole-condition disjunct beside the composed presence test, and the replay matches every row it admits; `1 >= F` is tier2, a bare count right of a literal having no reader carrier.
+- `limit`: `And` and `Or` one level deep, fixed operands, one root. A negated condition and a tolerance comparison are not measured.
+- `bytes`: [`empty-gate-count-beneath-and-2026-10-02/`](../../evidence/kernel-30.8.1/captures/empty-gate-count-beneath-and-2026-10-02/); SHA-256 model `e53049c7985c3a29069152c3337fe09b651926bad97e4d98e1915e98fb90e5d4`, request `439d407447e6de0dc7733ada502c25f2b75ee2934f9ee823a1d766ab28535d22`, artifact `781037d88f3915497e3de5ddbd97c3a89fe43fa0f06aa52d8e3fbe148c75b248`.
+- `sync`: outbound in [`SPEC-2026-10-02-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-06).
+
 <a id="src-starred-group-quantifier-capacity"></a>
 #### Starred group counts and threshold quantifiers use instantiated in-capacity rows, measured locally 2026-08-31 and settled inbound 2026-09-01
 

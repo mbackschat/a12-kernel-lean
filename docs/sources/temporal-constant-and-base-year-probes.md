@@ -129,6 +129,19 @@ How a temporal constant literal is admitted against its target's declared format
 - `bytes`: [`temporal-constant-literal-witnesses/Lit_DM.json`](../../evidence/kernel-30.8.1/captures/temporal-constant-literal-witnesses/Lit_DM.json), SHA-256 `4311d6f1059ecaafa0125cba3eeb68c0b44c8ded67b29c7650a9e3f24ab44752`. A computation-free model, because `RK_NAME_EXISTS` pre-empts every code once a target already carries a computation. No artifact: `--dry-run` writes none, and the twelve verdicts are recorded above.
 - `sync`: **inbound.** The corrections arrived from a12-dmkits' committed and reviewed `c2900fe7c` and are re-derived here rather than originated, so they open no outbound entry and instead disposition `SPEC-2026-08-31-03` and `SPEC-2026-08-31-04` in place.
 
+<a id="src-yearless-constant-family"></a>
+#### An omitted-year literal naming a real common-year date is a temporal constant at every target, fixed or repeatable, measured locally 2026-10-02
+
+- `revision`: `dmtool` 0.13.0 in the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, `git status --short` empty before and after, Kernel `30.8.1`. Eighteen `computation add --dry-run` rows on one computation-free model, attributed by `source: KERNEL`.
+- `question`: the DM reader typed a quoted literal as a date only for `DD.MM.YYYY`, so `"05.03."` reached a String target as text, at a fixed and at a row target. Is the yearless literal a temporal constant there, and does the row target see the fixed one's verdicts?
+- `model`: `Yearless_DM`, no Base Year, a fixed root `Fix` and a repeatable root `Rep` (max 3), each holding a String, an `MM-dd` and an `MM` date fragment and a full Date.
+- `claim`: `"05.03."` is refused `MVK_INVALID_COMPARE_TO_DATE` into a String target and into a full Date, and admitted into `MM-dd` and `MM`, identically at the fixed and the repeatable target. `"05.03.2024"` and `"12:30:00"` are refused into a String target at both.
+- `claim`: `"05.03"`, `"31.04."` and `"29.02."` are admitted into a String target, so a literal not naming a real common-year date stays text, while `"31.04."` and `"29.02."` are refused into `MM-dd`.
+- `local-consequence`: the reader now classifies a literal once, by content, and every site reading a quoted literal as text refuses a temporal one: the String operation, the row constant, the flat comparison operand and a filter's String comparison. An omitted-year constant into `MM-dd` or `MM` has no Lean carrier and is refused.
+- `limit`: static admission only, no Base Year, `en_US`. A yearless literal inside a concatenation or a value count is not measured.
+- `bytes`: [`yearless-constant-family-2026-10-02/`](../../evidence/kernel-30.8.1/captures/yearless-constant-family-2026-10-02/); SHA-256 model `b1efea9f5897069b9acc3a13c7015c0da22818f1a647919c37a2ca2df2653d43`, verdicts [`static.tsv`](../../evidence/kernel-30.8.1/captures/yearless-constant-family-2026-10-02/static.tsv) `8fa82dc83825fd7b177f4bb0331d55c50bf3482dbafff34e0d33769bd04fded9`.
+- `sync`: none. [`spec/05`](../../spec/05-dates-and-time.md) §1 already types the omitted-year shape as a date constant and [`spec/09`](../../spec/09-computations.md) §1's ladder refuses a temporal constant into a String target, so these rows confirm the clauses.
+
 <a id="src-datetime-constant-zone-split"></a>
 #### A DateTime constant is checked against two different zones at two different phases, measured locally 2026-09-01
 

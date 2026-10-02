@@ -38,6 +38,8 @@ inductive EntityNumericComparisonElabError where
   | productSource (error : NumericProductAggregateElabError)
   /-- A filled-group count, which its own carriers own. -/
   | groupCount
+  /-- A comparison reading no entity list, which the scalar carriers own. -/
+  | readsNoList
   | incoherent
   deriving Repr
 
@@ -116,7 +118,7 @@ def elaborateEntityNumericComparison (model : FlatModel) (rowGroup : GroupPath)
         | .numeric (.aggregate _ _) | .numeric (.filledGroupCount _) => true
         | .numeric _ => false
         | _ => true
-      if !(left.anyAtom readsList || right.anyAtom readsList) then throw .incoherent
+      if !(left.anyAtom readsList || right.anyAtom readsList) then throw .readsNoList
       let core : OrderedNumericComparison model := {
         op, suppressExactScaleWarning
         left := ← left.mapM (resolveEntityAtom model rowGroup)

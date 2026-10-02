@@ -270,8 +270,11 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env) :
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       source.referencePointers environment
   | .tokenValueCount source => source.referencePointers environment
+  -- The token filter coordinates are measured for `NumberOfValueInFields` and do not cross to the
+  -- distinct count unmeasured, so a filtered star is refused as the temporal arm refuses it.
   | .tokenDistinctCount source =>
-      (·.flatten) <$> source.operands.mapM (CheckedTokenEntityOperand.referencePointers environment)
+      if source.hasHaving then .error .filteredStarOperand
+      else (·.flatten) <$> source.operands.mapM (CheckedTokenEntityOperand.referencePointers environment)
   | .temporalDistinctCount run =>
       (·.flatten) <$> run.source.operands.mapM (CheckedTemporalDistinctCountOperand.referencePointers environment)
   | .booleanValueCount source => source.referencePointers environment

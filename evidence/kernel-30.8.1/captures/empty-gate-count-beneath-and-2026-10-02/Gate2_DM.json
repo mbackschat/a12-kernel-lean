@@ -1,0 +1,273 @@
+{
+ "header": {
+  "id": "Gate2_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Gate2_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/G1",
+        "name": "G1",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/G1/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/G2",
+        "name": "G2",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/G2/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/AND_GE",
+        "name": "AND_GE",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "AND_GE",
+         "errorCondition": "NumberOfFilledFields(A, W) < 1 And NumberOfFilledFields(A, W) >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "AND_GE"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/AND_GE_R",
+        "name": "AND_GE_R",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "AND_GE_R",
+         "errorCondition": "NumberOfFilledFields(A, W) >= 0 And NumberOfFilledFields(A, W) < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "AND_GE_R"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/AND_GRP",
+        "name": "AND_GRP",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "AND_GRP",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] < 2 And NumberOfFilledGroups(G1, G2) + [W] >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "AND_GRP"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/AND_BOTH",
+        "name": "AND_BOTH",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "AND_BOTH",
+         "errorCondition": "NumberOfFilledFields(A, W) < 1 And NumberOfFilledFields(A, B) < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "AND_BOTH"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/AND_LARGE",
+        "name": "AND_LARGE",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "AND_LARGE",
+         "errorCondition": "NumberOfFilledFields(A, W) >= 0 And NumberOfFilledFields(A, B) >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "AND_LARGE"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/OR_SMALL",
+        "name": "OR_SMALL",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "OR_SMALL",
+         "errorCondition": "NumberOfFilledFields(A, W) < 1 Or NumberOfFilledFields(A, W) >= 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "OR_SMALL"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GE_SMALL_R",
+        "name": "GE_SMALL_R",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "GE_SMALL_R",
+         "errorCondition": "1 >= NumberOfFilledFields(A, W)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "GE_SMALL_R"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/LE_SMALL_L",
+        "name": "LE_SMALL_L",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "LE_SMALL_L",
+         "errorCondition": "NumberOfFilledFields(A, W) <= 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LE_SMALL_L"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GE_LARGE_L",
+        "name": "GE_LARGE_L",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "GE_LARGE_L",
+         "errorCondition": "NumberOfFilledFields(A, W) >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "GE_LARGE_L"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,648 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Gate2_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "blank",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AND_BOTH",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_BOTH",
+              "referenced" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GRP",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GRP",
+              "referenced" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GE_SMALL_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GE_SMALL_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "LE_SMALL_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LE_SMALL_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "OR_SMALL",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "OR_SMALL",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AND_BOTH",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_BOTH",
+              "referenced" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GRP",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GRP",
+              "referenced" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GE_SMALL_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GE_SMALL_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "LE_SMALL_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LE_SMALL_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "OR_SMALL",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "OR_SMALL",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "probe-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AND_BOTH",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_BOTH",
+              "referenced" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GRP",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GRP",
+              "referenced" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GE_SMALL_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GE_SMALL_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "LE_SMALL_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LE_SMALL_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "OR_SMALL",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "OR_SMALL",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AND_BOTH",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_BOTH",
+              "referenced" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GE_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GE_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_GRP",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GRP",
+              "referenced" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "GE_SMALL_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GE_SMALL_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "LE_SMALL_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LE_SMALL_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "OR_SMALL",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "OR_SMALL",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "probe-content",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AND_GRP",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GRP",
+              "referenced" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_LARGE",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "AND_LARGE",
+              "referenced" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GE_LARGE_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GE_LARGE_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GE_SMALL_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GE_SMALL_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "LE_SMALL_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LE_SMALL_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AND_GRP",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "AND_GRP",
+              "referenced" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/G1/X",
+                "Probe/G2/Y",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "AND_LARGE",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "AND_LARGE",
+              "referenced" : [
+                "Probe/A",
+                "Probe/B",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GE_LARGE_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GE_LARGE_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "GE_SMALL_R",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GE_SMALL_R",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            },
+            {
+              "code" : "LE_SMALL_L",
+              "field" : "Probe/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LE_SMALL_L",
+              "referenced" : [
+                "Probe/A",
+                "Probe/W"
+              ],
+              "fillToFix" : [
+                "Probe/A",
+                "Probe/W"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

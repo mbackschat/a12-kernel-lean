@@ -22,7 +22,9 @@ private def model : FlatModel :=
         temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
       { id := 6, groupPath := ["Order"], name := "Due2", policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
-      { id := 7, groupPath := ["Other"], name := "O", policy := { kind := .number { scale := 0, signed := true } } }]
+      { id := 7, groupPath := ["Other"], name := "O", policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 8, groupPath := ["Order"], name := "Amt2", policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 9, groupPath := ["Order", "Tail"], name := "T", policy := { kind := .number { scale := 0, signed := true } } }]
     repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 5 }] }
 
 private def admitted (text : String) : Bool :=
@@ -150,6 +152,98 @@ example :
       (lowerComputation rowModel .english (computation target operation)).toOption.isSome
     [admitted "Due" "\"05.03.2024\"", admitted "Flag" "True", admitted "Text" "FieldValueAsString(Amt)",
      !admitted "Due" "[Amt]"].all id := by
+  native_decide
+
+/- A quoted literal is typed by its content before any operand reads it: a real date with or without
+its year, a real clock and a date-time stamp are temporal constants, while a date missing its
+trailing dot, an impossible day, a February 29 and a 24:00 clock stay strings. -/
+example :
+    ["05.03.2024", "05.03.", "30.04.", "12:30:00", "05.03.2024T12:30:00"].all isTemporalConstant &&
+      !["05.03", "31.04.", "29.02.", "24:00:00", "12:30", "29.02.2023", "2024-03-05"].any
+        isTemporalConstant := by
+  native_decide
+
+/- A temporal constant into a String target is refused at a fixed and at a row target alike, and a
+string-shaped one admitted (`yearless-constant-family-2026-10-02/static.tsv` Y01, Y02, Y07–Y14);
+opposite a text in a rule it is refused as well ([`spec/05`](../../../spec/05-dates-and-time.md) §1). -/
+example :
+    let computation (group : GroupPath) (target operation : String) : DmComputation :=
+      { group, name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+        alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
+    let fixed (operation : String) :=
+      (lowerComputation model .english (computation ["Order"] "Ref" operation)).toOption.isSome
+    let row (operation : String) :=
+      (lowerComputation rowModel .english (computation ["Order", "Rows"] "Text" operation)).toOption.isSome
+    [!fixed "\"05.03.\"", !row "\"05.03.\"", !fixed "\"05.03.2024\"", !row "\"05.03.2024\"",
+     fixed "\"05.03\"", row "\"05.03\"", fixed "\"31.04.\"", fixed "\"29.02.\"",
+     !fixed "\"12:30:00\"", !row "\"12:30:00\"",
+     !admitted "[Ref] == \"12:30:00\"", !admitted "[Ref] == \"05.03.\"",
+     admitted "[Ref] == \"05.03\""].all id := by
+  native_decide
+
+private def gated (text : String) : Option Bool :=
+  match parseText .english text with
+  | .ok parsed => (lowerCondition model ["Order"] false parsed.body).toOption.map (·.core.canFireOnEmpty)
+  | .error _ => none
+
+/- A count on its small side lifts the empty-instance gate from anywhere in the condition, beneath
+`And` beside a large-side twin too, while a count only on the large side does not; all three counts
+and the right-hand sides of `>` and `>=` take part
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-empty-gate-count-beneath-and)). -/
+example :
+    [gated "NumberOfFilledFields(Ref, Amt) < 1 And NumberOfFilledFields(Ref, Amt) >= 0",
+     gated "2 > NumberOfFilledGroups(Head, Tail) + [Amt]", gated "1 >= NumberOfFilledGroups(Head, Tail) + [Amt]",
+     gated "NumberOfDifferentValues(Amt, Amt2) < 1", gated "NumberOfDifferentValues(Ref, Head/Code) < 1",
+     gated "NumberOfDifferentValues(Due1, Due2) < 1",
+     gated "NumberOfFilledFields(Ref, Amt) >= 0 And [Amt] < 5", gated "-1 < NumberOfFilledGroups(Head, Tail) + [Amt]",
+     gated "NumberOfDifferentValues(Amt, Amt2) >= 0", gated "NumberOfDifferentValues(Ref, Head/Code) >= 0",
+     gated "NumberOfDifferentValues(Due1, Due2) >= 0"] =
+      [some true, some true, some true, some true, some true, some true,
+       some false, some false, some false, some false, some false] := by
+  native_decide
+
+/- A computation's suppressed codes are read as one preamble: the supported name padded is admitted,
+and the same name twice is refused ([`spec/12`](../../../spec/12-concrete-syntax.md) §4). -/
+example :
+    let computation (codes : List String) : DmComputation :=
+      { group := ["Order"], name := "C", targetRelPath := "../Amt", commonPrecondition := none
+        alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := codes }
+    let admitted (codes : List String) := (lowerComputation model .english (computation codes)).toOption.isSome
+    [admitted [], admitted [" MVK_INVALID_COMPARE_DEC_PLACES "],
+     !admitted ["MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"],
+     !admitted ["MVK_LATE"]].all id := by
+  native_decide
+
+private def repeatableRoot : FlatModel :=
+  { fields := [{ id := 1, groupPath := ["Rep"], name := "P", policy := { kind := .number { scale := 0, signed := true } },
+                 repeatableScope := [10] }]
+    repeatableGroups := [{ level := 10, path := ["Rep"], repeatability := some 3 }] }
+
+/- A once rule whose error field lies in a repeatable root runs with no content gate: over a document
+without one row it fires once, at the first row
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate) `REPSUM`). -/
+example :
+    let dm : DmModel := { flat := repeatableRoot, rules := [], computations := [], conditionLanguage := "en_US",
+                          refusals := [] }
+    let rule : DmRule := { group := ["Rep"], name := "R", errorEntityRelPath := "../P", errorCode := "R"
+                           condition := "Sum(/Rep*/P) < 5", severity := "ERROR" }
+    let world : World := { now := { epochMillis := 0 } }
+    (do
+      let checkedRule ← (checkRule dm .english rule).toOption
+      let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler repeatableRoot).toOption
+      let checked ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [] }).toOption
+      let messages ← (runRule world checked checkedRule).toOption
+      pure (messages.map fun message => renderPointer repeatableRoot message.errorAddress)) = some ["Rep/P"] := by
+  native_decide
+
+/- A comparison reading no entity list is the scalar carriers' alone, so a second root's field is
+refused with their reason rather than the entity carrier's. -/
+example :
+    (match parseText .english "[/Other/O] + [Amt] < 5" with
+      | .ok parsed => match lowerCondition model ["Order"] false parsed.body with
+        | .error refusal => refusal.detail.startsWith "A12Kernel.NumericValidationElabError.fieldOutsideRowGroup"
+        | .ok _ => false
+      | .error _ => false) = true := by
   native_decide
 
 end A12Kernel.Dm.LowerLocks

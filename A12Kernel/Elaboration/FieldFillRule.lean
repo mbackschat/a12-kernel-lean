@@ -36,7 +36,7 @@ end CheckedValidationCondition
 
 /-- `NumberOfFilledFields(list) op threshold` at the rule group. -/
 def elaborateFilledFieldCountComparison (model : FlatModel) (rowGroup : GroupPath)
-    (authored : SurfaceFieldEntitySource) (op : NumericComparisonOp) (threshold : Rat) :
+    (authored : SurfaceFieldEntitySource) (op : NumericComparisonOp) (threshold : Int) :
     Except FieldFillRuleElabError (CheckedOrderedNumericComparison model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
@@ -45,7 +45,7 @@ def elaborateFilledFieldCountComparison (model : FlatModel) (rowGroup : GroupPat
       let core : OrderedNumericComparison model := {
         op := .ordinary op
         left := .atom (.filledFieldCount source)
-        right := .literal { value := threshold, authoredScale := 0 } }
+        right := .literal { value := (threshold : Rat), authoredScale := 0 } }
       if hCore : core.wellFormedInBool rowGroup .sameGroupAddressed = true then
         pure { rowGroup, operandScope := .sameGroupAddressed, core
                modelWellFormed := by rw [hModel]; rfl, wellFormed := hCore }

@@ -629,8 +629,8 @@ example : (checkedGroupCount? (groupCountComparison
   }) = some (.fired .omission) := by
   native_decide
 
-/- The full-validation content gate admits a comparison that reads a filled-group count, whatever
-   else it reads, and still refuses one of field reads alone: on an instance without admitted content
+/- The full-validation content gate admits a comparison with a filled-group count on its small
+   side, whatever else it reads, and still refuses one of field reads alone: on an instance without admitted content
    `count < 1` and `count + [V] < 2` fire with the empty `V` read as `0`, while `[V] < 5` does not
    until the instance has content
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)). -/
