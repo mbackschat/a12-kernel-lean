@@ -1,0 +1,145 @@
+{
+ "model": "Nest_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "n01-clean",
+   "documentInline": {
+    "Nest": {
+     "NS": "99",
+     "NS2": "99",
+     "Outer": [
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "1"
+        },
+        {
+         "IP": "99",
+         "IBase": "2"
+        }
+       ]
+      },
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "3"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "n02-inner-malformed",
+   "documentInline": {
+    "Nest": {
+     "NS": "99",
+     "NS2": "99",
+     "Outer": [
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "1"
+        },
+        {
+         "IP": "99",
+         "IBase": "x"
+        }
+       ]
+      },
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "3"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "n03-inner-absent",
+   "documentInline": {
+    "Nest": {
+     "NS": "99",
+     "NS2": "99",
+     "Outer": [
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "1"
+        },
+        {
+         "IP": "99"
+        }
+       ]
+      },
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "3"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "n04-inner-over-limit",
+   "documentInline": {
+    "Nest": {
+     "NS": "99",
+     "NS2": "99",
+     "Outer": [
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "1"
+        },
+        {
+         "IP": "99",
+         "IBase": "2"
+        }
+       ]
+      },
+      {
+       "Inner": [
+        {
+         "IP": "99",
+         "IBase": "3"
+        },
+        {
+         "IP": "99",
+         "IBase": "4"
+        },
+        {
+         "IP": "99",
+         "IBase": "5"
+        },
+        {
+         "IP": "99",
+         "IBase": "100"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

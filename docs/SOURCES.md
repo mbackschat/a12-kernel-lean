@@ -1469,6 +1469,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A fill guard on a malformed source field poisons both guarded copies and their readers, on a root and per repeatable row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
 <a id="src-repeatable-row-alternatives"></a>
 - [A repeatable target's guarded alternatives select per row by first match and abort on a reached poisoned guard, and the fixed table's two refusals hold there, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)
+<a id="src-repeatable-nested-star-aggregate"></a>
+- [A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-nested-star-aggregate)
 <a id="src-join-operators-and-guards"></a>
 - [Operators and guards at a join, cycle classes, and a self-read asked after the authoring and scale gates on every shape, measured locally 2026-10-01](sources/computation-scheduling-probes.md#src-join-operators-and-guards)
 <a id="src-two-level-repeatable-join"></a>

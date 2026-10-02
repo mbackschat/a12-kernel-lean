@@ -1,0 +1,27 @@
+# row	field	outcome	value
+n01-clean	Nest/NS	value	6
+n01-clean	Nest/NS2	value	6
+n01-clean	Nest/Outer/Inner/IP	value	1
+n01-clean	Nest/Outer/Inner[2]/IP	value	2
+n01-clean	Nest/Outer[2]/Inner/IP	value	3
+n02-inner-malformed	Nest/NS	cleared	
+n02-inner-malformed	Nest/NS2	cleared	
+n02-inner-malformed	Nest/Outer/Inner/IP	value	1
+n02-inner-malformed	Nest/Outer/Inner[2]/IP	cleared	
+n02-inner-malformed	Nest/Outer[2]/Inner/IP	value	3
+n02-inner-malformed	formal	zahlHatUngueltigeZeichen	Nest/Outer/Inner[2]/IBase
+n03-inner-absent	Nest/NS	value	4
+n03-inner-absent	Nest/NS2	value	4
+n03-inner-absent	Nest/Outer/Inner/IP	value	1
+n03-inner-absent	Nest/Outer/Inner[2]/IP	value	0
+n03-inner-absent	Nest/Outer[2]/Inner/IP	value	3
+n04-inner-over-limit	Nest/NS	value	15
+n04-inner-over-limit	Nest/NS2	value	15
+n04-inner-over-limit	Nest/Outer/Inner/IP	value	1
+n04-inner-over-limit	Nest/Outer/Inner[2]/IP	value	2
+n04-inner-over-limit	Nest/Outer[2]/Inner/IP	value	3
+n04-inner-over-limit	Nest/Outer[2]/Inner[2]/IP	value	4
+n04-inner-over-limit	Nest/Outer[2]/Inner[3]/IP	value	5
+n04-inner-over-limit	Nest/Outer[2]/Inner[4]/IP	cleared	
+n04-inner-over-limit	formal	zuGrosseKontextnummer	Nest/Outer[2]/Inner[4]/IBase
+n04-inner-over-limit	formal	zuGrosseZeile	Nest/Outer[2]/Inner[4]

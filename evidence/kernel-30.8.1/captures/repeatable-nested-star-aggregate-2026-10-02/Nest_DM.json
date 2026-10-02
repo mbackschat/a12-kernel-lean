@@ -1,0 +1,174 @@
+{
+ "header": {
+  "id": "Nest_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Nest_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Nest",
+     "name": "Nest",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Nest/NS",
+        "name": "NS",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Nest/NS2",
+        "name": "NS2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Nest/NSComp",
+        "name": "NSComp",
+        "Computation": {
+         "computedFieldRelPath": "../NS",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Outer*/Inner*/IP)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Nest/NS2Comp",
+        "name": "NS2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../NS2",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Outer*/Inner*/IBase)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Nest/Outer",
+        "name": "Outer",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Nest/Outer/Inner",
+           "name": "Inner",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Nest/Outer/Inner/IBase",
+              "name": "IBase",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Nest/Outer/Inner/IP",
+              "name": "IP",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Nest/Outer/Inner/IPComp",
+              "name": "IPComp",
+              "Computation": {
+               "computedFieldRelPath": "../IP",
+               "computationAlternatives": [
+                {
+                 "operation": "[IBase]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

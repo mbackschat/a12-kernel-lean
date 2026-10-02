@@ -148,6 +148,17 @@ Dependency order, join, poison, empty-substitution, and fill-guard probes for au
 - `limit`: one repetition level, two alternatives, Number copies, `FieldFilled` guards; the order between two static refusals and a common precondition are not measured.
 - `sync`: confirms [`spec/09`](../../spec/09-computations.md) §3.2's abort that skips the remaining alternatives, on a repeatable target, and opens no entry.
 
+<a id="src-repeatable-nested-star-aggregate"></a>
+#### A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02
+
+- `revision`: one `:adapter:kernelProbe` run with `observe: ["validateFull", "compute"]` over four documents at the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, `source.state` `CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `enginesAgree: true` on every row, `model check` admitting the model and the checkout clean before and after. Artifact SHA-256 `2c92434a766443be3dae001ea71dfb20917c1d295049c8a8e5caec254234d181`, not retained because its messages carry rendered Kernel text.
+- `retained`: in the [grid directory](../../evidence/kernel-30.8.1/captures/repeatable-nested-star-aggregate-2026-10-02/), `Nest_DM.json` `c6f1debda5aa8f5708e22b4fa29e7b3963abf8b7755665b593cd71bb80942467`, `request.json` `7b9079759093b68853b51f22354e17bef7d43de653a6383920bcfe3603425f65` and `rows.tsv` `33ea4108bcca70ab538005b8502202452beb3af5daa9ac6797d28fcd2a9f909f`, codes only.
+- `model`: a root `Nest` with `NS = Sum(Outer*/Inner*/IP)` and `NS2 = Sum(Outer*/Inner*/IBase)`, a repeatable `Outer` (max 2) holding a repeatable `Inner` (max 3) with `IBase` and `IP = [IBase]`, the sums authored ahead of the copy and every computed target seeded with `99`.
+- `claim`: with inner sources `1`, `2` under the first outer row and `3` under the second, both sums are `6`. A malformed second source clears its `IP` and both sums. An absent one copies as `0`, both sums `4`. With the second outer row holding `3`, `4`, `5` and a fourth, over-limit inner row holding `100`, that row's `IP` clears and both sums are `15`. `formalErrorsInOperands` names `zahlHatUngueltigeZeichen` at the malformed source, and `zuGrosseKontextnummer` and `zuGrosseZeile` at the over-limit row.
+- `local-consequence`: [`RepeatableNumberPlanNestedStar`](../../A12Kernel/Conformance/RepeatableNumberPlanNestedStar.lean) locks the four documents through the authored repeatable plan, which already agreed; no clause changed.
+- `limit`: `Sum` only, two levels, a direct row copy; a `Sum` cannot tell an over-limit computed row left out from one read as empty.
+- `sync`: confirms [`spec/09`](../../spec/09-computations.md) §3.2's read-driven poison through a nested star aggregate, and opens no entry.
+
 <a id="src-repeatable-join-operators-and-guards"></a>
 #### On two repetition levels subtraction and multiplication join like addition, a fill guard on a poisoned computed row target holds neither way, and a poisoned fixed computed target clears every row reading it, measured locally 2026-10-01
 
