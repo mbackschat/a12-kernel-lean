@@ -64,40 +64,29 @@ private def bare (field : String) : SurfaceFieldPath :=
 private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.field (bare field))
 
-private def fixed? (target : FieldId) (guard : Option ComputationCondition)
+private def step? (group : GroupPath) (target : FieldId) (guard : Option ComputationCondition)
     (expression : AuthoredNumericExpr SurfaceNumericAtom) :
-    Option (CheckedRepeatableNumberPlanStep model) := do
-  let operation ← (elaborateNumericTargetComputationOperation model ["Gate"] target expression).toOption
-  let table ← (certifyNumericComputationTable
-    [({ precondition := guard, operation } :
-      ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.table table)
+    Option (CheckedNumericComputationTable model) :=
+  (elaborateNumericTargetComputationTable model group target [(guard, expression)]).toOption
 
-private def row? (operation : Option (CheckedRepeatableNumberRowOperation model))
-    (guard : Option ComputationCondition := none) :
-    Option (CheckedRepeatableNumberPlanStep model) := do
-  let step ← (checkRepeatableNumberRowStep (← operation) guard).toOption
-  pure (.row step)
+private def fixed? := step? ["Gate"]
 
-private def sum (target : FieldId) (left right : String) :
-    Option (CheckedRepeatableNumberRowOperation model) :=
-  (checkAddressedNumberBinary model rowsPath target (bare left) (bare right) .add).toOption.map .binary
+private def row? := step? rowsPath
 
-private def copy (target : FieldId) (source : String) :
-    Option (CheckedRepeatableNumberRowOperation model) :=
-  (checkAddressedNumberField model rowsPath target (bare source)).toOption.map .direct
+private def sum (left right : String) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add (read left) (read right)
 
 private def plusOne (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .add (read field) (.literal { value := 1, authoredScale := 0 })
 
 /-- The model's eight computations in its authored order, every reader ahead of what it reads. -/
-private def authored : List (Option (CheckedRepeatableNumberPlanStep model)) :=
+private def authored : List (Option (CheckedNumericComputationTable model)) :=
   [fixed? dId none (plusOne "P"), fixed? dnId none (plusOne "PN"),
     fixed? pId (some (.fieldFilled ngId)) (read "A"),
     fixed? pnId (some (.fieldNotFilled ngId)) (read "A"),
-    row? (sum rdId "RP" "RB"), row? (sum rdnId "RPN" "RB"),
-    row? (copy rpId "RA") (some (.fieldFilled rgId)),
-    row? (copy rpnId "RA") (some (.fieldNotFilled rgId))]
+    row? rdId none (sum "RP" "RB"), row? rdnId none (sum "RPN" "RB"),
+    row? rpId (some (.fieldFilled rgId)) (read "RA"),
+    row? rpnId (some (.fieldNotFilled rgId)) (read "RA")]
 
 private def plan? : Option (CheckedRepeatableNumberPlan model) := do
   (certifyRepeatableNumberPlan (← authored.mapM id)).toOption

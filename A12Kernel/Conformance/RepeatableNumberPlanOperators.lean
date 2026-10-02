@@ -78,11 +78,11 @@ private def outerStar : SurfaceStarFieldPath :=
   { base := .relative 0, groups := [{ name := "Outer", starred := true }], field := "OP" }
 
 private def fixedStep? (operation : Option (CheckedNumericTargetComputationOperation model)) :
-    Option (CheckedRepeatableNumberPlanStep model) := do
+    Option (CheckedNumericComputationTable model) := do
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation := ← operation } :
       ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.table table)
+  pure table
 
 private def rootSum? := fixedStep? (elaborateNumberEntityTargetComputationOperation model ["Rows"]
   rootSumId (.atom (.aggregate .sum { first := .star outerStar, rest := [] }))).toOption
@@ -90,30 +90,30 @@ private def rootSum? := fixedStep? (elaborateNumberEntityTargetComputationOperat
 private def fix? := fixedStep?
   (elaborateNumericTargetComputationOperation model ["Rows"] fixId (.atom (.field (bare "Base")))).toOption
 
-private def row? (operation : Option (CheckedRepeatableNumberRowOperation model))
+private def row? (group : GroupPath) (target : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (guard : Option ComputationCondition := none) :
-    Option (CheckedRepeatableNumberPlanStep model) := do
-  let step ← (checkRepeatableNumberRowStep (← operation) guard).toOption
-  pure (.row step)
+    Option (CheckedNumericComputationTable model) :=
+  (elaborateNumericTargetComputationTable model group target [(guard, expression)]).toOption
 
 private def binary (group : GroupPath) (target : FieldId) (left right : SurfaceFieldPath)
-    (op : NumericArithmeticOp) : Option (CheckedRepeatableNumberRowOperation model) :=
-  (checkAddressedNumberBinary model group target left right op).toOption.map .binary
+    (op : NumericScaleBinaryOp) : Option (CheckedNumericComputationTable model) :=
+  row? group target (.binary op (.atom (.field left)) (.atom (.field right)))
 
-private def copy (group : GroupPath) (target : FieldId) (source : SurfaceFieldPath) :
-    Option (CheckedRepeatableNumberRowOperation model) :=
-  (checkAddressedNumberField model group target source).toOption.map .direct
+private def copy (group : GroupPath) (target : FieldId) (source : SurfaceFieldPath)
+    (guard : ComputationCondition) : Option (CheckedNumericComputationTable model) :=
+  row? group target (.atom (.field source)) (some guard)
 
 /-- The model's nine computations in its authored order: every reader of `OP` ahead of it, `OSub`
 ahead of `Fix`, and only `RootSum` after the `OP` it sums. -/
-private def authored : List (Option (CheckedRepeatableNumberPlanStep model)) :=
-  [row? (binary innerPath iSubId (bare "IBase") (parent "OP") .subtract),
-    row? (binary innerPath iMulId (bare "IBase") (parent "OP") .multiply),
-    row? (binary outerPath oSubId (bare "OP") fixPath .subtract),
-    row? (binary outerPath oMulId (bare "OP") (bare "OBase2") .multiply),
-    row? (copy outerPath ohId (bare "OBase2")) (some (.fieldFilled opId)),
-    row? (copy outerPath ohnId (bare "OBase2")) (some (.fieldNotFilled opId)),
-    row? (copy outerPath opId (bare "OBase")) (some (.fieldFilled oGateId)),
+private def authored : List (Option (CheckedNumericComputationTable model)) :=
+  [binary innerPath iSubId (bare "IBase") (parent "OP") .subtract,
+    binary innerPath iMulId (bare "IBase") (parent "OP") .multiply,
+    binary outerPath oSubId (bare "OP") fixPath .subtract,
+    binary outerPath oMulId (bare "OP") (bare "OBase2") .multiply,
+    copy outerPath ohId (bare "OBase2") (.fieldFilled opId),
+    copy outerPath ohnId (bare "OBase2") (.fieldNotFilled opId),
+    copy outerPath opId (bare "OBase") (.fieldFilled oGateId),
     rootSum?,
     fix?]
 

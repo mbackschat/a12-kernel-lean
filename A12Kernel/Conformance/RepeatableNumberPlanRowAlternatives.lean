@@ -55,25 +55,21 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def copy (source : String) : Option (CheckedRepeatableNumberRowOperation model) :=
-  (checkAddressedNumberField model rowsPath rtId (bare source)).toOption.map .direct
+private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.field (bare field))
 
 private def table (alternatives : List (Option ComputationCondition × String)) :
-    Except (Option RepeatableNumberRowStepError) (CheckedRepeatableNumberRowStep model) := do
-  let checked ← alternatives.mapM fun (precondition, source) =>
-    match copy source with
-    | some operation => pure { precondition, operation }
-    | none => throw none
-  (checkRepeatableNumberRowTable checked).mapError some
+    Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
+  elaborateNumericTargetComputationTable model rowsPath rtId
+    (alternatives.map fun (precondition, source) => (precondition, read source))
 
-private def reader : Option (CheckedRepeatableNumberPlanStep model) := do
-  let operation ← (checkAddressedNumberBinary model rowsPath rdId (bare "RT") (bare "RC")
-    .add).toOption
-  pure (.row (← (checkRepeatableNumberRowStep (.binary operation) none).toOption))
+private def reader : Option (CheckedNumericComputationTable model) :=
+  (elaborateNumericTargetComputationTable model rowsPath rdId
+    [(none, .binary .add (read "RT") (read "RC"))]).toOption
 
 private def plan? : Option (CheckedRepeatableNumberPlan model) := do
   let rt ← (table [(some (.fieldFilled g1Id), "RA"), (some (.fieldFilled g2Id), "RB")]).toOption
-  (certifyRepeatableNumberPlan [← reader, .row rt]).toOption
+  (certifyRepeatableNumberPlan [← reader, rt]).toOption
 
 private inductive Gate where
   | value (number : Int)
@@ -137,9 +133,9 @@ reports `MVK_NO_WILDCARD` alone and not `MVK_ERROR_EMPTY_PRECONDITION`, and so i
 field, where it reports `MVK_INVALID_ENTITY` alone. Neither class is projected here. -/
 example :
     (match table [(none, "RA"), (some (.fieldFilled sId), "RB")] with
-      | .error (some error) => some error | _ => none) = some (.guardNotRowBound 2) ∧
+      | .error error => some error | _ => none) = some (.table (.guardNotAdmitted 2)) ∧
     (match table [(none, "RA"), (some (.fieldFilled 99), "RB")] with
-      | .error (some error) => some error | _ => none) = some (.guardNotRowBound 2) := by
+      | .error error => some error | _ => none) = some (.table (.guardNotAdmitted 2)) := by
   native_decide
 
 /- The two static refusals, each in the first or the later position: an unguarded alternative among
@@ -147,11 +143,11 @@ several, and a guard reading the table's own target. -/
 example :
     ((table [(none, "RA"), (some (.fieldFilled g2Id), "RB")]).toBool,
       match table [(none, "RA"), (some (.fieldFilled g2Id), "RB")] with
-      | .error (some error) => error.diagnostic? | _ => none) = (false, some .errorEmptyPrecondition) ∧
+      | .error error => error.diagnostic? | _ => none) = (false, some .errorEmptyPrecondition) ∧
     (match table [(some (.fieldFilled g1Id), "RA"), (none, "RB")] with
-      | .error (some error) => error.diagnostic? | _ => none) = some .errorEmptyPrecondition ∧
+      | .error error => error.diagnostic? | _ => none) = some .errorEmptyPrecondition ∧
     (match table [(some (.fieldFilled rtId), "RA"), (some (.fieldFilled g2Id), "RB")] with
-      | .error (some error) => error.diagnostic? | _ => none) =
+      | .error error => error.diagnostic? | _ => none) =
         some .errorReferenceToCalculatedField := by
   native_decide
 

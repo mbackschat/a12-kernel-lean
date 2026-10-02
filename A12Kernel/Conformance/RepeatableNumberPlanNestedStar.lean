@@ -52,18 +52,17 @@ private def nestedStar (field : String) : SurfaceStarFieldPath :=
     groups := [{ name := "Outer", starred := true }, { name := "Inner", starred := true }]
     field }
 
-private def sum? (target : FieldId) (field : String) : Option (CheckedRepeatableNumberPlanStep model) := do
+private def sum? (target : FieldId) (field : String) : Option (CheckedNumericComputationTable model) := do
   let operation ← (elaborateNumberEntityTargetComputationOperation model ["Nest"] target
     (.atom (.aggregate .sum { first := .star (nestedStar field), rest := [] }))).toOption
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation } :
       ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.table table)
+  pure table
 
-private def copy? : Option (CheckedRepeatableNumberPlanStep model) := do
-  let operation ← (checkAddressedNumberField model innerPath ipId
-    { base := .relative 0, groups := [], field := "IBase" }).toOption
-  pure (.row (← (checkRepeatableNumberRowStep (.direct operation) none).toOption))
+private def copy? : Option (CheckedNumericComputationTable model) :=
+  (elaborateNumericTargetComputationTable model innerPath ipId
+    [(none, .atom (.field { base := .relative 0, groups := [], field := "IBase" }))]).toOption
 
 private def plan? : Option (CheckedRepeatableNumberPlan model) := do
   (certifyRepeatableNumberPlan [← sum? nsId "IP", ← sum? ns2Id "IBase", ← copy?]).toOption

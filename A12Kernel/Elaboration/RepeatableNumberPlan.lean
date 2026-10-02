@@ -1,19 +1,18 @@
-import A12Kernel.Elaboration.AddressedNumberBinary
+import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.ComputationRunPlan
 import A12Kernel.Elaboration.NumericComputation.RunPlan
 
 /-! # Authored repeatable Number computation plans
 
-An authored plan of Number steps at fixed and repeatable targets, put into dependency order by the
-shared authored-order rule and executed one whole step at a time. A table step is a checked Number
-table. At a fixed target its aggregate reads rows through the plan; at a repeatable target it runs at
-every row of the target's scope through a context reading each operand at its own scope under that
-row, as an ordinary operand is read ([`spec/09`](../../spec/09-computations.md) §5), and admits only
-operations the scalar evaluator runs, so no aggregate reads rows from inside a row. A row step is a direct copy or a two-source
-addition, subtraction or multiplication computed at every row of its target's scope, selected among
-ordered guarded alternatives as a fixed table selects, each operand
-addressed at its own scope, so an inner row reads an enclosing row's target at that row.
+An authored plan of Number tables at fixed and repeatable targets, put into dependency order by the
+shared authored-order rule and executed one whole table at a time. At a fixed target a table's
+aggregate reads rows through the plan. At a repeatable target the table runs at every row of the
+target's scope, selecting among its guarded alternatives as a fixed table selects, through a context
+reading each operand at its own scope under that row, as an ordinary operand is read
+([`spec/09`](../../spec/09-computations.md) §5): an inner row reads an enclosing row's target at that
+row. Such a table admits only operations the scalar evaluator runs, so no aggregate reads rows from
+inside a row.
 
 Every read goes through one overlay: a completed step's outcome at its exact address, a target of a
 step not yet run as clean empty, and the immutable document otherwise. A stale stored value in a plan
@@ -21,175 +20,15 @@ target is therefore never read.
 
 The two-level grid of the [checkpoint](../../docs/sources/computation-scheduling-probes.md#src-two-level-repeatable-join)
 calibrates one plan: a root aggregate over a guarded outer copy, and an inner join of an inner copy
-with the enclosing outer target, the aggregate and the join authored ahead of what they read. Other
-admitted shapes run by the same rules without a measurement of their own: the grid measures the direct
-copy and addition, not subtraction or multiplication, and no row reads a poisoned guard; the
-[operator checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-join-operators-and-guards)
-and the [guard-source checkpoint](../../docs/sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
-measure those since.
+with the enclosing outer target, the aggregate and the join authored ahead of what they read. The
+[operator checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-join-operators-and-guards),
+the [guard-source checkpoint](../../docs/sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
+and the row-producer grid its conformance module cites measure subtraction, multiplication, fill
+guards on computed and malformed sources, and the extrema, rounded division, `Abs`, `FirstFilledValue`
+and value count at a row.
 -/
 
 namespace A12Kernel
-
-/-- The per-row Number operations a repeatable plan admits. -/
-inductive CheckedRepeatableNumberRowOperation (model : FlatModel) where
-  | direct (operation : CheckedAddressedNumberField model)
-  | binary (operation : CheckedAddressedNumberBinary model)
-
-namespace CheckedRepeatableNumberRowOperation
-
-def target : CheckedRepeatableNumberRowOperation model → CheckedAddressedNumericTarget model
-  | .direct operation => operation.placement.target
-  | .binary operation => operation.pair.left.placement.target
-
-def targetField (operation : CheckedRepeatableNumberRowOperation model) : FieldId :=
-  operation.target.targetField
-
-def sourceFields : CheckedRepeatableNumberRowOperation model → List FieldId
-  | .direct operation => [operation.placement.sourceDeclaration.id]
-  | .binary operation => [
-      operation.pair.left.placement.sourceDeclaration.id,
-      operation.pair.right.placement.sourceDeclaration.id]
-
-def evaluateAtEnvironmentWithRead : CheckedRepeatableNumberRowOperation model →
-    (CellAddr → Except CheckedDocumentError CheckedCell) → Env →
-      Except AddressedNumericLeafFault NumericComputationResult
-  | .direct operation, read, environment =>
-      operation.toCheckedAddressedNumberSource.evaluateAtEnvironmentWithRead read environment
-  | .binary operation, read, environment =>
-      operation.evaluateAtEnvironmentWithRead read environment
-
-end CheckedRepeatableNumberRowOperation
-
-/-- One row alternative certified against its table's target and row scope. Its guard reads only cells
-the target's row binds and never the target itself, as a Number table's guard never reads its own
-target. -/
-structure CheckedRepeatableNumberRowAlternative (model : FlatModel) (target : FieldId)
-    (scope : List RepeatableLevel) where
-  precondition : Option ComputationCondition
-  operation : CheckedRepeatableNumberRowOperation model
-  targetMatches : operation.targetField = target
-  guardRowBound : precondition.all (·.rowBoundBool model scope) = true
-  guardExcludesTarget : precondition.all (fun condition => !condition.referencesField target) = true
-
-namespace CheckedRepeatableNumberRowAlternative
-
-def toSelectable (alternative : CheckedRepeatableNumberRowAlternative model target scope) :
-    ComputationAlternative (CheckedRepeatableNumberRowOperation model) where
-  precondition := alternative.precondition
-  operation := alternative.operation
-
-end CheckedRepeatableNumberRowAlternative
-
-/-- A row table: ordered alternatives at one repeatable target, every row selecting the first whose
-guard holds by the shared first-match rule a fixed Number table uses. The Kernel selects that way per
-row, a reached poisoned guard aborting the row rather than passing to the next alternative
-([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)).
-A sole alternative may go unguarded. -/
-structure CheckedRepeatableNumberRowStep (model : FlatModel) where
-  private mk ::
-  /-- The placement the rows execute through, the first alternative's: every alternative's target field
-  matches it, so its target policy and repeatable scope are the step's. Its declaring group is only the
-  first alternative's; each alternative's own stays on its operation, and no execution reads it here. -/
-  target : CheckedAddressedNumericTarget model
-  first : CheckedRepeatableNumberRowAlternative model target.targetField
-    target.targetDeclaration.repeatableScope
-  remaining : List (CheckedRepeatableNumberRowAlternative model target.targetField
-    target.targetDeclaration.repeatableScope)
-
-namespace CheckedRepeatableNumberRowStep
-
-def alternatives (step : CheckedRepeatableNumberRowStep model) :
-    List (ComputationAlternative (CheckedRepeatableNumberRowOperation model)) :=
-  (step.first :: step.remaining).map (·.toSelectable)
-
-end CheckedRepeatableNumberRowStep
-
-/-- Why a row table is refused. Alternative positions are one-based. -/
-inductive RepeatableNumberRowStepError where
-  | empty
-  | targetMismatch (alternative : Nat) (expected actual : FieldId)
-  | unguardedAlternative (alternative : Nat)
-  | guardNotRowBound (alternative : Nat)
-  | guardReadsTarget (alternative : Nat) (target : FieldId)
-  deriving Repr, DecidableEq
-
-/-- The Kernel class of a row table's refusal: a guard reading the table's own target and an unguarded
-alternative among several draw the classes a fixed table's do, measured on a repeatable target in
-either position ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-row-alternatives)).
-A guard the row does not bind is refused ahead of both wherever it stands, and claims no class: the
-Kernel reports a sibling group's `MVK_NO_WILDCARD` there, and an unknown name's `MVK_INVALID_ENTITY`,
-which this refusal does not tell apart. The structural refusals claim no class either. -/
-def RepeatableNumberRowStepError.diagnostic? : RepeatableNumberRowStepError → Option KernelStaticDiagnostic
-  | .guardReadsTarget _ _ => some .errorReferenceToCalculatedField
-  | .unguardedAlternative _ => some .errorEmptyPrecondition
-  | .empty | .targetMismatch _ _ _ | .guardNotRowBound _ => none
-
-private def checkRepeatableNumberRowAlternative (target : FieldId) (scope : List RepeatableLevel)
-    (index : Nat) (guardRequired : Bool)
-    (admitted : AdmittedComputationAlternative (·.rowBoundBool model scope)
-      (CheckedRepeatableNumberRowOperation model)) :
-    Except RepeatableNumberRowStepError (CheckedRepeatableNumberRowAlternative model target scope) :=
-  let alternative := admitted.val
-  if hTarget : alternative.operation.targetField = target then
-    if guardRequired && alternative.precondition.isNone then
-      .error (.unguardedAlternative index)
-    else if hExcludes : alternative.precondition.all
-        (fun condition => !condition.referencesField target) = true then
-      .ok { precondition := alternative.precondition, operation := alternative.operation
-            targetMatches := hTarget, guardRowBound := admitted.property
-            guardExcludesTarget := hExcludes }
-    else .error (.guardReadsTarget index target)
-  else .error (.targetMismatch index target alternative.operation.targetField)
-
-/-- Certify ordered row alternatives in authored order against the first one's target, every guard's
-row binding asked before any alternative's own class, as a fixed table asks its guards. -/
-def checkRepeatableNumberRowTable
-    (alternatives : List (ComputationAlternative (CheckedRepeatableNumberRowOperation model))) :
-    Except RepeatableNumberRowStepError (CheckedRepeatableNumberRowStep model) :=
-  match alternatives with
-  | [] => .error .empty
-  | head :: tail => do
-      let target := head.operation.target
-      let scope := target.targetDeclaration.repeatableScope
-      let (head, tail) ←
-        (ComputationAlternative.admitGuards (·.rowBoundBool model scope) head tail).mapError
-          .guardNotRowBound
-      let guardRequired := !tail.isEmpty
-      let first ←
-        checkRepeatableNumberRowAlternative target.targetField scope 1 guardRequired head
-      let remaining ← tail.zipIdx.mapM fun (alternative, index) =>
-        checkRepeatableNumberRowAlternative target.targetField scope (index + 2) guardRequired
-          alternative
-      pure { target, first, remaining }
-
-/-- One row operation under an optional presence guard: the one-alternative row table. -/
-def checkRepeatableNumberRowStep (operation : CheckedRepeatableNumberRowOperation model)
-    (guard : Option ComputationCondition) :
-    Except RepeatableNumberRowStepError (CheckedRepeatableNumberRowStep model) :=
-  checkRepeatableNumberRowTable [{ precondition := guard, operation }]
-
-/-- One authored step of a repeatable Number plan. -/
-inductive CheckedRepeatableNumberPlanStep (model : FlatModel) where
-  /-- A Number table, at a fixed or a repeatable target. -/
-  | table (table : CheckedNumericComputationTable model)
-  /-- A row table at a repeatable target. -/
-  | row (step : CheckedRepeatableNumberRowStep model)
-
-namespace CheckedRepeatableNumberPlanStep
-
-def targetField : CheckedRepeatableNumberPlanStep model → FieldId
-  | .table computation => computation.targetField
-  | .row step => step.target.targetField
-
-/-- Whether the step's guard or operation reads one exact field, at any row. -/
-def referencesField : CheckedRepeatableNumberPlanStep model → FieldId → Bool
-  | .table computation, field => computation.referencesField field
-  | .row step, field => step.alternatives.any fun alternative =>
-      alternative.precondition.any (·.referencesField field) ||
-        alternative.operation.sourceFields.contains field
-
-end CheckedRepeatableNumberPlanStep
 
 /-- Why an authored repeatable plan is refused. -/
 inductive RepeatableNumberPlanError where
@@ -205,36 +44,34 @@ inductive RepeatableNumberPlanError where
 /-- An authored repeatable plan with its certified dependency order. -/
 structure CheckedRepeatableNumberPlan (model : FlatModel) where
   private mk ::
-  authored : List (CheckedRepeatableNumberPlanStep model)
-  execution : List (CheckedRepeatableNumberPlanStep model)
+  authored : List (CheckedNumericComputationTable model)
+  execution : List (CheckedNumericComputationTable model)
   executionOrdered : execution = computationAuthoredOrder
-    CheckedRepeatableNumberPlanStep.targetField CheckedRepeatableNumberPlanStep.referencesField
+    CheckedNumericComputationTable.targetField CheckedNumericComputationTable.referencesField
     authored.length authored
   uniqueTargets : FieldId.firstDuplicate? (authored.map (·.targetField)) = none
   dependenciesOrdered : firstForwardComputationDependency?
-    CheckedRepeatableNumberPlanStep.targetField CheckedRepeatableNumberPlanStep.referencesField
+    CheckedNumericComputationTable.targetField CheckedNumericComputationTable.referencesField
     execution = none
 
 /-- The target of a table at a repeatable target holding an operation the scalar evaluator cannot run. -/
-private def rowTableNotScalar? : CheckedRepeatableNumberPlanStep model → Option FieldId
-  | .table table =>
-      if !table.readingScope.isEmpty && !table.atomsSupportScalarEvaluation then
-        some table.targetField else none
-  | .row _ => none
+private def rowTableNotScalar? (table : CheckedNumericComputationTable model) : Option FieldId :=
+  if !table.readingScope.isEmpty && !table.atomsSupportScalarEvaluation then
+    some table.targetField else none
 
 /-- Certify an authored plan by ordering it. A forward read left after ordering can only wait on or
 close a cycle; a row table the scalar evaluator cannot run is refused once the order stands. -/
-def certifyRepeatableNumberPlan (steps : List (CheckedRepeatableNumberPlanStep model)) :
+def certifyRepeatableNumberPlan (steps : List (CheckedNumericComputationTable model)) :
     Except RepeatableNumberPlanError (CheckedRepeatableNumberPlan model) :=
   if steps.isEmpty then .error .empty else
   match hDuplicate : FieldId.firstDuplicate? (steps.map (·.targetField)) with
   | some target => .error (.duplicateTarget target)
   | none =>
       match hForward : firstForwardComputationDependency?
-          CheckedRepeatableNumberPlanStep.targetField
-          CheckedRepeatableNumberPlanStep.referencesField
-          (computationAuthoredOrder CheckedRepeatableNumberPlanStep.targetField
-            CheckedRepeatableNumberPlanStep.referencesField steps.length steps) with
+          CheckedNumericComputationTable.targetField
+          CheckedNumericComputationTable.referencesField
+          (computationAuthoredOrder CheckedNumericComputationTable.targetField
+            CheckedNumericComputationTable.referencesField steps.length steps) with
       | some (step, reads) => .error (.cycle step reads)
       | none =>
         match steps.findSome? rowTableNotScalar? with
@@ -249,6 +86,7 @@ def certifyRepeatableNumberPlan (steps : List (CheckedRepeatableNumberPlanStep m
 
 /-- A structural failure, with the target of the step that raised it. -/
 inductive RepeatableNumberPlanFault where
+  /-- A row's address or the target's row environments are structurally incoherent. -/
   | row (target : FieldId) (cause : AddressedNumericLeafFault)
   | table (target : FieldId) (cause : NumericComputationFault)
   | tableTargetCheck (target : FieldId) (cause : NumericTargetCheckFault)
@@ -276,18 +114,6 @@ private def cellAt (input : CheckedDocument model)
   | .ok cell => cell
   | .error _ => malformedCheckedCell
 
-private def executeRow (step : CheckedRepeatableNumberRowStep model)
-    (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
-    Except RepeatableNumberPlanFault (List (SourcedNumericTargetOutcome CellAddr)) :=
-  step.target.executeSelectedAtEnvironment input (fun environment =>
-    match ComputationAlternative.selectFirst step.alternatives
-        { read := cellAt input read environment } with
-    | .selected operation => .selected (operation.evaluateAtEnvironmentWithRead read environment)
-    | .noMatch => .noMatch
-    | .poison cause => .poison cause)
-  |>.mapError (.row step.target.targetField)
-
 private def supportedOutcome (table : CheckedNumericComputationTable model) :
     Except NumericComputationFault NumericTargetCheckResult →
       Except RepeatableNumberPlanFault NumericTargetOutcome
@@ -311,8 +137,7 @@ private def executeFixed (table : CheckedNumericComputationTable model) (world :
 
 /-- Run a table at a repeatable target once per row of its scope. A row selects and evaluates through
 a context reading every field at its own scope under the row, so a field of the row reads that row's
-cell and a field above it the enclosing one. An over-limit row clears without reading a guard, as a
-row step's does. -/
+cell and a field above it the enclosing one. An over-limit row clears without reading a guard. -/
 private def executeRows (table : CheckedNumericComputationTable model) (world : World)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
@@ -334,18 +159,16 @@ private def executeRows (table : CheckedNumericComputationTable model) (world : 
 
 def executeSteps (plan : CheckedRepeatableNumberPlan model) (world : World)
     (input : CheckedDocument model) :
-    List (CheckedRepeatableNumberPlanStep model) →
+    List (CheckedNumericComputationTable model) →
       List (SourcedNumericTargetOutcome CellAddr) →
       Except RepeatableNumberPlanFault (List (SourcedNumericTargetOutcome CellAddr))
   | [], completed => pure completed
-  | step :: remaining, completed => do
+  | table :: remaining, completed => do
       let read := plan.read input completed
-      let outcomes ← match step with
-        | .table table =>
-            if table.readingScope.isEmpty then
-              (fun outcome => [outcome]) <$> executeFixed table world input read
-            else executeRows table world input read
-        | .row row => executeRow row input read
+      let outcomes ←
+        if table.readingScope.isEmpty then
+          (fun outcome => [outcome]) <$> executeFixed table world input read
+        else executeRows table world input read
       plan.executeSteps world input remaining (completed ++ outcomes)
 
 /-- Run the certified order and return every outcome, grouped by step in that order and by row

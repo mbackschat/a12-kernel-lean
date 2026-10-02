@@ -5,8 +5,7 @@ import A12Kernel.Proofs.FieldId
 /-! # Authored repeatable Number plan laws
 
 The plan's certificate is sound and complete for cycles by specializing the shared authored-order
-laws, and its read overlay never exposes a plan target's stored value. Under an always-holding guard
-the guarded addressed executor is definitionally the unguarded one.
+laws, and its read overlay never exposes a plan target's stored value.
 -/
 
 namespace A12Kernel
@@ -19,10 +18,10 @@ theorem repeatableNumberPlan_executionSteps_perm (plan : CheckedRepeatableNumber
 
 /-- A plan refused as a cycle has read-closed steps: the refusal never falls on an acyclic plan. -/
 theorem certifyRepeatableNumberPlan_cycle_readClosed
-    (steps : List (CheckedRepeatableNumberPlanStep model)) (step reads : FieldId)
+    (steps : List (CheckedNumericComputationTable model)) (step reads : FieldId)
     (refused : certifyRepeatableNumberPlan steps = .error (.cycle step reads)) :
-    ∃ stuck, ComputationStepsReadClosed CheckedRepeatableNumberPlanStep.targetField
-        CheckedRepeatableNumberPlanStep.referencesField stuck ∧
+    ∃ stuck, ComputationStepsReadClosed CheckedNumericComputationTable.targetField
+        CheckedNumericComputationTable.referencesField stuck ∧
       ∀ member ∈ stuck, member ∈ steps := by
   unfold certifyRepeatableNumberPlan at refused
   split at refused
@@ -40,9 +39,9 @@ theorem certifyRepeatableNumberPlan_cycle_readClosed
 
 /-- A certified plan's authored steps hold no read-closed steps, so every cyclic plan is refused. -/
 theorem repeatableNumberPlan_not_readClosed (plan : CheckedRepeatableNumberPlan model)
-    (stuck : List (CheckedRepeatableNumberPlanStep model))
-    (closed : ComputationStepsReadClosed CheckedRepeatableNumberPlanStep.targetField
-      CheckedRepeatableNumberPlanStep.referencesField stuck) :
+    (stuck : List (CheckedNumericComputationTable model))
+    (closed : ComputationStepsReadClosed CheckedNumericComputationTable.targetField
+      CheckedNumericComputationTable.referencesField stuck) :
     ¬ ∀ member ∈ stuck, member ∈ plan.authored := fun within =>
   computationSteps_not_readClosed _ _ plan.execution stuck plan.dependenciesOrdered closed
     fun member memberStuck =>
@@ -67,13 +66,5 @@ theorem repeatableNumberPlan_read_completed (plan : CheckedRepeatableNumberPlan 
     plan.read input completed address =
       .ok (NumericDependencyCell.ofOutcome outcome.outcome).checked := by
   simp [CheckedRepeatableNumberPlan.read, readAfterNumericDependenciesWith, covered]
-
-/-- A selection that always selects its one operation executes exactly as the unguarded addressed
-carrier. -/
-theorem checkedAddressedNumericTarget_executeSelected_selected
-    (placement : CheckedAddressedNumericTarget model) (input : CheckedDocument model)
-    (evaluate : Env → Except AddressedNumericLeafFault NumericComputationResult) :
-    placement.executeSelectedAtEnvironment input (fun environment => .selected (evaluate environment)) =
-      placement.executeAtEnvironment input evaluate := rfl
 
 end A12Kernel

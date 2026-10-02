@@ -64,33 +64,29 @@ private def parent (field : String) : SurfaceFieldPath :=
 private def outerStar : SurfaceStarFieldPath :=
   { base := .relative 0, groups := [{ name := "Outer", starred := true }], field := "OP" }
 
-private def rootSum? : Option (CheckedRepeatableNumberPlanStep model) := do
+private def rootSum? : Option (CheckedNumericComputationTable model) := do
   let operation ← (elaborateNumberEntityTargetComputationOperation model ["Rows"] rootSumId
     (.atom (.aggregate .sum { first := .star outerStar, rest := [] }))).toOption
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation } :
       ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
-  pure (.table table)
+  pure table
 
-private def row? (operation : Option (CheckedRepeatableNumberRowOperation model))
+private def row? (group : GroupPath) (target : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (guard : Option ComputationCondition := none) :
-    Option (CheckedRepeatableNumberPlanStep model) := do
-  let step ← (checkRepeatableNumberRowStep (← operation) guard).toOption
-  pure (.row step)
+    Option (CheckedNumericComputationTable model) :=
+  (elaborateNumericTargetComputationTable model group target [(guard, expression)]).toOption
 
-private def op? := row?
-  ((checkAddressedNumberField model outerPath opId (bare "OBase")).toOption.map .direct)
-  (some (.fieldFilled oGateId))
+private def op? := row? outerPath opId (.atom (.field (bare "OBase"))) (some (.fieldFilled oGateId))
 
-private def iJoin? := row?
-  ((checkAddressedNumberBinary model innerPath iJoinId (bare "IA") (parent "OP") .add).toOption.map
-    .binary)
+private def iJoin? := row? innerPath iJoinId
+  (.binary .add (.atom (.field (bare "IA"))) (.atom (.field (parent "OP"))))
 
-private def ia? := row?
-  ((checkAddressedNumberField model innerPath iaId (bare "IBase")).toOption.map .direct)
+private def ia? := row? innerPath iaId (.atom (.field (bare "IBase")))
 
 /-- The model's four computations in its authored order. -/
-private def authored : List (CheckedRepeatableNumberPlanStep model) :=
+private def authored : List (CheckedNumericComputationTable model) :=
   [rootSum?, op?, iJoin?, ia?].filterMap id
 
 private def plan? : Option (CheckedRepeatableNumberPlan model) :=
@@ -152,7 +148,7 @@ private def reported? : NumericTargetOutcome → Option (Option Int)
 
 /-- Run the steps `order` picks from the plan; the certified run uses its execution order. -/
 private def outcomes? (rows : List OuterRow)
-    (order : CheckedRepeatableNumberPlan model → List (CheckedRepeatableNumberPlanStep model)) :
+    (order : CheckedRepeatableNumberPlan model → List (CheckedNumericComputationTable model)) :
     Option (List (CellAddr × Option Int)) := do
   let plan ← plan?
   let input ← document? rows
@@ -162,7 +158,7 @@ private def outcomes? (rows : List OuterRow)
 /-- Equal as sets of addressed reports: the Kernel sorts its report by field, so the order Lean emits
 rows in is not compared. -/
 private def reportsAs (rows : List OuterRow) (expected : List (CellAddr × Option Int))
-    (order : CheckedRepeatableNumberPlan model → List (CheckedRepeatableNumberPlanStep model) :=
+    (order : CheckedRepeatableNumberPlan model → List (CheckedNumericComputationTable model) :=
       (·.execution)) : Bool :=
   match outcomes? rows order with
   | some actual => actual.length == expected.length && expected.all actual.contains

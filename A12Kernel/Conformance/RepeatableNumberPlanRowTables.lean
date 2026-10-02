@@ -52,12 +52,12 @@ private def one : DecodedNumericLiteral := { value := 1, authoredScale := 0 }
 
 private def step? (target : String) (guard : Option ComputationCondition)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
-    Option (CheckedRepeatableNumberPlanStep model) :=
+    Option (CheckedNumericComputationTable model) :=
   (elaborateCompleteNumericTargetComputationTable model rowsPath (idOf target)
-    [(guard, expression)]).toOption.map .table
+    [(guard, expression)]).toOption
 
 /-- The grid's computations in its authored order, every reader ahead of `CA`. -/
-private def authored : List (Option (CheckedRepeatableNumberPlanStep model)) :=
+private def authored : List (Option (CheckedNumericComputationTable model)) :=
   [step? "K" (some (.fieldFilled (idOf "FF"))) (.literal one),
     step? "KN" (some (.fieldNotFilled (idOf "FF"))) (.literal one),
     step? "MX" none (.extremumCall .maximum (.extremum .maximum (read "CA") (read "B"))),
@@ -155,7 +155,7 @@ example :
     (match nestedTable (.atom (.numeric (.aggregate .sum
         { first := .star { base := .relative 0, groups := [{ name := "In", starred := true }], field := "S" }
           rest := [] }))) with
-      | .ok table => (certifyRepeatableNumberPlan [.table table] matches .error (.rowTableNotScalar 0))
+      | .ok table => (certifyRepeatableNumberPlan [table] matches .error (.rowTableNotScalar 0))
       | .error _ => false) = true := by
   native_decide
 
