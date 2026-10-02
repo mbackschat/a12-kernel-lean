@@ -186,6 +186,7 @@ import A12Kernel.Proofs.NumericApplication
 import A12Kernel.Proofs.NumericArithmetic
 import A12Kernel.Proofs.NumericComparison
 import A12Kernel.Proofs.NumericComputation
+import A12Kernel.Proofs.NumericComputationGroupCount
 import A12Kernel.Proofs.NumericComputationFormalInput
 import A12Kernel.Proofs.NumericComputationLaterValidation
 import A12Kernel.Proofs.NumericComputationRun

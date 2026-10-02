@@ -61,6 +61,23 @@ namespace CheckedNumberEntityGroup
 def groupPath (group : CheckedNumberEntityGroup model) : GroupPath :=
   group.source.groupPath
 
+/-- The group's cells on the reader route, read through a caller-supplied checked-cell view over the
+shared group walk `FlatModel.groupOperandEnvironments`, so a group operand there takes the in-capacity
+extent and canonical order the checked document gives it. -/
+def resolvedSideIn (group : CheckedNumberEntityGroup model) (phase : Phase) (document : Document)
+    (outer : Env) (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError (ResolvedValueListSide .number) := do
+  let declarations := model.groupSubtreeFields group.groupPath
+  let cells ← declarations.mapM fun declaration => do
+    let environments ← model.groupOperandEnvironments document outer group.source.boundLevelCount
+      declaration.repeatableScope
+    pure (environments.map fun environment =>
+      (observeCell phase (read environment declaration.id)).asNumberValueListCell)
+  pure { cells := cells.flatten
+         hasUninstantiatedTail := ← model.groupOperandUninstantiatedTail document outer
+           group.source.boundLevelCount (declarations.map (·.repeatableScope))
+         hasHaving := false }
+
 def isStarred (group : CheckedNumberEntityGroup model) : Bool :=
   group.source.isStarred
 

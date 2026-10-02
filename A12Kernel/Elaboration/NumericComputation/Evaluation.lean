@@ -247,6 +247,21 @@ end ScalarComputationContext
 
 namespace NumericComputationEvaluationContext
 
+/-- Read one instance of a fixed group whose own scope `environment` binds: its cells at that scope,
+    and whether a repeatable descendant holds a row under that instance's address, decided by the
+    validation slice's own `rowWithinGroup`. -/
+def readGroupInstanceAt (context : NumericComputationEvaluationContext) (model : FlatModel)
+    (groupPath : GroupPath) (environment : Env) :
+    Except NumericComputationFault (List CellObservation × Bool) := do
+  let scope := model.repeatableScopeForGroupPath groupPath
+  let fields := (model.groupSubtreeFields groupPath).filter (·.repeatableScope == scope)
+  let addressPrefix ← (environment.pathForScope scope).mapError fun error =>
+    NumericComputationFault.repeatableAddressing error.toStarAddressingError
+  pure (fields.map (fun declaration =>
+      observeCell .computation (context.starRead environment declaration.id)),
+    context.document.instantiatedRows.any
+      (CheckedDocument.rowWithinGroup model groupPath addressPrefix))
+
 /-- A fixed group-count operand's content, with the row constituent the scalar reader cannot express.
 
     Content has **two constituents and either suffices**: an admitted descendant cell outside every
@@ -277,14 +292,16 @@ def readGroupContent (context : NumericComputationEvaluationContext) (model : Fl
       .ok (descendants.map (fun declaration =>
         observeCell .computation (context.scalar.read declaration.id)), false)
   | none =>
-      match reference.repeatableDescendantShape? model with
-      | none => .error (NumericComputationFault.unsupportedGroupCount reference.path)
-      | some repeatables =>
-          .ok (((model.groupSubtreeFields reference.path).filter
-              (·.repeatableScope.isEmpty)).map (fun declaration =>
-                observeCell .computation (context.scalar.read declaration.id)),
-            repeatables.any fun group =>
-              context.document.instantiatedRows.any fun row => row.group == group.level)
+      if reference.boundInstanceOperand model then
+        context.readGroupInstanceAt model reference.path context.outer
+      else match reference.repeatableDescendantShape? model with
+        | none => .error (NumericComputationFault.unsupportedGroupCount reference.path)
+        | some repeatables =>
+            .ok (((model.groupSubtreeFields reference.path).filter
+                (·.repeatableScope.isEmpty)).map (fun declaration =>
+                  observeCell .computation (context.scalar.read declaration.id)),
+              repeatables.any fun group =>
+                context.document.instantiatedRows.any fun row => row.group == group.level)
 
 /-- Read a fixed group below a starred level once in each in-capacity environment of its starred
     ancestry, each instance exactly as `readGroupContent` reads a fixed operand's two constituents:
@@ -297,15 +314,7 @@ def readGroupInstances (context : NumericComputationEvaluationContext) (model : 
     Except NumericComputationFault (List (List CellObservation × Bool)) := do
   let environments ← (source.inCapacityEnvironments context.document context.outer).mapError
     NumericComputationFault.repeatableAddressing
-  let scope := model.repeatableScopeForGroupPath source.groupPath
-  let fields := (model.groupSubtreeFields source.groupPath).filter (·.repeatableScope == scope)
-  environments.mapM fun environment => do
-    let addressPrefix ← (environment.pathForScope scope).mapError fun error =>
-      NumericComputationFault.repeatableAddressing error.toStarAddressingError
-    pure (fields.map (fun declaration =>
-        observeCell .computation (context.starRead environment declaration.id)),
-      context.document.instantiatedRows.any
-        (CheckedDocument.rowWithinGroup model source.groupPath addressPrefix))
+  environments.mapM (context.readGroupInstanceAt model source.groupPath)
 
 /-- Read one group-count operand into its contribution.
 

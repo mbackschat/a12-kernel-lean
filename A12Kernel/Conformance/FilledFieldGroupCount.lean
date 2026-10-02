@@ -641,7 +641,7 @@ example : nestedRuntimeFillMatrix? [(20, 1)] = some oneRuntimeFill ∧
     nestedRuntimeFillMatrix? [(20, 2)] = some allRuntimeFills ∧
     nestedRuntimeFillMatrix? [(20, 3)] = some emptyRuntimeFills ∧
     nestedRuntimeFillResults? [] = some (runtimeFillOperators.map fun _ =>
-      .inl (.environment (.missingBinding 20))) := by
+      .inl (.addressing (.missingBinding 20))) := by
   native_decide
 
 end A12Kernel

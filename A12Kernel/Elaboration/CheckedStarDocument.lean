@@ -81,6 +81,41 @@ def inCapacityAddressedCells (resolved : ResolvedCheckedEntityOperandCore) :
 
 end ResolvedCheckedEntityOperandCore
 
+/-- The in-capacity environments at which a group operand reaches one declaration of repeatable scope
+`scope`, the operand fixing the scope's first `boundCount` levels at `outer`'s bindings and reopening
+every deeper one. The reopened levels resolve as a star does, through `StarPath.resolveInCapacity`, so
+a group operand and a star share one extent and one canonical row order; a scope `outer` fixes
+completely is its one row when that row is instantiated and in capacity. Every reader of a group
+operand, on the checked document and on the reader route, takes its rows from here. A scope the model
+declares no repeatable axes for, which a certified operand cannot carry, is refused as the deepest
+level's invalid repeatability. -/
+def FlatModel.groupOperandEnvironments (model : FlatModel) (document : Document) (outer : Env)
+    (boundCount : Nat) (scope : List RepeatableLevel) : Except StarAddressingError (List Env) := do
+  if scope.isEmpty then return [[]]
+  let axes ← match model.repeatableAxesForScope? scope with
+    | some axes => pure axes
+    | none => throw (.invalidRepeatability (scope.getLast?.getD 0))
+  if boundCount < scope.length then
+    return (← ({ axes, firstStar := boundCount } : StarPath).resolveInCapacity document outer).environments
+  let path ← (outer.pathForScope scope).mapError (·.toStarAddressingError)
+  let environment := scope.zip path
+  let instantiated := document.instantiatedRows.any fun row =>
+    row.group == scope.getLast?.getD 0 && row.path == path
+  return if instantiated && !StarAxes.environmentOverLimit axes environment then [environment] else []
+
+/-- Whether any repeatable scope a group operand reopens retains **declared but uninstantiated**
+capacity at the operand's own depth, read off the same star topology `groupOperandEnvironments`
+resolves. A scope no deeper than that depth contributes nothing: `outer` fixes all of its levels. -/
+def FlatModel.groupOperandUninstantiatedTail (model : FlatModel) (document : Document) (outer : Env)
+    (boundCount : Nat) (scopes : List (List RepeatableLevel)) : Except StarAddressingError Bool := do
+  let tails ← scopes.eraseDups.mapM fun scope => do
+    if scope.length ≤ boundCount then return false
+    let axes ← match model.repeatableAxesForScope? scope with
+      | some axes => pure axes
+      | none => throw (.invalidRepeatability (scope.getLast?.getD 0))
+    return (← ({ axes, firstStar := boundCount } : StarPath).resolveTopology document outer).domain.hasOpenTail
+  return tails.any id
+
 namespace CheckedDocument
 
 /-- Resolve one model-owned field instance to its exact address without reading its cell. -/
@@ -205,17 +240,8 @@ def resolveCheckedGroupEntityOperandPairs
     (slots : List (FlatFieldDecl × α)) :
     Except CheckedAddressingError (List (α × CheckedAddressedCell)) := do
   let perDeclaration ← slots.mapM fun (declaration, payload) => do
-    let bound := declaration.repeatableScope.take boundCount
-    let boundPath ← (outer.pathForScope bound).mapError .environment
-    let environments ←
-      if declaration.repeatableScope.isEmpty then
-        pure [([] : Env)]
-      else do
-        let reached ←
-          (checked.inCapacityRowEnvironments declaration.repeatableScope).mapError
-            CheckedAddressingError.rowEnvironment
-        pure (reached.filter fun environment =>
-          environment.take bound.length == bound.zip boundPath)
+    let environments ← (model.groupOperandEnvironments checked.source.toDocument outer boundCount
+      declaration.repeatableScope).mapError .addressing
     let cells ← environments.mapM (checked.addressedCell · declaration.id)
     pure (cells.map fun cell => (payload, cell))
   pure perDeclaration.flatten
@@ -235,20 +261,9 @@ uninstantiated** capacity, at the operand's own depth.
 def resolveCheckedGroupUninstantiatedTail
     (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
     (declarations : List FlatFieldDecl) :
-    Except CheckedAddressingError Bool := do
-  let scopes := (declarations.map (·.repeatableScope)).eraseDups
-  let tails ← scopes.mapM fun scope => do
-    if scope.length ≤ boundCount then
-      pure false
-    else
-      let axes ← match model.repeatableAxesForScope? scope with
-        | some axes => pure axes
-        | none => throw (.document (.incoherentRepeatableScope scope))
-      let topology ←
-        (({ axes, firstStar := boundCount } : StarPath).resolveTopology
-          checked.source.toDocument outer).mapError .addressing
-      pure topology.domain.hasOpenTail
-  pure (tails.any id)
+    Except CheckedAddressingError Bool :=
+  (model.groupOperandUninstantiatedTail checked.source.toDocument outer boundCount
+    (declarations.map (·.repeatableScope))).mapError .addressing
 
 /-- The `(row × field)` extent a group-scope operand reaches: every declaration in the group's subtree, at every instantiated row of that declaration's repeatable scope **below the operand's own depth**.
 

@@ -164,15 +164,15 @@ private def planned (expression : AuthoredNumericExpr SurfaceNumericComputationA
 
 /- The target's scope binds only its own levels: a read crossing the nested level below it is refused
 `MVK_NO_WILDCARD` ([`spec/09`](../../spec/09-computations.md) §5). A count of fixed groups inside the
-row is elaborated and then refused by the plan, whether a group holds a repeatable level or not,
-because the group-count reader enumerates a fixed group only outside every repeatable level; a count
-of fixed groups outside the row runs, one holding a repeatable level included. -/
+row certifies, whether a group holds a repeatable level or not, reading the instance the row binds as
+the [row-atom grid](../../docs/sources/computation-scheduling-probes.md#src-row-atoms) measures; a
+count of fixed groups outside the row certifies too, one holding a repeatable level included. -/
 example :
     (match nestedTable (.atom (.numeric (.field { base := .relative 0, groups := ["Box", "In"], field := "S" }))) with
       | .error error => error.diagnostic? == some .noWildcard
       | .ok _ => false) = true ∧
-    planned (groupCount [(0, ["Pad"]), (0, ["Pad2"])]) = some (some (.rowGroupInsideRepeatable 0)) ∧
-    planned (groupCount [(0, ["Box"]), (0, ["Pad"])]) = some (some (.rowGroupInsideRepeatable 0)) ∧
+    planned (groupCount [(0, ["Pad"]), (0, ["Pad2"])]) = some none ∧
+    planned (groupCount [(0, ["Box"]), (0, ["Pad"])]) = some none ∧
     planned (groupCount [(1, ["Out"]), (1, ["Out2"])]) = some none := by
   native_decide
 

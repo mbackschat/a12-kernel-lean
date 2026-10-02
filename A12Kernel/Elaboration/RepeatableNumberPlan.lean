@@ -38,9 +38,6 @@ namespace A12Kernel
 inductive RepeatableNumberPlanError where
   | empty
   | duplicateTarget (target : FieldId)
-  /-- A table at a repeatable target counts a fixed group inside a repeatable level, which the
-  group-count reader enumerates only outside every repeatable level. -/
-  | rowGroupInsideRepeatable (target : FieldId)
   /-- `step` is a step ordering could not place and `reads` a pending target it reads. -/
   | cycle (step reads : FieldId)
   deriving Repr, DecidableEq
@@ -58,31 +55,8 @@ structure CheckedRepeatableNumberPlan (model : FlatModel) where
     CheckedNumericComputationTable.targetField CheckedNumericComputationTable.referencesField
     execution = none
 
-/-- Whether a fixed group lies outside every repeatable level, where the group-count reader reads its
-cells and its descendants' rows, which are then all its own. -/
-private def fixedGroupOutsideRepeatable (model : FlatModel) (reference : ResolvedGroupReference) :
-    Bool :=
-  (model.repeatableScopeForGroupPath reference.path).isEmpty
-
-/-- Whether a row runs the atom. Every star is read through the row as its outer environment, and a
-fixed group outside every repeatable level reads the same at every row; one inside a level is a group
-the reader cannot enumerate. -/
-private def rowEvaluable : CheckedNumericComputationAtom model → Bool
-  | .numeric (.filledGroupCount groups) => groups.all (fixedGroupOutsideRepeatable model)
-  | .filledGroupCountMixed operands => operands.all fun
-      | .fixed reference => fixedGroupOutsideRepeatable model reference
-      | .starred _ | .starredPresence _ => true
-  | _ => true
-
-/-- The target of a table at a repeatable target holding an atom a row does not run. -/
-private def rowGroupInsideRepeatable? (table : CheckedNumericComputationTable model) :
-    Option FieldId :=
-  if !table.readingScope.isEmpty && !table.selectableAlternatives.all
-      (·.operation.operation.core.expression.allAtoms rowEvaluable) then
-    some table.targetField else none
-
 /-- Certify an authored plan by ordering it. A forward read left after ordering can only wait on or
-close a cycle; a row table holding an atom a row does not run is refused once the order stands. -/
+close a cycle. -/
 def certifyRepeatableNumberPlan (steps : List (CheckedNumericComputationTable model)) :
     Except RepeatableNumberPlanError (CheckedRepeatableNumberPlan model) :=
   if steps.isEmpty then .error .empty else
@@ -95,16 +69,13 @@ def certifyRepeatableNumberPlan (steps : List (CheckedNumericComputationTable mo
           (computationAuthoredOrder CheckedNumericComputationTable.targetField
             CheckedNumericComputationTable.referencesField steps.length steps) with
       | some (step, reads) => .error (.cycle step reads)
-      | none =>
-        match steps.findSome? rowGroupInsideRepeatable? with
-        | some target => .error (.rowGroupInsideRepeatable target)
-        | none => .ok {
-            authored := steps
-            execution := _
-            executionOrdered := rfl
-            uniqueTargets := hDuplicate
-            dependenciesOrdered := hForward
-          }
+      | none => .ok {
+          authored := steps
+          execution := _
+          executionOrdered := rfl
+          uniqueTargets := hDuplicate
+          dependenciesOrdered := hForward
+        }
 
 /-- A structural failure, with the target of the step that raised it. -/
 inductive RepeatableNumberPlanFault where

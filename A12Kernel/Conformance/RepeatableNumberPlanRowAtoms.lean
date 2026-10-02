@@ -104,14 +104,8 @@ private def step (target : String) :
   elaborateCompleteNumericTargetComputationTable model rowsPath (idOf target) [(none, expression target)]
     (targetScope := .row)
 
-/-- The seven atoms Lean runs at a row. `FX` and `BS` take a group operand, which the row route's
-reader refuses as `unsupportedGroupOperand`, and `GC` counts fixed groups inside the repeatable level,
-which the plan refuses as `rowGroupInsideRepeatable`; the Kernel computes all three, so their rows
-stay unlocked rather than lock a refusal. -/
-private def running : List String := targets.filter fun target => !["FX", "BS", "GC"].contains target
-
 private def plan? : Option (CheckedRepeatableNumberPlan model) := do
-  (certifyRepeatableNumberPlan (← running.mapM fun target => (step target).toOption)).toOption
+  (certifyRepeatableNumberPlan (← targets.mapM fun target => (step target).toOption)).toOption
 
 private def classified (name : String) (text : String) : RawCell :=
   if name == "T" then
@@ -174,22 +168,25 @@ private def clean : List RowInput :=
 
 /- `a01`: the row's own `A`, `B`, `T` and `Sub` rows, an empty `B` reading as zero for `Min`; the
 filtered star keeps the rows whose `A` exceeds the computing row's, the third row's keeping none;
-`ML` counts the row's own `Sub` rows beside the root `Fix`. -/
+`FX` reads the root `Fix` at every row, `BS` the row's own `Det` groups, `ML` the row's own `Sub` rows
+beside `Fix`, and `GC` the row's own `Box` and `Pad`. -/
 example :
     outcomes? clean ["7", "9"] = some
-      ["DV 1 2", "DV 2 1", "DV 3 0", "FF 1 4", "FF 2 10", "FF 3 0", "FV 1 12", "FV 2 7", "FV 3 3",
+      ["BS 1 1", "BS 2 5", "BS 3 0", "DV 1 2", "DV 2 1", "DV 3 0", "FF 1 4", "FF 2 10", "FF 3 0",
+        "FV 1 12", "FV 2 7", "FV 3 3", "FX 1 16", "FX 2 16", "FX 3 16", "GC 1 2", "GC 2 1", "GC 3 0",
         "ML 1 3", "ML 2 2", "ML 3 1", "MN 1 1", "MN 2 2", "MN 3 0", "MV 1 2", "MV 2 6", "MV 3 0",
         "VC 1 1", "VC 2 1", "VC 3 0"] := by
   native_decide
 
-/- `a02`: a malformed `IA` clears only its own row's `MV` and `DV`; a malformed `A` clears its own
-`MN` and every row's filtered `FF` and `VC`, since every filter reads it; a pattern-violating `T`
-clears its `FV`. -/
+/- `a02`: a malformed `IA` clears only its own row's `MV` and `DV`, and a malformed `DA` its row's
+`BS`; a malformed `A` clears its own `MN` and every row's filtered `FF` and `VC`, since every filter
+reads it; a pattern-violating `T` clears its `FV`. -/
 example :
     outcomes? [{ a := "1", b := "5", t := "12", subs := [("2", "1"), ("x", "")], box := "1", pad := "1" },
         { a := "x", b := "2", t := "7", subs := [("6", "x")], pad := "1" }, { a := "10", t := "z" }]
         ["7", "9"] = some
-      ["DV 1 -", "DV 2 1", "DV 3 0", "FF 1 -", "FF 2 -", "FF 3 -", "FV 1 12", "FV 2 7", "FV 3 -",
+      ["BS 1 1", "BS 2 -", "BS 3 0", "DV 1 -", "DV 2 1", "DV 3 0", "FF 1 -", "FF 2 -", "FF 3 -",
+        "FV 1 12", "FV 2 7", "FV 3 -", "FX 1 16", "FX 2 16", "FX 3 16", "GC 1 2", "GC 2 1", "GC 3 0",
         "ML 1 3", "ML 2 2", "ML 3 1", "MN 1 1", "MN 2 -", "MN 3 0", "MV 1 -", "MV 2 6", "MV 3 0",
         "VC 1 -", "VC 2 -", "VC 3 -"] := by
   native_decide
@@ -200,10 +197,11 @@ example :
     outcomes? [{ a := "1", b := "5", t := "12", subs := [("2", "1"), ("3", ""), ("1", "100")], box := "1", pad := "1" },
         { a := "4", b := "2", t := "7", subs := [("6", "5")], pad := "1" }, { a := "10", t := "3" },
         { a := "2", b := "1", t := "1" }] ["7", "9"] = some
-      ["DV 1 2", "DV 2 1", "DV 3 0", "DV 4 -", "FF 1 4", "FF 2 10", "FF 3 0", "FF 4 -", "FV 1 12",
-        "FV 2 7", "FV 3 3", "FV 4 -", "ML 1 3", "ML 2 2", "ML 3 1", "ML 4 -", "MN 1 1", "MN 2 2",
-        "MN 3 0", "MN 4 -", "MV 1 2", "MV 2 6", "MV 3 0", "MV 4 -", "VC 1 1", "VC 2 1", "VC 3 0",
-        "VC 4 -"] := by
+      ["BS 1 1", "BS 2 5", "BS 3 0", "BS 4 -", "DV 1 2", "DV 2 1", "DV 3 0", "DV 4 -", "FF 1 4",
+        "FF 2 10", "FF 3 0", "FF 4 -", "FV 1 12", "FV 2 7", "FV 3 3", "FV 4 -", "FX 1 16", "FX 2 16",
+        "FX 3 16", "FX 4 -", "GC 1 2", "GC 2 1", "GC 3 0", "GC 4 -", "ML 1 3", "ML 2 2", "ML 3 1",
+        "ML 4 -", "MN 1 1", "MN 2 2", "MN 3 0", "MN 4 -", "MV 1 2", "MV 2 6", "MV 3 0", "MV 4 -",
+        "VC 1 1", "VC 2 1", "VC 3 0", "VC 4 -"] := by
   native_decide
 
 /- `a04`: an empty computing-row `A` keeps every row with a positive `A`, an empty `T` reads as zero, an instantiated
@@ -212,7 +210,8 @@ nothing. -/
 example :
     outcomes? [{ a := "", subs := [("", "")] }, { a := "4", b := "2", t := "7", subs := [("6", "5")] },
         { a := "10" }] [] = some
-      ["DV 1 0", "DV 2 1", "DV 3 0", "FF 1 4", "FF 2 10", "FF 3 0", "FV 1 0", "FV 2 7", "FV 3 0",
+      ["BS 1 0", "BS 2 5", "BS 3 0", "DV 1 0", "DV 2 1", "DV 3 0", "FF 1 4", "FF 2 10", "FF 3 0",
+        "FV 1 0", "FV 2 7", "FV 3 0", "FX 1 0", "FX 2 0", "FX 3 0", "GC 1 0", "GC 2 0", "GC 3 0",
         "ML 1 1", "ML 2 1", "ML 3 0", "MN 1 0", "MN 2 2", "MN 3 0", "MV 1 0", "MV 2 6", "MV 3 0",
         "VC 1 1", "VC 2 1", "VC 3 0"] := by
   native_decide

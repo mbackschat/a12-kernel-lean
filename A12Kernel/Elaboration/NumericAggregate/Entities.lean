@@ -187,7 +187,7 @@ def resolvedComputationAggregateSide
             hasHaving := true })
       | .terminated cause | .poison cause =>
           pure (.inr (.unknown cause))
-  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
+  | .group slot => .inl <$> slot.resolvedSideIn .computation document outer starRead
 
 /-- Resolve one validation aggregate slot from the immutable checked document. Validation filters evaluate every candidate before the first target classification; target reads then stop at the first formal cause.
 

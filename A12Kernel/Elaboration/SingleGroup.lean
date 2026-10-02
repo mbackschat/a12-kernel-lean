@@ -209,10 +209,19 @@ def repeatableDescendantShape? (reference : ResolvedGroupReference) (model : Fla
       reference.path.isPrefixOf group.path
     if repeatables.isEmpty then none else some repeatables
 
+/-- A nonrepeatable group below a repeatable level, which a count at a row target reads as the
+    instance the computing row binds, as the Kernel counts a row's own fixed groups
+    ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-atoms)). -/
+def boundInstanceOperand (reference : ResolvedGroupReference) (model : FlatModel) : Bool :=
+  model.hasGroupPath reference.path &&
+    !(model.repeatableScopeForGroupPath reference.path).isEmpty &&
+    !model.repeatableGroups.any (·.path == reference.path)
+
 /-- Whether the computation arm admits this group as a count operand at all.
 
-    The one place the two admitted shapes are named together: a subtree of ordinary descendant
-    cells, or a repeatable descendant whose rows the document carries. Both the pre-read structural
+    The one place the three admitted shapes are named together: a subtree of ordinary descendant
+    cells, a repeatable descendant whose rows the document carries, or the instance a row binds of a
+    group below a repeatable level. Both the pre-read structural
     fault pass and the operand reader decide admission through this, so a widening cannot reach one
     and leave the other refusing the same operand — the divergence that
     `readGroupCountOperand_fixed_error_iff_notAdmitted` now forbids.
@@ -224,7 +233,8 @@ def repeatableDescendantShape? (reference : ResolvedGroupReference) (model : Fla
     predicate is newer. -/
 def computationOperandAdmitted (reference : ResolvedGroupReference) (model : FlatModel) : Bool :=
   (reference.computationDescendants? model).isSome ||
-    (reference.repeatableDescendantShape? model).isSome
+    (reference.repeatableDescendantShape? model).isSome ||
+    reference.boundInstanceOperand model
 
 end ResolvedGroupReference
 
