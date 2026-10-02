@@ -17,16 +17,17 @@ this choice is the replay's and the population replay is what checks it.
 
 namespace A12Kernel.Dm
 
-/-- A fired rule message as the Kernel reports it: code, pointer and `VALUE_ERROR` or
-`OMISSION_ERROR`. -/
+/-- A fired rule message as the Kernel reports it: code, pointer, `VALUE_ERROR` or
+`OMISSION_ERROR`, and severity. -/
 structure ObservedMessage where
   code : String
   pointer : String
   messageType : String
+  severity : String
   deriving Repr, BEq, Ord, Inhabited
 
 instance : ToString ObservedMessage where
-  toString message := s!"{message.code}@{message.pointer}:{message.messageType}"
+  toString message := s!"{message.code}@{message.pointer}:{message.messageType}/{message.severity}"
 
 private def severity? : String → Option ValidationSeverity
   | "ERROR" => some .error
@@ -91,7 +92,9 @@ def observe (model : FlatModel) (message : FlatRuleMessage) : ObservedMessage :=
   { code := message.errorCode, pointer := renderPointer model message.errorAddress
     messageType := match message.messageType with
       | .value => "VALUE_ERROR"
-      | .omission => "OMISSION_ERROR" }
+      | .omission => "OMISSION_ERROR"
+    severity := match message.severity with
+      | .error => "ERROR" | .warning => "WARNING" | .info => "INFO" }
 
 /-- Run one checked rule over a checked document on its certified iteration plan. -/
 def runRule (world : World) (checked : CheckedDocument model)
@@ -110,7 +113,9 @@ def runRule (world : World) (checked : CheckedDocument model)
         scalar := {
           fields := checked.flatContext.withWorld world
           -- A fixed group operand reads its full-validation slice of the document, as the
-          -- addressed numeric route does for the same groups.
+          -- addressed numeric route does for the same groups. This context has no error channel, so
+          -- an addressing error, which only a group below an unbound repeatable level could raise,
+          -- reads as an unavailable group, UNKNOWN rather than a fault.
           groups := fun path =>
             (checked.groupPresenceInput path [] .fullyRelevant false).toOption.map (·.derive) }
         outer := []

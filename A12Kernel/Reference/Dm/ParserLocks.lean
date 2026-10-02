@@ -91,4 +91,13 @@ example :
       (some { segments := [{ name := "Items", star := false }] }))].all id := by
   native_decide
 
+/- The H-model constructs are keywords in a German model only: `[ZeilenLueckenlos]` is no field read
+there, while an English model reads the same spelling as a name. -/
+example :
+    [keywordId? .german "VordruckAngegeben" == some "VordruckAngegeben",
+     keywordId? .english "VordruckAngegeben" == none,
+     (parseText .german "[ZeilenLueckenlos] > 0").toOption.isNone,
+     (parseText .english "[ZeilenLueckenlos] > 0").toOption.isSome].all id := by
+  native_decide
+
 end A12Kernel.Dm.ParserLocks

@@ -9,8 +9,9 @@ computations. This reader expands it into the `FlatModel` the elaborators take, 
 condition and each computation's alternatives as authored text for the DSL reader.
 
 It is an input adapter, differentially tested by the replay rather than proved. Every declaration it
-cannot map is kept with its reason in `DmModel.refusals` and its field left out of the model, so a
-replay row that needs it is refused as unrepresented instead of evaluated against a guess. Field ids
+cannot map, a bound it cannot read and an index naming no field included, is kept with its reason in
+`DmModel.refusals` and its field left out of the model, and the replay refuses such a model whole
+rather than evaluating any rule against a guess. Field ids
 follow depth-first declaration order, which is the order `FlatModel.fields` requires, and repeatable
 levels are numbered in the order their groups are reached.
 -/
@@ -73,15 +74,17 @@ private def nat? (json : Json) (key : String) : Option Nat :=
 private def bool? (json : Json) (key : String) : Option Bool :=
   (json.getObjValAs? Bool key).toOption
 
-/-- A DM decimal bound, written as a JSON number or a string. -/
-private def rat? (json : Json) (key : String) : Option Rat :=
+/-- A DM decimal bound, written as a JSON number or an integer string; absent is `none`, and any
+other value refuses the declaration rather than dropping the bound. -/
+private def rat? (json : Json) (key : String) : Except String (Option Rat) :=
   match json.getObjVal? key with
-  | .ok (.num number) => some (Rat.ofScientific number.mantissa.natAbs true number.exponent *
-      (if number.mantissa < 0 then -1 else 1))
+  | .ok (.num number) => pure (some (Rat.ofScientific number.mantissa.natAbs true number.exponent *
+      (if number.mantissa < 0 then -1 else 1)))
   | .ok (.str text) => match text.toInt? with
-    | some value => some value
-    | none => none
-  | _ => none
+    | some value => pure (some value)
+    | none => throw s!"{key} {text}"
+  | .ok .null | .error _ => pure none
+  | .ok other => throw s!"{key} {other.compress}"
 
 private def partialMode? : Option String → Except String TemporalPartialMode
   | none | some "FULL" => pure .full
@@ -126,7 +129,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
           zeroAllowed := !(bool? body "zeroNotAllowed").getD false
           leadingZerosAllowed := (bool? body "leadingZerosAllowed").getD false
           minStoredLength := nat? body "minLength", maxStoredLength := nat? body "maxLength"
-          minimum := rat? body "minValue", maximum := rat? body "maxValue" } }
+          minimum := ← rat? body "minValue", maximum := ← rat? body "maxValue" } }
   | "BooleanType" => pure { base with policy := { kind := .boolean } }
   | "ConfirmType" => pure { base with policy := { kind := .confirm } }
   | "EnumerationType" =>
@@ -231,10 +234,16 @@ def readModel (json : Json) : Except String DmModel := do
   let ((), state) ← (roots.toList.forM (readElement [] [])).run {}
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
-  let groups := state.groups.toList.map fun group =>
+  let mut refusals := state.refusals.toList
+  let mut groups := []
+  for group in state.groups.toList do
     match state.indexFields.find? (·.1 == group.level) with
-    | some (_, groupPath, index) => { group with indexField := fieldId groupPath index }
-    | none => group
+    | some (_, groupPath, index) =>
+        -- An index naming no field of its group refuses the group's index, not the whole read.
+        if (fieldId groupPath index).isNone then
+          refusals := refusals ++ [(groupPath, s!"indexFieldName {index} names no field")]
+        groups := groups ++ [{ group with indexField := fieldId groupPath index }]
+    | none => groups := groups ++ [group]
   pure {
     flat := {
       fields := state.fields.toList
@@ -245,6 +254,6 @@ def readModel (json : Json) : Except String DmModel := do
     rules := state.rules.toList
     computations := state.computations.toList
     conditionLanguage := ((config.getObjVal? "conditionLanguage").toOption.bind (str? · "code")).getD "en_US"
-    refusals := state.refusals.toList }
+    refusals }
 
 end A12Kernel.Dm

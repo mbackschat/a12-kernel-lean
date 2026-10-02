@@ -42,7 +42,10 @@ def replayRules (model : DmModel) (language : Language) (world : World)
     (checked : CheckedDocument model.flat) (kernel : List ObservedMessage) : List RuleVerdict :=
   model.rules.map fun rule =>
     let expected := (kernel.filter (·.code == rule.errorCode)).mergeSort (compare · · != .gt)
-    let status := match checkRule model language rule with
+    -- Messages are attributed by code, so a code two rules share cannot be told apart.
+    let shared := (model.rules.filter (·.errorCode == rule.errorCode)).length > 1
+    let status := if shared then .refused { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
+      else match checkRule model language rule with
       | .error refusal => .refused refusal
       | .ok checked' =>
           match runRule world checked checked' with

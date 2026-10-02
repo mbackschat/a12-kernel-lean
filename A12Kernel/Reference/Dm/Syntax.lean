@@ -89,6 +89,15 @@ def Language.ofCode? : String → Option Language
   | "de_DE" => some .german
   | _ => none
 
+/-- The H-model form constructs, keywords only in a German model and with no English spelling
+(spec §12.1: 125 German spellings against 112 English ones). Each is its own id; no lowering admits
+one, so a rule naming one is refused by it rather than read as a field. -/
+def germanOnlyKeywords : List String := [
+  "AktuelleVordruckNummer", "AnzahlAngegebenerVordrucke", "AnzahlAngegebeneUsb", "KeinVordruckAngegeben",
+  "MaximalAngegebenerZeilenindex", "MindestensEinVordruckAngegeben", "UsbNichtFortlaufend",
+  "VordruckAngegeben", "VordruckNichtAngegeben", "VordruckNichtFortlaufend", "ZeileNichtEindeutig",
+  "ZeilenLueckenlos", "ZeilenNichtAufsteigend"]
+
 /-- The keyword a spelling denotes in one language, by its English id. Only the connectives, `In`
 and the range keyword admit case variants, each family enumerated rather than case-folded (spec §12.1). -/
 def keywordId? (language : Language) (spelling : String) : Option String :=
@@ -98,8 +107,9 @@ def keywordId? (language : Language) (spelling : String) : Option String :=
   if spelling == "In" || spelling == "in" || spelling == "IN" then some "In"
   else match families.find? (·.2.contains spelling) with
     | some (id, _) => some id
-    | none => (keywordPairs.find? fun (english, german) =>
-        spelling == match language with | .english => english | .german => german).map (·.1)
+    | none => ((keywordPairs.find? fun (english, german) =>
+        spelling == match language with | .english => english | .german => german).map (·.1)).orElse
+          fun _ => if language == .german && germanOnlyKeywords.contains spelling then some spelling else none
 
 /-- The Kernel's class for a refused text; spec §12.3.1 owns which one a text draws. -/
 inductive SyntaxErrorClass

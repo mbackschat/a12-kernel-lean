@@ -8,12 +8,12 @@ A Kernel document in a `kernelProbe` request is nested JSON: an object per group
 name, a repeatable group as an array of its rows in index order, and a field as its stored scalar. This
 reader turns one into `DocumentData` for `checkDocument`, deriving every cell's parsed value from its
 stored text through the model's own classifiers. A JSON boolean stores the Kernel's `true` or `false`
-token and a JSON number its decimal spelling. A JSON `null` is a field present without a value, as
+token and a JSON number its decimal spelling, unless that spelling ends its fraction in zeros. A JSON `null` is a field present without a value, as
 a12-dmkits' `document-instance.schema.json` reads the Kernel's document format, and a missing key is an
 absent field.
 
-A field the model reader refused, a key the model does not declare, or a temporal text no classifier
-owns is reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused
+A field the model reader refused, a key or object the model declares nothing for, a JSON number whose
+written scale its rendering would drop, or a temporal text no classifier owns is reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused
 as unrepresented instead of evaluated against a guess.
 -/
 
@@ -26,12 +26,15 @@ structure DmDocument where
   refusals : List (List String × String)
   deriving Repr
 
-/-- The text the Kernel stores for one scalar JSON value. -/
-private def storedText? : Json → Option String
+/-- The text the Kernel stores for one scalar JSON value. A JSON number whose written fraction ends
+in zeros, such as `10.50`, has no text here: rendering drops the zeros, and whether the Kernel's
+reading keeps that scale is unmeasured, since a fraction-digit limit accepts both spellings alike. -/
+def storedText? : Json → Option String
   | .str text => some text
   | .bool true => some "true"
   | .bool false => some "false"
-  | .num number => some number.toString
+  | .num number =>
+      if number.exponent > 0 && number.mantissa % 10 == 0 then none else some number.toString
   | .null => some ""
   | _ => none
 
@@ -130,7 +133,7 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
     match model.flat.fields.find? fun field => field.groupPath == group && field.name == name with
     | some declaration =>
         match storedText? value with
-        | none => refuse childPath "field value is no scalar"
+        | none => refuse childPath "field value is no scalar, or a number whose written scale is unmeasured"
         | some stored =>
             match classifyStored model.flat declaration { field := declaration.id, path } stored with
             | .ok cell => modify fun state => { state with cells := state.cells.push cell }
@@ -146,7 +149,10 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
               | _ => refuse childPath "repeatable row is no object"
         | none, .obj members =>
             if model.refusals.any (·.1 == childPath) then refuse childPath "declaration refused by the model reader"
-            else readInstance model childPath path members.toList
+            -- A nonrepeatable group is known by the fields declared below it.
+            else if model.flat.fields.any (childPath.isPrefixOf ·.groupPath) then
+              readInstance model childPath path members.toList
+            else refuse childPath "member the model does not declare"
         | _, _ =>
             if model.refusals.any (·.1 == childPath) then refuse childPath "declaration refused by the model reader"
             else refuse childPath "member the model does not declare"

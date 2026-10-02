@@ -97,6 +97,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         [do
           let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
           let some threshold := decodeNumber? threshold | refuse "NumberOfFilledFields" "threshold"
+          -- A count compared with a fractional literal is unmeasured; the carrier takes an integral one.
+          if threshold.authoredScale != 0 then refuse "NumberOfFilledFields" "fractional threshold"
           let source ← lowerEntitySource model rowGroup arguments
           let checked ← elaborated "NumberOfFilledFields"
             (elaborateFilledFieldCountComparison model rowGroup source numericOp threshold.value)
@@ -106,6 +108,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
     | .compare op (.call "NumberOfFilledGroups" arguments none none) (.number threshold) => [do
         let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
         let some threshold := decodeNumber? threshold | refuse "NumberOfFilledGroups" "threshold"
+        -- A count compared with a fractional literal is unmeasured; the carrier takes an integral one.
+        if threshold.authoredScale != 0 then refuse "NumberOfFilledGroups" "fractional threshold"
         let operands ← arguments.mapM lowerGroupCountOperand
         let checked ← elaborated "NumberOfFilledGroups"
           (elaborateMixedFilledGroupCountComparison model rowGroup operands numericOp threshold.value)

@@ -63,13 +63,13 @@ Options:
 - **(b)** import a12-dmkits' parsed form through an upstream export;
 - **(c)** keep transcribing by hand.
 
-**Recommendation: (a).** The model importer is small, because `Reference/StrictJson.lean` already parses JSON. A Lean-native text reader keeps the theory usable on its own by every consumer it serves. It also lets Lean meet the static-legality oracle directly: `dmtool rule check` accept or refuse, and the MVK class, against Lean's. That addresses the uncovered checker codes without a hand grid per code.
+**Recommendation: (a).** The model importer is small, because `Reference/StrictJson.lean` already parses JSON. A Lean-native text reader keeps the theory usable on its own by every consumer it serves. It also lets Lean meet the static-legality oracle directly: `dmtool rule check` accept or refuse, and the MVK class, against Lean's. That addresses the uncovered checker codes without a hand grid per code. As built, the reader parses with `Lean.Data.Json` rather than `StrictJson`, whose number rendering drops a written fraction's trailing zeros, so the [document reader](../A12Kernel/Reference/Dm/Document.lean) refuses such a number instead of guessing its scale.
 
 Under (b), every Lean surface change would wait on a peer schema. The parser stays outside the proof boundary that [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#scope-boundary) already draws. It is differentially tested, never proved, and written from `spec/` and the peer's grammar classification, never by transcribing the Kernel grammar. This decision changes that scope table's "initially outside" parser row.
 
 ### D2 — one population differential instead of per-capsule grids
 
-The runner is one Lean executable. It reads a `kernelProbe` request (a model plus named documents) and prints the same row projection the probe artifact yields. One script compares the two and clusters divergences into a committed ledger with the peer's tiers:
+The runner is one Lean executable. It reads a `kernelProbe` request (a model plus named documents) and prints the same row projection the probe artifact yields. One script compares the two and clusters divergences into a committed ledger with the peer's tiers (as built, the replay executable compares and classifies each instance itself, and the coverage report only counts its lines):
 
 - **tier 1** — a different value or verdict;
 - **tier 2** — Lean refuses or cannot represent what the Kernel answers.

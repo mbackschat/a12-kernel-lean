@@ -37,6 +37,12 @@ example :
     [admitted "AtLeastOneFieldFilled(Head)", !admitted "AtLeastOneFieldFilled(Head -> Code)"].all id := by
   native_decide
 
+/- A count compared with a fractional threshold is refused, where the carrier would read `1.5` as an
+integral literal. -/
+example :
+    [admitted "NumberOfFilledFields(Head) < 2", !admitted "NumberOfFilledFields(Head) < 1.5"].all id := by
+  native_decide
+
 private def ruleAt (errorPath : String) : DmRule :=
   { group := ["Order"], name := "R", errorEntityRelPath := errorPath, errorCode := "E"
     condition := "FieldFilled(Ref)", severity := "ERROR" }

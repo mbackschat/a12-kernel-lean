@@ -14,10 +14,15 @@ row replays every rule and prints one tab-separated line per rule:
 
 `request  row  rule  code  tier  construct  detail`
 
-where `tier` is `match`, `tier1` (Lean fires a different message set), `tier2` (Lean cannot
-represent the rule or the document), or `fault` (a structural failure inside Lean). A row whose
-document or model cannot be read prints one line with the rule column `-`. The Kernel's first engine
-is the reference; a row whose engines disagree is reported as such and not compared.
+where `tier` is `match`, `tier1` (Lean fires a different message set), `unattributed` (a computation
+divergence beside a refused computation, which may have fed it), `tier2` (Lean cannot represent the
+rule, the computation, the model or the document), `fault` (Lean admitted the rule or plan but
+failed running it), or `absent` (no comparable Kernel observation: none retained, an unreadable
+artifact or model file, or engines that disagree). A row whose document or model cannot be read
+prints one line with the rule column `-`. The Kernel's first engine is the reference.
+
+A rule or computation reading `Today` or `Now` is refused when the request pins no clock, since the
+Kernel then read the real one. Dates resolve in the model zone through `ModelZone.concreteRules`.
 -/
 
 namespace A12Kernel.Replay
@@ -59,7 +64,8 @@ private def kernelMessages (row : Json) : Option (Bool × List ObservedMessage) 
   pure (agree, messages.toList.filterMap fun message => do
     pure { code := ← (message.getObjValAs? String "code").toOption
            pointer := ← (message.getObjValAs? String "field").toOption
-           messageType := ← (message.getObjValAs? String "type").toOption })
+           messageType := ← (message.getObjValAs? String "type").toOption
+           severity := (message.getObjValAs? String "severity").toOption.getD "ERROR" })
 
 private def kernelComputations (row : Json) : Option (List ComputedOutcome) := do
   let engines ← (row.getObjValAs? (Array Json) "engines").toOption
@@ -81,36 +87,65 @@ private def unindexed (pointer : String) : String :=
 private def sorted (outcomes : List ComputedOutcome) : List ComputedOutcome :=
   outcomes.mergeSort (compare · · != .gt)
 
+/-- Whether a condition or operation text names `Today` or `Now`. -/
+private def readsClock (language : Language) (text : String) : Bool :=
+  match lex language text with
+  | .ok lexemes => lexemes.any fun lexeme => lexeme.token == .keyword "Today" || lexeme.token == .keyword "Now"
+  | .error _ => false
+
+private def computationTexts (computation : DmComputation) : List String :=
+  computation.commonPrecondition.toList ++ computation.alternatives.flatMap fun alternative =>
+    alternative.precondition.toList ++ [alternative.operation]
+
+/-- The names a text reads, by its lexed name tokens. -/
+private def namesRead (language : Language) (text : String) : List String :=
+  match lex language text with
+  | .ok lexemes => lexemes.toList.filterMap fun lexeme => match lexeme.token with
+      | .name name => some name
+      | _ => none
+  | .error _ => []
+
+private def targetName (computation : DmComputation) : String :=
+  ((computation.targetRelPath.splitOn "/").getLast?.getD "").dropWhile (· == '.') |>.toString
+
 /-- Compare every computation of `model` on one checked document against the Kernel's outcomes,
 printing one line per computation through `line`. -/
 private def replayComputations (line : String → String → String → String → IO Unit)
-    (model : DmModel) (language : Language) (world : World)
+    (clocked : Bool) (model : DmModel) (language : Language) (world : World)
     (prepared : PreparedFlatStringContext model.flat compilePattern)
     (checked : CheckedDocument model.flat) (kernel : List ComputedOutcome) : IO Unit := do
   let attempts := model.computations.map fun computation =>
-    (computation, lowerComputation model.flat language computation)
+    (computation, if !clocked && (computationTexts computation).any (readsClock language) then
+        .error { construct := "Clock", detail := "the request pins no clock" }
+      else lowerComputation model.flat language computation)
   for (computation, attempt) in attempts do
     if let .error refusal := attempt then
       line computation.name "compute" "tier2" s!"{refusal.construct}\t{oneLine refusal.detail}"
   let admitted := attempts.filterMap fun (computation, attempt) =>
     attempt.toOption.map fun (target, lowered) => (computation, target, lowered)
   if admitted.isEmpty then return
-  let partial_ := admitted.length != attempts.length
+  let refusedTargets := attempts.filterMap fun (computation, attempt) =>
+    if attempt.toOption.isNone then some (targetName computation) else none
   match runComputations world prepared checked (admitted.map (·.2.2)) with
   | .error refusal =>
+      -- A plan Lean certified and then failed to run is a fault; an uncertified plan is a refusal.
+      let tier := if refusal.construct == "ComputationRun" then "fault" else "tier2"
       for (computation, _, _) in admitted do
-        line computation.name "compute" "tier2" s!"{refusal.construct}\t{oneLine refusal.detail}"
+        line computation.name "compute" tier s!"{refusal.construct}\t{oneLine refusal.detail}"
   | .ok outcomes =>
       for (computation, target, _) in admitted do
         let path := "/".intercalate target.path
         let lean := sorted (outcomes.filter (unindexed ·.pointer == path))
         let expected := sorted (kernel.filter (unindexed ·.pointer == path))
-        if lean == expected then line computation.name "compute" "match" ""
-        else
-          -- Beside a refused computation a target may read a stored value the Kernel computed, so the
-          -- divergence is not attributable to this computation.
-          let tier := if partial_ then "unattributed" else "tier1"
-          line computation.name "compute" tier s!"Divergence\tlean={lean} kernel={expected}"
+        -- A computation reading a refused computation's target may read a stored value the Kernel
+        -- would have recomputed, so neither its agreement nor its divergence is attributable to it.
+        -- The test is by name and so over-approximates the reads.
+        let fed := (computationTexts computation).any fun text =>
+          (namesRead language text).any refusedTargets.contains
+        if fed then
+          line computation.name "compute" "unattributed" s!"Fed\tlean={lean} kernel={expected}"
+        else if lean == expected then line computation.name "compute" "match" ""
+        else line computation.name "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"
 
 private def replayRequest (requestPath : System.FilePath) : IO Unit := do
   let line (row rule code tier rest : String) :=
@@ -122,12 +157,20 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
   let model ← match readModel (← readJson (directory / modelName)) with
     | .ok model => pure model
     | .error reason => do line "-" "-" "-" "tier2" s!"Model\t{reason}"; return
+  -- A declaration the reader could not map leaves every rule and computation reading it
+  -- unrepresented, and a group read cannot be told from one that skips it, so the model is refused.
+  if let some (path, reason) := model.refusals.head? then
+    line "-" "-" "-" "tier2" s!"Model\t{"/".intercalate path}: {reason}"; return
   let some language := Language.ofCode? model.conditionLanguage
     | line "-" "-" "-" "tier2" s!"Language\t{model.conditionLanguage}"
   let locale := (request.getObjValAs? String "locale").toOption.getD "en_US"
-  let clock := ((request.getObjValAs? String "clock").toOption.bind clockMillis?).getD 0
-  let world : World := { now := { epochMillis := clock } }
-  let artifact ← try pure (some (← readJson (artifactPath requestPath))) catch _ => pure none
+  let clock? := (request.getObjValAs? String "clock").toOption.bind clockMillis?
+  let world : World := { now := { epochMillis := clock?.getD 0 }, modelZoneRules := ModelZone.concreteRules }
+  let artifactFile := artifactPath requestPath
+  let artifact ← if ← artifactFile.pathExists then
+      try pure (some (← readJson artifactFile)) catch error => do
+        line "-" "-" "-" "absent" s!"Artifact\tunreadable: {error}"; return
+    else pure none
   let artifactRows := (artifact.bind fun json => (json.getObjValAs? (Array Json) "rows").toOption).getD #[]
   let prepared ← match prepareFlatStringContext world builtinStringPatternCompiler model.flat with
     | .ok prepared => pure prepared
@@ -138,7 +181,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
       (observed.getObjValAs? String "name").toOption == some name
     let some (agree, kernel) := observedRow.bind kernelMessages
       | line name "-" "-" "absent" "Artifact\tno retained observation"
-    if !agree then line name "-" "-" "fault" "Engines\tthe Kernel's engines disagree"; continue
+    if !agree then line name "-" "-" "absent" "Engines\tthe Kernel's engines disagree"; continue
     let document ← match row.getObjVal? "documentInline", row.getObjValAs? String "document" with
       | .ok inline, _ => pure inline
       | _, .ok file => readJson (directory / file)
@@ -153,15 +196,18 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
         | .error error => line name "-" "-" "tier2" s!"Document\t{(repr error).pretty 200}"
         | .ok checked =>
             for verdict in replayRules model language world checked kernel do
-              line name verdict.rule.name verdict.rule.errorCode verdict.status.tier
-                verdict.status.detail
+              if clock?.isNone && readsClock language verdict.rule.condition then
+                line name verdict.rule.name verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"
+              else
+                line name verdict.rule.name verdict.rule.errorCode verdict.status.tier
+                  verdict.status.detail
             if let some computed := observedRow.bind kernelComputations then
-              replayComputations (line name) model language world prepared checked computed
+              replayComputations (line name) clock?.isSome model language world prepared checked computed
 
 end A12Kernel.Replay
 
 def main (arguments : List String) : IO UInt32 := do
   for argument in arguments do
     try A12Kernel.Replay.replayRequest argument
-    catch error => IO.println s!"{argument}\t-\t-\t-\ttier2\tIO\t{(toString error).replace "\n" " "}"
+    catch error => IO.println s!"{argument}\t-\t-\t-\tabsent\tIO\t{(toString error).replace "\n" " "}"
   pure 0

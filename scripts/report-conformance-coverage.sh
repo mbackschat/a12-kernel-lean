@@ -318,7 +318,11 @@ done
 replay_rows="$(awk -F'\t' '{ print $1 "\t" $2 }' "$work/replay" | sort -u | count /dev/stdin)"
 replay_rows_absent="$(awk -F'\t' '$3 == "-" && $5 == "absent" { print $1 "\t" $2 }' "$work/replay" | sort -u | count /dev/stdin)"
 replay_rows_refused="$(awk -F'\t' '$3 == "-" && $5 != "absent" { print $1 "\t" $2 }' "$work/replay" | sort -u | count /dev/stdin)"
-replay_compared=$(( replay_rule_match + replay_rule_tier1 + replay_compute_match + replay_compute_tier1 ))
+# Every instance Lean admitted: a fault and an unattributed computation are admitted too, so they stay
+# in the denominator rather than shrinking it.
+replay_unattributed=$(( replay_rule_unattributed + replay_compute_unattributed ))
+replay_fault=$(( replay_rule_fault + replay_compute_fault ))
+replay_compared=$(( replay_rule_match + replay_rule_tier1 + replay_compute_match + replay_compute_tier1 + replay_unattributed + replay_fault ))
 replay_matched=$(( replay_rule_match + replay_compute_match ))
 replay_tier1=$(( replay_rule_tier1 + replay_compute_tier1 ))
 # A cluster counts instances (one rule or computation on one row) and distinct members (one rule or
@@ -427,7 +431,7 @@ Working-tree counts generated on ${today}; HEAD was \`${revision}\`. The vocabul
 
 ## Headline
 
-**Replaying ${replay_rows} retained Kernel observation rows through Lean, ${replay_matched} of the ${replay_compared} rule and computation instances Lean represents match the Kernel and ${replay_tier1} diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the ${admitted_cells} construct-by-arm cells the Kernel admits, Lean represents ${broad_cells} broadly ($(percent "$broad_cells" "$admitted_cells")%), ${partial_cells} partially and ${absent_cells} not at all, as classified on ${classified_on} in [Axis 0](#axis-0--kernel-constructs-by-arm).** ${in_lean} of ${total_classes} diagnostic identifiers occur in Lean source ($(percent "$in_lean" "$total_classes")%); ${modelled_untouched} do not.
+**Replaying ${replay_rows} retained Kernel observation rows through Lean, ${replay_matched} of the ${replay_compared} rule and computation instances Lean admits match the Kernel, ${replay_tier1} diverge, ${replay_unattributed} are not attributable beside a refused computation and ${replay_fault} fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the ${admitted_cells} construct-by-arm cells the Kernel admits, Lean represents ${broad_cells} broadly ($(percent "$broad_cells" "$admitted_cells")%), ${partial_cells} partially and ${absent_cells} not at all, as classified on ${classified_on} in [Axis 0](#axis-0--kernel-constructs-by-arm).** ${in_lean} of ${total_classes} diagnostic identifiers occur in Lean source ($(percent "$in_lean" "$total_classes")%); ${modelled_untouched} do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -488,9 +492,10 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 - **match**: the same outcome. A rule that fires on neither side matches too.
 - **tier 1**: a different outcome.
-- **tier 2**: Lean cannot represent the rule, computation or document. The construct column names the carrier that is missing.
-- **unattributed**: a computation diverging beside a refused one whose value it may read.
-- **fault**: a structural failure inside Lean.
+- **tier 2**: Lean cannot represent the rule, computation, model or document. The construct column names the construct no carrier admitted, or the carrier whose elaborator refused it.
+- **unattributed**: a computation reading, by name, the target of a refused computation, so neither its agreement nor its divergence is attributable to it.
+- **fault**: Lean admitted the rule or plan but failed running it.
+- **absent**: no comparable Kernel observation: none retained, an unreadable artifact or model file, or engines that disagree. These are counted as rows below.
 
 | | rules | computations |
 |---|---|---|

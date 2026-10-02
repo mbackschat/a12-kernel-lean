@@ -7,17 +7,15 @@ import A12Kernel.Elaboration.MixedComputationPlan
 /-! # Running a DM model's computations over one document
 
 Each computation is parsed and lowered onto the checked table of its target's kind, with its common
-precondition joined onto every alternative. The tables then run on one of the two executors that
-exist: the repeatable Number plan, which addresses fixed and row targets, when every lowered target
-is a Number, and otherwise the scalar plan, which runs String and Number targets at fixed addresses
-only. Every other target kind, a row target beside a String target, and every operation no carrier
-admits is refused by construct.
+precondition joined onto every alternative, or refused by the construct no carrier admits. The lowered
+steps, Number and String tables, whole-document targets and repeatable String constants, are certified
+together as one `MixedComputationPlan` and executed in its order over the checked document.
 
 The result is projected onto what a Kernel `compute` observation reports: its change projection,
 an instance whose computed value equals its stored value being no change, a target that held a
-value and now holds none being cleared, and a rejected attempt being errored. The Number plan
-supplies that projection itself (`NumericComputationRunView`); for the scalar plan's String targets
-it is taken against the stored text.
+value and now holds none being cleared, and a rejected attempt being errored. A Number step supplies
+that projection itself (`NumericComputationRunView`); for String and whole-document targets it is
+taken against the stored text.
 -/
 
 namespace A12Kernel.Dm
