@@ -38,7 +38,7 @@ import A12Kernel.Conformance.StringFirstFilledComputationRows
 import A12Kernel.Conformance.AddressedStringLength
 import A12Kernel.Conformance.AddressedTimeConstruction
 import A12Kernel.Conformance.AddressedTimeConstructionFormalInput
-import A12Kernel.Conformance.AddressedTimeFirstFilledComputation
+import A12Kernel.Conformance.TimeFirstFilledComputationRows
 import A12Kernel.Conformance.AddressedTimeFromDateTime
 import A12Kernel.Conformance.AddressedTimeFromDateTimeFormalInput
 import A12Kernel.Conformance.BaseYearDateSource

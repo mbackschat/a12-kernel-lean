@@ -46,12 +46,6 @@ def dateFragmentFirstFilledCellAt
   | .empty, _ => .empty
   | .unknown cause, _ | .poison cause, _ => .unknown cause
 
-inductive DateFragmentFirstFilledComputationFault where
-  | targetRows (cause : ActualRowEnvironmentError)
-  | targetEnvironment (cause : EnvBindingError)
-  | source (cause : CheckedAddressingError)
-  deriving Repr, DecidableEq
-
 /-- One checked DateFragment `FirstFilledValue` result backed by the common exact-text channels. -/
 structure DateFragmentFirstFilledComputationRunView (model : FlatModel)
     (ResidualMessage : Type) where
@@ -89,7 +83,7 @@ def evalResolvedDateFragmentFirstFilled
 def evaluateAt (operation : CheckedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (target : CellAddr) (environment : Env) :
-    Except DateFragmentFirstFilledComputationFault AddressedTokenComputationOutcome := do
+    Except FirstFilledSiteFault AddressedTokenComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError .source
   pure { targetField := target
          result := evalResolvedDateFragmentFirstFilled resolved.cells resolved.hasOpenTail }
@@ -98,14 +92,14 @@ def evaluateAt (operation : CheckedDateFragmentFirstFilledComputation model)
 scope with a clear at each over-limit row. -/
 def executeWithRead (operation : CheckedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell) :
-    Except DateFragmentFirstFilledComputationFault (List AddressedTokenComputationOutcome) :=
+    Except FirstFilledSiteFault (List AddressedTokenComputationOutcome) :=
   operation.shape.site.instances input .targetRows .targetEnvironment
     (fun target _ => pure { targetField := target, result := .noValue })
     (operation.evaluateAt input read)
 
 def execute (operation : CheckedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) :
-    Except DateFragmentFirstFilledComputationFault (List AddressedTokenComputationOutcome) :=
+    Except FirstFilledSiteFault (List AddressedTokenComputationOutcome) :=
   operation.executeWithRead input input.read
 
 /-- Classify caller-view token outcomes against the immutable source target at the same addresses.
@@ -113,14 +107,14 @@ This result boundary does not claim that the Kernel copies rather than rerenders
 def executeResultWithRead (operation : CheckedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (residualMessages : List ResidualMessage) :
-    Except DateFragmentFirstFilledComputationFault
+    Except FirstFilledSiteFault
       (DateFragmentFirstFilledComputationRunView model ResidualMessage) := do
   let outcomes ← operation.executeWithRead input read
   pure { operation, string := projectAddressedTokenResults input residualMessages outcomes }
 
 def executeResult (operation : CheckedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
-    Except DateFragmentFirstFilledComputationFault
+    Except FirstFilledSiteFault
       (DateFragmentFirstFilledComputationRunView model ResidualMessage) :=
   operation.executeResultWithRead input input.read residualMessages
 
@@ -144,7 +138,7 @@ inductive DateFragmentFirstFilledCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
-      (cause : DateFragmentFirstFilledComputationFault)
+      (cause : FirstFilledSiteFault)
   deriving Repr, DecidableEq
 
 namespace CheckedDateFragmentFirstFilledComputation

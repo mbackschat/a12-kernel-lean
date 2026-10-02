@@ -144,7 +144,7 @@ inductive DocumentComputationStepFault where
   | dateRangeFirstFilled (cause : DateRangeFirstFilledComputationFault)
   | enumerationFirstFilled (cause : CheckedAddressingError)
   | stringFirstFilled (cause : StringFirstFilledComputationFault)
-  | dateFragmentFirstFilled (cause : DateFragmentFirstFilledComputationFault)
+  | firstFilledSite (cause : FirstFilledSiteFault)
   | timeFromDateTime (cause : ValueAsDateTimeExtractionFault)
   | dateFromDateTime (cause : DateFromDateTimeComputationFault)
   | dateTimeDayThenSubdayShift (cause : DateTimeMixedShiftComputationFault)
@@ -382,17 +382,18 @@ def ofBooleanFirstFilled (operation : CheckedBooleanFirstFilledComputation model
     let outcome ← (operation.execute document).mapError .firstFilledSource
     pure (.boolean outcome, DocumentComputationReadBack.boolean outcome)
 
-/-- A fixed-target Time `FirstFilledValue`. -/
+/-- A fixed-target Time `FirstFilledValue` at its single instance. -/
 def ofTimeFirstFilled (operation : CheckedTimeFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
-  target := operation.shape.target.id
+  target := operation.targetField
   family := .time
-  referencesField := operation.shape.source.referencesField
-  excludesTarget := operation.shape.excludesTarget
+  referencesField := operation.referencesField
+  excludesTarget := operation.excludesTarget
   run _ _ document := do
-    let outcome ← (operation.execute document).mapError .firstFilledSource
-    let cell ← DocumentComputationReadBack.time model operation.shape.target.id outcome
-    pure (.time outcome, cell)
+    let entry ← (operation.evaluateAt document document.read
+      { field := operation.targetField, path := [] } []).mapError .firstFilledSite
+    let cell ← DocumentComputationReadBack.time model operation.targetField entry.outcome
+    pure (.time entry.outcome, cell)
 
 /-- A fixed-target DateTime `FirstFilledValue`. -/
 def ofDateTimeFirstFilled (operation : CheckedDateTimeFirstFilledComputation model) :
@@ -427,7 +428,7 @@ def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputa
   excludesTarget := operation.excludesTarget
   run _ _ document := do
     let entry ← (operation.evaluateAt document document.read
-      { field := operation.targetField, path := [] } []).mapError .dateFragmentFirstFilled
+      { field := operation.targetField, path := [] } []).mapError .firstFilledSite
     let outcome := entry.result.asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.dateFragment model operation.targetField outcome
     pure (.dateFragment outcome, cell)

@@ -164,7 +164,8 @@ private def outcome? (sourceInputs : List SourceInput) :
     Option TimeTargetOutcome := do
   let operation ← checked? target.id (star "Time")
   let input ← input? sourceInputs
-  operation.execute input |>.toOption
+  let [entry] ← operation.execute input |>.toOption | none
+  pure entry.outcome
 
 private def signature? (sourceInputs : List SourceInput) : Option String := do
   let outcome ← outcome? sourceInputs
@@ -176,10 +177,12 @@ private def signature? (sourceInputs : List SourceInput) : Option String := do
 private def runView? (targetStored : String) (targetRaw : RawCell)
     (sourceInputs : List SourceInput)
     (residualMessages : List FormalCause := []) :
-    Option (TimeComputationRunView FormalCause) := do
+    Option (TimeComputationRunView FormalCause CellAddr) := do
   let operation ← checked? target.id (star "Time")
   let input ← inputWithTarget? targetStored targetRaw sourceInputs
-  operation.executeResult input residualMessages |>.toOption
+  (·.time) <$> (operation.executeResult input residualMessages |>.toOption)
+
+private def root (field : FieldId) : CellAddr := { field, path := [] }
 
 private def selectedTime : StoredTime := ⟨"10:11:12", by decide⟩
 private def seedTime : StoredTime := ⟨"12:34:56", by decide⟩
@@ -212,11 +215,11 @@ example : (do
     let view ← runView? seedTime.text
       (.parsed (timeValue 45296000 seedClock)) [selectedInput 1]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
+    let applied ← view.applyTo destination.sourceTimeTargetStateAt |>.toOption
     pure (view.withoutErrors, view.withChanges,
-      applied target.id, applied otherGroupTarget.id)) =
-    some ([{ targetField := target.id, value := selectedTime }],
-      [{ targetField := target.id, value := selectedTime }],
+      applied (root target.id), applied (root otherGroupTarget.id))) =
+    some ([{ targetField := root target.id, value := selectedTime }],
+      [{ targetField := root target.id, value := selectedTime }],
       .presentValue selectedTime, .presentValue otherTime) := by
   native_decide
 
@@ -225,8 +228,8 @@ example : (do
     let view ← runView? selectedTime.text
       (.parsed (timeValue 36672000 selectedClock)) [selectedInput 1]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
-    pure (view.withChanges, applied target.id)) =
+    let applied ← view.applyTo destination.sourceTimeTargetStateAt |>.toOption
+    pure (view.withChanges, applied (root target.id))) =
     some ([], .presentValue seedTime) := by
   native_decide
 
@@ -236,18 +239,18 @@ example :
       let view ← runView? seedTime.text
         (.parsed (timeValue 45296000 seedClock)) []
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceTimeTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied otherGroupTarget.id)) =
-      some ([target.id], true, .presentEmpty, .presentValue otherTime) ∧
+        applied (root target.id), applied (root otherGroupTarget.id))) =
+      some ([root target.id], true, .presentEmpty, .presentValue otherTime) ∧
     (do
       let view ← runView? seedTime.text
         (.parsed (timeValue 45296000 seedClock)) [malformedInput 1]
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceTimeTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied otherGroupTarget.id)) =
-      some ([target.id], true, .presentEmpty, .presentValue otherTime) := by
+        applied (root target.id), applied (root otherGroupTarget.id))) =
+      some ([root target.id], true, .presentEmpty, .presentValue otherTime) := by
   native_decide
 
 /- The typed adapter retains the parsed clock rather than the stored text or transport instant; this mechanism separator is internal. -/

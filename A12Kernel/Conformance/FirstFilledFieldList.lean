@@ -133,7 +133,7 @@ private def results? (cells : List (String × String)) : Option (List String) :=
     (checkDateTimeFirstFilledComputation model ["Fc"] 11 (list ["M1", "M2"])).toOption
   let b ← (booleanResult.execute input).toOption
   let [{ result := g, .. }] ← (fragmentResult.execute input).toOption | none
-  let t ← (clockResult.execute input).toOption
+  let [{ outcome := t, .. }] ← (clockResult.execute input).toOption | none
   let m ← (momentResult.execute input).toOption
   pure [
     match b with | .value value => toString value | _ => "-",

@@ -112,8 +112,8 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
     | _ => refuse "FirstFilledValue" "row source"
   match target.policy.kind with
   | .temporal .time _ => do
-      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedTimeFirstFilled?
-        (← elaborated "FirstFilledValue" (checkAddressedTimeFirstFilledComputation model group target.id star)))
+      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofTimeFirstFilled?
+        (← elaborated "FirstFilledValue" (checkTimeFirstFilledComputation model group target.id (.star star))))
   | .temporal .dateTime _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedDateTimeFirstFilled?
         (← elaborated "FirstFilledValue" (checkAddressedDateTimeFirstFilledComputation model group target.id star)))

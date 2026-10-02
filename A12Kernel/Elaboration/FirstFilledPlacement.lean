@@ -111,6 +111,14 @@ def resolveAt (source : FirstFilledFieldSource model) (input : CheckedDocument m
 
 end FirstFilledFieldSource
 
+/-- A structural failure of a placed carrier's run: its target rows, a row's address, or a reached
+source read. -/
+inductive FirstFilledSiteFault where
+  | targetRows (cause : ActualRowEnvironmentError)
+  | targetEnvironment (cause : EnvBindingError)
+  | source (cause : CheckedAddressingError)
+  deriving Repr, DecidableEq
+
 namespace CheckedFirstFilledSite
 
 def referencesField (site : CheckedFirstFilledSite model) (field : FieldId) : Bool :=

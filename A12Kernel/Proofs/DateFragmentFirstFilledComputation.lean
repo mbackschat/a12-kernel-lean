@@ -35,20 +35,6 @@ theorem checkedDateFragmentFirstFilled_carriers
   ⟨operation.fragment, operation.shape.targetCarrier, operation.shape.sourceCarrier,
     operation.shape.sourceAccepted, operation.excludesTarget⟩
 
-/-- A fixed target runs exactly once, at its single instance, the empty environment. -/
-theorem checkedDateFragmentFirstFilled_fixed_runsOnce
-    (operation : CheckedDateFragmentFirstFilledComputation model)
-    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (fixed : operation.target.repeatableScope = []) :
-    operation.executeWithRead input read =
-      (·::[]) <$> operation.evaluateAt input read
-        { field := operation.targetField, path := [] } [] := by
-  simp [CheckedDateFragmentFirstFilledComputation.executeWithRead, CheckedFirstFilledSite.instances,
-    CheckedDocument.computationTargetOutcomes, CheckedDateFragmentFirstFilledComputation.target,
-    CheckedDateFragmentFirstFilledComputation.targetField] at fixed ⊢
-  simp [fixed, Env.pathForScope]
-  rfl
-
 /-- The immutable-document executor is definitionally the caller-read route specialized to the
 document's checked read. -/
 theorem checkedDateFragmentFirstFilled_executeWithRead_base
@@ -117,7 +103,7 @@ theorem checkedDateFragmentFirstFilled_executeResultWithFormalInputs_failure_exa
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
     (prepared : ComputationFormalInputPreparation model)
-    (fault : DateFragmentFirstFilledComputationFault)
+    (fault : FirstFilledSiteFault)
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeResultWithRead input prepared.preliminary.readComputation

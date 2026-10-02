@@ -1,7 +1,6 @@
 import A12Kernel.Elaboration.TimeFirstFilledComputation
-import A12Kernel.Elaboration.AddressedTimeFirstFilledFormalInput
 
-/-! # Direct and exact-address Time `FirstFilledValue` computation laws -/
+/-! # Time `FirstFilledValue` laws at a fixed or a repeatable target -/
 
 namespace A12Kernel
 
@@ -21,40 +20,27 @@ theorem timeFirstFilledCellAt_poison
     timeFirstFilledCellAt addressed = .poison cause := by
   simp [timeFirstFilledCellAt, observed]
 
-/-- Result construction retains the operation-owned target and delegates every public projection to the established Time outcome classifier. -/
-theorem timeFirstFilled_executeResult_projects
+/-- The immutable-document executor is definitionally the caller-read route specialized to the document's checked read. -/
+theorem checkedTimeFirstFilled_executeWithRead_base
     (operation : CheckedTimeFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (residualMessages : List ResidualMessage)
-    (outcome : TimeTargetOutcome)
-    (evaluated : operation.execute input = .ok outcome) :
-    operation.executeResult input residualMessages =
-      .ok (TimeComputationRunView.fromOutcomes input residualMessages
-        [(operation.targetPolicy.checked.target.id, outcome)]) := by
-  rw [CheckedTimeFirstFilledComputation.executeResult, evaluated]
-  rfl
-
-/-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/
-theorem addressedTimeFirstFilled_executeWithRead_base
-    (operation : CheckedAddressedTimeFirstFilledComputation model)
     (input : CheckedDocument model) :
     operation.executeWithRead input input.read = operation.execute input := by
   rfl
 
-/-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
-theorem addressedTimeFirstFilled_executeResult_projects
-    (operation : CheckedAddressedTimeFirstFilledComputation model)
+/-- Result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
+theorem checkedTimeFirstFilled_executeResult_projects
+    (operation : CheckedTimeFirstFilledComputation model)
     (input : CheckedDocument model) (messages : List ResidualMessage)
-    (outcomes : List AddressedTimeFirstFilledComputationOutcome)
-    (view : AddressedTimeFirstFilledComputationRunView model ResidualMessage)
+    (outcomes : List TimeFirstFilledComputationOutcome)
+    (view : TimeFirstFilledComputationRunView model ResidualMessage)
     (executed : operation.execute input = .ok outcomes)
     (produced : operation.executeResult input messages = .ok view) :
     view.operation = operation ∧
       view.time = TimeComputationRunView.fromOutcomesAt
         input.sourceTimeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  rw [CheckedAddressedTimeFirstFilledComputation.executeResult,
-    CheckedAddressedTimeFirstFilledComputation.executeResultWithRead]
+  rw [CheckedTimeFirstFilledComputation.executeResult,
+    CheckedTimeFirstFilledComputation.executeResultWithRead]
     at produced
   change operation.executeWithRead input input.read = .ok outcomes at executed
   rw [executed] at produced
@@ -63,12 +49,12 @@ theorem addressedTimeFirstFilled_executeResult_projects
   exact ⟨rfl, rfl⟩
 
 /-- Successful whole-call composition preserves the exact prepared Time result, including eager findings, clock rendering, and source-relative actions. -/
-theorem addressedTimeFirstFilled_executeResultWithFormalInputs_exact
-    (operation : CheckedAddressedTimeFirstFilledComputation model)
+theorem checkedTimeFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedTimeFirstFilledComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
     (prepared : ComputationFormalInputPreparation model)
-    (result : AddressedTimeFirstFilledComputationRunView model
+    (result : TimeFirstFilledComputationRunView model
       ComputationFormalInputFinding)
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
@@ -76,17 +62,17 @@ theorem addressedTimeFirstFilled_executeResultWithFormalInputs_exact
       prepared.preliminary.readComputation
       prepared.formalErrorsInOperands = .ok result) :
     operation.executeResultWithFormalInputs input = .ok result := by
-  rw [CheckedAddressedTimeFirstFilledComputation.executeResultWithFormalInputs,
+  rw [CheckedTimeFirstFilledComputation.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
-/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged addressed Time fault. -/
-theorem addressedTimeFirstFilled_executeResultWithFormalInputs_failure_exact
-    (operation : CheckedAddressedTimeFirstFilledComputation model)
+/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged Time fault. -/
+theorem checkedTimeFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedTimeFirstFilledComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
     (prepared : ComputationFormalInputPreparation model)
-    (fault : AddressedTimeFirstFilledComputationFault)
+    (fault : FirstFilledSiteFault)
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeResultWithRead input
@@ -94,13 +80,13 @@ theorem addressedTimeFirstFilled_executeResultWithFormalInputs_failure_exact
       prepared.formalErrorsInOperands = .error fault) :
     operation.executeResultWithFormalInputs input =
       .error (.execution prepared.formalErrorsInOperands fault) := by
-  rw [CheckedAddressedTimeFirstFilledComputation.executeResultWithFormalInputs,
+  rw [CheckedTimeFirstFilledComputation.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
-/-- Addressed application is exactly the common Time fold over the separately supplied document's exact cell-state projection. -/
-theorem addressedTimeFirstFilledRun_applyToChecked_delegates
-    (view : AddressedTimeFirstFilledComputationRunView model ResidualMessage)
+/-- Application is exactly the common Time fold over the separately supplied document's exact cell-state projection. -/
+theorem timeFirstFilledRun_applyToChecked_delegates
+    (view : TimeFirstFilledComputationRunView model ResidualMessage)
     (destination : CheckedDocument model) :
     view.applyToChecked destination =
       view.time.applyTo destination.sourceTimeTargetStateAt := by

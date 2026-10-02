@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedTimeFirstFilledFormalInput
+import A12Kernel.Elaboration.TimeFirstFilledComputation
 
 /-! # Exact-address repeatable Time `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedTimeFirstFilledComputation
+namespace A12Kernel.Conformance.TimeFirstFilledComputationRows
 
 open A12Kernel
 
@@ -60,34 +60,33 @@ private def targetStar : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedAddressedTimeFirstFilledComputation model) :=
-  (checkAddressedTimeFirstFilledComputation model
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+    Option (CheckedTimeFirstFilledComputation model) :=
+  (checkTimeFirstFilledComputation model
+    ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
 
 private def elabError? (checked : Except
-    AddressedTimeFirstFilledComputationElabError
-    (CheckedAddressedTimeFirstFilledComputation model)) :=
+    TimeFirstFilledComputationElabError
+    (CheckedTimeFirstFilledComputation model)) :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary admits only a repeatable whole-second Time target and one sibling Time star, and it rejects a target read through the reopened axis. -/
+/- A repeatable whole-second Time target admits one sibling Time star and rejects a target read through the reopened axis; a date-format target fails its carrier. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example : operation?.isSome = true ∧
-    elabError? (checkAddressedTimeFirstFilledComputation model
+    elabError? (checkTimeFirstFilledComputation model
       ["Projects", "Tasks"] target.id
-      (siblingStar dateTimeSource.name)) =
-        some (.sourceCarrier dateTimeSource.path) ∧
-    elabError? (checkAddressedTimeFirstFilledComputation model
+      (.star (siblingStar dateTimeSource.name))) =
+        some (.shape (.sourceCarrier dateTimeSource.path)) ∧
+    elabError? (checkTimeFirstFilledComputation model
       ["Projects", "Tasks"] wrongFormatTarget.id
-      (siblingStar source.name)) =
-        some (.targetPolicy (.unsupportedFormat wrongFormatTarget.id
-          "yyyy-MM-dd")) ∧
-    elabError? (checkAddressedTimeFirstFilledComputation model
-      ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) ∧
-    elabError? (checkAddressedTimeFirstFilledComputation model
-      ["Projects", "Tasks"] target.id targetStar) =
-        some (.targetSelfReference target.id) := by
+      (.star (siblingStar source.name))) =
+        some (.shape (.targetCarrier wrongFormatTarget.path)) ∧
+    elabError? (checkTimeFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
+        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) ∧
+    elabError? (checkTimeFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star targetStar)) =
+        some (.shape (.site (.starPlacement (.targetSelfReference target.id)))) := by
   native_decide
 
 private def prepared :
@@ -291,11 +290,11 @@ example : formalInputSummary? = some {
    TIME-declared `yyyy-MM-dd` one beside it is refused. Dropping the kind test widened this carrier
    by the cross-kind cell and by nothing else. -/
 example :
-    ((checkAddressedTimeFirstFilledComputation model ["Projects", "Tasks"]
-        clockShapedDateTarget.id (siblingStar source.name)).toOption.isSome,
-      (checkAddressedTimeFirstFilledComputation model ["Projects", "Tasks"]
-        wrongFormatTarget.id (siblingStar source.name)).toOption.isSome) =
+    ((checkTimeFirstFilledComputation model ["Projects", "Tasks"]
+        clockShapedDateTarget.id (.star (siblingStar source.name))).toOption.isSome,
+      (checkTimeFirstFilledComputation model ["Projects", "Tasks"]
+        wrongFormatTarget.id (.star (siblingStar source.name))).toOption.isSome) =
     (true, false) := by
   native_decide
 
-end A12Kernel.Conformance.AddressedTimeFirstFilledComputation
+end A12Kernel.Conformance.TimeFirstFilledComputationRows

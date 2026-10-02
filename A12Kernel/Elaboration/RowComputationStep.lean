@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.RepeatableDateTimeConstantComputation
 import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.AddressedFieldValueAsString
 import A12Kernel.Elaboration.StringFirstFilledComputation
-import A12Kernel.Elaboration.AddressedTimeFirstFilledComputation
+import A12Kernel.Elaboration.TimeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateTimeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedFullDateFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateRangeFirstFilledComputation
@@ -38,8 +38,7 @@ inductive RowComputationStepFault where
   | booleanConstant (cause : RepeatableBooleanConstantComputationFault)
   | fieldValueAsString (cause : AddressedFieldValueAsStringFault)
   | stringFirstFilled (cause : StringFirstFilledComputationFault)
-  | dateFragmentFirstFilled (cause : DateFragmentFirstFilledComputationFault)
-  | timeFirstFilled (cause : AddressedTimeFirstFilledComputationFault)
+  | firstFilledSite (cause : FirstFilledSiteFault)
   | dateTimeFirstFilled (cause : AddressedDateTimeFirstFilledComputationFault)
   | fullDateFirstFilled (cause : AddressedFullDateFirstFilledComputationFault)
   | dateRangeFirstFilled (cause : AddressedDateRangeFirstFilledComputationFault)
@@ -182,16 +181,16 @@ def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model)
 def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   checked? operation.targetField .dateFragment operation.referencesField fun _ _ _ document => do
-    let outcomes ← (operation.execute document).mapError .dateFragmentFirstFilled
+    let outcomes ← (operation.execute document).mapError .firstFilledSite
     readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
       .dateFragment (DocumentComputationReadBack.dateFragment model)
 
 /-- A per-row Time `FirstFilledValue` over a sibling star. -/
-def ofAddressedTimeFirstFilled? (operation : CheckedAddressedTimeFirstFilledComputation model) :
+def ofTimeFirstFilled? (operation : CheckedTimeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.checkedTarget.targetField .time (· == operation.checkedSource.declaration.id)
+  checked? operation.targetField .time operation.referencesField
     fun _ _ _ document => do
-      let outcomes ← (operation.execute document).mapError .timeFirstFilled
+      let outcomes ← (operation.execute document).mapError .firstFilledSite
       readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .time
         (DocumentComputationReadBack.time model)
 
