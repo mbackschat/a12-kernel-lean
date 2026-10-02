@@ -175,6 +175,17 @@ The exact revisions for the consolidated probe families remain queryable without
 
 **Limit:** formal provenance does not replace organizational approval, production security, platform qualification, or legal review. It makes the semantic part of those decisions precise and reproducible.
 
+## Cross-category use case: negation
+
+A12 has no generic `Not`: every negative check is its own predicate, such as `FieldNotFilled` beside `FieldFilled` or `NoFieldFilled` beside `AtLeastOneFieldFilled` ([`spec/02`](../spec/02-logic-and-formal-errors.md) §A.2). This use case asks for negation anyway, in two variants that share one mechanism.
+
+- **Rule negation (Transform).** Take a rule and produce the rule that fires exactly where the original's condition is definitely false, by pushing the negation through `And`/`Or` (De Morgan) and replacing each predicate with its complement: `FieldFilled` with `FieldNotFilled`, `>` with `<=`, `AtLeastOneFieldFilled` with `NoFieldFilled`. The output uses only operators the Kernel already has, so it runs on the real engine, or it is refused with the reason: a predicate with no complement in the language, an iteration guard the negation removes (`MVK_NEG_CONDITION_IN_ITERATION`), or an error field the output no longer references.
+- **`Non<Operation>` (Translate).** Introduce a negated twin for every operation, defined as the three-valued complement of the original: true where it is definitely false, unknown where it is unknown. A rule written with these operators lowers into the Kernel language through the same complement table, and is refused where an operation has no expressible complement.
+
+**The observable relation.** On every evaluated instance the negated condition's three-valued truth is the strong-Kleene complement of the original's. Three things stay outside that relation and need their own statements: the firing polarity of the negated rule (OMISSION when the original could still become true by filling more data, VALUE otherwise), the empty-instance gate (a negated rule may be evaluated on an instance the original never fires on), and the static iteration admission.
+
+**What it needs from the semantics.** The rule-level Kernel result collapses false and unknown, so a positive rule never exposes the difference, but its negation fires exactly on the definite-false part. The Lean account therefore has to keep definite falsity at every leaf. It does so for comparisons and presence predicates, but the field-fill and group quantifiers currently collapse to the Kernel's `falseOrUnknown`. That is an open representation gap, [SG30](SEMANTICS-GAPS.md#gap-sg30). The complement table is a finite decision per predicate family, checked against the Lean evaluators and calibrated by running each original and negated pair on the Kernel over documents that separate filled, empty, formally invalid, uninstantiated and over-limit cells.
+
 ## Cross-category use case: a derived simplified language variant
 
 **What it enables:** producing a smaller language from the full one—a reduced set of constructs that provably means the same thing on the fragment it covers, together with the mapping from full A12 into it. Consumers who cannot afford the whole surface get something implementable, analyzable, and teachable without re-deriving A12 semantics from prose.

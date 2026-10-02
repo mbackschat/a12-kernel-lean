@@ -116,6 +116,11 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 <a id="gap-sg29"></a>
 - [open obligation](gaps/paths-and-groups.md#gap-sg29)
 
+### SG30 — definite falsity of the fill and group quantifiers
+
+<a id="gap-sg30"></a>
+- [open obligation](gaps/paths-and-groups.md#gap-sg30)
+
 ### SG13 — group-list and group-count completion
 
 <a id="gap-sg13"></a>
